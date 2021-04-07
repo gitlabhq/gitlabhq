@@ -1,11 +1,13 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
+import LinksInner from '~/pipelines/components/graph_shared/links_inner.vue';
+import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import JobPill from '~/pipelines/components/pipeline_graph/job_pill.vue';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import StagePill from '~/pipelines/components/pipeline_graph/stage_pill.vue';
 import { DRAW_FAILURE, EMPTY_PIPELINE_DATA, INVALID_CI_CONFIG } from '~/pipelines/constants';
-import { pipelineData, singleStageData } from './mock_data';
+import { invalidNeedsData, pipelineData, singleStageData } from './mock_data';
 
 describe('pipeline graph component', () => {
   const defaultProps = { pipelineData };
@@ -16,19 +18,28 @@ describe('pipeline graph component', () => {
       propsData: {
         ...props,
       },
+      stubs: { LinksLayer, LinksInner },
+      data() {
+        return {
+          measurements: {
+            width: 1000,
+            height: 1000,
+          },
+        };
+      },
     });
   };
 
-  const findPipelineGraph = () => wrapper.find('[data-testid="graph-container"]');
-  const findAlert = () => wrapper.find(GlAlert);
-  const findAllStagePills = () => wrapper.findAll(StagePill);
-  const findAllStageBackgroundElements = () => wrapper.findAll('[data-testid="stage-background"]');
-  const findStageBackgroundElementAt = (index) => findAllStageBackgroundElements().at(index);
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findAllJobPills = () => wrapper.findAll(JobPill);
+  const findAllStageBackgroundElements = () => wrapper.findAll('[data-testid="stage-background"]');
+  const findAllStagePills = () => wrapper.findAllComponents(StagePill);
+  const findLinksLayer = () => wrapper.findComponent(LinksLayer);
+  const findPipelineGraph = () => wrapper.find('[data-testid="graph-container"]');
+  const findStageBackgroundElementAt = (index) => findAllStageBackgroundElements().at(index);
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('with no data', () => {
@@ -36,7 +47,7 @@ describe('pipeline graph component', () => {
       wrapper = createComponent({ pipelineData: {} });
     });
 
-    it('renders an empty section', () => {
+    it('does not render the graph', () => {
       expect(wrapper.text()).toBe(wrapper.vm.$options.errorTexts[EMPTY_PIPELINE_DATA]);
       expect(findPipelineGraph().exists()).toBe(false);
       expect(findAllStagePills()).toHaveLength(0);
@@ -74,10 +85,11 @@ describe('pipeline graph component', () => {
 
   describe('with error while rendering the links with needs', () => {
     beforeEach(() => {
-      wrapper = createComponent();
+      wrapper = createComponent({ pipelineData: invalidNeedsData });
     });
 
     it('renders the error that link could not be drawn', () => {
+      expect(findLinksLayer().exists()).toBe(true);
       expect(findAlert().exists()).toBe(true);
       expect(findAlert().text()).toBe(wrapper.vm.$options.errorTexts[DRAW_FAILURE]);
     });

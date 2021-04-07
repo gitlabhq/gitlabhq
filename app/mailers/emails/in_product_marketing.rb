@@ -6,6 +6,8 @@ module Emails
 
     FROM_ADDRESS = 'GitLab <team@gitlab.com>'
     CUSTOM_HEADERS = {
+      from: FROM_ADDRESS,
+      reply_to: FROM_ADDRESS,
       'X-Mailgun-Track' => 'yes',
       'X-Mailgun-Track-Clicks' => 'yes',
       'X-Mailgun-Track-Opens' => 'yes',
@@ -25,7 +27,8 @@ module Emails
     private
 
     def mail_to(to:, subject:)
-      mail(to: to, subject: subject, from: FROM_ADDRESS, reply_to: FROM_ADDRESS, **CUSTOM_HEADERS) do |format|
+      custom_headers = Gitlab.com? ? CUSTOM_HEADERS : {}
+      mail(to: to, subject: subject, **custom_headers) do |format|
         format.html { render layout: nil }
         format.text { render layout: nil }
       end

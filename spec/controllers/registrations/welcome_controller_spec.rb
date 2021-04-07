@@ -60,8 +60,10 @@ RSpec.describe Registrations::WelcomeController do
   end
 
   describe '#update' do
+    let(:email_opted_in) { '0' }
+
     subject(:update) do
-      patch :update, params: { user: { role: 'software_developer', setup_for_company: 'false' } }
+      patch :update, params: { user: { role: 'software_developer', setup_for_company: 'false', email_opted_in: email_opted_in } }
     end
 
     context 'without a signed in user' do
@@ -74,6 +76,24 @@ RSpec.describe Registrations::WelcomeController do
       end
 
       it { is_expected.to redirect_to(dashboard_projects_path)}
+
+      context 'when the user opted in' do
+        let(:email_opted_in) { '1' }
+
+        it 'sets the email_opted_in field' do
+          subject
+
+          expect(controller.current_user.email_opted_in).to eq(true)
+        end
+      end
+
+      context 'when the user opted out' do
+        it 'sets the email_opted_in field' do
+          subject
+
+          expect(controller.current_user.email_opted_in).to eq(false)
+        end
+      end
     end
   end
 end

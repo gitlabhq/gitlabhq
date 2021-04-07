@@ -297,7 +297,7 @@ RSpec.describe Banzai::Pipeline::WikiPipeline do
           mime_type: 'image/jpeg',
           name: 'images/image.jpg',
           path: 'images/image.jpg',
-          raw_data: '')
+          data: '')
 
         wiki_file = Gitlab::Git::WikiFile.new(gollum_file_double)
         markdown = "[[#{wiki_file.path}]]"

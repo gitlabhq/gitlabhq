@@ -10,6 +10,10 @@ export default {
       type: String,
       required: true,
     },
+    pipelineId: {
+      type: Number,
+      required: true,
+    },
     isHighlighted: {
       type: Boolean,
       required: false,
@@ -32,6 +36,9 @@ export default {
     },
   },
   computed: {
+    id() {
+      return `${this.jobName}-${this.pipelineId}`;
+    },
     jobPillClasses() {
       return [
         { 'gl-opacity-3': this.isFadedOut },
@@ -52,7 +59,7 @@ export default {
 <template>
   <tooltip-on-truncate :title="jobName" truncate-target="child" placement="top">
     <div
-      :id="jobName"
+      :id="id"
       class="gl-w-15 gl-bg-white gl-text-center gl-text-truncate gl-rounded-pill gl-mb-3 gl-px-5 gl-py-2 gl-relative gl-z-index-1 gl-transition-duration-slow gl-transition-timing-function-ease"
       :class="jobPillClasses"
       @mouseover="onMouseEnter"

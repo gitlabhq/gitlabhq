@@ -288,6 +288,10 @@ class Repository
     false
   end
 
+  def search_branch_names(pattern)
+    redis_set_cache.search('branch_names', pattern) { branch_names }
+  end
+
   def languages
     return [] if empty?
 

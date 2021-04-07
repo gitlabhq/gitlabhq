@@ -20,6 +20,7 @@
               = f.label :other_role, _('What is your job title? (optional)'), class: 'form-check-label gl-mb-3'
               = f.text_field :other_role, class: 'form-control'
         = render_if_exists "registrations/welcome/setup_for_company", f: f
+        = render 'devise/shared/email_opted_in', f: f
         .row
           .form-group.col-sm-12.gl-mb-0
             - if partial_exists? "registrations/welcome/button"

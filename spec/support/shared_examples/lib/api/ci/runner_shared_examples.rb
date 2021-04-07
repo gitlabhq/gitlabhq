@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'API::CI::Runner application context metadata' do |api_route|
-  it 'contains correct context metadata', :context_aware do
+  it 'contains correct context metadata' do
     # Avoids popping the context from the thread so we can
     # check its content after the request.
     allow(Labkit::Context).to receive(:pop)

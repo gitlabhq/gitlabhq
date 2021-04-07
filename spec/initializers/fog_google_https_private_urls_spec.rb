@@ -13,11 +13,13 @@ RSpec.describe 'Fog::Storage::GoogleXML::File', :fog_requests do
   end
 
   let(:file) do
+    # rubocop:disable Rails/SaveBang
     directory = storage.directories.create(key: 'data')
     directory.files.create(
       body: 'Hello World!',
       key: 'hello_world.txt'
     )
+    # rubocop:enable Rails/SaveBang
   end
 
   it 'delegates to #get_https_url' do

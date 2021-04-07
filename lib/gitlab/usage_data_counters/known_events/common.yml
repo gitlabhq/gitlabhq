@@ -247,6 +247,12 @@
   category: incident_management_alerts
   aggregation: weekly
   feature_flag: usage_data_incident_management_alert_create_incident
+# Incident management on-call
+- name: i_incident_management_oncall_notification_sent
+  redis_slot: incident_management
+  category: incident_management_oncall
+  aggregation: weekly
+  feature_flag: usage_data_i_incident_management_oncall_notification_sent
 # Testing category
 - name: i_testing_test_case_parsed
   category: testing

@@ -3,45 +3,49 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::InProductMarketingEmailsWorker, '#perform' do
-  context 'when the application setting is enabled' do
+  using RSpec::Parameterized::TableSyntax
+
+  RSpec.shared_examples 'in-product marketing email' do
     before do
-      stub_application_setting(in_product_marketing_emails_enabled: true)
+      stub_application_setting(in_product_marketing_emails_enabled: in_product_marketing_emails_enabled)
+      stub_experiment(in_product_marketing_emails: experiment_active)
+      allow(::Gitlab).to receive(:com?).and_return(is_gitlab_com)
     end
 
-    context 'when the experiment is inactive' do
-      before do
-        stub_experiment(in_product_marketing_emails: false)
-      end
+    it 'executes the email service service' do
+      expect(Namespaces::InProductMarketingEmailsService).to receive(:send_for_all_tracks_and_intervals).exactly(executes_service).times
 
-      it 'does not execute the in product marketing emails service' do
-        expect(Namespaces::InProductMarketingEmailsService).not_to receive(:send_for_all_tracks_and_intervals)
-
-        subject.perform
-      end
-    end
-
-    context 'when the experiment is active' do
-      before do
-        stub_experiment(in_product_marketing_emails: true)
-      end
-
-      it 'calls the send_for_all_tracks_and_intervals method on the in product marketing emails service' do
-        expect(Namespaces::InProductMarketingEmailsService).to receive(:send_for_all_tracks_and_intervals)
-
-        subject.perform
-      end
+      subject.perform
     end
   end
 
-  context 'when the application setting is disabled' do
-    before do
-      stub_application_setting(in_product_marketing_emails_enabled: false)
+  context 'not on gitlab.com' do
+    let(:is_gitlab_com) { false }
+
+    where(:in_product_marketing_emails_enabled, :experiment_active, :executes_service) do
+      true     | true     | 1
+      true     | false    | 1
+      false    | false    | 0
+      false    | true     | 0
     end
 
-    it 'does not execute the in product marketing emails service' do
-      expect(Namespaces::InProductMarketingEmailsService).not_to receive(:send_for_all_tracks_and_intervals)
+    with_them do
+      include_examples 'in-product marketing email'
+    end
+  end
 
-      subject.perform
+  context 'on gitlab.com' do
+    let(:is_gitlab_com) { true }
+
+    where(:in_product_marketing_emails_enabled, :experiment_active, :executes_service) do
+      true     | true     | 1
+      true     | false    | 0
+      false    | false    | 0
+      false    | true     | 0
+    end
+
+    with_them do
+      include_examples 'in-product marketing email'
     end
   end
 end

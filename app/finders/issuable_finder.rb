@@ -244,7 +244,7 @@ class IssuableFinder
 
         # These are "helper" params that modify the results, like :in and :search. They usually come in at the top-level
         # params, but if they do come in inside the `:not` params, the inner ones should take precedence.
-        not_helpers = params.slice(*NEGATABLE_PARAMS_HELPER_KEYS).merge(params[:not].slice(*NEGATABLE_PARAMS_HELPER_KEYS))
+        not_helpers = params.slice(*NEGATABLE_PARAMS_HELPER_KEYS).merge(params[:not].to_h.slice(*NEGATABLE_PARAMS_HELPER_KEYS))
         not_helpers.each do |key, value|
           not_params[key] = value unless not_params[key].present?
         end

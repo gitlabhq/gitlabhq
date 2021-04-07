@@ -13,6 +13,38 @@ RSpec.describe Emails::InProductMarketing do
   describe '#in_product_marketing_email' do
     using RSpec::Parameterized::TableSyntax
 
+    let(:track) { :create }
+    let(:series) { 0 }
+
+    subject { Notify.in_product_marketing_email(user.id, group.id, track, series) }
+
+    include_context 'gitlab email notification'
+
+    it 'sends to the right user with a link to unsubscribe' do
+      aggregate_failures do
+        expect(subject).to deliver_to(user.notification_email)
+        expect(subject).to have_body_text(profile_notifications_url)
+      end
+    end
+
+    context 'when on gitlab.com' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+      end
+
+      it 'has custom headers' do
+        aggregate_failures do
+          expect(subject).to deliver_from(described_class::FROM_ADDRESS)
+          expect(subject).to reply_to(described_class::FROM_ADDRESS)
+          expect(subject).to have_header('X-Mailgun-Track', 'yes')
+          expect(subject).to have_header('X-Mailgun-Track-Clicks', 'yes')
+          expect(subject).to have_header('X-Mailgun-Track-Opens', 'yes')
+          expect(subject).to have_header('X-Mailgun-Tag', 'marketing')
+          expect(subject).to have_body_text('%tag_unsubscribe_url%')
+        end
+      end
+    end
+
     where(:track, :series) do
       :create | 0
       :create | 1
@@ -29,8 +61,6 @@ RSpec.describe Emails::InProductMarketing do
     end
 
     with_them do
-      subject { Notify.in_product_marketing_email(user.id, group.id, track, series) }
-
       it 'has the correct subject and content' do
         aggregate_failures do
           is_expected.to have_subject(subject_line(track, series))

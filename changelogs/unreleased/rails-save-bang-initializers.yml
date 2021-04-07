@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang rubocop offenses in spec/initializers
+merge_request: 58049
+author: Abdul Wadood @abdulwd
+type: fixed

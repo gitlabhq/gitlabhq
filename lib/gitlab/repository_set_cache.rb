@@ -49,5 +49,20 @@ module Gitlab
 
       write(key, yield)
     end
+
+    # Searches the cache set using SSCAN with the MATCH option. The MATCH
+    # parameter is the pattern argument.
+    # See https://redis.io/commands/scan#the-match-option for more information.
+    # Returns an Enumerator that enumerates all SSCAN hits.
+    def search(key, pattern, &block)
+      full_key = cache_key(key)
+
+      with do |redis|
+        exists = redis.exists(full_key)
+        write(key, yield) unless exists
+
+        redis.sscan_each(full_key, match: pattern)
+      end
+    end
   end
 end

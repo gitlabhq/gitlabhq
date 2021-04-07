@@ -197,12 +197,6 @@ RSpec.describe Ci::HasStatus do
     end
   end
 
-  describe '.completed_and_blocked_statuses' do
-    subject { Ci::Pipeline.completed_and_blocked_statuses }
-
-    it { is_expected.to eq [:success, :failed, :canceled, :skipped, :manual, :scheduled] }
-  end
-
   context 'for scope with one status' do
     shared_examples 'having a job' do |status|
       %i[ci_build generic_commit_status].each do |type|

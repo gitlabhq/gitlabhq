@@ -17,11 +17,13 @@ module Gitlab
         Config::Yaml::Tags::TagError
       ].freeze
 
-      attr_reader :root
+      attr_reader :root, :context, :ref
 
-      def initialize(config, project: nil, sha: nil, user: nil, parent_pipeline: nil)
+      def initialize(config, project: nil, sha: nil, user: nil, parent_pipeline: nil, ref: nil)
         @context = build_context(project: project, sha: sha, user: user, parent_pipeline: parent_pipeline)
         @context.set_deadline(TIMEOUT_SECONDS)
+
+        @ref = ref
 
         @config = expand_config(config)
 

@@ -39,7 +39,7 @@ module Banzai
           end
         end
 
-        doc.css('pre.code.math').each do |el|
+        doc.css('pre.code.language-math').each do |el|
           el[STYLE_ATTRIBUTE] = 'display'
           el[:class] += " #{TAG_CLASS}"
         end

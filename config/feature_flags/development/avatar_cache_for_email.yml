@@ -1,8 +1,0 @@
----
-name: avatar_cache_for_email
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55184
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323185
-milestone: '13.10'
-type: development
-group: group::source code
-default_enabled: false

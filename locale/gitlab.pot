@@ -817,9 +817,6 @@ msgstr ""
 msgid "%{spanStart}in%{spanEnd} %{errorFn}"
 msgstr ""
 
-msgid "%{startDate} - %{endDate}"
-msgstr ""
-
 msgid "%{start} to %{end}"
 msgstr ""
 
@@ -5649,6 +5646,12 @@ msgstr ""
 msgid "Capacity threshold"
 msgstr ""
 
+msgid "CascadingSettings|cannot be changed because it is locked by an ancestor"
+msgstr ""
+
+msgid "CascadingSettings|cannot be nil when locking the attribute"
+msgstr ""
+
 msgid "Certain user content will be moved to a system-wide \"Ghost User\" in order to maintain content for posterity. For further information, please refer to the %{link_start}user account deletion documentation.%{link_end}"
 msgstr ""
 
@@ -8573,7 +8576,7 @@ msgstr ""
 msgid "ContributionAnalytics|Last week"
 msgstr ""
 
-msgid "ContributionAnalytics|Merge Requests"
+msgid "ContributionAnalytics|Merge requests"
 msgstr ""
 
 msgid "ContributionAnalytics|No issues for the selected time period."
@@ -9609,6 +9612,24 @@ msgstr ""
 msgid "DNS"
 msgstr ""
 
+msgid "DORA4Metrics|%{startDate} - %{endDate}"
+msgstr ""
+
+msgid "DORA4Metrics|Date"
+msgstr ""
+
+msgid "DORA4Metrics|Deployments"
+msgstr ""
+
+msgid "DORA4Metrics|Deployments charts"
+msgstr ""
+
+msgid "DORA4Metrics|Something went wrong while getting deployment frequency data"
+msgstr ""
+
+msgid "DORA4Metrics|These charts display the frequency of deployments to the production environment, as part of the DORA 4 metrics. The environment must be named %{codeStart}production%{codeEnd} for its data to appear in these charts."
+msgstr ""
+
 msgid "Dashboard"
 msgstr ""
 
@@ -10595,24 +10616,6 @@ msgstr ""
 msgid "Deployment Frequency"
 msgstr ""
 
-msgid "DeploymentFrequencyCharts|%{startDate} - %{endDate}"
-msgstr ""
-
-msgid "DeploymentFrequencyCharts|Date"
-msgstr ""
-
-msgid "DeploymentFrequencyCharts|Deployments"
-msgstr ""
-
-msgid "DeploymentFrequencyCharts|Deployments charts"
-msgstr ""
-
-msgid "DeploymentFrequencyCharts|Something went wrong while getting deployment frequency data"
-msgstr ""
-
-msgid "DeploymentFrequencyCharts|These charts display the frequency of deployments to the production environment, as part of the DORA 4 metrics. The environment must be named %{codeStart}production%{codeEnd} for its data to appear in these charts."
-msgstr ""
-
 msgid "Deployments"
 msgstr ""
 
@@ -11113,9 +11116,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Dismiss DevOps Report introduction"
-msgstr ""
-
-msgid "Dismiss Merge Request promotion"
 msgstr ""
 
 msgid "Dismiss Value Stream Analytics introduction box"
@@ -19440,6 +19440,9 @@ msgstr ""
 msgid "Merge request (MR) approvals"
 msgstr ""
 
+msgid "Merge request analytics"
+msgstr ""
+
 msgid "Merge request approval settings have been updated."
 msgstr ""
 
@@ -26758,16 +26761,19 @@ msgstr ""
 msgid "Runners|Can run untagged jobs"
 msgstr ""
 
+msgid "Runners|Command to register runner"
+msgstr ""
+
 msgid "Runners|Copy instructions"
 msgstr ""
 
 msgid "Runners|Description"
 msgstr ""
 
-msgid "Runners|Download Latest Binary"
+msgid "Runners|Download and install binary"
 msgstr ""
 
-msgid "Runners|Download and Install Binary"
+msgid "Runners|Download latest binary"
 msgstr ""
 
 msgid "Runners|Group"
@@ -26776,7 +26782,7 @@ msgstr ""
 msgid "Runners|IP Address"
 msgstr ""
 
-msgid "Runners|Install a Runner"
+msgid "Runners|Install a runner"
 msgstr ""
 
 msgid "Runners|Last contact"
@@ -26798,9 +26804,6 @@ msgid "Runners|Property Name"
 msgstr ""
 
 msgid "Runners|Protected"
-msgstr ""
-
-msgid "Runners|Register Runner"
 msgstr ""
 
 msgid "Runners|Revision"
@@ -36756,9 +36759,6 @@ msgstr ""
 msgid "mrWidget|Jump to first unresolved thread"
 msgstr ""
 
-msgid "mrWidget|Learn more about resolving conflicts"
-msgstr ""
-
 msgid "mrWidget|Loading deployment statistics"
 msgstr ""
 
@@ -36871,9 +36871,6 @@ msgid "mrWidget|This action will add the merge request to the merge train when p
 msgstr ""
 
 msgid "mrWidget|This action will start a merge train when pipeline %{pipelineLink} succeeds."
-msgstr ""
-
-msgid "mrWidget|This feature merges changes from the target branch to the source branch. You cannot use this feature since the source branch is protected."
 msgstr ""
 
 msgid "mrWidget|This merge request failed to be merged automatically"

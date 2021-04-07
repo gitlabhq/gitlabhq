@@ -98,9 +98,21 @@ export const mockGraphqlInstructions = {
   data: {
     runnerSetup: {
       installInstructions:
-        "# Download the binary for your system\nsudo curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64\n\n# Give it permissions to execute\nsudo chmod +x /usr/local/bin/gitlab-runner\n\n# Create a GitLab CI user\nsudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash\n\n# Install and run as service\nsudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner\nsudo gitlab-runner start\n",
+        '# Install and run as service\nsudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner\nsudo gitlab-runner start',
       registerInstructions:
-        'sudo gitlab-runner register --url http://192.168.1.81:3000/ --registration-token GE5gsjeep_HAtBf9s3Yz',
+        'sudo gitlab-runner register --url http://gdk.test:3000/ --registration-token $REGISTRATION_TOKEN',
+      __typename: 'RunnerSetup',
+    },
+  },
+};
+
+export const mockGraphqlInstructionsWindows = {
+  data: {
+    runnerSetup: {
+      installInstructions:
+        '# Windows runner, then run\n.gitlab-runner.exe install\n.gitlab-runner.exe start',
+      registerInstructions:
+        './gitlab-runner.exe register --url http://gdk.test:3000/ --registration-token $REGISTRATION_TOKEN',
       __typename: 'RunnerSetup',
     },
   },

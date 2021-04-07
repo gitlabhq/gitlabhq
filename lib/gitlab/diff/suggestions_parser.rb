@@ -17,7 +17,7 @@ module Gitlab
                                      no_original_data: true,
                                      suggestions_filter_enabled: supports_suggestion)
           doc = Nokogiri::HTML(html)
-          suggestion_nodes = doc.search('pre.suggestion')
+          suggestion_nodes = doc.search('pre.language-suggestion')
 
           return [] if suggestion_nodes.empty?
 

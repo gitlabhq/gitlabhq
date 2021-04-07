@@ -91,35 +91,35 @@ RSpec.describe Banzai::Filter::MathFilter do
   # Display math
 
   it 'adds data-math-style display attribute to display math' do
-    doc = filter('<pre class="code highlight js-syntax-highlight math" v-pre="true"><code>2+2</code></pre>')
+    doc = filter('<pre class="code highlight js-syntax-highlight language-math" v-pre="true"><code>2+2</code></pre>')
     pre = doc.xpath('descendant-or-self::pre').first
 
     expect(pre['data-math-style']).to eq 'display'
   end
 
   it 'adds js-render-math class to display math' do
-    doc = filter('<pre class="code highlight js-syntax-highlight math" v-pre="true"><code>2+2</code></pre>')
+    doc = filter('<pre class="code highlight js-syntax-highlight language-math" v-pre="true"><code>2+2</code></pre>')
     pre = doc.xpath('descendant-or-self::pre').first
 
     expect(pre[:class]).to include("js-render-math")
   end
 
   it 'ignores code blocks that are not math' do
-    input = '<pre class="code highlight js-syntax-highlight plaintext" v-pre="true"><code>2+2</code></pre>'
+    input = '<pre class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code>2+2</code></pre>'
     doc = filter(input)
 
     expect(doc.to_s).to eq input
   end
 
   it 'requires the pre to contain both code and math' do
-    input = '<pre class="highlight js-syntax-highlight plaintext math" v-pre="true"><code>2+2</code></pre>'
+    input = '<pre class="highlight js-syntax-highlight language-plaintext language-math" v-pre="true"><code>2+2</code></pre>'
     doc = filter(input)
 
     expect(doc.to_s).to eq input
   end
 
   it 'dollar signs around to display math' do
-    doc = filter('$<pre class="code highlight js-syntax-highlight math" v-pre="true"><code>2+2</code></pre>$')
+    doc = filter('$<pre class="code highlight js-syntax-highlight language-math" v-pre="true"><code>2+2</code></pre>$')
     before = doc.xpath('descendant-or-self::text()[1]').first
     after = doc.xpath('descendant-or-self::text()[3]').first
 

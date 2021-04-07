@@ -1,4 +1,4 @@
-query getRunnerPlatforms($projectPath: ID!, $groupPath: ID!) {
+query getRunnerPlatforms {
   runnerPlatforms {
     nodes {
       name
@@ -10,11 +10,5 @@ query getRunnerPlatforms($projectPath: ID!, $groupPath: ID!) {
         }
       }
     }
-  }
-  project(fullPath: $projectPath) {
-    id
-  }
-  group(fullPath: $groupPath) {
-    id
   }
 }

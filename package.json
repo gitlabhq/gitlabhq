@@ -150,7 +150,7 @@
     "vue-loader": "^15.9.6",
     "vue-router": "3.4.9",
     "vue-template-compiler": "^2.6.12",
-    "vue-virtual-scroll-list": "^1.4.4",
+    "vue-virtual-scroll-list": "^1.4.7",
     "vuedraggable": "^2.23.0",
     "vuex": "^3.6.0",
     "web-vitals": "^0.2.4",

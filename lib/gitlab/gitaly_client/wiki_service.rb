@@ -153,32 +153,6 @@ module Gitlab
         versions
       end
 
-      def find_file(name, revision)
-        request = Gitaly::WikiFindFileRequest.new(
-          repository: @gitaly_repo,
-          name: encode_binary(name),
-          revision: encode_binary(revision)
-        )
-
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_file, request, timeout: GitalyClient.fast_timeout)
-        wiki_file = nil
-
-        response.each do |message|
-          next unless message.name.present? || wiki_file
-
-          if wiki_file
-            wiki_file.raw_data = "#{wiki_file.raw_data}#{message.raw_data}"
-          else
-            wiki_file = GitalyClient::WikiFile.new(message.to_h)
-            # All gRPC strings in a response are frozen, so we get
-            # an unfrozen version here so appending in the else clause below doesn't blow up.
-            wiki_file.raw_data = wiki_file.raw_data.dup
-          end
-        end
-
-        wiki_file
-      end
-
       private
 
       # If a block is given and the yielded value is truthy, iteration will be

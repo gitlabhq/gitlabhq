@@ -3,6 +3,7 @@
 module Resolvers
   class MergeRequestsResolver < BaseResolver
     include ResolvesMergeRequests
+    extend ::Gitlab::Graphql::NegatableArguments
 
     type ::Types::MergeRequestType.connection_type, null: true
 
@@ -67,6 +68,16 @@ module Resolvers
              description: 'Sort merge requests by this criteria.',
              required: false,
              default_value: :created_desc
+
+    negated do
+      argument :labels, [GraphQL::STRING_TYPE],
+               required: false,
+               as: :label_name,
+               description: 'Array of label names. All resolved merge requests will not have these labels.'
+      argument :milestone_title, GraphQL::STRING_TYPE,
+               required: false,
+               description: 'Title of the milestone.'
+    end
 
     def self.single
       ::Resolvers::MergeRequestResolver

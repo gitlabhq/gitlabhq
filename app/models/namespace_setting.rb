@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class NamespaceSetting < ApplicationRecord
+  include CascadingNamespaceSettingAttribute
+
+  cascading_attr :delayed_project_removal
+
   belongs_to :namespace, inverse_of: :namespace_settings
 
   validate :default_branch_name_content
@@ -9,7 +13,8 @@ class NamespaceSetting < ApplicationRecord
 
   before_validation :normalize_default_branch_name
 
-  NAMESPACE_SETTINGS_PARAMS = [:default_branch_name, :delayed_project_removal, :resource_access_token_creation_allowed].freeze
+  NAMESPACE_SETTINGS_PARAMS = [:default_branch_name, :delayed_project_removal,
+                               :lock_delayed_project_removal, :resource_access_token_creation_allowed].freeze
 
   self.primary_key = :namespace_id
 

@@ -243,6 +243,7 @@ RSpec.describe GitlabSchema.types['Project'] do
                                             :assignee_username,
                                             :reviewer_username,
                                             :milestone_title,
+                                            :not,
                                             :sort
                                            )
     end

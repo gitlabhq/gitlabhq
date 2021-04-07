@@ -10412,6 +10412,30 @@ Status: `data_available`
 
 Tiers:
 
+### `redis_hll_counters.incident_management.i_incident_management_oncall_notification_sent_monthly`
+
+Count of unique users to receive a notification while on-call
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210405222005_i_incident_management_oncall_notification_sent_monthly.yml)
+
+Group: `group::monitor`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.incident_management.i_incident_management_oncall_notification_sent_weekly`
+
+Count of unique users to receive a notification while on-call
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210405220139_i_incident_management_oncall_notification_sent_weekly.yml)
+
+Group: `group::monitor`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.incident_management.incident_management_alert_assigned_monthly`
 
 Missing description

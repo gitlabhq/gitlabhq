@@ -189,6 +189,17 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
+    context 'with negated label argument' do
+      let_it_be(:label) { merge_request_6.labels.first }
+      let_it_be(:with_label) { create(:labeled_merge_request, :closed, labels: [label], **common_attrs) }
+
+      it 'excludes merge requests with given label from selection' do
+        result = resolve_mr(project, not: { labels: [label.title] })
+
+        expect(result).not_to include(merge_request_6, with_label)
+      end
+    end
+
     context 'with merged_after and merged_before arguments' do
       before do
         merge_request_1.metrics.update!(merged_at: 10.days.ago)
@@ -218,6 +229,14 @@ RSpec.describe Resolvers::MergeRequestsResolver do
         result = resolve_mr(project, milestone_title: 'unknown-milestone')
 
         expect(result).to be_empty
+      end
+    end
+
+    context 'with negated milestone argument' do
+      it 'filters out merge requests with given milestone title' do
+        result = resolve_mr(project, not: { milestone_title: milestone.title })
+
+        expect(result).not_to include(merge_request_with_milestone)
       end
     end
 

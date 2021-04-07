@@ -215,8 +215,8 @@ project = Project.find_by_full_path('group-changeme/project-changeme')
 ### Destroy a project
 
 ```ruby
-project = Project.find_by_full_path('')
-user = User.find_by_username('')
+project = Project.find_by_full_path('<project_path>')
+user = User.find_by_username('<username>')
 ProjectDestroyWorker.perform_async(project.id, user.id, {})
 # or ProjectDestroyWorker.new.perform(project.id, user.id, {})
 # or Projects::DestroyService.new(project, user).execute
@@ -225,8 +225,8 @@ ProjectDestroyWorker.perform_async(project.id, user.id, {})
 ### Remove fork relationship manually
 
 ```ruby
-p = Project.find_by_full_path('')
-u = User.find_by_username('')
+p = Project.find_by_full_path('<project_path>')
+u = User.find_by_username('<username>')
 ::Projects::UnlinkForkService.new(p, u).execute
 ```
 
@@ -243,13 +243,13 @@ project.update!(repository_read_only: true)
 ### Transfer project from one namespace to another
 
 ```ruby
- p= Project.find_by_full_path('')
+ p= Project.find_by_full_path('<project_path>')
 
  # To set the owner of the project
  current_user= p.creator
 
 # Namespace where you want this to be moved.
-namespace = Namespace.find_by_full_path("")
+namespace = Namespace.find_by_full_path("<new_namespace>")
 
 ::Projects::TransferService.new(p, current_user).execute(namespace)
 ```
@@ -468,7 +468,7 @@ end
 ### Skip reconfirmation
 
 ```ruby
-user = User.find_by_username ''
+user = User.find_by_username '<username>'
 user.skip_reconfirmation!
 ```
 
@@ -558,7 +558,7 @@ user.max_member_access_for_group group.id
 ```ruby
 user = User.find_by_username('<username>')
 group = Group.find_by_name("<group_name>")
-parent_group = Group.find_by(id: "") # empty string amounts to root as parent
+parent_group = Group.find_by(id: "<group_id>")
 service = ::Groups::TransferService.new(group, user)
 service.execute(parent_group)
 ```
@@ -679,7 +679,7 @@ conflicting_permanent_redirects.destroy_all
 ```ruby
 p = Project.find_by_full_path('<full/path/to/project>')
 m = p.merge_requests.find_by(iid: <iid>)
-u = User.find_by_username('')
+u = User.find_by_username('<username>')
 MergeRequests::PostMergeService.new(p, u).execute(m)
 ```
 
@@ -695,9 +695,9 @@ Issuable::DestroyService.new(m.project, u).execute(m)
 ### Rebase manually
 
 ```ruby
-p = Project.find_by_full_path('')
+p = Project.find_by_full_path('<project_path>')
 m = project.merge_requests.find_by(iid: )
-u = User.find_by_username('')
+u = User.find_by_username('<username>')
 MergeRequests::RebaseService.new(m.target_project, u).execute(m)
 ```
 
@@ -734,7 +734,7 @@ build.dependencies.each do |d| { puts "status: #{d.status}, finished at: #{d.fin
 ### Try CI service
 
 ```ruby
-p = Project.find_by_full_path('')
+p = Project.find_by_full_path('<project_path>')
 m = project.merge_requests.find_by(iid: )
 m.project.try(:ci_service)
 ```

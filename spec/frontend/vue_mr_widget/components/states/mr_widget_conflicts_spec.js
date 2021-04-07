@@ -1,4 +1,3 @@
-import { GlPopover } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import { removeBreakLine } from 'helpers/text_helper';
@@ -10,7 +9,6 @@ describe('MRWidgetConflicts', () => {
   let mergeRequestWidgetGraphql = null;
   const path = '/conflicts';
 
-  const findPopover = () => wrapper.find(GlPopover);
   const findResolveButton = () => wrapper.findByTestId('resolve-conflicts-button');
   const findMergeLocalButton = () => wrapper.findByTestId('merge-locally-button');
 
@@ -219,12 +217,8 @@ describe('MRWidgetConflicts', () => {
           });
         });
 
-        it('sets resolve button as disabled', () => {
-          expect(findResolveButton().attributes('disabled')).toBe('true');
-        });
-
-        it('shows the popover', () => {
-          expect(findPopover().exists()).toBe(true);
+        it('should not allow you to resolve the conflicts', () => {
+          expect(findResolveButton().exists()).toBe(false);
         });
       });
 
@@ -241,12 +235,9 @@ describe('MRWidgetConflicts', () => {
           });
         });
 
-        it('sets resolve button as disabled', () => {
-          expect(findResolveButton().attributes('disabled')).toBe(undefined);
-        });
-
-        it('does not show the popover', () => {
-          expect(findPopover().exists()).toBe(false);
+        it('should allow you to resolve the conflicts', () => {
+          expect(findResolveButton().text()).toContain('Resolve conflicts');
+          expect(findResolveButton().attributes('href')).toEqual(TEST_HOST);
         });
       });
     });

@@ -54,22 +54,25 @@ export default {
       },
       manual: true,
       result({ data }) {
+        if (Object.keys(this.state).length === 0) {
+          this.removeSourceBranch =
+            data.project.mergeRequest.shouldRemoveSourceBranch ||
+            data.project.mergeRequest.forceRemoveSourceBranch ||
+            false;
+          this.commitMessage = data.project.mergeRequest.defaultMergeCommitMessage;
+          this.squashBeforeMerge = data.project.mergeRequest.squashOnMerge;
+          this.isSquashReadOnly = data.project.squashReadOnly;
+          this.squashCommitMessage = data.project.mergeRequest.defaultSquashCommitMessage;
+        }
+
         this.state = {
           ...data.project.mergeRequest,
           mergeRequestsFfOnlyEnabled: data.project.mergeRequestsFfOnlyEnabled,
           onlyAllowMergeIfPipelineSucceeds: data.project.onlyAllowMergeIfPipelineSucceeds,
         };
-        this.removeSourceBranch =
-          data.project.mergeRequest.shouldRemoveSourceBranch ||
-          data.project.mergeRequest.forceRemoveSourceBranch ||
-          false;
-        this.commitMessage = data.project.mergeRequest.defaultMergeCommitMessage;
-        this.squashBeforeMerge = data.project.mergeRequest.squashOnMerge;
-        this.isSquashReadOnly = data.project.squashReadOnly;
-        this.squashCommitMessage = data.project.mergeRequest.defaultSquashCommitMessage;
         this.loading = false;
 
-        if (this.state.mergeTrainsCount !== null) {
+        if (this.state.mergeTrainsCount !== null && this.state.mergeTrainsCount !== undefined) {
           this.initPolling();
         }
       },

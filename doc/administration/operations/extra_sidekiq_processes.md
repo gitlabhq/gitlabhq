@@ -75,7 +75,7 @@ To start multiple processes:
 
    When `sidekiq-cluster` is only running on a single node, make sure that at least
    one process is running on all queues using `*`. This means a process will
-   automatically pick up jobs in queues created in the future.
+   This includes queues that have dedicated processes.
 
    If `sidekiq-cluster` is running on more than one node, you can also use
    [`--negate`](#negate-settings) and list all the queues that are already being

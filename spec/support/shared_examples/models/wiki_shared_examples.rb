@@ -354,32 +354,28 @@ RSpec.shared_examples 'wiki model' do
       subject.repository.create_file(user, 'image.png', image, branch_name: subject.default_branch, message: 'add image')
     end
 
-    shared_examples 'find_file results' do
-      it 'returns the latest version of the file if it exists' do
-        file = subject.find_file('image.png')
+    it 'returns the latest version of the file if it exists' do
+      file = subject.find_file('image.png')
 
-        expect(file.mime_type).to eq('image/png')
-      end
-
-      it 'returns nil if the page does not exist' do
-        expect(subject.find_file('non-existent')).to eq(nil)
-      end
-
-      it 'returns a Gitlab::Git::WikiFile instance' do
-        file = subject.find_file('image.png')
-
-        expect(file).to be_a Gitlab::Git::WikiFile
-      end
-
-      it 'returns the whole file' do
-        file = subject.find_file('image.png')
-        image.rewind
-
-        expect(file.raw_data.b).to eq(image.read.b)
-      end
+      expect(file.mime_type).to eq('image/png')
     end
 
-    it_behaves_like 'find_file results'
+    it 'returns nil if the page does not exist' do
+      expect(subject.find_file('non-existent')).to eq(nil)
+    end
+
+    it 'returns a Gitlab::Git::WikiFile instance' do
+      file = subject.find_file('image.png')
+
+      expect(file).to be_a Gitlab::Git::WikiFile
+    end
+
+    it 'returns the whole file' do
+      file = subject.find_file('image.png')
+      image.rewind
+
+      expect(file.raw_data.b).to eq(image.read.b)
+    end
 
     context 'when load_content is disabled' do
       it 'includes the file data in the Gitlab::Git::WikiFile' do
@@ -387,14 +383,6 @@ RSpec.shared_examples 'wiki model' do
 
         expect(file.raw_data).to be_empty
       end
-    end
-
-    context 'when feature flag :gitaly_find_file is disabled' do
-      before do
-        stub_feature_flags(gitaly_find_file: false)
-      end
-
-      it_behaves_like 'find_file results'
     end
   end
 

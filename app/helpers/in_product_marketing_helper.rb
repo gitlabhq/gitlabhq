@@ -313,7 +313,8 @@ module InProductMarketingHelper
   end
 
   def unsubscribe_link(format)
-    link(s_('InProductMarketing|unsubscribe'), '%tag_unsubscribe_url%', format)
+    unsubscribe_url = Gitlab.com? ? '%tag_unsubscribe_url%' : profile_notifications_url
+    link(s_('InProductMarketing|unsubscribe'), unsubscribe_url, format)
   end
 
   def link(text, link, format)

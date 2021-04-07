@@ -346,6 +346,7 @@ Example Responses:
   "two_factor_enabled": true,
   "external": false,
   "private_profile": false,
+  "commit_email": "john-codes@example.com",
   "current_sign_in_ip": "196.165.1.102",
   "last_sign_in_ip": "172.127.2.22",
   "plan": "gold",
@@ -440,7 +441,6 @@ Parameters:
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
 | `projects_limit`                     | No       | Number of projects user can create                                                                                                                      |
 | `provider`                           | No       | External provider name                                                                                                                                  |
-| `public_email`                       | No       | The public email of the user                                                                                                                            |
 | `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
 | `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` **(STARTER)**                                                                                                      |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
@@ -483,7 +483,7 @@ Parameters:
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
 | `projects_limit`                     | No       | Limit projects each user can create                                                                                                                     |
 | `provider`                           | No       | External provider name                                                                                                                                  |
-| `public_email`                       | No       | The public email of the user                                                                                                                            |
+| `public_email`                       | No       | The public email of the user (must be already verified)                                                                                                                            |
 | `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` **(STARTER)**                                                                                                      |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
@@ -622,6 +622,7 @@ GET /user
   "two_factor_enabled": true,
   "external": false,
   "private_profile": false,
+  "commit_email": "john-codes@example.com",
   "current_sign_in_ip": "196.165.1.102",
   "last_sign_in_ip": "172.127.2.22"
 }

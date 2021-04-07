@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'storing arguments in the application context' do
-  it 'places the expected params in the application context', :context_aware do
+  it 'places the expected params in the application context' do
     # Stub the clearing of the context so we can validate it later
     allow(Labkit::Context).to receive(:pop)
 

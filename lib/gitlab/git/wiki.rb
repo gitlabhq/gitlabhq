@@ -102,12 +102,6 @@ module Gitlab
         end
       end
 
-      def file(name, version)
-        wrapped_gitaly_errors do
-          gitaly_find_file(name, version)
-        end
-      end
-
       # options:
       #  :page     - The Integer page number.
       #  :per_page - The number of items per page.
@@ -159,13 +153,6 @@ module Gitlab
         Gitlab::Git::WikiPage.new(wiki_page, version)
       rescue GRPC::InvalidArgument
         nil
-      end
-
-      def gitaly_find_file(name, version)
-        wiki_file = gitaly_wiki_client.find_file(name, version)
-        return unless wiki_file
-
-        Gitlab::Git::WikiFile.new(wiki_file)
       end
 
       def gitaly_list_pages(limit: 0, sort: nil, direction_desc: false, load_content: false)
