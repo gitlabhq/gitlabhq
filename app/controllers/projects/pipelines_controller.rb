@@ -46,7 +46,17 @@ class Projects::PipelinesController < Projects::ApplicationController
     @pipelines_count = limited_pipelines_count(project)
 
     respond_to do |format|
-      format.html
+      format.html do
+        experiment(:pipeline_empty_state_templates, actor: current_user) do |e|
+          e.exclude! unless current_user
+          e.exclude! if @pipelines_count.to_i > 0
+          e.exclude! if helpers.has_gitlab_ci?(project)
+
+          e.use {}
+          e.try {}
+          e.track(:view, value: project.namespace_id)
+        end
+      end
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
 

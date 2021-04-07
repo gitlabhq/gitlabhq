@@ -167,8 +167,9 @@ do this manually.
 
    In GitLab 12.8 and earlier, see [Message: `sudo: gitlab-pg-ctl: command not found`](../replication/troubleshooting.md#message-sudo-gitlab-pg-ctl-command-not-found).
 
-1. Edit `/etc/gitlab/gitlab.rb` and remove any of the following lines that
-   might be present:
+1. Edit `/etc/gitlab/gitlab.rb` on every node in the **secondary** site to
+   reflect its new status as **primary** by removing any of the following
+   lines that might be present:
 
    ```ruby
    geo_secondary_role['enable'] = true

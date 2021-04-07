@@ -321,11 +321,11 @@ RSpec.describe "Admin Runners" do
     describe 'enable/create' do
       shared_examples 'assignable runner' do
         it 'enables a runner for a project' do
-          within '.unassigned-projects' do
+          within '[data-testid="unassigned-projects"]' do
             click_on 'Enable'
           end
 
-          assigned_project = page.find('.assigned-projects')
+          assigned_project = page.find('[data-testid="assigned-projects"]')
 
           expect(assigned_project).to have_content(@project2.path)
         end
@@ -371,11 +371,11 @@ RSpec.describe "Admin Runners" do
       end
 
       it 'enables specific runner for project' do
-        within '.assigned-projects' do
+        within '[data-testid="assigned-projects"]' do
           click_on 'Disable'
         end
 
-        new_runner_project = page.find('.unassigned-projects')
+        new_runner_project = page.find('[data-testid="unassigned-projects"]')
 
         expect(new_runner_project).to have_content(@project1.path)
       end

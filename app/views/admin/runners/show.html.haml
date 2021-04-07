@@ -32,7 +32,7 @@
   .col-md-6
     %h4= _('Restrict projects for this runner')
     - if @runner.projects.any?
-      %table.table.assigned-projects
+      %table.table{ data: { testid: 'assigned-projects' } }
         %thead
           %tr
             %th= _('Assigned projects')
@@ -49,7 +49,7 @@
                   .gl-alert-actions
                     = link_to s_('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-info btn-md gl-button'
 
-    %table.table.unassigned-projects
+    %table.table{ data: { testid: 'unassigned-projects' } }
       %thead
         %tr
           %th= _('Project')

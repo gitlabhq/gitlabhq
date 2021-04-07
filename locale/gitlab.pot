@@ -22787,6 +22787,9 @@ msgstr ""
 msgid "Pipelines|API"
 msgstr ""
 
+msgid "Pipelines|An error occurred. Please try again."
+msgstr ""
+
 msgid "Pipelines|Are you sure you want to run this pipeline?"
 msgstr ""
 
@@ -22803,6 +22806,9 @@ msgid "Pipelines|Child pipeline"
 msgstr ""
 
 msgid "Pipelines|Clear Runner Caches"
+msgstr ""
+
+msgid "Pipelines|Continuous deployment template to test and deploy your %{name} project."
 msgstr ""
 
 msgid "Pipelines|Copy trigger token"
@@ -22914,6 +22920,15 @@ msgid "Pipelines|Token"
 msgstr ""
 
 msgid "Pipelines|Trigger user has insufficient permissions to project"
+msgstr ""
+
+msgid "Pipelines|Try a sample CI/CD file"
+msgstr ""
+
+msgid "Pipelines|Use a sample file to implement GitLab CI/CD based on your project’s language/framework."
+msgstr ""
+
+msgid "Pipelines|Use template"
 msgstr ""
 
 msgid "Pipelines|Validating GitLab CI configuration…"

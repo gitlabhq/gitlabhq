@@ -726,9 +726,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/services/requirements_management/update_requirement_service_spec.rb
     - ee/spec/services/resource_access_tokens/create_service_spec.rb
     - ee/spec/services/resource_access_tokens/revoke_service_spec.rb
-    - ee/spec/services/search/global_service_spec.rb
-    - ee/spec/services/search/group_service_spec.rb
-    - ee/spec/services/search/project_service_spec.rb
     - ee/spec/services/security/auto_fix_label_service_spec.rb
     - ee/spec/services/security/store_grouped_scans_service_spec.rb
     - ee/spec/services/security/store_report_service_spec.rb

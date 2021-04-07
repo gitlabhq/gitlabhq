@@ -30,11 +30,9 @@ below.
 
 ## How to enter data
 
-Time Tracking uses two [quick actions](quick_actions.md)
-that GitLab introduced with this new feature: `/spend` and `/estimate`.
+Time Tracking uses two [quick actions](quick_actions.md): `/spend` and `/estimate`.
 
-Quick actions can be used in the body of an issue or a merge request, but also
-in a comment in both an issue or a merge request.
+If you use either quick action more than once in a single comment, only the last occurrence is applied.
 
 Below is an example of how you can use those new quick actions inside a comment.
 

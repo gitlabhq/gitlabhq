@@ -273,6 +273,23 @@ RSpec.describe Projects::PipelinesController do
     end
   end
 
+  describe 'GET #index' do
+    context 'pipeline_empty_state_templates experiment' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'tracks the view', :experiment do
+        expect(experiment(:pipeline_empty_state_templates))
+          .to track(:view, value: project.namespace_id)
+          .with_context(actor: user)
+          .on_next_instance
+
+        get :index, params: { namespace_id: project.namespace, project_id: project }
+      end
+    end
+  end
+
   describe 'GET show.json' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 

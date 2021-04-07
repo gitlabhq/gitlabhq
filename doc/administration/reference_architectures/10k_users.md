@@ -18,9 +18,9 @@ full list of reference architectures, see
 | Service                                    | Nodes       | Configuration           | GCP              | AWS          | Azure     |
 |--------------------------------------------|-------------|-------------------------|------------------|--------------|-----------|
 | External load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
-| Consul                                     | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
-| PostgreSQL                                 | 3           | 8 vCPU, 30 GB memory    | `n1-standard-8`  | `m5.2xlarge` | `D8s v3`  |
-| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Consul*                                    | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| PostgreSQL*                                | 3           | 8 vCPU, 30 GB memory    | `n1-standard-8`  | `m5.2xlarge` | `D8s v3`  |
+| PgBouncer*                                 | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | Redis - Cache*                             | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
 | Redis - Queues / Shared State*             | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
@@ -2367,9 +2367,10 @@ Kubernetes, you can reap certain cloud native workload management benefits while
 the others are deployed in compute VMs with Omnibus as described above in this
 page.
 
-It should be noted though that this is an advanced setup as running services in
-Kubernetes is well known to be complex. **This setup is only recommended** if
-you have strong working knowledge and experience in Kubernetes. The rest of this
+NOTE:
+This is an **advanced** setup. Running services in Kubernetes is well known
+to be complex. **This setup is only recommended** if you have strong working
+knowledge and experience in Kubernetes. The rest of this
 section will assume this.
 
 ### Cluster topology
@@ -2393,9 +2394,9 @@ services where applicable):
 
 | Service                                    | Nodes | Configuration           | GCP              |
 |--------------------------------------------|-------|-------------------------|------------------|
-| Consul                                     | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Consul*                                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | PostgreSQL*                                | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8`  |
-| PgBouncer                                  | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| PgBouncer*                                 | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Internal load balancing node               | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Redis - Cache*                             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
 | Redis - Queues / Shared State*             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |

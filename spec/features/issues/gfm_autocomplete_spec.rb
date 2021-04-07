@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'GFM autocomplete', :js do
-  let_it_be(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
-  let_it_be(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
   let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let_it_be(:user2) { create(:user, name: 'Marge Simpson', username: 'msimpson') }
 
@@ -14,7 +12,14 @@ RSpec.describe 'GFM autocomplete', :js do
 
   let_it_be(:issue) { create(:issue, project: project, assignees: [user]) }
   let_it_be(:label) { create(:label, project: project, title: 'special+') }
+  let_it_be(:label_scoped) { create(:label, project: project, title: 'scoped::label') }
+  let_it_be(:label_with_spaces) { create(:label, project: project, title: 'Accepting merge requests') }
   let_it_be(:snippet) { create(:project_snippet, project: project, title: 'code snippet') }
+
+  let_it_be(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
+  let_it_be(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
+  let_it_be(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a' }
+  let_it_be(:label_xss) { create(:label, project: project, title: label_xss_title) }
 
   before_all do
     project.add_maintainer(user)
@@ -117,34 +122,44 @@ RSpec.describe 'GFM autocomplete', :js do
         end
       end
 
-      it 'opens autocomplete menu for Issues when field starts with text with item escaping HTML characters' do
-        issue_xss_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
-        create(:issue, project: project, title: issue_xss_title)
+      context 'xss checks' do
+        it 'opens autocomplete menu for Issues when field starts with text with item escaping HTML characters' do
+          issue_xss_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
+          create(:issue, project: project, title: issue_xss_title)
 
-        fill_in 'Comment', with: '#'
+          fill_in 'Comment', with: '#'
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(find_autocomplete_menu).to have_text(issue_xss_title)
-      end
+          expect(find_autocomplete_menu).to have_text(issue_xss_title)
+        end
 
-      it 'opens autocomplete menu for Username when field starts with text with item escaping HTML characters' do
-        fill_in 'Comment', with: '@ev'
+        it 'opens autocomplete menu for Username when field starts with text with item escaping HTML characters' do
+          fill_in 'Comment', with: '@ev'
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(find_highlighted_autocomplete_item).to have_text(user_xss.username)
-      end
+          expect(find_highlighted_autocomplete_item).to have_text(user_xss.username)
+        end
 
-      it 'opens autocomplete menu for Milestone when field starts with text with item escaping HTML characters' do
-        milestone_xss_title = 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a'
-        create(:milestone, project: project, title: milestone_xss_title)
+        it 'opens autocomplete menu for Milestone when field starts with text with item escaping HTML characters' do
+          milestone_xss_title = 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a'
+          create(:milestone, project: project, title: milestone_xss_title)
 
-        fill_in 'Comment', with: '%'
+          fill_in 'Comment', with: '%'
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(find_autocomplete_menu).to have_text('alert milestone')
+          expect(find_autocomplete_menu).to have_text('alert milestone')
+        end
+
+        it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
+          fill_in 'Comment', with: '~'
+
+          wait_for_requests
+
+          expect(find_autocomplete_menu).to have_text('alert label')
+        end
       end
 
       describe 'autocomplete highlighting' do
@@ -232,7 +247,7 @@ RSpec.describe 'GFM autocomplete', :js do
 
       context 'if a selected value has special characters' do
         it 'wraps the result in double quotes' do
-          fill_in 'Comment', with: "~#{label.title[0]}"
+          fill_in 'Comment', with: "~#{label.title[0..2]}"
 
           find_highlighted_autocomplete_item.click
 
@@ -246,15 +261,9 @@ RSpec.describe 'GFM autocomplete', :js do
 
           expect(find_field('Comment').value).to have_text('cartwheel_tone1')
         end
+      end
 
-        it 'triggers autocomplete after selecting a quick action' do
-          fill_in 'Comment', with: '/as'
-
-          find_highlighted_autocomplete_item.click
-
-          expect(find_autocomplete_menu).to have_text(user2.username)
-        end
-
+      context 'quick actions' do
         it 'does not limit quick actions autocomplete list to 5' do
           fill_in 'Comment', with: '/'
 
@@ -263,31 +272,8 @@ RSpec.describe 'GFM autocomplete', :js do
       end
 
       context 'labels' do
-        it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
-          label_xss_title = 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a'
-          create(:label, project: project, title: label_xss_title)
-
-          fill_in 'Comment', with: '~'
-
-          wait_for_requests
-
-          expect(find_autocomplete_menu).to have_text('alert label')
-        end
-
         it 'allows colons when autocompleting scoped labels' do
-          create(:label, project: project, title: 'scoped:label')
-
           fill_in 'Comment', with: '~scoped:'
-
-          wait_for_requests
-
-          expect(find_autocomplete_menu).to have_text('scoped:label')
-        end
-
-        it 'allows colons when autocompleting scoped labels with double colons' do
-          create(:label, project: project, title: 'scoped::label')
-
-          fill_in 'Comment', with: '~scoped::'
 
           wait_for_requests
 
@@ -295,8 +281,6 @@ RSpec.describe 'GFM autocomplete', :js do
         end
 
         it 'allows spaces when autocompleting multi-word labels' do
-          create(:label, project: project, title: 'Accepting merge requests')
-
           fill_in 'Comment', with: '~Accepting merge'
 
           wait_for_requests
@@ -304,20 +288,15 @@ RSpec.describe 'GFM autocomplete', :js do
           expect(find_autocomplete_menu).to have_text('Accepting merge requests')
         end
 
-        it 'only autocompletes the latest label' do
-          create(:label, project: project, title: 'Accepting merge requests')
-          create(:label, project: project, title: 'Accepting job applicants')
-
-          fill_in 'Comment', with: '~Accepting merge requests foo bar ~Accepting job'
+        it 'only autocompletes the last label' do
+          fill_in 'Comment', with: '~scoped:: foo bar ~Accepting merge'
 
           wait_for_requests
 
-          expect(find_autocomplete_menu).to have_text('Accepting job applicants')
+          expect(find_autocomplete_menu).to have_text('Accepting merge requests')
         end
 
         it 'does not autocomplete labels if no tilde is typed' do
-          create(:label, project: project, title: 'Accepting merge requests')
-
           fill_in 'Comment', with: 'Accepting merge'
 
           wait_for_requests
@@ -372,13 +351,6 @@ RSpec.describe 'GFM autocomplete', :js do
       context 'project snippets' do
         let!(:object) { snippet }
         let(:expected_body) { object.to_reference }
-
-        it_behaves_like 'autocomplete suggestions'
-      end
-
-      context 'label' do
-        let!(:object) { label }
-        let(:expected_body) { object.title }
 
         it_behaves_like 'autocomplete suggestions'
       end
@@ -486,34 +458,44 @@ RSpec.describe 'GFM autocomplete', :js do
         end
       end
 
-      it 'opens autocomplete menu for Issues when field starts with text with item escaping HTML characters' do
-        issue_xss_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
-        create(:issue, project: project, title: issue_xss_title)
+      context 'xss checks' do
+        it 'opens autocomplete menu for Issues when field starts with text with item escaping HTML characters' do
+          issue_xss_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
+          create(:issue, project: project, title: issue_xss_title)
 
-        fill_in 'Comment', with: '#'
+          fill_in 'Comment', with: '#'
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(find_tribute_autocomplete_menu).to have_text(issue_xss_title)
-      end
+          expect(find_tribute_autocomplete_menu).to have_text(issue_xss_title)
+        end
 
-      it 'opens autocomplete menu for Username when field starts with text with item escaping HTML characters' do
-        fill_in 'Comment', with: '@ev'
+        it 'opens autocomplete menu for Username when field starts with text with item escaping HTML characters' do
+          fill_in 'Comment', with: '@ev'
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(find_tribute_autocomplete_menu).to have_text(user_xss.username)
-      end
+          expect(find_tribute_autocomplete_menu).to have_text(user_xss.username)
+        end
 
-      it 'opens autocomplete menu for Milestone when field starts with text with item escaping HTML characters' do
-        milestone_xss_title = 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a'
-        create(:milestone, project: project, title: milestone_xss_title)
+        it 'opens autocomplete menu for Milestone when field starts with text with item escaping HTML characters' do
+          milestone_xss_title = 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a'
+          create(:milestone, project: project, title: milestone_xss_title)
 
-        fill_in 'Comment', with: '%'
+          fill_in 'Comment', with: '%'
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(find_tribute_autocomplete_menu).to have_text('alert milestone')
+          expect(find_tribute_autocomplete_menu).to have_text('alert milestone')
+        end
+
+        it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
+          fill_in 'Comment', with: '~'
+
+          wait_for_requests
+
+          expect(find_tribute_autocomplete_menu).to have_text('alert label')
+        end
       end
 
       describe 'autocomplete highlighting' do
@@ -592,7 +574,7 @@ RSpec.describe 'GFM autocomplete', :js do
 
       context 'if a selected value has special characters' do
         it 'wraps the result in double quotes' do
-          fill_in 'Comment', with: "~#{label.title[0]}"
+          fill_in 'Comment', with: "~#{label.title[0..2]}"
 
           find_highlighted_tribute_autocomplete_menu.click
 
@@ -606,7 +588,9 @@ RSpec.describe 'GFM autocomplete', :js do
 
           expect(find_field('Comment').value).to have_text('cartwheel_tone1')
         end
+      end
 
+      context 'quick actions' do
         it 'autocompletes for quick actions' do
           fill_in 'Comment', with: '/as'
 
@@ -617,31 +601,8 @@ RSpec.describe 'GFM autocomplete', :js do
       end
 
       context 'labels' do
-        it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
-          label_xss_title = 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a'
-          create(:label, project: project, title: label_xss_title)
-
-          fill_in 'Comment', with: '~'
-
-          wait_for_requests
-
-          expect(find_tribute_autocomplete_menu).to have_text('alert label')
-        end
-
         it 'allows colons when autocompleting scoped labels' do
-          create(:label, project: project, title: 'scoped:label')
-
           fill_in 'Comment', with: '~scoped:'
-
-          wait_for_requests
-
-          expect(find_tribute_autocomplete_menu).to have_text('scoped:label')
-        end
-
-        it 'allows colons when autocompleting scoped labels with double colons' do
-          create(:label, project: project, title: 'scoped::label')
-
-          fill_in 'Comment', with: '~scoped::'
 
           wait_for_requests
 
@@ -649,8 +610,6 @@ RSpec.describe 'GFM autocomplete', :js do
         end
 
         it 'autocompletes multi-word labels' do
-          create(:label, project: project, title: 'Accepting merge requests')
-
           fill_in 'Comment', with: '~Acceptingmerge'
 
           wait_for_requests
@@ -658,24 +617,18 @@ RSpec.describe 'GFM autocomplete', :js do
           expect(find_tribute_autocomplete_menu).to have_text('Accepting merge requests')
         end
 
-        it 'only autocompletes the latest label' do
-          create(:label, project: project, title: 'documentation')
-          create(:label, project: project, title: 'feature')
-
-          fill_in 'Comment', with: '~documentation foo bar ~feat'
+        it 'only autocompletes the last label' do
+          fill_in 'Comment', with: '~scoped:: foo bar ~Acceptingmerge'
           # Invoke autocompletion
           find_field('Comment').native.send_keys(:right)
 
           wait_for_requests
 
-          expect(find_tribute_autocomplete_menu).to have_text('feature')
-          expect(find_tribute_autocomplete_menu).not_to have_text('documentation')
+          expect(find_tribute_autocomplete_menu).to have_text('Accepting merge requests')
         end
 
         it 'does not autocomplete labels if no tilde is typed' do
-          create(:label, project: project, title: 'documentation')
-
-          fill_in 'Comment', with: 'document'
+          fill_in 'Comment', with: 'Accepting'
 
           wait_for_requests
 
@@ -729,13 +682,6 @@ RSpec.describe 'GFM autocomplete', :js do
       context 'project snippets' do
         let!(:object) { snippet }
         let(:expected_body) { object.to_reference }
-
-        it_behaves_like 'autocomplete suggestions'
-      end
-
-      context 'label' do
-        let!(:object) { label }
-        let(:expected_body) { object.title }
 
         it_behaves_like 'autocomplete suggestions'
       end

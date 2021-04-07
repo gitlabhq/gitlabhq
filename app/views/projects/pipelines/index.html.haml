@@ -14,5 +14,6 @@
   "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
   "new-pipeline-path" => can?(current_user, :create_pipeline, @project) && new_project_pipeline_path(@project),
   "ci-lint-path" => can?(current_user, :create_pipeline, @project) && project_ci_lint_path(@project),
-  "reset-cache-path" => can?(current_user, :admin_pipeline, @project) && reset_cache_project_settings_ci_cd_path(@project) ,
-  "has-gitlab-ci" => has_gitlab_ci?(@project).to_s } }
+  "reset-cache-path" => can?(current_user, :admin_pipeline, @project) && reset_cache_project_settings_ci_cd_path(@project),
+  "has-gitlab-ci" => has_gitlab_ci?(@project).to_s,
+  "add-ci-yml-path" => can?(current_user, :create_pipeline, @project) && @project.present(current_user: current_user).add_ci_yml_path } }
