@@ -45,7 +45,7 @@ module QA
       # Note: This test doesn't have the :orchestrated tag because it runs in the Test::Integration::Praefect
       # scenario with other tests that aren't considered orchestrated.
       # It also runs on staging using nfs-file07 as non-cluster storage and nfs-file22 as cluster/praefect storage
-      context 'when moving from Gitaly to Gitaly Cluster', :requires_praefect, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/974', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/284645', type: :investigating } do
+      context 'when moving from Gitaly to Gitaly Cluster', :requires_praefect, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1755', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/284645', type: :investigating } do
         let(:source_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:destination_storage) { { type: :praefect, name: QA::Runtime::Env.praefect_repository_storage } }
         let(:project) do
