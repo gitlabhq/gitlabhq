@@ -437,7 +437,7 @@ module Issuable
   end
 
   def subscribed_without_subscriptions?(user, project)
-    participants(user).include?(user)
+    participant?(user)
   end
 
   def can_assign_epic?(user)

@@ -7,8 +7,6 @@ class <%= migration_class_name %> < ActiveRecord::Migration[<%= ActiveRecord::Mi
   # Uncomment the following include if you require helper functions:
   # include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME = false
-
   # When using the methods "add_concurrent_index" or "remove_concurrent_index"
   # you must disable the use of transactions
   # as these methods can not run in an existing transaction.

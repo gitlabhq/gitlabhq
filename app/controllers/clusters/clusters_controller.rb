@@ -60,6 +60,9 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def show
+    if params[:tab] == 'integrations'
+      @prometheus_integration = Clusters::IntegrationPresenter.new(@cluster.find_or_build_application(Clusters::Applications::Prometheus))
+    end
   end
 
   def update

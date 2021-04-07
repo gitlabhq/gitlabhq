@@ -182,7 +182,7 @@ module Gitlab
         parse_params do |raw_time_date|
           Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date).execute
         end
-        command :spend do |time_spent, time_spent_date|
+        command :spend, :spent do |time_spent, time_spent_date|
           if time_spent
             @updates[:spend_time] = {
               duration: time_spent,

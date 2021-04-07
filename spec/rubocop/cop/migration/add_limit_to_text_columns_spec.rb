@@ -17,7 +17,6 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           class TestTextLimits < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
             disable_ddl_transaction!
 
             def up
@@ -54,7 +53,6 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)
           class TestTextLimits < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
             disable_ddl_transaction!
 
             def up
@@ -90,8 +88,6 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)
           class TestTextLimits < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
-
             def up
               create_table :test_text_limits, id: false do |t|
                 t.integer :test_id, null: false
@@ -113,7 +109,6 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           class TestTextLimits < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
             disable_ddl_transaction!
 
             def up
@@ -146,7 +141,6 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
       it 'registers no offenses' do
         expect_no_offenses(<<~RUBY)
           class TestTextLimits < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
             disable_ddl_transaction!
 
             def up
@@ -168,8 +162,6 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)
           class TestTextLimits < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
-
             def up
               drop_table :no_offense_on_down
             end
@@ -194,7 +186,6 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
     it 'registers no offense' do
       expect_no_offenses(<<~RUBY)
         class TestTextLimits < ActiveRecord::Migration[6.0]
-          DOWNTIME = false
           disable_ddl_transaction!
 
           def up

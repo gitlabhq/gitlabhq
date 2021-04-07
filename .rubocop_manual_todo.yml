@@ -697,7 +697,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/services/ee/notification_service_spec.rb
     - ee/spec/services/ee/resource_events/merge_into_notes_service_spec.rb
     - ee/spec/services/ee/todos/destroy/entity_leave_service_spec.rb
-    - ee/spec/services/epics/create_service_spec.rb
     - ee/spec/services/external_approval_rules/create_service_spec.rb
     - ee/spec/services/external_approval_rules/destroy_service_spec.rb
     - ee/spec/services/external_approval_rules/update_service_spec.rb

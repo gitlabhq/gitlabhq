@@ -27,6 +27,15 @@ module Types
         end
       end
 
+      # Helper to define an enum member for each element of a Rails AR enum
+      def from_rails_enum(enum, description:)
+        enum.each_key do |name|
+          value name.to_s.upcase,
+                value: name,
+                description: format(description, name: name)
+        end
+      end
+
       def value(*args, **kwargs, &block)
         enum[args[0].downcase] = kwargs[:value] || args[0]
         gitlab_deprecation(kwargs)

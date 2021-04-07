@@ -23,7 +23,7 @@ module Types
       A global identifier.
 
       A global identifier represents an object uniquely across the application.
-      An example of such an identifier is "gid://gitlab/User/1".
+      An example of such an identifier is `"gid://gitlab/User/1"`.
 
       Global identifiers are encoded as strings.
     DESC

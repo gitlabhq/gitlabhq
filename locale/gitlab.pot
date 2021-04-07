@@ -6690,6 +6690,9 @@ msgstr ""
 msgid "ClusterIntegration|Base domain"
 msgstr ""
 
+msgid "ClusterIntegration|Before you enable this integration, follow the %{link_start}documented process%{link_end}."
+msgstr ""
+
 msgid "ClusterIntegration|Blocking mode"
 msgstr ""
 
@@ -6855,6 +6858,9 @@ msgstr ""
 msgid "ClusterIntegration|Enable Cloud Run for Anthos"
 msgstr ""
 
+msgid "ClusterIntegration|Enable Prometheus integration"
+msgstr ""
+
 msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster."
 msgstr ""
 
@@ -6991,6 +6997,15 @@ msgid "ClusterIntegration|Integrate Kubernetes with a cluster certificate"
 msgstr ""
 
 msgid "ClusterIntegration|Integrate with a cluster certificate"
+msgstr ""
+
+msgid "ClusterIntegration|Integration disabled"
+msgstr ""
+
+msgid "ClusterIntegration|Integration enabled"
+msgstr ""
+
+msgid "ClusterIntegration|Integrations enable you to integrate your cluster as part of your GitLab workflow."
 msgstr ""
 
 msgid "ClusterIntegration|Issuer Email"
@@ -12805,6 +12820,9 @@ msgid "ExternalWikiService|Replaces the link to the internal wiki with a link to
 msgstr ""
 
 msgid "ExternalWikiService|The URL of the external wiki"
+msgstr ""
+
+msgid "Externally installed"
 msgstr ""
 
 msgid "Facebook"

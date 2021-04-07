@@ -39,8 +39,6 @@ Or, you can create a database migration:
 class ImportCommonMetrics < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME = false
-
   def up
     ::Gitlab::DatabaseImporters::CommonMetrics::Importer.new.execute
   end

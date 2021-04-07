@@ -18,7 +18,7 @@ To measure the impact of a merge request you can use
 the following guides:
 
 - [Performance Guidelines](performance.md)
-- [What requires downtime?](what_requires_downtime.md)
+- [Avoiding downtime in migrations](avoiding_downtime_in_migrations.md)
 
 ## Definition
 

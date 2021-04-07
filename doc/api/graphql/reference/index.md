@@ -692,6 +692,16 @@ An API Fuzzing scan profile.
 | `name` | [`String`](#string) | The unique name of the profile. |
 | `yaml` | [`String`](#string) | A syntax highlit HTML representation of the YAML. |
 
+### `ApprovalRule`
+
+Describes a rule for who can approve merge requests.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | [`GlobalID!`](#globalid) | ID of the rule. |
+| `name` | [`String`](#string) | Name of the rule. |
+| `type` | [`ApprovalRuleType`](#approvalruletype) | Type of the rule. |
+
 ### `AwardEmoji`
 
 An emoji awarded by a user.
@@ -3916,7 +3926,7 @@ An edge in a connection.
 | `rebaseCommitSha` | [`String`](#string) | Rebase commit SHA of the merge request. |
 | `rebaseInProgress` | [`Boolean!`](#boolean) | Indicates if there is a rebase currently in progress for the merge request. |
 | `reference` | [`String!`](#string) | Internal reference of the merge request. Returned in shortened format by default. |
-| `reviewers` | [`UserConnection`](#userconnection) | Users from whom a review has been requested. |
+| `reviewers` | [`MergeRequestReviewerConnection`](#mergerequestreviewerconnection) | Users from whom a review has been requested. |
 | `securityAutoFix` | [`Boolean`](#boolean) | Indicates if the merge request is created by @GitLab-Security-Bot. |
 | `securityReportsUpToDateOnTargetBranch` | [`Boolean!`](#boolean) | Indicates if the target branch security reports are out of date. |
 | `shouldBeRebased` | [`Boolean!`](#boolean) | Indicates if the merge request will be rebased. |
@@ -4037,6 +4047,56 @@ Check permissions for the current user on a merge request.
 | `removeSourceBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_source_branch` on this resource. |
 | `revertOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `revert_on_current_merge_request` on this resource. |
 | `updateMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `update_merge_request` on this resource. |
+
+### `MergeRequestReviewer`
+
+A user from whom a merge request review has been requested.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `assignedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests assigned to the user. |
+| `authoredMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests authored by the user. |
+| `avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| `bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
+| `callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. |
+| `email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: `User.publicEmail`. |
+| `groupCount` | [`Int`](#int) | Group count for the user. Available only when feature flag `user_group_counts` is enabled. |
+| `groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. |
+| `id` | [`ID!`](#id) | ID of the user. |
+| `location` | [`String`](#string) | The location of the user. |
+| `mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
+| `name` | [`String!`](#string) | Human-readable name of the user. |
+| `projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. |
+| `publicEmail` | [`String`](#string) | User's public email. |
+| `reviewRequestedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests assigned to the user for review. |
+| `snippets` | [`SnippetConnection`](#snippetconnection) | Snippets authored by the user. |
+| `starredProjects` | [`ProjectConnection`](#projectconnection) | Projects starred by the user. |
+| `state` | [`UserState!`](#userstate) | State of the user. |
+| `status` | [`UserStatus`](#userstatus) | User status. |
+| `todos` | [`TodoConnection`](#todoconnection) | To-do items of the user. |
+| `userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| `username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
+| `webPath` | [`String!`](#string) | Web path of the user. |
+| `webUrl` | [`String!`](#string) | Web URL of the user. |
+
+### `MergeRequestReviewerConnection`
+
+The connection type for MergeRequestReviewer.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `edges` | [`[MergeRequestReviewerEdge]`](#mergerequestrevieweredge) | A list of edges. |
+| `nodes` | [`[MergeRequestReviewer]`](#mergerequestreviewer) | A list of nodes. |
+| `pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+### `MergeRequestReviewerEdge`
+
+An edge in a connection.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| `node` | [`MergeRequestReviewer`](#mergerequestreviewer) | The item at the end of the edge. |
 
 ### `MergeRequestReviewerRereviewPayload`
 
@@ -6623,6 +6683,22 @@ An edge in a connection.
 | `cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | `node` | [`User`](#user) | The item at the end of the edge. |
 
+### `UserMergeRequestInteraction`
+
+Information about a merge request given a specific user.
+
+This object has two parts to its state: a `User` and a `MergeRequest`. All
+fields relate to interactions between the two entities.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `applicableApprovalRules` | [`[ApprovalRule!]`](#approvalrule) | Approval rules that apply to this user for this merge request. |
+| `approved` | [`Boolean!`](#boolean) | Whether this user has approved this merge request. |
+| `canMerge` | [`Boolean!`](#boolean) | Whether this user can merge this merge request. |
+| `canUpdate` | [`Boolean!`](#boolean) | Whether this user can update this merge request. |
+| `reviewState` | [`MergeRequestReviewState`](#mergerequestreviewstate) | The state of the review by this user. |
+| `reviewed` | [`Boolean!`](#boolean) | Whether this user has provided a review for this merge request. |
+
 ### `UserPermissions`
 
 | Field | Type | Description |
@@ -7320,6 +7396,17 @@ All possible ways to specify the API surface for an API fuzzing scan.
 | `OPENAPI` | The API surface is specified by a OPENAPI file. |
 | `POSTMAN` | The API surface is specified by a POSTMAN file. |
 
+### `ApprovalRuleType`
+
+The kind of an approval rule.
+
+| Value | Description |
+| ----- | ----------- |
+| `ANY_APPROVER` | A `any_approver` approval rule. |
+| `CODE_OWNER` | A `code_owner` approval rule. |
+| `REGULAR` | A `regular` approval rule. |
+| `REPORT_APPROVER` | A `report_approver` approval rule. |
+
 ### `AvailabilityEnum`
 
 User availability status.
@@ -7801,6 +7888,15 @@ New state to apply to a merge request.
 | ----- | ----------- |
 | `CLOSED` | Close the merge request if it is open. |
 | `OPEN` | Open the merge request if it is closed. |
+
+### `MergeRequestReviewState`
+
+State of a review of a GitLab merge request.
+
+| Value | Description |
+| ----- | ----------- |
+| `REVIEWED` | The merge request is reviewed. |
+| `UNREVIEWED` | The merge request is unreviewed. |
 
 ### `MergeRequestSort`
 
@@ -8512,6 +8608,15 @@ Represents signed double-precision fractional values as specified by [IEEE 754](
 A `GitlabErrorTrackingDetailedErrorID` is a global ID. It is encoded as a string.
 
 An example `GitlabErrorTrackingDetailedErrorID` is: `"gid://gitlab/Gitlab::ErrorTracking::DetailedError/1"`.
+
+### `GlobalID`
+
+A global identifier.
+
+A global identifier represents an object uniquely across the application.
+An example of such an identifier is `"gid://gitlab/User/1"`.
+
+Global identifiers are encoded as strings.
 
 ### `GroupID`
 

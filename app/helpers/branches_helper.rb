@@ -20,6 +20,10 @@ module BranchesHelper
       end
     end
   end
+
+  def gldropdrown_branches_enabled?
+    Feature.enabled?(:gldropdown_branches)
+  end
 end
 
 BranchesHelper.prepend_if_ee('EE::BranchesHelper')

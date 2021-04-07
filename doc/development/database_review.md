@@ -176,7 +176,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
 
 #### Preparation when removing columns, tables, indexes, or other structures
 
-- Follow the [guidelines on dropping columns](what_requires_downtime.md#dropping-columns).
+- Follow the [guidelines on dropping columns](avoiding_downtime_in_migrations.md#dropping-columns).
 - Generally it's best practice (but not a hard rule) to remove indexes and foreign keys in a post-deployment migration.
   - Exceptions include removing indexes and foreign keys for small tables.
 - If you're adding a composite index, another index might become redundant, so remove that in the same migration.
@@ -199,7 +199,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
   - Check that the relevant version files under `db/schema_migrations` were added or removed.
   - Check queries timing (If any): In a single transaction, cumulative query time executed in a migration
     needs to fit comfortably within `15s` - preferably much less than that - on GitLab.com.
-  - For column removals, make sure the column has been [ignored in a previous release](what_requires_downtime.md#dropping-columns)
+  - For column removals, make sure the column has been [ignored in a previous release](avoiding_downtime_in_migrations.md#dropping-columns)
 - Check [background migrations](background_migrations.md):
   - Establish a time estimate for execution on GitLab.com. For historical purposes,
     it's highly recommended to include this estimation on the merge request description.

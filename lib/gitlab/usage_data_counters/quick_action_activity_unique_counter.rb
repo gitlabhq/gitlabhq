@@ -28,7 +28,7 @@ module Gitlab
             'unassign_reviewer'
           when 'request_review', 'reviewer'
             'assign_reviewer'
-          when 'spend'
+          when 'spend', 'spent'
             event_name_for_spend(args)
           when 'unassign'
             event_name_for_unassign(args)

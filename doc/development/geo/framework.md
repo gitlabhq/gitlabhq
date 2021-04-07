@@ -266,8 +266,6 @@ For example, to add support for files referenced by a `Widget` model with a
    class CreateWidgetRegistry < ActiveRecord::Migration[6.0]
      include Gitlab::Database::MigrationHelpers
 
-     DOWNTIME = false
-
      disable_ddl_transaction!
 
      def up
@@ -399,8 +397,6 @@ can track verification state.
    # frozen_string_literal: true
 
    class AddVerificationStateToWidgets < ActiveRecord::Migration[6.0]
-     DOWNTIME = false
-
      def change
        change_table(:widgets) do |t|
          t.integer :verification_state, default: 0, limit: 2, null: false
@@ -427,8 +423,6 @@ can track verification state.
    class AddVerificationFailureLimitToWidgets < ActiveRecord::Migration[6.0]
      include Gitlab::Database::MigrationHelpers
 
-     DOWNTIME = false
-
      disable_ddl_transaction!
 
      CONSTRAINT_NAME = 'widget_verification_failure_text_limit'
@@ -453,8 +447,6 @@ can track verification state.
    class AddVerificationIndexesToWidgets < ActiveRecord::Migration[6.0]
      include Gitlab::Database::MigrationHelpers
 
-     DOWNTIME = false
-     VERIFICATION_STATE_INDEX_NAME = "index_widgets_verification_state"
      PENDING_VERIFICATION_INDEX_NAME = "index_widgets_pending_verification"
      FAILED_VERIFICATION_INDEX_NAME = "index_widgets_failed_verification"
      NEEDS_VERIFICATION_INDEX_NAME = "index_widgets_needs_verification"
@@ -496,8 +488,6 @@ can track verification state.
 
    class CreateWidgetStates < ActiveRecord::Migration[6.0]
      include Gitlab::Database::MigrationHelpers
-
-     DOWNTIME = false
 
      disable_ddl_transaction!
 
@@ -925,8 +915,6 @@ For example, to add support for files referenced by a `Gizmos` model with a
 
    class CreateGizmoRegistry < ActiveRecord::Migration[6.0]
      include Gitlab::Database::MigrationHelpers
-
-     DOWNTIME = false
 
      disable_ddl_transaction!
 

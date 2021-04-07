@@ -380,7 +380,7 @@ RSpec.describe Issuable do
 
     context 'user is a participant in the issue' do
       before do
-        allow(issue).to receive(:participants).with(user).and_return([user])
+        allow(issue).to receive(:participant?).with(user).and_return(true)
       end
 
       it 'returns false when no subcription exists' do

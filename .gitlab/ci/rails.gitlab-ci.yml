@@ -257,17 +257,6 @@ static-analysis:
     - run_timed_command "retry yarn install --frozen-lockfile"
     - scripts/static-analysis
 
-downtime_check:
-  extends:
-    - .rails-job-base
-    - .rails:rules:downtime_check
-  needs: []
-  stage: test
-  variables:
-    SETUP_DB: "false"
-  script:
-    - bundle exec rake downtime_check
-
 rspec migration pg11:
   extends:
     - .rspec-base-pg11

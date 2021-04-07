@@ -93,7 +93,7 @@ module Gitlab
         end
 
         def cursor_attributes_for_node(node)
-          column_definitions.each_with_object({}) do |column_definition, hash|
+          column_definitions.each_with_object({}.with_indifferent_access) do |column_definition, hash|
             field_value = node[column_definition.attribute_name]
             hash[column_definition.attribute_name] = if field_value.is_a?(Time)
                                                        field_value.strftime('%Y-%m-%d %H:%M:%S.%N %Z')
@@ -162,7 +162,7 @@ module Gitlab
         # rubocop: disable CodeReuse/ActiveRecord
         def apply_cursor_conditions(scope, values = {})
           scope = apply_custom_projections(scope)
-          scope.where(build_where_values(values))
+          scope.where(build_where_values(values.with_indifferent_access))
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

@@ -86,6 +86,7 @@ RSpec.describe 'Branches' do
 
     describe 'Find branches' do
       it 'shows filtered branches', :js do
+        stub_feature_flags(gldropdown_branches: false)
         visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
@@ -93,6 +94,20 @@ RSpec.describe 'Branches' do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
+      end
+
+      context 'with gldropdown_branches enabled' do
+        it 'shows filtered branches', :js do
+          visit project_branches_path(project)
+
+          branch_search = find('input[data-testid="branch-search"]')
+
+          branch_search.set('fix')
+          branch_search.native.send_keys(:enter)
+
+          expect(page).to have_content('fix')
+          expect(find('.all-branches')).to have_selector('li', count: 1)
+        end
       end
     end
 
@@ -115,6 +130,7 @@ RSpec.describe 'Branches' do
       end
 
       it 'sorts the branches by name' do
+        stub_feature_flags(gldropdown_branches: false)
         visit project_branches_filtered_path(project, state: 'all')
 
         click_button "Last updated" # Open sorting dropdown
@@ -123,13 +139,40 @@ RSpec.describe 'Branches' do
         expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :name))
       end
 
+      context 'with gldropdown_branches enabled' do
+        it 'sorts the branches by name', :js do
+          visit project_branches_filtered_path(project, state: 'all')
+
+          click_button "Last updated" # Open sorting dropdown
+          within '[data-testid="branches-dropdown"]' do
+            find('p', text: 'Name').click
+          end
+
+          expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :name))
+        end
+      end
+
       it 'sorts the branches by oldest updated' do
+        stub_feature_flags(gldropdown_branches: false)
         visit project_branches_filtered_path(project, state: 'all')
 
         click_button "Last updated" # Open sorting dropdown
         click_link "Oldest updated"
 
         expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_asc))
+      end
+
+      context 'with gldropdown_branches enabled' do
+        it 'sorts the branches by oldest updated', :js do
+          visit project_branches_filtered_path(project, state: 'all')
+
+          click_button "Last updated" # Open sorting dropdown
+          within '[data-testid="branches-dropdown"]' do
+            find('p', text: 'Oldest updated').click
+          end
+
+          expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_asc))
+        end
       end
 
       it 'avoids a N+1 query in branches index' do
@@ -143,6 +186,7 @@ RSpec.describe 'Branches' do
 
     describe 'Find branches on All branches' do
       it 'shows filtered branches', :js do
+        stub_feature_flags(gldropdown_branches: false)
         visit project_branches_filtered_path(project, state: 'all')
 
         fill_in 'branch-search', with: 'fix'
@@ -151,10 +195,25 @@ RSpec.describe 'Branches' do
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
       end
+
+      context 'with gldropdown_branches enabled' do
+        it 'shows filtered branches', :js do
+          visit project_branches_filtered_path(project, state: 'all')
+
+          branch_search = find('input[data-testid="branch-search"]')
+
+          branch_search.set('fix')
+          branch_search.native.send_keys(:enter)
+
+          expect(page).to have_content('fix')
+          expect(find('.all-branches')).to have_selector('li', count: 1)
+        end
+      end
     end
 
     describe 'Delete unprotected branch on All branches' do
       it 'removes branch after confirmation', :js do
+        stub_feature_flags(gldropdown_branches: false)
         visit project_branches_filtered_path(project, state: 'all')
 
         fill_in 'branch-search', with: 'fix'
@@ -167,6 +226,24 @@ RSpec.describe 'Branches' do
 
         expect(page).not_to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 0)
+      end
+
+      context 'with gldropdown_branches enabled' do
+        it 'removes branch after confirmation', :js do
+          visit project_branches_filtered_path(project, state: 'all')
+
+          branch_search = find('input[data-testid="branch-search"]')
+
+          branch_search.set('fix')
+          branch_search.native.send_keys(:enter)
+
+          expect(page).to have_content('fix')
+          expect(find('.all-branches')).to have_selector('li', count: 1)
+          accept_confirm { find('.js-branch-fix .btn-danger').click }
+
+          expect(page).not_to have_content('fix')
+          expect(find('.all-branches')).to have_selector('li', count: 0)
+        end
       end
     end
 

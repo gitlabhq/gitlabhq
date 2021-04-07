@@ -1001,8 +1001,8 @@ Logs produced by pods running **GitLab Managed Apps** can be browsed using
 ## Install with one click
 
 WARNING:
-The one click installation method is scheduled for removal in GitLab 14.0. The removal
-of this feature from GitLab does not affect installed applications to avoid breaking
+The one-click installation method is deprecated and scheduled for removal in [GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
+This removal does not affect installed applications to avoid breaking
 changes. Following GitLab 14.0, users can take ownership of already installed applications
 using our documentation.
 

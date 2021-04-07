@@ -9,8 +9,6 @@ RSpec.describe RuboCop::Cop::Migration::Datetime do
   let(:create_table_migration_without_datetime) do
     %q(
       class Users < ActiveRecord::Migration[6.0]
-        DOWNTIME = false
-
         def change
           create_table :users do |t|
             t.string :username, null: false
@@ -24,8 +22,6 @@ RSpec.describe RuboCop::Cop::Migration::Datetime do
   let(:create_table_migration_with_datetime_with_timezone) do
     %q(
       class Users < ActiveRecord::Migration[6.0]
-        DOWNTIME = false
-
         def change
           create_table :users do |t|
             t.string :username, null: false
@@ -39,8 +35,6 @@ RSpec.describe RuboCop::Cop::Migration::Datetime do
   let(:add_column_migration_with_datetime) do
     %q(
       class Users < ActiveRecord::Migration[6.0]
-        DOWNTIME = false
-
         def change
           add_column(:users, :username, :text)
           add_column(:users, :last_sign_in, :datetime)
@@ -52,8 +46,6 @@ RSpec.describe RuboCop::Cop::Migration::Datetime do
   let(:add_column_migration_with_timestamp) do
     %q(
       class Users < ActiveRecord::Migration[6.0]
-        DOWNTIME = false
-
         def change
           add_column(:users, :username, :text)
           add_column(:users, :last_sign_in, :timestamp)
@@ -65,8 +57,6 @@ RSpec.describe RuboCop::Cop::Migration::Datetime do
   let(:add_column_migration_without_datetime) do
     %q(
       class Users < ActiveRecord::Migration[6.0]
-        DOWNTIME = false
-
         def change
           add_column(:users, :username, :text)
         end
@@ -77,8 +67,6 @@ RSpec.describe RuboCop::Cop::Migration::Datetime do
   let(:add_column_migration_with_datetime_with_timezone) do
     %q(
       class Users < ActiveRecord::Migration[6.0]
-        DOWNTIME = false
-
         def change
           add_column(:users, :username, :text)
           add_column(:users, :last_sign_in, :datetime_with_timezone)
@@ -95,8 +83,6 @@ RSpec.describe RuboCop::Cop::Migration::Datetime do
     it 'registers an offense when the ":datetime" data type is used on create_table' do
       expect_offense(<<~RUBY)
         class Users < ActiveRecord::Migration[6.0]
-          DOWNTIME = false
-
           def change
             create_table :users do |t|
               t.string :username, null: false
@@ -111,8 +97,6 @@ RSpec.describe RuboCop::Cop::Migration::Datetime do
     it 'registers an offense when the ":timestamp" data type is used on create_table' do
       expect_offense(<<~RUBY)
         class Users < ActiveRecord::Migration[6.0]
-          DOWNTIME = false
-
           def change
             create_table :users do |t|
               t.string :username, null: false
@@ -135,8 +119,6 @@ RSpec.describe RuboCop::Cop::Migration::Datetime do
     it 'registers an offense when the ":datetime" data type is used on add_column' do
       expect_offense(<<~RUBY)
         class Users < ActiveRecord::Migration[6.0]
-          DOWNTIME = false
-
           def change
             add_column(:users, :username, :text)
             add_column(:users, :last_sign_in, :datetime)
@@ -149,8 +131,6 @@ RSpec.describe RuboCop::Cop::Migration::Datetime do
     it 'registers an offense when the ":timestamp" data type is used on add_column' do
       expect_offense(<<~RUBY)
         class Users < ActiveRecord::Migration[6.0]
-          DOWNTIME = false
-
           def change
             add_column(:users, :username, :text)
             add_column(:users, :last_sign_in, :timestamp)

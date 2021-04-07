@@ -1,0 +1,6 @@
+- tab_name = 'integrations'
+- active = params[:tab] == tab_name
+
+%li.nav-item{ role: 'presentation' }
+  %a#cluster-apps-tab.nav-link{ class: active_when(active), href: clusterable.cluster_path(@cluster.id, params: {tab: tab_name}) }
+    %span= _('Integrations')

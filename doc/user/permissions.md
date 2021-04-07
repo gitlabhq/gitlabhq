@@ -176,7 +176,7 @@ The following table depicts the various user permission levels in a project.
 | Delete wiki pages                                 |         |            |             | ✓        | ✓      |
 | View project Audit Events                         |         |            |  ✓ (*11*)   | ✓        | ✓      |
 | Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
-| Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** |         |            |             | ✓        | ✓      |
+| Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** **(PREMIUM SAAS)** (*12*) |         |            |             | ✓        | ✓      |
 | View 2FA status of members                        |         |            |             | ✓        | ✓      |
 | Switch visibility level                           |         |            |             |          | ✓      |
 | Transfer project to another namespace             |         |            |             |          | ✓      |
@@ -204,6 +204,8 @@ The following table depicts the various user permission levels in a project.
    [Eligible approvers](project/merge_requests/merge_request_approvals.md#eligible-approvers).
 1. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
 1. Users can only view events based on their individual actions.
+1. Project access tokens are supported for self-managed instances on Free and above. They are also
+   supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial)).
 
 ## Project features permissions
 

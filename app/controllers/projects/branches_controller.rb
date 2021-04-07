@@ -12,6 +12,9 @@ class Projects::BranchesController < Projects::ApplicationController
   # Support legacy URLs
   before_action :redirect_for_legacy_index_sort_or_search, only: [:index]
   before_action :limit_diverging_commit_counts!, only: [:diverging_commit_counts]
+  before_action do
+    push_frontend_feature_flag(:gldropdown_branches)
+  end
 
   feature_category :source_code_management
 

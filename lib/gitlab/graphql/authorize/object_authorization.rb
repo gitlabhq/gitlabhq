@@ -21,8 +21,9 @@ module Gitlab
         def ok?(object, current_user)
           return true if none?
 
+          subject = object.try(:declarative_policy_subject) || object
           abilities.all? do |ability|
-            Ability.allowed?(current_user, ability, object)
+            Ability.allowed?(current_user, ability, subject)
           end
         end
       end

@@ -22,12 +22,24 @@ RSpec.describe 'Protected Branches', :js do
       end
 
       it 'does not allow developer to removes protected branch' do
+        stub_feature_flags(gldropdown_branches: false)
         visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
         find('#branch-search').native.send_keys(:enter)
 
         expect(page).to have_css('.btn-danger.disabled')
+      end
+
+      context 'with gldropdown_branches enabled' do
+        it 'does not allow developer to removes protected branch' do
+          visit project_branches_path(project)
+
+          find('input[data-testid="branch-search"]').set('fix')
+          find('input[data-testid="branch-search"]').native.send_keys(:enter)
+
+          expect(page).to have_css('.btn-danger.disabled')
+        end
       end
     end
   end
@@ -45,6 +57,7 @@ RSpec.describe 'Protected Branches', :js do
       end
 
       it 'removes branch after modal confirmation' do
+        stub_feature_flags(gldropdown_branches: false)
         visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
@@ -62,6 +75,28 @@ RSpec.describe 'Protected Branches', :js do
         find('#branch-search').native.send_keys(:enter)
 
         expect(page).to have_content('No branches to show')
+      end
+
+      context 'with gldropdown_branches enabled' do
+        it 'removes branch after modal confirmation' do
+          visit project_branches_path(project)
+
+          find('input[data-testid="branch-search"]').set('fix')
+          find('input[data-testid="branch-search"]').native.send_keys(:enter)
+
+          expect(page).to have_content('fix')
+          expect(find('.all-branches')).to have_selector('li', count: 1)
+          page.find('[data-target="#modal-delete-branch"]').click
+
+          expect(page).to have_css('.js-delete-branch[disabled]')
+          fill_in 'delete_branch_input', with: 'fix'
+          click_link 'Delete protected branch'
+
+          find('input[data-testid="branch-search"]').set('fix')
+          find('input[data-testid="branch-search"]').native.send_keys(:enter)
+
+          expect(page).to have_content('No branches to show')
+        end
       end
     end
   end

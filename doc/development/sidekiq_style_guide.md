@@ -831,8 +831,6 @@ as shown in this example:
 class MigrateTheRenamedSidekiqQueue < ActiveRecord::Migration[5.0]
   include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME = false
-
   def up
     sidekiq_queue_migrate 'old_queue_name', to: 'new_queue_name'
   end

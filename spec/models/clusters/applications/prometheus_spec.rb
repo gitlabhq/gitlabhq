@@ -39,6 +39,19 @@ RSpec.describe Clusters::Applications::Prometheus do
     end
   end
 
+  describe 'transition to externally_installed' do
+    let(:project) { create(:project) }
+    let(:cluster) { create(:cluster, :with_installed_helm) }
+    let(:application) { create(:clusters_applications_prometheus, :installing, cluster: cluster) }
+
+    it 'schedules post installation job' do
+      expect(Clusters::Applications::ActivateServiceWorker)
+        .to receive(:perform_async).with(cluster.id, 'prometheus')
+
+      application.make_externally_installed!
+    end
+  end
+
   describe 'transition to updating' do
     let(:project) { create(:project) }
     let(:cluster) { create(:cluster, projects: [project]) }

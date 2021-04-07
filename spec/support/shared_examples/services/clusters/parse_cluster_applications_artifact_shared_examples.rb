@@ -41,7 +41,7 @@ RSpec.shared_examples 'parse cluster applications artifact' do |release_name|
         end.to change(application_class, :count)
 
         expect(cluster_application).to be_persisted
-        expect(cluster_application).to be_installed
+        expect(cluster_application).to be_externally_installed
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.shared_examples 'parse cluster applications artifact' do |release_name|
       it 'marks the application as installed' do
         described_class.new(job, user).execute(artifact)
 
-        expect(cluster_application).to be_installed
+        expect(cluster_application).to be_externally_installed
       end
     end
   end

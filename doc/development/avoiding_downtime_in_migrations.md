@@ -4,12 +4,13 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# What requires downtime?
+# Avoiding downtime in migrations
 
-When working with a database certain operations can be performed without taking
-GitLab offline, others do require a downtime period. This guide describes
-various operations, their impact, and how to perform them without requiring
-downtime.
+When working with a database certain operations may require downtime. Since we
+cannot have downtime in migrations we need to use a set of steps to get the
+same end result without downtime. This guide describes various operations that
+may appear to need downtime, their impact, and how to perform them without
+requiring downtime.
 
 ## Dropping Columns
 

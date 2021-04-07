@@ -69,6 +69,10 @@ FactoryBot.define do
       status { 10 }
     end
 
+    trait :externally_installed do
+      status { 11 }
+    end
+
     trait :timed_out do
       installing
       updated_at { ClusterWaitForAppInstallationWorker::TIMEOUT.ago }

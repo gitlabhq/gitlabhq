@@ -368,23 +368,23 @@ RSpec.describe QuickActions::InterpretService do
                                 spent_at: DateTime.current.to_date
                               })
       end
-
-      it 'returns the spend_time message including the formatted duration and verb' do
-        _, _, message = service.execute('/spend -120m', issuable)
-
-        expect(message).to eq('Subtracted 2h spent time.')
-      end
     end
 
     shared_examples 'spend command with negative time' do
-      it 'populates spend_time: -1800 if content contains /spend -30m' do
+      it 'populates spend_time: -7200 if content contains -120m' do
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq(spend_time: {
-                                duration: -1800,
+                                duration: -7200,
                                 user_id: developer.id,
                                 spent_at: DateTime.current.to_date
                               })
+      end
+
+      it 'returns the spend_time message including the formatted duration and verb' do
+        _, _, message = service.execute(content, issuable)
+
+        expect(message).to eq('Subtracted 2h spent time.')
       end
     end
 
@@ -1242,8 +1242,18 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'spend command' do
+      let(:content) { '/spent 1h' }
+      let(:issuable) { issue }
+    end
+
     it_behaves_like 'spend command with negative time' do
-      let(:content) { '/spend -30m' }
+      let(:content) { '/spend -120m' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with negative time' do
+      let(:content) { '/spent -120m' }
       let(:issuable) { issue }
     end
 
@@ -1253,13 +1263,29 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'spend command with valid date' do
+      let(:date) { '2016-02-02' }
+      let(:content) { "/spent 30m #{date}" }
+      let(:issuable) { issue }
+    end
+
     it_behaves_like 'spend command with invalid date' do
       let(:content) { '/spend 30m 17-99-99' }
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'spend command with invalid date' do
+      let(:content) { '/spent 30m 17-99-99' }
+      let(:issuable) { issue }
+    end
+
     it_behaves_like 'spend command with future date' do
       let(:content) { '/spend 30m 6017-10-10' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with future date' do
+      let(:content) { '/spent 30m 6017-10-10' }
       let(:issuable) { issue }
     end
 
@@ -1269,7 +1295,17 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     it_behaves_like 'failed command' do
+      let(:content) { '/spent' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'failed command' do
       let(:content) { '/spend abc' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'failed command' do
+      let(:content) { '/spent abc' }
       let(:issuable) { issue }
     end
 
@@ -2247,10 +2283,14 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     describe 'spend command' do
-      let(:content) { '/spend -120m' }
+      it 'includes the formatted duration and proper verb when using /spend' do
+        _, explanations = service.explain('/spend -120m', issue)
 
-      it 'includes the formatted duration and proper verb' do
-        _, explanations = service.explain(content, issue)
+        expect(explanations).to eq(['Subtracts 2h spent time.'])
+      end
+
+      it 'includes the formatted duration and proper verb when using /spent' do
+        _, explanations = service.explain('/spent -120m', issue)
 
         expect(explanations).to eq(['Subtracts 2h spent time.'])
       end

@@ -56,15 +56,31 @@ module Participable
   # This method processes attributes of objects in breadth-first order.
   #
   # Returns an Array of User instances.
-  def participants(current_user = nil)
-    all_participants[current_user]
+  def participants(user = nil)
+    filtered_participants_hash[user]
+  end
+
+  # Checks if the user is a participant in a discussion.
+  #
+  # This method processes attributes of objects in breadth-first order.
+  #
+  # Returns a Boolean.
+  def participant?(user)
+    can_read_participable?(user) &&
+      all_participants_hash[user].include?(user)
   end
 
   private
 
-  def all_participants
-    @all_participants ||= Hash.new do |hash, user|
+  def all_participants_hash
+    @all_participants_hash ||= Hash.new do |hash, user|
       hash[user] = raw_participants(user)
+    end
+  end
+
+  def filtered_participants_hash
+    @filtered_participants_hash ||= Hash.new do |hash, user|
+      hash[user] = filter_by_ability(all_participants_hash[user])
     end
   end
 
@@ -98,8 +114,6 @@ module Participable
     end
 
     participants.merge(ext.users)
-
-    filter_by_ability(participants)
   end
 
   def filter_by_ability(participants)
@@ -108,6 +122,15 @@ module Participable
       Ability.users_that_can_read_personal_snippet(participants.to_a, self)
     else
       Ability.users_that_can_read_project(participants.to_a, project)
+    end
+  end
+
+  def can_read_participable?(participant)
+    case self
+    when PersonalSnippet
+      participant.can?(:read_snippet, self)
+    else
+      participant.can?(:read_project, project)
     end
   end
 end

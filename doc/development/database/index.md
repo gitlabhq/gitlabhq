@@ -22,7 +22,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Migrations
 
-- [What requires downtime?](../what_requires_downtime.md)
+- [Avoiding downtime in migrations](../avoiding_downtime_in_migrations.md)
 - [SQL guidelines](../sql.md) for working with SQL queries
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations
 - [Testing Rails migrations](../testing_guide/testing_migrations_guide.md) guide

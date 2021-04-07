@@ -26,6 +26,7 @@ export const APPLICATION_STATUS = {
   ERROR: 'errored',
   PRE_INSTALLED: 'pre_installed',
   UNINSTALLED: 'uninstalled',
+  EXTERNALLY_INSTALLED: 'externally_installed',
 };
 
 /*

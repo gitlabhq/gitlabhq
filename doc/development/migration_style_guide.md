@@ -16,16 +16,12 @@ migrations are written carefully, can be applied online, and adhere to the style
 guide below.
 
 Migrations are **not** allowed to require GitLab installations to be taken
-offline unless _absolutely necessary_.
-
-When downtime is necessary the migration has to be approved by:
-
-1. The VP of Engineering
-1. A Backend Maintainer
-1. A Database Maintainer
-
-An up-to-date list of people holding these titles can be found at
-<https://about.gitlab.com/company/team/>.
+offline ever. Migrations always must be written in such a way to avoid
+downtime. In the past we had a process for defining migrations that allowed for
+downtime by setting a `DOWNTIME` constant. You may see this when looking at
+older migrations. This process was in place for 4 years without every being
+used and as such we've learnt we can always figure out how to write a migration
+differently to avoid downtime.
 
 When writing your migrations, also consider that databases might have stale data
 or inconsistencies and guard for that. Try to make as few assumptions as
@@ -65,47 +61,16 @@ scripts/regenerate-schema
 TARGET=12-9-stable-ee scripts/regenerate-schema
 ```
 
-## What Requires Downtime?
+## Avoiding downtime
 
-The document ["What Requires Downtime?"](what_requires_downtime.md) specifies
-various database operations, such as
+The document ["Avoiding downtime in migrations"](avoiding_downtime_in_migrations.md) specifies
+various database operations, such as:
 
-- [dropping and renaming columns](what_requires_downtime.md#dropping-columns)
-- [changing column constraints and types](what_requires_downtime.md#changing-column-constraints)
-- [adding and dropping indexes, tables, and foreign keys](what_requires_downtime.md#adding-indexes)
+- [dropping and renaming columns](avoiding_downtime_in_migrations.md#dropping-columns)
+- [changing column constraints and types](avoiding_downtime_in_migrations.md#changing-column-constraints)
+- [adding and dropping indexes, tables, and foreign keys](avoiding_downtime_in_migrations.md#adding-indexes)
 
-and whether they require downtime and how to work around that whenever possible.
-
-## Downtime Tagging
-
-Every migration must specify if it requires downtime or not, and if it should
-require downtime it must also specify a reason for this. This is required even
-if 99% of the migrations don't require downtime as this makes it easier to find
-the migrations that _do_ require downtime.
-
-To tag a migration, add the following two constants to the migration class'
-body:
-
-- `DOWNTIME`: a boolean that when set to `true` indicates the migration requires
-  downtime.
-- `DOWNTIME_REASON`: a String containing the reason for the migration requiring
-  downtime. This constant **must** be set when `DOWNTIME` is set to `true`.
-
-For example:
-
-```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
-  DOWNTIME = true
-  DOWNTIME_REASON = 'This migration requires downtime because ...'
-
-  def change
-    ...
-  end
-end
-```
-
-It is an error (that is, CI fails) if the `DOWNTIME` constant is missing
-from a migration class.
+and explains how to perform them without requiring downtime.
 
 ## Reversibility
 
@@ -512,8 +477,6 @@ class like so:
 class MyMigration < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME = false
-
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_name'
@@ -640,8 +603,6 @@ Take the following migration as an example:
 
 ```ruby
 class DefaultRequestAccessGroups < ActiveRecord::Migration[5.2]
-  DOWNTIME = false
-
   def change
     change_column_default(:namespaces, :request_access_enabled, from: false, to: true)
   end
@@ -849,8 +810,6 @@ Example migration adding this column:
 
 ```ruby
 class AddOptionsToBuildMetadata < ActiveRecord::Migration[5.0]
-  DOWNTIME = false
-
   def change
     add_column :ci_builds_metadata, :config_options, :jsonb
   end

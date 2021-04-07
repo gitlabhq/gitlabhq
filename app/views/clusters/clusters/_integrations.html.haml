@@ -1,0 +1,19 @@
+.settings.expanded.border-0.m-0
+  %p
+    = s_('ClusterIntegration|Integrations enable you to integrate your cluster as part of your GitLab workflow.')
+    = link_to _('Learn more'), help_page_path('user/clusters/integrations.md'), target: '_blank'
+  .settings-content#advanced-settings-section
+    - if can?(current_user, :admin_cluster, @cluster) && @prometheus_integration.integration?
+      .sub-section.form-group
+        = form_for @prometheus_integration, url: @cluster.integrations_path, as: :integration, method: :post, html: { class: 'js-cluster-integrations-form' } do |form|
+          = form.hidden_field :application_type
+          .form-group
+            .gl-form-checkbox.custom-control.custom-checkbox
+              = form.check_box :enabled, { class: 'custom-control-input'}, true, false
+              = form.label :enabled, s_('ClusterIntegration|Enable Prometheus integration'), class: 'custom-control-label'
+            .gl-form-group
+              .form-text.text-gl-muted
+                - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path("user/clusters/integrations", anchor: "prometheus-cluster-integration") }
+                - link_end = '</a>'.html_safe
+                = html_escape(s_('ClusterIntegration|Before you enable this integration, follow the %{link_start}documented process%{link_end}.')) % { link_start: link_start, link_end: link_end }
+          = form.submit _('Save changes'), class: 'btn gl-button btn-success'

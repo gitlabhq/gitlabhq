@@ -20,6 +20,8 @@ const {
   UNINSTALLING,
   UNINSTALL_ERRORED,
   UNINSTALLED,
+  PRE_INSTALLED,
+  EXTERNALLY_INSTALLED,
 } = APPLICATION_STATUS;
 
 const NO_EFFECTS = 'no effects';
@@ -29,19 +31,21 @@ describe('applicationStateMachine', () => {
 
   describe(`current state is ${NO_STATUS}`, () => {
     it.each`
-      expectedState      | event                | effects
-      ${INSTALLING}      | ${SCHEDULED}         | ${NO_EFFECTS}
-      ${NOT_INSTALLABLE} | ${NOT_INSTALLABLE}   | ${NO_EFFECTS}
-      ${INSTALLABLE}     | ${INSTALLABLE}       | ${NO_EFFECTS}
-      ${INSTALLING}      | ${INSTALLING}        | ${NO_EFFECTS}
-      ${INSTALLED}       | ${INSTALLED}         | ${NO_EFFECTS}
-      ${INSTALLABLE}     | ${ERROR}             | ${{ installFailed: true }}
-      ${UPDATING}        | ${UPDATING}          | ${NO_EFFECTS}
-      ${INSTALLED}       | ${UPDATED}           | ${NO_EFFECTS}
-      ${INSTALLED}       | ${UPDATE_ERRORED}    | ${{ updateFailed: true }}
-      ${UNINSTALLING}    | ${UNINSTALLING}      | ${NO_EFFECTS}
-      ${INSTALLED}       | ${UNINSTALL_ERRORED} | ${{ uninstallFailed: true }}
-      ${UNINSTALLED}     | ${UNINSTALLED}       | ${NO_EFFECTS}
+      expectedState           | event                   | effects
+      ${INSTALLING}           | ${SCHEDULED}            | ${NO_EFFECTS}
+      ${NOT_INSTALLABLE}      | ${NOT_INSTALLABLE}      | ${NO_EFFECTS}
+      ${INSTALLABLE}          | ${INSTALLABLE}          | ${NO_EFFECTS}
+      ${INSTALLING}           | ${INSTALLING}           | ${NO_EFFECTS}
+      ${INSTALLED}            | ${INSTALLED}            | ${NO_EFFECTS}
+      ${INSTALLABLE}          | ${ERROR}                | ${{ installFailed: true }}
+      ${UPDATING}             | ${UPDATING}             | ${NO_EFFECTS}
+      ${INSTALLED}            | ${UPDATED}              | ${NO_EFFECTS}
+      ${INSTALLED}            | ${UPDATE_ERRORED}       | ${{ updateFailed: true }}
+      ${UNINSTALLING}         | ${UNINSTALLING}         | ${NO_EFFECTS}
+      ${INSTALLED}            | ${UNINSTALL_ERRORED}    | ${{ uninstallFailed: true }}
+      ${UNINSTALLED}          | ${UNINSTALLED}          | ${NO_EFFECTS}
+      ${PRE_INSTALLED}        | ${PRE_INSTALLED}        | ${NO_EFFECTS}
+      ${EXTERNALLY_INSTALLED} | ${EXTERNALLY_INSTALLED} | ${NO_EFFECTS}
     `(`transitions to $expectedState on $event event and applies $effects`, (data) => {
       const { expectedState, event, effects } = data;
       const currentAppState = {

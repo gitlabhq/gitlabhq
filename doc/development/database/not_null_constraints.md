@@ -26,8 +26,6 @@ For example, consider a migration that creates a table with two `NOT NULL` colum
 
 ```ruby
 class CreateDbGuides < ActiveRecord::Migration[6.0]
-  DOWNTIME = false
-
   def change
     create_table :db_guides do |t|
       t.bigint :stars, default: 0, null: false
@@ -47,8 +45,6 @@ For example, consider a migration that adds a new `NOT NULL` column `active` to 
 
 ```ruby
 class AddExtendedTitleToSprints < ActiveRecord::Migration[6.0]
-  DOWNTIME = false
-
   def change
     add_column :db_guides, :active, :boolean, default: true, null: false
   end
@@ -117,7 +113,6 @@ with `validate: false` in a post-deployment migration,
 ```ruby
 class AddNotNullConstraintToEpicsDescription < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
-  DOWNTIME = false
 
   disable_ddl_transaction!
 
@@ -191,7 +186,6 @@ migration helper in a final post-deployment migration,
 ```ruby
 class ValidateNotNullConstraintOnEpicsDescription < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
-  DOWNTIME = false
 
   disable_ddl_transaction!
 

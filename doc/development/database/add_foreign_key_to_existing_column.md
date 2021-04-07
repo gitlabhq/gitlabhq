@@ -69,8 +69,6 @@ Migration file for adding `NOT VALID` foreign key:
 class AddNotValidForeignKeyToEmailsUser < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME = false
-
   def up
     # safe to use: it requires short lock on the table since we don't validate the foreign key
     add_foreign_key :emails, :users, on_delete: :cascade, validate: false
@@ -96,8 +94,6 @@ Example for cleaning up records in the `emails` table within a database migratio
 ```ruby
 class RemoveRecordsWithoutUserFromEmailsTable < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
-
-  DOWNTIME = false
 
   disable_ddl_transaction!
 
@@ -132,8 +128,6 @@ Migration file for validating the foreign key:
 
 class ValidateForeignKeyOnEmailUsers < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
-
-  DOWNTIME = false
 
   def up
     validate_foreign_key :emails, :user_id
