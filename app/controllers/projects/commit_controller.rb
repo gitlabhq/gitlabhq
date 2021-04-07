@@ -168,7 +168,7 @@ class Projects::CommitController < Projects::ApplicationController
     @diffs = commit.diffs(opts)
     @notes_count = commit.notes.count
 
-    @environment = EnvironmentsFinder.new(@project, current_user, commit: @commit, find_latest: true).execute.last
+    @environment = EnvironmentsByDeploymentsFinder.new(@project, current_user, commit: @commit, find_latest: true).execute.last
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

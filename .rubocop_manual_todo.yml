@@ -2010,6 +2010,7 @@ Gitlab/NamespacedClass:
     - 'app/finders/deployments_finder.rb'
     - 'app/finders/environment_names_finder.rb'
     - 'app/finders/environments_finder.rb'
+    - 'app/finders/environments_by_deployments_finder.rb'
     - 'app/finders/events_finder.rb'
     - 'app/finders/feature_flags_finder.rb'
     - 'app/finders/feature_flags_user_lists_finder.rb'

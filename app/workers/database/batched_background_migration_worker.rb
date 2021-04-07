@@ -10,6 +10,7 @@ module Database
 
     LEASE_TIMEOUT_MULTIPLIER = 3
     MINIMUM_LEASE_TIMEOUT = 10.minutes.freeze
+    INTERVAL_VARIANCE = 5.seconds.freeze
 
     def perform
       return unless Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops) && active_migration
@@ -22,7 +23,7 @@ module Database
         # models don't inherit from ApplicationRecord
         active_migration.reload # rubocop:disable Cop/ActiveRecordAssociationReload
 
-        run_active_migration if active_migration.active? && active_migration.interval_elapsed?
+        run_active_migration if active_migration.active? && active_migration.interval_elapsed?(variance: INTERVAL_VARIANCE)
       end
     end
 

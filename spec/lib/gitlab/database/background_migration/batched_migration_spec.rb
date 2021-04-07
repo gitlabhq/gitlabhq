@@ -87,6 +87,34 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
           end
         end
       end
+
+      context 'when an interval variance is given' do
+        let(:variance) { 2.seconds }
+
+        context 'when the last job is less than an interval with variance old' do
+          it 'returns false' do
+            freeze_time do
+              create(:batched_background_migration_job,
+                batched_migration: batched_migration,
+                created_at: Time.current - 1.minute - 57.seconds)
+
+              expect(batched_migration.interval_elapsed?(variance: variance)).to eq(false)
+            end
+          end
+        end
+
+        context 'when the last job is more than an interval with variance old' do
+          it 'returns true' do
+            freeze_time do
+              create(:batched_background_migration_job,
+                batched_migration: batched_migration,
+                created_at: Time.current - 1.minute - 58.seconds)
+
+              expect(batched_migration.interval_elapsed?(variance: variance)).to eq(true)
+            end
+          end
+        end
+      end
     end
   end
 

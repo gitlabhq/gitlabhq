@@ -29,7 +29,12 @@ class MergeRequestPollWidgetEntity < Grape::Entity
 
   expose :default_merge_commit_message
 
-  expose :mergeable?, as: :mergeable
+  expose :mergeable do |merge_request, options|
+    next merge_request.mergeable? if Feature.disabled?(:check_mergeability_async_in_widget, merge_request.project, default_enabled: :yaml)
+    next false if options[:async_mergeability_check].present? && merge_request.checking?
+
+    merge_request.mergeable?
+  end
 
   expose :default_merge_commit_message_with_description do |merge_request|
     merge_request.default_merge_commit_message(include_description: true)

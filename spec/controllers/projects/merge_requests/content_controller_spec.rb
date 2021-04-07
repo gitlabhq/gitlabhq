@@ -11,13 +11,13 @@ RSpec.describe Projects::MergeRequests::ContentController do
     sign_in(user)
   end
 
-  def do_request(action = :cached_widget)
+  def do_request(action = :cached_widget, params = {})
     get action, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
       id: merge_request.iid,
       format: :json
-    }
+    }.merge(params)
   end
 
   context 'user has access to the project' do
@@ -42,6 +42,10 @@ RSpec.describe Projects::MergeRequests::ContentController do
     end
 
     describe 'GET widget' do
+      before do
+        merge_request.mark_as_unchecked!
+      end
+
       it 'checks whether the MR can be merged' do
         controller.instance_variable_set(:@merge_request, merge_request)
 
@@ -51,6 +55,17 @@ RSpec.describe Projects::MergeRequests::ContentController do
 
         expect(response).to match_response_schema('entities/merge_request_poll_widget')
         expect(response.headers['Poll-Interval']).to eq('10000')
+      end
+
+      context 'when async_mergeability_check param is passed' do
+        it 'checks mergeability asynchronously' do
+          expect_next_instance_of(MergeRequests::MergeabilityCheckService) do |service|
+            expect(service).not_to receive(:execute)
+            expect(service).to receive(:async_execute).and_call_original
+          end
+
+          do_request(:widget, { async_mergeability_check: true })
+        end
       end
 
       context 'merged merge request' do

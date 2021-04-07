@@ -258,6 +258,11 @@ module Trigger
       ENV['DOCS_BRANCH'] || 'master'
     end
 
+    # `gitlab-org/gitlab-docs` pipeline trigger "Triggered from gitlab-org/gitlab 'review-docs-deploy' job"
+    def trigger_token
+      ENV['DOCS_TRIGGER_TOKEN']
+    end
+
     def extra_variables
       {
         "BRANCH_#{project_slug.upcase}" => ENV['CI_COMMIT_REF_NAME'],

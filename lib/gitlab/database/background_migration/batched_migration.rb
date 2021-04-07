@@ -27,8 +27,11 @@ module Gitlab
           active.queue_order.first
         end
 
-        def interval_elapsed?
-          last_job.nil? || last_job.created_at <= Time.current - interval
+        def interval_elapsed?(variance: 0)
+          return true unless last_job
+
+          interval_with_variance = interval - variance
+          last_job.created_at <= Time.current - interval_with_variance
         end
 
         def create_batched_job!(min, max)

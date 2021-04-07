@@ -64,6 +64,10 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     presenter(merge_request).target_branch_commits_path
   end
 
+  expose :merge_request_widget_path do |merge_request|
+    widget_project_json_merge_request_path(merge_request.target_project, merge_request, format: :json)
+  end
+
   expose :target_branch_tree_path do |merge_request|
     presenter(merge_request).target_branch_tree_path
   end

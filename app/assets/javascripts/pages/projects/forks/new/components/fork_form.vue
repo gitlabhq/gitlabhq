@@ -13,6 +13,7 @@ import {
   GlFormRadioGroup,
   GlFormSelect,
 } from '@gitlab/ui';
+import { kebabCase } from 'lodash';
 import { buildApiUrl } from '~/api/api_utils';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -144,6 +145,10 @@ export default {
       if (this.projectAllowedVisibility.includes(visibility)) {
         this.fork.visibility = visibility;
       }
+    },
+    // eslint-disable-next-line func-names
+    'fork.name': function (newVal) {
+      this.fork.slug = kebabCase(newVal);
     },
   },
   mounted() {

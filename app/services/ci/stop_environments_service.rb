@@ -35,7 +35,7 @@ module Ci
     private
 
     def environments
-      @environments ||= EnvironmentsFinder
+      @environments ||= EnvironmentsByDeploymentsFinder
         .new(project, current_user, ref: @ref, recently_updated: true)
         .execute
     end
