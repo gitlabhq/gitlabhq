@@ -210,6 +210,13 @@ production: &base
     # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
     expunge_deleted: false
 
+    # For Microsoft Graph support
+    # inbox_method: microsoft_graph
+    # inbox_options:
+    #   tenant_id: "YOUR-TENANT-ID"
+    #   client_id: "YOUR-CLIENT-ID"
+    #   client_secret: "YOUR-CLIENT-SECRET"
+
   ## Consolidated object store config
   ## This will only take effect if the object_store sections are not defined
   ## within the types (e.g. artifacts, lfs, etc.).

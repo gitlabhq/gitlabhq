@@ -62,7 +62,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def members_update
     member_params = params.permit(:user_ids, :access_level, :expires_at)
-    result = Members::CreateService.new(current_user, member_params.merge(limit: -1)).execute(@group)
+    result = Members::CreateService.new(current_user, member_params.merge(limit: -1, source: @group)).execute
 
     if result[:status] == :success
       redirect_to [:admin, @group], notice: _('Users were successfully added.')

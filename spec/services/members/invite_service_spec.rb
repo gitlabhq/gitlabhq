@@ -48,14 +48,24 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
     it 'returns an error' do
       expect_not_to_create_members
-      expect(result[:message]).to eq('Email cannot be blank')
+      expect(result[:message]).to eq('Emails cannot be blank')
     end
   end
 
   context 'when email param is not included' do
     it 'returns an error' do
       expect_not_to_create_members
-      expect(result[:message]).to eq('Email cannot be blank')
+      expect(result[:message]).to eq('Emails cannot be blank')
+    end
+  end
+
+  context 'when email is not a valid email format' do
+    let(:params) { { email: '_bogus_' } }
+
+    it 'returns an error' do
+      expect { result }.not_to change(ProjectMember, :count)
+      expect(result[:status]).to eq(:error)
+      expect(result[:message][params[:email]]).to eq("Invite email is invalid")
     end
   end
 
@@ -114,7 +124,8 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
     it 'returns an error' do
       expect_not_to_create_members
-      expect(result[:message][project_user.email]).to eq("Access level is not included in the list")
+      expect(result[:message][project_user.email])
+        .to eq("Access level is not included in the list")
     end
   end
 
@@ -125,7 +136,8 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     it 'adds new email and returns an error for the already invited email' do
       expect_to_create_members(count: 1)
       expect(result[:status]).to eq(:error)
-      expect(result[:message][invited_member.invite_email]).to eq("Member already invited to #{project.name}")
+      expect(result[:message][invited_member.invite_email])
+        .to eq("Invite email has already been taken")
       expect(project.users).to include project_user
     end
   end
@@ -138,7 +150,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       expect_to_create_members(count: 1)
       expect(result[:status]).to eq(:error)
       expect(result[:message][requested_member.user.email])
-        .to eq("Member cannot be invited because they already requested to join #{project.name}")
+        .to eq("User already exists in source")
       expect(project.users).to include project_user
     end
   end
@@ -150,7 +162,8 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     it 'adds new email and returns an error for the already invited email' do
       expect_to_create_members(count: 1)
       expect(result[:status]).to eq(:error)
-      expect(result[:message][existing_member.user.email]).to eq("Already a member of #{project.name}")
+      expect(result[:message][existing_member.user.email])
+        .to eq("User already exists in source")
       expect(project.users).to include project_user
     end
   end

@@ -438,6 +438,16 @@ RSpec.describe Member do
     it { is_expected.to respond_to(:user_email) }
   end
 
+  describe '.valid_email?' do
+    it 'is a valid email format' do
+      expect(described_class.valid_email?('foo')).to eq(false)
+    end
+
+    it 'is not a valid email format' do
+      expect(described_class.valid_email?('foo@example.com')).to eq(true)
+    end
+  end
+
   describe '.add_user' do
     %w[project group].each do |source_type|
       context "when source is a #{source_type}" do

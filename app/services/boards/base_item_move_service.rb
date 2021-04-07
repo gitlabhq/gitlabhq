@@ -69,10 +69,14 @@ module Boards
         if moving_to_list.movable?
           moving_from_list.label_id
         else
-          ::Label.ids_on_board(board.id)
+          board_label_ids
         end
 
       Array(label_ids).compact
+    end
+
+    def board_label_ids
+      ::Label.ids_on_board(board.id)
     end
 
     def move_between_ids(move_params)

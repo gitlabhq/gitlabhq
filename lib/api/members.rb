@@ -100,9 +100,9 @@ module API
           authorize_admin_source!(source_type, source)
 
           if params[:user_id].to_s.include?(',')
-            create_service_params = params.except(:user_id).merge({ user_ids: params[:user_id] })
+            create_service_params = params.except(:user_id).merge({ user_ids: params[:user_id], source: source })
 
-            ::Members::CreateService.new(current_user, create_service_params).execute(source)
+            ::Members::CreateService.new(current_user, create_service_params).execute
           elsif params[:user_id].present?
             member = source.members.find_by(user_id: params[:user_id])
             conflict!('Member already exists') if member

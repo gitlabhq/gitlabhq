@@ -284,6 +284,10 @@ class Member < ApplicationRecord
       Gitlab::Access.sym_options
     end
 
+    def valid_email?(email)
+      Devise.email_regexp.match?(email)
+    end
+
     private
 
     def parse_users_list(source, list)
@@ -305,6 +309,7 @@ class Member < ApplicationRecord
 
       if user_ids.present?
         users.concat(User.where(id: user_ids))
+        # the below will automatically discard invalid user_ids
         existing_members = source.members_and_requesters.where(user_id: user_ids).index_by(&:user_id)
       end
 

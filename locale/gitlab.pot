@@ -2022,19 +2022,13 @@ msgstr ""
 msgid "AddContextCommits|Add/remove"
 msgstr ""
 
-msgid "AddMember|Already a member of %{source_name}"
+msgid "AddMember|Emails cannot be blank"
 msgstr ""
 
-msgid "AddMember|Email cannot be blank"
+msgid "AddMember|Invite email is invalid"
 msgstr ""
 
 msgid "AddMember|Invite limit of %{daily_invites} per day exceeded"
-msgstr ""
-
-msgid "AddMember|Member already invited to %{source_name}"
-msgstr ""
-
-msgid "AddMember|Member cannot be invited because they already requested to join %{source_name}"
 msgstr ""
 
 msgid "AddMember|No users specified."
@@ -6450,6 +6444,9 @@ msgstr ""
 msgid "CloudLicense|Activation code"
 msgstr ""
 
+msgid "CloudLicense|Billable users"
+msgstr ""
+
 msgid "CloudLicense|I agree that my use of the GitLab Software is subject to the Subscription Agreement located at the %{linkStart}Terms of Service%{linkEnd}, unless otherwise agreed to in writing with GitLab."
 msgstr ""
 
@@ -6466,6 +6463,9 @@ msgid "CloudLicense|Licensed to"
 msgstr ""
 
 msgid "CloudLicense|Manage"
+msgstr ""
+
+msgid "CloudLicense|Maximum users"
 msgstr ""
 
 msgid "CloudLicense|Paste your activation code"
@@ -6487,6 +6487,24 @@ msgid "CloudLicense|Sync Subscription details"
 msgstr ""
 
 msgid "CloudLicense|This instance is currently using the %{planName} plan."
+msgstr ""
+
+msgid "CloudLicense|This is the highest peak of users on your installation since the license started."
+msgstr ""
+
+msgid "CloudLicense|This is the number of %{billableUsersLinkStart}billable users%{billableUsersLinkEnd} on your installation, and this is the minimum number you need to purchase when you renew your license."
+msgstr ""
+
+msgid "CloudLicense|Users in subscription"
+msgstr ""
+
+msgid "CloudLicense|Users over subscription"
+msgstr ""
+
+msgid "CloudLicense|Users with a Guest role or those who don't belong to a Project or Group will not use a seat from your license."
+msgstr ""
+
+msgid "CloudLicense|You'll be charged for %{trueUpLinkStart}users over license%{trueUpLinkEnd} on a quarterly or annual basis, depending on the terms of your agreement."
 msgstr ""
 
 msgid "CloudLicense|Your subscription"

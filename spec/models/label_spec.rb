@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Label do
+  let_it_be(:project) { create(:project) }
+
   describe 'modules' do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Subscribable) }
@@ -41,6 +43,22 @@ RSpec.describe Label do
       is_expected.to allow_value('G&ITLAB').for(:title)
       is_expected.to allow_value("customer's request").for(:title)
       is_expected.to allow_value('s' * 255).for(:title)
+    end
+  end
+
+  describe 'scopes' do
+    describe '.on_board' do
+      let(:board) { create(:board, project: project) }
+      let!(:list1)   { create(:list, board: board, label: development) }
+      let!(:list2)   { create(:list, board: board, label: testing) }
+
+      let!(:development) { create(:label, project: project, name: 'Development') }
+      let!(:testing) { create(:label, project: project, name: 'Testing') }
+      let!(:regression) { create(:label, project: project, name: 'Regression') }
+
+      it 'returns only the board labels' do
+        expect(described_class.on_board(board.id)).to match_array([development, testing])
+      end
     end
   end
 
@@ -92,9 +110,7 @@ RSpec.describe Label do
   end
 
   describe 'priorization' do
-    subject(:label) { create(:label) }
-
-    let(:project) { label.project }
+    subject(:label) { create(:label, project: project) }
 
     describe '#prioritize!' do
       context 'when label is not prioritized' do

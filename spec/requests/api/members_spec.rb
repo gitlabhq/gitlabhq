@@ -273,7 +273,7 @@ RSpec.describe API::Members do
             user_ids = [stranger.id, access_requester.id].join(',')
 
             allow_next_instance_of(::Members::CreateService) do |service|
-              expect(service).to receive(:execute).with(source).and_return({ status: :error, message: error_message })
+              expect(service).to receive(:execute).and_return({ status: :error, message: error_message })
             end
 
             expect do
