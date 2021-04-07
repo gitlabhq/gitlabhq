@@ -72,7 +72,7 @@ RSpec.describe Groups::Settings::ApplicationsController do
       end
 
       it 'creates the application' do
-        create_params = attributes_for(:application, trusted: true, confidential: false, scopes: ['api'])
+        create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'])
 
         expect do
           post :create, params: { group_id: group, doorkeeper_application: create_params }
@@ -151,7 +151,7 @@ RSpec.describe Groups::Settings::ApplicationsController do
 
         expect(response).to redirect_to(group_settings_application_path(group, application))
         expect(application)
-          .to have_attributes(redirect_uri: 'http://example.com/', trusted: true, confidential: false)
+          .to have_attributes(redirect_uri: 'http://example.com/', trusted: false, confidential: false)
       end
 
       it 'renders the application form on errors' do

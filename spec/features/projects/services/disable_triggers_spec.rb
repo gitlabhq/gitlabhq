@@ -12,7 +12,7 @@ RSpec.describe 'Disable individual triggers', :js do
   end
 
   context 'service has multiple supported events' do
-    let(:service_name) { 'Jenkins CI' }
+    let(:service_name) { 'Jenkins' }
 
     it 'shows trigger checkboxes' do
       event_count = JenkinsService.supported_events.count

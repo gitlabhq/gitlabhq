@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class JenkinsService < CiService
+  include ActionView::Helpers::UrlHelper
+
   prop_accessor :jenkins_url, :project_name, :username, :password
 
   before_update :reset_password
@@ -58,15 +60,16 @@ class JenkinsService < CiService
   end
 
   def title
-    'Jenkins CI'
+    'Jenkins'
   end
 
   def description
-    'An extendable open source continuous integration server'
+    s_('An extendable open source CI/CD server.')
   end
 
   def help
-    "You must have installed the Git Plugin and GitLab Plugin in Jenkins. [More information](#{Gitlab::Routing.url_helpers.help_page_url('integration/jenkins')})"
+    docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('integration/jenkins'), target: '_blank', rel: 'noopener noreferrer'
+    s_('Trigger Jenkins builds when you push to a repository, or when a merge request is created, updated, or merged. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
   end
 
   def self.to_param
@@ -78,27 +81,30 @@ class JenkinsService < CiService
       {
         type: 'text',
         name: 'jenkins_url',
-        title: s_('ProjectService|Jenkins URL'),
+        title: s_('ProjectService|Jenkins server URL'),
         required: true,
-        placeholder: 'Jenkins URL like http://jenkins.example.com'
+        placeholder: 'http://jenkins.example.com',
+        help: s_('The URL of the Jenkins server.')
       },
       {
         type: 'text',
         name: 'project_name',
         required: true,
-        placeholder: 'Project Name',
-        help: 'The URL-friendly project name. Example: my_project_name'
+        placeholder: 'my_project_name',
+        help: s_('The name of the Jenkins project. Copy the name from the end of the URL to the project.')
       },
       {
         type: 'text',
         name: 'username',
-        required: true
+        required: true,
+        help: s_('The username for the Jenkins server.')
       },
       {
         type: 'password',
         name: 'password',
-        non_empty_password_title: s_('ProjectService|Enter new password'),
-        non_empty_password_help: s_('ProjectService|Leave blank to use your current password')
+        help: s_('The password for the Jenkins server.'),
+        non_empty_password_title: s_('ProjectService|Enter new password.'),
+        non_empty_password_help: s_('ProjectService|Leave blank to use your current password.')
       }
     ]
   end

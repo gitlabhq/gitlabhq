@@ -863,6 +863,16 @@ RSpec.describe Note do
     end
   end
 
+  describe '.cherry_picked_merge_requests' do
+    it 'returns merge requests that match the given merge commit' do
+      note = create(:track_mr_picking_note, commit_id: '456abc')
+
+      create(:track_mr_picking_note, project: create(:project), commit_id: '456def')
+
+      expect(MergeRequest.id_in(described_class.cherry_picked_merge_requests('456abc'))).to eq([note.noteable])
+    end
+  end
+
   describe '#for_project_snippet?' do
     it 'returns true for a project snippet note' do
       expect(build(:note_on_project_snippet).for_project_snippet?).to be true

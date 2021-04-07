@@ -20,7 +20,7 @@
   }
 }
 
-@mixin spinner($size: 16px, $border-width: 2px, $color: $orange-400) {
+@mixin spinner($size: 16px, $border-width: 2px, $color: $gray-700) {
   border-radius: 50%;
   position: relative;
   margin: 0 auto;
@@ -46,7 +46,7 @@
   }
 
   &.spinner-dark {
-    @include spinner-color($gray-500);
+    @include spinner-color($gray-700);
   }
 
   &.spinner-light {

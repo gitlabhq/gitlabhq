@@ -3680,6 +3680,9 @@ msgstr ""
 msgid "An example showing how to use Jsonnet with GitLab dynamic child pipelines"
 msgstr ""
 
+msgid "An extendable open source CI/CD server."
+msgstr ""
+
 msgid "An instance-level serverless domain already exists."
 msgstr ""
 
@@ -18900,6 +18903,9 @@ msgstr ""
 msgid "Manage project labels"
 msgstr ""
 
+msgid "Manage projects."
+msgstr ""
+
 msgid "Manage storage usage"
 msgstr ""
 
@@ -24203,16 +24209,22 @@ msgstr ""
 msgid "ProjectService|Enter new password"
 msgstr ""
 
+msgid "ProjectService|Enter new password."
+msgstr ""
+
 msgid "ProjectService|Issue URL"
 msgstr ""
 
-msgid "ProjectService|Jenkins URL"
+msgid "ProjectService|Jenkins server URL"
 msgstr ""
 
 msgid "ProjectService|Leave blank to use your current API key"
 msgstr ""
 
 msgid "ProjectService|Leave blank to use your current password"
+msgstr ""
+
+msgid "ProjectService|Leave blank to use your current password."
 msgstr ""
 
 msgid "ProjectService|Mock service URL"
@@ -30382,6 +30394,9 @@ msgstr ""
 msgid "The URL defined on the primary node that secondary nodes should use to contact it. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
+msgid "The URL of the Jenkins server."
+msgstr ""
+
 msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
 msgstr ""
 
@@ -30618,6 +30633,9 @@ msgstr ""
 msgid "The name of the CI/CD configuration file. A path relative to the root directory is optional (for example %{code_open}my/path/.myfile.yml%{code_close})."
 msgstr ""
 
+msgid "The name of the Jenkins project. Copy the name from the end of the URL to the project."
+msgstr ""
+
 msgid "The number of changes to fetch from GitLab when cloning a repository. Lower values can speed up pipeline execution. Set to %{code_open}0%{code_close} or blank to fetch all branches and tags for each job"
 msgstr ""
 
@@ -30634,6 +30652,9 @@ msgid "The parent epic is confidential and can only contain confidential epics a
 msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
+msgstr ""
+
+msgid "The password for the Jenkins server."
 msgstr ""
 
 msgid "The phase of the development lifecycle."
@@ -30778,6 +30799,9 @@ msgid "The user you are trying to approve is not pending approval"
 msgstr ""
 
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
+msgstr ""
+
+msgid "The username for the Jenkins server."
 msgstr ""
 
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
@@ -32479,6 +32503,9 @@ msgid "Trial|We will activate your trial on your group after you complete this s
 msgstr ""
 
 msgid "Trigger"
+msgstr ""
+
+msgid "Trigger Jenkins builds when you push to a repository, or when a merge request is created, updated, or merged. %{docs_link}"
 msgstr ""
 
 msgid "Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions."

@@ -288,9 +288,6 @@ class MergeRequest < ApplicationRecord
       ]
     )
   end
-  scope :by_cherry_pick_sha, -> (sha) do
-    joins(:notes).where(notes: { commit_id: sha })
-  end
   scope :join_project, -> { joins(:target_project) }
   scope :join_metrics, -> (target_project_id = nil) do
     # Do not join the relation twice

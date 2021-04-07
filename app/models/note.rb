@@ -215,6 +215,10 @@ class Note < ApplicationRecord
     def simple_sorts
       super.except('name_asc', 'name_desc')
     end
+
+    def cherry_picked_merge_requests(shas)
+      where(noteable_type: 'MergeRequest', commit_id: shas).select(:noteable_id)
+    end
   end
 
   # rubocop: disable CodeReuse/ServiceClass

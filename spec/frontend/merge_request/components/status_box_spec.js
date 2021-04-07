@@ -27,7 +27,7 @@ const testCases = [
     name: 'Closed',
     state: 'closed',
     class: 'status-box-mr-closed',
-    icon: 'close',
+    icon: 'issue-close',
   },
   {
     name: 'Merged',

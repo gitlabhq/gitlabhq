@@ -213,12 +213,12 @@ RSpec.describe CommitStatus do
 
     context 'when it is canceled' do
       before do
-        commit_status.update(status: 'canceled')
+        commit_status.update!(status: 'canceled')
       end
 
       context 'when there is auto_canceled_by' do
         before do
-          commit_status.update(auto_canceled_by: create(:ci_empty_pipeline))
+          commit_status.update!(auto_canceled_by: create(:ci_empty_pipeline))
         end
 
         it 'is auto canceled' do
@@ -610,7 +610,7 @@ RSpec.describe CommitStatus do
       end
 
       it "raise exception when trying to update" do
-        expect { commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
+        expect { commit_status.save! }.to raise_error(ActiveRecord::StaleObjectError)
       end
     end
 

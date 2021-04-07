@@ -65,7 +65,7 @@ module Groups
       def application_params
         params
           .require(:doorkeeper_application)
-          .permit(:name, :redirect_uri, :trusted, :scopes, :confidential)
+          .permit(:name, :redirect_uri, :scopes, :confidential)
           .tap do |params|
             params[:owner] = @group
           end
