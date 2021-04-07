@@ -5,6 +5,7 @@ module Resolvers
   module Users
     class SnippetsResolver < BaseResolver
       include ResolvesSnippets
+      include Gitlab::Allowable
 
       alias_method :user, :object
 
@@ -13,6 +14,12 @@ module Resolvers
                description: 'The type of snippet.'
 
       private
+
+      def resolve_snippets(_args)
+        return Snippet.none unless Ability.allowed?(current_user, :read_user_profile, user)
+
+        super
+      end
 
       def snippet_finder_params(args)
         super.merge(author: user)

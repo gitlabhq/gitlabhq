@@ -750,7 +750,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/support/shared_examples/graphql/mutations/set_multiple_assignees_shared_examples.rb
     - ee/spec/support/shared_examples/quick_actions/issue/status_page_quick_actions_shared_examples.rb
     - ee/spec/support/shared_examples/services/search_notes_shared_examples.rb
-    - ee/spec/tasks/gitlab/license_rake_spec.rb
     - ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb
     - ee/spec/views/groups/_compliance_frameworks.html.haml_spec.rb
     - ee/spec/views/groups/edit.html.haml_spec.rb

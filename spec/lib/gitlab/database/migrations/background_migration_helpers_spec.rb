@@ -431,4 +431,21 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       model.bulk_migrate_in(10.minutes, [%w(Class hello world)])
     end
   end
+
+  describe '#delete_queued_jobs' do
+    let(:job1) { double }
+    let(:job2) { double }
+
+    it 'deletes all queued jobs for the given background migration' do
+      expect(Gitlab::BackgroundMigration).to receive(:steal).with('BackgroundMigrationClassName') do |&block|
+        expect(block.call(job1)).to be(false)
+        expect(block.call(job2)).to be(false)
+      end
+
+      expect(job1).to receive(:delete)
+      expect(job2).to receive(:delete)
+
+      model.delete_queued_jobs('BackgroundMigrationClassName')
+    end
+  end
 end

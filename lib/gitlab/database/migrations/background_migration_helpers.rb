@@ -236,6 +236,14 @@ module Gitlab
           Gitlab::ApplicationContext.with_context(caller_id: self.class.to_s, &block)
         end
 
+        def delete_queued_jobs(class_name)
+          Gitlab::BackgroundMigration.steal(class_name) do |job|
+            job.delete
+
+            false
+          end
+        end
+
         private
 
         def track_in_database(class_name, arguments)

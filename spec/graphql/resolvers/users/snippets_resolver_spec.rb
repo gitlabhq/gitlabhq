@@ -75,9 +75,19 @@ RSpec.describe Resolvers::Users::SnippetsResolver do
         end.to raise_error(GraphQL::CoercionError)
       end
     end
+
+    context 'when user profile is private' do
+      it 'does not return snippets for that user' do
+        expect(resolve_snippets(obj: other_user)).to contain_exactly(other_personal_snippet, other_project_snippet)
+
+        other_user.update!(private_profile: true)
+
+        expect(resolve_snippets(obj: other_user)).to be_empty
+      end
+    end
   end
 
-  def resolve_snippets(args: {})
-    resolve(described_class, args: args, ctx: { current_user: current_user }, obj: current_user)
+  def resolve_snippets(args: {}, context_user: current_user, obj: current_user)
+    resolve(described_class, args: args, ctx: { current_user: context_user }, obj: obj)
   end
 end

@@ -111,7 +111,6 @@ linters:
       - Layout/EmptyLineAfterGuardClause
       - Layout/LeadingCommentSpace
       - Layout/SpaceAfterColon
-      - Layout/SpaceAfterComma
       - Layout/SpaceAroundOperators
       - Layout/SpaceBeforeBlockBraces
       - Layout/SpaceBeforeComma

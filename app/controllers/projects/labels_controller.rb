@@ -17,11 +17,14 @@ class Projects::LabelsController < Projects::ApplicationController
   feature_category :issue_tracking
 
   def index
-    @prioritized_labels = @available_labels.prioritized(@project)
-    @labels = @available_labels.unprioritized(@project).page(params[:page])
-
     respond_to do |format|
-      format.html
+      format.html do
+        @prioritized_labels = @available_labels.prioritized(@project)
+        @labels = @available_labels.unprioritized(@project).page(params[:page])
+        # preload group, project, and subscription data
+        Preloaders::LabelsPreloader.new(@prioritized_labels, current_user, @project).preload_all
+        Preloaders::LabelsPreloader.new(@labels, current_user, @project).preload_all
+      end
       format.json do
         render json: LabelSerializer.new.represent_appearance(@available_labels)
       end

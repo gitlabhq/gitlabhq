@@ -60,7 +60,7 @@ RSpec.describe Groups::LabelsController do
         create_list(:group_label, 3, group: group)
 
         # some n+1 queries still exist
-        expect { get :index, params: { group_id: group.to_param } }.not_to exceed_all_query_limit(control.count).with_threshold(12)
+        expect { get :index, params: { group_id: group.to_param } }.not_to exceed_all_query_limit(control.count).with_threshold(10)
         expect(assigns(:labels).count).to eq(4)
       end
     end

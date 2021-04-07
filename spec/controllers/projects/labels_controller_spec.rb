@@ -93,6 +93,26 @@ RSpec.describe Projects::LabelsController do
       end
     end
 
+    context 'with views rendered' do
+      render_views
+
+      before do
+        list_labels
+      end
+
+      it 'avoids N+1 queries' do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_labels }
+
+        create_list(:label, 3, project: project)
+        create_list(:group_label, 3, group: group)
+
+        # some n+1 queries still exist
+        # calls to get max project authorization access level
+        expect { list_labels }.not_to exceed_all_query_limit(control.count).with_threshold(25)
+        expect(assigns(:labels).count).to eq(10)
+      end
+    end
+
     def list_labels
       get :index, params: { namespace_id: project.namespace.to_param, project_id: project }
     end

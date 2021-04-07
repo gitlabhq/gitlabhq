@@ -22,13 +22,15 @@ module API
         users: Entities::UserBasic
       }.freeze
 
-      SCOPE_PRELOAD_METHOD = {
-        merge_requests: :with_api_entity_associations,
-        projects: :with_api_entity_associations,
-        issues: :with_api_entity_associations,
-        milestones: :with_api_entity_associations,
-        commits: :with_api_commit_entity_associations
-      }.freeze
+      def scope_preload_method
+        {
+          merge_requests: :with_api_entity_associations,
+          projects: :with_api_entity_associations,
+          issues: :with_api_entity_associations,
+          milestones: :with_api_entity_associations,
+          commits: :with_api_commit_entity_associations
+        }.freeze
+      end
 
       def search(additional_params = {})
         search_params = {
@@ -60,7 +62,7 @@ module API
       end
 
       def preload_method
-        SCOPE_PRELOAD_METHOD[params[:scope].to_sym]
+        scope_preload_method[params[:scope].to_sym]
       end
 
       def verify_search_scope!(resource:)
