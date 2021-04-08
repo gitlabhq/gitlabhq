@@ -494,7 +494,7 @@ a node and change its status from primary to replica (and vice versa).
         'redis.password' => 'redis-password-goes-here',
    }
 
-   # Disable auto migrations
+   # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
    ```
 
@@ -577,7 +577,7 @@ run: redis-exporter: (pid 30075) 76861s; run: log: (pid 29674) 76896s
         'redis.password' => 'redis-password-goes-here',
    }
 
-   # Disable auto migrations
+   # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
    ```
 
@@ -706,7 +706,7 @@ To configure the Sentinel:
    node_exporter['listen_address'] = '0.0.0.0:9100'
    redis_exporter['listen_address'] = '0.0.0.0:9121'
 
-   # Disable auto migrations
+   # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
    ```
 
@@ -831,7 +831,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    # Incoming recommended value for max connections is 500. See https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5691.
    patroni['postgresql']['max_connections'] = 500
 
-   # Disable automatic database migrations
+   # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
    # Configure the Consul agent
@@ -1095,6 +1095,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    postgresql['listen_address'] = '0.0.0.0'
    postgresql['max_connections'] = 200
 
+   # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
    # Configure the Consul agent
@@ -1240,7 +1241,8 @@ To configure the Praefect nodes, on each one:
    praefect['enable'] = true
    praefect['listen_addr'] = '0.0.0.0:2305'
 
-   gitlab_rails['rake_cache_clear'] = false
+   # Prevent database migrations from running on upgrade automatically
+   praefect['auto_migrate'] = false
    gitlab_rails['auto_migrate'] = false
 
    # Configure the Consul agent
@@ -1364,8 +1366,7 @@ On each node:
    alertmanager['enable'] = false
    prometheus['enable'] = false
 
-   # Prevent database connections during 'gitlab-ctl reconfigure'
-   gitlab_rails['rake_cache_clear'] = false
+   # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
    # Configure the gitlab-shell API callback URL. Without this, `git push` will
@@ -1533,7 +1534,6 @@ To configure the Sidekiq nodes, one each one:
    nginx['enable'] = false
    grafana['enable'] = false
    prometheus['enable'] = false
-   gitlab_rails['auto_migrate'] = false
    alertmanager['enable'] = false
    gitaly['enable'] = false
    gitlab_workhorse['enable'] = false
@@ -1584,6 +1584,7 @@ To configure the Sidekiq nodes, one each one:
    gitlab_rails['db_password'] = '<postgresql_user_password>'
    gitlab_rails['db_adapter'] = 'postgresql'
    gitlab_rails['db_encoding'] = 'unicode'
+   # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
    #######################################
@@ -1720,6 +1721,7 @@ On each node perform the following:
    gitlab_rails['db_host'] = '10.6.0.20' # internal load balancer IP
    gitlab_rails['db_port'] = 6432
    gitlab_rails['db_password'] = '<postgresql_user_password>'
+   # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
    ## Redis connection details
@@ -1885,7 +1887,6 @@ running [Prometheus](../monitoring/prometheus/index.md) and
    external_url 'http://gitlab.example.com'
 
    # Disable all other services
-   gitlab_rails['auto_migrate'] = false
    alertmanager['enable'] = false
    gitaly['enable'] = false
    gitlab_exporter['enable'] = false
@@ -1919,6 +1920,9 @@ running [Prometheus](../monitoring/prometheus/index.md) and
    consul['configuration'] = {
       retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
    }
+
+   # Prevent database migrations from running on upgrade automatically
+   gitlab_rails['auto_migrate'] = false
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).

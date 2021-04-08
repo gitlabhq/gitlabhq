@@ -30,6 +30,8 @@ module MergeRequests
 
       Gitlab::UsageDataCounters::MergeRequestCounter.count(:create)
       link_lfs_objects(merge_request)
+
+      delete_milestone_total_merge_requests_counter_cache(merge_request.milestone)
     end
 
     def link_lfs_objects(merge_request)

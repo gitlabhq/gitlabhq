@@ -272,6 +272,41 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           it_behaves_like 'updates milestone'
         end
+
+        context 'milestone counters cache reset' do
+          let(:milestone_old) { create(:milestone, project: project) }
+          let(:opts) { { milestone: milestone_old } }
+
+          it 'deletes milestone counters' do
+            expect_next_instance_of(Milestones::MergeRequestsCountService, milestone_old) do |service|
+              expect(service).to receive(:delete_cache).and_call_original
+            end
+
+            expect_next_instance_of(Milestones::MergeRequestsCountService, milestone) do |service|
+              expect(service).to receive(:delete_cache).and_call_original
+            end
+
+            update_merge_request(milestone: milestone)
+          end
+
+          it 'deletes milestone counters when the milestone is removed' do
+            expect_next_instance_of(Milestones::MergeRequestsCountService, milestone_old) do |service|
+              expect(service).to receive(:delete_cache).and_call_original
+            end
+
+            update_merge_request(milestone: nil)
+          end
+
+          it 'deletes milestone counters when the milestone was not set' do
+            update_merge_request(milestone: nil)
+
+            expect_next_instance_of(Milestones::MergeRequestsCountService, milestone) do |service|
+              expect(service).to receive(:delete_cache).and_call_original
+            end
+
+            update_merge_request(milestone: milestone)
+          end
+        end
       end
 
       it 'executes hooks with update action' do

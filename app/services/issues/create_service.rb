@@ -32,13 +32,17 @@ module Issues
       end
     end
 
+    # Add new items to Issues::AfterCreateService if they can be performed in Sidekiq
     def after_create(issue)
       add_incident_label(issue)
-      todo_service.new_issue(issue, current_user)
       user_agent_detail_service.create
       resolve_discussions_with_issue(issue)
-      delete_milestone_total_issue_counter_cache(issue.milestone)
-      track_incident_action(current_user, issue, :incident_created)
+
+      if Feature.disabled?(:issue_perform_after_creation_tasks_async, issue.project)
+        Issues::AfterCreateService
+          .new(issue.project, current_user)
+          .execute(issue)
+      end
 
       super
     end
@@ -77,4 +81,4 @@ module Issues
   end
 end
 
-Issues::CreateService.prepend_if_ee('EE::Issues::CreateService')
+Issues::CreateService.prepend_ee_mod

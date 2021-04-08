@@ -18,7 +18,7 @@ class Projects::IssuesController < Projects::ApplicationController
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
   prepend_before_action :store_uri, only: [:new, :show, :designs]
 
-  before_action :disable_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
+  before_action :disable_query_limiting, only: [:create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
   after_action :log_issue_show, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }

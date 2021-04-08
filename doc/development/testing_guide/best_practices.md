@@ -350,11 +350,104 @@ writing one](testing_levels.md#consider-not-writing-a-system-test)!
 - It's ok to look for DOM elements, but don't abuse it, because it makes the tests
   more brittle
 
-#### Debugging Capybara
+#### UI testing
 
-Sometimes you may need to debug Capybara tests by observing browser behavior.
+When testing the UI, write tests that simulate what a user sees and how they interact with the UI.
+This means preferring Capybara's semantic methods and avoiding querying by IDs, classes, or attributes.
+
+The benefits of testing in this way are that:
+
+- It ensures all interactive elements have an [accessible name](../fe_guide/accessibility.md#provide-accessible-names-for-screen-readers).
+- It is more readable, as it uses more natural language.
+- It is less brittle, as it avoids querying by IDs, classes, and attributes, which are not visible to the user.
+
+We strongly recommend that you query by the element's text label instead of by ID, class name, or `data-testid`.
+If needed, you can scope interactions within a specific area of the page by using `within`.
+
+##### Actions
+
+Where possible, use more specific [actions](https://rubydoc.info/github/teamcapybara/capybara/master/Capybara/Node/Actions), such as the ones below.
+
+```ruby
+# bad
+find(".group-name", text: group.name).click
+find('.js-show-diff-settings').click
+find('[data-testid="submit-review"]').click
+find('input[type="checkbox"]').click
+find('.search').native.send_keys('gitlab')
+
+# good
+click_button 'Submit review'
+
+click_link 'UI testing docs'
+
+fill_in 'Search projects', with: 'gitlab' # fill in text input with text
+
+select 'Last updated', from: 'Sort by' # select an option from a select input
+
+check 'Checkbox label'
+uncheck 'Checkbox label'
+
+choose 'Radio input label'
+
+attach_file('Attach a file', '/path/to/file.png')
+```
+
+##### Finders
+
+Where possible, use more specific [finders](https://rubydoc.info/github/teamcapybara/capybara/master/Capybara/Node/Finders), such as the ones below.
+
+```ruby
+# bad
+find('[data-testid="submit-review"]')
+
+# good
+find_button 'Submit review'
+find_button 'Submit review', disabled: true
+
+find_link 'UI testing docs'
+find_link 'UI testing docs', href: docs_url
+
+find_field 'Search projects'
+find_field 'Search projects', with: 'gitlab' # find the input field with text
+find_field 'Search projects', disabled: true
+find_field 'Checkbox label', checked: true
+find_field 'Checkbox label', unchecked: true
+```
+
+##### Matchers
+
+Where possible, use more specific [matchers](https://rubydoc.info/github/teamcapybara/capybara/master/Capybara/Node/Matchers), such as the ones below.
+
+```ruby
+# bad
+expect(find('[data-testid="submit-review"]')).to have_content(content)
+expect(page).to have_selector('[data-testid="submit-review"]')
+
+# good
+expect(page).to have_button 'Submit review'
+
+expect(page).to have_link 'UI testing docs'
+expect(page).to have_link 'UI testing docs', href: docs_url # assert the link has an href
+
+expect(page).to have_field 'Search projects'
+expect(page).to have_field 'Search projects', with: 'gitlab' # assert the input field has text
+
+expect(page).to have_checked_field 'Checkbox label'
+expect(page).to have_unchecked_field 'Radio input label'
+
+expect(page).to have_select 'Sort by'
+expect(page).to have_select 'Sort by', selected: 'Last updated' # assert the option is selected
+expect(page).to have_select 'Sort by', options: ['Last updated', 'Created date', 'Due date'] # assert an exact list of options
+expect(page).to have_select 'Sort by', with_options: ['Created date', 'Due date'] # assert a partial list of options
+
+expect(page).to have_text 'Some paragraph text.'
+expect(page).to have_text 'Some paragraph text.', exact: true # assert exact match
+```
 
 #### Live debug
+
+Sometimes you may need to debug Capybara tests by observing browser behavior.
 
 You can pause Capybara and view the website on the browser by using the
 `live_debug` method in your spec. The current page is automatically opened

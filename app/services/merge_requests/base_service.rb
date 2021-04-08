@@ -195,6 +195,12 @@ module MergeRequests
 
       merge_request.update(merge_error: message) if save_message_on_model
     end
+
+    def delete_milestone_total_merge_requests_counter_cache(milestone)
+      return unless milestone
+
+      Milestones::MergeRequestsCountService.new(milestone).delete_cache
+    end
   end
 end
 

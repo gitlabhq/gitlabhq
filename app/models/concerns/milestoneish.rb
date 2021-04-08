@@ -15,6 +15,10 @@ module Milestoneish
     total_issues_count - closed_issues_count
   end
 
+  def total_merge_requests_count
+    @total_merge_request_count ||= Milestones::MergeRequestsCountService.new(self).count
+  end
+
   def complete?
     total_issues_count > 0 && total_issues_count == closed_issues_count
   end

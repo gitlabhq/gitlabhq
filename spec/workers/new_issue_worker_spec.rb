@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe NewIssueWorker do
+  include AfterNextHelpers
+
   describe '#perform' do
     let(:worker) { described_class.new }
 
@@ -79,6 +81,31 @@ RSpec.describe NewIssueWorker do
             .and_return(double(deliver_later: true))
 
           worker.perform(issue.id, user.id)
+        end
+
+        context 'with issue_perform_after_creation_tasks_async feature disabled' do
+          before do
+            stub_feature_flags(issue_perform_after_creation_tasks_async: false)
+          end
+
+          it 'does not call Issues::AfterCreateService' do
+            expect(::Issues::AfterCreateService).not_to receive(:execute)
+
+            worker.perform(issue.id, user.id)
+          end
+        end
+
+        context 'with issue_perform_after_creation_tasks_async feature enabled' do
+          before do
+            stub_feature_flags(issue_perform_after_creation_tasks_async: true)
+          end
+
+          it 'calls Issues::AfterCreateService' do
+            expect_next(::Issues::AfterCreateService)
+                .to receive(:execute)
+
+            worker.perform(issue.id, user.id)
+          end
         end
       end
     end

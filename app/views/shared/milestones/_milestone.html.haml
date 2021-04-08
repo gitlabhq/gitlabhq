@@ -44,7 +44,7 @@
       = link_to pluralize(milestone.total_issues_count, _('Issue')), issues_path
       - if milestone.merge_requests_enabled?
         &middot;
-        = link_to pluralize(milestone.merge_requests_visible_to_user(current_user).size, _('Merge request')), merge_requests_path
+        = link_to pluralize(milestone.total_merge_requests_count, _('Merge request')), merge_requests_path
       .float-lg-right.light #{milestone.percent_complete}% complete
     .col-sm-2
       .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end

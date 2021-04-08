@@ -932,6 +932,9 @@ msgstr ""
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr ""
 
+msgid "%{type} License"
+msgstr ""
+
 msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
 msgstr ""
 
@@ -4414,7 +4417,13 @@ msgstr ""
 msgid "Authenticate with GitHub"
 msgstr ""
 
+msgid "Authenticated API rate limit period in seconds"
+msgstr ""
+
 msgid "Authenticated API request rate limit"
+msgstr ""
+
+msgid "Authenticated web rate limit period in seconds"
 msgstr ""
 
 msgid "Authenticated web request rate limit"
@@ -4766,6 +4775,9 @@ msgid "Be careful. Changing the project's namespace can have unintended side eff
 msgstr ""
 
 msgid "Be careful. Renaming a project's repository can have unintended side effects."
+msgstr ""
+
+msgid "Before inserting code, be sure to read the comment that separated each code group."
 msgstr ""
 
 msgid "Before this can be merged, a Jira issue must be linked in the title or description"
@@ -6480,40 +6492,13 @@ msgstr ""
 msgid "CloudLicense|I agree that my use of the GitLab Software is subject to the Subscription Agreement located at the %{linkStart}Terms of Service%{linkEnd}, unless otherwise agreed to in writing with GitLab."
 msgstr ""
 
-msgid "CloudLicense|ID"
-msgstr ""
-
-msgid "CloudLicense|Last Sync"
-msgstr ""
-
 msgid "CloudLicense|Learn how to %{linkStart}activate your subscription%{linkEnd}."
-msgstr ""
-
-msgid "CloudLicense|Licensed to"
-msgstr ""
-
-msgid "CloudLicense|Manage"
 msgstr ""
 
 msgid "CloudLicense|Maximum users"
 msgstr ""
 
 msgid "CloudLicense|Paste your activation code"
-msgstr ""
-
-msgid "CloudLicense|Plan"
-msgstr ""
-
-msgid "CloudLicense|Renews"
-msgstr ""
-
-msgid "CloudLicense|Started"
-msgstr ""
-
-msgid "CloudLicense|Subscription details"
-msgstr ""
-
-msgid "CloudLicense|Sync Subscription details"
 msgstr ""
 
 msgid "CloudLicense|This instance is currently using the %{planName} plan."
@@ -7687,6 +7672,9 @@ msgid "Code owner approval is required"
 msgstr ""
 
 msgid "Code owners"
+msgstr ""
+
+msgid "Code snippet copied. Insert it in the correct location in the YAML file."
 msgstr ""
 
 msgid "CodeIntelligence|This is the definition"
@@ -11634,7 +11622,7 @@ msgstr ""
 msgid "EmailsOnPushService|Send from committer"
 msgstr ""
 
-msgid "EmailsOnPushService|Send notifications from the committer's email address if the domain is part of the domain GitLab is running on (e.g. %{domains})."
+msgid "EmailsOnPushService|Send notifications from the committer's email address if the domain matches the domain used by your GitLab instance (such as %{domains})."
 msgstr ""
 
 msgid "EmailsOnPushService|can't exceed %{recipients_limit}"
@@ -11713,6 +11701,9 @@ msgid "Enable and configure Prometheus metrics."
 msgstr ""
 
 msgid "Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "Enable authenticated API request rate limit"
 msgstr ""
 
 msgid "Enable automatic repository housekeeping (git repack, git gc)"
@@ -11803,6 +11794,9 @@ msgid "Enable snowplow tracking"
 msgstr ""
 
 msgid "Enable two-factor authentication"
+msgstr ""
+
+msgid "Enable unauthenticated request rate limit"
 msgstr ""
 
 msgid "Enable usage ping"
@@ -14696,6 +14690,9 @@ msgstr ""
 msgid "Go back (while searching for files)"
 msgstr ""
 
+msgid "Go back to configuration"
+msgstr ""
+
 msgid "Go full screen"
 msgstr ""
 
@@ -15614,6 +15611,9 @@ msgstr ""
 msgid "Helps reduce alert volume (e.g. if creating too many issues)"
 msgstr ""
 
+msgid "Helps reduce request volume (e.g. from crawlers or abusive bots)"
+msgstr ""
+
 msgid "Helps reduce request volume for protected paths"
 msgstr ""
 
@@ -16137,6 +16137,9 @@ msgstr ""
 msgid "In progress"
 msgstr ""
 
+msgid "In this page you will find information about the settings that are used in your current instance."
+msgstr ""
+
 msgid "InProductMarketing|%{strong_start}Advanced application security%{strong_end} — including SAST, DAST scanning, FUZZ testing, dependency scanning, license compliance, secrete detection"
 msgstr ""
 
@@ -16584,6 +16587,9 @@ msgstr ""
 msgid "IncidentSettings|Incidents"
 msgstr ""
 
+msgid "IncidentSettings|Introduce a countdown timer in incident issues to better track Service Level Agreements (SLAs). The timer starts automatically when the incident is created, and sets a time limit for resolving the incident. When activated, the time to SLA countdown appears on all new incidents."
+msgstr ""
+
 msgid "IncidentSettings|PagerDuty integration"
 msgstr ""
 
@@ -16593,19 +16599,16 @@ msgstr ""
 msgid "IncidentSettings|Time limit"
 msgstr ""
 
-msgid "IncidentSettings|Time limit must be a multiple of 15 minutes"
+msgid "IncidentSettings|Time limit must be a multiple of 15 minutes."
 msgstr ""
 
-msgid "IncidentSettings|Time limit must be a valid number"
+msgid "IncidentSettings|Time limit must be a valid number."
 msgstr ""
 
-msgid "IncidentSettings|Time limit must be greater than 0"
+msgid "IncidentSettings|Time limit must be greater than 0."
 msgstr ""
 
-msgid "IncidentSettings|When activated, this will apply to all new incidents within the project"
-msgstr ""
-
-msgid "IncidentSettings|You may choose to introduce a countdown timer in incident issues to better track Service Level Agreements (SLAs). The timer is automatically started when the incident is created, and sets a time limit for the incident to be resolved in. When activated, \"time to SLA\" countdown will appear on all new incidents."
+msgid "IncidentSettings|When activated, this applies to all new incidents in the project."
 msgstr ""
 
 msgid "IncidentSettings|hours"
@@ -19161,6 +19164,12 @@ msgstr ""
 msgid "Max access level"
 msgstr ""
 
+msgid "Max authenticated API requests per period per user"
+msgstr ""
+
+msgid "Max authenticated web requests per period per user"
+msgstr ""
+
 msgid "Max file size is 200 KB."
 msgstr ""
 
@@ -19168,6 +19177,9 @@ msgid "Max requests per minute per user"
 msgstr ""
 
 msgid "Max role"
+msgstr ""
+
+msgid "Max unauthenticated requests per period per IP"
 msgstr ""
 
 msgid "MaxBuilds"
@@ -19273,6 +19285,9 @@ msgid "Maximum size of import files."
 msgstr ""
 
 msgid "Maximum size of individual attachments in comments."
+msgstr ""
+
+msgid "Maximum size of pages (MB)"
 msgstr ""
 
 msgid "Maximum time between updates that a mirror can have when scheduled to synchronize."
@@ -25559,6 +25574,9 @@ msgstr ""
 msgid "Re-verification interval"
 msgstr ""
 
+msgid "Read documentation"
+msgstr ""
+
 msgid "Read more"
 msgstr ""
 
@@ -29700,6 +29718,9 @@ msgstr ""
 msgid "Subscription"
 msgstr ""
 
+msgid "Subscription History"
+msgstr ""
+
 msgid "Subscription deletion failed."
 msgstr ""
 
@@ -29946,6 +29967,48 @@ msgstr ""
 msgid "Sunday"
 msgstr ""
 
+msgid "SuperSonics|Activated on"
+msgstr ""
+
+msgid "SuperSonics|Expires on"
+msgstr ""
+
+msgid "SuperSonics|ID"
+msgstr ""
+
+msgid "SuperSonics|Last Sync"
+msgstr ""
+
+msgid "SuperSonics|Licensed to"
+msgstr ""
+
+msgid "SuperSonics|Manage"
+msgstr ""
+
+msgid "SuperSonics|Plan"
+msgstr ""
+
+msgid "SuperSonics|Renews"
+msgstr ""
+
+msgid "SuperSonics|Seats"
+msgstr ""
+
+msgid "SuperSonics|Started"
+msgstr ""
+
+msgid "SuperSonics|Subscription details"
+msgstr ""
+
+msgid "SuperSonics|Sync Subscription details"
+msgstr ""
+
+msgid "SuperSonics|Type"
+msgstr ""
+
+msgid "SuperSonics|Valid From"
+msgstr ""
+
 msgid "Support"
 msgstr ""
 
@@ -30034,6 +30097,9 @@ msgid "System output"
 msgstr ""
 
 msgid "Table of Contents"
+msgstr ""
+
+msgid "Table of contents"
 msgstr ""
 
 msgid "Tag"
@@ -32929,6 +32995,9 @@ msgid "Unassign from commenting user"
 msgstr ""
 
 msgid "Unassigned"
+msgstr ""
+
+msgid "Unauthenticated rate limit period in seconds"
 msgstr ""
 
 msgid "Unauthenticated request rate limit"

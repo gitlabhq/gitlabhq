@@ -262,6 +262,12 @@ RSpec.describe Milestone, 'Milestoneish' do
     end
   end
 
+  describe '#total_merge_requests_count' do
+    it 'counts merge requests' do
+      expect(milestone.total_merge_requests_count).to eq 1
+    end
+  end
+
   describe '#remaining_days' do
     it 'shows 0 if no due date' do
       milestone = build_stubbed(:milestone)

@@ -34,7 +34,7 @@
 
       - if issuable_sidebar[:supports_milestone]
         - milestone = issuable_sidebar[:milestone] || {}
-        .block.milestone{ class: 'gl-border-b-0!', data: { qa_selector: 'milestone_block' } }
+        .block.milestone{ :class => ("gl-border-b-0!" if issuable_sidebar[:supports_iterations]), data: { qa_selector: 'milestone_block' } }
           .sidebar-collapsed-icon.has-tooltip{ title: sidebar_milestone_tooltip_label(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
             = sprite_icon('clock')
             %span.milestone-title.collapse-truncated-title

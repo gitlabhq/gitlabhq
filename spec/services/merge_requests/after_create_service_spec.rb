@@ -100,6 +100,22 @@ RSpec.describe MergeRequests::AfterCreateService do
       expect { execute_service }.to change { counter.read(:create) }.by(1)
     end
 
+    context 'with a milestone' do
+      let(:milestone) { create(:milestone, project: merge_request.target_project) }
+
+      before do
+        merge_request.update!(milestone_id: milestone.id)
+      end
+
+      it 'deletes the cache key for milestone merge request counter', :use_clean_rails_memory_store_caching do
+        expect_next_instance_of(Milestones::MergeRequestsCountService, milestone) do |service|
+          expect(service).to receive(:delete_cache).and_call_original
+        end
+
+        execute_service
+      end
+    end
+
     context 'todos' do
       it 'does not creates todos' do
         attributes = {

@@ -50,7 +50,7 @@ RSpec.describe Milestones::TransferService do
           end
         end
 
-        it 'deletes milestone issue counters cache for both milestones' do
+        it 'deletes milestone counters cache for both milestones' do
           new_milestone = create(:milestone, project: project, title: group_milestone.title)
 
           expect_next_instance_of(Milestones::IssuesCountService, group_milestone) do |service|
@@ -59,10 +59,16 @@ RSpec.describe Milestones::TransferService do
           expect_next_instance_of(Milestones::ClosedIssuesCountService, group_milestone) do |service|
             expect(service).to receive(:delete_cache).and_call_original
           end
+          expect_next_instance_of(Milestones::MergeRequestsCountService, group_milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
           expect_next_instance_of(Milestones::IssuesCountService, new_milestone) do |service|
             expect(service).to receive(:delete_cache).and_call_original
           end
           expect_next_instance_of(Milestones::ClosedIssuesCountService, new_milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+          expect_next_instance_of(Milestones::MergeRequestsCountService, new_milestone) do |service|
             expect(service).to receive(:delete_cache).and_call_original
           end
 

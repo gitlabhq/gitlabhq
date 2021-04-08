@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
+import { CODE_SNIPPET_SOURCE_SETTINGS } from './components/code_snippet_alert/constants';
 import getCommitSha from './graphql/queries/client/commit_sha.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
 import { resolvers } from './graphql/resolvers';
@@ -36,6 +37,13 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     projectNamespace,
     ymlHelpPagePath,
   } = el?.dataset;
+
+  const configurationPaths = Object.fromEntries(
+    Object.entries(CODE_SNIPPET_SOURCE_SETTINGS).map(([source, { datasetKey }]) => [
+      source,
+      el.dataset[datasetKey],
+    ]),
+  );
 
   Vue.use(VueApollo);
 
@@ -71,6 +79,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
       projectPath,
       projectNamespace,
       ymlHelpPagePath,
+      configurationPaths,
     },
     render(h) {
       return h(PipelineEditorApp);

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Issues::CreateService do
+  include AfterNextHelpers
+
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -64,7 +66,6 @@ RSpec.describe Issues::CreateService do
 
         it_behaves_like 'incident issue'
         it_behaves_like 'has incident label'
-        it_behaves_like 'an incident management tracked event', :incident_management_incident_created
 
         it 'does create an incident label' do
           expect { subject }
@@ -112,24 +113,34 @@ RSpec.describe Issues::CreateService do
         end
       end
 
-      it 'creates a pending todo for new assignee' do
-        attributes = {
-          project: project,
-          author: user,
-          user: assignee,
-          target_id: issue.id,
-          target_type: issue.class.name,
-          action: Todo::ASSIGNED,
-          state: :pending
-        }
-
-        expect(Todo.where(attributes).count).to eq 1
-      end
-
       it 'moves the issue to the end, in an asynchronous worker' do
         expect(IssuePlacementWorker).to receive(:perform_async).with(be_nil, Integer)
 
         described_class.new(project, user, opts).execute
+      end
+
+      context 'with issue_perform_after_creation_tasks_async feature disabled' do
+        before do
+          stub_feature_flags(issue_perform_after_creation_tasks_async: false)
+        end
+
+        it 'calls Issues::AfterCreateService' do
+          expect_next(::Issues::AfterCreateService, project, user).to receive(:execute)
+
+          described_class.new(project, user, opts).execute
+        end
+      end
+
+      context 'with issue_perform_after_creation_tasks_async feature enabled' do
+        before do
+          stub_feature_flags(issue_perform_after_creation_tasks_async: true)
+        end
+
+        it 'does not call Issues::AfterCreateService' do
+          expect(::Issues::AfterCreateService).not_to receive(:new)
+
+          described_class.new(project, user, opts).execute
+        end
       end
 
       context 'when label belongs to project group' do
@@ -277,14 +288,6 @@ RSpec.describe Issues::CreateService do
             expect(issue.user_mentions.count).to eq 0
           end
         end
-      end
-
-      it 'deletes milestone issues count cache' do
-        expect_next_instance_of(Milestones::IssuesCountService, milestone) do |service|
-          expect(service).to receive(:delete_cache).and_call_original
-        end
-
-        issue
       end
 
       it 'schedules a namespace onboarding create action worker' do

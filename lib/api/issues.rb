@@ -242,7 +242,7 @@ module API
         use :issue_params
       end
       post ':id/issues' do
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20773')
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21140')
 
         check_rate_limit! :issues_create, [current_user]
 

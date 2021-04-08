@@ -72,7 +72,7 @@ RSpec.describe ServiceFieldEntity do
           }
 
           is_expected.to include(expected_hash)
-          expect(subject[:help]).to include("Send notifications from the committer's email address if the domain is part of the domain GitLab is running on")
+          expect(subject[:help]).to include("Send notifications from the committer's email address if the domain matches the domain used by your GitLab instance")
         end
       end
 

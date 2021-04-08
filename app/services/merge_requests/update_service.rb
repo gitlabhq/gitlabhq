@@ -200,10 +200,15 @@ module MergeRequests
 
       merge_request_activity_counter.track_milestone_changed_action(user: current_user)
 
+      previous_milestone = Milestone.find_by_id(merge_request.previous_changes['milestone_id'].first)
+      delete_milestone_total_merge_requests_counter_cache(previous_milestone)
+
       if merge_request.milestone.nil?
         notification_service.async.removed_milestone_merge_request(merge_request, current_user)
       else
         notification_service.async.changed_milestone_merge_request(merge_request, merge_request.milestone, current_user)
+
+        delete_milestone_total_merge_requests_counter_cache(merge_request.milestone)
       end
     end
 
