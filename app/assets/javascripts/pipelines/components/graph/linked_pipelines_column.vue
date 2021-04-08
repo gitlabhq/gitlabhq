@@ -2,7 +2,8 @@
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import { LOAD_FAILURE } from '../../constants';
 import { reportToSentry } from '../../utils';
-import { ONE_COL_WIDTH, UPSTREAM } from './constants';
+import { listByLayers } from '../parsing_utils';
+import { ONE_COL_WIDTH, UPSTREAM, LAYER_VIEW } from './constants';
 import LinkedPipeline from './linked_pipeline.vue';
 import {
   getQueryHeaders,
@@ -35,11 +36,16 @@ export default {
       type: String,
       required: true,
     },
+    viewType: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       currentPipeline: null,
       loadingPipelineId: null,
+      pipelineLayers: {},
       pipelineExpanded: false,
     };
   },
@@ -123,6 +129,13 @@ export default {
 
       toggleQueryPollingByVisibility(this.$apollo.queries.currentPipeline);
     },
+    getPipelineLayers(id) {
+      if (this.viewType === LAYER_VIEW && !this.pipelineLayers[id]) {
+        this.pipelineLayers[id] = listByLayers(this.currentPipeline);
+      }
+
+      return this.pipelineLayers[id];
+    },
     isExpanded(id) {
       return Boolean(this.currentPipeline?.id && id === this.currentPipeline.id);
     },
@@ -203,7 +216,9 @@ export default {
               class="d-inline-block gl-mt-n2"
               :config-paths="configPaths"
               :pipeline="currentPipeline"
+              :pipeline-layers="getPipelineLayers(pipeline.id)"
               :is-linked-pipeline="true"
+              :view-type="viewType"
             />
           </div>
         </li>

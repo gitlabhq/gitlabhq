@@ -1,5 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GRAPHQL } from '~/pipelines/components/graph/constants';
+import { GRAPHQL, STAGE_VIEW } from '~/pipelines/components/graph/constants';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
@@ -20,6 +20,7 @@ describe('graph component', () => {
 
   const defaultProps = {
     pipeline: generateResponse(mockPipelineResponse, 'root/fungi-xoxo'),
+    viewType: STAGE_VIEW,
     configPaths: {
       metricsPath: '',
       graphqlResourceEtag: 'this/is/a/path',

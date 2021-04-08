@@ -86,7 +86,7 @@ differentiates the new cluster from the rest.
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
-[environment-specific CI/CD variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-cicd-variables) work.
+[environment-specific CI/CD variables](../../../ci/variables/README.md#limit-the-environment-scope-of-a-cicd-variable) work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, use that cluster. Each scope can be used only by a single cluster

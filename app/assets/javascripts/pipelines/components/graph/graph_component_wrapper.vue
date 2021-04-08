@@ -5,7 +5,8 @@ import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import { reportToSentry } from '../../utils';
-import { IID_FAILURE, STAGE_VIEW } from './constants';
+import { listByLayers } from '../parsing_utils';
+import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW } from './constants';
 import PipelineGraph from './graph_component.vue';
 import GraphViewSelector from './graph_view_selector.vue';
 import {
@@ -43,6 +44,7 @@ export default {
       alertType: null,
       currentViewType: STAGE_VIEW,
       pipeline: null,
+      pipelineLayers: null,
       showAlert: false,
     };
   },
@@ -155,6 +157,13 @@ export default {
     reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   methods: {
+    getPipelineLayers() {
+      if (this.currentViewType === LAYER_VIEW && !this.pipelineLayers) {
+        this.pipelineLayers = listByLayers(this.pipeline);
+      }
+
+      return this.pipelineLayers;
+    },
     hideAlert() {
       this.showAlert = false;
       this.alertType = null;
@@ -192,6 +201,8 @@ export default {
       v-if="pipeline"
       :config-paths="configPaths"
       :pipeline="pipeline"
+      :pipeline-layers="getPipelineLayers()"
+      :view-type="currentViewType"
       @error="reportFailure"
       @refreshPipelineGraph="refreshPipelineGraph"
     />

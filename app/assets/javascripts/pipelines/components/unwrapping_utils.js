@@ -1,11 +1,11 @@
 import { reportToSentry } from '../utils';
 
 const unwrapGroups = (stages) => {
-  return stages.map((stage) => {
+  return stages.map((stage, idx) => {
     const {
       groups: { nodes: groups },
     } = stage;
-    return { ...stage, groups };
+    return { node: { ...stage, groups }, lookup: { stageIdx: idx } };
   });
 };
 
@@ -23,20 +23,34 @@ const unwrapJobWithNeeds = (denodedJobArray) => {
   return unwrapNodesWithName(denodedJobArray, 'needs');
 };
 
-const unwrapStagesWithNeeds = (denodedStages) => {
+const unwrapStagesWithNeedsAndLookup = (denodedStages) => {
   const unwrappedNestedGroups = unwrapGroups(denodedStages);
 
-  const nodes = unwrappedNestedGroups.map((node) => {
+  const lookupMap = {};
+
+  const nodes = unwrappedNestedGroups.map(({ node, lookup }) => {
     const { groups } = node;
-    const groupsWithJobs = groups.map((group) => {
+    const groupsWithJobs = groups.map((group, idx) => {
       const jobs = unwrapJobWithNeeds(group.jobs.nodes);
+
+      lookupMap[group.name] = { ...lookup, groupIdx: idx };
       return { ...group, jobs };
     });
 
     return { ...node, groups: groupsWithJobs };
   });
 
-  return nodes;
+  return { stages: nodes, lookup: lookupMap };
 };
 
-export { unwrapGroups, unwrapNodesWithName, unwrapJobWithNeeds, unwrapStagesWithNeeds };
+const unwrapStagesWithNeeds = (denodedStages) => {
+  return unwrapStagesWithNeedsAndLookup(denodedStages).stages;
+};
+
+export {
+  unwrapGroups,
+  unwrapJobWithNeeds,
+  unwrapNodesWithName,
+  unwrapStagesWithNeeds,
+  unwrapStagesWithNeedsAndLookup,
+};

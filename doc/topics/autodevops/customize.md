@@ -171,7 +171,7 @@ list of options.
 ## Custom Helm chart per environment
 
 You can specify the use of a custom Helm chart per environment by scoping the CI/CD variable
-to the desired environment. See [Limiting environment scopes of variables](../../ci/variables/README.md#limit-the-environment-scopes-of-cicd-variables).
+to the desired environment. See [Limit environment scope of CI/CD variables](../../ci/variables/README.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ## Customizing `.gitlab-ci.yml`
 

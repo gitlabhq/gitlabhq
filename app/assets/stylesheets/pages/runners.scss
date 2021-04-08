@@ -25,32 +25,3 @@
     background-color: $red-500;
   }
 }
-
-.runner {
-  .btn {
-    padding: 1px 6px;
-  }
-
-  h4 {
-    font-weight: $gl-font-weight-normal;
-  }
-}
-
-.admin-runner-btn-group-cell {
-  min-width: 150px;
-
-  .btn-sm {
-    padding: 4px 9px;
-  }
-
-  .btn-default {
-    color: $gl-text-color-secondary;
-  }
-}
-
-@include media-breakpoint-down(md) {
-  .runners-content {
-    width: 100%;
-    overflow: auto;
-  }
-}

@@ -55,16 +55,16 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-justify-content-end gl-align-items-center gl-my-4">
+  <div class="gl-display-flex gl-align-items-center gl-my-4">
     <span>{{ $options.i18n.labelText }}</span>
-    <gl-dropdown class="gl-ml-4" :right="true">
+    <gl-dropdown class="gl-ml-4">
       <template #button-content>
         <gl-sprintf :message="currentDropdownText">
           <template #code="{ content }">
             <code> {{ content }} </code>
           </template>
         </gl-sprintf>
-        <gl-icon class="gl-px-2" name="angle-down" :size="18" />
+        <gl-icon class="gl-px-2" name="angle-down" :size="16" />
       </template>
       <gl-dropdown-item
         v-for="view in $options.views"

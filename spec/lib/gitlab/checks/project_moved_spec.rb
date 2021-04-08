@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
+
   let(:repository) { project.repository }
   let(:protocol) { 'http' }
   let(:git_user) { user }
@@ -101,6 +102,7 @@ RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
 
     context 'with project snippet' do
       let_it_be(:snippet) { create(:project_snippet, :repository, project: project, author: user) }
+
       let(:repository) { snippet.repository }
 
       it_behaves_like 'errors per protocol' do
@@ -111,6 +113,7 @@ RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
 
     context 'with personal snippet' do
       let_it_be(:snippet) { create(:personal_snippet, :repository, author: user) }
+
       let(:repository) { snippet.repository }
 
       it 'returns nil' do

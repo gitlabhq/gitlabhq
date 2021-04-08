@@ -16961,7 +16961,7 @@ msgstr ""
 msgid "Integrations|Use the GitLab Slack application"
 msgstr ""
 
-msgid "Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) will be created."
+msgid "Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) is created."
 msgstr ""
 
 msgid "Integrations|You can now close this window and return to the GitLab for Jira application."
@@ -17678,6 +17678,9 @@ msgstr ""
 msgid "JiraService|Automatically transitions Jira issues to the \"Done\" category. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
+msgid "JiraService|Base URL of the Jira instance."
+msgstr ""
+
 msgid "JiraService|Define the type of Jira issue to create from a vulnerability."
 msgstr ""
 
@@ -17708,10 +17711,13 @@ msgstr ""
 msgid "JiraService|For example, 12, 24"
 msgstr ""
 
+msgid "JiraService|For example, AB"
+msgstr ""
+
 msgid "JiraService|GitLab for Jira Configuration"
 msgstr ""
 
-msgid "JiraService|If different from Web URL"
+msgid "JiraService|If different from Web URL."
 msgstr ""
 
 msgid "JiraService|Issue List"
@@ -17732,16 +17738,13 @@ msgstr ""
 msgid "JiraService|Jira comments will be created when an issue gets referenced in a merge request."
 msgstr ""
 
-msgid "JiraService|Jira issue tracker"
-msgstr ""
-
 msgid "JiraService|Jira issue type"
 msgstr ""
 
 msgid "JiraService|Jira project key"
 msgstr ""
 
-msgid "JiraService|Leave blank to use your current password or API token"
+msgid "JiraService|Leave blank to use your current password or API token."
 msgstr ""
 
 msgid "JiraService|Move to Done"
@@ -17777,13 +17780,16 @@ msgstr ""
 msgid "JiraService|This issue is synchronized with Jira"
 msgstr ""
 
+msgid "JiraService|Track issues in Jira"
+msgstr ""
+
 msgid "JiraService|Transition Jira issues to their final state:"
 msgstr ""
 
-msgid "JiraService|Use a password for server version and an API token for cloud version"
+msgid "JiraService|Use a password for server version and an API token for cloud version."
 msgstr ""
 
-msgid "JiraService|Use a username for server version and an email for cloud version"
+msgid "JiraService|Use a username for server version and an email for cloud version."
 msgstr ""
 
 msgid "JiraService|Use custom transitions"
@@ -17798,16 +17804,13 @@ msgstr ""
 msgid "JiraService|View Jira issues in GitLab"
 msgstr ""
 
-msgid "JiraService|Warning: All GitLab users that have access to this GitLab project will be able to view all issues from the Jira project specified below."
+msgid "JiraService|Warning: All GitLab users that have access to this GitLab project are able to view all issues from the Jira project specified below."
 msgstr ""
 
 msgid "JiraService|Web URL"
 msgstr ""
 
 msgid "JiraService|Work on Jira issues without leaving GitLab. Adds a Jira menu to access your list of Jira issues and view any issue as read-only."
-msgstr ""
-
-msgid "JiraService|e.g. AB"
 msgstr ""
 
 msgid "JiraService|transition ids can have only numbers which can be split with , or ;"
@@ -18973,9 +18976,6 @@ msgid "Manage project labels"
 msgstr ""
 
 msgid "Manage projects."
-msgstr ""
-
-msgid "Manage storage usage"
 msgstr ""
 
 msgid "Manage two-factor authentication"
@@ -20535,15 +20535,13 @@ msgstr ""
 msgid "NamespaceStorageSize|You have reached %{usage_in_percent} of %{namespace_name}'s storage capacity (%{used_storage} of %{storage_limit})"
 msgstr ""
 
-msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on %{locked_project_count} project. To unlock it, please purchase additional storage"
-msgid_plural "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on %{locked_project_count} projects. To unlock them, please purchase additional storage"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To learn more about reducing storage capacity please visit our docs."
+msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on one or more projects."
 msgstr ""
 
 msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
+msgstr ""
+
+msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines. To learn more about reducing storage capacity please visit our docs."
 msgstr ""
 
 msgid "Namespaces"
@@ -34201,6 +34199,9 @@ msgstr ""
 msgid "View the performance dashboard at"
 msgstr ""
 
+msgid "View usage details"
+msgstr ""
+
 msgid "View users statistics"
 msgstr ""
 
@@ -35113,6 +35114,9 @@ msgid "Write a description or drag your files here…"
 msgstr ""
 
 msgid "Write milestone description..."
+msgstr ""
+
+msgid "Write to \"authorized_keys\" file"
 msgstr ""
 
 msgid "Write your release notes or drag your files here…"

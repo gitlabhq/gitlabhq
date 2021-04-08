@@ -690,7 +690,7 @@ with `review/` would have that variable available.
 
 Some GitLab features can behave differently for each environment.
 For example, you can
-[create a secret variable to be injected only into a production environment](../variables/README.md#limit-the-environment-scopes-of-cicd-variables).
+[create a project CI/CD variable to be injected only into a production environment](../variables/README.md#limit-the-environment-scope-of-a-cicd-variable).
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping in each environment group.

@@ -66,6 +66,11 @@ or have them [prefilled in manual pipelines](../pipelines/index.md#prefill-varia
 
 There are two types of variables: [`File` or `Variable`](#cicd-variable-types).
 
+Variable names are limited by the [shell the runner uses](https://docs.gitlab.com/runner/shells/index.html)
+to execute scripts. Each shell has its own set of reserved variable names.
+
+Make sure each variable is defined for the [scope you want to use it in](where_variables_can_be_used.md).
+
 ### Create a custom CI/CD variable in the `.gitlab-ci.yml` file
 
 To create a custom variable in the [`.gitlab-ci.yml`](../yaml/README.md#variables) file,
@@ -467,16 +472,23 @@ export GITLAB_USER_ID="42"
 ...
 ```
 
-## Inherit CI/CD variables
+## Pass an environment variable to another job
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22638) in GitLab 13.0 behind a disabled [feature flag](../../administration/feature_flags.md): `ci_dependency_variables`.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22638) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217834) in GitLab 13.1.
 
-You can inherit CI/CD variables from dependent jobs.
+You can pass environment variables from one job to another job in a later stage.
+These variables cannot be used as CI/CD variables to configure a pipeline, but
+they can be used in job scripts.
 
-This feature makes use of the [`artifacts:reports:dotenv`](../pipelines/job_artifacts.md#artifactsreportsdotenv) report feature.
+1. In the job script, save the variable as a `.env` file.
+1. Save the `.env` file as an [`artifacts:reports:dotenv`](../pipelines/job_artifacts.md#artifactsreportsdotenv)
+artifact.
+1. Set a job in a later stage to receive the artifact by using the [`dependencies`](../yaml/README.md#dependencies)
+   or the [`needs`](../yaml/README.md#artifact-downloads-with-needs) keywords.
+1. The later job can then [use the variable in scripts](#use-cicd-variables-in-job-scripts).
 
-Example with [`dependencies`](../yaml/README.md#dependencies) keyword.
+For example, with the [`dependencies`](../yaml/README.md#dependencies) keyword:
 
 ```yaml
 build:
@@ -490,12 +502,12 @@ build:
 deploy:
   stage: deploy
   script:
-    - echo $BUILD_VERSION  # => hello
+    - echo $BUILD_VERSION  # Output is: 'hello'
   dependencies:
     - build
 ```
 
-Example with the [`needs`](../yaml/README.md#artifact-downloads-with-needs) keyword:
+For example, with the [`needs`](../yaml/README.md#artifact-downloads-with-needs) keyword:
 
 ```yaml
 build:
@@ -509,131 +521,113 @@ build:
 deploy:
   stage: deploy
   script:
-    - echo $BUILD_VERSION  # => hello
+    - echo $BUILD_VERSION  # Output is: 'hello'
   needs:
     - job: build
       artifacts: true
 ```
 
-## Priority of CI/CD variables
+## CI/CD variable precedence
 
-Variables of different types can take precedence over other
-variables, depending on where they are defined.
+You can use CI/CD variables with the same name in different places, but the values
+can overwrite each other. The type of variable and where they are defined determines
+which variables take precedence.
 
 The order of precedence for variables is (from highest to lowest):
 
-1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables), [scheduled pipeline variables](../pipelines/schedules.md#using-variables),
-   and [manual pipeline run variables](#override-a-variable-by-manually-running-a-pipeline).
-1. Project-level [variables](#custom-cicd-variables) or [protected variables](#protect-a-cicd-variable).
-1. Group-level [variables](#group-cicd-variables) or [protected variables](#protect-a-cicd-variable).
-1. Instance-level [variables](#instance-cicd-variables) or [protected variables](#protect-a-cicd-variable).
-1. [Inherited CI/CD variables](#inherit-cicd-variables).
-1. YAML-defined [job-level variables](../yaml/README.md#variables).
-1. YAML-defined [global variables](../yaml/README.md#variables).
+1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables),
+   [scheduled pipeline variables](../pipelines/schedules.md#using-variables),
+   and [manual pipeline run variables](#override-a-variable-when-running-a-pipeline-manually).
+1. Project [variables](#custom-cicd-variables).
+1. Group [variables](#group-cicd-variables).
+1. Instance [variables](#instance-cicd-variables).
+1. [Inherited variables](#pass-an-environment-variable-to-another-job).
+1. Variables defined in jobs in the `.gitlab-ci.yml` file.
+1. Variables defined outside of jobs (globally) in the `.gitlab-ci.yml` file.
 1. [Deployment variables](#deployment-variables).
-1. [Predefined CI/CD variables](predefined_variables.md).
+1. [Predefined variables](predefined_variables.md).
 
-For example, if you define:
+In the following example, when the script in `job1` executes, the value of `API_TOKEN` is `secure`.
+Variables defined in jobs have a higher precedence than variables defined globally.
 
-- `API_TOKEN=secure` as a project variable.
-- `API_TOKEN=yaml` in your `.gitlab-ci.yml`.
+```yaml
+variables:
+  API_TOKEN: "default"
 
-`API_TOKEN` takes the value `secure` as the project
-variables take precedence over those defined in `.gitlab-ci.yml`.
+job1:
+  variables:
+    API_TOKEN: "secure"
+  script:
+    - echo "The variable value is $API_TOKEN"
+```
 
-## Unsupported variables
+## Override a defined CI/CD variable
 
-Variable names are limited by the underlying shell used to execute scripts (see [available shells](https://docs.gitlab.com/runner/shells/index.html).
-Each shell has its own unique set of reserved variable names.
-Keep in mind the [scope of CI/CD variables](where_variables_can_be_used.md) to ensure a variable is defined in the scope in which you wish to use it.
+You can override the value of a variable when you:
 
-## Where variables can be used
+1. [Run a pipeline manually](#override-a-variable-when-running-a-pipeline-manually) in the UI.
+1. Create a pipeline by using [the API](../../api/pipelines.md#create-a-new-pipeline).
+1. Run a job manually in the UI.
+1. Use [push options](../../user/project/push_options.md#push-options-for-gitlab-cicd).
+1. Trigger a pipeline by using [the API](../triggers/README.md#making-use-of-trigger-variables).
+1. Pass variables to a [downstream pipeline](../multi_project_pipelines.md#passing-cicd-variables-to-a-downstream-pipeline).
 
-[This section](where_variables_can_be_used.md) describes where and how the different types of variables can be used.
+The pipeline variables declared in these events take [priority over other variables](#cicd-variable-precedence).
 
-## Advanced use
+### Override a variable when running a pipeline manually
 
-### Limit the environment scopes of CI/CD variables
+You can override the value of a CI/CD variable when you
+[run a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
+
+1. Go to your project's **CI/CD > Pipelines** and select **Run pipeline**.
+1. Choose the branch you want to run the pipeline for.
+1. Input the variable and its value in the UI.
+
+### Restrict who can override variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295234) in GitLab 13.8.
+
+You can grant permission to override variables to [maintainers](../../user/permissions.md#project-features) only. When other users try to run a pipeline
+with overridden variables, they receive the `Insufficient permissions to set pipeline variables`
+error message.
+
+If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#custom-cicd-configuration-path),
+use this setting for control over the environment the pipeline runs in.
+
+You can enable this feature by using [the projects API](../../api/projects.md#edit-project)
+to enable the `restrict_user_defined_variables` setting. The setting is `disabled` by default.
+
+## Limit the environment scope of a CI/CD variable
 
 You can limit the environment scope of a variable by
 [defining which environments](../environments/index.md) it can be available for.
 
 To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scoping-environments-with-specs).
 
-### Deployment variables
+## Deployment variables
 
-[Integrations](../../user/project/integrations/overview.md) that are
-responsible for deployment configuration may define their own variables that
-are set in the build environment. These variables are only defined for
-[deployment jobs](../environments/index.md). Please consult the documentation of
-the integrations that you are using to learn which variables they define.
+Integrations that are responsible for deployment configuration can define their own
+variables that are set in the build environment. These variables are only defined
+for [deployment jobs](../environments/index.md).
 
-An example integration that defines deployment variables is the
-[Kubernetes integration](../../user/project/clusters/index.md#deployment-variables).
+For example, the [Kubernetes integration](../../user/project/clusters/index.md#deployment-variables)
+defines deployment variables that you can use with the integration.
 
-### Auto DevOps environment variables
+The [documentation for each integration](../../user/project/integrations/overview.md)
+explains if the integration has any deployment variables available.
+
+## Auto DevOps environment variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/49056) in GitLab 11.7.
 
-You can configure [Auto DevOps](../../topics/autodevops/index.md) to
-pass CI/CD variables to the running application by prefixing the key of the
-variable with `K8S_SECRET_`.
+You can configure [Auto DevOps](../../topics/autodevops/index.md) to pass CI/CD variables
+to a running application.
 
-These [prefixed variables](../../topics/autodevops/customize.md#application-secret-variables) are
-then available as environment variables on the running application
-container.
+To make a CI/CD variable available as an environment variable in the running application's container,
+[prefix the variable key](../../topics/autodevops/customize.md#application-secret-variables)
+with `K8S_SECRET_`.
 
-WARNING:
-Variables with multi-line values are not supported due to
-limitations with the Auto DevOps scripting environment.
-
-### When you can override variables
-
-You can override the value of a variable when:
-
-1. [Manually running](#override-a-variable-by-manually-running-a-pipeline) pipelines in the UI.
-1. Manually creating pipelines [via API](../../api/pipelines.md#create-a-new-pipeline).
-1. Manually playing a job via the UI.
-1. Using [push options](../../user/project/push_options.md#push-options-for-gitlab-cicd).
-1. Manually triggering pipelines with [the API](../triggers/README.md#making-use-of-trigger-variables).
-1. Passing variables to a [downstream pipeline](../multi_project_pipelines.md#passing-cicd-variables-to-a-downstream-pipeline).
-
-These pipeline variables declared in these events take [priority over other variables](#priority-of-cicd-variables).
-
-#### Restrict who can override variables
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295234) in GitLab 13.8.
-
-To allow only users with Maintainer role to set these variables, you can use
-[the API](../../api/projects.md#edit-project) to enable the project setting `restrict_user_defined_variables`.
-When a user without Maintainer role tries to run a pipeline with overridden
-variables, an `Insufficient permissions to set pipeline variables` error occurs.
-
-The setting is `disabled` by default.
-
-If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#custom-cicd-configuration-path),
-use this setting for strict control over all aspects of the environment
-the pipeline runs in.
-
-#### Override a variable by manually running a pipeline
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44059) in GitLab 10.8.
-
-You can override the value of a current variable by
-[running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
-
-For instance, suppose you added a custom variable named `$TEST`
-and you want to override it in a manual pipeline.
-
-Go to your project's **CI/CD > Pipelines** and select **Run pipeline**.
-Choose the branch you want to run the pipeline for, then add a variable and its value in the UI:
-
-![Override variable value](img/override_variable_manual_pipeline.png)
-
-The runner overrides the value previously set and uses the custom
-value for this specific pipeline.
-
-![Manually overridden variable output](img/override_value_via_manual_pipeline_output.png)
+CI/CD variables with multi-line values are not supported.
 
 ## CI/CD variable expressions
 
@@ -828,44 +822,22 @@ testvariable:
 > Introduced in GitLab Runner 1.7.
 
 WARNING:
-Enabling debug tracing can have severe security implications. The
-output **will** contain the content of all your variables and any other
-secrets! The output **will** be uploaded to the GitLab server and made visible
-in job logs!
+Debug logging can be a serious security risk. The output contains the content of
+all variables and other secrets available to the job. The output is uploaded to the
+GitLab server and visible in job logs.
 
-By default, the runner hides most of the details of what it is doing when
-processing a job. This behavior keeps job logs short, and prevents secrets
-from being leaked into the log unless your script writes them to the screen.
+You can use debug logging to help troubleshoot problems with pipeline configuration
+or job scripts. Debug logging exposes job execution details that are usually hidden
+by the runner and makes job logs more verbose. It also exposes all variables and secrets
+available to the job.
 
-If a job isn't working as expected, this can make the problem difficult to
-investigate; in these cases, you can enable debug tracing in `.gitlab-ci.yml`.
-Available on GitLab Runner v1.7+, this feature enables the shell's execution log. This results in a verbose job log listing all commands that were run, variables that were set, and so on.
-
-Before enabling this, you should ensure jobs are visible to
-[team members only](../../user/permissions.md#project-features). You should
-also [erase](../jobs/index.md#view-jobs-in-a-pipeline) all generated job logs
-before making them visible again.
-
-### Restricted access to debug logging
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213159) in GitLab 13.7.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292661) in GitLab 13.8.
-
-With restricted access to debug logging, only users with
-[developer or higher permissions](../../user/permissions.md#project-members-permissions)
-can view job logs when debug logging is enabled with a variable in:
-
-- The [`.gitlab-ci.yml` file](#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file).
-- The CI/CD variables set in the GitLab UI.
-
-WARNING:
-If you add `CI_DEBUG_TRACE` as a local variable to your runners, debug logs are visible
-to all users with access to job logs. The permission levels are not checked by Runner,
-so you should make use of the variable in GitLab only.
+Before you enable debug logging, make sure only [team members](../../user/permissions.md#project-features)
+can view job logs. You should also [delete job logs](../jobs/index.md#view-jobs-in-a-pipeline)
+with debug output before you make logs public again.
 
 ### Enable Debug logging
 
-To enable debug logs (traces), set the `CI_DEBUG_TRACE` variable to `true`:
+To enable debug logging (tracing), set the `CI_DEBUG_TRACE` variable to `true`:
 
 ```yaml
 job_name:
@@ -873,11 +845,10 @@ job_name:
     CI_DEBUG_TRACE: "true"
 ```
 
-Example truncated output with `CI_DEBUG_TRACE` set to `true`:
+Example output (truncated):
 
 ```shell
 ...
-
 export CI_SERVER_TLS_CA_FILE="/builds/gitlab-examples/ci-debug-trace.tmp/CI_SERVER_TLS_CA_FILE"
 if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
   echo $'\''\x1b[32;1mFetching changes...\x1b[0;m'\''
@@ -982,9 +953,25 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ++ CI_COMMIT_REF_NAME=master
 ++ export CI_COMMIT_REF_SLUG=master
 ++ CI_COMMIT_REF_SLUG=master
-
 ...
 ```
+
+### Restrict access to debug logging
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213159) in GitLab 13.7.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292661) in GitLab 13.8.
+
+You can restrict access to debug logging. When restricted, only users with
+[developer or higher permissions](../../user/permissions.md#project-members-permissions)
+can view job logs when debug logging is enabled with a variable in:
+
+- The [`.gitlab-ci.yml` file](#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file).
+- The CI/CD variables set in the GitLab UI.
+
+WARNING:
+If you add `CI_DEBUG_TRACE` as a local variable to runners, debug logs generate and are visible
+to all users with access to job logs. The permission levels are not checked by the runner,
+so you should only use the variable in GitLab itself.
 
 ## Video walkthrough of a working example
 

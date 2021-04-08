@@ -129,7 +129,7 @@ export default {
             <template #help>
               {{
                 s__(
-                  'JiraService|Warning: All GitLab users that have access to this GitLab project will be able to view all issues from the Jira project specified below.',
+                  'JiraService|Warning: All GitLab users that have access to this GitLab project are able to view all issues from the Jira project specified below.',
                 )
               }}
             </template>
@@ -169,7 +169,7 @@ export default {
           id="service_project_key"
           v-model="projectKey"
           name="service[project_key]"
-          :placeholder="s__('JiraService|e.g. AB')"
+          :placeholder="s__('JiraService|For example, AB')"
           :required="enableJiraIssues"
           :state="validProjectKey"
           :disabled="!enableJiraIssues"

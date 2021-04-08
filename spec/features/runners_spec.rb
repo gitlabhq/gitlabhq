@@ -79,7 +79,7 @@ RSpec.describe 'Runners' do
         visit project_runners_path(project)
 
         within '.activated-specific-runners' do
-          first('.edit-runner > a').click
+          first('[data-testid="edit-runner-link"]').click
         end
 
         expect(page.find_field('runner[access_level]')).not_to be_checked
@@ -99,7 +99,7 @@ RSpec.describe 'Runners' do
           visit project_runners_path(project)
 
           within '.activated-specific-runners' do
-            first('.edit-runner > a').click
+            first('[data-testid="edit-runner-link"]').click
           end
 
           expect(page.find_field('runner[run_untagged]')).to be_checked

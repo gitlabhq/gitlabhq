@@ -82,7 +82,7 @@
 
 
 - if @group_runners.any?
-  .runners-content.content-list
+  .content-list{ data: { testid: 'runners-table' } }
     .table-holder
       .gl-responsive-table-row.table-row-header{ role: 'row' }
         .table-section.section-10{ role: 'rowheader' }= _('Type/State')

@@ -144,7 +144,7 @@ export default {
       label-for="service[trigger]"
       :description="
         s__(
-          'Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) will be created.',
+          'Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) is created.',
         )
       "
     >

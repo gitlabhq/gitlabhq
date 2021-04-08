@@ -116,7 +116,7 @@ class JiraService < IssueTrackerService
   end
 
   def description
-    s_('JiraService|Jira issue tracker')
+    s_('JiraService|Track issues in Jira')
   end
 
   def self.to_param
@@ -130,19 +130,20 @@ class JiraService < IssueTrackerService
         name: 'url',
         title: s_('JiraService|Web URL'),
         placeholder: 'https://jira.example.com',
+        help: s_('JiraService|Base URL of the Jira instance.'),
         required: true
       },
       {
         type: 'text',
         name: 'api_url',
         title: s_('JiraService|Jira API URL'),
-        placeholder: s_('JiraService|If different from Web URL')
+        help: s_('JiraService|If different from Web URL.')
       },
       {
         type: 'text',
         name: 'username',
         title: s_('JiraService|Username or Email'),
-        placeholder: s_('JiraService|Use a username for server version and an email for cloud version'),
+        help: s_('JiraService|Use a username for server version and an email for cloud version.'),
         required: true
       },
       {
@@ -150,8 +151,8 @@ class JiraService < IssueTrackerService
         name: 'password',
         title: s_('JiraService|Password or API token'),
         non_empty_password_title: s_('JiraService|Enter new password or API token'),
-        non_empty_password_help: s_('JiraService|Leave blank to use your current password or API token'),
-        placeholder: s_('JiraService|Use a password for server version and an API token for cloud version'),
+        non_empty_password_help: s_('JiraService|Leave blank to use your current password or API token.'),
+        help: s_('JiraService|Use a password for server version and an API token for cloud version.'),
         required: true
       }
     ]

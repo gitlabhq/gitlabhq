@@ -434,21 +434,7 @@ export const mockPipelineResponse = {
                           },
                           needs: {
                             __typename: 'CiBuildNeedConnection',
-                            nodes: [
-                              {
-                                __typename: 'CiBuildNeed',
-                                name: 'build_c',
-                              },
-                              {
-                                __typename: 'CiBuildNeed',
-                                name: 'build_b',
-                              },
-                              {
-                                __typename: 'CiBuildNeed',
-                                name:
-                                  'build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl',
-                              },
-                            ],
+                            nodes: [],
                           },
                         },
                       ],

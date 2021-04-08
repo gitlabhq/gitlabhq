@@ -4636,7 +4636,7 @@ meaning it applies to all jobs. If you define a variable in a job, it's availabl
 to that job only.
 
 If a variable of the same name is defined globally and for a specific job, the
-[job-specific variable overrides the global variable](../variables/README.md#priority-of-cicd-variables).
+[job-specific variable overrides the global variable](../variables/README.md#cicd-variable-precedence).
 
 All YAML-defined variables are also set to any linked
 [Docker service containers](../services/index.md).

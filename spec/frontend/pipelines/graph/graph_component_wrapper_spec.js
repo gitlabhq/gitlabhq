@@ -1,13 +1,15 @@
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
-import { IID_FAILURE } from '~/pipelines/components/graph/constants';
+import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW } from '~/pipelines/components/graph/constants';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
 import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.vue';
+import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import * as parsingUtils from '~/pipelines/components/parsing_utils';
 import { mockPipelineResponse } from './mock_data';
 
 const defaultProvide = {
@@ -24,6 +26,9 @@ describe('Pipeline graph wrapper', () => {
   const getAlert = () => wrapper.find(GlAlert);
   const getLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const getGraph = () => wrapper.find(PipelineGraph);
+  const getStageColumnTitle = () => wrapper.find('[data-testid="stage-column-title"]');
+  const getAllStageColumnGroupsInColumn = () =>
+    wrapper.find(StageColumnComponent).findAll('[data-testid="stage-column-group"]');
   const getViewSelector = () => wrapper.find(GraphViewSelector);
 
   const createComponent = ({
@@ -48,12 +53,13 @@ describe('Pipeline graph wrapper', () => {
 
   const createComponentWithApollo = ({
     getPipelineDetailsHandler = jest.fn().mockResolvedValue(mockPipelineResponse),
+    mountFn = shallowMount,
     provide = {},
   } = {}) => {
     const requestHandlers = [[getPipelineDetails, getPipelineDetailsHandler]];
 
     const apolloProvider = createMockApollo(requestHandlers);
-    createComponent({ apolloProvider, provide });
+    createComponent({ apolloProvider, provide, mountFn });
   };
 
   afterEach(() => {
@@ -223,13 +229,16 @@ describe('Pipeline graph wrapper', () => {
     });
 
     describe('when feature flag is on', () => {
+      let layersFn;
       beforeEach(async () => {
+        layersFn = jest.spyOn(parsingUtils, 'listByLayers');
         createComponentWithApollo({
           provide: {
             glFeatures: {
               pipelineGraphLayersView: true,
             },
           },
+          mountFn: mount,
         });
 
         jest.runOnlyPendingTimers();
@@ -238,6 +247,26 @@ describe('Pipeline graph wrapper', () => {
 
       it('appears', () => {
         expect(getViewSelector().exists()).toBe(true);
+      });
+
+      it('switches between views', async () => {
+        const groupsInFirstColumn =
+          mockPipelineResponse.data.project.pipeline.stages.nodes[0].groups.nodes.length;
+        expect(getAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn);
+        expect(getStageColumnTitle().text()).toBe('Build');
+        await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        expect(getAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn + 1);
+        expect(getStageColumnTitle().text()).toBe('');
+      });
+
+      it('calls listByLayers only once no matter how many times view is switched', async () => {
+        expect(layersFn).not.toHaveBeenCalled();
+        await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        expect(layersFn).toHaveBeenCalledTimes(1);
+        await getViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
+        await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await getViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
+        expect(layersFn).toHaveBeenCalledTimes(1);
       });
     });
   });

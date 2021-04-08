@@ -1,6 +1,6 @@
 import Visibility from 'visibilityjs';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { unwrapStagesWithNeeds } from '../unwrapping_utils';
+import { unwrapStagesWithNeedsAndLookup } from '../unwrapping_utils';
 
 const addMulti = (mainPipelineProjectPath, linkedPipeline) => {
   return {
@@ -86,12 +86,13 @@ const unwrapPipelineData = (mainPipelineProjectPath, data) => {
     stages: { nodes: stages },
   } = pipeline;
 
-  const nodes = unwrapStagesWithNeeds(stages);
+  const { stages: updatedStages, lookup } = unwrapStagesWithNeedsAndLookup(stages);
 
   return {
     ...pipeline,
     id: getIdFromGraphQLId(pipeline.id),
-    stages: nodes,
+    stages: updatedStages,
+    stagesLookup: lookup,
     upstream: upstream
       ? [upstream].map(addMulti.bind(null, mainPipelineProjectPath)).map(transformId)
       : [],

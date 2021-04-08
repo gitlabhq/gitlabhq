@@ -255,7 +255,7 @@ curl --request POST \
   "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
 ```
 
-Trigger variables have the [highest priority](../variables/README.md#priority-of-cicd-variables)
+Trigger variables have the [highest priority](../variables/README.md#cicd-variable-precedence)
 of all types of variables.
 
 ## Using cron to trigger nightly pipelines

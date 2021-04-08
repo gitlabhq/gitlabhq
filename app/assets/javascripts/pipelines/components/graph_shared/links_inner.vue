@@ -11,6 +11,7 @@ import {
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { DRAW_FAILURE } from '../../constants';
 import { createJobsHash, generateJobNeedsDict, reportToSentry } from '../../utils';
+import { STAGE_VIEW } from '../graph/constants';
 import { parseData } from '../parsing_utils';
 import { reportPerformance } from './api';
 import { generateLinksData } from './drawing_utils';
@@ -54,11 +55,17 @@ export default {
       required: false,
       default: '',
     },
+    viewType: {
+      type: String,
+      required: false,
+      default: STAGE_VIEW,
+    },
   },
   data() {
     return {
       links: [],
       needsObject: null,
+      parsedData: {},
     };
   },
   computed: {
@@ -107,6 +114,15 @@ export default {
     },
     highlightedJobs(jobs) {
       this.$emit('highlightedJobsChange', jobs);
+    },
+    viewType() {
+      /*
+        We need to wait a tick so that the layout reflows
+        before the links refresh.
+      */
+      this.$nextTick(() => {
+        this.refreshLinks();
+      });
     },
   },
   errorCaptured(err, _vm, info) {
@@ -166,13 +182,16 @@ export default {
       this.beginPerfMeasure();
       try {
         const arrayOfJobs = this.pipelineData.flatMap(({ groups }) => groups);
-        const parsedData = parseData(arrayOfJobs);
-        this.links = generateLinksData(parsedData, this.containerId, `-${this.pipelineId}`);
+        this.parsedData = parseData(arrayOfJobs);
+        this.refreshLinks();
       } catch (err) {
         this.$emit('error', { type: DRAW_FAILURE, reportToSentry: false });
         reportToSentry(this.$options.name, err);
       }
       this.finishPerfMeasureAndSend();
+    },
+    refreshLinks() {
+      this.links = generateLinksData(this.parsedData, this.containerId, `-${this.pipelineId}`);
     },
     getLinkClasses(link) {
       return [

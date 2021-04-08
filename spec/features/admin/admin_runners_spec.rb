@@ -201,21 +201,21 @@ RSpec.describe "Admin Runners" do
 
         visit admin_runners_path
 
-        within '.runners-content .gl-responsive-table-row:nth-child(2)' do
+        within '[data-testid="runners-table"] .gl-responsive-table-row:nth-child(2)' do
           expect(page).to have_content 'runner-2'
         end
 
-        within '.runners-content .gl-responsive-table-row:nth-child(3)' do
+        within '[data-testid="runners-table"] .gl-responsive-table-row:nth-child(3)' do
           expect(page).to have_content 'runner-1'
         end
 
         sorting_by 'Last Contact'
 
-        within '.runners-content .gl-responsive-table-row:nth-child(2)' do
+        within '[data-testid="runners-table"] .gl-responsive-table-row:nth-child(2)' do
           expect(page).to have_content 'runner-1'
         end
 
-        within '.runners-content .gl-responsive-table-row:nth-child(3)' do
+        within '[data-testid="runners-table"] .gl-responsive-table-row:nth-child(3)' do
           expect(page).to have_content 'runner-2'
         end
       end

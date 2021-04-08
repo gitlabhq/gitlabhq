@@ -1,5 +1,5 @@
 %li.runner{ id: dom_id(runner) }
-  %h4
+  %h4.gl-font-weight-normal
     = runner_status_icon(runner)
 
     - if @project_runners.include?(runner)
@@ -9,9 +9,9 @@
         %span.has-tooltip{ title: _('Locked to current projects') }
           = sprite_icon('lock')
 
-      %small.edit-runner
-        = link_to edit_project_runner_path(@project, runner), class: 'btn gl-button btn-edit' do
-          = sprite_icon('pencil', css_class: 'gl-my-2')
+      = link_to edit_project_runner_path(@project, runner), class: 'btn gl-button btn-sm btn-icon', data: { testid: 'edit-runner-link' } do
+        = sprite_icon('pencil')
+
     - else
       %span.commit-sha
         = runner.short_sha

@@ -48,6 +48,11 @@ export default {
       required: false,
       default: null,
     },
+    discussionFile: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     helpPagePath: {
       type: String,
       required: false,
@@ -167,12 +172,18 @@ export default {
       return commentLineOptions(lines, this.commentLineStart, this.line.line_code);
     },
     diffFile() {
+      let fileResolvedFromAvailableSource;
+
       if (this.commentLineStart.line_code) {
         const lineCode = this.commentLineStart.line_code.split('_')[0];
-        return this.getDiffFileByHash(lineCode);
+        fileResolvedFromAvailableSource = this.getDiffFileByHash(lineCode);
       }
 
-      return null;
+      if (!fileResolvedFromAvailableSource && this.discussionFile) {
+        fileResolvedFromAvailableSource = this.discussionFile;
+      }
+
+      return fileResolvedFromAvailableSource || null;
     },
   },
   created() {
