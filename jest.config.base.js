@@ -86,6 +86,8 @@ module.exports = (path, options = {}) => {
     collectCoverageFrom,
     coverageDirectory: coverageDirectory(),
     coverageReporters: ['json', 'lcov', 'text-summary', 'clover'],
+    // We need ignore _worker code coverage since we are manually transforming it
+    coveragePathIgnorePatterns: ['<rootDir>/node_modules/', '_worker\\.js$'],
     cacheDirectory: '<rootDir>/tmp/cache/jest',
     modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
     reporters,
@@ -93,6 +95,7 @@ module.exports = (path, options = {}) => {
     restoreMocks: true,
     transform: {
       '^.+\\.(gql|graphql)$': 'jest-transform-graphql',
+      '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',
       '^.+\\.js$': 'babel-jest',
       '^.+\\.vue$': 'vue-jest',
       '^.+\\.(md|zip|png)$': 'jest-raw-loader',

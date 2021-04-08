@@ -7,7 +7,7 @@
 module SystemNoteService
   extend self
 
-  # Called when commits are added to a Merge Request
+  # Called when commits are added to a merge request
   #
   # noteable         - Noteable object
   # project          - Project owning noteable

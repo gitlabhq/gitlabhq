@@ -54,6 +54,6 @@ export default {
 
 <template>
   <gl-button :loading="isLoading" variant="success" category="secondary" @click="mutate">{{
-    s__('SecurityConfiguration|Configure via Merge Request')
+    s__('SecurityConfiguration|Configure via merge request')
   }}</gl-button>
 </template>

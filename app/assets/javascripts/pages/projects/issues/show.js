@@ -46,10 +46,18 @@ export default function initShowIssue() {
   new ZenMode(); // eslint-disable-line no-new
 
   if (issueType !== IssuableType.TestCase) {
+    const awardEmojiEl = document.getElementById('js-vue-awards-block');
+
     new Issue(); // eslint-disable-line no-new
     new ShortcutsIssuable(); // eslint-disable-line no-new
     initIssuableSidebar();
-    loadAwardsHandler();
+    if (awardEmojiEl) {
+      import('~/emoji/awards_app')
+        .then((m) => m.default(awardEmojiEl))
+        .catch(() => {});
+    } else {
+      loadAwardsHandler();
+    }
     initInviteMemberModal();
     initInviteMemberTrigger();
   }

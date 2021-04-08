@@ -128,6 +128,7 @@ const fileExtensionIcons = {
   c: 'c',
   m: 'c',
   h: 'h',
+  'c++': 'cpp',
   cc: 'cpp',
   cpp: 'cpp',
   mm: 'cpp',

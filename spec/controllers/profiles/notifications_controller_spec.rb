@@ -37,18 +37,24 @@ RSpec.describe Profiles::NotificationsController do
         expect(assigns(:group_notifications).map(&:source_id)).to include(subgroup.id)
       end
 
-      it 'does not have an N+1' do
-        sign_in(user)
+      context 'N+1 query check' do
+        render_views
 
-        control = ActiveRecord::QueryRecorder.new do
+        it 'does not have an N+1' do
+          sign_in(user)
+
           get :show
+
+          control = ActiveRecord::QueryRecorder.new do
+            get :show
+          end
+
+          create_list(:group, 2, parent: group)
+
+          expect do
+            get :show
+          end.not_to exceed_query_limit(control)
         end
-
-        create_list(:group, 2, parent: group)
-
-        expect do
-          get :show
-        end.not_to exceed_query_limit(control)
       end
     end
 

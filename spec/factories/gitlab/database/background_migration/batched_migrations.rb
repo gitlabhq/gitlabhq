@@ -9,5 +9,6 @@ FactoryBot.define do
     job_class_name { 'CopyColumnUsingBackgroundMigrationJob' }
     table_name { :events }
     column_name { :id }
+    total_tuple_count { 10_000 }
   end
 end

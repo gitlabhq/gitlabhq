@@ -190,7 +190,7 @@ export default {
         .then(() => this.updateTable())
         .catch(() => {
           createFlash(
-            __('An error occurred while trying to run a new pipeline for this Merge Request.'),
+            __('An error occurred while trying to run a new pipeline for this merge request.'),
           );
         })
         .finally(() => this.store.toggleIsRunningPipeline(false));

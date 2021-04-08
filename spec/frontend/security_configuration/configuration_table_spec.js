@@ -30,7 +30,7 @@ describe('Configuration Table Component', () => {
       expect(wrapper.text()).toContain(scanner.name);
       expect(wrapper.text()).toContain(scanner.description);
       if (scanner.type === REPORT_TYPE_SAST) {
-        expect(wrapper.findByTestId(scanner.type).text()).toBe('Configure via Merge Request');
+        expect(wrapper.findByTestId(scanner.type).text()).toBe('Configure via merge request');
       } else if (scanner.type !== REPORT_TYPE_SECRET_DETECTION) {
         expect(wrapper.findByTestId(scanner.type).text()).toMatchInterpolatedText(UPGRADE_CTA);
       }

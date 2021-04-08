@@ -1039,6 +1039,9 @@ msgstr ""
 msgid "(deleted)"
 msgstr ""
 
+msgid "(leave blank if you don't want to change it)"
+msgstr ""
+
 msgid "(max size 15 MB)"
 msgstr ""
 
@@ -1046,6 +1049,9 @@ msgid "(removed)"
 msgstr ""
 
 msgid "(revoked)"
+msgstr ""
+
+msgid "(we need your current password to confirm your changes)"
 msgstr ""
 
 msgid "* * * * *"
@@ -1488,6 +1494,9 @@ msgstr ""
 msgid "APIFuzzing|Choose a profile"
 msgstr ""
 
+msgid "APIFuzzing|Code snippet could not be generated. Try again later."
+msgstr ""
+
 msgid "APIFuzzing|Code snippet for the API Fuzzing configuration"
 msgstr ""
 
@@ -1551,10 +1560,16 @@ msgstr ""
 msgid "APIFuzzing|Target URL"
 msgstr ""
 
-msgid "APIFuzzing|The configuration could not be saved, please try again later."
+msgid "APIFuzzing|There are two ways to perform scans."
 msgstr ""
 
-msgid "APIFuzzing|There are two ways to perform scans."
+msgid "APIFuzzing|Tip: Insert the following variables anywhere below stages and include"
+msgstr ""
+
+msgid "APIFuzzing|Tip: Insert this part below all include"
+msgstr ""
+
+msgid "APIFuzzing|Tip: Insert this part below all stages"
 msgstr ""
 
 msgid "APIFuzzing|To prevent a security leak, authentication info must be added as a %{ciVariablesLinkStart}CI variable%{ciVariablesLinkEnd}. A user with maintainer access rights can manage CI variables in the %{ciSettingsLinkStart}Settings%{ciSettingsLinkEnd} area. We detected that you are not a maintainer. Commit your changes and assign them to a maintainer to update the credentials before merging."
@@ -2343,7 +2358,7 @@ msgstr ""
 msgid "AdminStatistics|Issues"
 msgstr ""
 
-msgid "AdminStatistics|Merge Requests"
+msgid "AdminStatistics|Merge requests"
 msgstr ""
 
 msgid "AdminStatistics|Milestones"
@@ -2900,10 +2915,7 @@ msgstr ""
 msgid "AlertMappingBuilder|Title is a required field for alerts in GitLab. Should the payload field you specified not be available, specifiy which field we should use instead. "
 msgstr ""
 
-msgid "AlertSettings|A URL and authorization key  have been created for your integration. You will need them to setup a webhook and authorize your endpoint to send alerts to GitLab."
-msgstr ""
-
-msgid "AlertSettings|A webhook URL and authorization key will be generated for the integration. Both will be visible after saving the integration in the “View credentials” tab."
+msgid "AlertSettings|A webhook URL and authorization key is generated for the integration. After you save the integration, both are visible under the “View credentials” tab."
 msgstr ""
 
 msgid "AlertSettings|Add new integration"
@@ -2930,19 +2942,25 @@ msgstr ""
 msgid "AlertSettings|Enable integration"
 msgstr ""
 
+msgid "AlertSettings|Enter an example payload from your selected monitoring tool. This supports sending alerts to a GitLab endpoint."
+msgstr ""
+
 msgid "AlertSettings|Enter integration name"
+msgstr ""
+
+msgid "AlertSettings|Free versions of GitLab are limited to one integration per type. To add more, %{linkStart}upgrade your subscription%{linkEnd}."
+msgstr ""
+
+msgid "AlertSettings|GitLab has created a URL and authorization key for your integration. You can use them to set up a webhook and authorize your endpoint to send alerts to GitLab."
 msgstr ""
 
 msgid "AlertSettings|HTTP Endpoint"
 msgstr ""
 
-msgid "AlertSettings|If you edit the payload, the stored mapping will be reset, and you'll need to re-map the fields."
+msgid "AlertSettings|If you edit the payload, you must re-map the fields again."
 msgstr ""
 
-msgid "AlertSettings|If you intend to create a custom mapping, provide an example payload from your monitoring tool and click the \"parse payload fields\" button to continue. The sample payload is required for completing the custom mapping;  if you want to skip the mapping step, progress straight to saving your integration."
-msgstr ""
-
-msgid "AlertSettings|In free versions of GitLab, only one integration for each type can be added. %{linkStart}Upgrade your subscription%{linkEnd} to add additional integrations."
+msgid "AlertSettings|If you reset the authorization key for this project, you must update the key in every enabled alert source."
 msgstr ""
 
 msgid "AlertSettings|Integration successfully saved"
@@ -2963,16 +2981,10 @@ msgstr ""
 msgid "AlertSettings|Prometheus API base URL"
 msgstr ""
 
-msgid "AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This will allow you to send an alert to an active GitLab alerting point."
-msgstr ""
-
 msgid "AlertSettings|Reset Key"
 msgstr ""
 
 msgid "AlertSettings|Reset the mapping"
-msgstr ""
-
-msgid "AlertSettings|Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in."
 msgstr ""
 
 msgid "AlertSettings|Sample payload has been parsed. You can now map the fields."
@@ -2996,22 +3008,22 @@ msgstr ""
 msgid "AlertSettings|Send without saving"
 msgstr ""
 
-msgid "AlertSettings|The default GitLab alert fields are listed below. If you choose to map your payload keys to GitLab's, please make a selection in the dropdowns below. You may also opt to leave the fields unmapped and move straight to saving your integration."
-msgstr ""
-
 msgid "AlertSettings|The form has unsaved changes"
 msgstr ""
 
 msgid "AlertSettings|The form has unsaved changes. How would you like to proceed?"
 msgstr ""
 
-msgid "AlertSettings|URL cannot be blank and must start with http or https"
+msgid "AlertSettings|To create a custom mapping, enter an example payload from your monitoring tool, in JSON format. Select the \"Parse payload fields\" button to continue."
 msgstr ""
 
-msgid "AlertSettings|Utilize the URL and authorization key below to authorize Prometheus to send alerts to GitLab. Review the Prometheus documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
+msgid "AlertSettings|URL cannot be blank and must start with http: or https:."
 msgstr ""
 
-msgid "AlertSettings|Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
+msgid "AlertSettings|Use the URL and authorization key below to configure how Prometheus sends alerts to GitLab. Review the %{linkStart}GitLab documentation%{linkEnd} to learn how to configure your endpoint."
+msgstr ""
+
+msgid "AlertSettings|Use the URL and authorization key below to configure how an external service sends alerts to GitLab. %{linkStart}How do I configure the endpoint?%{linkEnd}"
 msgstr ""
 
 msgid "AlertSettings|View URL and authorization key"
@@ -3021,6 +3033,9 @@ msgid "AlertSettings|View credentials"
 msgstr ""
 
 msgid "AlertSettings|Webhook URL"
+msgstr ""
+
+msgid "AlertSettings|You can map default GitLab alert fields to your payload keys in the dropdowns below."
 msgstr ""
 
 msgid "AlertSettings|You can now set up alert endpoints for manually configured Prometheus instances in the Alerts section on the Operations settings page. Alert endpoint fields on this page have been deprecated."
@@ -3041,13 +3056,16 @@ msgstr ""
 msgid "AlertsIntegrations|Current integrations"
 msgstr ""
 
+msgid "AlertsIntegrations|If you delete the %{integrationName} integration, alerts are no longer sent from this endpoint. This action cannot be undone."
+msgstr ""
+
 msgid "AlertsIntegrations|Integration Name"
 msgstr ""
 
 msgid "AlertsIntegrations|Integration payload is invalid."
 msgstr ""
 
-msgid "AlertsIntegrations|No integrations have been added yet"
+msgid "AlertsIntegrations|No integrations have been added yet."
 msgstr ""
 
 msgid "AlertsIntegrations|The current integration could not be updated. Please try again."
@@ -3059,22 +3077,19 @@ msgstr ""
 msgid "AlertsIntegrations|The integration could not be deleted. Please try again."
 msgstr ""
 
-msgid "AlertsIntegrations|The integration has been successfully removed."
-msgstr ""
-
-msgid "AlertsIntegrations|The integration has been successfully saved."
-msgstr ""
-
 msgid "AlertsIntegrations|The integration is currently inactive. Enable the integration to send the test alert."
+msgstr ""
+
+msgid "AlertsIntegrations|The integration is deleted."
+msgstr ""
+
+msgid "AlertsIntegrations|The integration is saved."
 msgstr ""
 
 msgid "AlertsIntegrations|The integration token could not be reset. Please try again."
 msgstr ""
 
-msgid "AlertsIntegrations|The test alert has been successfully sent, and should now be visible on your alerts list."
-msgstr ""
-
-msgid "AlertsIntegrations|You have opted to delete the %{integrationName} integration. Do you want to proceed? It means you will no longer receive alerts from this endpoint in your alert list, and this action cannot be undone."
+msgid "AlertsIntegrations|The test alert should now be visible in your alerts list."
 msgstr ""
 
 msgid "Algorithm"
@@ -3620,7 +3635,7 @@ msgstr ""
 msgid "An error occurred while trying to generate the report. Please try again later."
 msgstr ""
 
-msgid "An error occurred while trying to run a new pipeline for this Merge Request."
+msgid "An error occurred while trying to run a new pipeline for this merge request."
 msgstr ""
 
 msgid "An error occurred while unsubscribing to notifications."
@@ -4257,7 +4272,7 @@ msgstr ""
 msgid "Assigned Issues"
 msgstr ""
 
-msgid "Assigned Merge Requests"
+msgid "Assigned merge requests"
 msgstr ""
 
 msgid "Assigned projects"
@@ -4618,7 +4633,16 @@ msgstr ""
 msgid "Average per day: %{average}"
 msgstr ""
 
+msgid "Award added"
+msgstr ""
+
+msgid "Award removed"
+msgstr ""
+
 msgid "AwardEmoji|No emojis found."
+msgstr ""
+
+msgid "Back"
 msgstr ""
 
 msgid "Back to page %{number}"
@@ -5569,6 +5593,9 @@ msgid "Cancel running"
 msgstr ""
 
 msgid "Cancel this job"
+msgstr ""
+
+msgid "Cancel your account"
 msgstr ""
 
 msgid "Cancel, keep project"
@@ -11169,7 +11196,7 @@ msgstr ""
 msgid "Dismissed on pipeline %{pipelineLink} at %{projectLink}"
 msgstr ""
 
-msgid "Display alerts from all your monitoring tools directly within GitLab."
+msgid "Display alerts from all configured monitoring tools."
 msgstr ""
 
 msgid "Display name"
@@ -12201,7 +12228,7 @@ msgstr ""
 msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
 msgstr ""
 
-msgid "Epics, Issues, and Merge Requests"
+msgid "Epics, issues, and merge requests"
 msgstr ""
 
 msgid "Epics|%{startDate} – %{dueDate}"
@@ -12900,9 +12927,6 @@ msgstr ""
 msgid "Failed to clone this issue: wrong parameters."
 msgstr ""
 
-msgid "Failed to create Merge Request. Please try again."
-msgstr ""
-
 msgid "Failed to create a branch for this issue. Please try again."
 msgstr ""
 
@@ -12913,6 +12937,9 @@ msgid "Failed to create framework"
 msgstr ""
 
 msgid "Failed to create import label for jira import."
+msgstr ""
+
+msgid "Failed to create merge request. Please try again."
 msgstr ""
 
 msgid "Failed to create new project access token: %{token_response_message}"
@@ -17480,7 +17507,7 @@ msgstr ""
 msgid "Issues Rate Limits"
 msgstr ""
 
-msgid "Issues and Merge Requests"
+msgid "Issues and merge requests"
 msgstr ""
 
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
@@ -19425,9 +19452,6 @@ msgstr ""
 msgid "Merge Request Analytics"
 msgstr ""
 
-msgid "Merge Request Commits"
-msgstr ""
-
 msgid "Merge Requests"
 msgstr ""
 
@@ -19483,6 +19507,9 @@ msgid "Merge request approval settings have been updated."
 msgstr ""
 
 msgid "Merge request approvals"
+msgstr ""
+
+msgid "Merge request commits"
 msgstr ""
 
 msgid "Merge request dependencies"
@@ -25115,7 +25142,7 @@ msgstr ""
 msgid "Promotions|Not now, thanks!"
 msgstr ""
 
-msgid "Promotions|See the other features in the %{subscription_link_start}bronze plan%{subscription_link_end}"
+msgid "Promotions|See the other features in the %{subscription_link_start}Premium plan%{subscription_link_end}"
 msgstr ""
 
 msgid "Promotions|Start GitLab Ultimate trial"
@@ -27396,6 +27423,9 @@ msgid "SecurityConfiguration|Configure"
 msgstr ""
 
 msgid "SecurityConfiguration|Configure via Merge Request"
+msgstr ""
+
+msgid "SecurityConfiguration|Configure via merge request"
 msgstr ""
 
 msgid "SecurityConfiguration|Could not retrieve configuration data. Please refresh the page, or try again later."
@@ -32922,6 +32952,9 @@ msgstr ""
 msgid "Unfortunately, your email message to GitLab could not be processed."
 msgstr ""
 
+msgid "Unhappy?"
+msgstr ""
+
 msgid "Uninstall"
 msgstr ""
 
@@ -33396,13 +33429,13 @@ msgstr ""
 msgid "UsageTrends|Issues"
 msgstr ""
 
-msgid "UsageTrends|Issues & Merge Requests"
+msgid "UsageTrends|Issues & merge requests"
 msgstr ""
 
 msgid "UsageTrends|Items"
 msgstr ""
 
-msgid "UsageTrends|Merge Requests"
+msgid "UsageTrends|Merge requests"
 msgstr ""
 
 msgid "UsageTrends|Month"
@@ -36970,6 +37003,9 @@ msgid "mrWidget|This project is archived, write access has been disabled"
 msgstr ""
 
 msgid "mrWidget|To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
+msgstr ""
+
+msgid "mrWidget|To merge, a Jira issue key must be mentioned in the title or description."
 msgstr ""
 
 msgid "mrWidget|Use %{linkStart}CI pipelines to test your code%{linkEnd} by simply adding a GitLab CI configuration file to your project. It only takes a minute to make your code more secure and robust."

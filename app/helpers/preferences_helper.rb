@@ -33,7 +33,7 @@ module PreferencesHelper
       groups: _("Your Groups"),
       todos: _("Your To-Do List"),
       issues: _("Assigned Issues"),
-      merge_requests: _("Assigned Merge Requests"),
+      merge_requests: _("Assigned merge requests"),
       operations: _("Operations Dashboard")
     }.with_indifferent_access.freeze
   end

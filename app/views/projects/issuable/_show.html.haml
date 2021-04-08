@@ -1,3 +1,4 @@
+- api_awards_path = local_assigns.fetch(:api_awards_path, nil)
 - page_description issuable.description_html
 - page_card_attributes issuable.card_attributes
 - if issuable.relocation_target
@@ -6,4 +7,4 @@
 = render "projects/issues/alert_moved_from_service_desk", issue: issuable
 
 = render 'shared/issue_type/details_header', issuable: issuable
-= render 'shared/issue_type/details_content', issuable: issuable
+= render 'shared/issue_type/details_content', issuable: issuable, api_awards_path: api_awards_path

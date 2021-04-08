@@ -559,19 +559,19 @@ export const PROJECT_FILES_SHORTCUTS_GROUP = {
 
 export const ISSUABLE_SHORTCUTS_GROUP = {
   id: 'issuables',
-  name: __('Epics, Issues, and Merge Requests'),
+  name: __('Epics, issues, and merge requests'),
   keybindings: [ISSUABLE_COMMENT_OR_REPLY, ISSUABLE_EDIT_DESCRIPTION, ISSUABLE_CHANGE_LABEL],
 };
 
 export const ISSUE_MR_SHORTCUTS_GROUP = {
   id: 'issuesMRs',
-  name: __('Issues and Merge Requests'),
+  name: __('Issues and merge requests'),
   keybindings: [ISSUE_MR_CHANGE_ASSIGNEE, ISSUE_MR_CHANGE_MILESTONE],
 };
 
 export const MR_SHORTCUTS_GROUP = {
   id: 'mergeRequests',
-  name: __('Merge Requests'),
+  name: __('Merge requests'),
   keybindings: [
     MR_NEXT_FILE_IN_DIFF,
     MR_PREVIOUS_FILE_IN_DIFF,
@@ -584,7 +584,7 @@ export const MR_SHORTCUTS_GROUP = {
 
 export const MR_COMMITS_SHORTCUTS_GROUP = {
   id: 'mergeRequestCommits',
-  name: __('Merge Request Commits'),
+  name: __('Merge request commits'),
   keybindings: [MR_COMMITS_NEXT_COMMIT, MR_COMMITS_PREVIOUS_COMMIT],
 };
 

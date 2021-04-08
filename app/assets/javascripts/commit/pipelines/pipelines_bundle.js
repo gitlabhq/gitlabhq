@@ -5,8 +5,8 @@ import CommitPipelinesTable from './pipelines_table.vue';
  * Used in:
  *  - Project Pipelines List (projects:pipelines:index)
  *  - Commit details View > Pipelines Tab > Pipelines Table (projects:commit:pipelines)
- *  - Merge Request details View > Pipelines Tab > Pipelines Table (projects:merge_requests:show)
- *  - New Merge Request View > Pipelines Tab > Pipelines Table (projects:merge_requests:creations:new)
+ *  - Merge request details View > Pipelines Tab > Pipelines Table (projects:merge_requests:show)
+ *  - New merge request View > Pipelines Tab > Pipelines Table (projects:merge_requests:creations:new)
  */
 export default () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');

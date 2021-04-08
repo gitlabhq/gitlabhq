@@ -10,7 +10,7 @@ export const i18n = {
     selectType: {
       label: s__('AlertSettings|Select integration type'),
       enterprise: s__(
-        'AlertSettings|In free versions of GitLab, only one integration for each type can be added. %{linkStart}Upgrade your subscription%{linkEnd} to add additional integrations.',
+        'AlertSettings|Free versions of GitLab are limited to one integration per type. To add more, %{linkStart}upgrade your subscription%{linkEnd}.',
       ),
     },
     nameIntegration: {
@@ -22,15 +22,15 @@ export const i18n = {
     enableIntegration: {
       label: s__('AlertSettings|Enable integration'),
       help: s__(
-        'AlertSettings|A webhook URL and authorization key will be generated for the integration. Both will be visible after saving the integration in the “View credentials” tab.',
+        'AlertSettings|A webhook URL and authorization key is generated for the integration. After you save the integration, both are visible under the “View credentials” tab.',
       ),
     },
     setupCredentials: {
       help: s__(
-        "AlertSettings|Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint.",
+        'AlertSettings|Use the URL and authorization key below to configure how an external service sends alerts to GitLab. %{linkStart}How do I configure the endpoint?%{linkEnd}',
       ),
       prometheusHelp: s__(
-        'AlertSettings|Utilize the URL and authorization key below to authorize Prometheus to send alerts to GitLab. Review the Prometheus documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint.',
+        'AlertSettings|Use the URL and authorization key below to configure how Prometheus sends alerts to GitLab. Review the %{linkStart}GitLab documentation%{linkEnd} to learn how to configure your endpoint.',
       ),
       webhookUrl: s__('AlertSettings|Webhook URL'),
       authorizationKey: s__('AlertSettings|Authorization key'),
@@ -39,7 +39,7 @@ export const i18n = {
     mapFields: {
       label: s__('AlertSettings|Customize alert payload mapping (optional)'),
       help: s__(
-        'AlertSettings|If you intend to create a custom mapping, provide an example payload from your monitoring tool and click the "parse payload fields" button to continue. The sample payload is required for completing the custom mapping;  if you want to skip the mapping step, progress straight to saving your integration.',
+        'AlertSettings|To create a custom mapping, enter an example payload from your monitoring tool, in JSON format. Select the "Parse payload fields" button to continue.',
       ),
       placeholder: s__('AlertSettings|{ "events": [{ "application": "Name of application" }] }'),
       editPayload: s__('AlertSettings|Edit payload'),
@@ -48,17 +48,15 @@ export const i18n = {
         'AlertSettings|Sample payload has been parsed. You can now map the fields.',
       ),
       resetHeader: s__('AlertSettings|Reset the mapping'),
-      resetBody: s__(
-        "AlertSettings|If you edit the payload, the stored mapping will be reset, and you'll need to re-map the fields.",
-      ),
+      resetBody: s__('AlertSettings|If you edit the payload, you must re-map the fields again.'),
       resetOk: s__('AlertSettings|Proceed with editing'),
       mapIntro: s__(
-        "AlertSettings|The default GitLab alert fields are listed below. If you choose to map your payload keys to GitLab's, please make a selection in the dropdowns below. You may also opt to leave the fields unmapped and move straight to saving your integration.",
+        'AlertSettings|You can map default GitLab alert fields to your payload keys in the dropdowns below.',
       ),
     },
     testPayload: {
       help: s__(
-        'AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This will allow you to send an alert to an active GitLab alerting point.',
+        'AlertSettings|Enter an example payload from your selected monitoring tool. This supports sending alerts to a GitLab endpoint.',
       ),
       placeholder: s__('AlertSettings|{ "events": [{ "application": "Name of application" }] }'),
       modalTitle: s__('AlertSettings|The form has unsaved changes'),
@@ -69,13 +67,13 @@ export const i18n = {
     },
     prometheusFormUrl: {
       label: s__('AlertSettings|Prometheus API base URL'),
-      help: s__('AlertSettings|URL cannot be blank and must start with http or https'),
+      help: s__('AlertSettings|URL cannot be blank and must start with http: or https:.'),
       blankUrlError: __('URL cannot be blank'),
       invalidUrlError: __('URL is invalid'),
     },
     restKeyInfo: {
       label: s__(
-        'AlertSettings|Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in.',
+        'AlertSettings|If you reset the authorization key for this project, you must update the key in every enabled alert source.',
       ),
     },
   },
@@ -87,15 +85,13 @@ export const i18n = {
   integrationCreated: {
     title: s__('AlertSettings|Integration successfully saved'),
     successMsg: s__(
-      'AlertSettings|A URL and authorization key  have been created for your integration. You will need them to setup a webhook and authorize your endpoint to send alerts to GitLab.',
+      'AlertSettings|GitLab has created a URL and authorization key for your integration. You can use them to set up a webhook and authorize your endpoint to send alerts to GitLab.',
     ),
     btnCaption: s__('AlertSettings|View URL and authorization key'),
   },
-  changesSaved: s__('AlertsIntegrations|The integration has been successfully saved.'),
-  integrationRemoved: s__('AlertsIntegrations|The integration has been successfully removed.'),
-  alertSent: s__(
-    'AlertsIntegrations|The test alert has been successfully sent, and should now be visible on your alerts list.',
-  ),
+  changesSaved: s__('AlertsIntegrations|The integration is saved.'),
+  integrationRemoved: s__('AlertsIntegrations|The integration is deleted.'),
+  alertSent: s__('AlertsIntegrations|The test alert should now be visible in your alerts list.'),
   addNewIntegration: s__('AlertSettings|Add new integration'),
 };
 

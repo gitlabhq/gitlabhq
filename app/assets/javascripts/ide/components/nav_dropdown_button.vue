@@ -36,7 +36,7 @@ export default {
         <gl-icon :size="16" :aria-label="__('Current Branch')" name="branch" /> {{ branchLabel }}
       </span>
       <span v-if="showMergeRequests" class="col-5 pl-0 text-truncate">
-        <gl-icon :size="16" :aria-label="__('Merge Request')" name="merge-request" />
+        <gl-icon :size="16" :aria-label="__('Merge request')" name="merge-request" />
         {{ mergeRequestLabel }}
       </span>
     </span>

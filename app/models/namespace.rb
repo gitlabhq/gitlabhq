@@ -111,7 +111,7 @@ class Namespace < ApplicationRecord
 
   # Make sure that the name is same as strong_memoize name in root_ancestor
   # method
-  attr_writer :root_ancestor
+  attr_writer :root_ancestor, :emails_disabled_memoized
 
   class << self
     def by_path(path)
@@ -239,7 +239,7 @@ class Namespace < ApplicationRecord
 
   # any ancestor can disable emails for all descendants
   def emails_disabled?
-    strong_memoize(:emails_disabled) do
+    strong_memoize(:emails_disabled_memoized) do
       if parent_id
         self_and_ancestors.where(emails_disabled: true).exists?
       else

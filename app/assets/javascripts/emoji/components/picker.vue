@@ -82,6 +82,8 @@ export default {
       no-flip
       right
       lazy
+      @shown="$emit('shown')"
+      @hidden="$emit('hidden')"
     >
       <template #button-content><slot name="button-content"></slot></template>
       <gl-search-box-by-type

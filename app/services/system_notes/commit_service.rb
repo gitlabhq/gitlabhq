@@ -2,7 +2,7 @@
 
 module SystemNotes
   class CommitService < ::SystemNotes::BaseService
-    # Called when commits are added to a Merge Request
+    # Called when commits are added to a merge request
     #
     # new_commits      - Array of Commits added since last push
     # existing_commits - Array of Commits added in a previous push

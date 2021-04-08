@@ -161,7 +161,7 @@ module TodosHelper
     [
       { id: '', text: 'Any Type' },
       { id: 'Issue', text: 'Issue' },
-      { id: 'MergeRequest', text: 'Merge Request' },
+      { id: 'MergeRequest', text: 'Merge request' },
       { id: 'DesignManagement::Design', text: 'Design' },
       { id: 'AlertManagement::Alert', text: 'Alert' }
     ]

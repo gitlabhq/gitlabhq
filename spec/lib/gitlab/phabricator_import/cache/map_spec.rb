@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::PhabricatorImport::Cache::Map, :clean_gitlab_redis_cache do
   let_it_be(:project) { create(:project) }
+
   let(:redis) { Gitlab::Redis::Cache }
 
   subject(:map) { described_class.new(project) }

@@ -43,6 +43,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:new_pipelines_table, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:usage_data_i_testing_summary_widget_total, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
 
     record_experiment_user(:invite_members_version_b)
 

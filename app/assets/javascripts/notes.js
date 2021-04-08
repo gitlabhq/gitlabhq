@@ -106,7 +106,7 @@ export default class Notes {
     this.collapseLongCommitList();
     this.setViewType(view);
 
-    // We are in the Merge Requests page so we need another edit form for Changes tab
+    // We are in the merge requests page so we need another edit form for Changes tab
     if (getPagePath(1) === 'merge_requests') {
       $('.note-edit-form').clone().addClass('mr-note-edit-form').insertAfter('.note-edit-form');
     }

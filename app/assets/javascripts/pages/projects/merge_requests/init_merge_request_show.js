@@ -13,13 +13,21 @@ import initSourcegraph from '~/sourcegraph';
 import ZenMode from '~/zen_mode';
 
 export default function initMergeRequestShow() {
+  const awardEmojiEl = document.getElementById('js-vue-awards-block');
+
   new ZenMode(); // eslint-disable-line no-new
   initIssuableSidebar();
   initPipelines();
   new ShortcutsIssuable(true); // eslint-disable-line no-new
   handleLocationHash();
   initSourcegraph();
-  loadAwardsHandler();
+  if (awardEmojiEl) {
+    import('~/emoji/awards_app')
+      .then((m) => m.default(awardEmojiEl))
+      .catch(() => {});
+  } else {
+    loadAwardsHandler();
+  }
   initInviteMemberModal();
   initInviteMemberTrigger();
   initInviteMembersModal();

@@ -190,6 +190,10 @@ module Gitlab
           migration_status = batch_max_value.nil? ? :finished : :active
           batch_max_value ||= batch_min_value
 
+          # We keep track of the estimated number of tuples to reason later
+          # about the overall progress of a migration.
+          total_tuple_count = Gitlab::Database::PgClass.for_table(batch_table_name)&.cardinality_estimate
+
           Gitlab::Database::BackgroundMigration::BatchedMigration.create!(
             job_class_name: job_class_name,
             table_name: batch_table_name,
@@ -201,7 +205,8 @@ module Gitlab
             batch_size: batch_size,
             sub_batch_size: sub_batch_size,
             job_arguments: job_arguments,
-            status: migration_status)
+            status: migration_status,
+            total_tuple_count: total_tuple_count)
         end
 
         def perform_background_migration_inline?

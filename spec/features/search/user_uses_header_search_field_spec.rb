@@ -175,7 +175,7 @@ RSpec.describe 'User uses header search field', :js do
         fill_in_search('Merge')
 
         within(dashboard_search_options_popup_menu) do
-          expect(page).to have_text('Merge Requests')
+          expect(page).to have_text('Merge requests')
         end
       end
 

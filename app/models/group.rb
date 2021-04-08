@@ -180,6 +180,25 @@ class Group < Namespace
       groups.drop(1).each { |group| group.root_ancestor = root }
     end
 
+    # Returns the ids of the passed group models where the `emails_disabled`
+    # column is set to true anywhere in the ancestor hierarchy.
+    def ids_with_disabled_email(groups)
+      innner_query = Gitlab::ObjectHierarchy
+        .new(Group.where('id = namespaces_with_emails_disabled.id'))
+        .base_and_ancestors
+        .where(emails_disabled: true)
+        .select('1')
+        .limit(1)
+
+      group_ids = Namespace
+        .from('(SELECT * FROM namespaces) as namespaces_with_emails_disabled')
+        .where(namespaces_with_emails_disabled: { id: groups })
+        .where('EXISTS (?)', innner_query)
+        .pluck(:id)
+
+      Set.new(group_ids)
+    end
+
     private
 
     def public_to_user_arel(user)

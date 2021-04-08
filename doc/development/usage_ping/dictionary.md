@@ -1028,18 +1028,6 @@ Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
-### `counts.geo_node_usage.git_fetch_event_count_weekly`
-
-Number of Git fetch events from Prometheus on the Geo secondary
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210309194425_git_fetch_event_count_weekly.yml)
-
-Group: `group::geo`
-
-Status: `implemented`
-
-Tiers: `premium`, `ultimate`
-
 ### `counts.geo_nodes`
 
 Total number of sites in a Geo deployment
@@ -14817,6 +14805,18 @@ Group: ``
 Status: `data_available`
 
 Tiers: `free`
+
+### `usage_activity_by_stage.enablement.counts.geo_node_usage.git_fetch_event_count_weekly`
+
+Number of Git fetch events from Prometheus on the Geo secondary
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210309194425_git_fetch_event_count_weekly.yml)
+
+Group: `group::geo`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.manage.bulk_imports.gitlab`
 

@@ -33,7 +33,7 @@ RSpec.describe PreferencesHelper do
         ["Your Groups", 'groups'],
         ["Your To-Do List", 'todos'],
         ["Assigned Issues", 'issues'],
-        ["Assigned Merge Requests", 'merge_requests']
+        ["Assigned merge requests", 'merge_requests']
       ]
     end
   end

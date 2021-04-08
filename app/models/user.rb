@@ -1358,9 +1358,11 @@ class User < ApplicationRecord
   end
 
   def public_verified_emails
-    emails = verified_emails(include_private_email: false)
-    emails << email unless temp_oauth_email?
-    emails.uniq
+    strong_memoize(:public_verified_emails) do
+      emails = verified_emails(include_private_email: false)
+      emails << email unless temp_oauth_email?
+      emails.uniq
+    end
   end
 
   def any_email?(check_email)

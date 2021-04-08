@@ -186,6 +186,12 @@ module IssuesHelper
   def scoped_labels_available?(parent)
     false
   end
+
+  def award_emoji_issue_api_path(issue)
+    if Feature.enabled?(:improved_emoji_picker, issue.project, default_enabled: :yaml)
+      api_v4_projects_issues_award_emoji_path(id: issue.project.id, issue_iid: issue.iid)
+    end
+  end
 end
 
 IssuesHelper.prepend_if_ee('EE::IssuesHelper')

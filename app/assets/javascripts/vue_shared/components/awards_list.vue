@@ -44,6 +44,16 @@ export default {
       required: false,
       default: () => [],
     },
+    selectedClass: {
+      type: String,
+      required: false,
+      default: 'selected',
+    },
+  },
+  data() {
+    return {
+      isMenuOpen: false,
+    };
   },
   computed: {
     groupedDefaultAwards() {
@@ -68,7 +78,7 @@ export default {
   methods: {
     getAwardClassBindings(awardList) {
       return {
-        selected: this.hasReactionByCurrentUser(awardList),
+        [this.selectedClass]: this.hasReactionByCurrentUser(awardList),
         disabled: this.currentUserId === NO_USER_ID,
       };
     },
@@ -147,6 +157,11 @@ export default {
       const parsedName = /^[0-9]+$/.test(awardName) ? Number(awardName) : awardName;
 
       this.$emit('award', parsedName);
+
+      if (document.activeElement) document.activeElement.blur();
+    },
+    setIsMenuOpen(menuOpen) {
+      this.isMenuOpen = menuOpen;
     },
   },
 };
@@ -172,8 +187,10 @@ export default {
     <div v-if="canAwardEmoji" class="award-menu-holder">
       <emoji-picker
         v-if="glFeatures.improvedEmojiPicker"
-        toggle-class="add-reaction-button gl-relative!"
+        :toggle-class="['add-reaction-button gl-relative!', { 'is-active': isMenuOpen }]"
         @click="handleAward"
+        @shown="setIsMenuOpen(true)"
+        @hidden="setIsMenuOpen(false)"
       >
         <template #button-content>
           <span class="reaction-control-icon reaction-control-icon-neutral">

@@ -263,7 +263,15 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
   end
 
   describe '#queue_batched_background_migration' do
+    let(:pgclass_info) { instance_double('Gitlab::Database::PgClass', cardinality_estimate: 42) }
+
+    before do
+      allow(Gitlab::Database::PgClass).to receive(:for_table).and_call_original
+    end
+
     it 'creates the database record for the migration' do
+      expect(Gitlab::Database::PgClass).to receive(:for_table).with(:projects).and_return(pgclass_info)
+
       expect do
         model.queue_batched_background_migration(
           'MyJobClass',
@@ -288,7 +296,8 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
         batch_size: 100,
         sub_batch_size: 10,
         job_arguments: %w[],
-        status: 'active')
+        status: 'active',
+        total_tuple_count: pgclass_info.cardinality_estimate)
     end
 
     context 'when the job interval is lower than the minimum' do

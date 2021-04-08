@@ -24,7 +24,7 @@ describe('UsageTrendsApp', () => {
     expect(wrapper.find(UsageCounts).exists()).toBe(true);
   });
 
-  ['Total projects & groups', 'Pipelines', 'Issues & Merge Requests'].forEach((usage) => {
+  ['Total projects & groups', 'Pipelines', 'Issues & merge requests'].forEach((usage) => {
     it(`displays the ${usage} chart`, () => {
       const chartTitles = wrapper
         .findAll(UsageTrendsCountChart)

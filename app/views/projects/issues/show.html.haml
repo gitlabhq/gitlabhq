@@ -3,5 +3,5 @@
 - breadcrumb_title @issue.to_reference
 - page_title "#{@issue.title} (#{@issue.to_reference})", _("Issues")
 
-= render 'projects/issuable/show', issuable: @issue
+= render 'projects/issuable/show', issuable: @issue, api_awards_path: award_emoji_issue_api_path(@issue)
 = render 'shared/issuable/invite_members_trigger', project: @project

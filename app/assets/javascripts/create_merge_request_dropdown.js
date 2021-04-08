@@ -171,7 +171,7 @@ export default class CreateMergeRequestDropdown {
       })
       .catch(() =>
         createFlash({
-          message: __('Failed to create Merge Request. Please try again.'),
+          message: __('Failed to create merge request. Please try again.'),
         }),
       );
   }

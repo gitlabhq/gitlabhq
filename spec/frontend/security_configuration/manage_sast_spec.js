@@ -79,7 +79,7 @@ describe('Manage Sast Component', () => {
 
   it('should render Button with correct text', () => {
     createComponent();
-    expect(findButton().text()).toContain('Configure via Merge Request');
+    expect(findButton().text()).toContain('Configure via merge request');
   });
 
   describe('given a successful response', () => {

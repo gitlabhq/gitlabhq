@@ -283,7 +283,7 @@ const Api = {
   },
 
   /**
-   * Get all Merge Requests for a project, eventually filtering based on
+   * Get all merge requests for a project, eventually filtering based on
    * supplied parameters
    * @param projectPath
    * @param params
@@ -307,7 +307,7 @@ const Api = {
     return axios.post(url, options);
   },
 
-  // Return Merge Request for project
+  // Return merge request for project
   projectMergeRequest(projectPath, mergeRequestId, params = {}) {
     const url = Api.buildUrl(Api.projectMergeRequestPath)
       .replace(':id', encodeURIComponent(projectPath))

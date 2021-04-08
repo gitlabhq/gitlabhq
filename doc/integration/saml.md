@@ -788,6 +788,21 @@ for the SAML user.
 Ensure the IdP provides a claim containing the user's email address, using the
 claim name `email` or `mail`.
 
+### 422 error after login
+
+If you see a "422 error" in GitLab when you are redirected from the SAML
+sign-in page, you might have an incorrectly configured assertion consumer
+service (ACS) URL on the identity provider.
+
+Make sure the ACS URL points to `https://gitlab.example.com/users/auth/saml/callback`, where
+`gitlab.example.com` is the URL of your GitLab instance.
+
+If the ACS URL is correct, and you still have errors, review the other
+[Troubleshooting](#troubleshooting) sections.
+
+If you are sure that the ACS URL is correct, proceed to the [Redirect back to the login screen with no evident error](#redirect-back-to-the-login-screen-with-no-evident-error)
+section for further troubleshooting steps.
+
 ### Redirect back to the login screen with no evident error
 
 If after signing in into your SAML server you are redirected back to the sign in page and
