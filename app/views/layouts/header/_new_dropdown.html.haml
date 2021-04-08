@@ -1,4 +1,4 @@
-%li.header-new.dropdown{ data: { track_label: "new_dropdown", track_event: "click_dropdown", track_value: "" } }
+%li.header-new.dropdown{ data: { track_label: "new_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" } }
   = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip qa-new-menu-toggle", id: "js-onboarding-new-project-link", title: _("New..."), ref: 'tooltip', aria: { label: _("New...") }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body', display: 'static' } do
     = sprite_icon('plus-square')
     = sprite_icon('chevron-down', css_class: 'caret-down')
@@ -37,8 +37,7 @@
           = render 'layouts/header/project_invite_members_new_dropdown_item'
           %li.divider
           %li.dropdown-bold-header GitLab
-      - if current_user.can_create_project?
-        %li= link_to _('New project'), new_project_path, class: 'qa-global-new-project-link'
+      = content_for :new_repo_experiment
       - if current_user.can_create_group?
         %li= link_to _('New group'), new_group_path
       - if current_user.can?(:create_snippet)

@@ -11,6 +11,9 @@ GitLab Notifications allow you to stay informed about what's happening in GitLab
 enabled, you can receive updates about activity in issues, merge requests, epics, and designs.
 Notifications are sent via email.
 
+For the tool that enables GitLab administrators to send messages to users, read
+[Email from GitLab](../../tools/email.md).
+
 ## Receiving notifications
 
 You receive notifications for one of the following reasons:

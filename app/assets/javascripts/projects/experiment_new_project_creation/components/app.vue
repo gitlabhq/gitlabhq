@@ -1,8 +1,9 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlBreadcrumb, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { experiment } from '~/experimentation/utils';
 import { __, s__ } from '~/locale';
-
+import { NEW_REPO_EXPERIMENT } from '../constants';
 import blankProjectIllustration from '../illustrations/blank-project.svg';
 import ciCdProjectIllustration from '../illustrations/ci-cd-project.svg';
 import createFromTemplateIllustration from '../illustrations/create-from-template.svg';
@@ -13,8 +14,10 @@ import WelcomePage from './welcome.vue';
 const BLANK_PANEL = 'blank_project';
 const CI_CD_PANEL = 'cicd_for_external_repo';
 const LAST_ACTIVE_TAB_KEY = 'new_project_last_active_tab';
+
 const PANELS = [
   {
+    key: 'blank',
     name: BLANK_PANEL,
     selector: '#blank-project-pane',
     title: s__('ProjectsNew|Create blank project'),
@@ -24,6 +27,7 @@ const PANELS = [
     illustration: blankProjectIllustration,
   },
   {
+    key: 'template',
     name: 'create_from_template',
     selector: '#create-from-template-pane',
     title: s__('ProjectsNew|Create from template'),
@@ -33,6 +37,7 @@ const PANELS = [
     illustration: createFromTemplateIllustration,
   },
   {
+    key: 'import',
     name: 'import_project',
     selector: '#import-project-pane',
     title: s__('ProjectsNew|Import project'),
@@ -42,6 +47,7 @@ const PANELS = [
     illustration: importProjectIllustration,
   },
   {
+    key: 'ci',
     name: CI_CD_PANEL,
     selector: '#ci-cd-project-pane',
     title: s__('ProjectsNew|Run CI/CD for external repository'),
@@ -86,11 +92,27 @@ export default {
 
   computed: {
     availablePanels() {
+      const PANEL_TITLES = experiment(NEW_REPO_EXPERIMENT, {
+        use: () => ({
+          blank: s__('ProjectsNew|Create blank project'),
+          import: s__('ProjectsNew|Import project'),
+        }),
+        try: () => ({
+          blank: s__('ProjectsNew|Create blank project/repository'),
+          import: s__('ProjectsNew|Import project/repository'),
+        }),
+      });
+
+      const updatedPanels = PANELS.map(({ key, title, ...el }) => ({
+        ...el,
+        title: PANEL_TITLES[key] !== undefined ? PANEL_TITLES[key] : title,
+      }));
+
       if (this.isCiCdAvailable) {
-        return PANELS;
+        return updatedPanels;
       }
 
-      return PANELS.filter((p) => p.name !== CI_CD_PANEL);
+      return updatedPanels.filter((p) => p.name !== CI_CD_PANEL);
     },
 
     activePanel() {

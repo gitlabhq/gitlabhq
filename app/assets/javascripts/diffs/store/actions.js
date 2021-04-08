@@ -793,10 +793,22 @@ export const navigateToDiffFileIndex = ({ commit, state }, index) => {
   commit(types.VIEW_DIFF_FILE, fileHash);
 };
 
-export const setFileByFile = ({ commit }, { fileByFile }) => {
+export const setFileByFile = ({ state, commit }, { fileByFile }) => {
   const fileViewMode = fileByFile ? DIFF_VIEW_FILE_BY_FILE : DIFF_VIEW_ALL_FILES;
   commit(types.SET_FILE_BY_FILE, fileByFile);
   Cookies.set(DIFF_FILE_BY_FILE_COOKIE_NAME, fileViewMode);
+
+  return axios
+    .put(state.endpointUpdateUser, {
+      view_diffs_file_by_file: fileByFile,
+    })
+    .then(() => {
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/326961
+      // We can't even do a simple console warning here because
+      // the pipeline will fail. However, the issue above will
+      // eventually handle errors appropriately.
+      // console.warn('Saving the file-by-fil user preference failed.');
+    });
 };
 
 export function reviewFile({ commit, state }, { file, reviewed = true }) {

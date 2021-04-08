@@ -104,6 +104,7 @@ class User < ApplicationRecord
   # Profile
   has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :expired_today_and_unnotified_keys, -> { expired_today_and_not_notified }, class_name: 'Key'
+  has_many :expiring_soon_and_unnotified_keys, -> { expiring_soon_and_not_notified }, class_name: 'Key'
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :group_deploy_keys
   has_many :gpg_keys
@@ -401,6 +402,14 @@ class User < ApplicationRecord
         .select(1)
         .where('keys.user_id = users.id')
         .expired_today_and_not_notified)
+  end
+  scope :with_ssh_key_expiring_soon, -> do
+    includes(:expiring_soon_and_unnotified_keys)
+      .where('EXISTS (?)',
+         ::Key
+         .select(1)
+         .where('keys.user_id = users.id')
+         .expiring_soon_and_not_notified)
   end
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }

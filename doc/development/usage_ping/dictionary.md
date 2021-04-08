@@ -9956,6 +9956,30 @@ Status: `implemented`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.g_project_management_epic_users_changing_labels_monthly`
+
+Count of MAU chaging the epic lables
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210312195730_g_project_management_epic_labels_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_epic_users_changing_labels_weekly`
+
+Count of WAU chaging the epic lables
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210312195849_g_project_management_epic_labels_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.g_project_management_issue_promoted_to_epic_monthly`
 
 Count of MAU promoting issues to epics

@@ -76,36 +76,6 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     presenter(merge_request).cancel_auto_merge_path
   end
 
-  expose :test_reports_path do |merge_request|
-    if merge_request.has_test_reports?
-      test_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
-    end
-  end
-
-  expose :accessibility_report_path do |merge_request|
-    if merge_request.has_accessibility_reports?
-      accessibility_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
-    end
-  end
-
-  expose :codequality_reports_path do |merge_request|
-    if merge_request.has_codequality_reports?
-      codequality_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
-    end
-  end
-
-  expose :terraform_reports_path do |merge_request|
-    if merge_request.has_terraform_reports?
-      terraform_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
-    end
-  end
-
-  expose :exposed_artifacts_path do |merge_request|
-    if merge_request.has_exposed_artifacts?
-      exposed_artifacts_project_merge_request_path(merge_request.project, merge_request, format: :json)
-    end
-  end
-
   expose :create_issue_to_resolve_discussions_path do |merge_request|
     presenter(merge_request).create_issue_to_resolve_discussions_path
   end

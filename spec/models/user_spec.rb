@@ -1001,15 +1001,24 @@ RSpec.describe User do
       end
     end
 
-    describe '.with_ssh_key_expired_today' do
+    context 'SSH key expiration scopes' do
       let_it_be(:user1) { create(:user) }
-      let_it_be(:expired_today_not_notified) { create(:key, expires_at: Time.current, user: user1) }
-
       let_it_be(:user2) { create(:user) }
+      let_it_be(:expired_today_not_notified) { create(:key, expires_at: Time.current, user: user1) }
       let_it_be(:expired_today_already_notified) { create(:key, expires_at: Time.current, user: user2, expiry_notification_delivered_at: Time.current) }
+      let_it_be(:expiring_soon_not_notified) { create(:key, expires_at: 2.days.from_now, user: user2) }
+      let_it_be(:expiring_soon_notified) { create(:key, expires_at: 2.days.from_now, user: user1, before_expiry_notification_delivered_at: Time.current) }
 
-      it 'returns users whose token has expired today' do
-        expect(described_class.with_ssh_key_expired_today).to contain_exactly(user1)
+      describe '.with_ssh_key_expired_today' do
+        it 'returns users whose key has expired today' do
+          expect(described_class.with_ssh_key_expired_today).to contain_exactly(user1)
+        end
+      end
+
+      describe '.with_ssh_key_expiring_soon' do
+        it 'returns users whose keys will expire soon' do
+          expect(described_class.with_ssh_key_expiring_soon).to contain_exactly(user2)
+        end
       end
     end
 

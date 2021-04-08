@@ -1,5 +1,6 @@
 import { GlBreadcrumb } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { assignGitlabExperiment } from 'helpers/experimentation_helper';
 import App from '~/projects/experiment_new_project_creation/components/app.vue';
 import LegacyContainer from '~/projects/experiment_new_project_creation/components/legacy_container.vue';
 import WelcomePage from '~/projects/experiment_new_project_creation/components/welcome.vue';
@@ -15,6 +16,34 @@ describe('Experimental new project creation app', () => {
     wrapper.destroy();
     window.location.hash = '';
     wrapper = null;
+  });
+
+  const findWelcomePage = () => wrapper.findComponent(WelcomePage);
+  const findPanel = (panelName) =>
+    findWelcomePage()
+      .props()
+      .panels.find((p) => p.name === panelName);
+
+  describe('new_repo experiment', () => {
+    describe('when in the candidate variant', () => {
+      assignGitlabExperiment('new_repo', 'candidate');
+
+      it('has "repository" in the panel title', () => {
+        createComponent();
+
+        expect(findPanel('blank_project').title).toBe('Create blank project/repository');
+      });
+    });
+
+    describe('when in the control variant', () => {
+      assignGitlabExperiment('new_repo', 'control');
+
+      it('has "project" in the panel title', () => {
+        createComponent();
+
+        expect(findPanel('blank_project').title).toBe('Create blank project');
+      });
+    });
   });
 
   describe('with empty hash', () => {

@@ -114,6 +114,36 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     presenter(merge_request).api_unapprove_path
   end
 
+  expose :test_reports_path do |merge_request|
+    if merge_request.has_test_reports?
+      test_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
+    end
+  end
+
+  expose :accessibility_report_path do |merge_request|
+    if merge_request.has_accessibility_reports?
+      accessibility_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
+    end
+  end
+
+  expose :codequality_reports_path do |merge_request|
+    if merge_request.has_codequality_reports?
+      codequality_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
+    end
+  end
+
+  expose :terraform_reports_path do |merge_request|
+    if merge_request.has_terraform_reports?
+      terraform_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
+    end
+  end
+
+  expose :exposed_artifacts_path do |merge_request|
+    if merge_request.has_exposed_artifacts?
+      exposed_artifacts_project_merge_request_path(merge_request.project, merge_request, format: :json)
+    end
+  end
+
   expose :blob_path do
     expose :head_path, if: -> (mr, _) { mr.source_branch_sha } do |merge_request|
       project_blob_path(merge_request.project, merge_request.source_branch_sha)

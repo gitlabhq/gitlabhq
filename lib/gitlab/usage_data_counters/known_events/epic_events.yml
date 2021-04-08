@@ -122,3 +122,9 @@
   redis_slot: project_management
   aggregation: daily
   feature_flag: track_epics_activity
+
+- name: g_project_management_epic_users_changing_labels
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity

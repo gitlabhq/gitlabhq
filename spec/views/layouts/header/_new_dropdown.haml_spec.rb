@@ -163,6 +163,7 @@ RSpec.describe 'layouts/header/_new_dropdown' do
     end
 
     it 'has a "New project" link' do
+      render('layouts/header/new_repo_experiment')
       render
 
       expect(rendered).to have_link('New project', href: new_project_path)

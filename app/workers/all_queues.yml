@@ -451,6 +451,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ssh_keys_expiring_soon_notification
+  :feature_category: :compliance_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:stuck_ci_jobs
   :feature_category: :continuous_integration
   :has_external_dependencies:

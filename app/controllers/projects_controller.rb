@@ -74,6 +74,7 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
+      experiment(:new_repo, user: current_user).track(:project_created)
       experiment(:new_project_readme, actor: current_user).track(
         :created,
         property: active_new_project_tab,

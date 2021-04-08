@@ -116,6 +116,22 @@ RSpec.describe 'Project > Settings > Access Tokens', :js do
           end
         end
 
+        context 'with nested groups' do
+          let(:subgroup) { create(:group, parent: group) }
+
+          context 'when user is not a top level group owner' do
+            before do
+              subgroup.add_owner(user)
+            end
+
+            it 'does not show group settings link' do
+              visit project_settings_access_tokens_path(project)
+
+              expect(page).not_to have_link('group settings', href: edit_group_path(group))
+            end
+          end
+        end
+
         context 'when user is a group owner' do
           before do
             group.add_owner(user)

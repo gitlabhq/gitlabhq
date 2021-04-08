@@ -8948,6 +8948,9 @@ msgstr ""
 msgid "Create blank project"
 msgstr ""
 
+msgid "Create blank project/repository"
+msgstr ""
+
 msgid "Create branch"
 msgstr ""
 
@@ -13805,6 +13808,9 @@ msgstr ""
 msgid "From the Kubernetes cluster details view, applications list, install GitLab Runner."
 msgstr ""
 
+msgid "Full"
+msgstr ""
+
 msgid "Full name"
 msgstr ""
 
@@ -14012,6 +14018,9 @@ msgstr ""
 msgid "Geo|%{name} is scheduled for re-verify"
 msgstr ""
 
+msgid "Geo|%{timeAgoStr} (%{pendingEvents} events)"
+msgstr ""
+
 msgid "Geo|%{title} checksum progress"
 msgstr ""
 
@@ -14073,6 +14082,9 @@ msgid "Geo|Filter by status"
 msgstr ""
 
 msgid "Geo|Geo Status"
+msgstr ""
+
+msgid "Geo|Geo nodes are paused using a command run on the node"
 msgstr ""
 
 msgid "Geo|Geo sites"
@@ -14226,6 +14238,9 @@ msgid "Geo|Secondary node"
 msgstr ""
 
 msgid "Geo|Secondary site"
+msgstr ""
+
+msgid "Geo|Selective (%{syncLabel})"
 msgstr ""
 
 msgid "Geo|Status"
@@ -15980,6 +15995,9 @@ msgid "Import project from"
 msgstr ""
 
 msgid "Import project members"
+msgstr ""
+
+msgid "Import project/repository"
 msgstr ""
 
 msgid "Import projects from Bitbucket"
@@ -20920,6 +20938,9 @@ msgstr ""
 msgid "New project"
 msgstr ""
 
+msgid "New project/repository"
+msgstr ""
+
 msgid "New release"
 msgstr ""
 
@@ -22578,6 +22599,9 @@ msgid "Pause Elasticsearch indexing"
 msgstr ""
 
 msgid "Pause replication"
+msgstr ""
+
+msgid "Paused"
 msgstr ""
 
 msgid "Paused runners don't accept new jobs"
@@ -24794,6 +24818,9 @@ msgstr ""
 msgid "ProjectsNew|Create blank project"
 msgstr ""
 
+msgid "ProjectsNew|Create blank project/repository"
+msgstr ""
+
 msgid "ProjectsNew|Create from template"
 msgstr ""
 
@@ -24810,6 +24837,9 @@ msgid "ProjectsNew|Import"
 msgstr ""
 
 msgid "ProjectsNew|Import project"
+msgstr ""
+
+msgid "ProjectsNew|Import project/repository"
 msgstr ""
 
 msgid "ProjectsNew|Initialize repository with a README"
@@ -25753,6 +25783,9 @@ msgid "Release|Something went wrong while saving the release details"
 msgstr ""
 
 msgid "Remediations"
+msgstr ""
+
+msgid "Remember me"
 msgstr ""
 
 msgid "Remind later"
@@ -28540,6 +28573,9 @@ msgid "Sign in using smart card"
 msgstr ""
 
 msgid "Sign in via 2FA code"
+msgstr ""
+
+msgid "Sign in with"
 msgstr ""
 
 msgid "Sign in with Single Sign-On"
@@ -35610,10 +35646,16 @@ msgstr ""
 msgid "Your SSH key has expired"
 msgstr ""
 
+msgid "Your SSH key is expiring soon."
+msgstr ""
+
 msgid "Your SSH key was deleted"
 msgstr ""
 
 msgid "Your SSH keys (%{count})"
+msgstr ""
+
+msgid "Your SSH keys with the following fingerprints are scheduled to expire soon:"
 msgstr ""
 
 msgid "Your SSH keys with the following fingerprints has expired:"

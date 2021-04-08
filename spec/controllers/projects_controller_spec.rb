@@ -448,6 +448,12 @@ RSpec.describe ProjectsController do
 
       post :create, params: { project: project_params }
     end
+
+    it 'tracks a created event for the new_repo experiment', :experiment do
+      expect(experiment(:new_repo, :candidate)).to track(:project_created).on_next_instance
+
+      post :create, params: { project: project_params }
+    end
   end
 
   describe 'POST #archive' do

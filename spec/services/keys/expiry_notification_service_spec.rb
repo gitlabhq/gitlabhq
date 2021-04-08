@@ -4,48 +4,93 @@ require 'spec_helper'
 
 RSpec.describe Keys::ExpiryNotificationService do
   let_it_be_with_reload(:user) { create(:user) }
-  let_it_be_with_reload(:expired_key) { create(:key, expires_at: Time.current, user: user) }
 
-  let(:params) { { keys: keys } }
+  let(:params) { { keys: user.keys, expiring_soon: expiring_soon } }
 
   subject { described_class.new(user, params) }
 
-  context 'with expired key', :mailer do
-    let(:keys) { user.keys }
-
-    it 'sends a notification' do
+  shared_examples 'sends a notification' do
+    it do
       perform_enqueued_jobs do
         subject.execute
       end
       should_email(user)
     end
+  end
 
-    it 'uses notification service to send email to the user' do
+  shared_examples 'uses notification service to send email to the user' do |notification_method|
+    it do
       expect_next_instance_of(NotificationService) do |notification_service|
-        expect(notification_service).to receive(:ssh_key_expired).with(expired_key.user, [expired_key.fingerprint])
+        expect(notification_service).to receive(notification_method).with(key.user, [key.fingerprint])
       end
 
       subject.execute
     end
+  end
 
-    it 'updates notified column' do
-      expect { subject.execute }.to change { expired_key.reload.expiry_notification_delivered_at }
+  shared_examples 'does not send notification' do
+    it do
+      perform_enqueued_jobs do
+        subject.execute
+      end
+      should_not_email(user)
+    end
+  end
+
+  shared_context 'block user' do
+    before do
+      user.block!
+    end
+  end
+
+  context 'with key expiring today', :mailer do
+    let_it_be_with_reload(:key) { create(:key, expires_at: Time.current, user: user) }
+
+    let(:expiring_soon) { false }
+
+    context 'when user has permission to receive notification' do
+      it_behaves_like 'sends a notification'
+
+      it_behaves_like 'uses notification service to send email to the user', :ssh_key_expired
+
+      it 'updates notified column' do
+        expect { subject.execute }.to change { key.reload.expiry_notification_delivered_at }
+      end
     end
 
-    context 'when user does not have permission to receive notification' do
-      before do
-        user.block!
-      end
+    context 'when user does NOT have permission to receive notification' do
+      include_context 'block user'
 
-      it 'does not send notification' do
-        perform_enqueued_jobs do
-          subject.execute
-        end
-        should_not_email(user)
-      end
+      it_behaves_like 'does not send notification'
 
       it 'does not update notified column' do
-        expect { subject.execute }.not_to change { expired_key.reload.expiry_notification_delivered_at }
+        expect { subject.execute }.not_to change { key.reload.expiry_notification_delivered_at }
+      end
+    end
+  end
+
+  context 'with key expiring soon', :mailer do
+    let_it_be_with_reload(:key) { create(:key, expires_at: 3.days.from_now, user: user) }
+
+    let(:expiring_soon) { true }
+
+    context 'when user has permission to receive notification' do
+      it_behaves_like 'sends a notification'
+
+      it_behaves_like 'uses notification service to send email to the user', :ssh_key_expiring_soon
+
+      it 'updates notified column' do
+        expect { subject.execute }.to change { key.reload.before_expiry_notification_delivered_at }
+      end
+    end
+
+    context 'when user does NOT have permission to receive notification' do
+      include_context 'block user'
+
+      it_behaves_like 'does not send notification'
+
+      it 'does not update notified column' do
+        expect { subject.execute }.not_to change { key.reload.before_expiry_notification_delivered_at }
       end
     end
   end
