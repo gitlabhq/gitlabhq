@@ -82,18 +82,6 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
 
         expect(Rails.cache.fetch(merge_request_diff.cache_key)).to be_present
       end
-
-      context 'when cached_api_merge_request_version is disabled' do
-        before do
-          stub_feature_flags(cached_api_merge_request_version: false)
-        end
-
-        it 'is not performed' do
-          get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}", user)
-
-          expect(Rails.cache.fetch(merge_request_diff.cache_key)).to be_nil
-        end
-      end
     end
   end
 end

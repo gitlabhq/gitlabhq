@@ -45,11 +45,7 @@ module API
 
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        if Feature.enabled?(:cached_api_merge_request_version, default_enabled: :yaml)
-          present_cached merge_request.merge_request_diffs.find(params[:version_id]), with: Entities::MergeRequestDiffFull, cache_context: nil
-        else
-          present merge_request.merge_request_diffs.find(params[:version_id]), with: Entities::MergeRequestDiffFull
-        end
+        present_cached merge_request.merge_request_diffs.find(params[:version_id]), with: Entities::MergeRequestDiffFull, cache_context: nil
       end
     end
   end

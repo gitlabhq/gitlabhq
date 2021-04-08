@@ -131,22 +131,45 @@ that:
 - Is always at the version required by GitLab.
 - May contain custom patches required for proper operation.
 
-```shell
-# Install dependencies
-sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev libpcre2-dev build-essential
+1. Install the needed dependencies:
 
-# Clone the Gitaly repository
-git clone https://gitlab.com/gitlab-org/gitaly.git -b <X-Y-stable> /tmp/gitaly
+   ```shell
+   sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev libpcre2-dev build-essential git-core
+   ```
 
-# Compile and install Git
-cd /tmp/gitaly
-sudo make git GIT_PREFIX=/usr/local
-```
+1. Clone the Gitaly repository and compile Git. Replace `<X-Y-stable>` with the
+   stable branch that matches the GitLab version you want to install. For example,
+   if you want to install GitLab 13.6, use the branch name `13-6-stable`:
 
-Replace `<X-Y-stable>` with the stable branch that matches the GitLab version you want to
-install. For example, if you want to install GitLab 13.6, use the branch name `13-6-stable`.
+   ```shell
+   git clone https://gitlab.com/gitlab-org/gitaly.git -b <X-Y-stable> /tmp/gitaly
+   cd /tmp/gitaly
+   sudo make git GIT_PREFIX=/usr/local
+   ```
 
-When editing `config/gitlab.yml` later, change the `git -> bin_path` to `/usr/local/bin/git`.
+1. Optionally, you can remove the system Git and its dependencies:
+
+   ```shell
+   sudo apt remove -y git-core
+   sudo apt autoremove
+   ```
+
+When [editing `config/gitlab.yml` later](#configure-it), remember to change
+the Git path:
+
+- From:
+
+  ```yaml
+  git:
+    bin_path: /usr/bin/git
+  ```
+
+- To:
+
+  ```yaml
+  git:
+    bin_path: /usr/local/bin/git
+  ```
 
 ### GraphicsMagick
 

@@ -1411,6 +1411,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: todos_destroyer:todos_destroyer_destroyed_issuable
+  :feature_category: :issue_tracking
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: todos_destroyer:todos_destroyer_entity_leave
   :feature_category: :issue_tracking
   :has_external_dependencies:
