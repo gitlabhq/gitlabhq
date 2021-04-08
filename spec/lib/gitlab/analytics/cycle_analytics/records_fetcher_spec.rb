@@ -34,6 +34,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
     describe 'for issue based stage' do
       let_it_be(:issue1) { create(:issue, project: project) }
       let_it_be(:issue2) { create(:issue, project: project, confidential: true) }
+
       let(:stage) do
         build(:cycle_analytics_project_stage, {
           start_event_identifier: :plan_stage_start,

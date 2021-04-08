@@ -110,7 +110,6 @@ linters:
       - GitlabSecurity/PublicSend
       - Layout/EmptyLineAfterGuardClause
       - Layout/LeadingCommentSpace
-      - Layout/SpaceAfterColon
       - Layout/SpaceAroundOperators
       - Layout/SpaceBeforeBlockBraces
       - Layout/SpaceBeforeComma

@@ -88,3 +88,14 @@ Example response:
   { "2021-03-08": 4, "date": "2021-03-08", "value": 4 }
 ]
 ```
+
+## The `value` field
+
+For both the project and group-level endpoints above, the `value` field in the
+API response has a different meaning depending on the provided `metric` query
+parameter:
+
+| `metric` query parameter | Description of `value` in response                                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `deployment_frequency`   | The number of successful deployments during the time period.                                                                                                 |
+| `lead_time_for_changes`  | The median number of seconds between the merge of the merge request (MR) and the deployment of the MR's commits for all MRs deployed during the time period. |

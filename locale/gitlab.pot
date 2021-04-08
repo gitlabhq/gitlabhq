@@ -14531,9 +14531,6 @@ msgstr ""
 msgid "GitLabPages|It may take up to 30 minutes before the site is available after the first deployment."
 msgstr ""
 
-msgid "GitLabPages|Learn more."
-msgstr ""
-
 msgid "GitLabPages|Maximum size of pages (MB)"
 msgstr ""
 
@@ -14558,9 +14555,6 @@ msgstr ""
 msgid "GitLabPages|Save"
 msgstr ""
 
-msgid "GitLabPages|See the %{docs_link_start}GitLab Pages documentation%{link_end} to learn how to upload your static site and have GitLab serve it. You can also follow a %{samples_link_start}sample project%{link_end} or use a %{templates_link_start}GitLab CI template%{link_end}."
-msgstr ""
-
 msgid "GitLabPages|Something went wrong while obtaining the Let's Encrypt certificate for %{domain}. To retry visit your %{link_start}domain details%{link_end}."
 msgstr ""
 
@@ -14576,10 +14570,16 @@ msgstr ""
 msgid "GitLabPages|Verified"
 msgstr ""
 
-msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with sub-subdomains. This means that if your username/groupname contains a dot it will not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages will continue to work provided you don't redirect HTTP to HTTPS."
+msgid "GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "GitLabPages|With GitLab Pages you can host your static websites on GitLab.  Combined with the power of GitLab CI and the help of GitLab Runner you can deploy static pages for your individual projects, your user or your group."
+msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with sub-subdomains. This means that if your username/groupname contains a dot it will not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages will continue to work provided you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "GitLabPages|With GitLab Pages you can host your static website directly from your GitLab repository. %{docs_link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "GitLabPages|Your Pages site is not configured yet. See the %{docs_link_start}GitLab Pages documentation%{link_end} to learn how to upload your static site and have GitLab serve it. You can also take some inspiration from the %{samples_link_start}sample Pages projects%{link_end}."
 msgstr ""
 
 msgid "GitLabPages|Your pages are served under:"
@@ -23523,6 +23523,9 @@ msgid "Prevent MR approvals from users who make commits to the MR."
 msgstr ""
 
 msgid "Prevent adding new members to project membership within this group"
+msgstr ""
+
+msgid "Prevent approval of merge requests by merge request committers."
 msgstr ""
 
 msgid "Prevent environment from auto-stopping"

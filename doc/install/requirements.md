@@ -94,8 +94,8 @@ from source at the [Node.js website](https://nodejs.org/en/download/).
 
 GitLab 13.0 and later requires Redis version 4.0 or higher.
 
-Redis version 5.0 or higher is recommended, as this is what ships with
-[Omnibus GitLab](https://docs.gitlab.com/omnibus/) packages starting with GitLab 12.7.
+Redis version 6.0 or higher is recommended, as this is what ships with
+[Omnibus GitLab](https://docs.gitlab.com/omnibus/) packages starting with GitLab 13.9.
 
 ## Hardware requirements
 

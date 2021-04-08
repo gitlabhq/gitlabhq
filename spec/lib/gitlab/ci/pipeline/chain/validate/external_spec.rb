@@ -57,13 +57,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
     before do
       stub_env('EXTERNAL_VALIDATION_SERVICE_URL', validation_service_url)
       allow(Gitlab).to receive(:com?).and_return(dot_com)
+      allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('correlation-id')
     end
 
     it 'respects the defined payload schema' do
       expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
         expect(params[:body]).to match_schema('/external_validation')
         expect(params[:timeout]).to eq(described_class::DEFAULT_VALIDATION_REQUEST_TIMEOUT)
-        expect(params[:headers]).to eq({})
+        expect(params[:headers]).to eq({ 'X-Request-ID' => 'correlation-id' })
       end
 
       perform!
@@ -127,7 +128,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
 
       it 'passes token in X-Gitlab-Token header' do
         expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
-          expect(params[:headers]).to eq({ 'X-Gitlab-Token' => '123' })
+          expect(params[:headers]).to include({ 'X-Gitlab-Token' => '123' })
         end
 
         perform!

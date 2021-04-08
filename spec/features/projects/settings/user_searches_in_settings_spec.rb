@@ -73,6 +73,6 @@ RSpec.describe 'User searches project settings', :js do
       visit project_pages_path(project)
     end
 
-    it_behaves_like 'can highlight results', 'static websites'
+    it_behaves_like 'can highlight results', 'static website'
   end
 end

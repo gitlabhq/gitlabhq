@@ -8021,17 +8021,17 @@ Rotation length unit of an on-call rotation.
 
 | Value | Description |
 | ----- | ----------- |
-| `CANCELED` |  |
-| `CREATED` |  |
-| `FAILED` |  |
-| `MANUAL` |  |
-| `PENDING` |  |
-| `PREPARING` |  |
-| `RUNNING` |  |
-| `SCHEDULED` |  |
-| `SKIPPED` |  |
-| `SUCCESS` |  |
-| `WAITING_FOR_RESOURCE` |  |
+| `CANCELED` | Pipeline was canceled before completion. |
+| `CREATED` | Pipeline has been created. |
+| `FAILED` | At least one stage of the pipeline failed. |
+| `MANUAL` | Pipeline needs to be manually started. |
+| `PENDING` | Pipeline has not started running yet. |
+| `PREPARING` | Pipeline is preparing to run. |
+| `RUNNING` | Pipeline is running. |
+| `SCHEDULED` | Pipeline is scheduled to run. |
+| `SKIPPED` | Pipeline was skipped. |
+| `SUCCESS` | Pipeline completed successfully. |
+| `WAITING_FOR_RESOURCE` | A resource (for example, a runner) that the pipeline requires to run is unavailable. |
 
 ### `ProjectMemberRelation`
 
