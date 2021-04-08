@@ -114,7 +114,7 @@ module QA
       end
 
       context 'Geo', :orchestrated, :geo do
-        it 'replicates a published pypi package to the Geo secondary site', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1120' do
+        it 'replicates a published pypi package to the Geo secondary site', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1120', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/325556', type: :investigating } do
           QA::Runtime::Logger.debug('Visiting the secondary Geo site')
 
           QA::Flow::Login.while_signed_in(address: :geo_secondary) do

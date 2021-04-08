@@ -120,6 +120,73 @@ describe('detailedMetric', () => {
       });
     });
 
+    describe('when the details have summaryOptions option', () => {
+      const gitalyDetails = {
+        duration: '123ms',
+        calls: 456,
+        details: requestDetails,
+        warnings: ['gitaly calls: 456 over 30'],
+      };
+
+      describe('when the details have summaryOptions > hideTotal option', () => {
+        beforeEach(() => {
+          createComponent({
+            currentRequest: {
+              details: {
+                gitaly: { ...gitalyDetails, summaryOptions: { hideTotal: true } },
+              },
+            },
+          });
+        });
+
+        it('displays a summary section', () => {
+          expect(findAllSummaryItems()).toEqual(['Total duration 123ms']);
+        });
+      });
+
+      describe('when the details have summaryOptions > hideDuration option', () => {
+        beforeEach(() => {
+          createComponent({
+            currentRequest: {
+              details: {
+                gitaly: { ...gitalyDetails, summaryOptions: { hideDuration: true } },
+              },
+            },
+          });
+        });
+
+        it('displays a summary section', () => {
+          expect(findAllSummaryItems()).toEqual(['Total 456']);
+        });
+      });
+
+      describe('when the details have both summary and summaryOptions field', () => {
+        beforeEach(() => {
+          createComponent({
+            currentRequest: {
+              details: {
+                gitaly: {
+                  ...gitalyDetails,
+                  summary: {
+                    'In controllers': 100,
+                    'In middlewares': 20,
+                  },
+                  summaryOptions: {
+                    hideDuration: true,
+                    hideTotal: true,
+                  },
+                },
+              },
+            },
+          });
+        });
+
+        it('displays a summary section', () => {
+          expect(findAllSummaryItems()).toEqual(['In controllers 100', 'In middlewares 20']);
+        });
+      });
+    });
+
     describe("when the details don't have a start field", () => {
       beforeEach(() => {
         createComponent({

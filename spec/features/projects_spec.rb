@@ -290,7 +290,6 @@ RSpec.describe 'Project' do
     let(:project) { create(:forked_project_with_submodules) }
 
     before do
-      stub_feature_flags(refactor_blob_viewer: false)
       project.add_maintainer(user)
       sign_in user
       visit project_path(project)

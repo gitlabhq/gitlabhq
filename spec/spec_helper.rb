@@ -277,6 +277,11 @@ RSpec.configure do |config|
       # Vue issues page has feature parity with the current Haml page
       stub_feature_flags(vue_issues_list: false)
 
+      # Disable `refactor_blob_viewer` as we refactor
+      # the blob viewer. See the follwing epic for more:
+      # https://gitlab.com/groups/gitlab-org/-/epics/5531
+      stub_feature_flags(refactor_blob_viewer: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

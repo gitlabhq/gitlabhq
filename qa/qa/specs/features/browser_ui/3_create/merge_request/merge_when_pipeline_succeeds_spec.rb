@@ -46,7 +46,7 @@ module QA
         project&.remove_via_api!
       end
 
-      it 'merges when pipeline succeeds', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1684' do
+      it 'merges when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1684' do
         branch_name = "merge-request-test-#{SecureRandom.hex(8)}"
 
         # Create a branch that will be merged into the default branch

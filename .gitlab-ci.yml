@@ -53,6 +53,8 @@ workflow:
 variables:
   RAILS_ENV: "test"
   NODE_ENV: "test"
+  # we override the max_old_space_size to prevent OOM errors
+  NODE_OPTIONS: --max_old_space_size=3584
   SIMPLECOV: "true"
   GIT_DEPTH: "20"
   GIT_SUBMODULE_STRATEGY: "none"

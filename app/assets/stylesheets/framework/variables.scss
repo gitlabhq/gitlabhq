@@ -842,10 +842,10 @@ $linked-project-column-margin: 60px;
 /*
 Performance Bar
 */
-$perf-bar-production: #222;
-$perf-bar-staging: #291430;
-$perf-bar-development: #4c1210;
-$perf-bar-bucket-bg: #111;
+$perf-bar-production: $gray-950;
+$perf-bar-staging: $indigo-950;
+$perf-bar-development: $red-950;
+$perf-bar-bucket-bg: $black;
 $perf-bar-bucket-box-shadow-from: rgba($white, 0.2);
 $perf-bar-bucket-box-shadow-to: rgba($black, 0.25);
 $perf-bar-canary-text: $orange-400;

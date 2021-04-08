@@ -1,22 +1,15 @@
-.frontend-base:
-  extends:
-    - .default-retry
-    - .default-before_script
-  variables:
-    SETUP_DB: "false"
-    # we override the max_old_space_size to prevent OOM errors
-    NODE_OPTIONS: --max_old_space_size=3584
-
 .yarn-install: &yarn-install
   - source scripts/utils.sh
   - run_timed_command "retry yarn install --frozen-lockfile"
 
 .compile-assets-base:
   extends:
-    - .frontend-base
+    - .default-retry
+    - .default-before_script
     - .assets-compile-cache
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2-git-2.29-lfs-2.9-node-14.15-yarn-1.22-graphicsmagick-1.3.34
   variables:
+    SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
   stage: prepare
   script:
@@ -93,13 +86,13 @@ update-yarn-cache:
 
 .frontend-fixtures-base:
   extends:
-    - .frontend-base
+    - .default-retry
+    - .default-before_script
     - .rails-cache
     - .use-pg11
   stage: fixtures
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
   variables:
-    SETUP_DB: "true"
     WEBPACK_VENDOR_DLL: "true"
   script:
     - run_timed_command "gem install knapsack --no-document"
@@ -151,10 +144,8 @@ graphql-schema-dump:
 
 .frontend-test-base:
   extends:
-    - .frontend-base
+    - .default-retry
     - .yarn-cache
-  variables:
-    USE_BUNDLE_INSTALL: "false"
   stage: test
 
 eslint-as-if-foss:

@@ -132,6 +132,7 @@ module API
                                 .preload(:project_setting)
                                 .preload(:container_expiration_policy)
                                 .preload(:auto_devops)
+                                .preload(:service_desk_setting)
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,
                                          fork_network_member: :forked_from_project,

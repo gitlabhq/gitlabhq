@@ -136,7 +136,7 @@ export default {
       <div id="peek-view-host" class="view">
         <span
           v-if="hasHost"
-          class="current-host"
+          class="current-host gl-text-white"
           :class="{ canary: currentRequest.details.host.canary }"
         >
           <span v-html="birdEmoji"></span>
@@ -157,16 +157,16 @@ export default {
         id="peek-view-trace"
         class="view"
       >
-        <a class="gl-text-blue-300" :href="currentRequest.details.tracing.tracing_url">{{
+        <a class="gl-text-blue-200" :href="currentRequest.details.tracing.tracing_url">{{
           s__('PerformanceBar|Trace')
         }}</a>
       </div>
       <div v-if="currentRequest.details" id="peek-download" class="view">
-        <a class="gl-text-blue-300" :download="downloadName" :href="downloadPath">{{
+        <a class="gl-text-blue-200" :download="downloadName" :href="downloadPath">{{
           s__('PerformanceBar|Download')
         }}</a>
       </div>
-      <a v-if="statsUrl" class="gl-text-blue-300 view" :href="statsUrl">{{
+      <a v-if="statsUrl" class="gl-text-blue-200 view" :href="statsUrl">{{
         s__('PerformanceBar|Stats')
       }}</a>
       <request-selector

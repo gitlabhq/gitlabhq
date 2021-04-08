@@ -835,6 +835,29 @@ RSpec.describe API::Projects do
         end.not_to exceed_query_limit(control.count)
       end
     end
+
+    context 'when service desk is enabled', :use_clean_rails_memory_store_caching do
+      let_it_be(:admin) { create(:admin) }
+
+      it 'avoids N+1 queries' do
+        allow(Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(true)
+        allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
+
+        get api('/projects', admin)
+
+        create(:project, :public, :service_desk_enabled, namespace: admin.namespace)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api('/projects', admin)
+        end
+
+        create_list(:project, 2, :public, :service_desk_enabled, namespace: admin.namespace)
+
+        expect do
+          get api('/projects', admin)
+        end.not_to exceed_query_limit(control.count)
+      end
+    end
   end
 
   describe 'POST /projects' do

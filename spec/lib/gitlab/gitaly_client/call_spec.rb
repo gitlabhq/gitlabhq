@@ -24,11 +24,14 @@ RSpec.describe Gitlab::GitalyClient::Call do
     def expect_call_details_to_match(duration_higher_than: 0)
       expect(client.list_call_details.size).to eq(1)
       expect(client.list_call_details.first)
-        .to match a_hash_including(feature: "#{service}##{rpc}",
-                                   duration: a_value > duration_higher_than,
-                                   request: an_instance_of(Hash),
-                                   rpc: rpc,
-                                   backtrace: an_instance_of(Array))
+        .to match a_hash_including(
+          start: a_value > 0,
+          feature: "#{service}##{rpc}",
+          duration: a_value > duration_higher_than,
+          request: an_instance_of(Hash),
+          rpc: rpc,
+          backtrace: an_instance_of(Array)
+        )
     end
 
     context 'when the response is not an enumerator' do

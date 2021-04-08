@@ -54,11 +54,17 @@ export default {
       return this.currentRequest.details[this.metric];
     },
     metricDetailsSummary() {
-      return {
-        [s__('Total')]: this.metricDetails.calls,
-        [s__('PerformanceBar|Total duration')]: this.metricDetails.duration,
-        ...(this.metricDetails.summary || {}),
-      };
+      const summary = {};
+
+      if (!this.metricDetails.summaryOptions?.hideTotal) {
+        summary[s__('Total')] = this.metricDetails.calls;
+      }
+
+      if (!this.metricDetails.summaryOptions?.hideDuration) {
+        summary[s__('PerformanceBar|Total duration')] = this.metricDetails.duration;
+      }
+
+      return { ...summary, ...(this.metricDetails.summary || {}) };
     },
     metricDetailsLabel() {
       if (this.metricDetails.duration && this.metricDetails.calls) {
@@ -133,7 +139,7 @@ export default {
   >
     <gl-button v-gl-modal="modalId" class="gl-mr-2" type="button" variant="link">
       <span
-        class="gl-text-blue-300 gl-font-weight-bold"
+        class="gl-text-blue-200 gl-font-weight-bold"
         data-testid="performance-bar-details-label"
       >
         {{ metricDetailsLabel }}
@@ -208,7 +214,7 @@ export default {
         <div></div>
       </template>
     </gl-modal>
-    {{ title }}
+    <span class="gl-text-white">{{ title }}</span>
     <request-warning :html-id="htmlId" :warnings="warnings" />
   </div>
 </template>
