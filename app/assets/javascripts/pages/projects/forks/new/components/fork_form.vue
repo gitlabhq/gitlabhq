@@ -218,6 +218,7 @@ export default {
               id="fork-url"
               v-model="selectedNamespace"
               data-testid="fork-url-input"
+              data-qa-selector="fork_namespace_dropdown"
               required
             >
               <template slot="first">
@@ -291,6 +292,7 @@ export default {
         category="primary"
         variant="confirm"
         data-testid="submit-button"
+        data-qa-selector="fork_project_button"
         :loading="isSaving"
       >
         {{ s__('ForkProject|Fork project') }}
