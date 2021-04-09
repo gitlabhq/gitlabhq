@@ -1,0 +1,5 @@
+---
+title: Avoid inflating Redis memory when aborting pipelines
+merge_request: 59018
+author:
+type: fixed

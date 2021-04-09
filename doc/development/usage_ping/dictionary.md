@@ -5986,7 +5986,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.web_ide_merge_requests`
 
-Count of Merge Requests created from Web IDE
+Count of merge requests created from Web IDE
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180246_web_ide_merge_requests.yml)
 

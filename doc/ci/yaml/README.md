@@ -250,7 +250,40 @@ workflow:
     - if: $CI_COMMIT_REF_NAME =~ /feature/
       variables:
         IS_A_FEATURE: "true"                  # Define a new variable.
+    - when: always                            # Run the pipeline in other cases
+
+job1:
+  variables:
+    DEPLOY_VARIABLE: "job1-default-deploy"
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /master/
+      variables:                                   # Override DEPLOY_VARIABLE defined
+        DEPLOY_VARIABLE: "job1-deploy-production"  # at the job level.
+    - when: on_success                             # Run the job in other cases
+  script:
+    - echo "Run script with $DEPLOY_VARIABLE as an argument"
+    - echo "Run another script if $IS_A_FEATURE exists"
+
+job2:
+  script:
+    - echo "Run script with $DEPLOY_VARIABLE as an argument"
+    - echo "Run another script if $IS_A_FEATURE exists"
 ```
+
+When the branch is `master`:
+
+- job1's `DEPLOY_VARIABLE` is `job1-deploy-production`.
+- job2's `DEPLOY_VARIABLE` is `deploy-production`.
+
+When the branch is `feature`:
+
+- job1's `DEPLOY_VARIABLE` is `job1-default-deploy`, and `IS_A_FEATURE` is `true`.
+- job2's `DEPLOY_VARIABLE` is `default-deploy`, and `IS_A_FEATURE` is `true`.
+
+When the branch is something else:
+
+- job1's `DEPLOY_VARIABLE` is `job1-default-deploy`.
+- job2's `DEPLOY_VARIABLE` is `default-deploy`.
 
 ##### Enable or disable workflow:rules:variables **(CORE ONLY)**
 

@@ -8,6 +8,7 @@ RSpec.describe API::Helpers::Caching do
   describe "#present_cached" do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
+
     let(:presenter) { API::Entities::Todo }
 
     let(:kwargs) do

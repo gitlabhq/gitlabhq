@@ -12,9 +12,9 @@
 .select2-container,
 .select2-container.select2-drop-above {
   .select2-choice {
-    background: $white;
-    color: $gl-text-color;
-    border-color: $border-color;
+    background: var(--white, $white);
+    color: var(--gl-text-color, $gl-text-color);
+    border-color: var(--border-color, $border-color);
     height: 34px;
     padding: $gl-vert-padding $gl-input-padding;
     font-size: $gl-font-size;
@@ -27,6 +27,10 @@
       /* stylelint-disable-next-line function-url-quotes */
       background: url(asset_path('chevron-down.png')) no-repeat 2px 8px;
 
+      .gl-dark & {
+        filter: invert(0.9);
+      }
+
       b {
         display: none;
       }
@@ -37,8 +41,8 @@
     }
 
     &:hover {
-      border-color: $gray-darkest;
-      color: $gl-text-color;
+      border-color: var(--gray-200, $gray-200);
+      color: var(--gl-text-color, $gl-text-color);
     }
   }
 
@@ -49,8 +53,8 @@
   // .select2-focusser element instead.
   &.select2-container-active:not(.select2-dropdown-open) {
     .select2-choice {
-      color: $input-focus-color;
-      background-color: $input-focus-bg;
+      color: var(--gray-700, $gray-700);
+      background-color: var(--white, $white);
       border-color: $input-focus-border-color;
       outline: 0;
     }
@@ -85,19 +89,19 @@
 
     .select2-choices,
     .select2-choice {
-      border-color: $red-500;
+      border-color: var(--red-500, $red-500);
     }
   }
 }
 
 .select2-drop,
 .select2-drop.select2-drop-above {
-  background: $white;
+  background: var(--white, $white);
   box-shadow: 0 2px 4px $dropdown-shadow-color;
   border-radius: $gl-border-radius-base;
-  border: 1px solid $border-color;
+  border: 1px solid var(--border-color, $border-color);
   min-width: 175px;
-  color: $gl-text-color;
+  color: var(--gl-text-color, $gl-text-color);
   z-index: 999;
 
   .modal-open & {
@@ -114,7 +118,7 @@
 }
 
 .select2-drop.select2-drop-above.select2-drop-active {
-  border-top: 1px solid $border-color;
+  border-top: 1px solid var(--border-color, $border-color);
   margin-top: -6px;
 }
 
@@ -128,7 +132,7 @@
 .select2-dropdown-open,
 .select2-dropdown-open.select2-drop-above {
   .select2-choice {
-    border-color: $gray-darkest;
+    border-color: var(--border-color, $border-color);
     outline: 0;
   }
 }
@@ -136,7 +140,7 @@
 .select2-container-multi {
   .select2-choices {
     border-radius: $border-radius-default;
-    border-color: $border-color;
+    border-color: var(--border-color, $border-color);
     background: none;
 
     .select2-search-field input {
@@ -149,10 +153,10 @@
     .select2-search-choice {
       margin: 5px 0 0 8px;
       box-shadow: none;
-      border-color: $border-color;
-      color: $gl-text-color;
+      border-color: var(--border-color, $border-color);
+      color: var(--gl-text-color, $gl-text-color);
       line-height: 15px;
-      background-color: $gray-light;
+      background-color: var(--gray-50, $gray-50);
       background-image: none;
       padding: 3px 18px 3px 5px;
 
@@ -163,7 +167,7 @@
       }
 
       &.select2-search-choice-focus {
-        border-color: $gl-text-color;
+        border-color: var(--gl-text-color, $gl-text-color);
       }
     }
   }
@@ -188,22 +192,22 @@
   input {
     padding: $grid-size;
     background: transparent image-url('select2.png');
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
     background-clip: content-box;
     background-origin: content-box;
     background-repeat: no-repeat;
     background-position: right 0 bottom 0 !important;
-    border: 1px solid $border-color;
+    border: 1px solid var(--border-color, $border-color);
     border-radius: $border-radius-default;
     line-height: 16px;
     transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 
     &:focus {
-      border-color: $blue-300;
+      border-color: var(--blue-300, $blue-300);
     }
 
     &.select2-active {
-      background-color: $white;
+      background-color: var(--white, $white);
       background-image: image-url('select2-spinner.gif') !important;
       background-origin: content-box;
       background-repeat: no-repeat;
@@ -236,10 +240,10 @@
 
   .select2-highlighted {
     background: transparent;
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
 
     .select2-result-label {
-      background: $gray-darker;
+      background: var(--gray-50, $gray-50);
     }
   }
 
@@ -249,14 +253,14 @@
 
   li.select2-result-with-children > .select2-result-label {
     font-weight: $gl-font-weight-bold;
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
   }
 }
 
 .select2-highlighted {
   .group-result {
     .group-path {
-      color: $gray-700;
+      color: var(--gray-700, $gray-700);
     }
   }
 }

@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Learn GitLab Section Card renders correctly 1`] = `
+<gl-card-stub
+  bodyclass=""
+  class="gl-pt-0 learn-gitlab-section-card"
+  footerclass=""
+  headerclass=""
+>
+  <div
+    class="learn-gitlab-section-card-header"
+  >
+    <img
+      src="/assets/learn_gitlab/section_workspace.svg"
+    />
+     
+    <h2
+      class="gl-font-lg gl-mb-3"
+    >
+      Set up your workspace
+    </h2>
+     
+    <p
+      class="gl-text-gray-700 gl-mb-6"
+    >
+      Complete these tasks first so you can enjoy GitLab's features to their fullest:
+    </p>
+  </div>
+   
+  <learn-gitlab-section-link-stub
+    action="userAdded"
+    value="[object Object]"
+  />
+  <learn-gitlab-section-link-stub
+    action="gitWrite"
+    value="[object Object]"
+  />
+  <learn-gitlab-section-link-stub
+    action="mergeRequestCreated"
+    value="[object Object]"
+  />
+  <learn-gitlab-section-link-stub
+    action="securityScanEnabled"
+    value="[object Object]"
+  />
+  <learn-gitlab-section-link-stub
+    action="pipelineCreated"
+    value="[object Object]"
+  />
+  <learn-gitlab-section-link-stub
+    action="trialStarted"
+    value="[object Object]"
+  />
+  <learn-gitlab-section-link-stub
+    action="codeOwnersEnabled"
+    value="[object Object]"
+  />
+  <learn-gitlab-section-link-stub
+    action="requiredMrApprovalsEnabled"
+    value="[object Object]"
+  />
+</gl-card-stub>
+`;

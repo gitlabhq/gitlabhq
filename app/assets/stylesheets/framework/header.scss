@@ -442,22 +442,22 @@
     font-weight: $gl-font-weight-normal;
     margin-left: -6px;
     font-size: 11px;
-    color: $white;
+    color: var(--gray-950, $white);
     padding: 0 5px;
     line-height: 12px;
     border-radius: 7px;
     box-shadow: 0 1px 0 rgba($gl-header-color, 0.2);
 
     &.green-badge {
-      background-color: $green-400;
+      background-color: var(--green-400, $green-400);
     }
 
     &.merge-requests-count {
-      background-color: $orange-400;
+      background-color: var(--orange-400, $orange-400);
     }
 
     &.todos-count {
-      background-color: $blue-400;
+      background-color: var(--blue-400, $blue-400);
     }
   }
 
@@ -511,7 +511,7 @@
 .header-user {
   &.show .dropdown-menu {
     margin-top: 4px;
-    color: $gl-text-color;
+    color: var(--gl-text-color, $gl-text-color);
     left: auto;
     max-height: $dropdown-max-height-lg;
 
@@ -580,7 +580,7 @@
   .no-emoji-placeholder,
   .clear-user-status {
     svg {
-      fill: $gl-text-color-secondary;
+      fill: var(--gray-500, $gray-500);
     }
   }
 

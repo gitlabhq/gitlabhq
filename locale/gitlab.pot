@@ -2019,6 +2019,9 @@ msgstr ""
 msgid "Add to tree"
 msgstr ""
 
+msgid "Add trigger"
+msgstr ""
+
 msgid "Add user(s) to the group:"
 msgstr ""
 
@@ -4478,6 +4481,9 @@ msgid "Authorization key"
 msgstr ""
 
 msgid "Authorization required"
+msgstr ""
+
+msgid "Authorization token duration (minutes)"
 msgstr ""
 
 msgid "Authorization was granted by entering your username and password in the application."
@@ -16152,6 +16158,9 @@ msgstr ""
 msgid "In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
+msgid "In each example, replace %{code_start}TOKEN%{code_end} with the trigger token you generated and replace %{code_start}REF_NAME%{code_end} with the branch or tag name."
+msgstr ""
+
 msgid "In progress"
 msgstr ""
 
@@ -18424,10 +18433,7 @@ msgstr ""
 msgid "LearnGitLab|Route code reviews to the right reviewers, every time."
 msgstr ""
 
-msgid "LearnGitLab|Run a Security scan"
-msgstr ""
-
-msgid "LearnGitLab|Run a security scan"
+msgid "LearnGitLab|Run a Security scan using CI/CD"
 msgstr ""
 
 msgid "LearnGitLab|Save time by automating your integration and deployment tasks."
@@ -18461,6 +18467,9 @@ msgid "LearnGitLab|Try all GitLab features for 30 days, no credit card required.
 msgstr ""
 
 msgid "LearnGitLab|Use your new GitLab workflow to deploy your application, monitor its health, and keep it secure:"
+msgstr ""
+
+msgid "LearnGitlab|Trial only"
 msgstr ""
 
 msgid "Leave"
@@ -32381,6 +32390,9 @@ msgstr ""
 msgid "To open Jaeger from GitLab to view tracing from the %{link} page, add a URL to your Jaeger server."
 msgstr ""
 
+msgid "To pass variables to the triggered pipeline, add %{code_start}variables[VARIABLE]=VALUE%{code_end} to the API request."
+msgstr ""
+
 msgid "To personalize your GitLab experience, we'd like to know a bit more about you. We won't share this information with anyone."
 msgstr ""
 
@@ -32765,12 +32777,6 @@ msgid "Trigger was successfully updated."
 msgstr ""
 
 msgid "Triggerer"
-msgstr ""
-
-msgid "Triggers|In each example, replace %{code_start}TOKEN%{code_end} with the trigger token you generated and replace %{code_start}REF_NAME%{code_end} with the branch or tag name."
-msgstr ""
-
-msgid "Triggers|To pass variables to the triggered pipeline, add %{code_start}variables[VARIABLE]=VALUE%{code_end} to the API request."
 msgstr ""
 
 msgid "Troubleshoot and monitor your application with tracing"

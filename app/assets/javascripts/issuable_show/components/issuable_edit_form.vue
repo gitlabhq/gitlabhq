@@ -4,6 +4,7 @@ import $ from 'jquery';
 
 import Autosave from '~/autosave';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import ZenMode from '~/zen_mode';
 
 import eventHub from '../event_hub';
 
@@ -24,6 +25,10 @@ export default {
       required: true,
     },
     enableAutosave: {
+      type: Boolean,
+      required: true,
+    },
+    enableZenMode: {
       type: Boolean,
       required: true,
     },
@@ -62,6 +67,9 @@ export default {
   },
   mounted() {
     if (this.enableAutosave) this.initAutosave();
+
+    // eslint-disable-next-line no-new
+    if (this.enableZenMode) new ZenMode();
   },
   beforeDestroy() {
     eventHub.$off('update.issuable', this.resetAutosave);

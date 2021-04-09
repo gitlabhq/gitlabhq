@@ -113,4 +113,7 @@ include:
   - local: .gitlab/ci/dast.gitlab-ci.yml
   - local: .gitlab/ci/workhorse.gitlab-ci.yml
   - local: .gitlab/ci/graphql.gitlab-ci.yml
-  - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/.gitlab-ci-template.yml'
+  # switch the remote include to a local include until this is resolved:
+  #   https://gitlab.com/gitlab-org/gitlab/-/issues/327299
+  # - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/.gitlab-ci-template.yml'
+  - local: .gitlab/ci/untamper-my-lockfile.yml

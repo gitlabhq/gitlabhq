@@ -2282,6 +2282,35 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         )
       end
     end
+
+    context 'when method is scoped' do
+      let!(:commit_123_ref_master_parent_pipeline) do
+        create(
+          :ci_pipeline,
+          sha: '123',
+          ref: 'master',
+          project: project
+        )
+      end
+
+      let!(:commit_123_ref_master_child_pipeline) do
+        create(
+          :ci_pipeline,
+          sha: '123',
+          ref: 'master',
+          project: project,
+          child_of: commit_123_ref_master_parent_pipeline
+        )
+      end
+
+      it 'returns the latest pipeline after applying the scope' do
+        result = described_class.ci_sources.latest_pipeline_per_commit(%w[123], 'master')
+
+        expect(result).to match(
+          '123' => commit_123_ref_master_parent_pipeline
+        )
+      end
+    end
   end
 
   describe '.latest_successful_ids_per_project' do

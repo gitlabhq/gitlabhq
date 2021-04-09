@@ -3,7 +3,7 @@
 
   %fieldset
     .form-group
-      = f.label :container_registry_token_expire_delay, 'Authorization token duration (minutes)', class: 'label-bold'
+      = f.label :container_registry_token_expire_delay, _('Authorization token duration (minutes)'), class: 'label-bold'
       = f.number_field :container_registry_token_expire_delay, class: 'form-control gl-form-input'
     .form-group
       .form-check
@@ -31,4 +31,4 @@
         .form-text.text-muted
           = _("The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0.")
 
-  = f.submit 'Save changes', class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

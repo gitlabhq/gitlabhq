@@ -158,6 +158,27 @@ objects_to_update.update_all(some_field: some_value)
 This uses ActiveRecord's `update_all` method to update all rows in a single
 query. This in turn makes it much harder for this code to overload a database.
 
+## Use read replicas when possible
+
+In a DB cluster we have many read replicas and one primary. A classic use of scaling the DB is to have read-only actions be performed by the replicas. We use [load balancing](../administration/database_load_balancing.md) to distribute this load. This allows for the replicas to grow as the pressure on the DB grows.
+
+By default, queries use read-only replicas, but due to [primary sticking](../administration/database_load_balancing.md#primary-sticking), GitLab sticks to using the primary for a certain period of time and reverts back to secondaries after they have either caught up or after 30 seconds, which can lead to a considerable amount of unnecessary load on the primary. In this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56849) we introduced the `without_sticky_writes` block to prevent switching to the primary. This [merge request example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57328) provides a good use case for when queries can stick to the primary and how to prevent this by using `without_sticky_writes`.
+
+Internally, our database load balancer classifies the queries based on their main statement (`select`, `update`, `delete`, etc.). When in doubt, it redirects the queries to the primary database. Hence, there are some common cases the load balancer sends the queries to the primary unnecessarily:
+
+- Custom queries (via `exec_query`, `execute_statement`, `execute`, etc.)
+- Read-only transactions
+- In-flight connection configuration set
+- Sidekiq background jobs
+
+Worse, after the above queries are executed, GitLab [sticks to the primary](../administration/database_load_balancing.md#primary-sticking). In [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56476), we introduced `use_replica_if_possible` to make the inside queries prefer to use the replicas. That MR is also an example how we redirected a costly, time-consuming query to the replicas.
+
+## Use CTEs wisely
+
+Read about [complex queries on the relation object](iterating_tables_in_batches.md#complex-queries-on-the-relation-object) for considerations on how to use CTEs. We have found in some situations that CTEs can become problematic in use (similar to the n+1 problem above). In particular, hierarchical recursive CTE queries such as the CTE in [AuthorizedProjectsWorker](https://gitlab.com/gitlab-org/gitlab/-/issues/325688) are very difficult to optimize and don't scale. We should avoid them when implementing new features that require any kind of hierarchical structure.
+
+However, in many simpler cases, such as this [example](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43242#note_61416277), CTEs can be quite effective as an optimization fence.
+
 ## Cached Queries
 
 **Summary:** a merge request **should not** execute duplicated cached queries.

@@ -1,5 +1,6 @@
 <script>
 import { GlProgressBar, GlSprintf } from '@gitlab/ui';
+import { pick } from 'lodash';
 import { s__ } from '~/locale';
 import { ACTION_LABELS } from '../constants';
 import LearnGitlabInfoCard from './learn_gitlab_info_card.vue';
@@ -42,7 +43,7 @@ export default {
     infoProps(action) {
       return {
         ...this.actions[action],
-        ...ACTION_LABELS[action],
+        ...pick(ACTION_LABELS[action], ['title', 'actionLabel', 'description', 'trialRequired']),
       };
     },
     progressValue() {

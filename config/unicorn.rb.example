@@ -8,8 +8,8 @@
 # See http://unicorn.bogomips.org/Unicorn/Configurator.html for complete
 # documentation.
 
-# Note: If you change this file in a Merge Request, please also create a
-# Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
+# Note: If you change this file in a merge request, please also create a
+# merge request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 
 # Relative URL support
 # WARNING: We recommend using an FQDN to host GitLab in a root path instead

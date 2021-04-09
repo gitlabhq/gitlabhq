@@ -491,7 +491,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
             />
              
             <h6>
-              Run a security scan
+              Run a Security scan using CI/CD
             </h6>
              
             <p
@@ -506,7 +506,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
               rel="noopener noreferrer"
               target="_blank"
             >
-              Run a Security scan
+              Run a Security scan using CI/CD
             </a>
           </div>
         </div>

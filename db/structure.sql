@@ -23207,6 +23207,8 @@ CREATE INDEX index_non_requested_project_members_on_source_id_and_type ON member
 
 CREATE UNIQUE INDEX index_note_diff_files_on_diff_note_id ON note_diff_files USING btree (diff_note_id);
 
+CREATE INDEX index_notes_for_cherry_picked_merge_requests ON notes USING btree (project_id, commit_id) WHERE ((noteable_type)::text = 'MergeRequest'::text);
+
 CREATE INDEX index_notes_on_author_id_and_created_at_and_id ON notes USING btree (author_id, created_at, id);
 
 CREATE INDEX index_notes_on_commit_id ON notes USING btree (commit_id);

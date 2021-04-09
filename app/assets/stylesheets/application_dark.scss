@@ -1,3 +1,60 @@
 @import './themes/dark';
 
 @import './application';
+
+@import './themes/theme_helper';
+
+body.gl-dark {
+  @include gitlab-theme(
+    $gray-900,
+    $gray-400,
+    $gray-500,
+    $gray-800,
+    $gray-900,
+    $white
+  );
+
+  .logo-text svg {
+    fill: var(--gl-text-color);
+  }
+
+  .navbar-gitlab {
+    background-color: var(--gray-50);
+    box-shadow: 0 1px 0 0 var(--gray-100);
+
+    .navbar-sub-nav,
+    .navbar-nav {
+      li {
+        > a:hover,
+        > a:focus,
+        > button:hover,
+        > button:focus {
+          color: var(--gl-text-color);
+          background-color: var(--gray-200);
+        }
+      }
+
+      li.active,
+      li.dropdown.show {
+        > a,
+        > button {
+          color: var(--gl-text-color);
+          background-color: var(--gray-200);
+        }
+      }
+    }
+
+    .search {
+      form {
+        background-color: var(--gray-100);
+        box-shadow: inset 0 0 0 1px var(--border-color);
+
+        &:active,
+        &:hover {
+          background-color: var(--gray-100);
+          box-shadow: inset 0 0 0 1px var(--blue-200);
+        }
+      }
+    }
+  }
+}

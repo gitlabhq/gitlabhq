@@ -5,7 +5,7 @@
 #
 # For full list of options and their values see http://api.rubyonrails.org/classes/ActionMailer/Base.html
 #
-# If you change this file in a Merge Request, please also create a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
+# If you change this file in a merge request, please also create a merge request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 
 if Rails.env.production?
   Rails.application.config.action_mailer.delivery_method = :smtp

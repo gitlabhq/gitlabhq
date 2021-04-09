@@ -1,0 +1,5 @@
+---
+title: Optimize query for cherry picked merge requests
+merge_request: 58967
+author:
+type: performance

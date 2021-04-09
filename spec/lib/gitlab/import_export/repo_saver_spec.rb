@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::RepoSaver do
   describe 'bundle a project Git repo' do
     let_it_be(:user) { create(:user) }
+
     let!(:project) { create(:project, :repository) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:shared) { project.import_export_shared }

@@ -1,70 +1,308 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Learn GitLab Design A should render the loading state 1`] = `
-<ul>
-  <li>
-    <span>
-      Create or import a repository
-    </span>
-  </li>
-  <li>
-    <span>
-      Invite your colleagues
-    </span>
-  </li>
-  <li>
-    <span>
-      <gl-link-stub
-        href="http://example.com/"
+exports[`Learn GitLab Design A renders correctly 1`] = `
+<div>
+  <div
+    class="row"
+  >
+    <div
+      class="gl-mb-7 gl-ml-5"
+    >
+      <h1
+        class="gl-font-size-h1"
       >
-        Set up CI/CD
-      </gl-link-stub>
-    </span>
-  </li>
-  <li>
-    <span>
-      <gl-link-stub
-        href="http://example.com/"
+        Learn GitLab
+      </h1>
+       
+      <p
+        class="gl-text-gray-700 gl-mb-0"
       >
-        Start a free Ultimate trial
-      </gl-link-stub>
-    </span>
-  </li>
-  <li>
-    <span>
-      <gl-link-stub
-        href="http://example.com/"
+        Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project.
+      </p>
+    </div>
+  </div>
+   
+  <div
+    class="gl-mb-3"
+  >
+    <p
+      class="gl-text-gray-500 gl-mb-2"
+      data-testid="completion-percentage"
+    >
+      25% completed
+    </p>
+     
+    <div
+      class="progress"
+      max="8"
+      value="2"
+    >
+      <div
+        aria-valuemax="8"
+        aria-valuemin="0"
+        aria-valuenow="2"
+        class="progress-bar"
+        role="progressbar"
+        style="width: 25%;"
       >
-        Add code owners
-      </gl-link-stub>
-    </span>
-  </li>
-  <li>
-    <span>
-      <gl-link-stub
-        href="http://example.com/"
+        <!---->
+      </div>
+    </div>
+  </div>
+   
+  <div
+    class="row row-cols-1 row-cols-md-3 gl-mt-5"
+  >
+    <div
+      class="col gl-mb-6"
+    >
+      <div
+        class="gl-card gl-pt-0 learn-gitlab-section-card"
       >
-        Add merge request approval
-      </gl-link-stub>
-    </span>
-  </li>
-  <li>
-    <span>
-      <gl-link-stub
-        href="http://example.com/"
+        <!---->
+         
+        <div
+          class="gl-card-body"
+        >
+          <div
+            class="learn-gitlab-section-card-header"
+          >
+            <img
+              src="/assets/learn_gitlab/section_workspace.svg"
+            />
+             
+            <h2
+              class="gl-font-lg gl-mb-3"
+            >
+              Set up your workspace
+            </h2>
+             
+            <p
+              class="gl-text-gray-700 gl-mb-6"
+            >
+              Complete these tasks first so you can enjoy GitLab's features to their fullest:
+            </p>
+          </div>
+           
+          <div
+            class="gl-mb-4"
+          >
+            <span
+              class="gl-text-green-500"
+            >
+              <svg
+                aria-hidden="true"
+                class="gl-icon s16"
+                data-testid="completed-icon"
+              >
+                <use
+                  href="#check-circle-filled"
+                />
+              </svg>
+              
+    Invite your colleagues
+  
+            </span>
+             
+            <!---->
+          </div>
+          <div
+            class="gl-mb-4"
+          >
+            <span
+              class="gl-text-green-500"
+            >
+              <svg
+                aria-hidden="true"
+                class="gl-icon s16"
+                data-testid="completed-icon"
+              >
+                <use
+                  href="#check-circle-filled"
+                />
+              </svg>
+              
+    Create or import a repository
+  
+            </span>
+             
+            <!---->
+          </div>
+          <div
+            class="gl-mb-4"
+          >
+            <span>
+              <a
+                class="gl-link"
+                href="http://example.com/"
+              >
+                Set up CI/CD
+              </a>
+            </span>
+             
+            <!---->
+          </div>
+          <div
+            class="gl-mb-4"
+          >
+            <span>
+              <a
+                class="gl-link"
+                href="http://example.com/"
+              >
+                Start a free Ultimate trial
+              </a>
+            </span>
+             
+            <!---->
+          </div>
+          <div
+            class="gl-mb-4"
+          >
+            <span>
+              <a
+                class="gl-link"
+                href="http://example.com/"
+              >
+                Add code owners
+              </a>
+            </span>
+             
+            <span
+              class="gl-font-style-italic gl-text-gray-500"
+              data-testid="trial-only"
+            >
+              
+    - Trial only
+  
+            </span>
+          </div>
+          <div
+            class="gl-mb-4"
+          >
+            <span>
+              <a
+                class="gl-link"
+                href="http://example.com/"
+              >
+                Add merge request approval
+              </a>
+            </span>
+             
+            <span
+              class="gl-font-style-italic gl-text-gray-500"
+              data-testid="trial-only"
+            >
+              
+    - Trial only
+  
+            </span>
+          </div>
+        </div>
+         
+        <!---->
+      </div>
+    </div>
+    <div
+      class="col gl-mb-6"
+    >
+      <div
+        class="gl-card gl-pt-0 learn-gitlab-section-card"
       >
-        Submit a merge request
-      </gl-link-stub>
-    </span>
-  </li>
-  <li>
-    <span>
-      <gl-link-stub
-        href="http://example.com/"
+        <!---->
+         
+        <div
+          class="gl-card-body"
+        >
+          <div
+            class="learn-gitlab-section-card-header"
+          >
+            <img
+              src="/assets/learn_gitlab/section_plan.svg"
+            />
+             
+            <h2
+              class="gl-font-lg gl-mb-3"
+            >
+              Plan and execute
+            </h2>
+             
+            <p
+              class="gl-text-gray-700 gl-mb-6"
+            >
+              Create a workflow for your new workspace, and learn how GitLab features work together:
+            </p>
+          </div>
+           
+          <div
+            class="gl-mb-4"
+          >
+            <span>
+              <a
+                class="gl-link"
+                href="http://example.com/"
+              >
+                Submit a merge request
+              </a>
+            </span>
+             
+            <!---->
+          </div>
+        </div>
+         
+        <!---->
+      </div>
+    </div>
+    <div
+      class="col gl-mb-6"
+    >
+      <div
+        class="gl-card gl-pt-0 learn-gitlab-section-card"
       >
-        Run a security scan
-      </gl-link-stub>
-    </span>
-  </li>
-</ul>
+        <!---->
+         
+        <div
+          class="gl-card-body"
+        >
+          <div
+            class="learn-gitlab-section-card-header"
+          >
+            <img
+              src="/assets/learn_gitlab/section_deploy.svg"
+            />
+             
+            <h2
+              class="gl-font-lg gl-mb-3"
+            >
+              Deploy
+            </h2>
+             
+            <p
+              class="gl-text-gray-700 gl-mb-6"
+            >
+              Use your new GitLab workflow to deploy your application, monitor its health, and keep it secure:
+            </p>
+          </div>
+           
+          <div
+            class="gl-mb-4"
+          >
+            <span>
+              <a
+                class="gl-link"
+                href="http://example.com/"
+              >
+                Run a Security scan using CI/CD
+              </a>
+            </span>
+             
+            <!---->
+          </div>
+        </div>
+         
+        <!---->
+      </div>
+    </div>
+  </div>
+</div>
 `;

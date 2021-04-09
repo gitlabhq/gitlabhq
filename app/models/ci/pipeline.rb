@@ -394,26 +394,13 @@ module Ci
     #       given we simply get the latest pipelines for the commits, regardless
     #       of what refs the pipelines belong to.
     def self.latest_pipeline_per_commit(commits, ref = nil)
-      p1 = arel_table
-      p2 = arel_table.alias
+      sql = select('DISTINCT ON (sha) *')
+              .where(sha: commits)
+              .order(:sha, id: :desc)
 
-      # This LEFT JOIN will filter out all but the newest row for every
-      # combination of (project_id, sha) or (project_id, sha, ref) if a ref is
-      # given.
-      cond = p1[:sha].eq(p2[:sha])
-        .and(p1[:project_id].eq(p2[:project_id]))
-        .and(p1[:id].lt(p2[:id]))
+      sql = sql.where(ref: ref) if ref
 
-      cond = cond.and(p1[:ref].eq(p2[:ref])) if ref
-      join = p1.join(p2, Arel::Nodes::OuterJoin).on(cond)
-
-      relation = where(sha: commits)
-        .where(p2[:id].eq(nil))
-        .joins(join.join_sources)
-
-      relation = relation.where(ref: ref) if ref
-
-      relation.each_with_object({}) do |pipeline, hash|
+      sql.each_with_object({}) do |pipeline, hash|
         hash[pipeline.sha] = pipeline
       end
     end

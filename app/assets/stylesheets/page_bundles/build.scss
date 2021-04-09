@@ -8,9 +8,9 @@
   .archived-job {
     top: $header-height;
     border-radius: 2px 2px 0 0;
-    color: $orange-600;
-    background-color: $orange-50;
-    border: 1px solid $border-gray-normal;
+    color: var(--orange-600, $orange-600);
+    background-color: var(--orange-50, $orange-50);
+    border: 1px solid var(--border-color, $border-color);
     padding: 3px 12px;
     margin: auto;
     align-items: center;
@@ -88,17 +88,13 @@
 
   .header-content {
     a {
-      color: $gl-text-color;
+      color: var(--gl-text-color, $gl-text-color);
 
       &:hover {
-        color: $blue-600;
+        color: var(--blue-600, $blue-600);
         text-decoration: none;
       }
     }
-  }
-
-  code {
-    color: $code-color;
   }
 
   .avatar {
@@ -148,12 +144,12 @@
 
   .trigger-build-variable {
     font-weight: $gl-font-weight-normal;
-    color: $code-color;
+    color: var(--gray-950, $gray-950);
   }
 
   .trigger-build-value {
     padding: 2px 4px;
-    color: $black;
+    color: var(--black, $black);
   }
 
   .trigger-variables-table-cell {
@@ -173,7 +169,7 @@
     cursor: pointer;
 
     &:hover {
-      color: $gl-text-color;
+      color: var(--gl-text-color, $gl-text-color);
     }
   }
 
@@ -211,7 +207,7 @@
       }
 
       &.retried {
-        background-color: $gray-lightest;
+        background-color: var(--gray-10, $gray-10);
       }
 
       &:hover {

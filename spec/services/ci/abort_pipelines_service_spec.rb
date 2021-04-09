@@ -45,6 +45,22 @@ RSpec.describe Ci::AbortPipelinesService do
 
         expect { described_class.new.execute(project_pipelines) }.not_to exceed_query_limit(control_count)
       end
+
+      context 'with live build logs' do
+        before do
+          create(:ci_build_trace_chunk, build: cancelable_build)
+        end
+
+        it 'makes canceled builds with stale trace visible' do
+          expect(Ci::Build.with_stale_live_trace.count).to eq 0
+
+          travel_to(2.days.ago) do
+            described_class.new.execute(project.all_pipelines)
+          end
+
+          expect(Ci::Build.with_stale_live_trace.count).to eq 1
+        end
+      end
     end
 
     context 'with user pipelines' do
