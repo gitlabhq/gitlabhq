@@ -2,8 +2,17 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "id", "name", "createdAt", "updatedAt", "version", "packageType",
-    "project", "tags", "pipelines", "versions", "metadata"
+    "id",
+    "name",
+    "createdAt",
+    "updatedAt",
+    "version",
+    "packageType",
+    "project",
+    "tags",
+    "pipelines",
+    "versions",
+    "metadata"
   ],
   "properties": {
     "id": {
@@ -23,7 +32,18 @@
     },
     "packageType": {
       "type": ["string"],
-      "enum": ["MAVEN", "NPM", "CONAN", "NUGET", "PYPI", "COMPOSER", "GENERIC", "GOLANG", "RUBYGEMS", "DEBIAN"]
+      "enum": [
+        "MAVEN",
+        "NPM",
+        "CONAN",
+        "NUGET",
+        "PYPI",
+        "COMPOSER",
+        "GENERIC",
+        "GOLANG",
+        "RUBYGEMS",
+        "DEBIAN"
+      ]
     },
     "tags": {
       "type": "object",
@@ -59,8 +79,18 @@
     "metadata": {
       "anyOf": [
         { "$ref": "./package_composer_metadata.json" },
+        { "$ref": "./package_conan_metadata.json" },
         { "type": "null" }
       ]
+    },
+    "packageFiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pageInfo": { "type": "object" },
+        "edges": { "type": "array" },
+        "nodes": { "type": "array" }
+      }
     }
   }
 }

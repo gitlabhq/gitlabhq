@@ -515,4 +515,19 @@ This is usually a permissions issue with either:
 - The remote bucket if [object storage](../../../administration/packages/#using-object-storage)
   is used.
 
-In the latter case, ensure the bucket exists and the GitLab has write access to it.
+In the latter case, ensure the bucket exists and GitLab has write access to it.
+
+## Supported CLI commands
+
+The GitLab npm repository supports the following commands for the npm CLI (`npm`) and yarn CLI
+(`yarn`):
+
+- `npm install`: Install npm packages.
+- `npm publish`: Publish an npm package to the registry.
+- `npm dist-tag add`: Add a dist-tag to an npm package.
+- `npm dist-tag ls`: List dist-tags for a package.
+- `npm dist-tag rm`: Delete a dist-tag.
+- `npm ci`: Install npm packages directly from your `package-lock.json` file.
+- `npm view`: Show package metadata.
+- `yarn add`: Install an npm package.
+- `yarn update`: Update your dependencies.

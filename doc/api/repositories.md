@@ -397,6 +397,18 @@ these as the changelog entries. You can enrich entries with additional data,
 such as a link to the merge request or details about the commit author. You can
 [customize the format of a changelog](#customize-the-changelog-output) section with a template.
 
+Trailers can be manually added while editing a commit message. To include a commit
+using the default trailer of `Changelog` and categorize it as a feature, the
+trailer could be added to a commit message like so:
+
+```plaintext
+<Commit message subject>
+
+<Commit message description>
+
+Changelog: feature
+```
+
 ### Reverted commits
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55537) in GitLab 13.10.

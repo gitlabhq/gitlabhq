@@ -871,3 +871,11 @@ package:
     - 'mvn help:system'
     - 'mvn package'
 ```
+
+## Supported CLI commands
+
+The GitLab Maven repository supports the following Maven CLI commands:
+
+- `mvn deploy`: Publish your package to the Package Registry.
+- `mvn install`: Install packages specified in your Maven project.
+- `mvn dependency:get`: Install a specific package.

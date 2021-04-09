@@ -517,8 +517,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/policies/merge_request_policy_spec.rb
     - ee/spec/policies/project_policy_spec.rb
     - ee/spec/policies/vulnerabilities/issue_link_policy_spec.rb
-    - ee/spec/presenters/approval_rule_presenter_spec.rb
-    - ee/spec/presenters/ci/pipeline_presenter_spec.rb
     - ee/spec/requests/api/analytics/code_review_analytics_spec.rb
     - ee/spec/requests/api/audit_events_spec.rb
     - ee/spec/requests/api/commits_spec.rb

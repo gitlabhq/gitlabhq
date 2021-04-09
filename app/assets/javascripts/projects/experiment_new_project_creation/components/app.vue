@@ -91,7 +91,7 @@ export default {
   },
 
   computed: {
-    availablePanels() {
+    decoratedPanels() {
       const PANEL_TITLES = experiment(NEW_REPO_EXPERIMENT, {
         use: () => ({
           blank: s__('ProjectsNew|Create blank project'),
@@ -103,20 +103,22 @@ export default {
         }),
       });
 
-      const updatedPanels = PANELS.map(({ key, title, ...el }) => ({
+      return PANELS.map(({ key, title, ...el }) => ({
         ...el,
         title: PANEL_TITLES[key] !== undefined ? PANEL_TITLES[key] : title,
       }));
+    },
 
+    availablePanels() {
       if (this.isCiCdAvailable) {
-        return updatedPanels;
+        return this.decoratedPanels;
       }
 
-      return updatedPanels.filter((p) => p.name !== CI_CD_PANEL);
+      return this.decoratedPanels.filter((p) => p.name !== CI_CD_PANEL);
     },
 
     activePanel() {
-      return PANELS.find((p) => p.name === this.activeTab);
+      return this.decoratedPanels.find((p) => p.name === this.activeTab);
     },
 
     breadcrumbs() {

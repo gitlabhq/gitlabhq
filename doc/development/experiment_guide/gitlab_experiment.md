@@ -49,7 +49,7 @@ graph TD
     Running? -->|No| Excluded[Control / No Tracking]
     Cached? -->|No| Excluded?
     Cached? -->|Yes| Cached[Cached Value]
-    Excluded? -->|Yes / Cached| Excluded
+    Excluded? -->|Yes| Excluded
     Excluded? -->|No| Segmented?
     Segmented? -->|Yes / Cached| VariantA
     Segmented? -->|No| Included?[Experiment Group?]
@@ -92,7 +92,7 @@ end
 ```
 
 When this code executes, the experiment is run, a variant is assigned, and (if within a
-controller or view) a `window.gon.experiment.pillColor` object will be available in the
+controller or view) a `window.gon.experiment.pill_color` object will be available in the
 client layer, with details like:
 
 - The assigned variant.

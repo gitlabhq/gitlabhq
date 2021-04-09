@@ -24,6 +24,7 @@ The Package Registry supports the following formats:
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/nuget_repository/index.html">NuGet</a></td><td>12.8+</td></tr>
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/pypi_repository/index.html">PyPI</a></td><td>12.10+</td></tr>
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/generic_packages/index.html">Generic packages</a></td><td>13.5+</td></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/rubygems_registry/index.html">RubyGems</a></td><td>13.10+</td></tr>
 </table>
 </div>
 </div>
@@ -49,7 +50,6 @@ guides you through the process.
 | P2        | [#36895](https://gitlab.com/gitlab-org/gitlab/-/issues/36895) |
 | Puppet    | [#36897](https://gitlab.com/gitlab-org/gitlab/-/issues/36897) |
 | RPM       | [#5932](https://gitlab.com/gitlab-org/gitlab/-/issues/5932) |
-| RubyGems  | [#803](https://gitlab.com/gitlab-org/gitlab/-/issues/803) |
 | SBT       | [#36898](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) |
 | Terraform | [Draft: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834) |
 | Vagrant   | [#36899](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) |

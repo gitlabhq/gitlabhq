@@ -359,3 +359,10 @@ characters are removed.
 
 A `pip install` request for `my.package` looks for packages that match any of
 the three characters, such as `my-package`, `my_package`, and `my....package`.
+
+## Supported CLI commands
+
+The GitLab PyPI repository supports the following CLI commands:
+
+- `twine upload`: Upload a package to the registry.
+- `pip install`: Install a PyPI package from the registry.

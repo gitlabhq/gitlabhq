@@ -295,3 +295,10 @@ Never commit the `auth.json` file to your repository. To install packages from a
 consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages.md#satis) tool with your personal access token
 stored in a [GitLab CI/CD variable](../../../ci/variables/README.md) or in
 [HashiCorp Vault](../../../ci/secrets/index.md).
+
+## Supported CLI commands
+
+The GitLab Composer repository supports the following Composer CLI commands:
+
+- `composer install`: Install Composer dependencies.
+- `composer update`: Install the latest version of Composer dependencies.
