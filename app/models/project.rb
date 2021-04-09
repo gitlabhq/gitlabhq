@@ -1715,8 +1715,13 @@ class Project < ApplicationRecord
     end
   end
 
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/326989
   def any_active_runners?(&block)
     active_runners_with_tags.any?(&block)
+  end
+
+  def any_online_runners?(&block)
+    online_runners_with_tags.any?(&block)
   end
 
   def valid_runners_token?(token)
@@ -2741,9 +2746,11 @@ class Project < ApplicationRecord
   end
 
   def active_runners_with_tags
-    strong_memoize(:active_runners_with_tags) do
-      active_runners.with_tags
-    end
+    @active_runners_with_tags ||= active_runners.with_tags
+  end
+
+  def online_runners_with_tags
+    @online_runners_with_tags ||= active_runners_with_tags.online
   end
 end
 

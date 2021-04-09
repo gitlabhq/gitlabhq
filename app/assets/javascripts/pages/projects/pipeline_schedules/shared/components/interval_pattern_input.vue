@@ -139,7 +139,7 @@ export default {
       v-model="cronInterval"
       :placeholder="__('Define a custom pattern with cron syntax')"
       :name="inputNameAttribute"
-      class="form-control inline cron-interval-input"
+      class="form-control inline cron-interval-input gl-form-input"
       type="text"
       required="true"
       @input="onCustomInput"

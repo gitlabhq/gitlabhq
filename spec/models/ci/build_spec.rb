@@ -585,6 +585,68 @@ RSpec.describe Ci::Build do
         is_expected.to be_falsey
       end
     end
+
+    context 'with runners_cached_states feature flag enabled' do
+      before do
+        stub_feature_flags(runners_cached_states: true)
+      end
+
+      it 'caches the result in Redis' do
+        expect(Rails.cache).to receive(:fetch).with(['has-online-runners', build.id], expires_in: 1.minute)
+
+        build.any_runners_online?
+      end
+    end
+
+    context 'with runners_cached_states feature flag disabled' do
+      before do
+        stub_feature_flags(runners_cached_states: false)
+      end
+
+      it 'does not cache' do
+        expect(Rails.cache).not_to receive(:fetch).with(['has-online-runners', build.id], expires_in: 1.minute)
+
+        build.any_runners_online?
+      end
+    end
+  end
+
+  describe '#any_runners_available?' do
+    subject { build.any_runners_available? }
+
+    context 'when no runners' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when there are runners' do
+      let!(:runner) { create(:ci_runner, :project, projects: [build.project]) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'with runners_cached_states feature flag enabled' do
+      before do
+        stub_feature_flags(runners_cached_states: true)
+      end
+
+      it 'caches the result in Redis' do
+        expect(Rails.cache).to receive(:fetch).with(['has-available-runners', build.project.id], expires_in: 1.minute)
+
+        build.any_runners_available?
+      end
+    end
+
+    context 'with runners_cached_states feature flag disabled' do
+      before do
+        stub_feature_flags(runners_cached_states: false)
+      end
+
+      it 'does not cache' do
+        expect(Rails.cache).not_to receive(:fetch).with(['has-available-runners', build.project.id], expires_in: 1.minute)
+
+        build.any_runners_available?
+      end
+    end
   end
 
   describe '#artifacts?' do

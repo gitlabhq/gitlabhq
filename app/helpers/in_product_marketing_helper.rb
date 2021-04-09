@@ -49,7 +49,7 @@ module InProductMarketingHelper
       trial: [
         s_('InProductMarketing|Start a free trial of GitLab Ultimate – no CC required'),
         s_('InProductMarketing|Improve app security with a 30-day trial'),
-        s_('InProductMarketing|Start with a GitLab Gold free trial')
+        s_('InProductMarketing|Start with a GitLab Ultimate free trial')
       ],
       team: [
         s_('InProductMarketing|Invite your colleagues to join in less than one minute'),
@@ -97,8 +97,8 @@ module InProductMarketingHelper
         s_('InProductMarketing|Follow our steps')
       ],
       trial: [
-        s_('InProductMarketing|...and you can get a free trial of GitLab Gold'),
-        s_('InProductMarketing|Try GitLab Gold for free'),
+        s_('InProductMarketing|...and you can get a free trial of GitLab Ultimate'),
+        s_('InProductMarketing|Try GitLab Ultimate for free'),
         s_('InProductMarketing|Better code in less time')
       ],
       team: [
@@ -142,7 +142,7 @@ module InProductMarketingHelper
             s_('InProductMarketing|Ticketmaster decreased their CI build time by 15X')
           ], format)
         ].join("\n"),
-        s_("InProductMarketing|We know a thing or two about efficiency and we don't want to keep that to ourselves. Sign up for a free trial of GitLab Gold and your teams will be on it from day one."),
+        s_("InProductMarketing|We know a thing or two about efficiency and we don't want to keep that to ourselves. Sign up for a free trial of GitLab Ultimate and your teams will be on it from day one."),
         [
           s_('InProductMarketing|Stop wondering and use GitLab to answer questions like:'),
           list([
@@ -172,9 +172,9 @@ module InProductMarketingHelper
         nil
       ],
       trial: [
-        s_('InProductMarketing|Start a GitLab Gold trial today in less than one minute, no credit card required.'),
-        s_('InProductMarketing|Get started today with a 30-day GitLab Gold trial, no credit card required.'),
-        s_('InProductMarketing|Code owners and required merge approvals are part of the paid tiers of GitLab. You can start a free 30-day trial of GitLab Gold and enable these features in less than 5 minutes with no credit card required.')
+        s_('InProductMarketing|Start a GitLab Ultimate trial today in less than one minute, no credit card required.'),
+        s_('InProductMarketing|Get started today with a 30-day GitLab Ultimate trial, no credit card required.'),
+        s_('InProductMarketing|Code owners and required merge approvals are part of the paid tiers of GitLab. You can start a free 30-day trial of GitLab Ultimate and enable these features in less than 5 minutes with no credit card required.')
       ],
       team: [
         s_('InProductMarketing|Invite your colleagues and start shipping code faster.'),
@@ -250,7 +250,7 @@ module InProductMarketingHelper
       trial: [
         s_('InProductMarketing|Start a trial'),
         s_('InProductMarketing|Beef up your security'),
-        s_('InProductMarketing|Go for the gold!')
+        s_('InProductMarketing|Start your trial now!')
       ],
       team: [
         s_('InProductMarketing|Invite your colleagues today'),

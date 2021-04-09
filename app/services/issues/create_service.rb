@@ -6,7 +6,7 @@ module Issues
 
     def execute(skip_system_notes: false)
       @request = params.delete(:request)
-      @spam_params = Spam::SpamActionService.filter_spam_params!(params)
+      @spam_params = Spam::SpamActionService.filter_spam_params!(params, @request)
 
       @issue = BuildService.new(project, current_user, params).execute
 

@@ -461,7 +461,7 @@ RSpec.describe Issues::CreateService do
     end
 
     context 'checking spam' do
-      let(:request) { double(:request) }
+      let(:request) { double(:request, headers: nil) }
       let(:api) { true }
       let(:captcha_response) { 'abc123' }
       let(:spam_log_id) { 1 }

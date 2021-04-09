@@ -65,10 +65,8 @@ docs-lint links:
     - cd /tmp/gitlab-docs
     # Build HTML from Markdown
     - bundle exec nanoc
-    # Check the internal links
-    - bundle exec nanoc check internal_links
-    # Check the internal anchor links
-    - bundle exec nanoc check internal_anchors
+    # Check the internal links and anchors (in parallel)
+    - "parallel time bundle exec nanoc check ::: internal_links internal_anchors"
 
 ui-docs-links lint:
   extends:

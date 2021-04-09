@@ -1,0 +1,9 @@
+query getAvailableBranches($projectFullPath: ID!) {
+  project(fullPath: $projectFullPath) @client {
+    repository {
+      branches {
+        name
+      }
+    }
+  }
+}

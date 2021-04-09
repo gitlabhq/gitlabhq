@@ -22,7 +22,7 @@ module BranchesHelper
   end
 
   def gldropdrown_branches_enabled?
-    Feature.enabled?(:gldropdown_branches)
+    Feature.enabled?(:gldropdown_branches, default_enabled: :yaml)
   end
 end
 

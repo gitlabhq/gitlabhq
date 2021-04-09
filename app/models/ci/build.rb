@@ -33,6 +33,7 @@ module Ci
     }.freeze
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
+    RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
@@ -702,7 +703,23 @@ module Ci
     end
 
     def any_runners_online?
-      project.any_active_runners? { |runner| runner.match_build_if_online?(self) }
+      if Feature.enabled?(:runners_cached_states, project, default_enabled: :yaml)
+        cache_for_online_runners do
+          project.any_online_runners? { |runner| runner.match_build_if_online?(self) }
+        end
+      else
+        project.any_active_runners? { |runner| runner.match_build_if_online?(self) }
+      end
+    end
+
+    def any_runners_available?
+      if Feature.enabled?(:runners_cached_states, project, default_enabled: :yaml)
+        cache_for_available_runners do
+          project.active_runners.exists?
+        end
+      else
+        project.any_active_runners?
+      end
     end
 
     def stuck?
@@ -1106,6 +1123,20 @@ module Ci
         .dig(:allow_failure_criteria, :exit_codes)
         .to_a
         .include?(exit_code)
+    end
+
+    def cache_for_online_runners(&block)
+      Rails.cache.fetch(
+        ['has-online-runners', id],
+        expires_in: RUNNERS_STATUS_CACHE_EXPIRATION
+      ) { yield }
+    end
+
+    def cache_for_available_runners(&block)
+      Rails.cache.fetch(
+        ['has-available-runners', project.id],
+        expires_in: RUNNERS_STATUS_CACHE_EXPIRATION
+      ) { yield }
     end
   end
 end

@@ -23,15 +23,6 @@ module Spam
           captcha_site_key: Gitlab::CurrentSettings.recaptcha_site_key
         }
       end
-
-      # with_spam_action_response_fields(spammable) { {other_fields: true} }    -> hash
-      #
-      # Takes a Spammable and a block as arguments.
-      #
-      # The block passed should be a hash, which the spam_action_fields will be merged into.
-      def with_spam_action_response_fields(spammable)
-        yield.merge(spam_action_response_fields(spammable))
-      end
     end
   end
 end

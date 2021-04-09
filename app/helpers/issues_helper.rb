@@ -168,17 +168,23 @@ module IssuesHelper
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
       can_bulk_update: can?(current_user, :admin_issue, project).to_s,
       can_edit: can?(current_user, :admin_project, project).to_s,
+      can_import_issues: can?(current_user, :import_issues, @project).to_s,
       email: current_user&.notification_email,
+      empty_state_svg_path: image_path('illustrations/issues.svg'),
       endpoint: expose_path(api_v4_projects_issues_path(id: project.id)),
       export_csv_path: export_csv_project_issues_path(project),
       full_path: project.full_path,
+      has_issues: project_issues(project).exists?.to_s,
       import_csv_issues_path: import_csv_namespace_project_issues_path,
+      is_signed_in: current_user.present?.to_s,
       issues_path: project_issues_path(project),
+      jira_integration_path: help_page_url('user/project/integrations/jira', anchor: 'view-jira-issues'),
       max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
       new_issue_path: new_project_issue_path(project, issue: { assignee_id: finder.assignee.try(:id), milestone_id: finder.milestones.first.try(:id) }),
       project_import_jira_path: project_import_jira_path(project),
       rss_path: url_for(safe_params.merge(rss_url_options)),
-      show_new_issue_link: show_new_issue_link?(project).to_s
+      show_new_issue_link: show_new_issue_link?(project).to_s,
+      sign_in_path: new_user_session_path
     }
   end
 

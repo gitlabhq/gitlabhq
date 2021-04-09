@@ -4184,7 +4184,8 @@ finishes.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/19298) in GitLab 13.2.
 
 Use `release` to create a [release](../../user/project/releases/index.md).
-Requires the `release-cli` to be available in your GitLab Runner Docker or shell executor.
+Requires the [`release-cli`](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs)
+to be available in your GitLab Runner Docker or shell executor.
 
 These keywords are supported:
 
@@ -4268,6 +4269,36 @@ Once installed, the `release` keyword should be available to you.
 
   release-cli version 0.6.0
   ```
+
+#### Use a custom SSL CA certificate authority
+
+You can use the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable to configure a custom SSL CA certificate authority,
+which is used to verify the peer when the `release-cli` creates a release through the API using HTTPS with custom certificates.
+The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the
+[text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1)
+or the `path/to/file` containing the certificate authority.
+For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
+
+```yaml
+release:
+  variables:
+    ADDITIONAL_CA_CERT_BUNDLE: |
+        -----BEGIN CERTIFICATE-----
+        MIIGqTCCBJGgAwIBAgIQI7AVxxVwg2kch4d56XNdDjANBgkqhkiG9w0BAQsFADCB
+        ...
+        jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
+        -----END CERTIFICATE-----
+  script:
+    - echo "Create release"
+  release:
+    name: 'My awesome release'
+    tag_name: '$CI_COMMIT_TAG'
+```
+
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a
+[custom variable in the UI](../variables/README.md#custom-cicd-variables),
+either as a `file`, which requires the path to the certificate, or as a variable,
+which requires the text representation of the certificate.
 
 #### `script`
 

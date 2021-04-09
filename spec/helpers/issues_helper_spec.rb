@@ -288,24 +288,31 @@ RSpec.describe IssuesHelper do
       allow(helper).to receive(:current_user).and_return(current_user)
       allow(helper).to receive(:finder).and_return(finder)
       allow(helper).to receive(:can?).and_return(true)
-      allow(helper).to receive(:url_for).and_return('#')
+      allow(helper).to receive(:image_path).and_return('#')
       allow(helper).to receive(:import_csv_namespace_project_issues_path).and_return('#')
+      allow(helper).to receive(:url_for).and_return('#')
 
       expected = {
         calendar_path: '#',
         can_bulk_update: 'true',
         can_edit: 'true',
+        can_import_issues: 'true',
         email: current_user&.notification_email,
+        empty_state_svg_path: '#',
         endpoint: expose_path(api_v4_projects_issues_path(id: project.id)),
         export_csv_path: export_csv_project_issues_path(project),
         full_path: project.full_path,
+        has_issues: project_issues(project).exists?.to_s,
         import_csv_issues_path: '#',
+        is_signed_in: current_user.present?.to_s,
         issues_path: project_issues_path(project),
+        jira_integration_path: help_page_url('user/project/integrations/jira', anchor: 'view-jira-issues'),
         max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
         new_issue_path: new_project_issue_path(project, issue: { assignee_id: finder.assignee.id, milestone_id: finder.milestones.first.id }),
         project_import_jira_path: project_import_jira_path(project),
         rss_path: '#',
-        show_new_issue_link: 'true'
+        show_new_issue_link: 'true',
+        sign_in_path: new_user_session_path
       }
 
       expect(helper.issues_list_data(project, current_user, finder)).to include(expected)

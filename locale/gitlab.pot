@@ -16185,7 +16185,7 @@ msgstr ""
 msgid "InProductMarketing|*GitLab*, noun: a synonym for efficient teams"
 msgstr ""
 
-msgid "InProductMarketing|...and you can get a free trial of GitLab Gold"
+msgid "InProductMarketing|...and you can get a free trial of GitLab Ultimate"
 msgstr ""
 
 msgid "InProductMarketing|3 ways to dive into GitLab CI/CD"
@@ -16215,7 +16215,7 @@ msgstr ""
 msgid "InProductMarketing|By enabling code owners and required merge approvals the right person will review the right MR. This is a win-win: cleaner code and a more efficient review process."
 msgstr ""
 
-msgid "InProductMarketing|Code owners and required merge approvals are part of the paid tiers of GitLab. You can start a free 30-day trial of GitLab Gold and enable these features in less than 5 minutes with no credit card required."
+msgid "InProductMarketing|Code owners and required merge approvals are part of the paid tiers of GitLab. You can start a free 30-day trial of GitLab Ultimate and enable these features in less than 5 minutes with no credit card required."
 msgstr ""
 
 msgid "InProductMarketing|Create a project in GitLab in 5 minutes"
@@ -16260,7 +16260,7 @@ msgstr ""
 msgid "InProductMarketing|Get started today"
 msgstr ""
 
-msgid "InProductMarketing|Get started today with a 30-day GitLab Gold trial, no credit card required."
+msgid "InProductMarketing|Get started today with a 30-day GitLab Ultimate trial, no credit card required."
 msgstr ""
 
 msgid "InProductMarketing|Get started with GitLab CI/CD"
@@ -16291,9 +16291,6 @@ msgid "InProductMarketing|Give us one minute..."
 msgstr ""
 
 msgid "InProductMarketing|Go farther with GitLab"
-msgstr ""
-
-msgid "InProductMarketing|Go for the gold!"
 msgstr ""
 
 msgid "InProductMarketing|Goldman Sachs went from 1 build every two weeks to thousands of builds a day"
@@ -16380,7 +16377,7 @@ msgstr ""
 msgid "InProductMarketing|Sometimes you're not ready to make a full transition to a new tool. If you're not ready to fully commit, %{mirroring_link} gives you a safe way to try out GitLab in parallel with your current tool."
 msgstr ""
 
-msgid "InProductMarketing|Start a GitLab Gold trial today in less than one minute, no credit card required."
+msgid "InProductMarketing|Start a GitLab Ultimate trial today in less than one minute, no credit card required."
 msgstr ""
 
 msgid "InProductMarketing|Start a free trial of GitLab Ultimate – no CC required"
@@ -16395,7 +16392,10 @@ msgstr ""
 msgid "InProductMarketing|Start by importing your projects"
 msgstr ""
 
-msgid "InProductMarketing|Start with a GitLab Gold free trial"
+msgid "InProductMarketing|Start with a GitLab Ultimate free trial"
+msgstr ""
+
+msgid "InProductMarketing|Start your trial now!"
 msgstr ""
 
 msgid "InProductMarketing|Stop wondering and use GitLab to answer questions like:"
@@ -16431,7 +16431,7 @@ msgstr ""
 msgid "InProductMarketing|To understand and get the most out of GitLab, start at the beginning and %{project_link}. In GitLab, repositories are part of a project, so after you've created your project you can go ahead and %{repo_link}."
 msgstr ""
 
-msgid "InProductMarketing|Try GitLab Gold for free"
+msgid "InProductMarketing|Try GitLab Ultimate for free"
 msgstr ""
 
 msgid "InProductMarketing|Try it out"
@@ -16452,7 +16452,7 @@ msgstr ""
 msgid "InProductMarketing|Use GitLab CI/CD"
 msgstr ""
 
-msgid "InProductMarketing|We know a thing or two about efficiency and we don't want to keep that to ourselves. Sign up for a free trial of GitLab Gold and your teams will be on it from day one."
+msgid "InProductMarketing|We know a thing or two about efficiency and we don't want to keep that to ourselves. Sign up for a free trial of GitLab Ultimate and your teams will be on it from day one."
 msgstr ""
 
 msgid "InProductMarketing|What does our value stream timeline look like from product to development to review and production?"
@@ -17688,6 +17688,9 @@ msgid "Jira-GitLab user mapping template"
 msgstr ""
 
 msgid "JiraService| on branch %{branch_link}"
+msgstr ""
+
+msgid "JiraService|%{jiraDocsLinkStart}Enable the Jira integration%{jiraDocsLinkEnd} to view your Jira issues in GitLab."
 msgstr ""
 
 msgid "JiraService|%{jira_docs_link_start}Enable the Jira integration%{jira_docs_link_end} to view your Jira issues in GitLab."
@@ -22914,9 +22917,6 @@ msgstr ""
 msgid "Pipelines|API"
 msgstr ""
 
-msgid "Pipelines|An error occurred. Please try again."
-msgstr ""
-
 msgid "Pipelines|Are you sure you want to run this pipeline?"
 msgstr ""
 
@@ -22929,13 +22929,13 @@ msgstr ""
 msgid "Pipelines|CI lint"
 msgstr ""
 
+msgid "Pipelines|CI/CD template to test and deploy your %{name} project."
+msgstr ""
+
 msgid "Pipelines|Child pipeline"
 msgstr ""
 
 msgid "Pipelines|Clear runner caches"
-msgstr ""
-
-msgid "Pipelines|Continuous deployment template to test and deploy your %{name} project."
 msgstr ""
 
 msgid "Pipelines|Copy trigger token"
@@ -22951,6 +22951,9 @@ msgid "Pipelines|Edit"
 msgstr ""
 
 msgid "Pipelines|Editor"
+msgstr ""
+
+msgid "Pipelines|Get familiar with GitLab CI/CD syntax by starting with a simple pipeline that runs a “Hello world” script."
 msgstr ""
 
 msgid "Pipelines|Get started with CI/CD"
@@ -23049,10 +23052,16 @@ msgstr ""
 msgid "Pipelines|Trigger user has insufficient permissions to project"
 msgstr ""
 
-msgid "Pipelines|Try a sample CI/CD file"
+msgid "Pipelines|Use a CI/CD template"
 msgstr ""
 
-msgid "Pipelines|Use a sample file to implement GitLab CI/CD based on your project’s language/framework."
+msgid "Pipelines|Use a sample %{codeStart}.gitlab-ci.yml%{codeEnd} template file to explore how CI/CD works."
+msgstr ""
+
+msgid "Pipelines|Use a sample CI/CD template"
+msgstr ""
+
+msgid "Pipelines|Use a template based on your project's language or framework to get started with GitLab CI/CD."
 msgstr ""
 
 msgid "Pipelines|Use template"
@@ -23074,6 +23083,9 @@ msgid "Pipelines|invalid"
 msgstr ""
 
 msgid "Pipelines|parent"
+msgstr ""
+
+msgid "Pipelines|“Hello world” with GitLab CI/CD"
 msgstr ""
 
 msgid "Pipeline|Actions"
@@ -32957,6 +32969,9 @@ msgid "Unable to convert Kubernetes logs encoding to UTF-8"
 msgstr ""
 
 msgid "Unable to create link to vulnerability"
+msgstr ""
+
+msgid "Unable to fetch branch list for this project."
 msgstr ""
 
 msgid "Unable to fetch unscanned projects"

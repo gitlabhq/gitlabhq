@@ -11,6 +11,23 @@ export const resolvers = {
         }),
       };
     },
+    /* eslint-disable @gitlab/require-i18n-strings */
+    project() {
+      return {
+        __typename: 'Project',
+        repository: {
+          __typename: 'Repository',
+          branches: [
+            { __typename: 'Branch', name: 'master' },
+            { __typename: 'Branch', name: 'main' },
+            { __typename: 'Branch', name: 'develop' },
+            { __typename: 'Branch', name: 'production' },
+            { __typename: 'Branch', name: 'test' },
+          ],
+        },
+      };
+    },
+    /* eslint-enable @gitlab/require-i18n-strings */
   },
   Mutation: {
     lintCI: (_, { endpoint, content, dry_run }) => {

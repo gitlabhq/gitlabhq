@@ -19,16 +19,12 @@ RSpec.describe Spam::Concerns::HasSpamActionResponseFields do
     end
 
     it 'merges in spam action fields from spammable' do
-      result = subject.send(:with_spam_action_response_fields, spammable) do
-        { other_field: true }
-      end
-      expect(result)
+      expect(subject.spam_action_response_fields(spammable))
         .to eq({
                  spam: true,
                  needs_captcha_response: true,
                  spam_log_id: 1,
-                 captcha_site_key: recaptcha_site_key,
-                 other_field: true
+                 captcha_site_key: recaptcha_site_key
                })
     end
   end

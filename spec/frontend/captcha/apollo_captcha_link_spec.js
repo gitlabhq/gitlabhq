@@ -44,7 +44,7 @@ describe('apolloCaptchaLink', () => {
     },
     errors: [
       {
-        message: 'Your Query was detected to be SPAM.',
+        message: 'Your Query was detected to be spam.',
         path: ['user'],
         locations: [{ line: 2, column: 3 }],
         extensions: {
@@ -116,7 +116,7 @@ describe('apolloCaptchaLink', () => {
     });
   });
 
-  it('unresolvable SPAM errors are passed through', (done) => {
+  it('unresolvable spam errors are passed through', (done) => {
     setupLink(SPAM_ERROR_RESPONSE);
     link.request(mockOperation()).subscribe((result) => {
       expect(result).toEqual(SPAM_ERROR_RESPONSE);
@@ -127,8 +127,8 @@ describe('apolloCaptchaLink', () => {
     });
   });
 
-  describe('resolvable SPAM errors', () => {
-    it('re-submits request with SPAM headers if the captcha modal was solved correctly', (done) => {
+  describe('resolvable spam errors', () => {
+    it('re-submits request with spam headers if the captcha modal was solved correctly', (done) => {
       waitForCaptchaToBeSolved.mockResolvedValue(CAPTCHA_RESPONSE);
       setupLink(CAPTCHA_ERROR_RESPONSE, SUCCESS_RESPONSE);
       link.request(mockOperation()).subscribe((result) => {

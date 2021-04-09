@@ -8,7 +8,7 @@ module Issues
       handle_move_between_ids(issue)
 
       @request = params.delete(:request)
-      @spam_params = Spam::SpamActionService.filter_spam_params!(params)
+      @spam_params = Spam::SpamActionService.filter_spam_params!(params, @request)
 
       change_issue_duplicate(issue)
       move_issue_to_new_project(issue) || clone_issue(issue) || update_task_event(issue) || update(issue)

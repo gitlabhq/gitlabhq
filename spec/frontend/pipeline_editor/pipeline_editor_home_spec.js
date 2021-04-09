@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 
 import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
+import PipelineEditorFileNav from '~/pipeline_editor/components/file_nav/pipeline_editor_file_nav.vue';
 import PipelineEditorHeader from '~/pipeline_editor/components/header/pipeline_editor_header.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import { MERGED_TAB, VISUALIZE_TAB } from '~/pipeline_editor/constants';
@@ -27,6 +28,7 @@ describe('Pipeline editor home wrapper', () => {
   const findPipelineEditorHeader = () => wrapper.findComponent(PipelineEditorHeader);
   const findPipelineEditorTabs = () => wrapper.findComponent(PipelineEditorTabs);
   const findCommitSection = () => wrapper.findComponent(CommitSection);
+  const findFileNav = () => wrapper.findComponent(PipelineEditorFileNav);
 
   afterEach(() => {
     wrapper.destroy();
@@ -36,6 +38,10 @@ describe('Pipeline editor home wrapper', () => {
   describe('renders', () => {
     beforeEach(() => {
       createComponent();
+    });
+
+    it('shows the file nav', () => {
+      expect(findFileNav().exists()).toBe(true);
     });
 
     it('shows the pipeline editor header', () => {

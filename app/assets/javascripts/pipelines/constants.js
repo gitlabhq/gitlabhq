@@ -36,7 +36,8 @@ export const UNSUPPORTED_DATA = 'unsupported_data';
 
 export const CHILD_VIEW = 'child';
 
-// The keys of the Object are the same as the `key` value in the template list we get from the API.
+// The keys of the templates are the same as their filenames
+export const HELLO_WORLD_TEMPLATE_KEY = 'Hello-World';
 export const SUGGESTED_CI_TEMPLATES = {
   Android: { logoPath: '/assets/illustrations/logos/android.svg' },
   Bash: { logoPath: '/assets/illustrations/logos/bash.svg' },

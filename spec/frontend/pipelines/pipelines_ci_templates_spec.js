@@ -7,16 +7,23 @@ const addCiYmlPath = "/-/new/master?commit_message='Add%20.gitlab-ci.yml'";
 describe('Pipelines CI Templates', () => {
   let wrapper;
 
+  const GlEmoji = { template: '<img/>' };
+
   const createWrapper = () => {
     return shallowMount(PipelinesCiTemplate, {
       provide: {
         addCiYmlPath,
       },
+      stubs: {
+        GlEmoji,
+      },
     });
   };
 
+  const findTestTemplateLinks = () => wrapper.findAll('[data-testid="test-template-link"]');
   const findTemplateDescriptions = () => wrapper.findAll('[data-testid="template-description"]');
   const findTemplateLinks = () => wrapper.findAll('[data-testid="template-link"]');
+  const findTemplateNames = () => wrapper.findAll('[data-testid="template-name"]');
   const findTemplateLogos = () => wrapper.findAll('[data-testid="template-logo"]');
 
   afterEach(() => {
@@ -24,7 +31,19 @@ describe('Pipelines CI Templates', () => {
     wrapper = null;
   });
 
-  describe('renders templates', () => {
+  describe('renders test template', () => {
+    beforeEach(() => {
+      wrapper = createWrapper();
+    });
+
+    it('links to the hello world template', () => {
+      expect(findTestTemplateLinks().at(0).attributes('href')).toBe(
+        addCiYmlPath.concat('&template=Hello-World'),
+      );
+    });
+  });
+
+  describe('renders template list', () => {
     beforeEach(() => {
       wrapper = createWrapper();
     });
@@ -37,20 +56,24 @@ describe('Pipelines CI Templates', () => {
       expect(content).toContain(...keys);
     });
 
+    it('has the correct template name', () => {
+      expect(findTemplateNames().at(0).text()).toBe('Android');
+    });
+
     it('links to the correct template', () => {
-      expect(findTemplateLinks().at(0).attributes('href')).toEqual(
+      expect(findTemplateLinks().at(0).attributes('href')).toBe(
         addCiYmlPath.concat('&template=Android'),
       );
     });
 
     it('has the description of the template', () => {
-      expect(findTemplateDescriptions().at(0).text()).toEqual(
-        'Continuous deployment template to test and deploy your Android project.',
+      expect(findTemplateDescriptions().at(0).text()).toBe(
+        'CI/CD template to test and deploy your Android project.',
       );
     });
 
     it('has the right logo of the template', () => {
-      expect(findTemplateLogos().at(0).attributes('src')).toEqual(
+      expect(findTemplateLogos().at(0).attributes('src')).toBe(
         '/assets/illustrations/logos/android.svg',
       );
     });

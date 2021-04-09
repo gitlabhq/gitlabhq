@@ -10,7 +10,7 @@ module Snippets
       # NOTE: disable_spam_action_service can be removed when the ':snippet_spam' feature flag is removed.
       disable_spam_action_service = params.delete(:disable_spam_action_service) == true
       @request = params.delete(:request)
-      @spam_params = Spam::SpamActionService.filter_spam_params!(params)
+      @spam_params = Spam::SpamActionService.filter_spam_params!(params, @request)
 
       return invalid_params_error(snippet) unless valid_params?
 

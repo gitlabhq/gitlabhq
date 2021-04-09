@@ -21,13 +21,13 @@ RSpec.shared_examples 'a mutation which can mutate a spammable' do
     end
   end
 
-  describe "#with_spam_action_response_fields" do
+  describe "#spam_action_response_fields" do
     it 'resolves with spam action fields' do
       subject
 
       # NOTE: We do not need to assert on the specific values of spam action fields here, we only need
-      # to verify that #with_spam_action_response_fields was invoked and that the fields are present in the
-      # response. The specific behavior of #with_spam_action_response_fields is covered in the
+      # to verify that #spam_action_response_fields was invoked and that the fields are present in the
+      # response. The specific behavior of #spam_action_response_fields is covered in the
       # HasSpamActionResponseFields unit tests.
       expect(mutation_response.keys)
         .to include('spam', 'spamLogId', 'needsCaptchaResponse', 'captchaSiteKey')

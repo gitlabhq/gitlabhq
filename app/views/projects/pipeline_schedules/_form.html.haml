@@ -3,7 +3,7 @@
   .form-group.row
     .col-md-9
       = f.label :description, _('Description'), class: 'label-bold'
-      = f.text_field :description, class: 'form-control', required: true, autofocus: true, placeholder: s_('PipelineSchedules|Provide a short description for this pipeline')
+      = f.text_field :description, class: 'form-control gl-form-input', required: true, autofocus: true, placeholder: s_('PipelineSchedules|Provide a short description for this pipeline')
   .form-group.row
     .col-md-9
       = f.label :cron, _('Interval Pattern'), class: 'label-bold'

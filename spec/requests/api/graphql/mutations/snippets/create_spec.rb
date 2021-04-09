@@ -211,5 +211,9 @@ RSpec.describe 'Creating a Snippet' do
         end
       end
     end
+
+    it_behaves_like 'has spam protection' do
+      let(:mutation_class) { ::Mutations::Snippets::Create }
+    end
   end
 end

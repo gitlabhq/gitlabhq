@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlIcon, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { toNumber } from 'lodash';
 import createFlash from '~/flash';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
@@ -14,7 +14,7 @@ import {
 } from '~/issues_list/constants';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase, getParameterByName } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import eventHub from '../eventhub';
 import IssueCardTimeInfo from './issue_card_time_info.vue';
 
@@ -26,13 +26,38 @@ export default {
   sortParams,
   i18n: {
     calendarLabel: __('Subscribe to calendar'),
+    jiraIntegrationMessage: s__(
+      'JiraService|%{jiraDocsLinkStart}Enable the Jira integration%{jiraDocsLinkEnd} to view your Jira issues in GitLab.',
+    ),
+    jiraIntegrationSecondaryMessage: s__('JiraService|This feature requires a Premium plan.'),
+    jiraIntegrationTitle: s__('JiraService|Using Jira for issue tracking?'),
+    newIssueLabel: __('New issue'),
+    noClosedIssuesTitle: __('There are no closed issues'),
+    noOpenIssuesDescription: __('To keep this project going, create a new issue'),
+    noOpenIssuesTitle: __('There are no open issues'),
+    noIssuesSignedInDescription: __(
+      'Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable.',
+    ),
+    noIssuesSignedInTitle: __(
+      'The Issue Tracker is the place to add things that need to be improved or solved in a project',
+    ),
+    noIssuesSignedOutButtonText: __('Register / Sign In'),
+    noIssuesSignedOutDescription: __(
+      'The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project.',
+    ),
+    noIssuesSignedOutTitle: __('There are no issues to show'),
+    noSearchResultsDescription: __('To widen your search, change or remove filters above'),
+    noSearchResultsTitle: __('Sorry, your filter produced no results'),
     reorderError: __('An error occurred while reordering issues.'),
     rssLabel: __('Subscribe to RSS feed'),
   },
   components: {
     CsvImportExportButtons,
     GlButton,
+    GlEmptyState,
     GlIcon,
+    GlLink,
+    GlSprintf,
     IssuableList,
     IssueCardTimeInfo,
     BlockingIssuesCount: () => import('ee_component/issues/components/blocking_issues_count.vue'),
@@ -47,6 +72,9 @@ export default {
     canBulkUpdate: {
       default: false,
     },
+    emptyStateSvgPath: {
+      default: '',
+    },
     endpoint: {
       default: '',
     },
@@ -56,7 +84,16 @@ export default {
     fullPath: {
       default: '',
     },
+    hasIssues: {
+      default: false,
+    },
+    isSignedIn: {
+      default: false,
+    },
     issuesPath: {
+      default: '',
+    },
+    jiraIntegrationPath: {
       default: '',
     },
     newIssuePath: {
@@ -68,6 +105,9 @@ export default {
     showNewIssueLink: {
       default: false,
     },
+    signInPath: {
+      default: '',
+    },
   },
   data() {
     const orderBy = getParameterByName('order_by');
@@ -76,9 +116,18 @@ export default {
       (key) => sortParams[key].order_by === orderBy && sortParams[key].sort === sort,
     );
 
+    const search = getParameterByName('search') || '';
+    const tokens = search.split(' ').map((searchWord) => ({
+      type: 'filtered-search-term',
+      value: {
+        data: searchWord,
+      },
+    }));
+
     return {
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
       filters: sortParams[sortKey] || {},
+      filterTokens: tokens,
       isLoading: false,
       issues: [],
       page: toNumber(getParameterByName('page')) || 1,
@@ -89,6 +138,23 @@ export default {
     };
   },
   computed: {
+    isManualOrdering() {
+      return this.sortKey === RELATIVE_POSITION_ASC;
+    },
+    isOpenTab() {
+      return this.state === IssuableStates.Opened;
+    },
+    searchQuery() {
+      return (
+        this.filterTokens
+          .map((searchTerm) => searchTerm.value.data)
+          .filter((searchWord) => Boolean(searchWord))
+          .join(' ') || undefined
+      );
+    },
+    showPaginationControls() {
+      return this.issues.length > 0;
+    },
     tabCounts() {
       return Object.values(IssuableStates).reduce(
         (acc, state) => ({
@@ -101,12 +167,10 @@ export default {
     urlParams() {
       return {
         page: this.page,
+        search: this.searchQuery,
         state: this.state,
         ...this.filters,
       };
-    },
-    isManualOrdering() {
-      return this.sortKey === RELATIVE_POSITION_ASC;
     },
   },
   mounted() {
@@ -121,6 +185,10 @@ export default {
   },
   methods: {
     fetchIssues() {
+      if (!this.hasIssues) {
+        return undefined;
+      }
+
       this.isLoading = true;
 
       return axios
@@ -128,6 +196,7 @@ export default {
           params: {
             page: this.page,
             per_page: this.$options.PAGE_SIZE,
+            search: this.searchQuery,
             state: this.state,
             with_labels_details: true,
             ...this.filters,
@@ -164,6 +233,10 @@ export default {
         this.page = 1;
       }
       this.state = state;
+      this.fetchIssues();
+    },
+    handleFilter(filter) {
+      this.filterTokens = filter;
       this.fetchIssues();
     },
     handlePageChange(page) {
@@ -214,10 +287,12 @@ export default {
 
 <template>
   <issuable-list
+    v-if="hasIssues"
     :namespace="fullPath"
     recent-searches-storage-key="issues"
     :search-input-placeholder="__('Search or filter results…')"
     :search-tokens="[]"
+    :initial-filter-value="filterTokens"
     :sort-options="$options.sortOptions"
     :initial-sort-by="sortKey"
     :issuables="issues"
@@ -227,13 +302,14 @@ export default {
     :issuables-loading="isLoading"
     :is-manual-ordering="isManualOrdering"
     :show-bulk-edit-sidebar="showBulkEditSidebar"
-    :show-pagination-controls="true"
+    :show-pagination-controls="showPaginationControls"
     :total-items="totalIssues"
     :current-page="page"
     :previous-page="page - 1"
     :next-page="page + 1"
     :url-params="urlParams"
     @click-tab="handleClickTab"
+    @filter="handleFilter"
     @page-change="handlePageChange"
     @reorder="handleReorder"
     @sort="handleSort"
@@ -267,7 +343,7 @@ export default {
         {{ __('Edit issues') }}
       </gl-button>
       <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-        {{ __('New issue') }}
+        {{ $options.i18n.newIssueLabel }}
       </gl-button>
     </template>
 
@@ -312,5 +388,81 @@ export default {
         :is-list-item="true"
       />
     </template>
+
+    <template #empty-state>
+      <gl-empty-state
+        v-if="searchQuery"
+        :description="$options.i18n.noSearchResultsDescription"
+        :title="$options.i18n.noSearchResultsTitle"
+        :svg-path="emptyStateSvgPath"
+      >
+        <template #actions>
+          <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
+            {{ $options.i18n.newIssueLabel }}
+          </gl-button>
+        </template>
+      </gl-empty-state>
+
+      <gl-empty-state
+        v-else-if="isOpenTab"
+        :description="$options.i18n.noOpenIssuesDescription"
+        :title="$options.i18n.noOpenIssuesTitle"
+        :svg-path="emptyStateSvgPath"
+      >
+        <template #actions>
+          <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
+            {{ $options.i18n.newIssueLabel }}
+          </gl-button>
+        </template>
+      </gl-empty-state>
+
+      <gl-empty-state
+        v-else
+        :title="$options.i18n.noClosedIssuesTitle"
+        :svg-path="emptyStateSvgPath"
+      />
+    </template>
   </issuable-list>
+
+  <div v-else-if="isSignedIn">
+    <gl-empty-state
+      :description="$options.i18n.noIssuesSignedInDescription"
+      :title="$options.i18n.noIssuesSignedInTitle"
+      :svg-path="emptyStateSvgPath"
+    >
+      <template #actions>
+        <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
+          {{ $options.i18n.newIssueLabel }}
+        </gl-button>
+        <csv-import-export-buttons
+          class="gl-mr-3"
+          :export-csv-path="exportCsvPathWithQuery"
+          :issuable-count="totalIssues"
+        />
+      </template>
+    </gl-empty-state>
+    <hr />
+    <p class="gl-text-center gl-font-weight-bold gl-mb-0">
+      {{ $options.i18n.jiraIntegrationTitle }}
+    </p>
+    <p class="gl-text-center gl-mb-0">
+      <gl-sprintf :message="$options.i18n.jiraIntegrationMessage">
+        <template #jiraDocsLink="{ content }">
+          <gl-link :href="jiraIntegrationPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
+    <p class="gl-text-center gl-text-gray-500">
+      {{ $options.i18n.jiraIntegrationSecondaryMessage }}
+    </p>
+  </div>
+
+  <gl-empty-state
+    v-else
+    :description="$options.i18n.noIssuesSignedOutDescription"
+    :title="$options.i18n.noIssuesSignedOutTitle"
+    :svg-path="emptyStateSvgPath"
+    :primary-button-text="$options.i18n.noIssuesSignedOutButtonText"
+    :primary-button-link="signInPath"
+  />
 </template>
