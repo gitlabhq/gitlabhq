@@ -303,16 +303,19 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 ### GitLab Rails
 
-1. Test in a Rails console by setting the feature flag:
+Test in a Rails console by setting the feature flag:
 
-   NOTE:
-   Pay attention to the name of the flag and the one used in the Rails console.
-   There is a difference between them (dashes replaced by underscores and name
-   prefix is changed). Make sure to prefix all flags with `gitaly_`.
+```ruby
+Feature.enable('gitaly_go_find_all_tags')
+```
 
-   ```ruby
-   Feature.enable('gitaly_go_find_all_tags')
-   ```
+Pay attention to the name of the flag and the one used in the Rails console. There is a difference
+between them (dashes replaced by underscores and name prefix is changed). Make sure to prefix all
+flags with `gitaly_`.
+
+NOTE:
+If not set in GitLab, feature flags are read as false from the console and Gitaly uses their
+default value. The default value depends on the GitLab version.
 
 ### Testing with GDK
 

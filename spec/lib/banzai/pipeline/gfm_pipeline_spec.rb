@@ -145,6 +145,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline do
 
   describe 'emoji in references' do
     let_it_be(:project) { create(:project, :public) }
+
     let(:emoji) { '💯' }
 
     it 'renders a label reference with emoji inside' do

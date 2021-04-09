@@ -1,0 +1,5 @@
+---
+title: Fix EmptyLineAfterFinalLetItBe offenses in spec/lib/banzai
+merge_request: 58242
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Predefined variables reference
+# Predefined variables reference **(FREE)**
 
 Predefined [CI/CD variables](README.md) are available in every GitLab CI/CD pipeline.
 

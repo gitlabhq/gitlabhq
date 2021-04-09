@@ -588,7 +588,7 @@ include:
   - template: DAST.gitlab-ci.yml
 
 variables:
-  DAST_PATHS=/page1.html,/category1/page1.html,/page3.html
+  DAST_PATHS: "/page1.html,/category1/page1.html,/page3.html"
 ```
 
 When using `DAST_PATHS` and `DAST_PATHS_FILE`, note the following:

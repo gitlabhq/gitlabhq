@@ -6,6 +6,7 @@ RSpec.describe Banzai::Filter::InlineMetricsRedactorFilter do
   include FilterSpecHelper
 
   let_it_be(:project) { create(:project) }
+
   let(:url) { urls.metrics_dashboard_project_environment_url(project, 1, embedded: true) }
   let(:input) { %(<a href="#{url}">example</a>) }
   let(:doc) { filter(input) }
@@ -38,6 +39,7 @@ RSpec.describe Banzai::Filter::InlineMetricsRedactorFilter do
 
     context 'for a cluster metric embed' do
       let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :project, projects: [project]) }
+
       let(:params) { [project.namespace.path, project.path, cluster.id] }
       let(:query_params) { { group: 'Cluster Health', title: 'CPU Usage', y_label: 'CPU (cores)' } }
       let(:url) { urls.metrics_dashboard_namespace_project_cluster_url(*params, **query_params, format: :json) }
@@ -84,6 +86,7 @@ RSpec.describe Banzai::Filter::InlineMetricsRedactorFilter do
 
     context 'for an alert embed' do
       let_it_be(:alert) { create(:prometheus_alert, project: project) }
+
       let(:url) do
         urls.metrics_dashboard_project_prometheus_alert_url(
           project,

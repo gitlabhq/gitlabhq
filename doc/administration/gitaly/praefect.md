@@ -24,6 +24,10 @@ See the [design
 document](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md)
 for implementation details.
 
+NOTE:
+If not set in GitLab, feature flags are read as false from the console and Praefect uses their
+default value. The default value depends on the GitLab version.
+
 ## Setup Instructions
 
 If you [installed](https://about.gitlab.com/install/) GitLab using the Omnibus
@@ -978,9 +982,6 @@ Feature.enable(:gitaly_reference_transactions)
 Feature.disable(:gitaly_reference_transactions_primary_wins)
 ```
 
-NOTE:
-If not set in GitLab, flags are read as false from the console and Praefect uses their default value, which depends on the GitLab version.
-
 To monitor strong consistency, you can use the following Prometheus metrics:
 
 - `gitaly_praefect_transactions_total`: Number of transactions created and
@@ -1248,8 +1249,9 @@ affected repositories. Praefect provides tools for:
 - [Automatic](#automatic-reconciliation) reconciliation, for GitLab 13.4 and later.
 - [Manual](#manual-reconciliation) reconciliation, for:
   - GitLab 13.3 and earlier.
-  - Repositories upgraded to GitLab 13.4 and later without entries in the `repositories` table.
-    A migration tool [is planned](https://gitlab.com/gitlab-org/gitaly/-/issues/3033).
+  - Repositories upgraded to GitLab 13.4 and later without entries in the `repositories` table. In
+    GitLab 13.6 and later, [a migration is run](https://gitlab.com/gitlab-org/gitaly/-/issues/3033)
+    when Praefect starts for these repositories.
 
 These tools reconcile the outdated repositories to bring them fully up to date again.
 

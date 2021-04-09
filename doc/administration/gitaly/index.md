@@ -66,6 +66,10 @@ Gitaly comes pre-configured with Omnibus GitLab, which is a configuration
 
 GitLab installations for more than 2000 users should use Gitaly Cluster.
 
+NOTE:
+If not set in GitLab, feature flags are read as false from the console and Gitaly uses their
+default value. The default value depends on the GitLab version.
+
 ## Gitaly Cluster
 
 Gitaly, the service that provides storage for Git repositories, can

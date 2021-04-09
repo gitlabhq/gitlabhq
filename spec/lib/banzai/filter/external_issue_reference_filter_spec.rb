@@ -184,6 +184,7 @@ RSpec.describe Banzai::Filter::ExternalIssueReferenceFilter do
 
   context "jira project" do
     let_it_be(:service) { create(:jira_service, project: project) }
+
     let(:reference) { issue.to_reference }
 
     context "with right markdown" do
