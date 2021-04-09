@@ -891,6 +891,7 @@ RSpec.describe Project, factory_default: :keep do
   describe '#get_issue' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
+
     let!(:issue) { create(:issue, project: project) }
 
     before_all do
@@ -2406,6 +2407,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#latest_pipeline' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:second_branch) { project.repository.branches[2] }
 
     let!(:pipeline_for_default_branch) do
@@ -2870,6 +2872,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#emails_disabled?' do
     let_it_be(:namespace) { create(:namespace) }
+
     let(:project) { build(:project, namespace: namespace, emails_disabled: false) }
 
     context 'emails disabled in group' do
@@ -3190,6 +3193,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#ci_variables_for' do
     let_it_be(:project) { create(:project) }
+
     let(:environment_scope) { '*' }
 
     let!(:ci_variable) do
@@ -4035,6 +4039,7 @@ RSpec.describe Project, factory_default: :keep do
     include ProjectHelpers
 
     let_it_be(:group) { create(:group) }
+
     let!(:project) { create(:project, project_level, namespace: group ) }
     let(:user) { create_user_from_membership(project, membership) }
 
@@ -4300,6 +4305,7 @@ RSpec.describe Project, factory_default: :keep do
 
   context 'legacy storage' do
     let_it_be(:project) { create(:project, :repository, :legacy_storage) }
+
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:project_storage) { project.send(:storage) }
 
@@ -4399,6 +4405,7 @@ RSpec.describe Project, factory_default: :keep do
 
   context 'hashed storage' do
     let_it_be(:project) { create(:project, :repository, skip_disk_validation: true) }
+
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
     let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
@@ -4489,6 +4496,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#has_ci?' do
     let_it_be(:project, reload: true) { create(:project) }
+
     let(:repository) { double }
 
     before do
@@ -4985,6 +4993,7 @@ RSpec.describe Project, factory_default: :keep do
 
     context 'branch protection' do
       let_it_be(:namespace) { create(:namespace) }
+
       let(:project) { create(:project, :repository, namespace: namespace) }
 
       before do
@@ -6597,6 +6606,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#latest_jira_import' do
     let_it_be(:project) { create(:project) }
+
     context 'when no jira imports' do
       it 'returns nil' do
         expect(project.latest_jira_import).to be nil

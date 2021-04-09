@@ -18,6 +18,8 @@ You can download job artifacts by using the GitLab UI or the [API](../../api/job
 For an overview, watch the video [GitLab CI Pipeline, Artifacts, and Environments](https://www.youtube.com/watch?v=PCKDICEe10s).
 Watch also [GitLab CI pipeline tutorial for beginners](https://www.youtube.com/watch?v=Jav4vbUrqII).
 
+Administrators should review our [job artifacts administration](../../administration/job_artifacts.md) documentation.
+
 ## Define artifacts in the `.gitlab-ci.yml` file
 
 This example shows how to configure your `.gitlab-ci.yml` file to create job artifacts:

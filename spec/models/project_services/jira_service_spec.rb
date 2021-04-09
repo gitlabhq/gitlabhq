@@ -790,6 +790,7 @@ RSpec.describe JiraService do
 
   describe '#create_cross_reference_note' do
     let_it_be(:user) { build_stubbed(:user) }
+
     let(:jira_issue) { ExternalIssue.new('JIRA-123', project) }
 
     subject { jira_service.create_cross_reference_note(jira_issue, resource, user) }

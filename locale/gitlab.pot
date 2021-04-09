@@ -5323,9 +5323,6 @@ msgstr ""
 msgid "Burndown chart"
 msgstr ""
 
-msgid "Burndown charts are now fixed. This means that removing issues from a milestone after it has expired won't affect the chart. You can view the old chart using the %{strongStart}Legacy burndown chart%{strongEnd} button."
-msgstr ""
-
 msgid "BurndownChartLabel|Open issue weight"
 msgstr ""
 

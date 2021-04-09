@@ -6,7 +6,7 @@ module Clusters
     include TokenAuthenticatable
 
     add_authentication_token_field :token, encrypted: :required, token_generator: -> { Devise.friendly_token(50) }
-    cached_attr_reader :last_used_at
+    cached_attr_reader :last_contacted_at
 
     self.table_name = 'cluster_agent_tokens'
 
@@ -20,8 +20,6 @@ module Clusters
 
     validates :description, length: { maximum: 1024 }
     validates :name, presence: true, length: { maximum: 255 }
-
-    scope :order_last_used_at_desc, -> { order(::Gitlab::Database.nulls_last_order('last_used_at', 'DESC')) }
 
     def track_usage
       track_values = { last_used_at: Time.current.utc }

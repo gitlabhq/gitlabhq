@@ -9,19 +9,6 @@ RSpec.describe Clusters::AgentToken do
   it { is_expected.to validate_length_of(:name).is_at_most(255) }
   it { is_expected.to validate_presence_of(:name) }
 
-  describe 'scopes' do
-    describe '.order_last_used_at_desc' do
-      let_it_be(:token_1) { create(:cluster_agent_token, last_used_at: 7.days.ago) }
-      let_it_be(:token_2) { create(:cluster_agent_token, last_used_at: nil) }
-      let_it_be(:token_3) { create(:cluster_agent_token, last_used_at: 2.days.ago) }
-
-      it 'sorts by last_used_at descending, with null values at last' do
-        expect(described_class.order_last_used_at_desc)
-          .to eq([token_3, token_1, token_2])
-      end
-    end
-  end
-
   describe '#token' do
     it 'is generated on save' do
       agent_token = build(:cluster_agent_token, token_encrypted: nil)

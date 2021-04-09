@@ -5,7 +5,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Notification Emails
+# GitLab Notification Emails **(FREE)**
 
 GitLab Notifications allow you to stay informed about what's happening in GitLab. With notifications
 enabled, you can receive updates about activity in issues, merge requests, epics, and designs.

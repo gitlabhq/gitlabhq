@@ -1014,6 +1014,26 @@ class MyThingResolver < BaseResolver
 end
 ```
 
+By default, fields defined in `#preloads` will be preloaded if that field
+is selected in the query. Occasionally, finer control may be
+needed to avoid preloading too much or incorrect content.
+
+Extending the above example, we might want to preload a different
+association if certain fields are requested together. This can
+be done by overriding `#filtered_preloads`:
+
+```ruby
+class MyThingResolver < BaseResolver
+  # ...
+
+  def filtered_preloads
+    return [:alternate_attribute] if lookahead.selects?(:field_one) && lookahead.selects?(:field_two)
+
+    super
+  end
+end
+```
+
 The final thing that is needed is that every field that uses this resolver needs
 to advertise the need for lookahead:
 
