@@ -3,18 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user, developer_projects: [project]) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user, developer_projects: [project]) }
+
   let(:seeds_block) { }
-
-  let(:command) do
-    Gitlab::Ci::Pipeline::Chain::Command.new(
-      project: project,
-      current_user: user,
-      origin_ref: 'master',
-      seeds_block: seeds_block)
-  end
-
+  let(:command) { initialize_command }
   let(:pipeline) { build(:ci_pipeline, project: project) }
 
   describe '#perform!' do
@@ -27,13 +20,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
     end
 
     subject(:run_chain) do
-      [
-        Gitlab::Ci::Pipeline::Chain::Config::Content.new(pipeline, command),
-        Gitlab::Ci::Pipeline::Chain::Config::Process.new(pipeline, command),
-        Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules.new(pipeline, command)
-      ].map(&:perform!)
-
-      described_class.new(pipeline, command).perform!
+      run_previous_chain(pipeline, command)
+      perform_seed(pipeline, command)
     end
 
     it 'allocates next IID' do
@@ -228,5 +216,86 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
         end
       end
     end
+
+    context 'N+1 queries' do
+      it 'avoids N+1 queries when calculating variables of jobs' do
+        pipeline1, command1 = prepare_pipeline1
+        pipeline2, command2 = prepare_pipeline2
+
+        control = ActiveRecord::QueryRecorder.new do
+          perform_seed(pipeline1, command1)
+        end
+
+        expect { perform_seed(pipeline2, command2) }.not_to exceed_query_limit(
+          control.count + expected_extra_queries
+        )
+      end
+
+      private
+
+      def prepare_pipeline1
+        config1 = { build: { stage: 'build', script: 'build' } }
+        stub_ci_pipeline_yaml_file(YAML.dump(config1))
+        pipeline1 = build(:ci_pipeline, project: project)
+        command1 = initialize_command
+
+        run_previous_chain(pipeline1, command1)
+
+        [pipeline1, command1]
+      end
+
+      def prepare_pipeline2
+        config2 = { build1: { stage: 'build', script: 'build1' },
+                    build2: { stage: 'build', script: 'build2' },
+                    test: { stage: 'build', script: 'test' } }
+        stub_ci_pipeline_yaml_file(YAML.dump(config2))
+        pipeline2 = build(:ci_pipeline, project: project)
+        command2 = initialize_command
+
+        run_previous_chain(pipeline2, command2)
+
+        [pipeline2, command2]
+      end
+
+      def expected_extra_queries
+        extra_jobs = 2
+        non_handled_sql_queries = 3
+
+        # 1. Ci::Build Load () SELECT "ci_builds".* FROM "ci_builds"
+        #                      WHERE "ci_builds"."type" = 'Ci::Build'
+        #                        AND "ci_builds"."commit_id" IS NULL
+        #                        AND ("ci_builds"."retried" = FALSE OR "ci_builds"."retried" IS NULL)
+        #                        AND (stage_idx < 1)
+        # 2. Ci::InstanceVariable Load => `Ci::InstanceVariable#cached_data` => already cached with `fetch_memory_cache`
+        # 3. Ci::Variable Load => `Project#ci_variables_for` => already cached with `Gitlab::SafeRequestStore`
+
+        extra_jobs * non_handled_sql_queries
+      end
+    end
+
+    private
+
+    def run_previous_chain(pipeline, command)
+      [
+        Gitlab::Ci::Pipeline::Chain::Config::Content.new(pipeline, command),
+        Gitlab::Ci::Pipeline::Chain::Config::Process.new(pipeline, command),
+        Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules.new(pipeline, command)
+      ].map(&:perform!)
+    end
+
+    def perform_seed(pipeline, command)
+      described_class.new(pipeline, command).perform!
+    end
+  end
+
+  private
+
+  def initialize_command
+    Gitlab::Ci::Pipeline::Chain::Command.new(
+      project: project,
+      current_user: user,
+      origin_ref: 'master',
+      seeds_block: seeds_block
+    )
   end
 end

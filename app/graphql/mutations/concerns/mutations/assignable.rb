@@ -19,12 +19,9 @@ module Mutations
 
     def resolve(project_path:, iid:, assignee_usernames:, operation_mode:)
       resource = authorized_find!(project_path: project_path, iid: iid)
+      users = new_assignees(resource, assignee_usernames)
 
-      update_service_class.new(
-        resource.project,
-        current_user,
-        assignee_ids: assignee_ids(resource, assignee_usernames, operation_mode)
-      ).execute(resource)
+      assign!(resource, users, operation_mode)
 
       {
         resource.class.name.underscore.to_sym => resource,
@@ -34,10 +31,20 @@ module Mutations
 
     private
 
-    def assignee_ids(resource, usernames, mode)
-      new = UsersFinder.new(current_user, username: usernames).execute.map(&:id)
+    def assign!(resource, users, operation_mode)
+      update_service_class.new(
+        resource.project,
+        current_user,
+        assignee_ids: assignee_ids(resource, users, operation_mode)
+      ).execute(resource)
+    end
 
-      transform_list(mode, resource, new)
+    def new_assignees(resource, usernames)
+      UsersFinder.new(current_user, username: usernames).execute.to_a
+    end
+
+    def assignee_ids(resource, users, mode)
+      transform_list(mode, resource, users.map(&:id))
     end
 
     def current_assignee_ids(resource)

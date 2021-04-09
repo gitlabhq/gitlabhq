@@ -2,11 +2,11 @@
 import { GlDrawer } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import BoardSidebarDueDate from '~/boards/components/sidebar/board_sidebar_due_date.vue';
-import BoardSidebarIssueTitle from '~/boards/components/sidebar/board_sidebar_issue_title.vue';
 import BoardSidebarLabelsSelect from '~/boards/components/sidebar/board_sidebar_labels_select.vue';
 import BoardSidebarMilestoneSelect from '~/boards/components/sidebar/board_sidebar_milestone_select.vue';
 import BoardSidebarSubscription from '~/boards/components/sidebar/board_sidebar_subscription.vue';
 import BoardSidebarTimeTracker from '~/boards/components/sidebar/board_sidebar_time_tracker.vue';
+import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { ISSUABLE } from '~/boards/constants';
 import { contentTop } from '~/lib/utils/common_utils';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
@@ -16,7 +16,7 @@ export default {
   headerHeight: `${contentTop()}px`,
   components: {
     GlDrawer,
-    BoardSidebarIssueTitle,
+    BoardSidebarTitle,
     SidebarAssigneesWidget,
     BoardSidebarTimeTracker,
     BoardSidebarLabelsSelect,
@@ -67,7 +67,7 @@ export default {
   >
     <template #header>{{ __('Issue details') }}</template>
     <template #default>
-      <board-sidebar-issue-title />
+      <board-sidebar-title />
       <sidebar-assignees-widget
         :iid="activeBoardItem.iid"
         :full-path="fullPath"

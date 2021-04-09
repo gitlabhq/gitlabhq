@@ -80,7 +80,7 @@ RSpec.describe 'Setting assignees of a merge request' do
   end
 
   context 'with assignees already assigned' do
-    let(:db_query_limit) { 38 }
+    let(:db_query_limit) { 39 }
 
     before do
       merge_request.assignees = [assignee2]

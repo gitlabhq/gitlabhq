@@ -47,6 +47,12 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
           .and change(merge_request, :updated_by).to(user)
       end
 
+      it 'does not update the assignees if they do not have access' do
+        opts[:assignee_ids] = [create(:user).id]
+
+        expect { update_merge_request }.not_to change(merge_request, :assignee_ids)
+      end
+
       it 'is more efficient than using the full update-service' do
         allow(MergeRequests::AssigneesChangeWorker)
           .to receive(:perform_async)

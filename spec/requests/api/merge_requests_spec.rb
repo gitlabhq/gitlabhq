@@ -2151,6 +2151,23 @@ RSpec.describe API::MergeRequests do
       let(:entity) { merge_request }
     end
 
+    context 'when only assignee_ids are provided' do
+      let(:params) do
+        {
+          assignee_ids: [user2.id]
+        }
+      end
+
+      it 'sets the assignees' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['assignees']).to contain_exactly(
+          a_hash_including('name' => user2.name)
+        )
+      end
+    end
+
     context 'accepts reviewer_ids' do
       let(:params) do
         {

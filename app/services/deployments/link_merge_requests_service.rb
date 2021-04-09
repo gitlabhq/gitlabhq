@@ -33,7 +33,7 @@ module Deployments
       # meaningful way (i.e. they can't just retry the deploy themselves).
       return unless deployment.success?
 
-      if (prev = deployment.previous_environment_deployment)
+      if (prev = deployment.previous_deployment)
         link_merge_requests_for_range(prev.sha, deployment.sha)
       else
         # When no previous deployment is found we fall back to linking all merge

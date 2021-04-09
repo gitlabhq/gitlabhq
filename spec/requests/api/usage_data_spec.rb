@@ -161,4 +161,23 @@ RSpec.describe API::UsageData do
       end
     end
   end
+
+  describe 'GET /usage_data/metric_definitions' do
+    let(:endpoint) { '/usage_data/metric_definitions' }
+    let(:metric_yaml) do
+      { 'key_path' => 'counter.category.event', 'description' => 'Metric description' }.to_yaml
+    end
+
+    context 'without authentication' do
+      it 'returns a YAML file', :aggregate_failures do
+        allow(Gitlab::Usage::MetricDefinition).to receive(:dump_metrics_yaml).and_return(metric_yaml)
+
+        get api(endpoint)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('application/yaml')
+        expect(response.body).to eq(metric_yaml)
+      end
+    end
+  end
 end

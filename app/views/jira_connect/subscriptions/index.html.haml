@@ -39,13 +39,13 @@
       - else
         .gl-text-center
           %h4= s_('Integrations|No linked namespaces')
-          %p= s_('Integrations|Namespaces are your GitLab groups and subgroups that will be linked to this Jira instance.')
+          %p= s_('Integrations|Namespaces are the GitLab groups and subgroups you link to this Jira instance.')
 
   %p.jira-connect-app-body.gl-mt-7.gl-font-base.gl-text-center
     %strong= s_('Integrations|Browser limitations')
     - firefox_link_url = 'https://www.mozilla.org/en-US/firefox/'
     - firefox_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: firefox_link_url }
-    = s_('Integrations|Adding a namespace currently works only in browsers that allow cross‑site cookies. Please make sure to use %{firefox_link_start}Firefox%{firefox_link_end} or enable cross‑site cookies in your browser when adding a namespace.').html_safe % { firefox_link_start: firefox_link_start, firefox_link_end: '</a>'.html_safe }
+    = s_('Integrations|Adding a namespace works only in browsers that allow cross‑site cookies. Use %{firefox_link_start}Firefox%{firefox_link_end}, or enable cross‑site cookies in your browser, when adding a namespace.').html_safe % { firefox_link_start: firefox_link_start, firefox_link_end: '</a>'.html_safe }
     = link_to _('Learn more'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/284211', target: '_blank', rel: 'noopener noreferrer'
 
 = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?

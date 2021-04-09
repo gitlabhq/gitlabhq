@@ -22,17 +22,28 @@ RSpec.shared_examples 'an assignable resource' do
                        assignee_usernames: assignee_usernames)
     end
 
-    before do
-      resource.project.add_developer(assignee)
-      resource.project.add_developer(assignee2)
-    end
-
     it 'raises an error if the resource is not accessible to the user' do
       expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
     end
 
+    it 'does not change assignees if the resource is not accessible to the assignees' do
+      resource.project.add_developer(user)
+
+      expect { subject }.not_to change { resource.reload.assignee_ids }
+    end
+
+    it 'returns an operational error if the resource is not accessible to the assignees' do
+      resource.project.add_developer(user)
+
+      result = subject
+
+      expect(result[:errors]).to include a_string_matching(/Cannot assign/)
+    end
+
     context 'when the user can update the resource' do
       before do
+        resource.project.add_developer(assignee)
+        resource.project.add_developer(assignee2)
         resource.project.add_developer(user)
       end
 

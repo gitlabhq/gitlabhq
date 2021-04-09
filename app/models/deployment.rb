@@ -240,18 +240,10 @@ class Deployment < ApplicationRecord
   def previous_deployment
     @previous_deployment ||=
       self.class.for_environment(environment_id)
-      .where(ref: ref)
-      .where.not(id: id)
-      .order(id: :desc)
-      .take
-  end
-
-  def previous_environment_deployment
-    self.class.for_environment(environment_id)
-      .success
-      .where.not(id: self.id)
-      .order(id: :desc)
-      .take
+        .success
+        .where('id < ?', id)
+        .order(id: :desc)
+        .take
   end
 
   def stop_action

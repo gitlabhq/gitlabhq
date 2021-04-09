@@ -27,12 +27,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ issue: 'activeBoardItem' }),
+    ...mapGetters({ item: 'activeBoardItem' }),
     pendingChangesStorageKey() {
-      return this.getPendingChangesKey(this.issue);
+      return this.getPendingChangesKey(this.item);
     },
     projectPath() {
-      const referencePath = this.issue.referencePath || '';
+      const referencePath = this.item.referencePath || '';
       return referencePath.slice(0, referencePath.indexOf('#'));
     },
     validationState() {
@@ -40,29 +40,29 @@ export default {
     },
   },
   watch: {
-    issue: {
-      handler(updatedIssue, formerIssue) {
-        if (formerIssue?.title !== this.title) {
-          localStorage.setItem(this.getPendingChangesKey(formerIssue), this.title);
+    item: {
+      handler(updatedItem, formerItem) {
+        if (formerItem?.title !== this.title) {
+          localStorage.setItem(this.getPendingChangesKey(formerItem), this.title);
         }
 
-        this.title = updatedIssue.title;
+        this.title = updatedItem.title;
         this.setPendingState();
       },
       immediate: true,
     },
   },
   methods: {
-    ...mapActions(['setActiveIssueTitle']),
-    getPendingChangesKey(issue) {
-      if (!issue) {
+    ...mapActions(['setActiveItemTitle']),
+    getPendingChangesKey(item) {
+      if (!item) {
         return '';
       }
 
       return joinPaths(
         window.location.pathname.slice(1),
-        String(issue.id),
-        'issue-title-pending-changes',
+        String(item.id),
+        'item-title-pending-changes',
       );
     },
     async setPendingState() {
@@ -78,7 +78,7 @@ export default {
       }
     },
     cancel() {
-      this.title = this.issue.title;
+      this.title = this.item.title;
       this.$refs.sidebarItem.collapse();
       this.showChangesAlert = false;
       localStorage.removeItem(this.pendingChangesStorageKey);
@@ -86,24 +86,24 @@ export default {
     async setTitle() {
       this.$refs.sidebarItem.collapse();
 
-      if (!this.title || this.title === this.issue.title) {
+      if (!this.title || this.title === this.item.title) {
         return;
       }
 
       try {
         this.loading = true;
-        await this.setActiveIssueTitle({ title: this.title, projectPath: this.projectPath });
+        await this.setActiveItemTitle({ title: this.title, projectPath: this.projectPath });
         localStorage.removeItem(this.pendingChangesStorageKey);
         this.showChangesAlert = false;
       } catch (e) {
-        this.title = this.issue.title;
+        this.title = this.item.title;
         createFlash({ message: this.$options.i18n.updateTitleError });
       } finally {
         this.loading = false;
       }
     },
     handleOffClick() {
-      if (this.title !== this.issue.title) {
+      if (this.title !== this.item.title) {
         this.showChangesAlert = true;
         localStorage.setItem(this.pendingChangesStorageKey, this.title);
       } else {
@@ -112,11 +112,11 @@ export default {
     },
   },
   i18n: {
-    issueTitlePlaceholder: __('Issue title'),
+    titlePlaceholder: __('Title'),
     submitButton: __('Save changes'),
     cancelButton: __('Cancel'),
-    updateTitleError: __('An error occurred when updating the issue title'),
-    invalidFeedback: __('An issue title is required'),
+    updateTitleError: __('An error occurred when updating the title'),
+    invalidFeedback: __('A title is required'),
     reviewYourChanges: __('Changes to the title have not been saved'),
   },
 };
@@ -131,10 +131,10 @@ export default {
     @off-click="handleOffClick"
   >
     <template #title>
-      <span class="gl-font-weight-bold" data-testid="issue-title">{{ issue.title }}</span>
+      <span class="gl-font-weight-bold" data-testid="item-title">{{ item.title }}</span>
     </template>
     <template #collapsed>
-      <span class="gl-text-gray-800">{{ issue.referencePath }}</span>
+      <span class="gl-text-gray-800">{{ item.referencePath }}</span>
     </template>
     <gl-alert v-if="showChangesAlert" variant="warning" class="gl-mb-5" :dismissible="false">
       {{ $options.i18n.reviewYourChanges }}
@@ -144,7 +144,7 @@ export default {
         <gl-form-input
           v-model="title"
           v-autofocusonshow
-          :placeholder="$options.i18n.issueTitlePlaceholder"
+          :placeholder="$options.i18n.titlePlaceholder"
           :state="validationState"
         />
       </gl-form-group>

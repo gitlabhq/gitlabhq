@@ -722,6 +722,7 @@ RSpec.describe GroupPolicy do
 
   describe 'design activity' do
     let_it_be(:group) { create(:group, :public) }
+
     let(:current_user) { nil }
 
     subject { described_class.new(current_user, group) }

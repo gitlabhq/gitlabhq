@@ -1,0 +1,5 @@
+---
+title: Add caching to variables calculation of builds
+merge_request: 58286
+author:
+type: performance

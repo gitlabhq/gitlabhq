@@ -1223,9 +1223,13 @@ describe('setActiveIssueMilestone', () => {
   });
 });
 
-describe('setActiveIssueTitle', () => {
-  const state = { boardItems: { [mockIssue.id]: mockIssue } };
-  const getters = { activeBoardItem: mockIssue };
+describe('setActiveItemTitle', () => {
+  const state = {
+    boardItems: { [mockIssue.id]: mockIssue },
+    issuableType: 'issue',
+    fullPath: 'path/f',
+  };
+  const getters = { activeBoardItem: mockIssue, isEpicBoard: false };
   const testTitle = 'Test Title';
   const input = {
     title: testTitle,
@@ -1235,7 +1239,7 @@ describe('setActiveIssueTitle', () => {
   it('should commit title after setting the issue', (done) => {
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
-        updateIssue: {
+        updateIssuableTitle: {
           issue: {
             title: testTitle,
           },
@@ -1251,7 +1255,7 @@ describe('setActiveIssueTitle', () => {
     };
 
     testAction(
-      actions.setActiveIssueTitle,
+      actions.setActiveItemTitle,
       input,
       { ...state, ...getters },
       [
@@ -1270,7 +1274,7 @@ describe('setActiveIssueTitle', () => {
       .spyOn(gqlClient, 'mutate')
       .mockResolvedValue({ data: { updateIssue: { errors: ['failed mutation'] } } });
 
-    await expect(actions.setActiveIssueTitle({ getters }, input)).rejects.toThrow(Error);
+    await expect(actions.setActiveItemTitle({ getters }, input)).rejects.toThrow(Error);
   });
 });
 

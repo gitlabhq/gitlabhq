@@ -3362,10 +3362,10 @@ msgstr ""
 msgid "An error occurred when updating the issue due date"
 msgstr ""
 
-msgid "An error occurred when updating the issue title"
+msgid "An error occurred when updating the issue weight"
 msgstr ""
 
-msgid "An error occurred when updating the issue weight"
+msgid "An error occurred when updating the title"
 msgstr ""
 
 msgid "An error occurred while acknowledging the notification. Refresh the page and try again."
@@ -3696,9 +3696,6 @@ msgid "An instance-level serverless domain already exists."
 msgstr ""
 
 msgid "An issue already exists"
-msgstr ""
-
-msgid "An issue title is required"
 msgstr ""
 
 msgid "An unauthenticated user"
@@ -5913,6 +5910,9 @@ msgstr ""
 msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
 msgstr ""
 
+msgid "Check the current instance configuration "
+msgstr ""
+
 msgid "Check the elasticsearch.log file to debug why the migration was halted and make any changes before retrying the migration. When you fix the cause of the failure, click \"Retry migration\", and the migration will be scheduled to be retried in the background."
 msgstr ""
 
@@ -7887,6 +7887,9 @@ msgid "Compare %{oldCommitId}...%{newCommitId}"
 msgstr ""
 
 msgid "Compare Git revisions"
+msgstr ""
+
+msgid "Compare GitLab editions"
 msgstr ""
 
 msgid "Compare Revisions"
@@ -11355,6 +11358,9 @@ msgstr ""
 msgid "Dynamic Application Security Testing (DAST)"
 msgstr ""
 
+msgid "Each project can also have an issue tracker and a wiki."
+msgstr ""
+
 msgid "Edit"
 msgstr ""
 
@@ -14351,6 +14357,9 @@ msgstr ""
 msgid "Get a free instance review"
 msgstr ""
 
+msgid "Get a support subscription"
+msgstr ""
+
 msgid "Get started"
 msgstr ""
 
@@ -14478,6 +14487,9 @@ msgid "GitLab is a single application for the entire software development lifecy
 msgstr ""
 
 msgid "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later."
+msgstr ""
+
+msgid "GitLab is open source software to collaborate on code."
 msgstr ""
 
 msgid "GitLab is undergoing maintenance and is operating in a read-only mode."
@@ -15093,6 +15105,9 @@ msgid "GroupSAML|Are you sure you want to remove the SAML group link?"
 msgstr ""
 
 msgid "GroupSAML|Before enforcing SSO, enable SAML authentication."
+msgstr ""
+
+msgid "GroupSAML|Before enforcing SSO-access for Git, enable SSO-only authentication for web activity."
 msgstr ""
 
 msgid "GroupSAML|Certificate fingerprint"
@@ -16847,7 +16862,7 @@ msgstr ""
 msgid "Integrations|Add namespace"
 msgstr ""
 
-msgid "Integrations|Adding a namespace currently works only in browsers that allow cross‑site cookies. Please make sure to use %{firefox_link_start}Firefox%{firefox_link_end} or enable cross‑site cookies in your browser when adding a namespace."
+msgid "Integrations|Adding a namespace works only in browsers that allow cross‑site cookies. Use %{firefox_link_start}Firefox%{firefox_link_end}, or enable cross‑site cookies in your browser, when adding a namespace."
 msgstr ""
 
 msgid "Integrations|All details"
@@ -16907,7 +16922,7 @@ msgstr ""
 msgid "Integrations|Namespace successfully linked"
 msgstr ""
 
-msgid "Integrations|Namespaces are your GitLab groups and subgroups that will be linked to this Jira instance."
+msgid "Integrations|Namespaces are the GitLab groups and subgroups you link to this Jira instance."
 msgstr ""
 
 msgid "Integrations|No available namespaces."
@@ -17418,9 +17433,6 @@ msgid "Issue or merge request ID is required"
 msgstr ""
 
 msgid "Issue published on status page."
-msgstr ""
-
-msgid "Issue title"
 msgstr ""
 
 msgid "Issue types"
@@ -18967,6 +18979,9 @@ msgid "Manage applications that can use GitLab as an OAuth provider."
 msgstr ""
 
 msgid "Manage applications that you've authorized to use your account."
+msgstr ""
+
+msgid "Manage git repositories with fine-grained access controls that keep your code secure."
 msgstr ""
 
 msgid "Manage group labels"
@@ -22659,6 +22674,9 @@ msgstr ""
 msgid "Pending comments"
 msgstr ""
 
+msgid "Pending sync…"
+msgstr ""
+
 msgid "People without permission will never get a notification and won't be able to comment."
 msgstr ""
 
@@ -22672,6 +22690,9 @@ msgid "Percentage"
 msgstr ""
 
 msgid "Perform advanced options such as changing path, transferring, exporting, or removing the group."
+msgstr ""
+
+msgid "Perform code reviews and enhance collaboration with merge requests."
 msgstr ""
 
 msgid "Perform common operations on GitLab project"
@@ -25545,6 +25566,9 @@ msgstr ""
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
+msgid "Quick help"
+msgstr ""
+
 msgid "Quick range"
 msgstr ""
 
@@ -25582,6 +25606,9 @@ msgid "Read documentation"
 msgstr ""
 
 msgid "Read more"
+msgstr ""
+
+msgid "Read more about GitLab at %{link_to_promo}."
 msgstr ""
 
 msgid "Read more about project permissions %{help_link_open}here%{help_link_close}"
@@ -27771,6 +27798,9 @@ msgstr ""
 msgid "See metrics"
 msgstr ""
 
+msgid "See our website for getting help"
+msgstr ""
+
 msgid "See the affected projects in the GitLab admin panel"
 msgstr ""
 
@@ -29852,6 +29882,9 @@ msgid "Successfully unblocked"
 msgstr ""
 
 msgid "Successfully unlocked"
+msgstr ""
+
+msgid "Successfully updated %{last_updated_timeago}."
 msgstr ""
 
 msgid "Successfully verified domain ownership"
@@ -32068,6 +32101,9 @@ msgstr ""
 msgid "Time until first merge request"
 msgstr ""
 
+msgid "Time zone"
+msgstr ""
+
 msgid "TimeTrackingEstimated|Est"
 msgstr ""
 
@@ -33169,6 +33205,12 @@ msgstr ""
 msgid "Update %{sourcePath} file"
 msgstr ""
 
+msgid "Update Now"
+msgstr ""
+
+msgid "Update Scheduled…"
+msgstr ""
+
 msgid "Update all"
 msgstr ""
 
@@ -33239,6 +33281,9 @@ msgid "Updates"
 msgstr ""
 
 msgid "Updating"
+msgstr ""
+
+msgid "Updating…"
 msgstr ""
 
 msgid "Upgrade offers available!"
@@ -33586,7 +33631,13 @@ msgstr ""
 msgid "Use one line per URI"
 msgstr ""
 
+msgid "Use shortcuts"
+msgstr ""
+
 msgid "Use template"
+msgstr ""
+
+msgid "Use the search bar on the top of this page"
 msgstr ""
 
 msgid "Use this token to validate received payloads."
@@ -33602,6 +33653,9 @@ msgid "Use your smart card to authenticate with the LDAP server."
 msgstr ""
 
 msgid "Used by members to sign in to your group in GitLab"
+msgstr ""
+
+msgid "Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises."
 msgstr ""
 
 msgid "Used programming language"
@@ -35218,7 +35272,7 @@ msgstr ""
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr ""
 
-msgid "You are signed into GitLab as %{user_link}"
+msgid "You are signed in to GitLab as %{user_link}"
 msgstr ""
 
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."

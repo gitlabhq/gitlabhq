@@ -9896,6 +9896,30 @@ Status: `implemented`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.g_project_management_epic_issue_moved_from_project_monthly`
+
+Counts of MAU moving epic issues between projects
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210405190240_g_project_management_epic_issue_moved_from_project_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_epic_issue_moved_from_project_weekly`
+
+Counts of WAU moving epic issues between projects
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210405185814_g_project_management_epic_issue_moved_from_project_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.g_project_management_epic_issue_removed_monthly`
 
 Count of MAU removing issues from epics

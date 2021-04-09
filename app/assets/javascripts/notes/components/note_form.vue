@@ -424,7 +424,7 @@ export default {
             <gl-button
               :disabled="isDisabled"
               category="primary"
-              variant="success"
+              variant="confirm"
               data-qa-selector="reply_comment_button"
               class="gl-mr-3 js-vue-issue-save js-comment-button"
               @click="handleUpdate()"

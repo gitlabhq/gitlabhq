@@ -8,6 +8,7 @@ import {
   inactiveId,
   flashAnimationDuration,
   ISSUABLE,
+  titleQueries,
 } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
@@ -33,7 +34,6 @@ import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.grap
 import issueSetLabelsMutation from '../graphql/issue_set_labels.mutation.graphql';
 import issueSetMilestoneMutation from '../graphql/issue_set_milestone.mutation.graphql';
 import issueSetSubscriptionMutation from '../graphql/issue_set_subscription.mutation.graphql';
-import issueSetTitleMutation from '../graphql/issue_set_title.mutation.graphql';
 import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
 import * as types from './mutation_types';
 
@@ -526,27 +526,31 @@ export default {
     });
   },
 
-  setActiveIssueTitle: async ({ commit, getters }, input) => {
-    const { activeBoardItem } = getters;
+  setActiveItemTitle: async ({ commit, getters, state }, input) => {
+    const { activeBoardItem, isEpicBoard } = getters;
+    const { fullPath, issuableType } = state;
+    const workspacePath = isEpicBoard
+      ? { groupPath: fullPath }
+      : { projectPath: input.projectPath };
     const { data } = await gqlClient.mutate({
-      mutation: issueSetTitleMutation,
+      mutation: titleQueries[issuableType].mutation,
       variables: {
         input: {
+          ...workspacePath,
           iid: String(activeBoardItem.iid),
-          projectPath: input.projectPath,
           title: input.title,
         },
       },
     });
 
-    if (data.updateIssue?.errors?.length > 0) {
-      throw new Error(data.updateIssue.errors);
+    if (data.updateIssuableTitle?.errors?.length > 0) {
+      throw new Error(data.updateIssuableTitle.errors);
     }
 
     commit(types.UPDATE_BOARD_ITEM_BY_ID, {
       itemId: activeBoardItem.id,
       prop: 'title',
-      value: data.updateIssue.issue.title,
+      value: data.updateIssuableTitle[issuableType].title,
     });
   },
 

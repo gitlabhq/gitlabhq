@@ -7,6 +7,7 @@ RSpec.describe BlobViewer::MetricsDashboardYml do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
+
   let(:blob) { fake_blob(path: '.gitlab/dashboards/custom-dashboard.yml', data: data) }
   let(:sha) { sample_commit.id }
   let(:data) { fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml') }

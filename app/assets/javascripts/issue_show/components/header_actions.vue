@@ -25,7 +25,6 @@ export default {
   },
   actionPrimary: {
     text: __('Yes, close issue'),
-    attributes: [{ variant: 'warning' }],
   },
   i18n: {
     promoteErrorMessage: __(
@@ -220,7 +219,6 @@ export default {
     <gl-button
       v-if="showToggleIssueStateButton"
       class="gl-display-none gl-sm-display-inline-flex!"
-      category="secondary"
       :data-qa-selector="qaSelector"
       :loading="isToggleStateButtonLoading"
       @click="toggleIssueState"

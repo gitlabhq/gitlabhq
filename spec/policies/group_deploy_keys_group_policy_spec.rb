@@ -8,6 +8,7 @@ RSpec.describe GroupDeployKeysGroupPolicy do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:group_deploy_key) { create(:group_deploy_key) }
+
   let(:group_deploy_keys_group) { create(:group_deploy_keys_group, group: group, group_deploy_key: group_deploy_key) }
 
   describe 'edit a group deploy key for a given group' do

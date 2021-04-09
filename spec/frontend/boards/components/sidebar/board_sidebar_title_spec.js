@@ -1,11 +1,11 @@
 import { GlAlert, GlFormInput, GlForm } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import BoardSidebarIssueTitle from '~/boards/components/sidebar/board_sidebar_issue_title.vue';
+import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { createStore } from '~/boards/stores';
 import createFlash from '~/flash';
 
-const TEST_TITLE = 'New issue title';
+const TEST_TITLE = 'New item title';
 const TEST_ISSUE_A = {
   id: 'gid://gitlab/Issue/1',
   iid: 8,
@@ -21,7 +21,7 @@ const TEST_ISSUE_B = {
 
 jest.mock('~/flash');
 
-describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
+describe('~/boards/components/sidebar/board_sidebar_title.vue', () => {
   let wrapper;
   let store;
 
@@ -32,12 +32,12 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
     wrapper = null;
   });
 
-  const createWrapper = (issue = TEST_ISSUE_A) => {
+  const createWrapper = (item = TEST_ISSUE_A) => {
     store = createStore();
-    store.state.boardItems = { [issue.id]: { ...issue } };
-    store.dispatch('setActiveId', { id: issue.id });
+    store.state.boardItems = { [item.id]: { ...item } };
+    store.dispatch('setActiveId', { id: item.id });
 
-    wrapper = shallowMount(BoardSidebarIssueTitle, {
+    wrapper = shallowMount(BoardSidebarTitle, {
       store,
       provide: {
         canUpdate: true,
@@ -53,7 +53,7 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
   const findFormInput = () => wrapper.find(GlFormInput);
   const findEditableItem = () => wrapper.find(BoardEditableItem);
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
-  const findTitle = () => wrapper.find('[data-testid="issue-title"]');
+  const findTitle = () => wrapper.find('[data-testid="item-title"]');
   const findCollapsed = () => wrapper.find('[data-testid="collapsed-content"]');
 
   it('renders title and reference', () => {
@@ -73,7 +73,7 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
     beforeEach(async () => {
       createWrapper();
 
-      jest.spyOn(wrapper.vm, 'setActiveIssueTitle').mockImplementation(() => {
+      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {
         store.state.boardItems[TEST_ISSUE_A.id].title = TEST_TITLE;
       });
       findFormInput().vm.$emit('input', TEST_TITLE);
@@ -87,7 +87,7 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
     });
 
     it('commits change to the server', () => {
-      expect(wrapper.vm.setActiveIssueTitle).toHaveBeenCalledWith({
+      expect(wrapper.vm.setActiveItemTitle).toHaveBeenCalledWith({
         title: TEST_TITLE,
         projectPath: 'h/b',
       });
@@ -98,14 +98,14 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
     beforeEach(async () => {
       createWrapper();
 
-      jest.spyOn(wrapper.vm, 'setActiveIssueTitle').mockImplementation(() => {});
+      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {});
       findFormInput().vm.$emit('input', '');
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await wrapper.vm.$nextTick();
     });
 
     it('commits change to the server', () => {
-      expect(wrapper.vm.setActiveIssueTitle).not.toHaveBeenCalled();
+      expect(wrapper.vm.setActiveItemTitle).not.toHaveBeenCalled();
     });
   });
 
@@ -122,7 +122,7 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
     it('does not collapses sidebar and shows alert', () => {
       expect(findCollapsed().isVisible()).toBe(false);
       expect(findAlert().exists()).toBe(true);
-      expect(localStorage.getItem(`${TEST_ISSUE_A.id}/issue-title-pending-changes`)).toBe(
+      expect(localStorage.getItem(`${TEST_ISSUE_A.id}/item-title-pending-changes`)).toBe(
         TEST_TITLE,
       );
     });
@@ -130,7 +130,7 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
 
   describe('when accessing the form with pending changes', () => {
     beforeAll(() => {
-      localStorage.setItem(`${TEST_ISSUE_A.id}/issue-title-pending-changes`, TEST_TITLE);
+      localStorage.setItem(`${TEST_ISSUE_A.id}/item-title-pending-changes`, TEST_TITLE);
 
       createWrapper();
     });
@@ -146,7 +146,7 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
     beforeEach(async () => {
       createWrapper(TEST_ISSUE_B);
 
-      jest.spyOn(wrapper.vm, 'setActiveIssueTitle').mockImplementation(() => {
+      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {
         store.state.boardItems[TEST_ISSUE_B.id].title = TEST_TITLE;
       });
       findFormInput().vm.$emit('input', TEST_TITLE);
@@ -155,7 +155,7 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
     });
 
     it('collapses sidebar and render former title', () => {
-      expect(wrapper.vm.setActiveIssueTitle).not.toHaveBeenCalled();
+      expect(wrapper.vm.setActiveItemTitle).not.toHaveBeenCalled();
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findTitle().text()).toBe(TEST_ISSUE_B.title);
     });
@@ -165,7 +165,7 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
     beforeEach(async () => {
       createWrapper(TEST_ISSUE_B);
 
-      jest.spyOn(wrapper.vm, 'setActiveIssueTitle').mockImplementation(() => {
+      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {
         throw new Error(['failed mutation']);
       });
       findFormInput().vm.$emit('input', 'Invalid title');
@@ -173,7 +173,7 @@ describe('~/boards/components/sidebar/board_sidebar_issue_title.vue', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('collapses sidebar and renders former issue title', () => {
+    it('collapses sidebar and renders former item title', () => {
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findTitle().text()).toContain(TEST_ISSUE_B.title);
       expect(createFlash).toHaveBeenCalled();

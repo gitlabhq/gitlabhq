@@ -4,10 +4,10 @@ import Vuex from 'vuex';
 import { stubComponent } from 'helpers/stub_component';
 import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
 import BoardSidebarDueDate from '~/boards/components/sidebar/board_sidebar_due_date.vue';
-import BoardSidebarIssueTitle from '~/boards/components/sidebar/board_sidebar_issue_title.vue';
 import BoardSidebarLabelsSelect from '~/boards/components/sidebar/board_sidebar_labels_select.vue';
 import BoardSidebarMilestoneSelect from '~/boards/components/sidebar/board_sidebar_milestone_select.vue';
 import BoardSidebarSubscription from '~/boards/components/sidebar/board_sidebar_subscription.vue';
+import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { ISSUABLE } from '~/boards/constants';
 import { mockIssue, mockIssueGroupPath, mockIssueProjectPath } from '../mock_data';
 
@@ -102,8 +102,8 @@ describe('BoardContentSidebar', () => {
     expect(wrapper.find(BoardSidebarLabelsSelect).exists()).toBe(true);
   });
 
-  it('renders BoardSidebarIssueTitle', () => {
-    expect(wrapper.find(BoardSidebarIssueTitle).exists()).toBe(true);
+  it('renders BoardSidebarTitle', () => {
+    expect(wrapper.find(BoardSidebarTitle).exists()).toBe(true);
   });
 
   it('renders BoardSidebarDueDate', () => {

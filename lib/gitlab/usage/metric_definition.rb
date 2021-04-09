@@ -69,6 +69,10 @@ module Gitlab
           @schemer ||= ::JSONSchemer.schema(Pathname.new(METRIC_SCHEMA_PATH))
         end
 
+        def dump_metrics_yaml
+          @metrics_yaml ||= definitions.values.map(&:to_h).map(&:deep_stringify_keys).to_yaml
+        end
+
         private
 
         def load_all!

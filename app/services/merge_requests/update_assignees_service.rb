@@ -7,15 +7,20 @@ module MergeRequests
     # This saves a lot of queries for irrelevant things that cannot possibly
     # change in the execution of this service.
     def execute(merge_request)
-      return unless current_user&.can?(:update_merge_request, merge_request)
+      return merge_request unless current_user&.can?(:update_merge_request, merge_request)
 
       old_ids = merge_request.assignees.map(&:id)
-      return if old_ids.to_set == update_attrs[:assignee_ids].to_set # no-change
+      new_ids = new_assignee_ids(merge_request)
+      return merge_request if new_ids.size != update_attrs[:assignee_ids].size
+      return merge_request if old_ids.to_set == new_ids.to_set # no-change
 
-      merge_request.update!(**update_attrs)
+      attrs = update_attrs.merge(assignee_ids: new_ids)
+      merge_request.update!(**attrs)
 
       # Defer the more expensive operations (handle_assignee_changes) to the background
       MergeRequests::AssigneesChangeWorker.perform_async(merge_request.id, current_user.id, old_ids)
+
+      merge_request
     end
 
     def handle_assignee_changes(merge_request, old_assignees)
@@ -31,8 +36,31 @@ module MergeRequests
 
     private
 
+    def new_assignee_ids(merge_request)
+      # prime the cache - prevent N+1 lookup during authorization loop.
+      merge_request.project.team.max_member_access_for_user_ids(update_attrs[:assignee_ids])
+      User.id_in(update_attrs[:assignee_ids]).map do |user|
+        if user.can?(:read_merge_request, merge_request)
+          user.id
+        else
+          merge_request.errors.add(
+            :assignees,
+            "Cannot assign #{user.to_reference} to #{merge_request.to_reference}"
+          )
+          nil
+        end
+      end.compact
+    end
+
     def assignee_ids
       params.fetch(:assignee_ids).first(1)
+    end
+
+    def params
+      ps = super
+
+      # allow either assignee_id or assignee_ids, preferring assignee_id if passed.
+      { assignee_ids: ps.key?(:assignee_id) ? Array.wrap(ps[:assignee_id]) : ps[:assignee_ids] }
     end
 
     def update_attrs

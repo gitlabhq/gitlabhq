@@ -683,7 +683,9 @@ module Ci
     end
 
     def has_kubernetes_active?
-      project.deployment_platform&.active?
+      strong_memoize(:has_kubernetes_active) do
+        project.deployment_platform&.active?
+      end
     end
 
     def freeze_period?
