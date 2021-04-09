@@ -8,6 +8,7 @@ RSpec.describe Gitlab::AlertManagement::AlertStatusCounts do
   let_it_be(:alert_resolved) { create(:alert_management_alert, :resolved, project: project) }
   let_it_be(:alert_ignored) { create(:alert_management_alert, :ignored, project: project) }
   let_it_be(:alert_triggered) { create(:alert_management_alert) }
+
   let(:params) { {} }
 
   describe '#execute' do

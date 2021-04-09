@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
   let_it_be(:project) { create(:project) }
+
   let(:raw_payload) { {} }
 
   let(:parsed_payload) { described_class.new(project: project, payload: raw_payload) }
