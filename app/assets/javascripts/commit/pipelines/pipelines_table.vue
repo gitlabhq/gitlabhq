@@ -81,7 +81,7 @@ export default {
       return this.hasError && !this.isLoading;
     },
     /**
-     * The Run Pipeline button can only be rendered when:
+     * The "Run pipeline" button can only be rendered when:
      * - In MR view -  we use `canCreatePipelineInTargetProject` for that purpose
      * - If the latest pipeline has the `detached_merge_request_pipeline` flag
      *
@@ -148,7 +148,7 @@ export default {
       }
     },
     /**
-     * When the user clicks on the Run Pipeline button
+     * When the user clicks on the "Run pipeline" button
      * we need to make a post request and
      * to update the table content once the request is finished.
      *
@@ -177,7 +177,7 @@ export default {
   <div class="content-list pipelines">
     <gl-loading-icon
       v-if="isLoading"
-      :label="s__('Pipelines|Loading Pipelines')"
+      :label="s__('Pipelines|Loading pipelines')"
       size="lg"
       class="prepend-top-20"
     />
@@ -197,12 +197,12 @@ export default {
         block
         class="gl-mt-3 gl-mb-3"
         :class="pipelineButtonClass"
-        variant="success"
+        variant="confirm"
         data-testid="run_pipeline_button_mobile"
         :loading="state.isRunningMergeRequestPipeline"
         @click="tryRunPipeline"
       >
-        {{ s__('Pipelines|Run Pipeline') }}
+        {{ s__('Pipeline|Run pipeline') }}
       </gl-button>
 
       <pipelines-table-component
@@ -213,12 +213,12 @@ export default {
         <template #table-header-actions>
           <div v-if="canRenderPipelineButton" class="gl-text-right">
             <gl-button
-              variant="success"
+              variant="confirm"
               data-testid="run_pipeline_button"
               :loading="state.isRunningMergeRequestPipeline"
               @click="tryRunPipeline"
             >
-              {{ s__('Pipelines|Run Pipeline') }}
+              {{ s__('Pipeline|Run pipeline') }}
             </gl-button>
           </div>
         </template>
@@ -231,7 +231,7 @@ export default {
       ref="modal"
       :modal-id="modalId"
       :title="s__('Pipelines|Are you sure you want to run this pipeline?')"
-      :ok-title="s__('Pipelines|Run Pipeline')"
+      :ok-title="s__('Pipeline|Run pipeline')"
       ok-variant="danger"
       @ok="onClickRunPipeline"
     >

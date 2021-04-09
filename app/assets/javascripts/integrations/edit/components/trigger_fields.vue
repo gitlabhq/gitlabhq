@@ -10,7 +10,7 @@ const typeWithPlaceholder = {
 };
 
 const placeholderForType = {
-  [typeWithPlaceholder.SLACK]: __('Slack channels (e.g. general, development)'),
+  [typeWithPlaceholder.SLACK]: __('general, development'),
   [typeWithPlaceholder.MATTERMOST]: __('my-channel'),
 };
 

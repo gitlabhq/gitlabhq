@@ -3740,6 +3740,9 @@ msgstr ""
 msgid "Analyze your source code for known vulnerabilities."
 msgstr ""
 
+msgid "Analyzing file…"
+msgstr ""
+
 msgid "Ancestors"
 msgstr ""
 
@@ -15738,6 +15741,9 @@ msgstr ""
 msgid "How do I mirror repositories?"
 msgstr ""
 
+msgid "How do I set up this service?"
+msgstr ""
+
 msgid "How does cleanup work?"
 msgstr ""
 
@@ -22893,13 +22899,13 @@ msgstr ""
 msgid "Pipelines|By revoking a trigger you will break any processes making use of it. Are you sure?"
 msgstr ""
 
-msgid "Pipelines|CI Lint"
+msgid "Pipelines|CI lint"
 msgstr ""
 
 msgid "Pipelines|Child pipeline"
 msgstr ""
 
-msgid "Pipelines|Clear Runner Caches"
+msgid "Pipelines|Clear runner caches"
 msgstr ""
 
 msgid "Pipelines|Continuous deployment template to test and deploy your %{name} project."
@@ -22947,6 +22953,9 @@ msgstr ""
 msgid "Pipelines|Loading Pipelines"
 msgstr ""
 
+msgid "Pipelines|Loading pipelines"
+msgstr ""
+
 msgid "Pipelines|Merged YAML is view only"
 msgstr ""
 
@@ -22966,9 +22975,6 @@ msgid "Pipelines|Project cache successfully reset."
 msgstr ""
 
 msgid "Pipelines|Revoke"
-msgstr ""
-
-msgid "Pipelines|Run Pipeline"
 msgstr ""
 
 msgid "Pipelines|Something went wrong while cleaning runners cache."
@@ -23124,13 +23130,13 @@ msgstr ""
 msgid "Pipeline|Raw text search is not currently supported. Please use the available search tokens."
 msgstr ""
 
-msgid "Pipeline|Run Pipeline"
-msgstr ""
-
 msgid "Pipeline|Run for"
 msgstr ""
 
 msgid "Pipeline|Run for branch name or tag"
+msgstr ""
+
+msgid "Pipeline|Run pipeline"
 msgstr ""
 
 msgid "Pipeline|Running"
@@ -28738,25 +28744,10 @@ msgstr ""
 msgid "Slack application"
 msgstr ""
 
-msgid "Slack channels (e.g. general, development)"
-msgstr ""
-
 msgid "Slack integration allows you to interact with GitLab via slash commands in a chat window."
 msgstr ""
 
-msgid "SlackIntegration|%{strong_open}Note:%{strong_close} Usernames and private channels are not supported."
-msgstr ""
-
-msgid "SlackIntegration|%{webhooks_link_start}Add an incoming webhook%{webhooks_link_end} in your Slack team. The default channel can be overridden for each event."
-msgstr ""
-
-msgid "SlackIntegration|Paste the %{strong_open}Webhook URL%{strong_close} into the field below."
-msgstr ""
-
-msgid "SlackIntegration|Select events below to enable notifications. The %{strong_open}Slack channel names%{strong_close} and %{strong_open}Slack username%{strong_close} fields are optional."
-msgstr ""
-
-msgid "SlackIntegration|This service sends notifications about project events to Slack channels. To set up this service:"
+msgid "SlackIntegration|Sends notifications about project events to Slack channels."
 msgstr ""
 
 msgid "SlackService|2. Paste the %{strong_open}Token%{strong_close} into the field below"
@@ -36584,6 +36575,9 @@ msgid "from %d job"
 msgid_plural "from %d jobs"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "general, development"
+msgstr ""
 
 msgid "group"
 msgstr ""

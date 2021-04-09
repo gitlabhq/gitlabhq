@@ -444,18 +444,16 @@ export default {
         </gl-sprintf></template
       >
     </gl-form-group>
-    <div
-      class="gl-border-t-solid gl-border-gray-100 gl-border-t-1 gl-p-5 gl-bg-gray-10 gl-display-flex gl-justify-content-space-between"
-    >
+    <div class="gl-pt-5 gl-display-flex">
       <gl-button
         type="submit"
         category="primary"
         variant="confirm"
-        class="js-no-auto-disable"
+        class="js-no-auto-disable gl-mr-3"
         data-qa-selector="run_pipeline_button"
         data-testid="run_pipeline_button"
         :disabled="submitted"
-        >{{ s__('Pipeline|Run Pipeline') }}</gl-button
+        >{{ s__('Pipeline|Run pipeline') }}</gl-button
       >
       <gl-button :href="pipelinesPath">{{ __('Cancel') }}</gl-button>
     </div>

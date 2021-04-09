@@ -20,7 +20,11 @@ class ChaosController < ActionController::Base
   end
 
   def kill
-    do_chaos :kill, Chaos::KillWorker
+    do_chaos :kill, Chaos::KillWorker, 'KILL'
+  end
+
+  def quit
+    do_chaos :kill, Chaos::KillWorker, 'QUIT'
   end
 
   def gc

@@ -1,0 +1,5 @@
+---
+title: Add a chaos endpoint that signals QUIT
+merge_request: 58755
+author:
+type: changed

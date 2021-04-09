@@ -146,10 +146,10 @@ curl "http://localhost:3000/-/chaos/sleep?duration_s=60&token=secret"
 
 ## Kill
 
-This endpoint simulates the unexpected death of a worker process using a `kill` signal.
+This endpoint simulates the unexpected death of a worker process using the `KILL` signal.
 
-Because this endpoint uses the `KILL` signal, the worker isn't given an
-opportunity to cleanup or shutdown.
+Because this endpoint uses the `KILL` signal, the process isn't given an
+opportunity to clean up or shut down.
 
 ```plaintext
 GET /-/chaos/kill
@@ -158,11 +158,31 @@ GET /-/chaos/kill?async=true
 
 | Attribute    | Type    | Required | Description                                                            |
 | ------------ | ------- | -------- | ---------------------------------------------------------------------- |
-| `async`      | boolean | no       | Set to true to kill a Sidekiq background worker process                |
+| `async`      | boolean | no       | Set to true to signal a Sidekiq background worker process              |
 
 ```shell
 curl "http://localhost:3000/-/chaos/kill" --header 'X-Chaos-Secret: secret'
 curl "http://localhost:3000/-/chaos/kill?token=secret"
+```
+
+## Quit
+
+This endpoint simulates the unexpected death of a worker process using the `QUIT` signal.
+Unlike `KILL`, the `QUIT` signal will also attempt to write a core dump.
+See [core(5)](https://man7.org/linux/man-pages/man5/core.5.html) for more information.
+
+```plaintext
+GET /-/chaos/quit
+GET /-/chaos/quit?async=true
+```
+
+| Attribute    | Type    | Required | Description                                                            |
+| ------------ | ------- | -------- | ---------------------------------------------------------------------- |
+| `async`      | boolean | no       | Set to true to signal a Sidekiq background worker process              |
+
+```shell
+curl "http://localhost:3000/-/chaos/quit" --header 'X-Chaos-Secret: secret'
+curl "http://localhost:3000/-/chaos/quit?token=secret"
 ```
 
 ## Run garbage collector

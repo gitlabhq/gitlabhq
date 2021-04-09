@@ -191,16 +191,16 @@ describe('Pipelines', () => {
         expect(findNavigationControls().exists()).toBe(true);
       });
 
-      it('renders Run Pipeline link', () => {
+      it('renders Run pipeline link', () => {
         expect(findRunPipelineButton().attributes('href')).toBe(paths.newPipelinePath);
       });
 
-      it('renders CI Lint link', () => {
+      it('renders CI lint link', () => {
         expect(findCiLintButton().attributes('href')).toBe(paths.ciLintPath);
       });
 
-      it('renders Clear Runner Cache button', () => {
-        expect(findCleanCacheButton().text()).toBe('Clear Runner Caches');
+      it('renders Clear runner cache button', () => {
+        expect(findCleanCacheButton().text()).toBe('Clear runner caches');
       });
 
       it('renders pipelines in a table', () => {
@@ -499,16 +499,16 @@ describe('Pipelines', () => {
         expect(findTab('all').text()).toMatchInterpolatedText('All 0');
       });
 
-      it('renders Run Pipeline link', () => {
+      it('renders Run pipeline link', () => {
         expect(findRunPipelineButton().attributes('href')).toBe(paths.newPipelinePath);
       });
 
-      it('renders CI Lint link', () => {
+      it('renders CI lint link', () => {
         expect(findCiLintButton().attributes('href')).toBe(paths.ciLintPath);
       });
 
-      it('renders Clear Runner Cache button', () => {
-        expect(findCleanCacheButton().text()).toBe('Clear Runner Caches');
+      it('renders Clear runner cache button', () => {
+        expect(findCleanCacheButton().text()).toBe('Clear runner caches');
       });
 
       it('renders empty state', () => {
@@ -714,7 +714,7 @@ describe('Pipelines', () => {
         expect(findRunPipelineButton().attributes('href')).toBe(paths.newPipelinePath);
 
         expect(findCiLintButton().attributes('href')).toBe(paths.ciLintPath);
-        expect(findCleanCacheButton().text()).toBe('Clear Runner Caches');
+        expect(findCleanCacheButton().text()).toBe('Clear runner caches');
       });
 
       it('shows error state', () => {

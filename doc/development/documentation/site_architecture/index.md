@@ -119,7 +119,7 @@ pipeline in the main `gitlab` repository as well as in `gitlab-docs`. Create an 
 a different name first and test it to ensure you do not break the pipelines.
 
 1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI/CD > Pipelines**.
-1. Click the **Run Pipeline** button.
+1. Click the **Run pipeline** button.
 1. See that a new pipeline is running. The jobs that build the images are in the first
    stage, `build-images`. You can click the pipeline number to see the larger pipeline
    graph, or click the first (`build-images`) stage in the mini pipeline graph to

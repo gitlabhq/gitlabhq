@@ -29,7 +29,7 @@ describe('Pipelines Nav Controls', () => {
     createComponent(mockData);
 
     const runPipeline = findRunPipeline();
-    expect(runPipeline.text()).toContain('Run Pipeline');
+    expect(runPipeline.text()).toContain('Run pipeline');
     expect(runPipeline.attributes('href')).toBe(mockData.newPipelinePath);
   });
 
@@ -55,7 +55,7 @@ describe('Pipelines Nav Controls', () => {
 
     createComponent(mockData);
 
-    expect(wrapper.find('.js-ci-lint').text().trim()).toContain('CI Lint');
+    expect(wrapper.find('.js-ci-lint').text().trim()).toContain('CI lint');
     expect(wrapper.find('.js-ci-lint').attributes('href')).toBe(mockData.ciLintPath);
   });
 
@@ -70,7 +70,7 @@ describe('Pipelines Nav Controls', () => {
     });
 
     it('should render button for resetting runner caches', () => {
-      expect(wrapper.find('.js-clear-cache').text().trim()).toContain('Clear Runner Caches');
+      expect(wrapper.find('.js-clear-cache').text().trim()).toContain('Clear runner caches');
     });
 
     it('should emit postAction event when reset runner cache button is clicked', async () => {

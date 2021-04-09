@@ -87,7 +87,7 @@ module Gitlab
       # rubocop: disable Metrics/AbcSize
       # rubocop: disable CodeReuse/ActiveRecord
       def system_usage_data
-        issues_created_manually_from_alerts = count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: issue_minimum_id, finish: issue_maximum_id)
+        issues_created_manually_from_alerts = count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue))
 
         {
           counts: {
@@ -138,7 +138,7 @@ module Gitlab
             in_review_folder: count(::Environment.in_review_folder),
             grafana_integrated_projects: count(GrafanaIntegration.enabled),
             groups: count(Group),
-            issues: count(Issue, start: issue_minimum_id, finish: issue_maximum_id),
+            issues: count(Issue, start: minimum_id(Issue), finish: maximum_id(Issue)),
             issues_created_from_gitlab_error_tracking_ui: count(SentryIssue),
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
@@ -146,9 +146,9 @@ module Gitlab
             issues_created_from_alerts: total_alert_issues,
             issues_created_gitlab_alerts: issues_created_manually_from_alerts,
             issues_created_manually_from_alerts: issues_created_manually_from_alerts,
-            incident_issues: count(::Issue.incident, start: issue_minimum_id, finish: issue_maximum_id),
-            alert_bot_incident_issues: count(::Issue.authored(::User.alert_bot), start: issue_minimum_id, finish: issue_maximum_id),
-            incident_labeled_issues: count(::Issue.with_label_attributes(::IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES), start: issue_minimum_id, finish: issue_maximum_id),
+            incident_issues: count(::Issue.incident, start: minimum_id(Issue), finish: maximum_id(Issue)),
+            alert_bot_incident_issues: count(::Issue.authored(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue)),
+            incident_labeled_issues: count(::Issue.with_label_attributes(::IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES), start: minimum_id(Issue), finish: maximum_id(Issue)),
             keys: count(Key),
             label_lists: count(List.label),
             lfs_objects: count(LfsObject),
@@ -389,8 +389,8 @@ module Gitlab
       # rubocop: disable CodeReuse/ActiveRecord
       def container_expiration_policies_usage
         results = {}
-        start = ::Project.minimum(:id)
-        finish = ::Project.maximum(:id)
+        start = minimum_id(Project)
+        finish = maximum_id(Project)
 
         results[:projects_with_expiration_policy_disabled] = distinct_count(::ContainerExpirationPolicy.where(enabled: false), :project_id, start: start, finish: finish)
         # rubocop: disable UsageData/LargeTable
@@ -591,7 +591,7 @@ module Gitlab
         {
           events: distinct_count(::Event.where(time_period), :author_id),
           groups: distinct_count(::GroupMember.where(time_period), :user_id),
-          users_created: count(::User.where(time_period), start: user_minimum_id, finish: user_maximum_id),
+          users_created: count(::User.where(time_period), start: minimum_id(User), finish: maximum_id(User)),
           omniauth_providers: filtered_omniauth_provider_names.reject { |name| name == 'group_saml' },
           user_auth_by_provider: distinct_count_user_auth_by_provider(time_period),
           unique_users_all_imports: unique_users_all_imports(time_period),
@@ -636,8 +636,8 @@ module Gitlab
           clusters: distinct_count(::Clusters::Cluster.where(time_period), :user_id),
           clusters_applications_prometheus: cluster_applications_user_distinct_count(::Clusters::Applications::Prometheus, time_period),
           operations_dashboard_default_dashboard: count(::User.active.with_dashboard('operations').where(time_period),
-                                                        start: user_minimum_id,
-                                                        finish: user_maximum_id),
+                                                        start: minimum_id(User),
+                                                        finish: maximum_id(User)),
           projects_with_tracing_enabled: distinct_count(::Project.with_tracing_enabled.where(time_period), :creator_id),
           projects_with_error_tracking_enabled: distinct_count(::Project.with_enabled_error_tracking.where(time_period), :creator_id),
           projects_with_incidents: distinct_count(::Issue.incident.where(time_period), :project_id),
@@ -691,12 +691,12 @@ module Gitlab
       def usage_activity_by_stage_verify(time_period)
         {
           ci_builds: distinct_count(::Ci::Build.where(time_period), :user_id),
-          ci_external_pipelines: distinct_count(::Ci::Pipeline.external.where(time_period), :user_id, start: user_minimum_id, finish: user_maximum_id),
-          ci_internal_pipelines: distinct_count(::Ci::Pipeline.internal.where(time_period), :user_id, start: user_minimum_id, finish: user_maximum_id),
-          ci_pipeline_config_auto_devops: distinct_count(::Ci::Pipeline.auto_devops_source.where(time_period), :user_id, start: user_minimum_id, finish: user_maximum_id),
-          ci_pipeline_config_repository: distinct_count(::Ci::Pipeline.repository_source.where(time_period), :user_id, start: user_minimum_id, finish: user_maximum_id),
+          ci_external_pipelines: distinct_count(::Ci::Pipeline.external.where(time_period), :user_id, start: minimum_id(User), finish: maximum_id(User)),
+          ci_internal_pipelines: distinct_count(::Ci::Pipeline.internal.where(time_period), :user_id, start: minimum_id(User), finish: maximum_id(User)),
+          ci_pipeline_config_auto_devops: distinct_count(::Ci::Pipeline.auto_devops_source.where(time_period), :user_id, start: minimum_id(User), finish: maximum_id(User)),
+          ci_pipeline_config_repository: distinct_count(::Ci::Pipeline.repository_source.where(time_period), :user_id, start: minimum_id(User), finish: maximum_id(User)),
           ci_pipeline_schedules: distinct_count(::Ci::PipelineSchedule.where(time_period), :owner_id),
-          ci_pipelines: distinct_count(::Ci::Pipeline.where(time_period), :user_id, start: user_minimum_id, finish: user_maximum_id),
+          ci_pipelines: distinct_count(::Ci::Pipeline.where(time_period), :user_id, start: minimum_id(User), finish: maximum_id(User)),
           ci_triggers: distinct_count(::Ci::Trigger.where(time_period), :owner_id),
           clusters_applications_runner: cluster_applications_user_distinct_count(::Clusters::Applications::Runner, time_period)
         }
@@ -801,8 +801,8 @@ module Gitlab
       end
 
       def distinct_count_service_desk_enabled_projects(time_period)
-        project_creator_id_start = user_minimum_id
-        project_creator_id_finish = user_maximum_id
+        project_creator_id_start = minimum_id(User)
+        project_creator_id_finish = maximum_id(User)
 
         distinct_count(::Project.service_desk_enabled.where(time_period), :creator_id, start: project_creator_id_start, finish: project_creator_id_finish) # rubocop: disable CodeReuse/ActiveRecord
       end
@@ -834,57 +834,9 @@ module Gitlab
       def total_alert_issues
         # Remove prometheus table queries once they are deprecated
         # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/217407.
-        add count(Issue.with_alert_management_alerts, start: issue_minimum_id, finish: issue_maximum_id),
-          count(::Issue.with_self_managed_prometheus_alert_events, start: issue_minimum_id, finish: issue_maximum_id),
-          count(::Issue.with_prometheus_alert_events, start: issue_minimum_id, finish: issue_maximum_id)
-      end
-
-      def user_minimum_id
-        strong_memoize(:user_minimum_id) do
-          ::User.minimum(:id)
-        end
-      end
-
-      def user_maximum_id
-        strong_memoize(:user_maximum_id) do
-          ::User.maximum(:id)
-        end
-      end
-
-      def issue_minimum_id
-        strong_memoize(:issue_minimum_id) do
-          ::Issue.minimum(:id)
-        end
-      end
-
-      def issue_maximum_id
-        strong_memoize(:issue_maximum_id) do
-          ::Issue.maximum(:id)
-        end
-      end
-
-      def deployment_minimum_id
-        strong_memoize(:deployment_minimum_id) do
-          ::Deployment.minimum(:id)
-        end
-      end
-
-      def deployment_maximum_id
-        strong_memoize(:deployment_maximum_id) do
-          ::Deployment.maximum(:id)
-        end
-      end
-
-      def project_minimum_id
-        strong_memoize(:project_minimum_id) do
-          ::Project.minimum(:id)
-        end
-      end
-
-      def project_maximum_id
-        strong_memoize(:project_maximum_id) do
-          ::Project.maximum(:id)
-        end
+        add count(Issue.with_alert_management_alerts, start: minimum_id(Issue), finish: maximum_id(Issue)),
+          count(::Issue.with_self_managed_prometheus_alert_events, start: minimum_id(Issue), finish: maximum_id(Issue)),
+          count(::Issue.with_prometheus_alert_events, start: minimum_id(Issue), finish: maximum_id(Issue))
       end
 
       def self_monitoring_project
@@ -918,7 +870,7 @@ module Gitlab
       end
 
       def deployment_count(relation)
-        count relation, start: deployment_minimum_id, finish: deployment_maximum_id
+        count relation, start: minimum_id(Deployment), finish: maximum_id(Deployment)
       end
 
       def project_imports(time_period)

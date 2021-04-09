@@ -138,11 +138,11 @@ describe('TriggerFields', () => {
         const expectedResults = [
           {
             name: 'service[push_channel]',
-            placeholder: 'Slack channels (e.g. general, development)',
+            placeholder: 'general, development',
           },
           {
             name: 'service[merge_request_channel]',
-            placeholder: 'Slack channels (e.g. general, development)',
+            placeholder: 'general, development',
           },
         ];
 

@@ -418,7 +418,7 @@ If the MR source branch is more than 100 commits behind the target branch, ask t
 Review links and images, especially in documentation MRs.
 When in doubt, ask someone from `@gitlab-com/gl-security/appsec` to review the merge request **before starting any merge request pipeline**.
 
-- Start a new merge request pipeline with the `Run Pipeline` button in the merge
+- Start a new merge request pipeline with the `Run pipeline` button in the merge
   request's "Pipelines" tab, and enable "Merge When Pipeline Succeeds" (MWPS).
   Note that:
   - If **[master is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
