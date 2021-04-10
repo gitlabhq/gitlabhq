@@ -753,9 +753,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - spec/helpers/projects/terraform_helper_spec.rb
     - spec/helpers/projects_helper_spec.rb
     - spec/helpers/search_helper_spec.rb
-    - spec/lib/api/entities/design_management/design_spec.rb
-    - spec/lib/api/entities/merge_request_changes_spec.rb
-    - spec/lib/api/entities/release_spec.rb
     - spec/lib/bulk_imports/groups/loaders/group_loader_spec.rb
     - spec/lib/extracts_path_spec.rb
     - spec/lib/extracts_ref_spec.rb
@@ -802,9 +799,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - spec/lib/gitlab/hook_data/issue_builder_spec.rb
     - spec/lib/gitlab/hook_data/merge_request_builder_spec.rb
     - spec/lib/gitlab/hook_data/release_builder_spec.rb
-    - spec/lib/gitlab/jira_import/base_importer_spec.rb
-    - spec/lib/gitlab/jira_import/handle_labels_service_spec.rb
-    - spec/lib/gitlab/jira_import_spec.rb
     - spec/lib/gitlab/json_cache_spec.rb
     - spec/lib/gitlab/language_detection_spec.rb
     - spec/lib/gitlab/project_search_results_spec.rb

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Entities::Release do
   let_it_be(:project) { create(:project) }
+
   let(:release) { create(:release, project: project) }
   let(:evidence) { release.evidences.first }
   let(:user) { create(:user) }
