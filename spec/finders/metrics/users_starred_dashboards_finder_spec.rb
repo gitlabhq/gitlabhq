@@ -7,6 +7,7 @@ RSpec.describe Metrics::UsersStarredDashboardsFinder do
     subject(:starred_dashboards) { described_class.new(user: user, project: project, params: params).execute }
 
     let_it_be(:user) { create(:user) }
+
     let(:project) { create(:project) }
     let(:dashboard_path) { 'config/prometheus/common_metrics.yml' }
     let(:params) { {} }

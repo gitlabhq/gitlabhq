@@ -696,8 +696,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - spec/finders/events_finder_spec.rb
     - spec/finders/group_descendants_finder_spec.rb
     - spec/finders/groups_finder_spec.rb
-    - spec/finders/metrics/dashboards/annotations_finder_spec.rb
-    - spec/finders/metrics/users_starred_dashboards_finder_spec.rb
     - spec/finders/packages/conan/package_file_finder_spec.rb
     - spec/finders/packages/go/module_finder_spec.rb
     - spec/finders/packages/group_packages_finder_spec.rb
