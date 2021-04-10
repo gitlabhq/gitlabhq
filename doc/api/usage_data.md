@@ -20,7 +20,7 @@ Return all of the raw SQL queries used to compute usage ping.
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/usage_data/queries
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/usage_data/queries"
 ```
 
 Sample response
@@ -64,5 +64,53 @@ Sample response
     "ci_pipeline_config_auto_devops": "SELECT COUNT(\"ci_pipelines\".\"id\") FROM \"ci_pipelines\" WHERE \"ci_pipelines\".\"config_source\" = 2",
     "ci_pipeline_config_repository": "SELECT COUNT(\"ci_pipelines\".\"id\") FROM \"ci_pipelines\" WHERE \"ci_pipelines\".\"config_source\" = 1",
     "ci_runners": "SELECT COUNT(\"ci_runners\".\"id\") FROM \"ci_runners\"",
+...
+```
+
+## UsageDataNonSqlMetrics API
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57050) in GitLab 13.11.
+> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+
+Return all non-SQL metrics data used in the usage ping.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/usage_data/non_sql_metrics"
+```
+
+Sample response:
+
+```json
+{
+  "recorded_at": "2021-03-26T07:04:03.724Z",
+  "uuid": null,
+  "hostname": "localhost",
+  "version": "13.11.0-pre",
+  "installation_type": "gitlab-development-kit",
+  "active_user_count": -3,
+  "edition": "EE",
+  "license_md5": "bb8cd0d8a6d9569ff3f70b8927a1f949",
+  "license_id": null,
+  "historical_max_users": 0,
+  "licensee": {
+    "Name": "John Doe1"
+  },
+  "license_user_count": null,
+  "license_starts_at": "1970-01-01",
+  "license_expires_at": "2022-02-26",
+  "license_plan": "starter",
+  "license_add_ons": {
+    "GitLab_FileLocks": 1,
+    "GitLab_Auditor_User": 1
+  },
+  "license_trial": null,
+  "license_subscription_id": "0000",
+  "license": {},
+  "settings": {
+    "ldap_encrypted_secrets_enabled": false,
+    "operating_system": "mac_os_x-11.2.2"
+  },
 ...
 ```

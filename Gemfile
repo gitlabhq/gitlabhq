@@ -511,6 +511,7 @@ gem 'erubi', '~> 1.9.0'
 # Monkey-patched in `config/initializers/mail_encoding_patch.rb`
 # See https://gitlab.com/gitlab-org/gitlab/issues/197386
 gem 'mail', '= 2.7.1'
+gem 'mail-smtp_pool', '~> 0.1.0', path: 'vendor/gems/mail-smtp_pool', require: false
 
 # File encryption
 gem 'lockbox', '~> 0.6.2'

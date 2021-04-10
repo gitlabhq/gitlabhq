@@ -920,6 +920,16 @@
     - <<: *if-merge-request
       changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
+#######################
+# Vendored gems rules #
+#######################
+
+.vendor:rules:mail-smtp_pool:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/mail-smtp_pool/**/*"]
+    - <<: *if-merge-request-title-run-all-rspec
+
 ##################
 # Releases rules #
 ##################

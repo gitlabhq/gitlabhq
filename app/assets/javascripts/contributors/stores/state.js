@@ -1,5 +1,5 @@
-export default () => ({
+export default (branch) => ({
   loading: false,
   chartData: null,
-  branch: 'master',
+  branch,
 });

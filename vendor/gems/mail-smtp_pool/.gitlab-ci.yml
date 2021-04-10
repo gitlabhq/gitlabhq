@@ -1,0 +1,29 @@
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
+.rspec:
+  cache:
+    key: mail-smtp_pool-ruby
+    paths:
+      - vendor/gems/mail-smtp_pool/vendor/ruby
+  before_script:
+    - cd vendor/gems/mail-smtp_pool
+    - ruby -v                                   # Print out ruby version for debugging
+    - gem install bundler --no-document         # Bundler is not installed with the image
+    - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
+    - bundle install -j $(nproc)
+  script:
+    - bundle exec rspec
+
+rspec-2.6:
+  image: "ruby:2.6"
+  extends: .rspec
+
+rspec-2.7:
+  image: "ruby:2.7"
+  extends: .rspec
+
+rspec-3.0:
+  image: "ruby:3.0"
+  extends: .rspec

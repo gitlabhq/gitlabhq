@@ -1,4 +1,11 @@
 PATH
+  remote: vendor/gems/mail-smtp_pool
+  specs:
+    mail-smtp_pool (0.1.0)
+      connection_pool (~> 2.0)
+      mail (~> 2.7)
+
+PATH
   remote: vendor/shims/mimemagic
   specs:
     mimemagic (0.3.7)
@@ -1483,6 +1490,7 @@ DEPENDENCIES
   loofah (~> 2.2)
   lru_redux
   mail (= 2.7.1)
+  mail-smtp_pool (~> 0.1.0)!
   marginalia (~> 1.10.0)
   memory_profiler (~> 0.9)
   method_source (~> 1.0)

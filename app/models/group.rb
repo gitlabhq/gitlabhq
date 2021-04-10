@@ -86,7 +86,7 @@ class Group < Namespace
   validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent
   validate :two_factor_authentication_allowed
-  validates :variables, nested_attributes_duplicates: true
+  validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 

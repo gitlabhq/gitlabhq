@@ -7,6 +7,7 @@ import {
   GlFormCombobox,
   GlFormGroup,
   GlFormSelect,
+  GlFormInput,
   GlFormTextarea,
   GlIcon,
   GlLink,
@@ -41,6 +42,7 @@ export default {
     GlFormCombobox,
     GlFormGroup,
     GlFormSelect,
+    GlFormInput,
     GlFormTextarea,
     GlIcon,
     GlLink,
@@ -127,6 +129,12 @@ export default {
       }
 
       return true;
+    },
+    scopedVariablesEnabled() {
+      return !this.isGroup || this.glFeatures.scopedGroupVariables;
+    },
+    scopedVariablesAvailable() {
+      return !this.isGroup || this.glFeatures.groupScopedCiVariables;
     },
     variableValidationFeedback() {
       return `${this.tokenValidationFeedback} ${this.maskedFeedback}`;
@@ -226,24 +234,27 @@ export default {
           :label="__('Type')"
           label-for="ci-variable-type"
           class="w-50 gl-mr-5"
-          :class="{ 'w-100': isGroup }"
+          :class="{ 'w-100': !scopedVariablesEnabled }"
         >
           <gl-form-select id="ci-variable-type" v-model="variable_type" :options="typeOptions" />
         </gl-form-group>
 
         <gl-form-group
-          v-if="!isGroup"
+          v-if="scopedVariablesEnabled"
           :label="__('Environment scope')"
           label-for="ci-variable-env"
           class="w-50"
           data-testid="environment-scope"
         >
           <ci-environments-dropdown
+            v-if="scopedVariablesAvailable"
             class="w-100"
             :value="environment_scope"
             @selectEnvironment="setEnvironmentScope"
             @createClicked="addWildCardScope"
           />
+
+          <gl-form-input v-else v-model="environment_scope" class="w-100" readonly />
         </gl-form-group>
       </div>
 

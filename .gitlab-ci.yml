@@ -102,6 +102,7 @@ include:
   - local: .gitlab/ci/qa.gitlab-ci.yml
   - local: .gitlab/ci/reports.gitlab-ci.yml
   - local: .gitlab/ci/rails.gitlab-ci.yml
+  - local: .gitlab/ci/vendored-gems.gitlab-ci.yml
   - local: .gitlab/ci/review.gitlab-ci.yml
   - local: .gitlab/ci/rules.gitlab-ci.yml
   - local: .gitlab/ci/setup.gitlab-ci.yml

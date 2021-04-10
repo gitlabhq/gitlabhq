@@ -1,0 +1,7 @@
+vendor mail-smtp_pool:
+  extends:
+    - .vendor:rules:mail-smtp_pool
+  needs: []
+  trigger:
+    include: vendor/gems/mail-smtp_pool/.gitlab-ci.yml
+    strategy: depend

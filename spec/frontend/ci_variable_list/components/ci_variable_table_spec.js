@@ -1,4 +1,3 @@
-import { GlTable } from '@gitlab/ui';
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import CiVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
@@ -12,21 +11,24 @@ describe('Ci variable table', () => {
   let wrapper;
   let store;
 
-  const createComponent = () => {
-    store = createStore();
-    store.state.isGroup = true;
+  const createComponent = (isGroup = false, scopedGroupVariables = false) => {
+    store = createStore({ isGroup });
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = mount(CiVariableTable, {
       attachTo: document.body,
       localVue,
       store,
+      provide: {
+        glFeatures: {
+          scopedGroupVariables,
+        },
+      },
     });
   };
 
   const findRevealButton = () => wrapper.find({ ref: 'secret-value-reveal-button' });
   const findEditButton = () => wrapper.find({ ref: 'edit-ci-variable' });
   const findEmptyVariablesPlaceholder = () => wrapper.find({ ref: 'empty-variables' });
-  const findTable = () => wrapper.find(GlTable);
 
   beforeEach(() => {
     createComponent();
@@ -40,12 +42,14 @@ describe('Ci variable table', () => {
     expect(store.dispatch).toHaveBeenCalledWith('fetchVariables');
   });
 
-  it('fields prop does not contain environment_scope if group', () => {
-    expect(findTable().props('fields')).not.toEqual(
+  it('fields do not contain environment_scope if group level and feature is disabled', () => {
+    createComponent(true, false);
+
+    expect(wrapper.vm.fields).not.toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           key: 'environment_scope',
-          label: 'Environment Scope',
+          label: 'Environments',
         }),
       ]),
     );
