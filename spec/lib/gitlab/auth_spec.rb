@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
   let_it_be(:project) { create(:project) }
+
   let(:gl_auth) { described_class }
 
   describe 'constants' do
@@ -543,6 +544,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
         context 'and belong to different projects' do
           let_it_be(:other_project) { create(:project) }
+
           let!(:read_registry) { create(:deploy_token, username: 'deployer', read_repository: false, projects: [project]) }
           let!(:read_repository) { create(:deploy_token, username: read_registry.username, read_registry: false, projects: [other_project]) }
           let(:auth_success) { Gitlab::Auth::Result.new(read_repository, other_project, :deploy_token, [:download_code]) }
