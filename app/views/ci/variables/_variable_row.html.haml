@@ -60,5 +60,5 @@
             value: is_masked,
             data: { default: is_masked_default.to_s } }
       = render_if_exists 'ci/variables/environment_scope', form_field: form_field, variable: variable
-    %button.btn.btn-svg.js-row-remove-button.ci-variable-row-remove-button.table-section{ type: 'button', 'aria-label': s_('CiVariables|Remove variable row') }
+    %button.gl-button.btn.btn-default.btn-icon.js-row-remove-button.ci-variable-row-remove-button.table-section{ type: 'button', 'aria-label': s_('CiVariables|Remove variable row') }
       = sprite_icon('close')

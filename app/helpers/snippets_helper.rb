@@ -11,16 +11,6 @@ module SnippetsHelper
     end
   end
 
-  def download_raw_snippet_button(snippet)
-    link_to(sprite_icon('download'),
-            gitlab_raw_snippet_path(snippet, inline: false),
-            target: '_blank',
-            rel: 'noopener noreferrer',
-            class: "btn btn-sm has-tooltip",
-            title: 'Download',
-            data: { container: 'body' })
-  end
-
   # Return the path of a snippets index for a user or for a project
   #
   # @returns String, path to snippet index
@@ -54,7 +44,7 @@ module SnippetsHelper
 
     link_to(external_snippet_icon('doc-code'),
             gitlab_raw_snippet_blob_url(snippet, blob.path),
-            class: 'btn',
+            class: 'gl-button btn btn-default',
             target: '_blank',
             rel: 'noopener noreferrer',
             title: 'Open raw')
@@ -63,7 +53,7 @@ module SnippetsHelper
   def embedded_snippet_download_button(snippet, blob)
     link_to(external_snippet_icon('download'),
             gitlab_raw_snippet_blob_url(snippet, blob.path, nil, inline: false),
-            class: 'btn',
+            class: 'gl-button btn btn-default',
             target: '_blank',
             title: 'Download',
             rel: 'noopener noreferrer')

@@ -665,7 +665,7 @@ code {
   font-size: 95%;
 }
 
-.git-revision-dropdown .dropdown-content ul li a {
+.git-revision-dropdown .dropdown-content li:not(.dropdown-menu-empty-item) a {
   font-family: $monospace-font;
   font-size: 95%;
   word-break: break-all;

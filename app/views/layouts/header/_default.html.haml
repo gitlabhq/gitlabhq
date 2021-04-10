@@ -113,7 +113,7 @@
             %li.nav-item
               %div
                 - sign_in_text = allow_signup? ? _('Sign in / Register') : _('Sign in')
-                = link_to sign_in_text, new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'
+                = link_to sign_in_text, new_session_path(:user, redirect_to_referer: 'yes'), class: 'gl-button btn btn-default btn-sign-in'
 
       %button.navbar-toggler.d-block.d-sm-none{ type: 'button' }
         %span.sr-only= _('Toggle navigation')

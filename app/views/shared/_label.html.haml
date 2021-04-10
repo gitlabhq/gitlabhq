@@ -29,7 +29,7 @@
             %ul
               - if label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
                 %li
-                  %button.js-promote-project-label-button.btn.btn-transparent{ disabled: true, type: 'button',
+                  %button.js-promote-project-label-button.gl-button.btn.btn-default-tertiary{ disabled: true, type: 'button',
                     data: { url: promote_project_label_path(label.project, label),
                             label_title: label.title,
                             label_color: label.color,
@@ -53,10 +53,10 @@
             .dropdown-menu.dropdown-open-left
               %ul
                 %li
-                  %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }
+                  %button.js-subscribe-button.label-subscribe-button.gl-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }
                     %span= _('Subscribe at project level')
                 %li
-                  %button.js-subscribe-button.js-group-level.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }
+                  %button.js-subscribe-button.js-group-level.label-subscribe-button.gl-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }
                     %span= _('Subscribe at group level')
         - else
           %button.gl-button.js-subscribe-button.label-subscribe-button.btn.btn-default.gl-ml-3{ data: { status: status, url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }

@@ -67,7 +67,7 @@
         - if member.can_resend_invite?
           = link_to sprite_icon('paper-airplane'), polymorphic_path([:resend_invite, member]),
                     method: :post,
-                    class: 'btn btn-default align-self-center mr-sm-2',
+                    class: 'gl-button btn btn-default align-self-center mr-sm-2',
                     title: _('Resend invite')
 
         - if user != current_user && member.can_update?

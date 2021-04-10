@@ -5,10 +5,10 @@
         %span.js-clone-dropdown-label
           = enabled_protocol_button(container, enabled_protocol)
     - else
-      %a#clone-dropdown.input-group-text.btn.gl-button.btn-default.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
+      %a#clone-dropdown.input-group-text.gl-button.btn.btn-default.btn-icon.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
         %span.js-clone-dropdown-label
           = default_clone_protocol.upcase
-        = sprite_icon('chevron-down')
+        = sprite_icon('chevron-down', css_class: 'gl-icon')
       %ul.dropdown-menu.dropdown-menu-selectable.clone-options-dropdown
         %li
           = ssh_clone_button(container)

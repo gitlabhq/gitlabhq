@@ -11,7 +11,7 @@
   %li.divider
   - if can?(current_user, :update_user_status, current_user)
     %li
-      %button.btn.menu-item.js-set-status-modal-trigger{ type: 'button' }
+      %button.gl-button.btn.btn-link.menu-item.js-set-status-modal-trigger{ type: 'button' }
         - if show_status_emoji?(current_user.status) || user_status_set_to_busy?(current_user.status)
           = s_('SetStatusModal|Edit status')
         - else

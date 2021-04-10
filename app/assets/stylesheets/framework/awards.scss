@@ -122,12 +122,8 @@
   }
 }
 
-.award-control {
+.gl-button.btn.award-control {
   margin: 4px 8px 4px 0;
-  outline: 0;
-  position: relative;
-  display: block;
-  float: left;
 
   &.disabled {
     cursor: default;
@@ -145,15 +141,6 @@
   &:hover,
   &:active,
   &.is-active {
-    background-color: $blue-50;
-    border-color: $blue-200;
-    box-shadow: none;
-    outline: 0;
-
-    .award-control-icon svg {
-      fill: $blue-500;
-    }
-
     .award-control-icon-neutral {
       opacity: 0;
     }
@@ -162,6 +149,14 @@
       opacity: 1;
       transform: scale(1.15);
     }
+  }
+
+  &.active,
+  &.is-active,
+  &:active {
+    background-color: $blue-50;
+    border-color: $blue-200;
+    box-shadow: inset 0 0 2px $blue-200;
   }
 
   &.is-active {
@@ -192,10 +187,6 @@
     &:focus {
       outline: 0;
     }
-
-    .award-control-icon {
-      margin: 0;
-    }
   }
 
   &.is-loading {
@@ -213,9 +204,7 @@
   gl-emoji,
   .award-control-icon {
     vertical-align: middle;
-    margin-right: 0.15em;
-    font-size: 1.5em;
-    line-height: 1;
+    line-height: 0.5em;
   }
 
   .award-control-icon-loading {
@@ -224,11 +213,8 @@
 
   .award-control-icon {
     color: $border-gray-normal;
-    margin-top: 1px;
-    padding: 0 2px;
 
     svg {
-      margin-bottom: 3px;
       height: $default-icon-size;
       width: $default-icon-size;
       border-radius: 50%;
@@ -239,10 +225,8 @@
   .award-control-icon-positive,
   .award-control-icon-super-positive {
     @include transition(opacity, transform);
-    position: absolute;
-    left: 10px;
-    bottom: 6px;
     opacity: 0;
+    position: absolute;
 
     path {
       fill: $award-emoji-positive-add-lines;

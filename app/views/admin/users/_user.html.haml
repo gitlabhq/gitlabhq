@@ -39,18 +39,18 @@
                     = link_to s_('AdminUsers|Approve'), approve_admin_user_path(user), method: :put
                     = link_to s_('AdminUsers|Reject'), reject_admin_user_path(user), method: :delete
                   - else
-                    %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_unblock_data(user) }
+                    %button.gl-button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_unblock_data(user) }
                       = s_('AdminUsers|Unblock')
                 - else
-                  %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_block_data(user, user_block_effects) }
+                  %button.gl-button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_block_data(user, user_block_effects) }
                     = s_('AdminUsers|Block')
               - if user.can_be_deactivated?
                 %li
-                  %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_deactivation_data(user, user_deactivation_effects) }
+                  %button.gl-button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_deactivation_data(user, user_deactivation_effects) }
                     = s_('AdminUsers|Deactivate')
               - elsif user.deactivated?
                 %li
-                  %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_activation_data(user) }
+                  %button.gl-button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_activation_data(user) }
                     = s_('AdminUsers|Activate')
               - if user.access_locked?
                 %li
@@ -59,13 +59,13 @@
               %li.divider
               - if user.can_be_removed?
                 %li
-                  %button.js-delete-user-modal-button.btn.btn-default-tertiary.text-danger{ data: { 'gl-modal-action': 'delete',
+                  %button.js-delete-user-modal-button.gl-button.btn.btn-danger-tertiary{ data: { 'gl-modal-action': 'delete',
                     delete_user_url: admin_user_path(user),
                     block_user_url: block_admin_user_path(user),
                     username: sanitize_name(user.name) } }
                     = s_('AdminUsers|Delete user')
                 %li
-                  %button.js-delete-user-modal-button.btn.btn-default-tertiary.text-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
+                  %button.js-delete-user-modal-button.gl-button.btn.btn-danger-tertiary{ data: { 'gl-modal-action': 'delete-with-contributions',
                     delete_user_url: admin_user_path(user, hard_delete: true),
                     block_user_url: block_admin_user_path(user),
                     username: sanitize_name(user.name) } }

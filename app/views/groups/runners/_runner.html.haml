@@ -67,21 +67,21 @@
   .table-section.table-button-footer.section-10
     .btn-group.table-action-buttons
       .btn-group
-        = link_to edit_group_runner_path(@group, runner), class: 'btn btn-default has-tooltip', title: _('Edit'), ref: 'tooltip', aria: { label: _('Edit') }, data: { placement: 'top', container: 'body'} do
-          = sprite_icon('pencil')
+        = link_to edit_group_runner_path(@group, runner), class: 'gl-button btn btn-default btn-icon has-tooltip', title: _('Edit'), ref: 'tooltip', aria: { label: _('Edit') }, data: { placement: 'top', container: 'body'} do
+          = sprite_icon('pencil', css_class: 'gl-icon')
       .btn-group
         - if runner.active?
-          = link_to pause_group_runner_path(@group, runner), method: :post, class: 'btn btn-default has-tooltip', title: _('Pause'), ref: 'tooltip', aria: { label: _('Pause') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
-            = sprite_icon('pause')
+          = link_to pause_group_runner_path(@group, runner), method: :post, class: 'gl-button btn btn-default btn-icon has-tooltip', title: _('Pause'), ref: 'tooltip', aria: { label: _('Pause') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
+            = sprite_icon('pause', css_class: 'gl-icon')
         - else
-          = link_to resume_group_runner_path(@group, runner), method: :post, class: 'btn btn-default has-tooltip', title: _('Resume'), ref: 'tooltip', aria: { label: _('Resume') }, data: { placement: 'top', container: 'body'} do
-            = sprite_icon('play')
+          = link_to resume_group_runner_path(@group, runner), method: :post, class: 'gl-button btn btn-default btn-icon has-tooltip', title: _('Resume'), ref: 'tooltip', aria: { label: _('Resume') }, data: { placement: 'top', container: 'body'} do
+            = sprite_icon('play', css_class: 'gl-icon')
       - if runner.belongs_to_more_than_one_project?
         - delete_runner_tooltip = _('Multi-project Runners cannot be removed')
         .btn-group.has-tooltip{ data: { container: 'body', placement: 'top' }, title: delete_runner_tooltip }
-          .btn.btn-danger{ 'aria-label' => delete_runner_tooltip, disabled: 'disabled' }
-            = sprite_icon('close')
+          .gl-button.btn.btn-danger.btn-icon{ 'aria-label' => delete_runner_tooltip, disabled: 'disabled' }
+            = sprite_icon('close', css_class: 'gl-icon')
       - else
         .btn-group
-          = link_to group_runner_path(@group, runner), method: :delete, class: 'btn btn-danger has-tooltip', title: _('Remove'), ref: 'tooltip', aria: { label: _('Remove') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
-            = sprite_icon('close')
+          = link_to group_runner_path(@group, runner), method: :delete, class: 'gl-button btn btn-danger btn-icon has-tooltip', title: _('Remove'), ref: 'tooltip', aria: { label: _('Remove') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
+            = sprite_icon('close', css_class: 'gl-icon')

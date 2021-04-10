@@ -27,13 +27,13 @@
         data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "gl-button btn btn-sm btn-danger"
   %td
     - if spam_log.submitted_as_ham?
-      .btn.btn-sm.disabled
+      .gl-button.btn.btn-default.btn-sm.disabled.gl-mb-3
         Submitted as ham
     - else
-      = link_to 'Submit as ham', mark_as_ham_admin_spam_log_path(spam_log), method: :post, class: 'gl-button btn btn-sm btn-warning'
+      = link_to 'Submit as ham', mark_as_ham_admin_spam_log_path(spam_log), method: :post, class: 'gl-button btn btn-default btn-sm gl-mb-3'
     - if user && !user.blocked?
-      = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "gl-button btn btn-sm"
+      = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "gl-button btn btn-default btn-sm gl-mb-3"
     - else
-      .btn.btn-sm.disabled
+      .gl-button.btn.btn-default.btn-sm.disabled.gl-mb-3
         Already blocked
-    = link_to 'Remove log', [:admin, spam_log], remote: true, method: :delete, class: "gl-button btn btn-sm btn-close js-remove-tr"
+    = link_to 'Remove log', [:admin, spam_log], remote: true, method: :delete, class: "gl-button btn btn-default btn-sm btn-close js-remove-tr"

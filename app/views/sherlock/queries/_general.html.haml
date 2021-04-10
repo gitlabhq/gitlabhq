@@ -26,7 +26,7 @@
   .card
     .card-header
       .float-right
-        %button.js-clipboard-trigger.btn.btn-sm{ title: t('sherlock.copy_to_clipboard'), type: :button }
+        %button.js-clipboard-trigger.gl-button.btn.btn-default.btn-sm{ title: t('sherlock.copy_to_clipboard'), type: :button }
           = sprite_icon('copy-to-clipboard')
         %pre.hidden
           = @query.formatted_query
@@ -41,7 +41,7 @@
   .card
     .card-header
       .float-right
-        %button.js-clipboard-trigger.btn.btn-sm{ title: t('sherlock.copy_to_clipboard'), type: :button }
+        %button.js-clipboard-trigger.gl-button.btn.btn-default.btn-sm{ title: t('sherlock.copy_to_clipboard'), type: :button }
           = sprite_icon('copy-to-clipboard')
         %pre.hidden
           = @query.explain

@@ -11,7 +11,7 @@
           = html_escape(_('%{label_name} %{span_open}will be permanently deleted from %{subject_name}. This cannot be undone.%{span_close}')) % { label_name: tag.strong(label.name), subject_name: label.subject_name, span_open: '<span>'.html_safe, span_close: '</span>'.html_safe }
 
       .modal-footer
-        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn gl-button btn-default' }= _('Cancel')
+        %a{ href: '#', data: { dismiss: 'modal' }, class: 'gl-button btn btn-default' }= _('Cancel')
 
         = link_to _('Delete label'),
           label.destroy_path,

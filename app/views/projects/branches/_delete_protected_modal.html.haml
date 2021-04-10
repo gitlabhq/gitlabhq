@@ -34,7 +34,7 @@
         = text_field_tag 'delete_branch_input', '', class: 'form-control js-delete-branch-input'
 
       .modal-footer
-        %button.btn{ data: { dismiss: 'modal' } } Cancel
+        %button.gl-button.btn.btn-default{ data: { dismiss: 'modal' } } Cancel
         = link_to s_('Branches|Delete protected branch'), '',
           class: "gl-button btn btn-danger js-delete-branch",
           title: s_('Branches|Delete branch'),

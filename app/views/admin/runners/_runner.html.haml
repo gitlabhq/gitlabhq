@@ -65,15 +65,15 @@
   .table-section.table-button-footer.section-10
     .btn-group.table-action-buttons
       .btn-group
-        = link_to admin_runner_path(runner), class: 'gl-button btn btn-default has-tooltip', title: _('Edit'), ref: 'tooltip', aria: { label: _('Edit') }, data: { placement: 'top', container: 'body'} do
-          = sprite_icon('pencil')
+        = link_to admin_runner_path(runner), class: 'gl-button btn btn-default btn-icon has-tooltip', title: _('Edit'), ref: 'tooltip', aria: { label: _('Edit') }, data: { placement: 'top', container: 'body'} do
+          = sprite_icon('pencil', css_class: 'gl-icon')
       .btn-group
         - if runner.active?
-          = link_to [:pause, :admin, runner], method: :post, class: 'gl-button btn btn-default btn-svg has-tooltip', title: _('Pause'), ref: 'tooltip', aria: { label: _('Pause') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
-            = sprite_icon('pause')
+          = link_to [:pause, :admin, runner], method: :post, class: 'gl-button btn btn-default btn-icon has-tooltip', title: _('Pause'), ref: 'tooltip', aria: { label: _('Pause') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
+            = sprite_icon('pause', css_class: 'gl-icon')
         - else
-          = link_to [:resume, :admin, runner], method: :post, class: 'gl-button btn btn-default btn-svg has-tooltip gl-px-3', title: _('Resume'), ref: 'tooltip', aria: { label: _('Resume') }, data: { placement: 'top', container: 'body'} do
-            = sprite_icon('play')
+          = link_to [:resume, :admin, runner], method: :post, class: 'gl-button btn btn-default btn-icon has-tooltip gl-px-3', title: _('Resume'), ref: 'tooltip', aria: { label: _('Resume') }, data: { placement: 'top', container: 'body'} do
+            = sprite_icon('play', css_class: 'gl-icon')
       .btn-group
-        = link_to [:admin, runner], method: :delete, class: 'gl-button btn btn-danger has-tooltip', title: _('Remove'), ref: 'tooltip', aria: { label: _('Remove') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
-          = sprite_icon('close')
+        = link_to [:admin, runner], method: :delete, class: 'gl-button btn btn-danger btn-icon has-tooltip', title: _('Remove'), ref: 'tooltip', aria: { label: _('Remove') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
+          = sprite_icon('close', css_class: 'gl-icon')

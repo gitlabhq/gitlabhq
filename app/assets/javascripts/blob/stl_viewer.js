@@ -9,8 +9,8 @@ export default () => {
 
       e.preventDefault();
 
-      document.querySelector('.js-material-changer.active').classList.remove('active');
-      target.classList.add('active');
+      document.querySelector('.js-material-changer.selected').classList.remove('selected');
+      target.classList.add('selected');
       target.blur();
 
       viewer.changeObjectMaterials(target.dataset.type);

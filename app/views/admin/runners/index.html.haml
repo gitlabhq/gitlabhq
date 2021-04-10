@@ -50,7 +50,7 @@
         .filtered-search-box
           = dropdown_tag(_('Recent searches'),
             options: { wrapper_class: 'filtered-search-history-dropdown-wrapper',
-            toggle_class: 'btn filtered-search-history-dropdown-toggle-button',
+            toggle_class: 'gl-button btn btn-default filtered-search-history-dropdown-toggle-button',
             dropdown_class: 'filtered-search-history-dropdown',
             content_class: 'filtered-search-history-dropdown-content' }) do
             .js-filtered-search-history-dropdown{ data: { full_path: admin_runners_path } }
@@ -72,7 +72,7 @@
             #js-dropdown-operator.filtered-search-input-dropdown-menu.dropdown-menu
               %ul.filter-dropdown{ data: { dropdown: true, dynamic: true } }
                 %li.filter-dropdown-item{ data: { value: "{{ title }}" } }
-                  %button.btn.btn-link{ type: 'button' }
+                  %button.gl-button.btn.btn-link{ type: 'button' }
                     {{ title }}
                     %span.btn-helptext
                       {{ help }}
@@ -100,12 +100,12 @@
           #js-dropdown-runner-tag.filtered-search-input-dropdown-menu.dropdown-menu
             %ul{ data: { dropdown: true } }
               %li.filter-dropdown-item{ data: { value: 'none' } }
-                %button.btn.btn-link
+                %button.gl-button.btn.btn-link
                   = _('No Tag')
               %li.divider.droplab-item-ignore
             %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
               %li.filter-dropdown-item
-                %button.btn.btn-link.js-data-value
+                %button.gl-button.btn.btn-link.js-data-value
                   %span.dropdown-light-content
                     {{name}}
 

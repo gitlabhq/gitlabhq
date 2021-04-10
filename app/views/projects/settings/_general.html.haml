@@ -37,6 +37,6 @@
     = render 'shared/choose_avatar_button', f: f
     - if @project.avatar?
       %hr
-      = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'btn btn-link'
+      = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'gl-button btn btn-danger-secondary'
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm gl-mt-6", data: { qa_selector: 'save_naming_topics_avatar_button' }

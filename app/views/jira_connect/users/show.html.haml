@@ -5,7 +5,7 @@
   %p= s_('Integrations|You can now close this window and return to the GitLab for Jira application.')
 
   - if @jira_app_link
-    %p= external_link s_('Integrations|Return to GitLab for Jira'), @jira_app_link, class: 'btn btn-success'
+    %p= external_link s_('Integrations|Return to GitLab for Jira'), @jira_app_link, class: 'gl-button btn btn-confirm'
 
   %p= link_to _('Sign out'), destroy_user_session_path, method: :post
 

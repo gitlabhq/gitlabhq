@@ -11,12 +11,12 @@
   .form-group.row
     .col-md-9
       = f.label :cron_timezone, _('Cron Timezone'), class: 'label-bold'
-      = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'btn js-timezone-dropdown w-100', dropdown_class: 'w-100', title: _("Select a timezone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
+      = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'gl-button btn btn-default js-timezone-dropdown w-100', dropdown_class: 'w-100', title: _("Select a timezone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
       = f.text_field :cron_timezone, value: @schedule.cron_timezone, id: 'schedule_cron_timezone', class: 'hidden', name: 'schedule[cron_timezone]', required: true
   .form-group.row
     .col-md-9
       = f.label :ref, _('Target Branch'), class: 'label-bold'
-      = dropdown_tag(_("Select target branch"), options: { toggle_class: 'btn js-target-branch-dropdown w-100', dropdown_class: 'git-revision-dropdown w-100', title: _("Select target branch"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: @project.repository.branch_names, default_branch: @project.default_branch } } )
+      = dropdown_tag(_("Select target branch"), options: { toggle_class: 'gl-button btn btn-default js-target-branch-dropdown w-100', dropdown_class: 'git-revision-dropdown w-100', title: _("Select target branch"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: @project.repository.branch_names, default_branch: @project.default_branch } } )
       = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
   .form-group.row.js-ci-variable-list-section
     .col-md-9
@@ -27,7 +27,7 @@
           = render 'ci/variables/variable_row', form_field: 'schedule', variable: variable, only_key_value: true
         = render 'ci/variables/variable_row', form_field: 'schedule', only_key_value: true
       - if @schedule.variables.size > 0
-        %button.btn.btn-info.btn-inverted.gl-mt-3.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@schedule.variables.size == 0}" } }
+        %button.gl-button.btn.btn-confirm-secondary.gl-mt-3.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@schedule.variables.size == 0}" } }
           - if @schedule.variables.size == 0
             = n_('Hide value', 'Hide values', @schedule.variables.size)
           - else
