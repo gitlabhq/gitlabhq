@@ -164,7 +164,7 @@ RSpec.describe Featurable do
   end
 
   def update_all_project_features(project, features, value)
-    project_feature_attributes = features.map { |f| ["#{f}_access_level", value] }.to_h
+    project_feature_attributes = features.to_h { |f| ["#{f}_access_level", value] }
     project.project_feature.update!(project_feature_attributes)
   end
 end

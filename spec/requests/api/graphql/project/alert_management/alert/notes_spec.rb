@@ -38,7 +38,7 @@ RSpec.describe 'getting Alert Management Alert Notes' do
   end
 
   let(:alerts_result) { graphql_data.dig('project', 'alertManagementAlerts', 'nodes') }
-  let(:notes_result) { alerts_result.map { |alert| [alert['iid'], alert['notes']['nodes']] }.to_h }
+  let(:notes_result) { alerts_result.to_h { |alert| [alert['iid'], alert['notes']['nodes']] } }
   let(:first_notes_result) { notes_result[first_alert.iid.to_s] }
   let(:second_notes_result) { notes_result[second_alert.iid.to_s] }
 

@@ -43,6 +43,33 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
         subject
       end
     end
+
+    context 'with hook environment' do
+      let(:git_env) do
+        {
+          'GIT_OBJECT_DIRECTORY_RELATIVE' => '.git/objects',
+          'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['/dir/one', '/dir/two']
+        }
+      end
+
+      let(:expected_params) do
+        expected_repository = repository.gitaly_repository
+        expected_repository.git_alternate_object_directories = Google::Protobuf::RepeatedField.new(:string)
+
+        { limit: limit, repository: expected_repository }
+      end
+
+      it 'sends a list_all_lfs_pointers message' do
+        allow(Gitlab::Git::HookEnv).to receive(:all).with(repository.gl_repository).and_return(git_env)
+
+        expect_any_instance_of(Gitaly::BlobService::Stub)
+          .to receive(:list_all_lfs_pointers)
+          .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+          .and_return([])
+
+        subject
+      end
+    end
   end
 
   describe '#get_all_lfs_pointers' do

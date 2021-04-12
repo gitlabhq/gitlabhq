@@ -762,6 +762,21 @@ end
 Gitlab::CurrentSettings.current_application_settings.runners_registration_token
 ```
 
+### Run pipeline schedules manually
+
+You can run pipeline schedules manually through the Rails console to reveal any errors that are usually not visible.
+
+```ruby
+# schedule_id can be obtained from Edit Pipeline Schedule page
+schedule = Ci::PipelineSchedule.find_by(id: <schedule_id>)
+
+# Select the user that you want to run the schedule for
+user = User.find_by_username('<username>')
+
+# Run the schedule
+ps = Ci::CreatePipelineService.new(schedule.project, user, ref: schedule.ref).execute!(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
+```
+
 ## License
 
 ### See current license information

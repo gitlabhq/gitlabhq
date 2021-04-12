@@ -7,6 +7,7 @@ RSpec.describe MergeRequests::CreatePipelineService do
 
   let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:service) { described_class.new(project, actor, params) }
   let(:actor) { user }
   let(:params) { {} }
@@ -50,6 +51,7 @@ RSpec.describe MergeRequests::CreatePipelineService do
 
     context 'with fork merge request' do
       let_it_be(:forked_project) { fork_project(project, nil, repository: true, target_project: create(:project, :private, :repository)) }
+
       let(:source_project) { forked_project }
 
       context 'when actor has permission to create pipelines in target project' do

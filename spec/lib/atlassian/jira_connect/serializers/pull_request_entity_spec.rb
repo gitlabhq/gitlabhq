@@ -14,7 +14,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::PullRequestEntity do
   end
 
   context 'with user_notes_count option' do
-    let(:user_notes_count) { merge_requests.map { |merge_request| [merge_request.id, 1] }.to_h }
+    let(:user_notes_count) { merge_requests.to_h { |merge_request| [merge_request.id, 1] } }
 
     subject { described_class.represent(merge_requests, user_notes_count: user_notes_count).as_json }
 

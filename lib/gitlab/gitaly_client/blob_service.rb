@@ -78,17 +78,7 @@ module Gitlab
       end
 
       def get_new_lfs_pointers(revision, limit, not_in, dynamic_timeout = nil)
-        request = Gitaly::GetNewLFSPointersRequest.new(
-          repository: @gitaly_repo,
-          revision: encode_binary(revision),
-          limit: limit || 0
-        )
-
-        if not_in.nil? || not_in == :all
-          request.not_in_all = true
-        else
-          request.not_in_refs += not_in
-        end
+        request, rpc = create_new_lfs_pointers_request(revision, limit, not_in)
 
         timeout =
           if dynamic_timeout
@@ -100,7 +90,7 @@ module Gitlab
         response = GitalyClient.call(
           @gitaly_repo.storage_name,
           :blob_service,
-          :get_new_lfs_pointers,
+          rpc,
           request,
           timeout: timeout
         )
@@ -117,6 +107,39 @@ module Gitlab
       end
 
       private
+
+      def create_new_lfs_pointers_request(revision, limit, not_in)
+        # If the check happens for a change which is using a quarantine
+        # environment for incoming objects, then we can avoid doing the
+        # necessary graph walk to detect only new LFS pointers and instead scan
+        # through all quarantined objects.
+        git_env = ::Gitlab::Git::HookEnv.all(@gitaly_repo.gl_repository)
+        if Feature.enabled?(:lfs_integrity_inspect_quarantined_objects, @project, default_enabled: :yaml) && git_env['GIT_OBJECT_DIRECTORY_RELATIVE'].present?
+          repository = @gitaly_repo.dup
+          repository.git_alternate_object_directories = Google::Protobuf::RepeatedField.new(:string)
+
+          request = Gitaly::ListAllLFSPointersRequest.new(
+            repository: repository,
+            limit: limit || 0
+          )
+
+          [request, :list_all_lfs_pointers]
+        else
+          request = Gitaly::GetNewLFSPointersRequest.new(
+            repository: @gitaly_repo,
+            revision: encode_binary(revision),
+            limit: limit || 0
+          )
+
+          if not_in.nil? || not_in == :all
+            request.not_in_all = true
+          else
+            request.not_in_refs += not_in
+          end
+
+          [request, :get_new_lfs_pointers]
+        end
+      end
 
       def consume_blob_response(response)
         data = []

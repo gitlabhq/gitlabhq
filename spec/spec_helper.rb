@@ -15,6 +15,9 @@ Warning[:deprecated] = true unless ENV.key?('SILENCE_DEPRECATIONS')
 require './spec/deprecation_toolkit_env'
 DeprecationToolkitEnv.configure!
 
+require './spec/knapsack_env'
+KnapsackEnv.configure!
+
 require './spec/simplecov_env'
 SimpleCovEnv.start!
 
@@ -47,11 +50,6 @@ if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
   require 'rspec_profiling/rspec'
 end
 
-if ENV['CI'] && ENV['KNAPSACK_GENERATE_REPORT'] && !ENV['NO_KNAPSACK']
-  require 'knapsack'
-  Knapsack::Adapters::RSpecAdapter.bind
-end
-
 # require rainbow gem String monkeypatch, so we can test SystemChecks
 require 'rainbow/ext/string'
 Rainbow.enabled = false
@@ -81,7 +79,7 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
 
   config.use_transactional_fixtures = true
-  config.use_instantiated_fixtures  = false
+  config.use_instantiated_fixtures = false
   config.fixture_path = Rails.root
 
   config.verbose_retry = true

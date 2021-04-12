@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::MergeService do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
+
   let(:merge_request) { create(:merge_request, :simple, author: user2, assignees: [user2]) }
   let(:project) { merge_request.project }
 
