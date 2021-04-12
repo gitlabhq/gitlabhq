@@ -56,7 +56,7 @@ export default {
       type="button"
       data-toggle="dropdown"
       data-display="static"
-      class="dropdown-menu-toggle build-content gl-build-content"
+      class="dropdown-menu-toggle build-content gl-build-content gl-pipeline-job-width! gl-pr-4!"
     >
       <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
         <span class="gl-display-flex gl-align-items-center gl-min-w-0">

@@ -1,0 +1,5 @@
+---
+title: Externalise strings in spam_logs/_spam_log.html.haml
+merge_request: 58169
+author: nuwe1
+type: other

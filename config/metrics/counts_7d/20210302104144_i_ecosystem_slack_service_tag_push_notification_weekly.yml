@@ -6,7 +6,7 @@ product_stage: create
 product_group: group::ecosystem
 product_category: integrations
 value_type: number
-status: implemented
+status: data_available
 milestone: "13.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54347
 time_frame: 7d

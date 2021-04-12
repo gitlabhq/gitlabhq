@@ -11,6 +11,8 @@ time_frame: 28d
 data_source: redis_hll
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

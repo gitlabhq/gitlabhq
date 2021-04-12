@@ -348,10 +348,6 @@ Now that the database is created, let's move on to setting up Redis with ElastiC
 ElastiCache is an in-memory hosted caching solution. Redis maintains its own
 persistence and is used to store session data, temporary cache information, and background job queues for the GitLab application.
 
-WARNING:
-GitLab recommends you use ElastiCache Redis version 5.0.x, because version 6.x contains
-a bug that [prevents Sidekiq from processing jobs](https://gitlab.com/gitlab-org/gitlab/-/issues/281683).
-
 ### Create a Redis Security Group
 
 1. Navigate to the EC2 dashboard.

@@ -1,0 +1,6 @@
+---
+title: Reschedule background migration to copy projects.container_registry_enabled
+  to project_features.container_registry_access_level
+merge_request: 58360
+author:
+type: added

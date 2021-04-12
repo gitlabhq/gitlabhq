@@ -430,15 +430,15 @@ Tiers: `free`
 
 ### `counts.assignee_lists`
 
-Missing description
+Count of assignee lists created on Boards
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181100_assignee_lists.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `counts.auto_devops_disabled`
 
@@ -466,7 +466,7 @@ Tiers: `free`
 
 ### `counts.boards`
 
-Missing description
+Count of total Boards created
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181252_boards.yml)
 
@@ -474,7 +474,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.ci_builds`
 
@@ -2714,7 +2714,7 @@ Count of Projects that imported Issues from Jira
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181259_jira_imports_projects_count.yml)
 
-Group: `group::project management`
+Group: `group::ecosystem`
 
 Status: `data_available`
 
@@ -2722,11 +2722,11 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.jira_imports_total_imported_count`
 
-Count of Issues imported from Jira
+Count of Jira imports completed
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181258_jira_imports_total_imported_count.yml)
 
-Group: `group::project management`
+Group: `group::ecosystem`
 
 Status: `data_available`
 
@@ -2734,11 +2734,11 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.jira_imports_total_imported_issues_count`
 
-Count of Jira imports run
+Count of total issues imported via the Jira Importer
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181301_jira_imports_total_imported_issues_count.yml)
 
-Group: `group::project management`
+Group: `group::ecosystem`
 
 Status: `data_available`
 
@@ -2794,15 +2794,15 @@ Tiers: `premium`, `ultimate`
 
 ### `counts.label_lists`
 
-Missing description
+Count of label lists created on Boards
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181104_label_lists.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.labels`
 
@@ -2810,7 +2810,7 @@ Count of Labels
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181111_labels.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
@@ -2938,27 +2938,27 @@ Tiers: `free`
 
 ### `counts.milestone_lists`
 
-Missing description
+Count of milestone lists created on Boards
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181106_milestone_lists.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181106_milestone_lists.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `counts.milestones`
 
-Missing description
+Count of milestones created
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181108_milestones.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.navbar_searches`
 
@@ -3002,7 +3002,7 @@ Count of Notes across all objects that use them
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181113_notes.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
@@ -3718,7 +3718,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.projects`
 
-Count of Projects
+Count of Projects created
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181254_projects.yml)
 
@@ -3726,7 +3726,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.projects_asana_active`
 
@@ -5902,7 +5902,7 @@ Tiers: `free`
 
 ### `counts.todos`
 
-Count of ToDos
+Count of todos created
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181256_todos.yml)
 
@@ -5918,7 +5918,7 @@ Count of Uploads via Notes and Descriptions
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181109_uploads.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
@@ -8296,7 +8296,7 @@ Count of unique users per month who changed assignees of a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8308,7 +8308,7 @@ Count of unique users per week who changed assignees of a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8512,7 +8512,7 @@ Count of unique users per month who changed labels of a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8524,7 +8524,7 @@ Count of unique users per week who changed labels of a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8584,7 +8584,7 @@ Count of unique users per month who changed milestone of a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8596,7 +8596,7 @@ Count of unique users per week who changed milestone of a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8608,7 +8608,7 @@ Count of unique users per month who locked a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8620,7 +8620,7 @@ Count of unique users per week who locked a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8632,7 +8632,7 @@ Count of unique users per month who unlocked a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8644,7 +8644,7 @@ Count of unique users per week who unlocked a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8800,7 +8800,7 @@ Count of unique users per month who changed reviewers of a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8812,7 +8812,7 @@ Count of unique users per week who changed reviewers of a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8848,7 +8848,7 @@ Count of unique users per month who changed time estimate of a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8860,7 +8860,7 @@ Count of unique users per week who changed time estimate of a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8872,7 +8872,7 @@ Count of unique users per month who changed time spent on a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -8884,7 +8884,7 @@ Count of unique users per week who changed time spent on a MR
 
 Group: `group::code review`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9592,7 +9592,7 @@ Calculated unique users to trigger a Slack message by performing an action on a 
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9604,7 +9604,7 @@ Calculated unique users to trigger a Slack message by performing an action on a 
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9616,7 +9616,7 @@ Calculated unique users to trigger a Slack message by creating a confidential no
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9628,7 +9628,7 @@ Calculated unique users to trigger a Slack message by creating a confidential no
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9640,7 +9640,7 @@ Calculated unique users to trigger a Slack message by performing a deployment by
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9652,7 +9652,7 @@ Calculated unique users to trigger a Slack message by performing a deployment by
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9664,7 +9664,7 @@ Calculated unique users to trigger a Slack message by performing an action on an
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9676,7 +9676,7 @@ Calculated unique users to trigger a Slack message by performing an action on an
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9688,7 +9688,7 @@ Calculated unique users to trigger a Slack message by performing an action on a 
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9700,7 +9700,7 @@ Calculated unique users to trigger a Slack message by performing an action on a 
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9712,7 +9712,7 @@ Calculated unique users to trigger a Slack message by creating a note by month
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9724,7 +9724,7 @@ Calculated unique users to trigger a Slack message by creating a note by week
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9736,7 +9736,7 @@ Calculated unique users to trigger a Slack message by performing a Git push by m
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9748,7 +9748,7 @@ Calculated unique users to trigger a Slack message by performing a Git push by w
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9760,7 +9760,7 @@ Calculated unique users to trigger a Slack message by performing a tag push by m
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9772,7 +9772,7 @@ Calculated unique users to trigger a Slack message by performing a tag push by w
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9784,7 +9784,7 @@ Calculated unique users to trigger a Slack message by performing an action on a 
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9796,7 +9796,7 @@ Calculated unique users to trigger a Slack message by performing an action on a 
 
 Group: `group::ecosystem`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -9844,7 +9844,7 @@ Counts of WAU closing epics
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -9856,7 +9856,7 @@ Count of MAU creating epics
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -9868,7 +9868,7 @@ Count of WAU creating epics
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -10024,7 +10024,7 @@ Counts of MAU adding epic notes
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -10036,7 +10036,7 @@ Counts of WAU adding epic notes
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -10860,13 +10860,13 @@ Tiers:
 
 Count of MAU adding an issue to an epic
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181414_g_project_management_issue_added_to_epic_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181414_g_project_management_issue_added_to_epic_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_added_to_epic_weekly`
 
@@ -10878,43 +10878,43 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_assignee_changed_monthly`
 
 Count of MAU changing issue assignees
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181311_g_project_management_issue_assignee_changed_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181311_g_project_management_issue_assignee_changed_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_assignee_changed_weekly`
 
 Count of WAU changing issue assignees
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181310_g_project_management_issue_assignee_changed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181310_g_project_management_issue_assignee_changed_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_changed_epic_monthly`
 
 Count of MAU changing the epic on an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181420_g_project_management_issue_changed_epic_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181420_g_project_management_issue_changed_epic_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_changed_epic_weekly`
 
@@ -10926,11 +10926,11 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_cloned_monthly`
 
-Missing description
+Count of MAU cloning an issue
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181501_g_project_management_issue_cloned_monthly.yml)
 
@@ -10938,19 +10938,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_cloned_weekly`
 
-Missing description
+Count of WAU cloning an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181459_g_project_management_issue_cloned_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181459_g_project_management_issue_cloned_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_closed_monthly`
 
@@ -10962,19 +10962,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_closed_weekly`
 
 Count of WAU closing an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181324_g_project_management_issue_closed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181324_g_project_management_issue_closed_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_comment_added_monthly`
 
@@ -10986,19 +10986,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_comment_added_weekly`
 
 Count of WAU commenting on an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181444_g_project_management_issue_comment_added_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181444_g_project_management_issue_comment_added_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_monthly`
 
@@ -11010,19 +11010,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_weekly`
 
 Count of WAU editing a comment on an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181448_g_project_management_issue_comment_edited_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181448_g_project_management_issue_comment_edited_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_comment_removed_monthly`
 
@@ -11034,19 +11034,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_comment_removed_weekly`
 
 Count of WAU deleting a comment from an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181451_g_project_management_issue_comment_removed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181451_g_project_management_issue_comment_removed_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_created_monthly`
 
@@ -11058,19 +11058,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_created_weekly`
 
 Count of WAU creating issues
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181321_g_project_management_issue_created_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181321_g_project_management_issue_created_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_cross_referenced_monthly`
 
@@ -11082,19 +11082,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_cross_referenced_weekly`
 
-Count of WAU referncing an issue from somewhere else
+Count of WAU referencing an issue from somewhere else
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181347_g_project_management_issue_cross_referenced_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181347_g_project_management_issue_cross_referenced_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_description_changed_monthly`
 
@@ -11106,19 +11106,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_description_changed_weekly`
 
 Count of WAU editing an issue description
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181306_g_project_management_issue_description_changed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181306_g_project_management_issue_description_changed_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_designs_added_monthly`
 
@@ -11130,19 +11130,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_designs_added_weekly`
 
 Count of WAU adding a design to an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181422_g_project_management_issue_designs_added_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181422_g_project_management_issue_designs_added_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_monthly`
 
@@ -11154,19 +11154,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_designs_modified_weekly`
 
 Count of WAU modifying a design on an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181425_g_project_management_issue_designs_modified_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181425_g_project_management_issue_designs_modified_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_monthly`
 
@@ -11178,19 +11178,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_designs_removed_weekly`
 
 Count of WAU removing a design from an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181429_g_project_management_issue_designs_removed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181429_g_project_management_issue_designs_removed_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_due_date_changed_monthly`
 
@@ -11202,31 +11202,31 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_due_date_changed_weekly`
 
 Count of WAU changing an issue due date
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181433_g_project_management_issue_due_date_changed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181433_g_project_management_issue_due_date_changed_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_health_status_changed_monthly`
 
 Count of MAU changing the health status on an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181457_g_project_management_issue_health_status_changed_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181457_g_project_management_issue_health_status_changed_monthly.yml)
 
-Group: `group::project management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_health_status_changed_weekly`
 
@@ -11234,23 +11234,23 @@ Count of WAU changing the health status on an issue
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181455_g_project_management_issue_health_status_changed_weekly.yml)
 
-Group: `group::project management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_iteration_changed_monthly`
 
 Count of MAU changing an issue's iteration
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181341_g_project_management_issue_iteration_changed_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181341_g_project_management_issue_iteration_changed_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_iteration_changed_weekly`
 
@@ -11262,7 +11262,7 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_label_changed_monthly`
 
@@ -11274,19 +11274,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_label_changed_weekly`
 
 Count of WAU changing an issue's label
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181332_g_project_management_issue_label_changed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181332_g_project_management_issue_label_changed_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_locked_monthly`
 
@@ -11298,19 +11298,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_locked_weekly`
 
 Count of WAU locking an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181405_g_project_management_issue_locked_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181405_g_project_management_issue_locked_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_made_confidential_monthly`
 
@@ -11322,19 +11322,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_made_confidential_weekly`
 
 Count of WAU making an issue confidential
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181313_g_project_management_issue_made_confidential_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181313_g_project_management_issue_made_confidential_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_made_visible_monthly`
 
@@ -11346,19 +11346,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_made_visible_weekly`
 
 Count of WAU making an issue not confidential
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181317_g_project_management_issue_made_visible_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181317_g_project_management_issue_made_visible_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_marked_as_duplicate_monthly`
 
@@ -11370,19 +11370,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_marked_as_duplicate_weekly`
 
 Count of WAU marking an issue as a duplicate
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181401_g_project_management_issue_marked_as_duplicate_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181401_g_project_management_issue_marked_as_duplicate_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_milestone_changed_monthly`
 
@@ -11394,19 +11394,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_milestone_changed_weekly`
 
 Count of WAU changing an issue's milestone
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181336_g_project_management_issue_milestone_changed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181336_g_project_management_issue_milestone_changed_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_moved_monthly`
 
@@ -11418,19 +11418,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_moved_weekly`
 
 Count of WAU moving an issue to another project
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181350_g_project_management_issue_moved_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181350_g_project_management_issue_moved_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_related_monthly`
 
@@ -11442,31 +11442,31 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_related_weekly`
 
 Count of WAU relating an issue to another issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181354_g_project_management_issue_related_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181354_g_project_management_issue_related_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_removed_from_epic_monthly`
 
 Count of MAU removing an issue from an epic
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181416_g_project_management_issue_removed_from_epic_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181416_g_project_management_issue_removed_from_epic_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_removed_from_epic_weekly`
 
@@ -11490,19 +11490,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_reopened_weekly`
 
 Count of WAU re-opening a closed issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181328_g_project_management_issue_reopened_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181328_g_project_management_issue_reopened_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_time_estimate_changed_monthly`
 
@@ -11514,19 +11514,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_time_estimate_changed_weekly`
 
 Count of WAU changing an issue time estimate
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181437_g_project_management_issue_time_estimate_changed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181437_g_project_management_issue_time_estimate_changed_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_time_spent_changed_monthly`
 
@@ -11538,19 +11538,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_time_spent_changed_weekly`
 
 Count of WAU recording time spent on an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181440_g_project_management_issue_time_spent_changed_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181440_g_project_management_issue_time_spent_changed_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_title_changed_monthly`
 
@@ -11562,11 +11562,11 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly`
 
-Distinct users count that changed issue title in a group for last recent week
+Count of WAU editing an issue title
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210201124931_g_project_management_issue_title_changed_weekly.yml)
 
@@ -11578,7 +11578,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_unlocked_monthly`
 
-Count of MAU marking an issue as blocked or blocked by
+Count of MAU unlocking an issue
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181411_g_project_management_issue_unlocked_monthly.yml)
 
@@ -11586,19 +11586,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_unlocked_weekly`
 
-Count of WAU marking an issue as blocked or blocked by
+Count of WAU unlocking an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181409_g_project_management_issue_unlocked_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181409_g_project_management_issue_unlocked_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_unrelated_monthly`
 
@@ -11610,31 +11610,31 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_unrelated_weekly`
 
 Count of WAU unrelating an issue to another issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181358_g_project_management_issue_unrelated_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181358_g_project_management_issue_unrelated_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_weight_changed_monthly`
 
 Count of MAU changing an issue's weight
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181345_g_project_management_issue_weight_changed_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181345_g_project_management_issue_weight_changed_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_weight_changed_weekly`
 
@@ -11646,11 +11646,11 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly`
 
-Count of MAU taking an action related to an issue
+Aggregate count of MAU taking an action related to an issue
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181504_issues_edit_total_unique_counts_monthly.yml)
 
@@ -11658,19 +11658,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly`
 
-Count of WAU taking an action related to an issue
+Aggregate count of WAU taking an action related to an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181503_issues_edit_total_unique_counts_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181503_issues_edit_total_unique_counts_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_monthly`
 
@@ -11704,7 +11704,7 @@ Monthly unique user count having merge requests which contains the CI config fil
 
 Group: `group::pipeline authoring`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -11716,49 +11716,49 @@ Weekly unique user count having merge requests which contains the CI config file
 
 Group: `group::pipeline authoring`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_approve_monthly`
 
-Missing description
+Count of MAU using the `/approve` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181508_i_quickactions_approve_monthly.yml)
 
-Group: `group::project management`
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_approve_weekly`
 
-Missing description
+Count of WAU using the `/approve` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181506_i_quickactions_approve_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181506_i_quickactions_approve_weekly.yml)
 
-Group: `group::project management`
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_multiple_monthly`
 
-Missing description
+Count of MAU using the `/assign @user1 @user2` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181516_i_quickactions_assign_multiple_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181516_i_quickactions_assign_multiple_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_multiple_weekly`
 
-Missing description
+Count of WAU using the `/assign @user1 @user2` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181514_i_quickactions_assign_multiple_weekly.yml)
 
@@ -11766,35 +11766,35 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_reviewer_monthly`
 
-Missing description
+Count of MAU using the `/assign_reviewer` or `request_reviewer` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181523_i_quickactions_assign_reviewer_monthly.yml)
 
-Group: `group::project management`
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_reviewer_weekly`
 
-Missing description
+Count of WAU using the `/assign_reviewer` or `request_reviewer` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181521_i_quickactions_assign_reviewer_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181521_i_quickactions_assign_reviewer_weekly.yml)
 
-Group: `group::project management`
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_self_monthly`
 
-Missing description
+Count of MAU using the `/assign me` quick action to assign self to an issuable
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181519_i_quickactions_assign_self_monthly.yml)
 
@@ -11802,23 +11802,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_self_weekly`
 
-Missing description
+Count of WAU using the `/assign me` quick action to assign self to an issuable
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181517_i_quickactions_assign_self_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181517_i_quickactions_assign_self_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_single_monthly`
 
-Missing description
+Count of MAU using the `/assign @user1` quick action to assign a single individual to an issuable
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181512_i_quickactions_assign_single_monthly.yml)
 
@@ -11826,23 +11826,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_assign_single_weekly`
 
-Missing description
+Count of WAU using the `/assign @user1` quick action to assign a single individual to an issuable
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181510_i_quickactions_assign_single_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181510_i_quickactions_assign_single_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_award_monthly`
 
-Missing description
+Count of MAU using the `/award` quick action to set an award emoji on an issuable
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181527_i_quickactions_award_monthly.yml)
 
@@ -11850,23 +11850,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_award_weekly`
 
-Missing description
+Count of WAU using the `/award` quick action to set an award emoji on an issuable
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181525_i_quickactions_award_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181525_i_quickactions_award_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_board_move_monthly`
 
-Missing description
+Count of MAU using the `/board_move` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181530_i_quickactions_board_move_monthly.yml)
 
@@ -11874,59 +11874,59 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_board_move_weekly`
 
-Missing description
+Count of WAU using the `/board_move` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181529_i_quickactions_board_move_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181529_i_quickactions_board_move_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_child_epic_monthly`
 
-Missing description
+Count of MAU using the `/child_epic` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181534_i_quickactions_child_epic_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181534_i_quickactions_child_epic_monthly.yml)
 
-Group: `group::project management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_child_epic_weekly`
 
-Missing description
+Count of WAU using the `/child_epic` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181532_i_quickactions_child_epic_weekly.yml)
 
-Group: `group::project management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_clear_weight_monthly`
 
-Missing description
+Count of MAU using the `/clear_weight` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181538_i_quickactions_clear_weight_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181538_i_quickactions_clear_weight_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_clear_weight_weekly`
 
-Missing description
+Count of WAU using the `/clear_weight` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181536_i_quickactions_clear_weight_weekly.yml)
 
@@ -11934,11 +11934,11 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_clone_monthly`
 
-Missing description
+Count of MAU using the `/clone` quick action to clone an issue.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181541_i_quickactions_clone_monthly.yml)
 
@@ -11946,23 +11946,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_clone_weekly`
 
-Missing description
+Count of WAU using the `/clone` quick action to clone an issue.
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181540_i_quickactions_clone_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181540_i_quickactions_clone_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_close_monthly`
 
-Missing description
+Count of MAU using the `/close` quick action to close an issuable
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181545_i_quickactions_close_monthly.yml)
 
@@ -11970,23 +11970,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_close_weekly`
 
-Missing description
+Count of WAU using the `/close` quick action to close an issuable
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181543_i_quickactions_close_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181543_i_quickactions_close_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_confidential_monthly`
 
-Missing description
+Count of MAU using the `/confidential` quick action to set an issue as confidential
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181549_i_quickactions_confidential_monthly.yml)
 
@@ -11994,23 +11994,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_confidential_weekly`
 
-Missing description
+Count of WAU using the `/confidential` quick action to set an issue as confidential
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181547_i_quickactions_confidential_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181547_i_quickactions_confidential_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_copy_metadata_issue_monthly`
 
-Missing description
+Count of MAU using the `/copy_metadata` quick action on an issue
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181556_i_quickactions_copy_metadata_issue_monthly.yml)
 
@@ -12018,47 +12018,47 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_copy_metadata_issue_weekly`
 
-Missing description
+Count of WAU using the `/copy_metadata` quick action on an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181554_i_quickactions_copy_metadata_issue_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181554_i_quickactions_copy_metadata_issue_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_copy_metadata_merge_request_monthly`
 
-Missing description
+Count of MAU using the `/copy_metadata` quick action on a Merge Request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181553_i_quickactions_copy_metadata_merge_request_monthly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_copy_metadata_merge_request_weekly`
 
-Missing description
+Count of WAU using the `/copy_metadata` quick action on a Merge Request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181551_i_quickactions_copy_metadata_merge_request_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181551_i_quickactions_copy_metadata_merge_request_weekly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_create_merge_request_monthly`
 
-Missing description
+Count of MAU using the `/create_merge_request` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181600_i_quickactions_create_merge_request_monthly.yml)
 
@@ -12066,23 +12066,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_create_merge_request_weekly`
 
-Missing description
+Count of WAU using the `/create_merge_request` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181558_i_quickactions_create_merge_request_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181558_i_quickactions_create_merge_request_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_done_monthly`
 
-Missing description
+Count of MAU using the `/done` quick action to mark a todo as done
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181604_i_quickactions_done_monthly.yml)
 
@@ -12090,47 +12090,47 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_done_weekly`
 
-Missing description
+Count of WAU using the `/done` quick action to mark a todo as done
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181602_i_quickactions_done_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181602_i_quickactions_done_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_draft_monthly`
 
-Missing description
+Count of MAU using the `/draft` quick action on a Merge Request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181607_i_quickactions_draft_monthly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_draft_weekly`
 
-Missing description
+Count of WAU using the `/draft` quick action on a Merge Request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181605_i_quickactions_draft_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181605_i_quickactions_draft_weekly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_due_monthly`
 
-Missing description
+Count of MAU using the `/due` quick action to change the due date on an issuable
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181611_i_quickactions_due_monthly.yml)
 
@@ -12138,23 +12138,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_due_weekly`
 
-Missing description
+Count of WAU using the `/due` quick action to change the due date on an issuable
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181609_i_quickactions_due_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181609_i_quickactions_due_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_duplicate_monthly`
 
-Missing description
+Count of MAU using the `/duplicate` quick action to mark an issue as a duplicate of another
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181615_i_quickactions_duplicate_monthly.yml)
 
@@ -12162,35 +12162,35 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_duplicate_weekly`
 
-Missing description
+Count of WAU using the `/duplicate` quick action to mark an issue as a duplicate of another
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181613_i_quickactions_duplicate_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181613_i_quickactions_duplicate_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_epic_monthly`
 
-Missing description
+Count of MAU using the `/epic` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181618_i_quickactions_epic_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181618_i_quickactions_epic_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_epic_weekly`
 
-Missing description
+Count of WAU using the `/epic` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181617_i_quickactions_epic_weekly.yml)
 
@@ -12198,11 +12198,11 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_estimate_monthly`
 
-Missing description
+Count of MAU using the `/estimate` quick action to set a time estimate on an issue
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181622_i_quickactions_estimate_monthly.yml)
 
@@ -12210,19 +12210,19 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_estimate_weekly`
 
-Missing description
+Count of WAU using the `/estimate` quick action to set a time estimate on an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181620_i_quickactions_estimate_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181620_i_quickactions_estimate_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_invite_email_multiple_monthly`
 
@@ -12232,7 +12232,7 @@ Unique users using the /invite_email quick action to add a multiple email partic
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -12256,7 +12256,7 @@ Unique users using the /invite_email quick action to add a single email particip
 
 Group: `group::product planning`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -12274,19 +12274,19 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_iteration_monthly`
 
-Missing description
+Count of MAU using the `/iteration` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181626_i_quickactions_iteration_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181626_i_quickactions_iteration_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_iteration_weekly`
 
-Missing description
+Count of WAU using the `/iteration` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181624_i_quickactions_iteration_weekly.yml)
 
@@ -12294,11 +12294,11 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_label_monthly`
 
-Missing description
+Count of MAU using the `/label` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181629_i_quickactions_label_monthly.yml)
 
@@ -12306,23 +12306,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_label_weekly`
 
-Missing description
+Count of WAU using the `/label` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181628_i_quickactions_label_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181628_i_quickactions_label_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_lock_monthly`
 
-Missing description
+Count of MAU using the `/lock` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181633_i_quickactions_lock_monthly.yml)
 
@@ -12330,47 +12330,47 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_lock_weekly`
 
-Missing description
+Count of WAU using the `/lock` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181631_i_quickactions_lock_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181631_i_quickactions_lock_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_merge_monthly`
 
-Missing description
+Count of MAU using the `/merge` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181637_i_quickactions_merge_monthly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_merge_weekly`
 
-Missing description
+Count of WAU using the `/merge` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181635_i_quickactions_merge_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181635_i_quickactions_merge_weekly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_milestone_monthly`
 
-Missing description
+Count of MAU using the `/milestone` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181641_i_quickactions_milestone_monthly.yml)
 
@@ -12378,23 +12378,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_milestone_weekly`
 
-Missing description
+Count of WAU using the `/milestone` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181639_i_quickactions_milestone_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181639_i_quickactions_milestone_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_move_monthly`
 
-Missing description
+Count of MAU using the `/move` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181644_i_quickactions_move_monthly.yml)
 
@@ -12402,59 +12402,59 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_move_weekly`
 
-Missing description
+Count of WAU using the `/move` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181642_i_quickactions_move_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181642_i_quickactions_move_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_parent_epic_monthly`
 
-Missing description
+Count of MAU using the `/parent_epic` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181648_i_quickactions_parent_epic_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181648_i_quickactions_parent_epic_monthly.yml)
 
-Group: `group::project management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_parent_epic_weekly`
 
-Missing description
+Count of WAU using the `/parent_epic` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181646_i_quickactions_parent_epic_weekly.yml)
 
-Group: `group::project management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_promote_monthly`
 
-Missing description
+Count of MAU using the `/promote` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181652_i_quickactions_promote_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181652_i_quickactions_promote_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_promote_weekly`
 
-Missing description
+Count of WAU using the `/promote` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181650_i_quickactions_promote_weekly.yml)
 
@@ -12462,35 +12462,35 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_publish_monthly`
 
-Missing description
+Count of MAU using the `/publish` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181655_i_quickactions_publish_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181655_i_quickactions_publish_monthly.yml)
 
-Group: `group::project management`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_publish_weekly`
 
-Missing description
+Count of WAU using the `/publish` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181654_i_quickactions_publish_weekly.yml)
 
-Group: `group::project management`
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_reassign_monthly`
 
-Missing description
+Count of MAU using the `/reassign @user1` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181659_i_quickactions_reassign_monthly.yml)
 
@@ -12498,71 +12498,71 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_reassign_reviewer_monthly`
 
-Missing description
+Count of MAU using the `/reassign_reviewer` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181703_i_quickactions_reassign_reviewer_monthly.yml)
 
-Group: `group::project management`
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_reassign_reviewer_weekly`
 
-Missing description
+Count of WAU using the `/reassign_reviewer` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181701_i_quickactions_reassign_reviewer_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181701_i_quickactions_reassign_reviewer_weekly.yml)
 
-Group: `group::project management`
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_reassign_weekly`
 
-Missing description
+Count of WAU using the `/reassign @user1` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181657_i_quickactions_reassign_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181657_i_quickactions_reassign_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_rebase_monthly`
 
-Missing description
+Count of MAU using the `/rebase` quick action on a Merge Request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181707_i_quickactions_rebase_monthly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_rebase_weekly`
 
-Missing description
+Count of WAU using the `/rebase` quick action on a Merge Request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181705_i_quickactions_rebase_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181705_i_quickactions_rebase_weekly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_relabel_monthly`
 
-Missing description
+Count of MAU using the `/relabel` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181710_i_quickactions_relabel_monthly.yml)
 
@@ -12570,23 +12570,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_relabel_weekly`
 
-Missing description
+Count of WAU using the `/relabel` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181708_i_quickactions_relabel_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181708_i_quickactions_relabel_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_relate_monthly`
 
-Missing description
+Count of MAU using the `/relate` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181714_i_quickactions_relate_monthly.yml)
 
@@ -12594,47 +12594,47 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_relate_weekly`
 
-Missing description
+Count of WAU using the `/relate` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181712_i_quickactions_relate_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181712_i_quickactions_relate_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_child_epic_monthly`
 
-Missing description
+Count of MAU using the `/remove_child_epic` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181718_i_quickactions_remove_child_epic_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181718_i_quickactions_remove_child_epic_monthly.yml)
 
-Group: `group::project management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_child_epic_weekly`
 
-Missing description
+Count of WAU using the `/remove_child_epic` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181716_i_quickactions_remove_child_epic_weekly.yml)
 
-Group: `group::project management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_due_date_monthly`
 
-Missing description
+Count of MAU using the `/remove_due_date` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181721_i_quickactions_remove_due_date_monthly.yml)
 
@@ -12642,35 +12642,35 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_due_date_weekly`
 
-Missing description
+Count of WAU using the `/remove_due_date` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181719_i_quickactions_remove_due_date_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181719_i_quickactions_remove_due_date_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_epic_monthly`
 
-Missing description
+Count of MAU using the `/remove_epic` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181725_i_quickactions_remove_epic_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181725_i_quickactions_remove_epic_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_epic_weekly`
 
-Missing description
+Count of WAU using the `/remove_epic` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181723_i_quickactions_remove_epic_weekly.yml)
 
@@ -12678,11 +12678,11 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_estimate_monthly`
 
-Missing description
+Count of MAU using the `/remove_estimate` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181729_i_quickactions_remove_estimate_monthly.yml)
 
@@ -12690,35 +12690,35 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_estimate_weekly`
 
-Missing description
+Count of WAU using the `/remove_estimate` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181727_i_quickactions_remove_estimate_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181727_i_quickactions_remove_estimate_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_iteration_monthly`
 
-Missing description
+Count of MAU using the `/remove_iteration` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181732_i_quickactions_remove_iteration_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181732_i_quickactions_remove_iteration_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_iteration_weekly`
 
-Missing description
+Count of WAU using the `/remove_iteration` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181731_i_quickactions_remove_iteration_weekly.yml)
 
@@ -12726,11 +12726,11 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_milestone_monthly`
 
-Missing description
+Count of MAU using the `/remove_milestone` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181736_i_quickactions_remove_milestone_monthly.yml)
 
@@ -12738,47 +12738,47 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_milestone_weekly`
 
-Missing description
+Count of WAU using the `/remove_milestone` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181734_i_quickactions_remove_milestone_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181734_i_quickactions_remove_milestone_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_parent_epic_monthly`
 
-Missing description
+Count of MAU using the `/remove_parent_epic` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181740_i_quickactions_remove_parent_epic_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181740_i_quickactions_remove_parent_epic_monthly.yml)
 
-Group: `group::project management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_parent_epic_weekly`
 
-Missing description
+Count of WAU using the `/remove_parent_epic` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181738_i_quickactions_remove_parent_epic_weekly.yml)
 
-Group: `group::project management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_time_spent_monthly`
 
-Missing description
+Count of MAU using the `/remove_time_spent` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181744_i_quickactions_remove_time_spent_monthly.yml)
 
@@ -12786,23 +12786,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_time_spent_weekly`
 
-Missing description
+Count of WAU using the `/remove_time_spent` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181742_i_quickactions_remove_time_spent_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181742_i_quickactions_remove_time_spent_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_zoom_monthly`
 
-Missing description
+Count of MAU using the `/remove_zoom` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181747_i_quickactions_remove_zoom_monthly.yml)
 
@@ -12810,23 +12810,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_remove_zoom_weekly`
 
-Missing description
+Count of WAU using the `/remove_zoom` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181745_i_quickactions_remove_zoom_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181745_i_quickactions_remove_zoom_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_reopen_monthly`
 
-Missing description
+Count of MAU using the `/reopen` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181751_i_quickactions_reopen_monthly.yml)
 
@@ -12834,23 +12834,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_reopen_weekly`
 
-Missing description
+Count of WAU using the `/reopen` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181749_i_quickactions_reopen_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181749_i_quickactions_reopen_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_shrug_monthly`
 
-Missing description
+Count of MAU using the `/shrug` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181755_i_quickactions_shrug_monthly.yml)
 
@@ -12858,23 +12858,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_shrug_weekly`
 
-Missing description
+Count of WAU using the `/shrug` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181753_i_quickactions_shrug_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181753_i_quickactions_shrug_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_spend_add_monthly`
 
-Missing description
+Count of MAU using the `/spend` quick action to add time spent
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181802_i_quickactions_spend_add_monthly.yml)
 
@@ -12882,23 +12882,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_spend_add_weekly`
 
-Missing description
+Count of WAU using the `/spend` quick action to add time spent
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181800_i_quickactions_spend_add_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181800_i_quickactions_spend_add_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_spend_subtract_monthly`
 
-Missing description
+Count of MAU using the `/spend` quick action to subtract time spent
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181758_i_quickactions_spend_subtract_monthly.yml)
 
@@ -12906,47 +12906,47 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_spend_subtract_weekly`
 
-Missing description
+Count of WAU using the `/spend` quick action to subtract time spent
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181756_i_quickactions_spend_subtract_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181756_i_quickactions_spend_subtract_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_submit_review_monthly`
 
-Missing description
+Count of MAU using the `/submit_review` quick action on Merge Requests
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181806_i_quickactions_submit_review_monthly.yml)
 
-Group: `group::project management`
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_submit_review_weekly`
 
-Missing description
+Count of WAU using the `/submit_review` quick action on Merge Requests
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181804_i_quickactions_submit_review_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181804_i_quickactions_submit_review_weekly.yml)
 
-Group: `group::project management`
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_subscribe_monthly`
 
-Missing description
+Count of MAU using the `/subscribe` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181809_i_quickactions_subscribe_monthly.yml)
 
@@ -12954,23 +12954,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_subscribe_weekly`
 
-Missing description
+Count of WAU using the `/subscribe` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181808_i_quickactions_subscribe_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181808_i_quickactions_subscribe_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_tableflip_monthly`
 
-Missing description
+Count of MAU using the `/tableflip` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181813_i_quickactions_tableflip_monthly.yml)
 
@@ -12978,71 +12978,71 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_tableflip_weekly`
 
-Missing description
+Count of WAU using the `/tableflip` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181811_i_quickactions_tableflip_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181811_i_quickactions_tableflip_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_tag_monthly`
 
-Missing description
+Count of MAU using the `/tag` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181817_i_quickactions_tag_monthly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_tag_weekly`
 
-Missing description
+Count of WAU using the `/tag` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181815_i_quickactions_tag_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181815_i_quickactions_tag_weekly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_target_branch_monthly`
 
-Missing description
+Count of MAU using the `/target_branch` quick action on Merge Requests
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181821_i_quickactions_target_branch_monthly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_target_branch_weekly`
 
-Missing description
+Count of WAU using the `/target_branch` quick action on Merge Requests
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181819_i_quickactions_target_branch_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181819_i_quickactions_target_branch_weekly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_title_monthly`
 
-Missing description
+Count of MAU using the `/title` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181824_i_quickactions_title_monthly.yml)
 
@@ -13050,23 +13050,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_title_weekly`
 
-Missing description
+Count of WAU using the `/title` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181822_i_quickactions_title_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181822_i_quickactions_title_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_todo_monthly`
 
-Missing description
+Count of MAU using the `/todo` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181828_i_quickactions_todo_monthly.yml)
 
@@ -13074,95 +13074,95 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_todo_weekly`
 
-Missing description
+Count of WAU using the `/todo` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181826_i_quickactions_todo_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181826_i_quickactions_todo_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unassign_all_monthly`
 
-Missing description
+Count of MAU using the `/unassign` quick action on Merge Requests
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181835_i_quickactions_unassign_all_monthly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unassign_all_weekly`
 
-Missing description
+Count of WAU using the `/unassign` quick action on Merge Requests
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181833_i_quickactions_unassign_all_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181833_i_quickactions_unassign_all_weekly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unassign_reviewer_monthly`
 
-Missing description
+Count of MAU using the `/unassign_reviewer` or `/remove_reviewer` quick action on Merge Requests
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181839_i_quickactions_unassign_reviewer_monthly.yml)
 
-Group: `group::project management`
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unassign_reviewer_weekly`
 
-Missing description
+Count of WAU using the `/unassign_reviewer` or `/remove_reviewer` quick action on Merge Requests
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181837_i_quickactions_unassign_reviewer_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181837_i_quickactions_unassign_reviewer_weekly.yml)
 
-Group: `group::project management`
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unassign_specific_monthly`
 
-Missing description
+Count of MAU using the `/unassign @user1` quick action on Merge Requests
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181832_i_quickactions_unassign_specific_monthly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unassign_specific_weekly`
 
-Missing description
+Count of WAU using the `/unassign @user1` quick action on Merge Requests
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181830_i_quickactions_unassign_specific_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181830_i_quickactions_unassign_specific_weekly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unlabel_all_monthly`
 
-Missing description
+Count of MAU using the `/unlabel` quick action to remove all labels
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181846_i_quickactions_unlabel_all_monthly.yml)
 
@@ -13170,23 +13170,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unlabel_all_weekly`
 
-Missing description
+Count of WAU using the `/unlabel` quick action to remove all labels
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181845_i_quickactions_unlabel_all_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181845_i_quickactions_unlabel_all_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unlabel_specific_monthly`
 
-Missing description
+Count of MAU using the `/unlabel` or `/remove_label` quick action to remove one or more specific labels
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181843_i_quickactions_unlabel_specific_monthly.yml)
 
@@ -13194,23 +13194,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unlabel_specific_weekly`
 
-Missing description
+Count of WAU using the `/unlabel` or `/remove_label` quick action to remove one or more specific labels
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181841_i_quickactions_unlabel_specific_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181841_i_quickactions_unlabel_specific_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unlock_monthly`
 
-Missing description
+Count of MAU using the `/unlock` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181850_i_quickactions_unlock_monthly.yml)
 
@@ -13218,23 +13218,23 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unlock_weekly`
 
-Missing description
+Count of WAU using the `/unlock` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181848_i_quickactions_unlock_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181848_i_quickactions_unlock_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unsubscribe_monthly`
 
-Missing description
+Count of MAU using the `/unsubscribe` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181854_i_quickactions_unsubscribe_monthly.yml)
 
@@ -13242,35 +13242,35 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_unsubscribe_weekly`
 
-Missing description
+Count of WAU using the `/unsubscribe` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181852_i_quickactions_unsubscribe_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181852_i_quickactions_unsubscribe_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_weight_monthly`
 
-Missing description
+Count of MAU using the `/weight` quick action
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181857_i_quickactions_weight_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181857_i_quickactions_weight_monthly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_weight_weekly`
 
-Missing description
+Count of WAU using the `/weight` quick action
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181856_i_quickactions_weight_weekly.yml)
 
@@ -13278,35 +13278,35 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_wip_monthly`
 
-Missing description
+Count of MAU using the `/wip` quick action on Merge Requests
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181901_i_quickactions_wip_monthly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_wip_weekly`
 
-Missing description
+Count of WAU using the `/wip` quick action on Merge Requests
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181859_i_quickactions_wip_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181859_i_quickactions_wip_weekly.yml)
 
-Group: `group::project management`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_zoom_monthly`
 
-Missing description
+Count of MAU using the `/zoom` quick action on Issues
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181905_i_quickactions_zoom_monthly.yml)
 
@@ -13314,31 +13314,31 @@ Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.i_quickactions_zoom_weekly`
 
-Missing description
+Count of WAU using the `/zoom` quick action on Issues
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216181903_i_quickactions_zoom_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216181903_i_quickactions_zoom_weekly.yml)
 
 Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.quickactions_total_unique_counts_monthly`
 
-Missing description
+Count of MAU using one or more quick actions
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184803_quickactions_total_unique_counts_monthly.yml)
 
-Group: ``
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.quickactions.quickactions_total_unique_counts_weekly`
 
@@ -14260,7 +14260,7 @@ Information about the operating system running GitLab
 
 Group: `group::distribution`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -14838,7 +14838,7 @@ Number of Git fetch events from Prometheus on the Geo secondary
 
 Group: `group::geo`
 
-Status: `implemented`
+Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
@@ -15564,15 +15564,15 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.plan.assignee_lists`
 
-Missing description
+Count of users creating assignee lists on Boards
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181132_assignee_lists.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.plan.epics`
 
@@ -15588,63 +15588,63 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.plan.issues`
 
-Missing description
+Count of users creating Issues
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181115_issues.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.plan.label_lists`
 
-Missing description
+Count of users creating label lists on Boards
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181135_label_lists.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.plan.milestone_lists`
 
-Missing description
+Count of users creating milestone lists on Boards
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181137_milestone_lists.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181137_milestone_lists.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.plan.notes`
 
-Missing description
+Count of users creating Notes on Issues
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181117_notes.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.plan.projects`
 
-Missing description
+Count of users creating projects
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181119_projects.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.plan.projects_jira_active`
 
@@ -15708,15 +15708,15 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.plan.todos`
 
-Missing description
+Count of users todos created
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181121_todos.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.release.deployments`
 
@@ -17484,15 +17484,15 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.plan.assignee_lists`
 
-Missing description
+Count of MAU creating assignee lists on Boards
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181156_assignee_lists.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.plan.epics`
 
@@ -17508,63 +17508,63 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.plan.issues`
 
-Missing description
+Count of MAU creating issues
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181139_issues.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.plan.label_lists`
 
-Missing description
+Count of MAU creating label lists on Boards
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181200_label_lists.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.plan.milestone_lists`
 
-Missing description
+Count of MAU created milestone lists on Boards
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181201_milestone_lists.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181201_milestone_lists.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.plan.notes`
 
-Missing description
+Count of MAU commenting on an issuable
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181141_notes.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.plan.projects`
 
-Missing description
+Count of MAU creating projects
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181143_projects.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.plan.projects_jira_active`
 
@@ -17628,15 +17628,15 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.plan.todos`
 
-Missing description
+Count of MAU creating todos
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181145_todos.yml)
 
-Group: `group::plan`
+Group: `group::project management`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.release.deployments`
 

@@ -2,8 +2,8 @@
 key_path: counts.notes
 description: Count of Notes across all objects that use them
 product_section: dev
-product_stage:
-product_group: group::plan
+product_stage: plan 
+product_group: group::project management
 product_category: issue_tracking
 value_type: number
 status: data_available
@@ -16,4 +16,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

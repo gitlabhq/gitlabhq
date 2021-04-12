@@ -6,7 +6,7 @@
   .svg-content
     = image_tag illustration_path, size: '75'
     .text-content
-      - if user_profile? and current_user.present? and current_user.username == params[:username]
+      - if user_profile? && current_user.present? && current_user.username == params[:username]
         %h5= current_user_empty_message_header
 
         - if current_user_empty_message_description.present?

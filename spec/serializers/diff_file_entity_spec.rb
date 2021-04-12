@@ -49,6 +49,14 @@ RSpec.describe DiffFileEntity do
 
       expect(subject).to include(:load_collapsed_diff_url)
     end
+
+    context 'when diff_view is unknown' do
+      let(:options) { { diff_view: :unknown } }
+
+      it 'hides highlighted_diff_lines and parallel_diff_lines' do
+        is_expected.not_to include(:highlighted_diff_lines, :parallel_diff_lines)
+      end
+    end
   end
 
   describe '#parallel_diff_lines' do

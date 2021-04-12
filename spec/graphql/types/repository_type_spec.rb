@@ -14,4 +14,6 @@ RSpec.describe GitlabSchema.types['Repository'] do
   specify { expect(described_class).to have_graphql_field(:exists, calls_gitaly?: true, complexity: 2) }
 
   specify { expect(described_class).to have_graphql_field(:blobs) }
+
+  specify { expect(described_class).to have_graphql_field(:branch_names, calls_gitaly?: true, complexity: 170) }
 end

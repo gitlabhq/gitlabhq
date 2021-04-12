@@ -1,8 +1,0 @@
----
-name: ci_async_initial_pipeline_processing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57589
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326217
-milestone: '13.11'
-type: development
-group: group::continuous integration
-default_enabled: false

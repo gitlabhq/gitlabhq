@@ -213,13 +213,9 @@ module MergeRequests
     end
 
     def handle_assignees_change(merge_request, old_assignees)
-      create_assignee_note(merge_request, old_assignees)
-      notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignees)
-      todo_service.reassigned_assignable(merge_request, current_user, old_assignees)
-
-      new_assignees = merge_request.assignees - old_assignees
-      merge_request_activity_counter.track_users_assigned_to_mr(users: new_assignees)
-      merge_request_activity_counter.track_assignees_changed_action(user: current_user)
+      MergeRequests::HandleAssigneesChangeService
+        .new(project, current_user)
+        .async_execute(merge_request, old_assignees)
     end
 
     def handle_reviewers_change(merge_request, old_reviewers)

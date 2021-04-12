@@ -57,7 +57,7 @@ The following table shows the supported metrics, at which level they are support
 | `change_failure_rate`     | Project/Group-level   |  To be supported                      | To be supported  |                                                                                       |
 | `time_to_restore_service` | Project/Group-level   |  To be supported                      | To be supported  |                                                                                       |
 
-## Deployment frequency charts **(ULTIMATE)**
+### Deployment frequency charts **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.8.
 
@@ -66,3 +66,18 @@ The **Analytics > CI/CD Analytics** page shows information about the deployment 
 information to appear on the graphs.
 
 ![Deployment frequency](img/deployment_frequency_chart_v13_8.png)
+
+### Lead time charts **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250329) in GitLab 13.11.
+
+The charts in the **Lead Time** tab show information about how long it takes
+merge requests to be deployed to a production environment.
+
+![Lead time](img/lead_time_chart_v13_11.png)
+
+Smaller values are better. Small lead times indicate fast, efficient deployment
+processes.
+
+For time periods in which no merge requests were deployed, the charts render a
+red, dashed line.

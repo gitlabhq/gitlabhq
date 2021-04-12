@@ -37,9 +37,11 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
 
     context 'when the parameters are valid' do
       it 'updates the MR, and queues the more expensive work for later' do
-        expect(MergeRequests::AssigneesChangeWorker)
-          .to receive(:perform_async)
-          .with(merge_request.id, user.id, [user3.id])
+        expect_next(MergeRequests::HandleAssigneesChangeService, project, user) do |service|
+          expect(service)
+            .to receive(:async_execute)
+            .with(merge_request, [user3], execute_hooks: true)
+        end
 
         expect { update_merge_request }
           .to change(merge_request, :assignees).to([user2])
@@ -54,9 +56,11 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
       end
 
       it 'is more efficient than using the full update-service' do
-        allow(MergeRequests::AssigneesChangeWorker)
-          .to receive(:perform_async)
-          .with(merge_request.id, user.id, [user3.id])
+        allow_next(MergeRequests::HandleAssigneesChangeService, project, user) do |service|
+          expect(service)
+            .to receive(:async_execute)
+            .with(merge_request, [user3], execute_hooks: true)
+        end
 
         other_mr = create(:merge_request, :simple, :unique_branches,
                           title: merge_request.title,
@@ -70,19 +74,6 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
         expect { service.execute(merge_request) }
           .to issue_fewer_queries_than { update_service.execute(other_mr) }
       end
-    end
-  end
-
-  describe '#handle_assignee_changes' do
-    subject { service.handle_assignee_changes(merge_request, [user2]) }
-
-    it 'calls UpdateService#handle_assignee_changes and executes hooks' do
-      expect(service).to receive(:handle_assignees_change).with(merge_request, [user2])
-      expect(merge_request.project).to receive(:execute_hooks).with(anything, :merge_request_hooks)
-      expect(merge_request.project).to receive(:execute_services).with(anything, :merge_request_hooks)
-      expect(service).to receive(:enqueue_jira_connect_messages_for).with(merge_request)
-
-      subject
     end
   end
 end

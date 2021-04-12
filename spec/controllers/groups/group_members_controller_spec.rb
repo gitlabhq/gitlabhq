@@ -9,8 +9,12 @@ RSpec.describe Groups::GroupMembersController do
   let(:group) { create(:group, :public) }
   let(:membership) { create(:group_member, group: group) }
 
-  around do |example|
-    travel_to DateTime.new(2019, 4, 1) { example.run }
+  before do
+    travel_to DateTime.new(2019, 4, 1)
+  end
+
+  after do
+    travel_back
   end
 
   describe 'GET index' do

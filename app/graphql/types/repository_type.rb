@@ -16,5 +16,8 @@ module Types
           description: 'Tree of the repository.'
     field :blobs, Types::Tree::BlobType.connection_type, null: true, resolver: Resolvers::BlobsResolver, calls_gitaly: true,
           description: 'Blobs contained within the repository'
+    field :branch_names, [GraphQL::STRING_TYPE], null: true, calls_gitaly: true,
+          complexity: 170, description: 'Names of branches available in this repository that match the search pattern.',
+          resolver: Resolvers::RepositoryBranchNamesResolver
   end
 end

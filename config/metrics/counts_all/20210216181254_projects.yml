@@ -1,6 +1,6 @@
 ---
 key_path: counts.projects
-description: Count of Projects
+description: Count of Projects created
 product_section: dev
 product_stage: plan
 product_group: group::project management
@@ -11,6 +11,8 @@ time_frame: all
 data_source: database
 distribution:
 - ce
+- ee 
 tier:
 - free
-skip_validation: true
+- premium 
+- ultimate 

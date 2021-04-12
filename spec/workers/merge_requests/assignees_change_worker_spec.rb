@@ -19,7 +19,7 @@ RSpec.describe MergeRequests::AssigneesChangeWorker do
   describe '#perform' do
     context 'with a non-existing merge request' do
       it 'does nothing' do
-        expect(::MergeRequests::UpdateAssigneesService).not_to receive(:new)
+        expect(::MergeRequests::HandleAssigneesChangeService).not_to receive(:new)
 
         worker.perform(non_existing_record_id, user.id, user_ids)
       end
@@ -27,7 +27,7 @@ RSpec.describe MergeRequests::AssigneesChangeWorker do
 
     context 'with a non-existing user' do
       it 'does nothing' do
-        expect(::MergeRequests::UpdateAssigneesService).not_to receive(:new)
+        expect(::MergeRequests::HandleAssigneesChangeService).not_to receive(:new)
 
         worker.perform(merge_request.id, non_existing_record_id, user_ids)
       end
@@ -35,7 +35,7 @@ RSpec.describe MergeRequests::AssigneesChangeWorker do
 
     context 'when there are no changes' do
       it 'does nothing' do
-        expect(::MergeRequests::UpdateAssigneesService).not_to receive(:new)
+        expect(::MergeRequests::HandleAssigneesChangeService).not_to receive(:new)
 
         worker.perform(merge_request.id, user.id, merge_request.assignee_ids)
       end
@@ -43,15 +43,15 @@ RSpec.describe MergeRequests::AssigneesChangeWorker do
 
     context 'when the old users cannot be found' do
       it 'does nothing' do
-        expect(::MergeRequests::UpdateAssigneesService).not_to receive(:new)
+        expect(::MergeRequests::HandleAssigneesChangeService).not_to receive(:new)
 
         worker.perform(merge_request.id, user.id, [non_existing_record_id])
       end
     end
 
     it 'gets MergeRequests::UpdateAssigneesService to handle the changes' do
-      expect_next(::MergeRequests::UpdateAssigneesService)
-        .to receive(:handle_assignee_changes).with(merge_request, match_array(old_assignees))
+      expect_next(::MergeRequests::HandleAssigneesChangeService)
+        .to receive(:execute).with(merge_request, match_array(old_assignees), execute_hooks: true)
 
       worker.perform(merge_request.id, user.id, user_ids)
     end

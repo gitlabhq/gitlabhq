@@ -2,7 +2,7 @@
 
 query usersSearch($search: String!, $fullPath: ID!) {
   workspace: project(fullPath: $fullPath) {
-    users: projectMembers(search: $search) {
+    users: projectMembers(search: $search, relations: [DIRECT, INHERITED, INVITED_GROUPS]) {
       nodes {
         user {
           ...User

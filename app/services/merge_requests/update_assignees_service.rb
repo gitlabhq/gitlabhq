@@ -9,7 +9,8 @@ module MergeRequests
     def execute(merge_request)
       return merge_request unless current_user&.can?(:update_merge_request, merge_request)
 
-      old_ids = merge_request.assignees.map(&:id)
+      old_assignees = merge_request.assignees
+      old_ids = old_assignees.map(&:id)
       new_ids = new_assignee_ids(merge_request)
       return merge_request if new_ids.size != update_attrs[:assignee_ids].size
       return merge_request if old_ids.to_set == new_ids.to_set # no-change
@@ -18,20 +19,11 @@ module MergeRequests
       merge_request.update!(**attrs)
 
       # Defer the more expensive operations (handle_assignee_changes) to the background
-      MergeRequests::AssigneesChangeWorker.perform_async(merge_request.id, current_user.id, old_ids)
+      MergeRequests::HandleAssigneesChangeService
+        .new(project, current_user)
+        .async_execute(merge_request, old_assignees, execute_hooks: true)
 
       merge_request
-    end
-
-    def handle_assignee_changes(merge_request, old_assignees)
-      # exposes private method from super-class
-      users = old_assignees.to_a
-      handle_assignees_change(merge_request, users)
-      execute_hooks(
-        merge_request,
-        'update',
-        old_associations: { assignees: users }
-      )
     end
 
     private

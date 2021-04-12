@@ -6,7 +6,7 @@ product_stage: verify
 product_group: group::pipeline authoring
 product_category: pipeline_authoring
 value_type: number
-status: implemented
+status: data_available
 milestone: "13.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54707
 time_frame: 7d

@@ -4,18 +4,26 @@ FactoryBot.define do
   factory :clusters_applications_helm, class: 'Clusters::Applications::Helm' do
     cluster factory: %i(cluster provided_by_gcp)
 
-    before(:create) do
-      allow(Gitlab::Kubernetes::Helm::V2::Certificate).to receive(:generate_root)
-        .and_return(
-          double(
-            key_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_key.key')),
-            cert_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem'))
-          )
-        )
+    transient do
+      helm_installed { true }
     end
 
-    after(:create) do
-      allow(Gitlab::Kubernetes::Helm::V2::Certificate).to receive(:generate_root).and_call_original
+    before(:create) do |_record, evaluator|
+      if evaluator.helm_installed
+        allow(Gitlab::Kubernetes::Helm::V2::Certificate).to receive(:generate_root)
+          .and_return(
+            double(
+              key_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_key.key')),
+              cert_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem'))
+            )
+          )
+      end
+    end
+
+    after(:create) do |_record, evaluator|
+      if evaluator.helm_installed
+        allow(Gitlab::Kubernetes::Helm::V2::Certificate).to receive(:generate_root).and_call_original
+      end
     end
 
     trait :not_installable do
@@ -78,13 +86,18 @@ FactoryBot.define do
       updated_at { ClusterWaitForAppInstallationWorker::TIMEOUT.ago }
     end
 
+    # Common trait used by the apps below
+    trait :no_helm_installed do
+      cluster factory: %i(cluster provided_by_gcp)
+
+      transient do
+        helm_installed { false }
+      end
+    end
+
     factory :clusters_applications_ingress, class: 'Clusters::Applications::Ingress' do
       modsecurity_enabled { false }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-
-      trait :no_helm_installed do
-        cluster factory: %i(cluster provided_by_gcp)
-      end
 
       trait :modsecurity_blocking do
         modsecurity_enabled { true }
@@ -108,62 +121,34 @@ FactoryBot.define do
     factory :clusters_applications_cert_manager, class: 'Clusters::Applications::CertManager' do
       email { 'admin@example.com' }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-
-      trait :no_helm_installed do
-        cluster factory: %i(cluster provided_by_gcp)
-      end
     end
 
     factory :clusters_applications_elastic_stack, class: 'Clusters::Applications::ElasticStack' do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-
-      trait :no_helm_installed do
-        cluster factory: %i(cluster provided_by_gcp)
-      end
     end
 
     factory :clusters_applications_crossplane, class: 'Clusters::Applications::Crossplane' do
       stack { 'gcp' }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-
-      trait :no_helm_installed do
-        cluster factory: %i(cluster provided_by_gcp)
-      end
     end
 
     factory :clusters_applications_prometheus, class: 'Clusters::Applications::Prometheus' do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-
-      trait :no_helm_installed do
-        cluster factory: %i(cluster provided_by_gcp)
-      end
     end
 
     factory :clusters_applications_runner, class: 'Clusters::Applications::Runner' do
       runner factory: %i(ci_runner)
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-
-      trait :no_helm_installed do
-        cluster factory: %i(cluster provided_by_gcp)
-      end
     end
 
     factory :clusters_applications_knative, class: 'Clusters::Applications::Knative' do
       hostname { 'example.com' }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-
-      trait :no_helm_installed do
-        cluster factory: %i(cluster provided_by_gcp)
-      end
     end
 
     factory :clusters_applications_jupyter, class: 'Clusters::Applications::Jupyter' do
       oauth_application factory: :oauth_application
       cluster factory: %i(cluster with_installed_helm provided_by_gcp project)
-
-      trait :no_helm_installed do
-        cluster factory: %i(cluster provided_by_gcp)
-      end
     end
 
     factory :clusters_applications_fluentd, class: 'Clusters::Applications::Fluentd' do
@@ -171,18 +156,10 @@ FactoryBot.define do
       waf_log_enabled { true }
       cilium_log_enabled { true }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-
-      trait :no_helm_installed do
-        cluster factory: %i(cluster provided_by_gcp)
-      end
     end
 
     factory :clusters_applications_cilium, class: 'Clusters::Applications::Cilium' do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
-
-      trait :no_helm_installed do
-        cluster factory: %i(cluster provided_by_gcp)
-      end
     end
   end
 end

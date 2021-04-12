@@ -8564,6 +8564,9 @@ msgstr ""
 msgid "Contains %{count} blobs of images (%{size})"
 msgstr ""
 
+msgid "ContentEditor|You have to provide a renderMarkdown function or a custom serializer"
+msgstr ""
+
 msgid "Contents of .gitlab-ci.yml"
 msgstr ""
 
@@ -17981,6 +17984,9 @@ msgstr ""
 msgid "Joined %{time_ago}"
 msgstr ""
 
+msgid "Joined %{user_created_time}"
+msgstr ""
+
 msgid "Jul"
 msgstr ""
 
@@ -26002,6 +26008,9 @@ msgstr ""
 msgid "Remove list"
 msgstr ""
 
+msgid "Remove log"
+msgstr ""
+
 msgid "Remove member"
 msgstr ""
 
@@ -29725,6 +29734,9 @@ msgstr ""
 msgid "Submit a review"
 msgstr ""
 
+msgid "Submit as ham"
+msgstr ""
+
 msgid "Submit as spam"
 msgstr ""
 
@@ -29747,6 +29759,9 @@ msgid "Submit the current review."
 msgstr ""
 
 msgid "Submit your changes"
+msgstr ""
+
+msgid "Submitted as ham"
 msgstr ""
 
 msgid "Submitted the current review."
@@ -32954,6 +32969,9 @@ msgid "URL of the external storage that will serve the repository static objects
 msgstr ""
 
 msgid "URL or request ID"
+msgstr ""
+
+msgid "USER %{user_name} WILL BE REMOVED! Are you sure?"
 msgstr ""
 
 msgid "USER %{user} WILL BE REMOVED! Are you sure?"

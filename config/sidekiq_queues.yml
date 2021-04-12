@@ -214,6 +214,8 @@
   - 1
 - - merge_requests_delete_source_branch
   - 1
+- - merge_requests_handle_assignees_change
+  - 1
 - - metrics_dashboard_prune_old_annotations
   - 1
 - - metrics_dashboard_sync_dashboards

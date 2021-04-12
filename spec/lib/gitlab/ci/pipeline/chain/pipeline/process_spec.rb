@@ -23,21 +23,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Pipeline::Process do
 
       perform
     end
-
-    context 'with async processing disabled' do
-      before do
-        stub_feature_flags(ci_async_initial_pipeline_processing: false)
-      end
-
-      it 'processes pipeline inline' do
-        expect(::Ci::ProcessPipelineService)
-          .to receive(:new)
-          .with(pipeline)
-          .and_call_original
-
-        perform
-      end
-    end
   end
 
   describe '#break?' do

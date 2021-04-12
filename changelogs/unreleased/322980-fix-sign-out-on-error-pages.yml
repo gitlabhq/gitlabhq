@@ -1,0 +1,5 @@
+---
+title: Fix sign out button in error pages
+merge_request: 59030
+author:
+type: fixed

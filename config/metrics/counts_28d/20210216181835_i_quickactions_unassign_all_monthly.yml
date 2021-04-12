@@ -1,16 +1,18 @@
 ---
 key_path: redis_hll_counters.quickactions.i_quickactions_unassign_all_monthly
-description:
+description: Count of MAU using the `/unassign` quick action on Merge Requests
 product_section: dev
-product_stage: plan
-product_group: group::project management
-product_category:
+product_stage: create
+product_group: group::source code
+product_category: source_code_management
 value_type: number
 status: data_available
 time_frame: 28d
 data_source: redis_hll
 distribution:
 - ce
+- ee 
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate
