@@ -443,7 +443,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/controllers/registrations/projects_controller_spec.rb
     - ee/spec/controllers/subscriptions_controller_spec.rb
     - ee/spec/features/admin/admin_show_new_user_signups_cap_alert_spec.rb
-    - ee/spec/features/analytics/group_analytics_spec.rb
     - ee/spec/features/boards/group_boards/multiple_boards_spec.rb
     - ee/spec/features/ci_shared_runner_warnings_spec.rb
     - ee/spec/features/dashboards/todos_spec.rb
@@ -578,8 +577,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/services/alert_management/process_prometheus_alert_service_spec.rb
     - ee/spec/services/approval_rules/create_service_spec.rb
     - ee/spec/services/audit_event_service_spec.rb
-    - ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb
-    - ee/spec/services/auto_merge/merge_train_service_spec.rb
     - ee/spec/services/award_emojis/add_service_spec.rb
     - ee/spec/services/award_emojis/destroy_service_spec.rb
     - ee/spec/services/billable_members/destroy_service_spec.rb
@@ -637,7 +634,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/services/status_page/publish_service_spec.rb
     - ee/spec/services/status_page/trigger_publish_service_spec.rb
     - ee/spec/services/status_page/unpublish_details_service_spec.rb
-    - ee/spec/services/timebox_report_service_spec.rb
     - ee/spec/services/todo_service_spec.rb
     - ee/spec/support/shared_examples/graphql/geo/geo_registries_resolver_shared_examples.rb
     - ee/spec/support/shared_examples/graphql/mutations/set_multiple_assignees_shared_examples.rb
