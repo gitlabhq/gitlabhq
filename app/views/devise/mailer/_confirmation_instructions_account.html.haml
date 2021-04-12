@@ -2,15 +2,15 @@
 - if @resource.unconfirmed_email.present? || !@resource.created_recently?
   #content
     = email_default_heading(@resource.unconfirmed_email || @resource.email)
-    %p Click the link below to confirm your email address.
+    %p= _('Click the link below to confirm your email address.')
     #cta
-      = link_to 'Confirm your email address', confirmation_link
+      = link_to _('Confirm your email address'), confirmation_link
 - else
   #content
     - if Gitlab.com?
-      = email_default_heading('Thanks for signing up to GitLab!')
+      = email_default_heading(_('Thanks for signing up to GitLab!'))
     - else
-      = email_default_heading("Welcome, #{@resource.name}!")
-    %p To get started, click the link below to confirm your account.
+      = email_default_heading(_("Welcome, %{name}!") % { name: @resource.name })
+    %p= _("To get started, click the link below to confirm your account.")
     #cta
-      = link_to 'Confirm your account', confirmation_link
+      = link_to _('Confirm your account'), confirmation_link

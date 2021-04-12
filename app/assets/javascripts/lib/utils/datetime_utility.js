@@ -254,6 +254,37 @@ export const timeIntervalInWords = (intervalInSeconds) => {
     : secondsText;
 };
 
+/**
+ * Similar to `timeIntervalInWords`, but rounds the return value
+ * to 1/10th of the largest time unit. For example:
+ *
+ * 30 => 30 seconds
+ * 90 => 1.5 minutes
+ * 7200 => 2 hours
+ * 86400 => 1 day
+ * ... etc.
+ *
+ * The largest supported unit is "days".
+ *
+ * @param {Number} intervalInSeconds The time interval in seconds
+ * @returns {String} A humanized description of the time interval
+ */
+export const humanizeTimeInterval = (intervalInSeconds) => {
+  if (intervalInSeconds < 60 /* = 1 minute */) {
+    const seconds = Math.round(intervalInSeconds * 10) / 10;
+    return n__('%d second', '%d seconds', seconds);
+  } else if (intervalInSeconds < 3600 /* = 1 hour */) {
+    const minutes = Math.round(intervalInSeconds / 6) / 10;
+    return n__('%d minute', '%d minutes', minutes);
+  } else if (intervalInSeconds < 86400 /* = 1 day */) {
+    const hours = Math.round(intervalInSeconds / 360) / 10;
+    return n__('%d hour', '%d hours', hours);
+  }
+
+  const days = Math.round(intervalInSeconds / 8640) / 10;
+  return n__('%d day', '%d days', days);
+};
+
 export const dateInWords = (date, abbreviated = false, hideYear = false) => {
   if (!date) return date;
 

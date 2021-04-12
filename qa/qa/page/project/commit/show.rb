@@ -11,8 +11,15 @@ module QA
 
           view 'app/assets/javascripts/projects/commit/components/commit_options_dropdown.vue' do
             element :options_button
+            element :cherry_pick_button
             element :email_patches
             element :plain_diff
+          end
+
+          def cherry_pick_commit
+            click_element(:options_button)
+            click_element(:cherry_pick_button, Page::Component::CommitModal)
+            click_element(:submit_commit_button)
           end
 
           def select_email_patches

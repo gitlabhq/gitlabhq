@@ -10,6 +10,7 @@ import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_char
 jest.mock('~/lib/utils/url_utility');
 
 const DeploymentFrequencyChartsStub = { name: 'DeploymentFrequencyCharts', render: () => {} };
+const LeadTimeChartsStub = { name: 'LeadTimeCharts', render: () => {} };
 
 describe('ProjectsPipelinesChartsApp', () => {
   let wrapper;
@@ -25,6 +26,7 @@ describe('ProjectsPipelinesChartsApp', () => {
           },
           stubs: {
             DeploymentFrequencyCharts: DeploymentFrequencyChartsStub,
+            LeadTimeCharts: LeadTimeChartsStub,
           },
         },
         mountOptions,
@@ -44,6 +46,7 @@ describe('ProjectsPipelinesChartsApp', () => {
   const findGlTabs = () => wrapper.find(GlTabs);
   const findAllGlTab = () => wrapper.findAll(GlTab);
   const findGlTabAt = (i) => findAllGlTab().at(i);
+  const findLeadTimeCharts = () => wrapper.find(LeadTimeChartsStub);
   const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
   const findPipelineCharts = () => wrapper.find(PipelineCharts);
 
@@ -51,15 +54,23 @@ describe('ProjectsPipelinesChartsApp', () => {
     expect(findPipelineCharts().exists()).toBe(true);
   });
 
+  it('renders the lead time charts', () => {
+    expect(findLeadTimeCharts().exists()).toBe(true);
+  });
+
   describe('when shouldRenderDeploymentFrequencyCharts is true', () => {
     beforeEach(() => {
       createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
     });
 
-    it('renders the deployment frequency charts in a tab', () => {
+    it('renders the expected tabs', () => {
       expect(findGlTabs().exists()).toBe(true);
       expect(findGlTabAt(0).attributes('title')).toBe('Pipelines');
       expect(findGlTabAt(1).attributes('title')).toBe('Deployments');
+      expect(findGlTabAt(2).attributes('title')).toBe('Lead Time');
+    });
+
+    it('renders the deployment frequency charts', () => {
       expect(findDeploymentFrequencyCharts().exists()).toBe(true);
     });
 
@@ -108,6 +119,7 @@ describe('ProjectsPipelinesChartsApp', () => {
   describe('when provided with a query param', () => {
     it.each`
       chart            | tab
+      ${'lead-time'}   | ${'2'}
       ${'deployments'} | ${'1'}
       ${'pipelines'}   | ${'0'}
       ${'fake'}        | ${'0'}
@@ -160,8 +172,13 @@ describe('ProjectsPipelinesChartsApp', () => {
       createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: false } });
     });
 
+    it('renders the expected tabs', () => {
+      expect(findGlTabs().exists()).toBe(true);
+      expect(findGlTabAt(0).attributes('title')).toBe('Pipelines');
+      expect(findGlTabAt(1).attributes('title')).toBe('Lead Time');
+    });
+
     it('does not render the deployment frequency charts in a tab', () => {
-      expect(findGlTabs().exists()).toBe(false);
       expect(findDeploymentFrequencyCharts().exists()).toBe(false);
     });
   });

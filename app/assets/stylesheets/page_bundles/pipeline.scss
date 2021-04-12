@@ -148,7 +148,19 @@
 }
 
 .gl-build-content {
-  @include build-content();
+  display: inline-block;
+  padding: 8px 10px 9px;
+  width: 100%;
+  border: 1px solid var(--border-color, $border-color);
+  border-radius: 30px;
+  background-color: var(--white, $white);
+
+  &:hover,
+  &:focus {
+    background-color: var(--gray-50, $gray-50);
+    border: 1px solid $dropdown-toggle-active-border-color;
+    color: var(--gl-text-color, $gl-text-color);
+  }
 }
 
 .gl-ci-action-icon-container {

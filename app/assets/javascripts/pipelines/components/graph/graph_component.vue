@@ -54,6 +54,7 @@ export default {
   data() {
     return {
       hoveredJobName: '',
+      hoveredSourceJobName: '',
       highlightedJobs: [],
       measurements: {
         width: 0,
@@ -92,6 +93,9 @@ export default {
     },
     shouldHideLinks() {
       return this.isStageView;
+    },
+    shouldShowStageName() {
+      return !this.isStageView;
     },
     // The show downstream check prevents showing redundant linked columns
     showDownstreamPipelines() {
@@ -147,6 +151,9 @@ export default {
     },
     setJob(jobName) {
       this.hoveredJobName = jobName;
+    },
+    setSourceJob(jobName) {
+      this.hoveredSourceJobName = jobName;
     },
     slidePipelineContainer() {
       this.$refs.mainPipelineContainer.scrollBy({
@@ -204,11 +211,13 @@ export default {
               <stage-column-component
                 v-for="column in layout"
                 :key="column.id || column.name"
-                :title="column.name"
+                :name="column.name"
                 :groups="column.groups"
                 :action="column.status.action"
                 :highlighted-jobs="highlightedJobs"
+                :show-stage-name="shouldShowStageName"
                 :job-hovered="hoveredJobName"
+                :source-job-hovered="hoveredSourceJobName"
                 :pipeline-expanded="pipelineExpanded"
                 :pipeline-id="pipeline.id"
                 @refreshPipelineGraph="$emit('refreshPipelineGraph')"
@@ -227,7 +236,7 @@ export default {
             :column-title="__('Downstream')"
             :type="$options.pipelineTypeConstants.DOWNSTREAM"
             :view-type="viewType"
-            @downstreamHovered="setJob"
+            @downstreamHovered="setSourceJob"
             @pipelineExpandToggle="togglePipelineExpanded"
             @scrollContainer="slidePipelineContainer"
             @error="onError"

@@ -3,25 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe WhatsNewHelper do
-  describe '#whats_new_storage_key' do
-    subject { helper.whats_new_storage_key }
+  describe '#whats_new_version_digest' do
+    let(:digest) { 'digest' }
 
-    context 'when version exist' do
-      let(:release_item) { double(:item) }
+    it 'calls ReleaseHighlight.most_recent_version_digest' do
+      expect(ReleaseHighlight).to receive(:most_recent_version_digest).and_return(digest)
 
-      before do
-        allow(ReleaseHighlight).to receive(:versions).and_return([84.0])
-      end
-
-      it { is_expected.to eq('display-whats-new-notification-84.0') }
-    end
-
-    context 'when most recent release highlights do NOT exist' do
-      before do
-        allow(ReleaseHighlight).to receive(:versions).and_return(nil)
-      end
-
-      it { is_expected.to be_nil }
+      expect(helper.whats_new_version_digest).to eq(digest)
     end
   end
 
@@ -42,16 +30,6 @@ RSpec.describe WhatsNewHelper do
 
         expect(subject).to be_nil
       end
-    end
-  end
-
-  describe '#whats_new_versions' do
-    let(:versions) { [84.0] }
-
-    it 'returns ReleaseHighlight.versions' do
-      expect(ReleaseHighlight).to receive(:versions).and_return(versions)
-
-      expect(helper.whats_new_versions).to eq(versions)
     end
   end
 end

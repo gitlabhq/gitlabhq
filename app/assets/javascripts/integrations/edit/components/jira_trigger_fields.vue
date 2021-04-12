@@ -214,7 +214,7 @@ export default {
       <gl-form-checkbox
         v-model="issueTransitionEnabled"
         :disabled="isInheriting"
-        data-qa-selector="service_jira_issue_transition_enabled"
+        data-qa-selector="service_jira_issue_transition_enabled_checkbox"
       >
         {{ s__('JiraService|Enable Jira transitions') }}
       </gl-form-checkbox>
@@ -232,7 +232,7 @@ export default {
         name="service[jira_issue_transition_automatic]"
         :value="issueTransitionOption.value"
         :disabled="isInheriting"
-        :data-qa-selector="`service_jira_issue_transition_automatic_${issueTransitionOption.value}`"
+        :data-qa-selector="`service_jira_issue_transition_automatic_${issueTransitionOption.value}_radio`"
       >
         {{ issueTransitionOption.label }}
 

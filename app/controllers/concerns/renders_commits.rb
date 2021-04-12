@@ -17,12 +17,13 @@ module RendersCommits
   def set_commits_for_rendering(commits, commits_count: nil)
     @total_commit_count = commits_count || commits.size
     limited, @hidden_commit_count = limited_commits(commits, @total_commit_count)
-    commits.each(&:lazy_author) # preload authors
     prepare_commits_for_rendering(limited)
   end
   # rubocop: enable Gitlab/ModuleWithInstanceVariables
 
   def prepare_commits_for_rendering(commits)
+    commits.each(&:lazy_author) # preload commits' authors
+
     Banzai::CommitRenderer.render(commits, @project, current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
     commits

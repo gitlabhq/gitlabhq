@@ -1,5 +1,5 @@
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import { setNotification, getStorageKey } from '~/whats_new/utils/notification';
+import { setNotification, getVersionDigest } from '~/whats_new/utils/notification';
 
 describe('~/whats_new/utils/notification', () => {
   useLocalStorageSpy();
@@ -33,10 +33,23 @@ describe('~/whats_new/utils/notification', () => {
       expect(notificationEl.classList).toContain('with-notifications');
     });
 
-    it('removes class and count element when storage key is true', () => {
+    it('removes class and count element when legacy storage key is false', () => {
       const notificationEl = findNotificationEl();
       notificationEl.classList.add('with-notifications');
-      localStorage.setItem('storage-key', 'false');
+      localStorage.setItem('display-whats-new-notification-13.10', 'false');
+
+      expect(findNotificationCountEl()).toExist();
+
+      subject();
+
+      expect(findNotificationCountEl()).not.toExist();
+      expect(notificationEl.classList).not.toContain('with-notifications');
+    });
+
+    it('removes class and count element when storage key has current digest', () => {
+      const notificationEl = findNotificationEl();
+      notificationEl.classList.add('with-notifications');
+      localStorage.setItem('display-whats-new-notification', 'version-digest');
 
       expect(findNotificationCountEl()).toExist();
 
@@ -47,9 +60,9 @@ describe('~/whats_new/utils/notification', () => {
     });
   });
 
-  describe('getStorageKey', () => {
+  describe('getVersionDigest', () => {
     it('retrieves the storage key data attribute from the el', () => {
-      expect(getStorageKey(getAppEl())).toBe('storage-key');
+      expect(getVersionDigest(getAppEl())).toBe('version-digest');
     });
   });
 });

@@ -110,21 +110,66 @@ The current method provides several attributes that are sent on each click event
 | property  | text    | false    | Any additional property of the element, or object being acted on. |
 | value     | decimal | false    | Describes a numeric value or something directly related to the event. This could be the value of an input (e.g. `10` when clicking `internal` visibility). |
 
+### Examples
+
+| category* | label            | action                | property** | value |
+|-------------|------------------|-----------------------|----------|:-----:|
+| [root:index] | main_navigation            | click_navigation_link | `[link_label]`   | - |
+| [groups:boards:show] | toggle_swimlanes | click_toggle_button | - | `[is_active]` |
+| [projects:registry:index] | registry_delete | click_button | - | - |
+| [projects:registry:index] | registry_delete | confirm_deletion | - | - |
+| [projects:blob:show] | congratulate_first_pipeline | click_button | `[human_access]` | - |
+| [projects:clusters:new] | chart_options | generate_link | `[chart_link]` | - |
+| [projects:clusters:new] | chart_options | click_add_label_button | `[label_id]` | - |
+
+_* It's ok to omit the category, and use the default._<br>
+_** Property is usually the best place for variable strings._
+
+### Reference SQL
+
+#### Last 20 `reply_comment_button` events
+
+```sql
+SELECT
+  event_id,
+  v_tracker,
+  event_label,
+  event_action,
+  event_property,
+  event_value,
+  event_category,
+  contexts
+FROM legacy.snowplow_structured_events_all
+WHERE
+  event_label = 'reply_comment_button'
+  AND event_action = 'click_button'
+  -- AND event_category = 'projects:issues:show'
+  -- AND event_value = 1
+ORDER BY collector_tstamp DESC
+LIMIT 20
+```
+
 ### Web-specific parameters
 
 Snowplow JS adds many [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.
 
 ## Implementing Snowplow JS (Frontend) tracking
 
-GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to use tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Structured event taxonomy](#structured-event-taxonomy).
+GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. The simplest way to use it is to add `data-` attributes to clickable elements and dropdowns. There is also a Vue mixin (exposing a `track` method), and the static method `Tracking.event`. Each of these requires at minimum a `category` and an `action`. Additional data can be provided that adheres to our [Structured event taxonomy](#structured-event-taxonomy).
 
 | field      | type   | default value              | description                                                                                                                                                                                                    |
 |:-----------|:-------|:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `category` | string | `document.body.dataset.page` | Page or subsection of a page that events are being captured within.                                                                                                                                            |
-| `action`   | string | 'generic'                  | Action the user is taking. Clicks should be `click` and activations should be `activate`, so for example, focusing a form field would be `activate_form_input`, and clicking a button would be `click_button`. |
+| `action`   | string | generic                  | Action the user is taking. Clicks should be `click` and activations should be `activate`, so for example, focusing a form field would be `activate_form_input`, and clicking a button would be `click_button`. |
 | `data`     | object | `{}`                         | Additional data such as `label`, `property`, `value`, and `context` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
 
-### Tracking in HAML (or Vue Templates)
+### Usage recommendations
+
+- Use [data attributes](#tracking-with-data-attributes) on HTML elements that emits either the `click`, `show.bs.dropdown`, or `hide.bs.dropdown` events.
+- Use the [Vue mixin](#tracking-within-vue-components) when tracking custom events, or if the supported events for data attributes are not propagating.
+- Use the [Tracking class directly](#tracking-in-raw-javascript) when tracking on raw JS files.
+
+### Tracking with data attributes
 
 When working within HAML (or Vue templates) we can add `data-track-*` attributes to elements of interest. All elements that have a `data-track-action` attribute automatically have event tracking bound on clicks.
 
@@ -142,7 +187,7 @@ Below is an example of `data-track-*` attributes assigned to a button:
 />
 ```
 
-Event listeners are bound at the document level to handle click events on or within elements with these data attributes. This allows them to be properly handled on re-rendering and changes to the DOM. Note that because of the way these events are bound, click events should not be stopped from propagating up the DOM tree. If for any reason click events are being stopped from propagating, you need to implement your own listeners and follow the instructions in [Tracking in raw JavaScript](#tracking-in-raw-javascript).
+Event listeners are bound at the document level to handle click events on or within elements with these data attributes. This allows them to be properly handled on re-rendering and changes to the DOM. Note that because of the way these events are bound, click events should not be stopped from propagating up the DOM tree. If for any reason click events are being stopped from propagating, you need to implement your own listeners and follow the instructions in [Tracking within Vue components](#tracking-within-vue-components) or [Tracking in raw JavaScript](#tracking-in-raw-javascript).
 
 Below is a list of supported `data-track-*` attributes:
 
@@ -154,16 +199,29 @@ Below is a list of supported `data-track-*` attributes:
 | `data-track-value`    | false    | The `value` as described in our [Structured event taxonomy](#structured-event-taxonomy). If omitted, this is the element's `value` property or an empty string. For checkboxes, the default value is the element's checked attribute or `false` when unchecked. |
 | `data-track-context`  | false    | The `context` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
 
+#### Available helpers
+
+```ruby
+tracking_attrs(label, action, property) # { data: { track_label... } }
+
+%button{ **tracking_attrs('main_navigation', 'click_button', 'navigation') }
+```
+
 #### Caveats
 
 When using the GitLab helper method [`nav_link`](https://gitlab.com/gitlab-org/gitlab/-/blob/898b286de322e5df6a38d257b10c94974d580df8/app/helpers/tab_helper.rb#L69) be sure to wrap `html_options` under the `html_options` keyword argument.
 Be careful, as this behavior can be confused with the `ActionView` helper method [`link_to`](https://api.rubyonrails.org/v5.2.3/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to) that does not require additional wrapping of `html_options`
 
-`nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { data: { track_label: "groups_dropdown", track_action: "click_dropdown" } })`
+```ruby
+# Bad
+= nav_link(controller: ['dashboard/groups', 'explore/groups'], data: { track_label: "explore_groups", track_action: "click_button" })
 
-vs
+# Good
+= nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { data: { track_label: "explore_groups", track_action: "click_button" } })
 
-`link_to assigned_issues_dashboard_path, title: _('Issues'), data: { track_label: 'main_navigation', track_action: 'click_issues_link' }`
+# Good (other helpers)
+= link_to explore_groups_path, title: _("Explore"), data: { track_label: "explore_groups", track_action: "click_button" }
+```
 
 ### Tracking within Vue components
 
@@ -186,17 +244,19 @@ export default {
     return {
       expanded: false,
       tracking: {
-        label: 'left_sidebar'
-      }
+        label: 'left_sidebar',
+      },
     };
   },
-}
+};
 ```
 
-The mixin provides a `track` method that can be called within the template, or from component methods. An example of the whole implementation might look like the following.
+The mixin provides a `track` method that can be called within the template,
+or from component methods. An example of the whole implementation might look like this:
 
 ```javascript
 export default {
+  name: 'RightSidebar',
   mixins: [Tracking.mixin({ label: 'right_sidebar' })],
   data() {
     return {
@@ -206,24 +266,82 @@ export default {
   methods: {
     toggle() {
       this.expanded = !this.expanded;
-      this.track('click_toggle', { value: this.expanded })
+      // Additional data will be merged, like `value` below
+      this.track('click_toggle', { value: Number(this.expanded) });
     }
   }
 };
 ```
 
-And if needed within the template, you can use the `track` method directly as well.
+The event data can be provided with a `tracking` object, declared in the `data` function,
+or as a `computed property`.
+
+```javascript
+export default {
+  name: 'RightSidebar',
+  mixins: [Tracking.mixin()],
+  data() {
+    return {
+      tracking: {
+        label: 'right_sidebar',
+        // category: '',
+        // property: '',
+        // value: '',
+      },
+    };
+  },
+};
+```
+
+The event data can be provided directly in the `track` function as well.
+This object will merge with any previously provided options.
+
+```javascript
+this.track('click_button', {
+  label: 'right_sidebar',
+});
+```
+
+Lastly, if needed within the template, you can use the `track` method directly as well.
 
 ```html
 <template>
   <div>
-    <a class="toggle" @click.prevent="toggle">Toggle</a>
+    <button data-testid="toggle" @click="toggle">Toggle</button>
+
     <div v-if="expanded">
       <p>Hello world!</p>
-      <a @click.prevent="track('click_action')">Track an event</a>
+      <button @click="track('click_action')">Track another event</button>
     </div>
   </div>
 </template>
+```
+
+#### Testing example
+
+```javascript
+import { mockTracking } from 'helpers/tracking_helper';
+// mockTracking(category, documentOverride, spyMethod)
+
+describe('RightSidebar.vue', () => {
+  let trackingSpy;
+  let wrapper;
+
+  beforeEach(() => {
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+  });
+
+  const findToggle = () => wrapper.find('[data-testid="toggle"]');
+
+  it('tracks turning off toggle', () => {
+    findToggle().trigger('click');
+
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_toggle', {
+      label: 'right_sidebar',
+      value: 0,
+    });
+  });
+});
 ```
 
 ### Tracking in raw JavaScript
@@ -234,64 +352,35 @@ Custom event tracking and instrumentation can be added by directly calling the `
 import Tracking from '~/tracking';
 
 const button = document.getElementById('create_from_template_button');
+
 button.addEventListener('click', () => {
   Tracking.event('dashboard:projects:index', 'click_button', {
     label: 'create_from_template',
     property: 'template_preview',
-    value: 'rails',
-  });
-})
-```
-
-### Tests and test helpers
-
-In Jest particularly in Vue tests, you can use the following:
-
-```javascript
-import { mockTracking } from 'helpers/tracking_helper';
-
-describe('MyTracking', () => {
-  let spy;
-
-  beforeEach(() => {
-    spy = mockTracking('_category_', wrapper.element, jest.spyOn);
-  });
-
-  it('tracks an event when clicked on feedback', () => {
-    wrapper.find('.discover-feedback-icon').trigger('click');
-
-    expect(spy).toHaveBeenCalledWith('_category_', 'click_button', {
-      label: 'security-discover-feedback-cta',
-      property: '0',
-    });
   });
 });
 ```
 
-In obsolete Karma tests it's used as below:
+#### Testing example
 
 ```javascript
-import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
+import Tracking from '~/tracking';
 
-describe('my component', () => {
-  let trackingSpy;
+describe('MyTracking', () => {
+  let wrapper;
 
   beforeEach(() => {
-    trackingSpy = mockTracking('_category_', vm.$el, spyOn);
+    jest.spyOn(Tracking, 'event');
   });
 
-  const triggerEvent = () => {
-    // action which should trigger a event
-  };
+  const findButton = () => wrapper.find('[data-testid="create_from_template"]');
 
-  it('tracks an event when toggled', () => {
-    expect(trackingSpy).not.toHaveBeenCalled();
+  it('tracks event', () => {
+    findButton().trigger('click');
 
-    triggerEvent('a.toggle');
-
-    expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_edit_button', {
-      label: 'right_sidebar',
-      property: 'confidentiality',
+    expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
+      label: 'create_from_template',
+      property: 'template_preview',
     });
   });
 });
@@ -354,12 +443,6 @@ There are several tools for developing and testing Snowplow Event
 **Legend**
 
 **{check-circle}** Available, **{status_preparing}** In progress, **{dotted-circle}** Not Planned
-
-### Preparing your MR for Review
-
-1. For frontend events, in the MR description section, add a screenshot of the event's relevant section using the [Snowplow Analytics Debugger](https://chrome.google.com/webstore/detail/snowplow-analytics-debugg/jbnlcgeengmijcghameodeaenefieedm) Chrome browser extension.
-1. For backend events, please use Snowplow Micro and add the output of the Snowplow Micro good events  `GET http://localhost:9090/micro/good`.
-1. Include a member of the Product Intelligence team as a reviewer of your MR. Mention `@gitlab-org/growth/product_intelligence/engineers` in your MR to request a review.
 
 ### Snowplow Analytics Debugger Chrome Extension
 

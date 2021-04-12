@@ -114,7 +114,7 @@ class Projects::CommitController < Projects::ApplicationController
     @branch_name = create_new_branch? ? @commit.revert_branch_name : @start_branch
 
     create_commit(Commits::RevertService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully reverted.",
-                                          success_path: -> { successful_change_path }, failure_path: failed_change_path)
+                                          success_path: -> { successful_change_path(@project) }, failure_path: failed_change_path)
   end
 
   def cherry_pick
@@ -122,10 +122,15 @@ class Projects::CommitController < Projects::ApplicationController
 
     return render_404 if @start_branch.blank?
 
+    target_project = find_cherry_pick_target_project
+    return render_404 unless target_project
+
     @branch_name = create_new_branch? ? @commit.cherry_pick_branch_name : @start_branch
 
     create_commit(Commits::CherryPickService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully cherry-picked into #{@branch_name}.",
-                                              success_path: -> { successful_change_path }, failure_path: failed_change_path)
+                                              success_path: -> { successful_change_path(target_project) },
+                                              failure_path: failed_change_path,
+                                              target_project: target_project)
   end
 
   private
@@ -138,8 +143,8 @@ class Projects::CommitController < Projects::ApplicationController
     params[:create_merge_request].present? || !can?(current_user, :push_code, @project)
   end
 
-  def successful_change_path
-    referenced_merge_request_url || project_commits_url(@project, @branch_name)
+  def successful_change_path(target_project)
+    referenced_merge_request_url || project_commits_url(target_project, @branch_name)
   end
 
   def failed_change_path
@@ -217,5 +222,15 @@ class Projects::CommitController < Projects::ApplicationController
   def assign_change_commit_vars
     @start_branch = params[:start_branch]
     @commit_params = { commit: @commit }
+  end
+
+  def find_cherry_pick_target_project
+    return @project if params[:target_project_id].blank?
+    return @project unless Feature.enabled?(:pick_into_project, @project, default_enabled: :yaml)
+
+    MergeRequestTargetProjectFinder
+      .new(current_user: current_user, source_project: @project, project_feature: :repository)
+      .execute
+      .find_by_id(params[:target_project_id])
   end
 end

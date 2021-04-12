@@ -1,10 +1,11 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GRAPHQL, STAGE_VIEW } from '~/pipelines/components/graph/constants';
+import { GRAPHQL, LAYER_VIEW, STAGE_VIEW } from '~/pipelines/components/graph/constants';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
+import { listByLayers } from '~/pipelines/components/parsing_utils';
 import {
   generateResponse,
   mockPipelineResponse,
@@ -17,6 +18,7 @@ describe('graph component', () => {
   const findLinkedColumns = () => wrapper.findAll(LinkedPipelinesColumn);
   const findLinksLayer = () => wrapper.find(LinksLayer);
   const findStageColumns = () => wrapper.findAll(StageColumnComponent);
+  const findStageNameInJob = () => wrapper.find('[data-testid="stage-name-in-job"]');
 
   const defaultProps = {
     pipeline: generateResponse(mockPipelineResponse, 'root/fungi-xoxo'),
@@ -82,6 +84,10 @@ describe('graph component', () => {
       expect(findLinksLayer().exists()).toBe(true);
     });
 
+    it('does not display stage name on the job in default (stage) mode', () => {
+      expect(findStageNameInJob().exists()).toBe(false);
+    });
+
     describe('when column requests a refresh', () => {
       beforeEach(() => {
         findStageColumns().at(0).vm.$emit('refreshPipelineGraph');
@@ -93,7 +99,7 @@ describe('graph component', () => {
     });
 
     describe('when links are present', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         createComponent({
           mountFn: mount,
           stubOverride: { 'job-item': false },
@@ -130,6 +136,26 @@ describe('graph component', () => {
 
     it('should render linked pipelines columns', () => {
       expect(findLinkedColumns()).toHaveLength(2);
+    });
+  });
+
+  describe('in layers mode', () => {
+    beforeEach(() => {
+      createComponent({
+        mountFn: mount,
+        stubOverride: {
+          'job-item': false,
+          'job-group-dropdown': false,
+        },
+        props: {
+          viewType: LAYER_VIEW,
+          pipelineLayers: listByLayers(defaultProps.pipeline),
+        },
+      });
+    });
+
+    it('displays the stage name on the job', () => {
+      expect(findStageNameInJob().exists()).toBe(true);
     });
   });
 });

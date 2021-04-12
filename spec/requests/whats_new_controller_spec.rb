@@ -35,16 +35,5 @@ RSpec.describe WhatsNewController, :clean_gitlab_redis_cache do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
-
-    context 'with version param' do
-      it 'returns items without pagination headers' do
-        allow(ReleaseHighlight).to receive(:for_version).with(version: '42').and_return(highlights)
-
-        get whats_new_path(version: 42), xhr: true
-
-        expect(response.body).to eq(highlights.items.to_json)
-        expect(response.headers['X-Next-Page']).to be_nil
-      end
-    end
   end
 end

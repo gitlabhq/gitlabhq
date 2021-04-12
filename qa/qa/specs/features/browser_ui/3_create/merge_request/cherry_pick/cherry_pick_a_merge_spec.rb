@@ -22,7 +22,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'cherry picks a basic merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1616' do
+      it 'creates a merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1616' do
         feature_mr.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|
@@ -30,8 +30,11 @@ module QA
           merge_request.cherry_pick!
         end
 
-        Page::MergeRequest::New.perform do |merge_request|
-          expect(merge_request).to have_content('The merge request has been successfully cherry-picked')
+        Page::MergeRequest::New.perform(&:create_merge_request)
+
+        Page::MergeRequest::Show.perform do |merge_request|
+          merge_request.click_diffs_tab
+          expect(merge_request).to have_file(feature_mr.file_name)
         end
       end
     end

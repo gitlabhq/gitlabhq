@@ -34,7 +34,7 @@ Product Intelligence files.
 
 ### Roles and process
 
-The merge request **author** should:
+#### The merge request **author** should
 
 - Decide whether a Product Intelligence review is needed.
 - If a Product Intelligence review is needed, add the labels
@@ -48,7 +48,15 @@ The merge request **author** should:
   [Metrics Dictionary](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/usage_ping/dictionary.md) if it is needed.
 - Add a changelog [according to guidelines](../changelog.md).
 
-The Product Intelligence **reviewer** should:
+##### When adding or modifiying Snowplow events
+
+- For frontend events, when relevant, add a screenshot of the event in
+  the [testing tool](../snowplow.md#developing-and-testing-snowplow) used.
+- For backend events, when relevant, add the output of the Snowplow Micro
+  good events `GET http://localhost:9090/micro/good` (it might be a good idea
+  to reset with `GET http://localhost:9090/micro/reset` first).
+
+#### The Product Intelligence **reviewer** should
 
 - Perform a first-pass review on the merge request and suggest improvements to the author.
 - Approve the MR, and relabel the MR with `~"product intelligence::approved"`.
@@ -71,6 +79,9 @@ Any of the Product Intelligence engineers can be assigned for the Product Intell
 - For tracking using Redis HLL (HyperLogLog):
   - Check the Redis slot.
   - Check if a [feature flag is needed](index.md#recommendations).
+- For tracking with Snowplow:
+  - Check that the [event taxonomy](../snowplow.md#structured-event-taxonomy) is correct.
+  - Check the [usage recomendations](../snowplow.md#usage-recommendations).
 - Metrics YAML definitions:
   - Check the metric `description`.
   - Check the metrics `key_path`.

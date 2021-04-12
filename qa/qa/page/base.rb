@@ -132,7 +132,7 @@ module QA
         all(element_selector_css(name), **kwargs)
       end
 
-      def check_element(name)
+      def check_element(name, click_by_js = false)
         if find_element(name, visible: false).checked?
           QA::Runtime::Logger.debug("#{name} is already checked")
 
@@ -140,7 +140,7 @@ module QA
         end
 
         retry_until(sleep_interval: 1) do
-          find_element(name, visible: false).click
+          click_checkbox_or_radio(name, click_by_js)
           checked = find_element(name, visible: false).checked?
 
           QA::Runtime::Logger.debug(checked ? "#{name} was checked" : "#{name} was not checked")
@@ -149,7 +149,7 @@ module QA
         end
       end
 
-      def uncheck_element(name)
+      def uncheck_element(name, click_by_js = false)
         unless find_element(name, visible: false).checked?
           QA::Runtime::Logger.debug("#{name} is already unchecked")
 
@@ -157,7 +157,7 @@ module QA
         end
 
         retry_until(sleep_interval: 1) do
-          find_element(name, visible: false).click
+          click_checkbox_or_radio(name, click_by_js)
           unchecked = !find_element(name, visible: false).checked?
 
           QA::Runtime::Logger.debug(unchecked ? "#{name} was unchecked" : "#{name} was not unchecked")
@@ -175,9 +175,7 @@ module QA
         end
 
         retry_until(sleep_interval: 1) do
-          radio = find_element(name, visible: false)
-          # Some radio buttons are hidden by their labels and cannot be clicked directly
-          click_by_js ? page.execute_script("arguments[0].click();", radio) : radio.click
+          click_checkbox_or_radio(name, click_by_js)
           selected = find_element(name, visible: false).checked?
 
           QA::Runtime::Logger.debug(selected ? "#{name} was selected" : "#{name} was not selected")
@@ -422,6 +420,14 @@ module QA
             @views.push(Page::View.new(path, view.elements))
           end
         end
+      end
+
+      private
+
+      def click_checkbox_or_radio(name, click_by_js)
+        box = find_element(name, visible: false)
+        # Some checkboxes and radio buttons are hidden by their labels and cannot be clicked directly
+        click_by_js ? page.execute_script("arguments[0].click();", box) : box.click
       end
     end
   end

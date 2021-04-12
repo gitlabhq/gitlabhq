@@ -178,6 +178,30 @@ describe('timeIntervalInWords', () => {
   });
 });
 
+describe('humanizeTimeInterval', () => {
+  it.each`
+    intervalInSeconds | expected
+    ${0}              | ${'0 seconds'}
+    ${1}              | ${'1 second'}
+    ${1.48}           | ${'1.5 seconds'}
+    ${2}              | ${'2 seconds'}
+    ${60}             | ${'1 minute'}
+    ${91}             | ${'1.5 minutes'}
+    ${120}            | ${'2 minutes'}
+    ${3600}           | ${'1 hour'}
+    ${5401}           | ${'1.5 hours'}
+    ${7200}           | ${'2 hours'}
+    ${86400}          | ${'1 day'}
+    ${129601}         | ${'1.5 days'}
+    ${172800}         | ${'2 days'}
+  `(
+    'returns "$expected" when the time interval is $intervalInSeconds seconds',
+    ({ intervalInSeconds, expected }) => {
+      expect(datetimeUtility.humanizeTimeInterval(intervalInSeconds)).toBe(expected);
+    },
+  );
+});
+
 describe('dateInWords', () => {
   const date = new Date('07/01/2016');
 

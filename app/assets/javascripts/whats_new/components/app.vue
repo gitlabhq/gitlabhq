@@ -1,13 +1,5 @@
 <script>
-import {
-  GlDrawer,
-  GlInfiniteScroll,
-  GlResizeObserverDirective,
-  GlTabs,
-  GlTab,
-  GlBadge,
-  GlLoadingIcon,
-} from '@gitlab/ui';
+import { GlDrawer, GlInfiniteScroll, GlResizeObserverDirective } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import Tracking from '~/tracking';
 import { getDrawerBodyHeight } from '../utils/get_drawer_body_height';
@@ -20,37 +12,24 @@ export default {
   components: {
     GlDrawer,
     GlInfiniteScroll,
-    GlTabs,
-    GlTab,
     SkeletonLoader,
     Feature,
-    GlBadge,
-    GlLoadingIcon,
   },
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
   mixins: [trackingMixin],
   props: {
-    storageKey: {
+    versionDigest: {
       type: String,
       required: true,
-    },
-    versions: {
-      type: Array,
-      required: true,
-    },
-    gitlabDotCom: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   computed: {
     ...mapState(['open', 'features', 'pageInfo', 'drawerBodyHeight', 'fetching']),
   },
   mounted() {
-    this.openDrawer(this.storageKey);
+    this.openDrawer(this.versionDigest);
     this.fetchItems();
 
     const body = document.querySelector('body');
@@ -69,16 +48,6 @@ export default {
     handleResize() {
       const height = getDrawerBodyHeight(this.$refs.drawer.$el);
       this.setDrawerBodyHeight(height);
-    },
-    featuresForVersion(version) {
-      return this.features.filter((feature) => {
-        return feature.release === parseFloat(version);
-      });
-    },
-    fetchVersion(version) {
-      if (this.featuresForVersion(version).length === 0) {
-        this.fetchItems({ version });
-      }
     },
   },
 };
@@ -99,7 +68,6 @@ export default {
       </template>
       <template v-if="features.length">
         <gl-infinite-scroll
-          v-if="gitlabDotCom"
           :fetched-items="features.length"
           :max-list-height="drawerBodyHeight"
           class="gl-p-0"
@@ -109,26 +77,6 @@ export default {
             <feature v-for="feature in features" :key="feature.title" :feature="feature" />
           </template>
         </gl-infinite-scroll>
-        <gl-tabs v-else :style="{ height: `${drawerBodyHeight}px` }" class="gl-p-0">
-          <gl-tab
-            v-for="(version, index) in versions"
-            :key="version"
-            @click="fetchVersion(version)"
-          >
-            <template #title>
-              <span>{{ version }}</span>
-              <gl-badge v-if="index === 0">{{ __('Your Version') }}</gl-badge>
-            </template>
-            <gl-loading-icon v-if="fetching" size="lg" class="text-center" />
-            <template v-else>
-              <feature
-                v-for="feature in featuresForVersion(version)"
-                :key="feature.title"
-                :feature="feature"
-              />
-            </template>
-          </gl-tab>
-        </gl-tabs>
       </template>
       <div v-else class="gl-mt-5">
         <skeleton-loader />

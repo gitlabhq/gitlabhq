@@ -139,7 +139,7 @@ module CommitsHelper
   def cherry_pick_projects_data(project)
     return [] unless Feature.enabled?(:pick_into_project, project, default_enabled: :yaml)
 
-    target_projects(project).map do |project|
+    [project, project.forked_from_project].compact.map do |project|
       {
         id: project.id.to_s,
         name: project.full_path,

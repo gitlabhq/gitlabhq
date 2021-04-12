@@ -5,7 +5,19 @@ const unwrapGroups = (stages) => {
     const {
       groups: { nodes: groups },
     } = stage;
-    return { node: { ...stage, groups }, lookup: { stageIdx: idx } };
+
+    /*
+      Being peformance conscious here means we don't want to spread and copy the
+      group value just to add one parameter.
+    */
+    /* eslint-disable no-param-reassign */
+    const groupsWithStageName = groups.map((group) => {
+      group.stageName = stage.name;
+      return group;
+    });
+    /* eslint-enable no-param-reassign */
+
+    return { node: { ...stage, groups: groupsWithStageName }, lookup: { stageIdx: idx } };
   });
 };
 

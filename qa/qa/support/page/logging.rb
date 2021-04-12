@@ -52,13 +52,13 @@ module QA
           elements
         end
 
-        def check_element(name)
+        def check_element(name, click_by_js = nil)
           log("checking :#{name}")
 
           super
         end
 
-        def uncheck_element(name)
+        def uncheck_element(name, click_by_js = nil)
           log("unchecking :#{name}")
 
           super

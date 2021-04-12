@@ -3,17 +3,6 @@
 class ReleaseHighlight
   CACHE_DURATION = 1.hour
   FILES_PATH = Rails.root.join('data', 'whats_new', '*.yml')
-  RELEASE_VERSIONS_IN_A_YEAR = 12
-
-  def self.for_version(version:)
-    index = self.versions.index(version)
-
-    return if index.nil?
-
-    page = index + 1
-
-    self.paginated(page: page)
-  end
 
   def self.paginated(page: 1)
     key = self.cache_key("items:page-#{page}")
@@ -82,15 +71,15 @@ class ReleaseHighlight
     end
   end
 
-  def self.versions
-    key = self.cache_key('versions')
+  def self.most_recent_version_digest
+    key = self.cache_key('most_recent_version_digest')
 
     Gitlab::ProcessMemoryCache.cache_backend.fetch(key, expires_in: CACHE_DURATION) do
-      versions = self.file_paths.first(RELEASE_VERSIONS_IN_A_YEAR).map do |path|
-        /\d*\_(\d*\_\d*)\.yml$/.match(path).captures[0].gsub(/0(?=\d)/, "").tr("_", ".")
-      end
+      version = self.paginated&.items&.first&.[]('release')&.to_s
 
-      versions.uniq
+      next if version.nil?
+
+      Digest::SHA256.hexdigest(version)
     end
   end
 

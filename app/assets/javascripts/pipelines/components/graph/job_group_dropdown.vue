@@ -1,6 +1,4 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { reportToSentry } from '../../utils';
 import JobItem from './job_item.vue';
 
@@ -11,12 +9,8 @@ import JobItem from './job_item.vue';
  *
  */
 export default {
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
   components: {
     JobItem,
-    CiIcon,
   },
   props: {
     group: {
@@ -27,6 +21,11 @@ export default {
       type: Number,
       required: false,
       default: -1,
+    },
+    stageName: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -51,22 +50,21 @@ export default {
 <template>
   <div :id="computedJobId" class="ci-job-dropdown-container dropdown dropright">
     <button
-      v-gl-tooltip.hover="{ boundary: 'viewport' }"
-      :title="tooltipText"
       type="button"
       data-toggle="dropdown"
       data-display="static"
       class="dropdown-menu-toggle build-content gl-build-content gl-pipeline-job-width! gl-pr-4!"
     >
       <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
-        <span class="gl-display-flex gl-align-items-center gl-min-w-0">
-          <ci-icon :status="group.status" :size="24" class="gl-line-height-0" />
-          <span class="gl-text-truncate mw-70p gl-pl-3">
-            {{ group.name }}
-          </span>
-        </span>
+        <job-item
+          :dropdown-length="group.size"
+          :group-tooltip="tooltipText"
+          :job="group"
+          :stage-name="stageName"
+          @pipelineActionRequestComplete="pipelineActionRequestComplete"
+        />
 
-        <span class="gl-font-weight-100 gl-font-size-lg"> {{ group.size }} </span>
+        <div class="gl-font-weight-100 gl-font-size-lg gl-ml-n4">{{ group.size }}</div>
       </div>
     </button>
 

@@ -13,9 +13,9 @@ module QA
             end
 
             view 'app/assets/javascripts/integrations/edit/components/jira_trigger_fields.vue' do
-              element :service_jira_issue_transition_enabled
-              element :service_jira_issue_transition_automatic_true, ':data-qa-selector="`service_jira_issue_transition_automatic_${issueTransitionOption.value}`"' # rubocop:disable QA/ElementWithPattern
-              element :service_jira_issue_transition_automatic_false, ':data-qa-selector="`service_jira_issue_transition_automatic_${issueTransitionOption.value}`"' # rubocop:disable QA/ElementWithPattern
+              element :service_jira_issue_transition_enabled_checkbox
+              element :service_jira_issue_transition_automatic_true_radio, ':data-qa-selector="`service_jira_issue_transition_automatic_${issueTransitionOption.value}_radio`"' # rubocop:disable QA/ElementWithPattern
+              element :service_jira_issue_transition_automatic_false_radio, ':data-qa-selector="`service_jira_issue_transition_automatic_${issueTransitionOption.value}_radio`"' # rubocop:disable QA/ElementWithPattern
               element :service_jira_issue_transition_id_field
             end
 
@@ -55,15 +55,15 @@ module QA
             end
 
             def enable_transitions
-              click_element_coordinates(:service_jira_issue_transition_enabled, visible: false)
+              check_element(:service_jira_issue_transition_enabled_checkbox, true)
             end
 
             def use_automatic_transitions
-              click_element_coordinates(:service_jira_issue_transition_automatic_true, visible: false)
+              choose_element(:service_jira_issue_transition_automatic_true_radio, true)
             end
 
             def use_custom_transitions
-              click_element_coordinates(:service_jira_issue_transition_automatic_false, visible: false)
+              choose_element(:service_jira_issue_transition_automatic_false_radio, true)
             end
 
             def set_transition_ids(transition_ids)

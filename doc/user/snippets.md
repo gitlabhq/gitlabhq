@@ -14,7 +14,7 @@ You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
 [syntax highlighting](#filenames), [embedding](#embed-snippets), [downloading](#download-snippets),
 and you can maintain your snippets with the [snippets API](../api/snippets.md).
 
-![Example of snippet](img/snippet_tooltip_v13_10.png)
+![Example of snippet](img/snippet_intro_v13_11.png)
 
 GitLab provides two types of snippets:
 
@@ -125,7 +125,7 @@ A single snippet can support up to 10 files, which helps keep related files toge
 - A `gulpfile.js` file and a `package.json` file, which together can be
   used to bootstrap a project and manage its dependencies.
 
-If you need more than 10 files for your snippet, we recommend you a create a
+If you need more than 10 files for your snippet, we recommend you create a
 [wiki](project/wiki/index.md) instead. Wikis are available for projects at all
 subscription levels, and [groups](project/wiki/index.md#group-wikis) for
 [GitLab Premium](https://about.gitlab.com/pricing).

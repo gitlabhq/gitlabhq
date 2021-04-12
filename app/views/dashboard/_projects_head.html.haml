@@ -18,11 +18,11 @@
     = nav_link(page: [dashboard_projects_path, root_path]) do
       = link_to dashboard_projects_path, class: 'shortcuts-activity', data: {placement: 'right'} do
         = _("Your projects")
-        %span.badge.badge-pill= limited_counter_with_delimiter(@total_user_projects_count)
+        %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(@total_user_projects_count)
     = nav_link(page: starred_dashboard_projects_path) do
       = link_to starred_dashboard_projects_path, data: {placement: 'right'} do
         = _("Starred projects")
-        %span.badge.badge-pill= limited_counter_with_delimiter(@total_starred_projects_count)
+        %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(@total_starred_projects_count)
     = nav_link(page: [explore_root_path, trending_explore_projects_path, starred_explore_projects_path, explore_projects_path]) do
       = link_to explore_root_path, data: {placement: 'right'} do
         = _("Explore projects")

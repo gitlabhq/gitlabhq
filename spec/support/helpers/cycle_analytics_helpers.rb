@@ -3,15 +3,15 @@
 module CycleAnalyticsHelpers
   include GitHelpers
 
-  def wait_for_stages_to_load
-    expect(page).to have_selector '.js-stage-table'
+  def wait_for_stages_to_load(selector = '.js-path-navigation')
+    expect(page).to have_selector selector
     wait_for_requests
   end
 
-  def select_group(target_group)
+  def select_group(target_group, ready_selector = '.js-path-navigation')
     visit group_analytics_cycle_analytics_path(target_group)
 
-    wait_for_stages_to_load
+    wait_for_stages_to_load(ready_selector)
   end
 
   def toggle_dropdown(field)

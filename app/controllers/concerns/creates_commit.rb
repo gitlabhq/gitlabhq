@@ -5,19 +5,23 @@ module CreatesCommit
   include Gitlab::Utils::StrongMemoize
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
-    if user_access(@project).can_push_to_branch?(branch_name_or_ref)
-      @project_to_commit_into = @project
+  def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil, target_project: nil)
+    target_project ||= @project
+
+    if user_access(target_project).can_push_to_branch?(branch_name_or_ref)
+      @project_to_commit_into = target_project
       @branch_name ||= @ref
     else
-      @project_to_commit_into = current_user.fork_of(@project)
+      @project_to_commit_into = current_user.fork_of(target_project)
       @branch_name ||= @project_to_commit_into.repository.next_branch('patch')
     end
 
     @start_branch ||= @ref || @branch_name
 
+    start_project = Feature.enabled?(:pick_into_project, @project, default_enabled: :yaml) ? @project_to_commit_into : @project
+
     commit_params = @commit_params.merge(
-      start_project: @project,
+      start_project: start_project,
       start_branch: @start_branch,
       branch_name: @branch_name
     )
@@ -27,7 +31,7 @@ module CreatesCommit
     if result[:status] == :success
       update_flash_notice(success_notice)
 
-      success_path = final_success_path(success_path)
+      success_path = final_success_path(success_path, target_project)
 
       respond_to do |format|
         format.html { redirect_to success_path }
@@ -79,9 +83,9 @@ module CreatesCommit
     end
   end
 
-  def final_success_path(success_path)
+  def final_success_path(success_path, target_project)
     if create_merge_request?
-      merge_request_exists? ? existing_merge_request_path : new_merge_request_path
+      merge_request_exists? ? existing_merge_request_path : new_merge_request_path(target_project)
     else
       success_path = success_path.call if success_path.respond_to?(:call)
 
@@ -90,12 +94,12 @@ module CreatesCommit
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  def new_merge_request_path
+  def new_merge_request_path(target_project)
     project_new_merge_request_path(
       @project_to_commit_into,
       merge_request: {
         source_project_id: @project_to_commit_into.id,
-        target_project_id: @project.id,
+        target_project_id: target_project.id,
         source_branch: @branch_name,
         target_branch: @start_branch
       }

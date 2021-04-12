@@ -31,7 +31,13 @@ msgstr ""
 msgid " Please sign in."
 msgstr ""
 
+msgid " Target Path"
+msgstr ""
+
 msgid " Try to %{action} this file again."
+msgstr ""
+
+msgid " Type"
 msgstr ""
 
 msgid " You need to do this before %{grace_period_deadline}."
@@ -5245,6 +5251,9 @@ msgstr ""
 msgid "Broadcast Messages"
 msgstr ""
 
+msgid "Broadcast messages are displayed for every user and can be used to notify users about scheduled maintenance, recent upgrades and more."
+msgstr ""
+
 msgid "Browse Directory"
 msgstr ""
 
@@ -5680,6 +5689,21 @@ msgid "Cannot skip two factor authentication setup"
 msgstr ""
 
 msgid "Capacity threshold"
+msgstr ""
+
+msgid "CascadingSettings|Enforce for all subgroups"
+msgstr ""
+
+msgid "CascadingSettings|Setting enforced"
+msgstr ""
+
+msgid "CascadingSettings|Subgroups cannot change this setting."
+msgstr ""
+
+msgid "CascadingSettings|This setting has been enforced by an instance admin."
+msgstr ""
+
+msgid "CascadingSettings|This setting has been enforced by an owner of %{link}."
 msgstr ""
 
 msgid "CascadingSettings|cannot be changed because it is locked by an ancestor"
@@ -6376,6 +6400,9 @@ msgid "Click %{link_to} to view the request."
 msgstr ""
 
 msgid "Click the button below."
+msgstr ""
+
+msgid "Click the link below to confirm your email address."
 msgstr ""
 
 msgid "Click to expand it."
@@ -8153,6 +8180,12 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
+msgid "Confirm your account"
+msgstr ""
+
+msgid "Confirm your email address"
+msgstr ""
+
 msgid "Confirmation email sent to %{email}"
 msgstr ""
 
@@ -9666,16 +9699,37 @@ msgstr ""
 msgid "DORA4Metrics|Date"
 msgstr ""
 
+msgid "DORA4Metrics|Days from merge to deploy"
+msgstr ""
+
 msgid "DORA4Metrics|Deployments"
 msgstr ""
 
 msgid "DORA4Metrics|Deployments charts"
 msgstr ""
 
+msgid "DORA4Metrics|Lead time"
+msgstr ""
+
+msgid "DORA4Metrics|Median lead time"
+msgstr ""
+
+msgid "DORA4Metrics|No merge requests were deployed during this period"
+msgstr ""
+
 msgid "DORA4Metrics|Something went wrong while getting deployment frequency data"
 msgstr ""
 
+msgid "DORA4Metrics|Something went wrong while getting lead time data."
+msgstr ""
+
 msgid "DORA4Metrics|These charts display the frequency of deployments to the production environment, as part of the DORA 4 metrics. The environment must be named %{codeStart}production%{codeEnd} for its data to appear in these charts."
+msgstr ""
+
+msgid "DORA4Metrics|These charts display the median time between a merge request being merged and deployed to production, as part of the DORA 4 metrics."
+msgstr ""
+
+msgid "DORA4|Lead time charts"
 msgstr ""
 
 msgid "Dashboard"
@@ -11848,6 +11902,9 @@ msgid "Encountered an error while rendering: %{err}"
 msgstr ""
 
 msgid "End Time"
+msgstr ""
+
+msgid "Ends"
 msgstr ""
 
 msgid "Ends at (UTC)"
@@ -15350,7 +15407,16 @@ msgstr ""
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr ""
 
-msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. This delay can be %{customization_link} in instance settings"
+msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay."
+msgstr ""
+
+msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. Inherited by subgroups."
+msgstr ""
+
+msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. This delay can be %{link_start}customized by an admin%{link_end} in instance settings."
+msgstr ""
+
+msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. This delay can be %{link_start}customized by an admin%{link_end} in instance settings. Inherited by subgroups."
 msgstr ""
 
 msgid "GroupSettings|Select a sub-group as the custom project template source for this group."
@@ -25473,6 +25539,9 @@ msgstr ""
 msgid "Purchase more storage"
 msgstr ""
 
+msgid "PurchaseStep|An error occured in the purchase step. If the problem persists please contact support@gitlab.com."
+msgstr ""
+
 msgid "Push"
 msgstr ""
 
@@ -29512,6 +29581,9 @@ msgstr ""
 msgid "Starting..."
 msgstr ""
 
+msgid "Starts"
+msgstr ""
+
 msgid "Starts %{startsIn}"
 msgstr ""
 
@@ -30616,6 +30688,9 @@ msgid "Thank you for your report. A GitLab administrator will look into it short
 msgstr ""
 
 msgid "Thank you for your support request! We are tracking your request as ticket #%{issue_iid}, and will respond as soon as we can."
+msgstr ""
+
+msgid "Thanks for signing up to GitLab!"
 msgstr ""
 
 msgid "Thanks for your purchase!"
@@ -34907,6 +34982,9 @@ msgstr ""
 msgid "Welcome to the guided GitLab tour"
 msgstr ""
 
+msgid "Welcome, %{name}!"
+msgstr ""
+
 msgid "What are you searching for?"
 msgstr ""
 
@@ -35906,9 +35984,6 @@ msgid "Your U2F device did not send a valid JSON response."
 msgstr ""
 
 msgid "Your U2F device was registered!"
-msgstr ""
-
-msgid "Your Version"
 msgstr ""
 
 msgid "Your WebAuthn device did not send a valid JSON response."

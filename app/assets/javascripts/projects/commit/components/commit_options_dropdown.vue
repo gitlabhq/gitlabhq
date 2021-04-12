@@ -72,6 +72,7 @@ export default {
     <gl-dropdown-item
       v-if="canCherryPick"
       data-testid="cherry-pick-link"
+      data-qa-selector="cherry_pick_button"
       @click="showModal($options.openCherryPickModal)"
     >
       {{ s__('ChangeTypeAction|Cherry-pick') }}

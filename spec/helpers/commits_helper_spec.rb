@@ -200,7 +200,7 @@ RSpec.describe CommitsHelper do
     end
 
     it 'returns data for cherry picking into a project' do
-      expect(helper.cherry_pick_projects_data(project)).to match_array([
+      expect(helper.cherry_pick_projects_data(forked_project)).to match_array([
         { id: project.id.to_s, name: project.full_path, refsUrl: refs_project_path(project) },
         { id: forked_project.id.to_s, name: forked_project.full_path, refsUrl: refs_project_path(forked_project) }
       ])

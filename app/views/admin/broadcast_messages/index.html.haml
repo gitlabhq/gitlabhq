@@ -2,10 +2,9 @@
 - page_title _("Broadcast Messages")
 
 %h3.page-title
-  Broadcast Messages
+  = _('Broadcast Messages')
 %p.light
-  Broadcast messages are displayed for every user and can be used to notify
-  users about scheduled maintenance, recent upgrades and more.
+  = _('Broadcast messages are displayed for every user and can be used to notify users about scheduled maintenance, recent upgrades and more.')
 
 = render 'form'
 
@@ -15,12 +14,12 @@
   %table.table.table-responsive
     %thead
       %tr
-        %th Status
-        %th Preview
-        %th Starts
-        %th Ends
-        %th Target Path
-        %th Type
+        %th= _('Status')
+        %th= _('Preview')
+        %th= _('Starts')
+        %th= _('Ends')
+        %th= _(' Target Path')
+        %th= _(' Type')
         %th &nbsp;
     %tbody
       - @broadcast_messages.each do |message|
@@ -38,7 +37,7 @@
           %td
             = message.broadcast_type.capitalize
           %td.gl-white-space-nowrap.gl-display-flex
-            = link_to sprite_icon('pencil-square', css_class: 'gl-icon'), edit_admin_broadcast_message_path(message), title: 'Edit', class: 'btn btn-icon gl-button'
-            = link_to sprite_icon('remove', css_class: 'gl-icon'), admin_broadcast_message_path(message), method: :delete, remote: true, title: 'Remove', class: 'js-remove-tr btn btn-icon gl-button btn-danger ml-2'
+            = link_to sprite_icon('pencil-square', css_class: 'gl-icon'), edit_admin_broadcast_message_path(message), title: _('Edit'), class: 'btn btn-icon gl-button'
+            = link_to sprite_icon('remove', css_class: 'gl-icon'), admin_broadcast_message_path(message), method: :delete, remote: true, title: _('Remove'), class: 'js-remove-tr btn btn-icon gl-button btn-danger ml-2'
 
   = paginate @broadcast_messages, theme: 'gitlab'

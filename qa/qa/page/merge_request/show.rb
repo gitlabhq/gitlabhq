@@ -238,18 +238,12 @@ module QA
         end
 
         def mark_to_squash
-          # The squash checkbox is disabled on load
-          wait_until do
-            has_element?(:squash_checkbox)
-          end
-
           # The squash checkbox is enabled via JS
           wait_until(reload: false) do
-            !find_element(:squash_checkbox).disabled?
+            !find_element(:squash_checkbox, visible: false).disabled?
           end
 
-          # TODO: Fix workaround for data-qa-selector failure
-          click_element(:squash_checkbox)
+          check_element(:squash_checkbox, true)
         end
 
         def merge!

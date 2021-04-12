@@ -28,7 +28,7 @@ const mockGroups = Array(4)
   });
 
 const defaultProps = {
-  title: 'Fish',
+  name: 'Fish',
   groups: mockGroups,
   pipelineId: 159,
 };
@@ -62,7 +62,7 @@ describe('stage column component', () => {
     });
 
     it('should render provided title', () => {
-      expect(findStageColumnTitle().text()).toBe(defaultProps.title);
+      expect(findStageColumnTitle().text()).toBe(defaultProps.name);
     });
 
     it('should render the provided groups', () => {
@@ -119,7 +119,7 @@ describe('stage column component', () => {
                 ],
               },
             ],
-            title: 'test <img src=x onerror=alert(document.domain)>',
+            name: 'test <img src=x onerror=alert(document.domain)>',
           },
         });
       });
