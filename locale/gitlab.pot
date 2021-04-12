@@ -7017,7 +7017,7 @@ msgstr ""
 msgid "ClusterIntegration|If you do not wish to delete all associated GitLab resources, you can simply remove the integration."
 msgstr ""
 
-msgid "ClusterIntegration|In order to view the health of your cluster, you must first install Prometheus in the Applications tab."
+msgid "ClusterIntegration|In order to view the health of your cluster, you must first enable Prometheus in the Integrations tab."
 msgstr ""
 
 msgid "ClusterIntegration|Ingress"

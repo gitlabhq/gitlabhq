@@ -33,7 +33,7 @@ RSpec.describe 'Cluster Health board', :js, :kubeclient, :use_clean_rails_memory
 
       click_link 'Health'
 
-      expect(page).to have_text('you must first install Prometheus in the Applications tab')
+      expect(page).to have_text('you must first enable Prometheus in the Integrations tab')
     end
   end
 

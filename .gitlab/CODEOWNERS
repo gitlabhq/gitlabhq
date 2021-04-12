@@ -193,7 +193,7 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/auth/ldap/ @dblessing @mkozono
 
 [Templates]
-/lib/gitlab/ci/templates/ @nolith @shinya.maeda
+/lib/gitlab/ci/templates/ @nolith @shinya.maeda @matteeyah
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
 /lib/gitlab/ci/templates/Security/ @plafoucriere @gonzoyumo @twoodham @sethgitlab
 

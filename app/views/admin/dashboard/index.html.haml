@@ -165,27 +165,30 @@
         .gl-card-body
           %h4= s_('AdminArea|Latest projects')
           - @projects.each do |project|
-            %p
-              = link_to project.full_name, admin_project_path(project), class: 'str-truncated-60'
-              %span.light.float-right
+            .gl-display-flex.gl-py-3
+              .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
+                = link_to project.full_name, admin_project_path(project)
+              %span.gl-white-space-nowrap.gl-text-right
                 #{time_ago_with_tooltip(project.created_at)}
     .col-md-4.gl-mb-6
       .gl-card
         .gl-card-body
           %h4= s_('AdminArea|Latest users')
           - @users.each do |user|
-            %p
-              = link_to [:admin, user], class: 'str-truncated-60' do
-                = user.name
-              %span.light.float-right
+            .gl-display-flex.gl-py-3
+              .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
+                = link_to [:admin, user] do
+                  = user.name
+              %span.gl-white-space-nowrap.gl-text-right
                 #{time_ago_with_tooltip(user.created_at)}
     .col-md-4.gl-mb-6
       .gl-card
         .gl-card-body
           %h4= s_('AdminArea|Latest groups')
           - @groups.each do |group|
-            %p
-              = link_to [:admin, group], class: 'str-truncated-60' do
-                = group.full_name
-              %span.light.float-right
+            .gl-display-flex.gl-py-3
+              .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
+                = link_to [:admin, group] do
+                  = group.full_name
+              %span.gl-white-space-nowrap.gl-text-right
                 #{time_ago_with_tooltip(group.created_at)}
