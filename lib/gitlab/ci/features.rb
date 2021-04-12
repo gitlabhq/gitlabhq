@@ -63,10 +63,6 @@ module Gitlab
       def self.multiple_cache_per_job?
         ::Feature.enabled?(:multiple_cache_per_job, default_enabled: :yaml)
       end
-
-      def self.remove_duplicate_artifact_exposure_paths?(project)
-        ::Feature.enabled?(:remove_duplicate_artifact_exposure_paths, project, default_enabled: :yaml)
-      end
     end
   end
 end

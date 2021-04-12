@@ -27,28 +27,6 @@ RSpec.describe BuildArtifactEntity do
       expect(subject[:path]).to include "jobs/#{job.id}/artifacts/download?file_type=codequality"
     end
 
-    context 'with remove_duplicate_artifact_exposure_paths enabled' do
-      before do
-        stub_feature_flags(remove_duplicate_artifact_exposure_paths: true)
-      end
-
-      it 'has no keep or browse path' do
-        expect(subject).not_to include(:keep_path)
-        expect(subject).not_to include(:browse_path)
-      end
-    end
-
-    context 'with remove_duplicate_artifact_exposure_paths disabled' do
-      before do
-        stub_feature_flags(remove_duplicate_artifact_exposure_paths: false)
-      end
-
-      it 'has keep and browse paths' do
-        expect(subject[:keep_path]).to be_present
-        expect(subject[:browse_path]).to be_present
-      end
-    end
-
     context 'when project is specified in options' do
       let(:options) { super().merge(project: job.project) }
 

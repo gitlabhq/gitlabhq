@@ -52,19 +52,26 @@ RSpec.describe BulkImports::Common::Transformers::UserReferenceTransformer do
     end
 
     context 'when custom reference is provided' do
-      it 'updates provided reference' do
-        hash = {
-          'author' => {
-            'public_email' => user.email
+      shared_examples 'updates provided reference' do |reference|
+        let(:hash) do
+          {
+            'author' => {
+              'public_email' => user.email
+            }
           }
-        }
+        end
 
-        transformer = described_class.new(reference: 'author')
-        result = transformer.transform(context, hash)
+        it 'updates provided reference' do
+          transformer = described_class.new(reference: reference)
+          result = transformer.transform(context, hash)
 
-        expect(result['author']).to be_nil
-        expect(result['author_id']).to eq(user.id)
+          expect(result['author']).to be_nil
+          expect(result['author_id']).to eq(user.id)
+        end
       end
+
+      include_examples 'updates provided reference', 'author'
+      include_examples 'updates provided reference', :author
     end
   end
 end

@@ -21,19 +21,7 @@ class BuildArtifactEntity < Grape::Entity
     )
   end
 
-  expose :keep_path, if: -> (*) { artifact.expiring? && show_duplicated_paths?(project) } do |artifact|
-    fast_keep_project_job_artifacts_path(project, artifact.job)
-  end
-
-  expose :browse_path, if: -> (*) { show_duplicated_paths?(project) } do |artifact|
-    fast_browse_project_job_artifacts_path(project, artifact.job)
-  end
-
   private
-
-  def show_duplicated_paths?(project)
-    !Gitlab::Ci::Features.remove_duplicate_artifact_exposure_paths?(project)
-  end
 
   def project
     options[:project] || artifact.project

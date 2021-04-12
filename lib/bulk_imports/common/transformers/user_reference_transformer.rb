@@ -12,7 +12,7 @@ module BulkImports
         DEFAULT_REFERENCE = 'user'
 
         def initialize(options = {})
-          @reference = options[:reference] || DEFAULT_REFERENCE
+          @reference = options[:reference].to_s.presence || DEFAULT_REFERENCE
           @suffixed_reference = "#{@reference}_id"
         end
 

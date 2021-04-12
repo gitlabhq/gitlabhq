@@ -36,13 +36,13 @@ For example:
 
 To minimize problems during the documentation release process, use the following timeline:
 
-- Before the 20nd of the month:
+- Any time before the 17th of the month:
 
   [Add the charts version](#add-chart-version), so that the documentation is built using the
   [version of the charts project that maps to](https://docs.gitlab.com/charts/installation/version_mappings.html)
   the GitLab release. This step may have been completed already.
 
-- On or near the 20th of the month:
+- Between the 17th and the 20th of the month:
 
   1. [Create a stable branch and Docker image](#create-stable-branch-and-docker-image-for-release) for
      the new version.

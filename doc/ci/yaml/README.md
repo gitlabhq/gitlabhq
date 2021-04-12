@@ -2782,7 +2782,7 @@ To follow progress on support for GitLab-managed clusters, see the
 
 #### `environment:deployment_tier`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 13.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
 
 Use the `deployment_tier` keyword to specify the tier of the deployment environment:
 

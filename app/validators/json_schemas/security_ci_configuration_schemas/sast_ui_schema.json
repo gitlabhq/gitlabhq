@@ -51,23 +51,6 @@
     ],
     "analyzers": [
         {
-            "name": "brakeman",
-            "label": "Brakeman",
-            "enabled" : true,
-            "description": "Ruby on Rails",
-            "variables": [
-                {
-                    "field" : "SAST_BRAKEMAN_LEVEL",
-                    "label" : "Brakeman confidence level.",
-                    "type": "string",
-                    "default_value": "1",
-                    "value": "",
-                    "size": "SMALL",
-                    "description": "Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low, 2=Medium, 3=High."
-                }
-            ]
-        },
-        {
             "name": "bandit",
             "label": "Bandit",
             "enabled" : true,
@@ -75,12 +58,29 @@
             "variables": [
                 {
                     "field" : "SAST_BANDIT_EXCLUDED_PATHS",
-                    "label" : "Paths to exclude from scan.",
+                    "label" : "Paths to exclude from scan",
                     "type": "string",
                     "default_value": "",
                     "value": "",
                     "size": "SMALL",
                     "description": "Comma-separated list of paths to exclude from scan. Uses Python’s 'fnmatch' syntax; For example: '*/tests/*, */venv/*'"
+                }
+            ]
+        },
+        {
+            "name": "brakeman",
+            "label": "Brakeman",
+            "enabled" : true,
+            "description": "Ruby on Rails",
+            "variables": [
+                {
+                    "field" : "SAST_BRAKEMAN_LEVEL",
+                    "label" : "Brakeman confidence level",
+                    "type": "string",
+                    "default_value": "1",
+                    "value": "",
+                    "size": "SMALL",
+                    "description": "Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low, 2=Medium, 3=High."
                 }
             ]
         },
@@ -110,7 +110,7 @@
         },
         {
             "name": "kubesec",
-            "label": "kubesec",
+            "label": "Kubesec",
             "enabled" : true,
             "description": "Kubernetes manifests, Helm Charts",
             "variables": []
@@ -124,7 +124,7 @@
         },
         {
             "name": "gosec",
-            "label": "Golang Security Checker",
+            "label": "Gosec",
             "enabled" : true,
             "description": "Go",
             "variables": [
