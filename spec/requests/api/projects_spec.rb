@@ -1584,7 +1584,6 @@ RSpec.describe API::Projects do
       expect(json_response['alt']).to eq("dk")
       expect(json_response['url']).to start_with("/uploads/")
       expect(json_response['url']).to end_with("/dk.png")
-
       expect(json_response['full_path']).to start_with("/#{project.namespace.path}/#{project.path}/uploads")
     end
 
@@ -1594,6 +1593,24 @@ RSpec.describe API::Projects do
       expect(Gitlab::AppLogger).to receive(:info).with(hash_including(message: 'File exceeds maximum size')).and_call_original
 
       post api("/projects/#{project.id}/uploads", user), params: { file: file }
+    end
+
+    it "does not leave the temporary file in place after uploading, even when the tempfile reaper does not run" do
+      stub_env('GITLAB_TEMPFILE_IMMEDIATE_UNLINK', '1')
+      tempfile = Tempfile.new('foo')
+      path = tempfile.path
+
+      allow_any_instance_of(Rack::TempfileReaper).to receive(:call) do |instance, env|
+        instance.instance_variable_get(:@app).call(env)
+      end
+
+      expect(path).not_to be(nil)
+      expect(Rack::Multipart::Parser::TEMPFILE_FACTORY).to receive(:call).and_return(tempfile)
+
+      post api("/projects/#{project.id}/uploads", user), params: { file: fixture_file_upload("spec/fixtures/dk.png", "image/png") }
+
+      expect(tempfile.path).to be(nil)
+      expect(File.exist?(path)).to be(false)
     end
 
     shared_examples 'capped upload attachments' do

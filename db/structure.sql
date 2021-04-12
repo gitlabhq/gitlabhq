@@ -16520,6 +16520,7 @@ CREATE TABLE project_settings (
     allow_editing_commit_messages boolean DEFAULT false NOT NULL,
     prevent_merge_without_jira_issue boolean DEFAULT false NOT NULL,
     cve_id_request_enabled boolean DEFAULT true NOT NULL,
+    mr_default_target_self boolean DEFAULT false NOT NULL,
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL))
 );
 
@@ -23229,9 +23230,7 @@ CREATE INDEX index_notes_on_project_id_and_noteable_type ON notes USING btree (p
 
 CREATE INDEX index_notes_on_review_id ON notes USING btree (review_id);
 
-CREATE INDEX index_notification_settings_on_source_id_and_source_type ON notification_settings USING btree (source_id, source_type);
-
-CREATE INDEX index_notification_settings_on_user_id ON notification_settings USING btree (user_id);
+CREATE INDEX index_notification_settings_on_source_and_level_and_user ON notification_settings USING btree (source_id, source_type, level, user_id);
 
 CREATE UNIQUE INDEX index_notifications_on_user_id_and_source_id_and_source_type ON notification_settings USING btree (user_id, source_id, source_type);
 

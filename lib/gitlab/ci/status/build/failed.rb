@@ -26,7 +26,9 @@ module Gitlab
             bridge_pipeline_is_child_pipeline: 'creation of child pipeline not allowed from another child pipeline',
             downstream_pipeline_creation_failed: 'downstream pipeline can not be created',
             secrets_provider_not_found: 'secrets provider can not be found',
-            reached_max_descendant_pipelines_depth: 'reached maximum depth of child pipelines'
+            reached_max_descendant_pipelines_depth: 'reached maximum depth of child pipelines',
+            project_deleted: 'pipeline project was deleted',
+            user_blocked: 'pipeline user was blocked'
           }.freeze
 
           private_constant :REASONS

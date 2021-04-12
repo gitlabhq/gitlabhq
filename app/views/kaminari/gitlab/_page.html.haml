@@ -10,5 +10,5 @@
   ('sibling' if page.next? || page.prev?),
   ('js-first-button' if page.first?),
   ('js-last-button' if page.last?),
-  ('d-none d-md-block' if !page.current?) ] }
+  ('d-none d-md-block' if !page.current?)] }
   = link_to page, url, { remote: remote, rel: page.next? ? 'next' : page.prev? ? 'prev' : nil, class: ['page-link', active_when(page.current?)] }

@@ -6,7 +6,7 @@ import { loadBranches } from '~/projects/commit_box/info/load_branches';
 
 const mockCommitPath = '/commit/abcd/branches';
 const mockBranchesRes =
-  '<a href="/-/commits/master">master</a><span><a href="/-/commits/my-branch">my-branch</a></span>';
+  '<a href="/-/commits/main">main</a><span><a href="/-/commits/my-branch">my-branch</a></span>';
 
 describe('~/projects/commit_box/info/load_branches', () => {
   let mock;
@@ -45,7 +45,7 @@ describe('~/projects/commit_box/info/load_branches', () => {
     beforeEach(() => {
       mock
         .onGet(mockCommitPath)
-        .reply(200, '<a onload="alert(\'xss!\');" href="/-/commits/master">master</a>');
+        .reply(200, '<a onload="alert(\'xss!\');" href="/-/commits/main">main</a>');
     });
 
     it('displays sanitized html', async () => {
@@ -53,7 +53,7 @@ describe('~/projects/commit_box/info/load_branches', () => {
       await waitForPromises();
 
       expect(getElInnerHtml()).toMatchInterpolatedText(
-        '<div class="commit-info branches"><a href="/-/commits/master">master</a></div>',
+        '<div class="commit-info branches"><a href="/-/commits/main">main</a></div>',
       );
     });
   });

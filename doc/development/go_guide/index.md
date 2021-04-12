@@ -499,6 +499,12 @@ of the Code Review Comments page on the Go wiki for more details.
 Most editors/IDEs allow you to run commands before/after saving a file, you can set it
 up to run `goimports -local gitlab.com/gitlab-org` so that it's applied to every file when saving.
 
+### Analyzer Tests
+
+The conventional Secure [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/) has a [`convert` function](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/convert.go#L15-17) that converts SAST/DAST scanner reports into [GitLab Security Reports](https://gitlab.com/gitlab-org/security-products/security-report-schemas). When writing tests for the `convert` function, we should make use of [test fixtures](https://dave.cheney.net/2016/05/10/test-fixtures-in-go) using a `testdata` directory at the root of the analyzer's repo. The `testdata` directory should contain two subdirectories: `expect` and `reports`. The `reports` directory should contain sample SAST/DAST scanner reports which are passed into the `convert` function during the test setup. The `expect` directory should contain the expected GitLab Security Report that the `convert` returns. See Secret Detection for an [example](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/160424589ef1eed7b91b59484e019095bc7233bd/convert_test.go#L13-66).
+
+If the scanner report is small, less than 35 lines, then feel free to [inline the report](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/blob/8bd2428a/convert/convert_test.go#L13-77) rather than use a `testdata` directory.
+
 ---
 
 [Return to Development documentation](../README.md).

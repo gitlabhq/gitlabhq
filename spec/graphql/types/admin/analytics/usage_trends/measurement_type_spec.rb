@@ -11,6 +11,7 @@ RSpec.describe GitlabSchema.types['UsageTrendsMeasurement'] do
 
   describe 'authorization' do
     let_it_be(:measurement) { create(:usage_trends_measurement, :project_count) }
+
     let(:user) { create(:user) }
 
     let(:query) do

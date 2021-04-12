@@ -1,0 +1,5 @@
+---
+title: Fix badge s and borders in dark mode info wells
+merge_request: 58875
+author:
+type: fixed

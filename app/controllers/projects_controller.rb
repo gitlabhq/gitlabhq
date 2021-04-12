@@ -404,6 +404,7 @@ class ProjectsController < Projects::ApplicationController
       show_default_award_emojis
       squash_option
       allow_editing_commit_messages
+      mr_default_target_self
     ]
   end
 

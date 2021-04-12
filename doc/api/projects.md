@@ -1196,7 +1196,7 @@ POST /projects/user/:user_id
 | `avatar`                                                    | mixed   | **{dotted-circle}** No | Image file for avatar of the project. |
 | `build_coverage_regex`                                      | string  | **{dotted-circle}** No | Test coverage parsing. |
 | `build_git_strategy`                                        | string  | **{dotted-circle}** No | The Git strategy. Defaults to `fetch`. |
-| `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time in minutes that a job is able run (in seconds). |
+| `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `ci_config_path`                                            | string  | **{dotted-circle}** No | The path to CI configuration file. |
 | `container_registry_enabled`                                | boolean | **{dotted-circle}** No | Enable container registry for this project. |
@@ -1269,7 +1269,7 @@ PUT /projects/:id
 | `avatar`                                                    | mixed          | **{dotted-circle}** No | Image file for avatar of the project.                |
 | `build_coverage_regex`                                      | string         | **{dotted-circle}** No | Test coverage parsing. |
 | `build_git_strategy`                                        | string         | **{dotted-circle}** No | The Git strategy. Defaults to `fetch`. |
-| `build_timeout`                                             | integer        | **{dotted-circle}** No | The maximum amount of time in minutes that a job is able run (in seconds). |
+| `build_timeout`                                             | integer        | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `ci_config_path`                                            | string         | **{dotted-circle}** No | The path to CI configuration file. |
 | `ci_default_git_depth`                                      | integer        | **{dotted-circle}** No | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#git-shallow-clone). |

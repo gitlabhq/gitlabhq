@@ -121,10 +121,6 @@ hr {
     @include str-truncated(30%);
   }
 
-  &-60 {
-    @include str-truncated(60%);
-  }
-
   &-100 {
     @include str-truncated(100%);
   }

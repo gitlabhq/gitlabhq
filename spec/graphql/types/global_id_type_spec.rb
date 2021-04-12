@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Types::GlobalIDType do
   let_it_be(:project) { create(:project) }
+
   let(:gid) { project.to_global_id }
 
   it 'is has the correct name' do

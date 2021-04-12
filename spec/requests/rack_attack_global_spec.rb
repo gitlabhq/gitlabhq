@@ -143,6 +143,31 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         end
       end
 
+      context 'when the request is to a container registry notification endpoint' do
+        let(:secret_token) { 'secret_token' }
+        let(:events) { [{ action: 'push' }] }
+        let(:registry_endpoint) { '/api/v4/container_registry_event/events' }
+        let(:registry_headers) { { 'Content-Type' => ::API::ContainerRegistryEvent::DOCKER_DISTRIBUTION_EVENTS_V1_JSON } }
+
+        before do
+          allow(Gitlab.config.registry).to receive(:notification_secret) { secret_token }
+
+          event = spy(:event)
+          allow(::ContainerRegistry::Event).to receive(:new).and_return(event)
+          allow(event).to receive(:supported?).and_return(true)
+        end
+
+        it 'does not throttle the requests' do
+          (1 + requests_per_period).times do
+            post registry_endpoint,
+                 params: { events: events }.to_json,
+                 headers: registry_headers.merge('Authorization' => secret_token)
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
+
       it 'logs RackAttack info into structured logs' do
         requests_per_period.times do
           get url_that_does_not_require_authentication

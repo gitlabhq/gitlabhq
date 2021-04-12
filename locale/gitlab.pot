@@ -18220,6 +18220,9 @@ msgstr ""
 msgid "Last contact"
 msgstr ""
 
+msgid "Last edit"
+msgstr ""
+
 msgid "Last edited %{date}"
 msgstr ""
 
@@ -24693,10 +24696,19 @@ msgstr ""
 msgid "ProjectSettings|Supported variables:"
 msgstr ""
 
+msgid "ProjectSettings|Target project"
+msgstr ""
+
 msgid "ProjectSettings|The commit message used when applying merge request suggestions. %{link_start}Learn more about suggestions.%{link_end}"
 msgstr ""
 
+msgid "ProjectSettings|The default target project for merge requests created in this fork project."
+msgstr ""
+
 msgid "ProjectSettings|These checks must pass before merge requests can be merged."
+msgstr ""
+
+msgid "ProjectSettings|This project"
 msgstr ""
 
 msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."
@@ -24712,6 +24724,9 @@ msgid "ProjectSettings|To enable this feature, configure pipelines. %{link_start
 msgstr ""
 
 msgid "ProjectSettings|Transfer project"
+msgstr ""
+
+msgid "ProjectSettings|Upstream project"
 msgstr ""
 
 msgid "ProjectSettings|Used for every new merge request."

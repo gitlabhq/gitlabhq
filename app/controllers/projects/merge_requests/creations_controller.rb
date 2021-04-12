@@ -121,13 +121,15 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   # rubocop: disable CodeReuse/ActiveRecord
   def selected_target_project
-    if @project.id.to_s == params[:target_project_id] || !@project.forked?
-      @project
-    elsif params[:target_project_id].present?
+    return @project unless @project.forked?
+
+    if params[:target_project_id].present?
+      return @project if @project.id.to_s == params[:target_project_id]
+
       MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: @project)
         .find_by(id: params[:target_project_id])
     else
-      @project.forked_from_project
+      @project.default_merge_request_target
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

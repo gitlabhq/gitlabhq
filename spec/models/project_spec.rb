@@ -3803,49 +3803,74 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#default_merge_request_target' do
+    let_it_be(:project) { create(:project, :public) }
+
+    let!(:forked) { fork_project(project) }
+
+    context 'when mr_default_target_self is set to true' do
+      it 'returns the current project' do
+        expect(forked.project_setting).to receive(:mr_default_target_self)
+          .and_return(true)
+
+        expect(forked.default_merge_request_target).to eq(forked)
+      end
+    end
+
+    context 'when merge request can not target upstream' do
+      it 'returns the current project' do
+        expect(forked).to receive(:mr_can_target_upstream?).and_return(false)
+
+        expect(forked.default_merge_request_target).to eq(forked)
+      end
+    end
+
+    context 'when merge request can target upstream' do
+      it 'returns the source project' do
+        expect(forked).to receive(:mr_can_target_upstream?).and_return(true)
+
+        expect(forked.default_merge_request_target).to eq(project)
+      end
+    end
+  end
+
+  describe '#mr_can_target_upstream?' do
+    let_it_be(:project) { create(:project, :public) }
+
+    let!(:forked) { fork_project(project) }
+
     context 'when forked from a more visible project' do
-      it 'returns the more restrictive project' do
-        project = create(:project, :public)
-        forked = fork_project(project)
+      it 'can not target the upstream project' do
         forked.visibility = Gitlab::VisibilityLevel::PRIVATE
         forked.save!
 
         expect(project.visibility).to eq 'public'
         expect(forked.visibility).to eq 'private'
 
-        expect(forked.default_merge_request_target).to eq(forked)
+        expect(forked.mr_can_target_upstream?).to be_falsey
       end
     end
 
     context 'when forked from a project with disabled merge requests' do
-      it 'returns the current project' do
-        project = create(:project, :merge_requests_disabled)
-        forked = fork_project(project)
+      it 'can not target the upstream project' do
+        project.project_feature
+          .update!(merge_requests_access_level: ProjectFeature::DISABLED)
 
         expect(forked.forked_from_project).to receive(:merge_requests_enabled?)
           .and_call_original
 
-        expect(forked.default_merge_request_target).to eq(forked)
+        expect(forked.mr_can_target_upstream?).to be_falsey
       end
     end
 
     context 'when forked from a project with enabled merge requests' do
-      it 'returns the source project' do
-        project = create(:project, :public)
-        forked = fork_project(project)
-
-        expect(project.visibility).to eq 'public'
-        expect(forked.visibility).to eq 'public'
-
-        expect(forked.default_merge_request_target).to eq(project)
+      it 'can target the upstream project' do
+        expect(forked.mr_can_target_upstream?).to be_truthy
       end
     end
 
     context 'when not forked' do
-      it 'returns the current project' do
-        project = build_stubbed(:project)
-
-        expect(project.default_merge_request_target).to eq(project)
+      it 'can not target the upstream project' do
+        expect(project.mr_can_target_upstream?).to be_falsey
       end
     end
   end

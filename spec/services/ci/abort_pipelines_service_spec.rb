@@ -17,33 +17,38 @@ RSpec.describe Ci::AbortPipelinesService do
   describe '#execute' do
     def expect_correct_cancellations
       expect(cancelable_pipeline.finished_at).not_to be_nil
-      expect(cancelable_pipeline).to be_canceled
-      expect(cancelable_pipeline.stages - [non_cancelable_stage]).to all(be_canceled)
-      expect(cancelable_build).to be_canceled
+      expect(cancelable_pipeline.status).to eq('failed')
+      expect((cancelable_pipeline.stages - [non_cancelable_stage]).map(&:status)).to all(eq('failed'))
+      expect(cancelable_build.status).to eq('failed')
+      expect(cancelable_build.finished_at).not_to be_nil
 
-      expect(manual_pipeline).not_to be_canceled
-      expect(non_cancelable_stage).not_to be_canceled
-      expect(non_cancelable_build).not_to be_canceled
+      expect(manual_pipeline.status).not_to eq('failed')
+      expect(non_cancelable_stage.status).not_to eq('failed')
+      expect(non_cancelable_build.status).not_to eq('failed')
     end
 
     context 'with project pipelines' do
-      it 'cancels all running pipelines and related jobs' do
-        expect(described_class.new.execute(project.all_pipelines)).to be_success
+      def abort_project_pipelines
+        described_class.new.execute(project.all_pipelines, :project_deleted)
+      end
+
+      it 'fails all running pipelines and related jobs' do
+        expect(abort_project_pipelines).to be_success
 
         expect_correct_cancellations
 
-        expect(other_users_pipeline).to be_canceled
-        expect(other_users_pipeline.stages).to all(be_canceled)
+        expect(other_users_pipeline.status).to eq('failed')
+        expect(other_users_pipeline.failure_reason).to eq('project_deleted')
+        expect(other_users_pipeline.stages.map(&:status)).to all(eq('failed'))
       end
 
       it 'avoids N+1 queries' do
-        project_pipelines = project.all_pipelines
-        control_count = ActiveRecord::QueryRecorder.new { described_class.new.execute(project_pipelines) }.count
+        control_count = ActiveRecord::QueryRecorder.new { abort_project_pipelines }.count
 
         pipelines = create_list(:ci_pipeline, 5, :running, project: project)
         create_list(:ci_build, 5, :running, pipeline: pipelines.first)
 
-        expect { described_class.new.execute(project_pipelines) }.not_to exceed_query_limit(control_count)
+        expect { abort_project_pipelines }.not_to exceed_query_limit(control_count)
       end
 
       context 'with live build logs' do
@@ -51,11 +56,11 @@ RSpec.describe Ci::AbortPipelinesService do
           create(:ci_build_trace_chunk, build: cancelable_build)
         end
 
-        it 'makes canceled builds with stale trace visible' do
+        it 'makes failed builds with stale trace visible' do
           expect(Ci::Build.with_stale_live_trace.count).to eq 0
 
           travel_to(2.days.ago) do
-            described_class.new.execute(project.all_pipelines)
+            abort_project_pipelines
           end
 
           expect(Ci::Build.with_stale_live_trace.count).to eq 1
@@ -64,22 +69,25 @@ RSpec.describe Ci::AbortPipelinesService do
     end
 
     context 'with user pipelines' do
-      it 'cancels all running pipelines and related jobs' do
-        expect(described_class.new.execute(user.pipelines)).to be_success
+      def abort_user_pipelines
+        described_class.new.execute(user.pipelines, :user_blocked)
+      end
+
+      it 'fails all running pipelines and related jobs' do
+        expect(abort_user_pipelines).to be_success
 
         expect_correct_cancellations
 
-        expect(other_users_pipeline).not_to be_canceled
+        expect(other_users_pipeline.status).not_to eq('failed')
       end
 
       it 'avoids N+1 queries' do
-        user_pipelines = user.pipelines
-        control_count = ActiveRecord::QueryRecorder.new { described_class.new.execute(user_pipelines) }.count
+        control_count = ActiveRecord::QueryRecorder.new { abort_user_pipelines }.count
 
         pipelines = create_list(:ci_pipeline, 5, :running, project: project, user: user)
         create_list(:ci_build, 5, :running, pipeline: pipelines.first)
 
-        expect { described_class.new.execute(user_pipelines) }.not_to exceed_query_limit(control_count)
+        expect { abort_user_pipelines }.not_to exceed_query_limit(control_count)
       end
     end
   end

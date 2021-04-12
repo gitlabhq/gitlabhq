@@ -114,7 +114,6 @@ linters:
       - Layout/SpaceBeforeBlockBraces
       - Layout/SpaceBeforeComma
       - Layout/SpaceBeforeFirstArg
-      - Layout/SpaceInsideArrayLiteralBrackets
       - Layout/SpaceInsideHashLiteralBraces
       - Layout/SpaceInsideStringInterpolation
       - Layout/TrailingEmptyLines

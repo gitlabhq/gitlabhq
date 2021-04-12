@@ -109,7 +109,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       pipelines = build_list(:ci_pipeline, 3, :running)
       allow(project).to receive(:all_pipelines).and_return(pipelines)
 
-      expect(::Ci::AbortPipelinesService).to receive_message_chain(:new, :execute).with(pipelines)
+      expect(::Ci::AbortPipelinesService).to receive_message_chain(:new, :execute).with(pipelines, :project_deleted)
 
       destroy_project(project, user, {})
     end

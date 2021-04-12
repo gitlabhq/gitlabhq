@@ -26,9 +26,9 @@
     %thead
       %tr
         %th
-        %th Service
-        %th Description
-        %th Last edit
+        %th= _('Service')
+        %th= _('Description')
+        %th= _('Last edit')
     - @services.each do |service|
       - if service.type.in?(@existing_instance_types)
         %tr

@@ -46,6 +46,10 @@ RSpec.describe Projects::SnippetsController do
       let(:params) { base_params }
     end
 
+    it_behaves_like 'snippets views' do
+      let(:params) { base_params }
+    end
+
     context 'when the project snippet is private' do
       let_it_be(:project_snippet) { create(:project_snippet, :private, project: project, author: user) }
 

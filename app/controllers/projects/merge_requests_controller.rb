@@ -67,16 +67,19 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   feature_category :code_review, [
                      :assign_related_issues, :bulk_update, :cancel_auto_merge,
-                     :ci_environments_status, :commit_change_content, :commits,
-                     :context_commits, :destroy, :diff_for_path, :discussions,
-                     :edit, :exposed_artifacts, :index, :merge,
-                     :pipeline_status, :pipelines, :rebase, :remove_wip, :show,
-                     :toggle_award_emoji, :toggle_subscription, :update
+                     :commit_change_content, :commits, :context_commits, :destroy,
+                     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
+                     :show, :toggle_award_emoji, :toggle_subscription, :update
                    ]
 
-  feature_category :code_testing, [:test_reports, :coverage_reports, :codequality_mr_diff_reports]
+  feature_category :code_testing, [
+                     :test_reports, :coverage_reports, :codequality_reports,
+                     :codequality_mr_diff_reports
+                   ]
+
   feature_category :accessibility_testing, [:accessibility_reports]
   feature_category :infrastructure_as_code, [:terraform_reports]
+  feature_category :continuous_integration, [:pipeline_status, :pipelines, :exposed_artifacts]
 
   def index
     @merge_requests = @issuables
