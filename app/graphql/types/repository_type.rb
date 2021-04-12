@@ -14,5 +14,7 @@ module Types
           description: 'Indicates a corresponding Git repository exists on disk.'
     field :tree, Types::Tree::TreeType, null: true, resolver: Resolvers::TreeResolver, calls_gitaly: true,
           description: 'Tree of the repository.'
+    field :blobs, Types::Tree::BlobType.connection_type, null: true, resolver: Resolvers::BlobsResolver, calls_gitaly: true,
+          description: 'Blobs contained within the repository'
   end
 end

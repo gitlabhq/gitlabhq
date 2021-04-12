@@ -1,0 +1,5 @@
+---
+title: Expose timelogs against issues and merge requests in GraphQL
+merge_request: 57321
+author: Lee Tickett @leetickett
+type: added

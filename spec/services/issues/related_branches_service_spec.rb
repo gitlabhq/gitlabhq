@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Issues::RelatedBranchesService do
   let_it_be(:developer) { create(:user) }
   let_it_be(:issue) { create(:issue) }
+
   let(:user) { developer }
 
   subject { described_class.new(issue.project, user) }

@@ -1378,7 +1378,7 @@ class Project < ApplicationRecord
   def find_or_initialize_service(name)
     return if disabled_services.include?(name)
 
-    find_service(services, name) || build_from_instance_or_template(name) || public_send("build_#{name}_service") # rubocop:disable GitlabSecurity/PublicSend
+    find_service(services, name) || build_from_instance_or_template(name) || build_service(name)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -2594,6 +2594,10 @@ class Project < ApplicationRecord
 
     template = find_service(services_templates, name)
     return Service.build_from_integration(template, project_id: id) if template
+  end
+
+  def build_service(name)
+    "#{name}_service".classify.constantize.new(project_id: id)
   end
 
   def services_templates

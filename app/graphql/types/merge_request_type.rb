@@ -186,6 +186,8 @@ module Types
           description: 'Selected auto merge strategy.'
     field :merge_user, Types::UserType, null: true,
           description: 'User who merged this merge request.'
+    field :timelogs, Types::TimelogType.connection_type, null: false,
+          description: 'Timelogs on the merge request.'
 
     def approved_by
       object.approved_by_users

@@ -5795,16 +5795,34 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#find_or_initialize_services' do
-    before do
-      allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover teamcity])
-      allow(subject).to receive(:disabled_services).and_return(%w[prometheus])
+    let_it_be(:subject) { create(:project) }
+
+    it 'avoids N+1 database queries' do
+      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_services }.count
+
+      expect(control_count).to be <= 4
     end
 
-    it 'returns only enabled services' do
-      services = subject.find_or_initialize_services
+    it 'avoids N+1 database queries with more available services' do
+      allow(Service).to receive(:available_services_names).and_return(%w[pushover])
+      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_services }
 
-      expect(services.count).to eq(2)
-      expect(services.map(&:title)).to eq(['JetBrains TeamCity CI', 'Pushover'])
+      allow(Service).to receive(:available_services_names).and_call_original
+      expect { subject.find_or_initialize_services }.not_to exceed_query_limit(control_count)
+    end
+
+    context 'with disabled services' do
+      before do
+        allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover teamcity])
+        allow(subject).to receive(:disabled_services).and_return(%w[prometheus])
+      end
+
+      it 'returns only enabled services sorted' do
+        services = subject.find_or_initialize_services
+
+        expect(services.size).to eq(2)
+        expect(services.map(&:title)).to eq(['JetBrains TeamCity CI', 'Pushover'])
+      end
     end
   end
 

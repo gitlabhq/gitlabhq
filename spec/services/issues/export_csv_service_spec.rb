@@ -8,6 +8,7 @@ RSpec.describe Issues::ExportCsvService do
   let_it_be(:project) { create(:project, :public, group: group) }
   let_it_be(:issue) { create(:issue, project: project, author: user) }
   let_it_be(:bad_issue) { create(:issue, project: project, author: user) }
+
   subject { described_class.new(Issue.all, project) }
 
   it 'renders csv to string' do

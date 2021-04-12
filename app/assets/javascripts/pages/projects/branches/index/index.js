@@ -5,5 +5,10 @@ import initDiverganceGraph from '~/branches/divergence_graph';
 
 AjaxLoadingSpinner.init();
 new DeleteModal(); // eslint-disable-line no-new
-initDiverganceGraph(document.querySelector('.js-branch-list').dataset.divergingCountsEndpoint);
+
+const { divergingCountsEndpoint, defaultBranch } = document.querySelector(
+  '.js-branch-list',
+).dataset;
+
+initDiverganceGraph(divergingCountsEndpoint, defaultBranch);
 BranchSortDropdown();

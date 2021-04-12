@@ -13,7 +13,7 @@ module QA
         include SubMenus::Settings
         include SubMenus::Packages
 
-        view 'app/views/layouts/nav/sidebar/_project.html.haml' do
+        view 'app/views/layouts/nav/sidebar/_project_menus.html.haml' do
           element :activity_link
           element :merge_requests_link
           element :snippets_link

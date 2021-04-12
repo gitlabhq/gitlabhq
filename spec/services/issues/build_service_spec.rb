@@ -6,6 +6,7 @@ RSpec.describe Issues::BuildService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
+
   let(:user) { developer }
 
   before_all do

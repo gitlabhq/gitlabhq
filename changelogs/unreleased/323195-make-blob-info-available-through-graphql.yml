@@ -1,0 +1,5 @@
+---
+title: Make blobs directly accessible through the graphql repository
+merge_request: 58677
+author:
+type: added

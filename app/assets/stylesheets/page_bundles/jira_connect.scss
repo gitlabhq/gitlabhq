@@ -4,7 +4,6 @@
 @import 'bootstrap-vue/src/index';
 
 @import '@gitlab/ui/src/scss/utilities';
-@import '@gitlab/ui/src/components/base/alert/alert';
 
 // We should only import styles that we actually use.
 @import '@gitlab/ui/src/components/base/alert/alert';
@@ -16,8 +15,8 @@
 @import '@gitlab/ui/src/components/base/loading_icon/loading_icon';
 @import '@gitlab/ui/src/components/base/modal/modal';
 @import '@gitlab/ui/src/components/base/pagination/pagination';
-@import '@gitlab/ui/src/components/base/tabs/tabs/tabs';
 @import '@gitlab/ui/src/components/base/tooltip/tooltip';
+@import '@gitlab/ui/src/components/base/search_box_by_type/search_box_by_type';
 
 $atlaskit-border-color: #dfe1e6;
 $header-height: 40px;

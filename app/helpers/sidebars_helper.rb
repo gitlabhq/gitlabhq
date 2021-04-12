@@ -14,6 +14,10 @@ module SidebarsHelper
     end
   end
 
+  def project_sidebar_context(project, user)
+    Sidebars::Context.new(**project_sidebar_context_data(project, user))
+  end
+
   private
 
   def sidebar_project_tracking_attrs
@@ -26,5 +30,13 @@ module SidebarsHelper
 
   def sidebar_user_profile_tracking_attrs
     tracking_attrs('user_side_navigation', 'render', 'user_side_navigation')
+  end
+
+  def project_sidebar_context_data(project, user)
+    {
+      current_user: user,
+      container: project,
+      project: project
+    }
   end
 end

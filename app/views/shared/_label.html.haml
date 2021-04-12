@@ -36,10 +36,10 @@
                             label_text_color: label.text_color,
                             group_name: label.project.group.name } }
                     = _('Promote to group label')
-              - if can?(current_user, :admin_label, label)
-                %li
-                  %span{ data: { toggle: 'modal', target: "#modal-delete-label-#{label.id}" } }
-                    %button.text-danger.remove-row{ type: 'button' }= _('Delete')
+              %li
+                %span
+                  %button.text-danger.remove-row.js-delete-label-modal-button{ type: 'button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } }
+                    = _('Delete')
     - if current_user
       %li.inline.label-subscription
         - if label.can_subscribe_to_label_in_different_levels?
@@ -61,5 +61,3 @@
         - else
           %button.gl-button.js-subscribe-button.label-subscribe-button.btn.btn-default.gl-ml-3{ data: { status: status, url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
             %span= label_subscription_toggle_button_text(label, @project)
-
-= render 'shared/delete_label_modal', label: label

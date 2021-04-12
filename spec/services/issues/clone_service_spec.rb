@@ -242,6 +242,7 @@ RSpec.describe Issues::CloneService do
 
       context 'issue with a design', :clean_gitlab_redis_shared_state do
         let_it_be(:new_project) { create(:project) }
+
         let!(:design) { create(:design, :with_lfs_file, issue: old_issue) }
         let!(:note) { create(:diff_note_on_design, noteable: design, issue: old_issue, project: old_issue.project) }
         let(:subject) { clone_service.execute(old_issue, new_project) }

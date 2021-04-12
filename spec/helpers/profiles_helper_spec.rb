@@ -112,6 +112,46 @@ RSpec.describe ProfilesHelper do
     end
   end
 
+  describe "#ssh_key_expiration_tooltip" do
+    using RSpec::Parameterized::TableSyntax
+
+    before do
+      allow(Key).to receive(:enforce_ssh_key_expiration_feature_available?).and_return(false)
+    end
+
+    error_message = 'Key type is forbidden. Must be DSA, ECDSA, or ED25519'
+
+    where(:error, :expired, :result) do
+      false | false | nil
+      true  | false | error_message
+      false | true  | 'Key usable beyond expiration date.'
+      true  | true  | error_message
+    end
+
+    with_them do
+      let_it_be(:key) do
+        build(:personal_key)
+      end
+
+      it do
+        key.expires_at = expired ? 2.days.ago : 2.days.from_now
+        key.errors.add(:base, error_message) if error
+
+        expect(helper.ssh_key_expiration_tooltip(key)).to eq(result)
+      end
+    end
+  end
+
+  describe "#ssh_key_expires_field_description" do
+    before do
+      allow(Key).to receive(:enforce_ssh_key_expiration_feature_available?).and_return(false)
+    end
+
+    it 'returns the description' do
+      expect(helper.ssh_key_expires_field_description).to eq('Key can still be used after expiration.')
+    end
+  end
+
   def stub_cas_omniauth_provider
     provider = OpenStruct.new(
       'name' => 'cas3',

@@ -21,6 +21,11 @@ export default {
       type: Object,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -60,7 +65,7 @@ export default {
 </script>
 
 <template>
-  <li class="gl-border-b-1 gl-border-b-solid gl-border-b-gray-200">
+  <li class="gl-border-b-1 gl-border-b-solid gl-border-b-gray-100">
     <div class="gl-display-flex gl-align-items-center gl-py-3">
       <gl-icon name="folder-o" class="gl-mr-3" />
       <div class="gl-display-none gl-flex-shrink-0 gl-sm-display-flex gl-mr-3">
@@ -83,11 +88,13 @@ export default {
 
         <gl-button
           category="secondary"
-          variant="success"
+          variant="confirm"
           :loading="isLoading"
+          :disabled="disabled"
           @click.prevent="onClick"
-          >{{ __('Link') }}</gl-button
         >
+          {{ __('Link') }}
+        </gl-button>
       </div>
     </div>
   </li>

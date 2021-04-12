@@ -2,9 +2,10 @@
 
 module HasTimelogsReport
   extend ActiveSupport::Concern
+  include Gitlab::Utils::StrongMemoize
 
   def timelogs(start_time, end_time)
-    @timelogs ||= timelogs_for(start_time, end_time)
+    strong_memoize(:timelogs) { timelogs_for(start_time, end_time) }
   end
 
   def user_can_access_group_timelogs?(current_user)

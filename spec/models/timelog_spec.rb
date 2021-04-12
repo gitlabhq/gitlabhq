@@ -56,9 +56,9 @@ RSpec.describe Timelog do
         group = create(:group)
         subgroup = create(:group, parent: group)
 
-        create(:timelog, issue: create(:issue, project: create(:project)))
-        timelog1 = create(:timelog, issue: create(:issue, project: create(:project, group: group)))
-        timelog2 = create(:timelog, issue: create(:issue, project: create(:project, group: subgroup)))
+        create(:issue_timelog)
+        timelog1 = create(:issue_timelog, issue: create(:issue, project: create(:project, group: group)))
+        timelog2 = create(:issue_timelog, issue: create(:issue, project: create(:project, group: subgroup)))
 
         expect(described_class.for_issues_in_group(group)).to contain_exactly(timelog1, timelog2)
       end
@@ -66,9 +66,9 @@ RSpec.describe Timelog do
 
     describe 'between_times' do
       it 'returns collection of timelogs within given times' do
-        create(:timelog, spent_at: 65.days.ago)
-        timelog1 = create(:timelog, spent_at: 15.days.ago)
-        timelog2 = create(:timelog, spent_at: 5.days.ago)
+        create(:issue_timelog, spent_at: 65.days.ago)
+        timelog1 = create(:issue_timelog, spent_at: 15.days.ago)
+        timelog2 = create(:issue_timelog, spent_at: 5.days.ago)
         timelogs = described_class.between_times(20.days.ago, 1.day.ago)
 
         expect(timelogs).to contain_exactly(timelog1, timelog2)

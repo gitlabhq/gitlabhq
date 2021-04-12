@@ -4,6 +4,7 @@ require 'spec_helper'
 RSpec.describe Groups::AutoDevopsService, '#execute' do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
+
   let(:group_params) { { auto_devops_enabled: '0' } }
   let(:service) { described_class.new(group, user, group_params) }
 

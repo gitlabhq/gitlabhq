@@ -32,18 +32,16 @@ RSpec.describe HasTimelogsReport do
   end
 
   describe '#user_can_access_group_timelogs?' do
-    before do
-      group.add_developer(user)
-    end
-
     it 'returns true if user can access group timelogs' do
-      expect(group.user_can_access_group_timelogs?(user)).to be_truthy
+      group.add_developer(user)
+
+      expect(group).to be_user_can_access_group_timelogs(user)
     end
 
     it 'returns false if user has insufficient permissions' do
       group.add_guest(user)
 
-      expect(group.user_can_access_group_timelogs?(user)).to be_falsey
+      expect(group).not_to be_user_can_access_group_timelogs(user)
     end
   end
 

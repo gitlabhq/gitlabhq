@@ -14,6 +14,7 @@ RSpec.describe 'Timelogs through GroupQuery' do
     let_it_be(:timelog1)  { create(:timelog, issue: issue, user: user, spent_at: '2019-08-13 14:00:00') }
     let_it_be(:timelog2)  { create(:timelog, issue: issue, user: user, spent_at: '2019-08-10 08:00:00') }
     let_it_be(:params)    { { startTime: '2019-08-10 12:00:00', endTime: '2019-08-21 12:00:00' } }
+
     let(:timelogs_data)   { graphql_data['group']['timelogs']['nodes'] }
 
     before do
@@ -34,11 +35,11 @@ RSpec.describe 'Timelogs through GroupQuery' do
       end
 
       it 'contains correct data', :aggregate_failures do
-        username = timelog_array.map {|data| data['user']['username'] }
+        username = timelog_array.map { |data| data['user']['username'] }
         spent_at = timelog_array.map { |data| data['spentAt'].to_time }
         time_spent = timelog_array.map { |data| data['timeSpent'] }
-        issue_title = timelog_array.map {|data| data['issue']['title'] }
-        milestone_title = timelog_array.map {|data| data['issue']['milestone']['title'] }
+        issue_title = timelog_array.map { |data| data['issue']['title'] }
+        milestone_title = timelog_array.map { |data| data['issue']['milestone']['title'] }
 
         expect(username).to eq([user.username])
         expect(spent_at.first).to be_like_time(timelog1.spent_at)
@@ -50,7 +51,7 @@ RSpec.describe 'Timelogs through GroupQuery' do
       context 'when arguments with no time are present' do
         let!(:timelog3) { create(:timelog, issue: issue, user: user, spent_at: '2019-08-10 15:00:00') }
         let!(:timelog4) { create(:timelog, issue: issue, user: user, spent_at: '2019-08-21 15:00:00') }
-        let(:params) { { startDate: '2019-08-10', endDate: '2019-08-21' }}
+        let(:params) { { startDate: '2019-08-10', endDate: '2019-08-21' } }
 
         it 'sets times as start of day and end of day' do
           expect(response).to have_gitlab_http_status(:ok)
@@ -111,12 +112,10 @@ RSpec.describe 'Timelogs through GroupQuery' do
       }
     NODE
 
-    graphql_query_for("group", { "fullPath" => group.full_path },
-      [query_graphql_field(
-        "timelogs",
-        timelog_params,
-        timelog_nodes
-      )]
+    graphql_query_for(
+      :group,
+      { full_path: group.full_path },
+      query_graphql_field(:timelogs, timelog_params, timelog_nodes)
     )
   end
 end

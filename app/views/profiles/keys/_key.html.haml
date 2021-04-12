@@ -1,3 +1,5 @@
+- icon_classes = 'settings-list-icon gl-display-none gl-sm-display-block'
+
 %li.key-list-item
   .gl-display-flex.gl-align-items-flex-start
     .key-list-item-info.gl-w-full.float-none
@@ -5,15 +7,11 @@
         = key.title
 
       .gl-display-flex.gl-align-items-center.gl-mt-2
-        - if key.valid?
-          - if key.expired?
-            %span.gl-display-inline-block.has-tooltip{ title: s_('Profiles|Your key has expired') }
-              = sprite_icon('warning-solid', css_class: 'settings-list-icon gl-display-none gl-sm-display-block')
-          - else
-            = sprite_icon('key', css_class: 'settings-list-icon gl-display-none gl-sm-display-block')
+        - if key.valid? && !key.expired?
+          = sprite_icon('key', css_class: icon_classes)
         - else
-          %span.gl-display-inline-block.has-tooltip{ title: key.errors.full_messages.join(', ') }
-            = sprite_icon('warning-solid', css_class: 'settings-list-icon gl-display-none gl-sm-display-block')
+          %span.gl-display-inline-block.has-tooltip{ title: ssh_key_expiration_tooltip(key) }
+            = sprite_icon('warning-solid', css_class: icon_classes)
 
         %span.gl-text-truncate.gl-sm-ml-3
           = key.fingerprint

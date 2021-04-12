@@ -64,10 +64,7 @@ RSpec.describe Projects::PostCreationWorker do
 
           it 'cleans invalid record and logs warning', :aggregate_failures do
             invalid_service_record = build(:prometheus_service, properties: { api_url: nil, manual_configuration: true }.to_json)
-
-            allow_next_found_instance_of(Project) do |instance|
-              allow(instance).to receive(:build_prometheus_service).and_return(invalid_service_record)
-            end
+            allow(PrometheusService).to receive(:new).and_return(invalid_service_record)
 
             expect(Gitlab::ErrorTracking).to receive(:track_exception).with(an_instance_of(ActiveRecord::RecordInvalid), include(extra: { project_id: a_kind_of(Integer) })).twice
             subject

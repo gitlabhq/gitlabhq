@@ -299,6 +299,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
       reviewers { nodes { username } }
       participants { nodes { username } }
       headPipeline { status }
+      timelogs { nodes { timeSpent } }
       SELECT
     end
 
@@ -307,7 +308,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
         query($first: Int) {
           project(fullPath: "#{project.full_path}") {
             mergeRequests(first: $first) {
-              nodes { #{mr_fields} }
+              nodes { iid #{mr_fields} }
             }
           }
         }
@@ -324,6 +325,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
         mr.assignees << current_user
         mr.reviewers << create(:user)
         mr.reviewers << current_user
+        mr.timelogs << create(:merge_request_timelog, merge_request: mr)
       end
     end
 
@@ -345,7 +347,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
     end
 
     def user_collection
-      { 'nodes' => all(match(a_hash_including('username' => be_present))) }
+      { 'nodes' => be_present.and(all(match(a_hash_including('username' => be_present)))) }
     end
 
     it 'returns appropriate results' do
@@ -358,7 +360,8 @@ RSpec.describe 'getting merge request listings nested in a project' do
             'assignees' => user_collection,
             'reviewers' => user_collection,
             'participants' => user_collection,
-            'headPipeline' => { 'status' => be_present }
+            'headPipeline' => { 'status' => be_present },
+            'timelogs' => { 'nodes' => be_one }
           )))
     end
 

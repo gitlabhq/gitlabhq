@@ -1,0 +1,8 @@
+---
+name: ci_pipeline_ensure_iid_on_drop
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57783
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326886
+milestone: '13.11'
+type: development
+group: group::code review
+default_enabled: false

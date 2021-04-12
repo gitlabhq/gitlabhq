@@ -250,12 +250,16 @@ module Projects
 
     def make_secure_tmp_dir(tmp_path)
       FileUtils.mkdir_p(tmp_path)
-      path = Dir.mktmpdir(nil, tmp_path)
+      path = Dir.mktmpdir(tmp_dir_prefix, tmp_path)
       begin
         yield(path)
       ensure
         FileUtils.remove_entry_secure(path)
       end
+    end
+
+    def tmp_dir_prefix
+      "project-#{project.id}-build-#{build.id}-"
     end
   end
 end

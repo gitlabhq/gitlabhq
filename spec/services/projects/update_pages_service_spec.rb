@@ -55,6 +55,12 @@ RSpec.describe Projects::UpdatePagesService do
         end
       end
 
+      it 'creates a temporary directory with the project and build ID' do
+        expect(Dir).to receive(:mktmpdir).with("project-#{project.id}-build-#{build.id}-", anything).and_call_original
+
+        subject.execute
+      end
+
       it "doesn't deploy to legacy storage if it's disabled" do
         allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
 

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ide::SchemasConfigService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:filename) { 'sample.yml' }
   let(:schema_content) { double(body: '{"title":"Sample schema"}') }
 

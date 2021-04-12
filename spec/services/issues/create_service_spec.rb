@@ -11,6 +11,7 @@ RSpec.describe Issues::CreateService do
   describe '#execute' do
     let_it_be(:assignee) { create(:user) }
     let_it_be(:milestone) { create(:milestone, project: project) }
+
     let(:issue) { described_class.new(project, user, opts).execute }
 
     context 'when params are valid' do

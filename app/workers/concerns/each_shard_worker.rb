@@ -24,7 +24,13 @@ module EachShardWorker
   end
 
   def healthy_ready_shards
-    ready_shards.select(&:success)
+    success_checks, failed_checks = ready_shards.partition(&:success)
+
+    if failed_checks.any?
+      ::Gitlab::AppLogger.error(message: 'Excluding unhealthy shards', failed_checks: failed_checks.map(&:payload), class: self.class.name)
+    end
+
+    success_checks
   end
 
   def ready_shards
