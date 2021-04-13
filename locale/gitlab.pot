@@ -21086,6 +21086,9 @@ msgstr ""
 msgid "New project/repository"
 msgstr ""
 
+msgid "New public deploy key"
+msgstr ""
+
 msgid "New release"
 msgstr ""
 
@@ -26696,6 +26699,9 @@ msgid "Resend invite"
 msgstr ""
 
 msgid "Resend it"
+msgstr ""
+
+msgid "Resend unlock instructions"
 msgstr ""
 
 msgid "Reset"

@@ -8,8 +8,8 @@ module Gitlab
         # Entry that represents a cache configuration
         #
         class Cache < ::Gitlab::Config::Entry::Simplifiable
-          strategy :Caches, if: -> (config) { Feature.enabled?(:multiple_cache_per_job) }
-          strategy :Cache, if: -> (config) { Feature.disabled?(:multiple_cache_per_job) }
+          strategy :Caches, if: -> (config) { Feature.enabled?(:multiple_cache_per_job, default_enabled: :yaml) }
+          strategy :Cache, if: -> (config) { Feature.disabled?(:multiple_cache_per_job, default_enabled: :yaml) }
 
           class Caches < ::Gitlab::Config::Entry::ComposableArray
             include ::Gitlab::Config::Entry::Validatable

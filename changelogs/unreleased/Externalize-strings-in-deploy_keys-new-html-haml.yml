@@ -1,0 +1,5 @@
+---
+title: Externalize strings in deploy_keys/new.html.haml
+merge_request: 58148
+author: nuwe1
+type: other

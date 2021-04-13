@@ -764,6 +764,7 @@ class User < ApplicationRecord
         u.bio = 'The GitLab support bot used for Service Desk'
         u.name = 'GitLab Support Bot'
         u.avatar = bot_avatar(image: 'support-bot.png')
+        u.confirmed_at = Time.zone.now
       end
     end
 

@@ -1075,7 +1075,7 @@ GEM
       proc_to_ast
       rspec (>= 2.13, < 4)
       unparser
-    rspec-rails (4.0.2)
+    rspec-rails (4.1.2)
       actionpack (>= 4.2)
       activesupport (>= 4.2)
       railties (>= 4.2)
@@ -1563,7 +1563,7 @@ DEPENDENCIES
   rouge (~> 3.26.0)
   rqrcode-rails3 (~> 0.1.7)
   rspec-parameterized
-  rspec-rails (~> 4.0.2)
+  rspec-rails (~> 4.1.2)
   rspec-retry (~> 0.6.1)
   rspec_junit_formatter
   rspec_profiling (~> 0.0.6)

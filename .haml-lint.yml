@@ -104,7 +104,6 @@ linters:
 
       # These cops should eventually get enabled
       - Cop/LineBreakAfterGuardClauses
-      - Cop/LineBreakAroundConditionalBlock
       - Cop/ProjectPathHelper
       - Gitlab/FeatureAvailableUsage
       - GitlabSecurity/PublicSend

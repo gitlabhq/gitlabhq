@@ -5508,6 +5508,12 @@ RSpec.describe User do
     it_behaves_like 'bot user avatars', :alert_bot, 'alert-bot.png'
     it_behaves_like 'bot user avatars', :support_bot, 'support-bot.png'
     it_behaves_like 'bot user avatars', :security_bot, 'security-bot.png'
+
+    context 'when bot is the support_bot' do
+      subject { described_class.support_bot }
+
+      it { is_expected.to be_confirmed }
+    end
   end
 
   describe '#confirmation_required_on_sign_in?' do
