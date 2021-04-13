@@ -1,0 +1,8 @@
+---
+name: resolve_merge_request_todos_async
+introduced_by_url:
+rollout_issue_url:
+milestone: '13.11'
+type: development
+group: group::code review
+default_enabled: false

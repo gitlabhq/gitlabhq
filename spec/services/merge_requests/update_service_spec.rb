@@ -590,48 +590,54 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       let!(:pending_todo) { create(:todo, :assigned, user: user, project: project, target: merge_request, author: user2) }
 
       context 'when the title change' do
-        before do
+        it 'calls MergeRequest::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
+
           update_merge_request({ title: 'New title' })
         end
 
-        it 'marks pending todos as done' do
-          expect(pending_todo.reload).to be_done
-        end
-
         it 'does not create any new todos' do
+          update_merge_request({ title: 'New title' })
+
           expect(Todo.count).to eq(1)
         end
       end
 
       context 'when the description change' do
-        before do
+        it 'calls MergeRequest::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
+
           update_merge_request({ description: "Also please fix #{user2.to_reference} #{user3.to_reference}" })
         end
 
-        it 'marks pending todos as done' do
-          expect(pending_todo.reload).to be_done
-        end
-
         it 'creates only 1 new todo' do
+          update_merge_request({ description: "Also please fix #{user2.to_reference} #{user3.to_reference}" })
+
           expect(Todo.count).to eq(2)
         end
       end
 
       context 'when is reassigned' do
-        before do
-          update_merge_request({ assignee_ids: [user2.id] })
-        end
+        it 'calls MergeRequest::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
 
-        it 'marks previous assignee pending todos as done' do
-          expect(pending_todo.reload).to be_done
+          update_merge_request({ assignee_ids: [user2.id] })
         end
       end
 
       context 'when reviewers gets changed' do
-        it 'marks pending todo as done' do
-          update_merge_request({ reviewer_ids: [user2.id] })
+        it 'calls MergeRequest::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
 
-          expect(pending_todo.reload).to be_done
+          update_merge_request({ reviewer_ids: [user2.id] })
         end
 
         it 'creates a pending todo for new review request' do
@@ -709,10 +715,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           end
         end
 
-        it 'marks pending todos as done' do
-          update_merge_request({ milestone: create(:milestone, project: project) })
+        it 'calls MergeRequests::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
 
-          expect(pending_todo.reload).to be_done
+          update_merge_request({ milestone: create(:milestone, project: project) })
         end
 
         it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
@@ -726,17 +734,19 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
 
       context 'when the labels change' do
-        before do
-          travel_to(1.minute.from_now) do
-            update_merge_request({ label_ids: [label.id] })
+        it 'calls MergeRequests::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
           end
-        end
 
-        it 'marks pending todos as done' do
-          expect(pending_todo.reload).to be_done
+          update_merge_request({ label_ids: [label.id] })
         end
 
         it 'updates updated_at' do
+          travel_to(1.minute.from_now) do
+            update_merge_request({ label_ids: [label.id] })
+          end
+
           expect(merge_request.reload.updated_at).to be > Time.current
         end
       end
@@ -751,24 +761,26 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
 
       context 'when the target branch change' do
-        before do
-          update_merge_request({ target_branch: 'target' })
-        end
+        it 'calls MergeRequests::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
 
-        it 'marks pending todos as done' do
-          expect(pending_todo.reload).to be_done
+          update_merge_request({ target_branch: 'target' })
         end
       end
 
       context 'when auto merge is enabled and target branch changed' do
         before do
           AutoMergeService.new(project, user, { sha: merge_request.diff_head_sha }).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
-
-          update_merge_request({ target_branch: 'target' })
         end
 
-        it 'marks pending todos as done' do
-          expect(pending_todo.reload).to be_done
+        it 'calls MergeRequests::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
+
+          update_merge_request({ target_branch: 'target' })
         end
       end
     end

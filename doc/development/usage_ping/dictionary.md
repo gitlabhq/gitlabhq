@@ -6106,15 +6106,15 @@ Tiers: `free`
 
 ### `counts_monthly.aggregated_metrics.i_testing_paid_monthly_active_user_total`
 
-Missing description
+Aggregated count of users who have engaged with a Premium or Ultimate tier testing feature per month.
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183209_i_testing_paid_monthly_active_user_total.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216183209_i_testing_paid_monthly_active_user_total.yml)
 
-Group: ``
+Group: `group::testing`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `counts_monthly.aggregated_metrics.incident_management_alerts_total_unique_counts`
 
@@ -6274,15 +6274,15 @@ Tiers:
 
 ### `counts_weekly.aggregated_metrics.i_testing_paid_monthly_active_user_total`
 
-Missing description
+Aggregated count of users who have engaged with a Premium or Ultimate tier testing feature per week.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216183219_i_testing_paid_monthly_active_user_total.yml)
 
-Group: ``
+Group: `group::testing`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `counts_weekly.aggregated_metrics.incident_management_alerts_total_unique_counts`
 
@@ -13654,7 +13654,7 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_full_code_quality_report_total_weekly`
 
-Count of unique users per week|month who visit the full code quality report
+Count of unique users per week who visit the full code quality report
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216182145_i_testing_full_code_quality_report_total_weekly.yml)
 
@@ -13666,7 +13666,7 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_group_code_coverage_project_click_total_monthly`
 
-Count of unique users per week|month who click on a project link in the group code coverage table
+Aggregated count of unique users who have clicked from group code coverage page to an individual project page each month.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216182153_i_testing_group_code_coverage_project_click_total_monthly.yml)
 
@@ -13678,19 +13678,19 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_group_code_coverage_project_click_total_weekly`
 
-Missing description
+Aggregated count of unique users who have clicked from group code coverage page to an individual project page each week.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184132_i_testing_group_code_coverage_project_click_total_weekly.yml)
 
-Group: ``
+Group: `group::testing`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_group_code_coverage_visit_total_monthly`
 
-Count of unique users per week|month who visited the group code coverage page
+Count of unique users per month who visited the group code coverage page
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216182143_i_testing_group_code_coverage_visit_total_monthly.yml)
 
@@ -13702,7 +13702,7 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_group_code_coverage_visit_total_weekly`
 
-Count of unique users per week|month who visited the group code coverage page
+Count of unique users per week who visited the group code coverage page
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216182141_i_testing_group_code_coverage_visit_total_weekly.yml)
 
@@ -13714,7 +13714,7 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_load_performance_widget_total_monthly`
 
-Count of unique users per week|month who expanded the load performance report MR widget
+Count of unique users per month who expanded the load performance report MR widget
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216182156_i_testing_load_performance_widget_total_monthly.yml)
 
@@ -13726,7 +13726,7 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_load_performance_widget_total_weekly`
 
-Count of unique users per week|month who expanded the load performance report MR widget
+Count of unique users per week who expanded the load performance report MR widget
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216182154_i_testing_load_performance_widget_total_weekly.yml)
 
@@ -13738,31 +13738,31 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_metrics_report_artifact_uploaders_monthly`
 
-Internal Tracking to count number of unit tests parsed for planning of future code testing features. Data available [here](https://app.periscopedata.com/app/gitlab/788674/Verify:Testing-Group-Metrics?widget=10454394&udv=0)
+Tracks number of metrics reports uploaded monthly.
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216182200_i_testing_metrics_report_artifact_uploaders_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216182200_i_testing_metrics_report_artifact_uploaders_monthly.yml)
 
 Group: `group::testing`
 
 Status: `data_available`
 
-Tiers: `free`, `premium`, `ultimate`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_metrics_report_artifact_uploaders_weekly`
 
-Internal Tracking to count number of unit tests parsed for planning of future code testing features. Data available [here](https://app.periscopedata.com/app/gitlab/788674/Verify:Testing-Group-Metrics?widget=10454394&udv=0)
+Count of unique users per week who trigger a pipeline that uploads a metrics report.
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216182158_i_testing_metrics_report_artifact_uploaders_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216182158_i_testing_metrics_report_artifact_uploaders_weekly.yml)
 
 Group: `group::testing`
 
 Status: `data_available`
 
-Tiers: `free`, `premium`, `ultimate`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_metrics_report_widget_total_monthly`
 
-Count of unique users per week|month who expanded the metrics report MR widget
+Count of unique users per month who expanded the metrics report MR widget
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216182139_i_testing_metrics_report_widget_total_monthly.yml)
 
@@ -13774,7 +13774,7 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_metrics_report_widget_total_weekly`
 
-Count of unique users per week|month who expanded the metrics report MR widget
+Count of unique users per week who expanded the metrics report MR widget
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216182138_i_testing_metrics_report_widget_total_weekly.yml)
 
@@ -13810,7 +13810,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_web_performance_widget_total_monthly`
 
-Count of unique users per week|month who expanded the browser performance report MR widget
+Count of unique users per month who expanded the browser performance report MR widget
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216182151_i_testing_web_performance_widget_total_monthly.yml)
 
@@ -13822,7 +13822,7 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.testing.i_testing_web_performance_widget_total_weekly`
 
-Count of unique users per week|month who expanded the browser performance report MR widget
+Count of unique users per week who expanded the browser performance report MR widget
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216182149_i_testing_web_performance_widget_total_weekly.yml)
 
@@ -13840,7 +13840,7 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `removed`
 
 Tiers: `free`
 
@@ -13852,9 +13852,9 @@ Missing description
 
 Group: ``
 
-Status: `data_available`
+Status: `removed`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.user_packages.i_package_composer_user_monthly`
 

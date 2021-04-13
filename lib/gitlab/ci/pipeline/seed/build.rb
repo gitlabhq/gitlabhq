@@ -213,7 +213,7 @@ module Gitlab
           end
 
           def recalculate_yaml_variables!
-            return unless ::Feature.enabled?(:ci_workflow_rules_variables, default_enabled: :yaml)
+            return unless ::Feature.enabled?(:ci_workflow_rules_variables, @pipeline.project, default_enabled: :yaml)
 
             @seed_attributes[:yaml_variables] = Gitlab::Ci::Variables::Helpers.inherit_yaml_variables(
               from: @context.root_variables, to: @job_variables, inheritance: @root_variables_inheritance

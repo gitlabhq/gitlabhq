@@ -225,6 +225,10 @@ module QA
         )
       end
 
+      def health_check_failure_message?(msg)
+        ['error when pinging healthcheck', 'failed checking node health'].include?(msg)
+      end
+
       def wait_for_no_praefect_storage_error
         # If a healthcheck error was the last message to be logged, we'll keep seeing that message even if it's no longer a problem
         # That is, there's no message shown in the Praefect logs when the healthcheck succeeds
@@ -241,7 +245,7 @@ module QA
             QA::Runtime::Logger.debug(line.chomp)
             log = JSON.parse(line)
 
-            break true if log['msg'] != 'error when pinging healthcheck'
+            break true unless health_check_failure_message?(log['msg'])
           rescue JSON::ParserError
             # Ignore lines that can't be parsed as JSON
           end
@@ -302,7 +306,7 @@ module QA
           QA::Runtime::Logger.debug(line.chomp)
           log = JSON.parse(line)
 
-          log['msg'] == 'error when pinging healthcheck' && log['storage'] == node
+          health_check_failure_message?(log['msg']) && log['storage'] == node
         rescue JSON::ParserError
           # Ignore lines that can't be parsed as JSON
         end

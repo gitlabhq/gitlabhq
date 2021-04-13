@@ -60,9 +60,12 @@ const create = ({ render = () => null }) => {
           // creates a bold alias for the strong mark converter
           ...defaultMarkdownSerializer.marks.strong,
         },
+        italic: { open: '_', close: '_', mixable: true, expelEnclosingWhitespace: true },
       });
 
-      return serializer.serialize(document);
+      return serializer.serialize(document, {
+        tightLists: true,
+      });
     },
   };
 };

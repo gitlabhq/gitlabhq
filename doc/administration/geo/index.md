@@ -281,7 +281,6 @@ WARNING:
 This list of limitations only reflects the latest version of GitLab. If you are using an older version, extra limitations may be in place.
 
 - Pushing directly to a **secondary** node redirects (for HTTP) or proxies (for SSH) the request to the **primary** node instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381), except when using Git over HTTP with credentials embedded within the URI. For example, `https://user:password@secondary.tld`.
-- Cloning, pulling, or pushing repositories that exist on the **primary** node but not on the **secondary** nodes where [selective synchronization](replication/configuration.md#selective-synchronization) does not include the project is not supported over SSH [but support is planned](https://gitlab.com/groups/gitlab-org/-/epics/2562). HTTP(S) is supported.
 - The **primary** node has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** node to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. We are working on improving this experience. See [Omnibus GitLab issue #2978](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/2978) for details.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** node.
@@ -289,6 +288,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - Object pools for forked project deduplication work only on the **primary** node, and are duplicated on the **secondary** node.
 - GitLab Runners cannot register with a **secondary** node. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
 - Geo **secondary** nodes can not be configured to [use high-availability configurations of PostgreSQL](https://gitlab.com/groups/gitlab-org/-/epics/2536).
+- [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accomodate compliance / export control use cases.
 
 ### Limitations on replication/verification
 

@@ -4,5 +4,47 @@
 ---
 - name: bold
   markdown: '**bold**'
-- name: code
+- name: emphasis
+  markdown: '_emphasized text_'
+- name: inline_code
   markdown: '`code`'
+- name: link
+  markdown: '[GitLab](https://gitlab.com)'
+- name: code_block
+  markdown: |-
+    ```javascript
+      console.log('hello world')
+    ```
+- name: headings
+  markdown: |-
+    # Heading 1
+
+    ## Heading 2
+
+    ### Heading 3
+
+    #### Heading 4
+
+    ##### Heading 5
+
+    ###### Heading 6
+- name: blockquote
+  markdown: |-
+    > This is a blockquote
+    >
+    > This is another one
+- name: thematic_break
+  markdown: |-
+    ---
+- name: bullet_list
+  markdown: |-
+    * list item 1
+    * list item 2
+      * embedded list item 3
+- name: ordered_list
+  markdown: |-
+    1. list item 1
+    2. list item 2
+    3. list item 3
+- name: image
+  markdown: '![alt text](https://gitlab.com/logo.png)'

@@ -23942,6 +23942,8 @@ CREATE UNIQUE INDEX index_sop_configs_on_project_id ON security_orchestration_po
 
 CREATE INDEX index_sop_configurations_project_id_policy_project_id ON security_orchestration_policy_configurations USING btree (security_policy_management_project_id, project_id);
 
+CREATE INDEX index_spam_logs_on_user_id ON spam_logs USING btree (user_id);
+
 CREATE INDEX index_sprints_iterations_cadence_id ON sprints USING btree (iterations_cadence_id);
 
 CREATE INDEX index_sprints_on_description_trigram ON sprints USING gin (description gin_trgm_ops);

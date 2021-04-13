@@ -107,54 +107,5 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
         ['test: [aws, app1]', 'test: [aws, app2]', 'test: [gcp, app]', 'test: [ovh, app]']
       )
     end
-
-    context 'when the FF ci_workflow_rules_variables is disabled' do
-      before do
-        stub_feature_flags(ci_workflow_rules_variables: false)
-      end
-
-      it 'excludes job_variables' do
-        expect(subject.map(&:attributes)).to match_array(
-          [
-            {
-              name: 'test: [aws, app1]',
-              instance: 1,
-              parallel: { total: 4 },
-              variables: {
-                'PROVIDER' => 'aws',
-                'STACK' => 'app1'
-              }
-            },
-            {
-              name: 'test: [aws, app2]',
-              instance: 2,
-              parallel: { total: 4 },
-              variables: {
-                'PROVIDER' => 'aws',
-                'STACK' => 'app2'
-              }
-            },
-            {
-              name: 'test: [ovh, app]',
-              instance: 3,
-              parallel: { total: 4 },
-              variables: {
-                'PROVIDER' => 'ovh',
-                'STACK' => 'app'
-              }
-            },
-            {
-              name: 'test: [gcp, app]',
-              instance: 4,
-              parallel: { total: 4 },
-              variables: {
-                'PROVIDER' => 'gcp',
-                'STACK' => 'app'
-              }
-            }
-          ]
-        )
-      end
-    end
   end
 end

@@ -323,14 +323,6 @@ in a comment or description field.
 Assignees in the sidebar are updated in real time. This feature is **disabled by default**.
 To enable it, you need to enable [ActionCable in-app mode](https://docs.gitlab.com/omnibus/settings/actioncable.html).
 
-## Cached issue count **(FREE SELF)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243753) in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323493) in GitLab 13.11.
-
-In a group, the sidebar displays the total count of open issues and this value is cached if higher
-than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
-
 ## Similar issues
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22866) in GitLab 11.6.

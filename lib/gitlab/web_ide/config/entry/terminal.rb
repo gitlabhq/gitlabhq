@@ -55,7 +55,7 @@ module Gitlab
             {
               tag_list: tags || [],
               yaml_variables: yaml_variables, # https://gitlab.com/gitlab-org/gitlab/-/issues/300581
-              job_variables: job_variables,
+              job_variables: yaml_variables,
               options: {
                 image: image_value,
                 services: services_value,
@@ -73,12 +73,6 @@ module Gitlab
                 { key: key.to_s, value: value, public: true }
               end
             end
-          end
-
-          def job_variables
-            return unless ::Feature.enabled?(:ci_workflow_rules_variables, default_enabled: :yaml)
-
-            yaml_variables
           end
         end
       end

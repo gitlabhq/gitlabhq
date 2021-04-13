@@ -1,7 +1,20 @@
 import { isFunction, isString } from 'lodash';
 import { Editor } from 'tiptap';
-import { Bold, Code } from 'tiptap-extensions';
+import {
+  Bold,
+  Italic,
+  Code,
+  Link,
+  Image,
+  Heading,
+  Blockquote,
+  HorizontalRule,
+  BulletList,
+  OrderedList,
+  ListItem,
+} from 'tiptap-extensions';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
+import CodeBlockHighlight from '../extensions/code_block_highlight';
 import createMarkdownSerializer from './markdown_serializer';
 
 const createEditor = async ({ content, renderMarkdown, serializer: customSerializer } = {}) => {
@@ -10,7 +23,20 @@ const createEditor = async ({ content, renderMarkdown, serializer: customSeriali
   }
 
   const editor = new Editor({
-    extensions: [new Bold(), new Code()],
+    extensions: [
+      new Bold(),
+      new Italic(),
+      new Code(),
+      new Link(),
+      new Image(),
+      new Heading({ levels: [1, 2, 3, 4, 5, 6] }),
+      new Blockquote(),
+      new HorizontalRule(),
+      new BulletList(),
+      new ListItem(),
+      new OrderedList(),
+      new CodeBlockHighlight(),
+    ],
   });
   const serializer = customSerializer || createMarkdownSerializer({ render: renderMarkdown });
 

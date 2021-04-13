@@ -147,7 +147,11 @@ module MergeRequests
     def resolve_todos(merge_request, old_labels, old_assignees, old_reviewers)
       return unless has_changes?(merge_request, old_labels: old_labels, old_assignees: old_assignees, old_reviewers: old_reviewers)
 
-      todo_service.resolve_todos_for_target(merge_request, current_user)
+      service_user = current_user
+
+      merge_request.run_after_commit_or_now do
+        ::MergeRequests::ResolveTodosService.new(merge_request, service_user).async_execute
+      end
     end
 
     def handle_target_branch_change(merge_request)

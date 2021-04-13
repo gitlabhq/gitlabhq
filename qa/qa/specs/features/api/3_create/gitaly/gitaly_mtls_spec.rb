@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Gitaly', :orchestrated, :mtls, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/324622', type: :investigating } do
+    context 'Gitaly', :orchestrated, :mtls do
       describe 'Using mTLS' do
         let(:intial_commit_message) { 'Initial commit' }
         let(:first_added_commit_message) { 'commit over git' }

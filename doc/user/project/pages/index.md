@@ -49,7 +49,7 @@ To create a GitLab Pages website:
 | [Create a `gitlab-ci.yml` file from scratch](getting_started/pages_from_scratch.md)    | Add a Pages site to an existing project. Learn how to create and configure your own CI file. |
 | [Use a `.gitlab-ci.yml` template](getting_started/pages_ci_cd_template.md) | Add a Pages site to an existing project. Use a pre-populated CI template file. |
 | [Fork a sample project](getting_started/pages_forked_sample_project.md)               | Create a new project with Pages already configured by forking a sample project. |
-| [Use a new project template](getting_started/pages_new_project_template.md)       | Create a new project with Pages already configured by using a new project template. |
+| [Use a project template](getting_started/pages_new_project_template.md)       | Create a new project with Pages already configured by using a template. |
 
 To update a GitLab Pages website:
 

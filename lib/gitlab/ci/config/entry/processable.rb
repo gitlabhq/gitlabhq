@@ -142,14 +142,10 @@ module Gitlab
           end
 
           def job_variables
-            return unless ::Feature.enabled?(:ci_workflow_rules_variables, default_enabled: :yaml)
-
             variables_value.to_h
           end
 
           def root_variables_inheritance
-            return unless ::Feature.enabled?(:ci_workflow_rules_variables, default_enabled: :yaml)
-
             inherit_entry&.variables_entry&.value
           end
 

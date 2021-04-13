@@ -3,16 +3,16 @@
     .table-mobile-header{ role: 'rowheader' }= _('Type')
     .table-mobile-content
       - if runner.group_type?
-        %span.badge.badge-success
+        %span.badge.badge-pill.gl-badge.sm.badge-success
           = _('group')
       - else
-        %span.badge.badge-info
+        %span.badge.badge-pill.gl-badge.sm.badge-info
           = _('specific')
       - if runner.locked?
-        %span.badge.badge-warning
+        %span.badge.badge-pill.gl-badge.sm.badge-warning
           = _('locked')
       - unless runner.active?
-        %span.badge.badge-danger
+        %span.badge.badge-pill.gl-badge.sm.badge-danger
           = _('paused')
 
   .table-section.section-10

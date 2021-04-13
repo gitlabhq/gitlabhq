@@ -389,20 +389,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
           end
         end
 
-        context 'when FF ci_workflow_rules_variables is disabled' do
-          before do
-            stub_feature_flags(ci_workflow_rules_variables: false)
-          end
-
-          it 'does not return job_variables and root_variables_inheritance' do
-            expect(entry.value).to include(
-              variables: { 'A' => 'job', 'B' => 'job' }
-            )
-            expect(entry.value).not_to have_key(:job_variables)
-            expect(entry.value).not_to have_key(:root_variables_inheritance)
-          end
-        end
-
         context 'when root yaml variables are used' do
           let(:variables) do
             Gitlab::Ci::Config::Entry::Variables.new(
@@ -519,21 +505,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
             job_variables: {},
             root_variables_inheritance: true
           )
-        end
-
-        context 'when FF ci_workflow_rules_variables is disabled' do
-          before do
-            stub_feature_flags(ci_workflow_rules_variables: false)
-          end
-
-          it 'does not return job_variables and root_variables_inheritance' do
-            expect(entry.value).to eq(
-              name: :rspec,
-              stage: 'test',
-              only: { refs: %w[branches tags] },
-              variables: {}
-            )
-          end
         end
       end
     end

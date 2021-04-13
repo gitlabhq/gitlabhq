@@ -16044,6 +16044,9 @@ msgstr ""
 msgid "ImageViewerDimensions|W"
 msgstr ""
 
+msgid "Impersonate"
+msgstr ""
+
 msgid "Impersonation Tokens"
 msgstr ""
 
@@ -27173,6 +27176,9 @@ msgstr ""
 msgid "SSH key"
 msgstr ""
 
+msgid "SSH keys"
+msgstr ""
+
 msgid "SSH keys allow you to establish a secure connection between your computer and GitLab."
 msgstr ""
 
@@ -27669,7 +27675,7 @@ msgstr ""
 msgid "SecurityConfiguration|You can quickly enable all security scanning tools by enabling %{linkStart}Auto DevOps%{linkEnd}."
 msgstr ""
 
-msgid "SecurityOrchestration|A security policy project can be used enforce policies for a given project, group, or instance. It allows you to speficy security policies that are important to you  and enforce them with every commit."
+msgid "SecurityOrchestration|A security policy project can be used enforce policies for a given project, group, or instance. It allows you to specify security policies that are important to you  and enforce them with every commit."
 msgstr ""
 
 msgid "SecurityOrchestration|Create a policy"
@@ -29015,6 +29021,9 @@ msgid "Something went wrong"
 msgstr ""
 
 msgid "Something went wrong on our end"
+msgstr ""
+
+msgid "Something went wrong on our end while loading the code quality diff."
 msgstr ""
 
 msgid "Something went wrong on our end."
@@ -30988,7 +30997,7 @@ msgstr ""
 msgid "The merge request can now be merged."
 msgstr ""
 
-msgid "The merge request has been updated, and the number of code quality violations in this file has changed."
+msgid "The merge request has made changes to this file that affect the number of code quality violations in it."
 msgstr ""
 
 msgid "The metric must be one of %{metrics}."
