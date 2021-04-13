@@ -270,7 +270,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
     let(:object_pool_service) { Gitlab::GitalyClient::ObjectPoolService.new(object_pool) }
 
     before do
-      object_pool_service.create(repository)
+      object_pool_service.create(repository) # rubocop:disable Rails/SaveBang
       object_pool_service.link_repository(repository)
     end
 

@@ -499,8 +499,9 @@ GEM
       rubyntlm (~> 0.5)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    gon (6.2.0)
-      actionpack (>= 3.0)
+    gon (6.4.0)
+      actionpack (>= 3.0.20)
+      i18n (>= 0.7)
       multi_json
       request_store (>= 1.0)
     google-api-client (0.50.0)
@@ -591,7 +592,7 @@ GEM
       rainbow
       rubocop (>= 0.50.0)
       sysexits (~> 1.1)
-    hamlit (2.14.4)
+    hamlit (2.15.0)
       temple (>= 0.8.2)
       thor
       tilt
@@ -1075,10 +1076,10 @@ GEM
       proc_to_ast
       rspec (>= 2.13, < 4)
       unparser
-    rspec-rails (4.1.2)
-      actionpack (>= 4.2)
-      activesupport (>= 4.2)
-      railties (>= 4.2)
+    rspec-rails (5.0.1)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
+      railties (>= 5.2)
       rspec-core (~> 3.10)
       rspec-expectations (~> 3.10)
       rspec-mocks (~> 3.10)
@@ -1444,7 +1445,7 @@ DEPENDENCIES
   gitlab-styles (~> 6.2.0)
   gitlab_chronic_duration (~> 0.10.6.2)
   gitlab_omniauth-ldap (~> 2.1.1)
-  gon (~> 6.2)
+  gon (~> 6.4.0)
   google-api-client (~> 0.33)
   google-protobuf (~> 3.14.0)
   gpgme (~> 2.0.19)
@@ -1460,7 +1461,7 @@ DEPENDENCIES
   gssapi
   guard-rspec
   haml_lint (~> 0.36.0)
-  hamlit (~> 2.14.4)
+  hamlit (~> 2.15.0)
   hangouts-chat (~> 0.0.5)
   hashie
   hashie-forbidden_attributes
@@ -1563,7 +1564,7 @@ DEPENDENCIES
   rouge (~> 3.26.0)
   rqrcode-rails3 (~> 0.1.7)
   rspec-parameterized
-  rspec-rails (~> 4.1.2)
+  rspec-rails (~> 5.0.1)
   rspec-retry (~> 0.6.1)
   rspec_junit_formatter
   rspec_profiling (~> 0.0.6)

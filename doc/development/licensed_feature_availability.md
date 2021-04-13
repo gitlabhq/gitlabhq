@@ -41,3 +41,16 @@ the instance license.
 ```ruby
 License.feature_available?(:feature_symbol)
 ```
+
+## Restricting frontend features
+
+To restrict frontend features based on the license, use `push_licensed_feature`.
+The frontend can then access this via `this.glFeatures`:
+
+```ruby
+before_action do
+  push_licensed_feature(:feature_symbol)
+  # or by project/namespace
+  push_licensed_feature(:feature_symbol, project)
+end
+```

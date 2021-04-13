@@ -97,6 +97,10 @@ function rspec_paralellized_job() {
     spec_folder_prefix="ee/"
   fi
 
+  if [[ "${test_tool}" =~ "-jh" ]]; then
+    spec_folder_prefix="jh/"
+  fi
+
   export KNAPSACK_LOG_LEVEL="debug"
   export KNAPSACK_REPORT_PATH="knapsack/${report_name}_report.json"
 

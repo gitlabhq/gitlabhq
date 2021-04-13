@@ -24,6 +24,7 @@ module LearnGitlabHelper
   private
 
   ACTION_ISSUE_IDS = {
+    issue_created: 4,
     git_write: 6,
     pipeline_created: 7,
     merge_request_created: 9,

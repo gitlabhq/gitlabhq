@@ -63,6 +63,15 @@ export const ACTION_LABELS = {
     section: 'deploy',
     position: 1,
   },
+  issueCreated: {
+    title: s__('LearnGitLab|Create an issue'),
+    actionLabel: s__('LearnGitLab|Create an issue'),
+    description: s__(
+      'LearnGitLab|Create/import issues (tickets) to collaborate on ideas and plan work.',
+    ),
+    section: 'plan',
+    position: 0,
+  },
 };
 
 export const ACTION_SECTIONS = {

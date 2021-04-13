@@ -21,6 +21,30 @@ RSpec.describe Profiles::NotificationsController do
       expect(response).to render_template :show
     end
 
+    context 'when personal projects are present', :request_store do
+      let!(:personal_project_1) { create(:project, namespace: user.namespace) }
+
+      context 'N+1 query check' do
+        render_views
+
+        it 'does not have an N+1' do
+          sign_in(user)
+
+          get :show
+
+          control = ActiveRecord::QueryRecorder.new do
+            get :show
+          end
+
+          create_list(:project, 2, namespace: user.namespace)
+
+          expect do
+            get :show
+          end.not_to exceed_query_limit(control)
+        end
+      end
+    end
+
     context 'with groups that do not have notification preferences' do
       let_it_be(:group) { create(:group) }
       let_it_be(:subgroup) { create(:group, parent: group) }

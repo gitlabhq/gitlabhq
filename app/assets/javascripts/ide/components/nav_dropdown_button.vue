@@ -31,7 +31,7 @@ export default {
 
 <template>
   <dropdown-button>
-    <span class="row flex-nowrap">
+    <span class="row gl-flex-nowrap">
       <span class="col-auto flex-fill text-truncate">
         <gl-icon :size="16" :aria-label="__('Current Branch')" name="branch" /> {{ branchLabel }}
       </span>

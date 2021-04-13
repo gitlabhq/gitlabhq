@@ -56,7 +56,6 @@ module DeprecationToolkitEnv
   def self.allowed_kwarg_warning_paths
     %w[
       activerecord-6.0.3.4/lib/active_record/migration.rb
-      devise-4.7.3/lib/devise/test/controller_helpers.rb
       activesupport-6.0.3.4/lib/active_support/cache.rb
       batch-loader-1.4.0/lib/batch_loader/graphql.rb
       carrierwave-1.3.1/lib/carrierwave/sanitized_file.rb

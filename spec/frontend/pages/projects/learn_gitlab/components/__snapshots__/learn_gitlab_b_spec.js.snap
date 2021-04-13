@@ -29,21 +29,21 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
       class="gl-text-gray-500 gl-mb-2"
       data-testid="completion-percentage"
     >
-      25% completed
+      22% completed
     </p>
      
     <div
       class="progress"
-      max="8"
+      max="9"
       value="2"
     >
       <div
-        aria-valuemax="8"
+        aria-valuemax="9"
         aria-valuemin="0"
         aria-valuenow="2"
         class="progress-bar"
         role="progressbar"
-        style="width: 25%;"
+        style="width: 22.22222222222222%;"
       >
         <!---->
       </div>
@@ -94,6 +94,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
             class="gl-text-center gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column learn-gitlab-info-card-content"
           >
             <img
+              alt="Invite your colleagues"
               src="http://example.com/images/illustration.svg"
             />
              
@@ -151,6 +152,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
             class="gl-text-center gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column learn-gitlab-info-card-content"
           >
             <img
+              alt="Create or import a repository"
               src="http://example.com/images/illustration.svg"
             />
              
@@ -200,6 +202,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
             class="gl-text-center gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column learn-gitlab-info-card-content"
           >
             <img
+              alt="Set-up CI/CD"
               src="http://example.com/images/illustration.svg"
             />
              
@@ -249,6 +252,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
             class="gl-text-center gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column learn-gitlab-info-card-content"
           >
             <img
+              alt="Try GitLab Ultimate for free"
               src="http://example.com/images/illustration.svg"
             />
              
@@ -303,6 +307,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
             class="gl-text-center gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column learn-gitlab-info-card-content"
           >
             <img
+              alt="Add code owners"
               src="http://example.com/images/illustration.svg"
             />
              
@@ -357,6 +362,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
             class="gl-text-center gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column learn-gitlab-info-card-content"
           >
             <img
+              alt="Enable require merge approvals"
               src="http://example.com/images/illustration.svg"
             />
              
@@ -422,6 +428,57 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
             class="gl-text-center gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column learn-gitlab-info-card-content"
           >
             <img
+              alt="Create an issue"
+              src="http://example.com/images/illustration.svg"
+            />
+             
+            <h6>
+              Create an issue
+            </h6>
+             
+            <p
+              class="gl-font-sm gl-text-gray-700"
+            >
+              Create/import issues (tickets) to collaborate on ideas and plan work.
+            </p>
+             
+            <a
+              class="gl-link"
+              href="http://example.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Create an issue
+            </a>
+          </div>
+        </div>
+         
+        <!---->
+      </div>
+    </div>
+     
+    <div
+      class="col gl-mb-6"
+    >
+      <div
+        class="gl-card gl-pt-0"
+      >
+        <!---->
+         
+        <div
+          class="gl-card-body"
+        >
+          <div
+            class="gl-text-right gl-h-5"
+          >
+            <!---->
+          </div>
+           
+          <div
+            class="gl-text-center gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column learn-gitlab-info-card-content"
+          >
+            <img
+              alt="Submit a merge request (MR)"
               src="http://example.com/images/illustration.svg"
             />
              
@@ -487,6 +544,7 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
             class="gl-text-center gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column learn-gitlab-info-card-content"
           >
             <img
+              alt="Run a Security scan using CI/CD"
               src="http://example.com/images/illustration.svg"
             />
              

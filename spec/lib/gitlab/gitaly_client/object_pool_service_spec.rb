@@ -11,7 +11,7 @@ RSpec.describe Gitlab::GitalyClient::ObjectPoolService do
   subject { described_class.new(object_pool) }
 
   before do
-    subject.create(raw_repository)
+    subject.create(raw_repository) # rubocop:disable Rails/SaveBang
   end
 
   describe '#create' do
@@ -22,7 +22,7 @@ RSpec.describe Gitlab::GitalyClient::ObjectPoolService do
     context 'when the pool already exists' do
       it 'returns an error' do
         expect do
-          subject.create(raw_repository)
+          subject.create(raw_repository) # rubocop:disable Rails/SaveBang
         end.to raise_error(GRPC::FailedPrecondition)
       end
     end

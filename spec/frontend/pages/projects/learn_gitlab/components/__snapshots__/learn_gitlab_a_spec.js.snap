@@ -29,21 +29,21 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
       class="gl-text-gray-500 gl-mb-2"
       data-testid="completion-percentage"
     >
-      25% completed
+      22% completed
     </p>
      
     <div
       class="progress"
-      max="8"
+      max="9"
       value="2"
     >
       <div
-        aria-valuemax="8"
+        aria-valuemax="9"
         aria-valuemin="0"
         aria-valuenow="2"
         class="progress-bar"
         role="progressbar"
-        style="width: 25%;"
+        style="width: 22.22222222222222%;"
       >
         <!---->
       </div>
@@ -234,6 +234,20 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             </p>
           </div>
            
+          <div
+            class="gl-mb-4"
+          >
+            <span>
+              <a
+                class="gl-link"
+                href="http://example.com/"
+              >
+                Create an issue
+              </a>
+            </span>
+             
+            <!---->
+          </div>
           <div
             class="gl-mb-4"
           >

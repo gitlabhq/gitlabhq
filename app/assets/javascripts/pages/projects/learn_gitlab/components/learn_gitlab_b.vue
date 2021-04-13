@@ -97,6 +97,9 @@ export default {
 
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4">
       <div class="col gl-mb-6">
+        <learn-gitlab-info-card v-bind="infoProps('issueCreated')" />
+      </div>
+      <div class="col gl-mb-6">
         <learn-gitlab-info-card v-bind="infoProps('mergeRequestCreated')" />
       </div>
     </div>

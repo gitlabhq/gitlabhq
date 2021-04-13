@@ -168,11 +168,13 @@ RSpec.describe ApplicationHelper do
     it { expect(helper.active_when(false)).to eq(nil) }
   end
 
-  describe '#promo_host' do
-    subject { helper.promo_host }
+  unless Gitlab.jh?
+    describe '#promo_host' do
+      subject { helper.promo_host }
 
-    it 'returns the url' do
-      is_expected.to eq('about.gitlab.com')
+      it 'returns the url' do
+        is_expected.to eq('about.gitlab.com')
+      end
     end
   end
 
@@ -180,7 +182,7 @@ RSpec.describe ApplicationHelper do
     subject { helper.promo_url }
 
     it 'returns the url' do
-      is_expected.to eq('https://about.gitlab.com')
+      is_expected.to eq("https://#{helper.promo_host}")
     end
 
     it 'changes if promo_host changes' do
@@ -194,7 +196,7 @@ RSpec.describe ApplicationHelper do
     subject { helper.contact_sales_url }
 
     it 'returns the url' do
-      is_expected.to eq('https://about.gitlab.com/sales')
+      is_expected.to eq("https://#{helper.promo_host}/sales")
     end
 
     it 'changes if promo_url changes' do

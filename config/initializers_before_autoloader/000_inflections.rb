@@ -35,5 +35,6 @@ ActiveSupport::Inflector.inflections do |inflect|
     vulnerability_feedback
   )
   inflect.acronym 'EE'
+  inflect.acronym 'JH'
   inflect.acronym 'CSP'
 end

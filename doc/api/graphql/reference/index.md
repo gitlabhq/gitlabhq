@@ -7525,6 +7525,15 @@ The kind of an approval rule.
 | `REGULAR` | A `regular` approval rule. |
 | `REPORT_APPROVER` | A `report_approver` approval rule. |
 
+### `AssigneeWildcardId`
+
+Assignee ID wildcard values.
+
+| Value | Description |
+| ----- | ----------- |
+| `ANY` | An assignee is assigned. |
+| `NONE` | No assignee is assigned. |
+
 ### `AvailabilityEnum`
 
 User availability status.

@@ -247,75 +247,117 @@ RSpec.describe Gitlab do
     end
   end
 
-  describe '.ee?' do
+  describe 'ee? and jh?' do
     before do
-      stub_env('FOSS_ONLY', nil) # Make sure the ENV is clean
+      # Make sure the ENV is clean
+      stub_env('FOSS_ONLY', nil)
+      stub_env('EE_ONLY', nil)
+
       described_class.instance_variable_set(:@is_ee, nil)
+      described_class.instance_variable_set(:@is_jh, nil)
     end
 
     after do
       described_class.instance_variable_set(:@is_ee, nil)
+      described_class.instance_variable_set(:@is_jh, nil)
     end
 
-    context 'for EE' do
-      before do
-        root = Pathname.new('dummy')
-        license_path = double(:path, exist?: true)
+    def stub_path(*paths, **arguments)
+      root = Pathname.new('dummy')
+      pathname = double(:path, **arguments)
 
-        allow(described_class)
-          .to receive(:root)
-                .and_return(root)
+      allow(described_class)
+        .to receive(:root)
+        .and_return(root)
 
+      allow(root).to receive(:join)
+
+      paths.each do |path|
         allow(root)
           .to receive(:join)
-                .with('ee/app/models/license.rb')
-                .and_return(license_path)
+          .with(path)
+          .and_return(pathname)
+      end
+    end
+
+    describe '.ee?' do
+      context 'for EE' do
+        before do
+          stub_path('ee/app/models/license.rb', exist?: true)
+        end
+
+        context 'when using FOSS_ONLY=1' do
+          before do
+            stub_env('FOSS_ONLY', '1')
+          end
+
+          it 'returns not to be EE' do
+            expect(described_class).not_to be_ee
+          end
+        end
+
+        context 'when using FOSS_ONLY=0' do
+          before do
+            stub_env('FOSS_ONLY', '0')
+          end
+
+          it 'returns to be EE' do
+            expect(described_class).to be_ee
+          end
+        end
+
+        context 'when using default FOSS_ONLY' do
+          it 'returns to be EE' do
+            expect(described_class).to be_ee
+          end
+        end
       end
 
-      context 'when using FOSS_ONLY=1' do
+      context 'for CE' do
         before do
-          stub_env('FOSS_ONLY', '1')
+          stub_path('ee/app/models/license.rb', exist?: false)
         end
 
         it 'returns not to be EE' do
           expect(described_class).not_to be_ee
         end
       end
-
-      context 'when using FOSS_ONLY=0' do
-        before do
-          stub_env('FOSS_ONLY', '0')
-        end
-
-        it 'returns to be EE' do
-          expect(described_class).to be_ee
-        end
-      end
-
-      context 'when using default FOSS_ONLY' do
-        it 'returns to be EE' do
-          expect(described_class).to be_ee
-        end
-      end
     end
 
-    context 'for CE' do
-      before do
-        root = double(:path)
-        license_path = double(:path, exists?: false)
+    describe '.jh?' do
+      context 'for JH' do
+        before do
+          stub_path(
+            'ee/app/models/license.rb',
+            'jh',
+            exist?: true)
+        end
 
-        allow(described_class)
-          .to receive(:root)
-                .and_return(Pathname.new('dummy'))
+        context 'when using default FOSS_ONLY and EE_ONLY' do
+          it 'returns to be JH' do
+            expect(described_class).to be_jh
+          end
+        end
 
-        allow(root)
-          .to receive(:join)
-                .with('ee/app/models/license.rb')
-                .and_return(license_path)
-      end
+        context 'when using FOSS_ONLY=1' do
+          before do
+            stub_env('FOSS_ONLY', '1')
+          end
 
-      it 'returns not to be EE' do
-        expect(described_class).not_to be_ee
+          it 'returns not to be JH' do
+            expect(described_class).not_to be_jh
+          end
+        end
+
+        context 'when using EE_ONLY=1' do
+          before do
+            stub_env('EE_ONLY', '1')
+          end
+
+          it 'returns not to be JH' do
+            expect(described_class).not_to be_jh
+          end
+        end
       end
     end
   end

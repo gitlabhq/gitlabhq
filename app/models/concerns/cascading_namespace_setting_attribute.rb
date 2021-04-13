@@ -25,7 +25,7 @@ module CascadingNamespaceSettingAttribute
 
   class_methods do
     def cascading_settings_feature_enabled?
-      ::Feature.enabled?(:cascading_namespace_settings, default_enabled: false)
+      ::Feature.enabled?(:cascading_namespace_settings, default_enabled: true)
     end
 
     private

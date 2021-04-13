@@ -58,6 +58,8 @@ To add a new application for your user:
 
 ## Group owned applications
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16227) in GitLab 13.11.
+
 To add a new application for a group:
 
 1. Navigate to the desired group.

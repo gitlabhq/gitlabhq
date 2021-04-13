@@ -67,6 +67,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    codequalityDiff: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -80,7 +85,7 @@ export default {
     genericError: GENERIC_ERROR,
   },
   computed: {
-    ...mapState('diffs', ['currentDiffFileId', 'codequalityDiff']),
+    ...mapState('diffs', ['currentDiffFileId']),
     ...mapGetters(['isNotesFetched']),
     ...mapGetters('diffs', ['getDiffFileDiscussions']),
     viewBlobHref() {
@@ -149,9 +154,7 @@ export default {
       return loggedIn && featureOn;
     },
     hasCodequalityChanges() {
-      return (
-        this.codequalityDiff?.files && this.codequalityDiff?.files[this.file.file_path]?.length > 0
-      );
+      return this.codequalityDiff.length > 0;
     },
   },
   watch: {

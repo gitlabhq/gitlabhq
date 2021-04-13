@@ -26,13 +26,13 @@ describe('Learn GitLab Design B', () => {
   it('renders the progress percentage', () => {
     const text = wrapper.find('[data-testid="completion-percentage"]').text();
 
-    expect(text).toEqual('25% completed');
+    expect(text).toBe('22% completed');
   });
 
   it('renders the progress bar with correct values', () => {
-    const progressBar = wrapper.find(GlProgressBar);
+    const progressBar = wrapper.findComponent(GlProgressBar);
 
     expect(progressBar.attributes('value')).toBe('2');
-    expect(progressBar.attributes('max')).toBe('8');
+    expect(progressBar.attributes('max')).toBe('9');
   });
 });

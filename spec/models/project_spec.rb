@@ -5225,57 +5225,27 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#default_branch' do
-    context 'with an empty repository' do
-      let_it_be(:project) { create(:project_empty_repo) }
+    context 'with default_branch_name' do
+      let_it_be_with_refind(:root_group) { create(:group) }
+      let_it_be_with_refind(:project_group) { create(:group, parent: root_group) }
+      let_it_be_with_refind(:project) { create(:project, path: 'avatar', namespace: project_group) }
 
-      context 'group.default_branch_name is available' do
-        let(:project_group) { create(:group) }
-        let(:project) { create(:project, path: 'avatar', namespace: project_group) }
-
-        before do
-          expect(Gitlab::CurrentSettings)
-            .not_to receive(:default_branch_name)
-
-          expect(project.group)
-            .to receive(:default_branch_name)
-            .and_return('example_branch')
-        end
-
-        it 'returns the group default value' do
-          expect(project.default_branch).to eq('example_branch')
-        end
+      where(:instance_branch, :root_group_branch, :project_group_branch, :project_branch) do
+        ''      | nil           | nil            | nil
+        nil     | nil           | nil            | nil
+        'main'  | nil           | nil            | 'main'
+        'main'  | 'root_branch' | nil            | 'root_branch'
+        'main'  | 'root_branch' | 'group_branch' | 'group_branch'
       end
 
-      context 'Gitlab::CurrentSettings.default_branch_name is available' do
+      with_them do
         before do
-          expect(Gitlab::CurrentSettings)
-            .to receive(:default_branch_name)
-            .and_return(example_branch_name)
+          allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return(instance_branch)
+          root_group.namespace_settings.update!(default_branch_name: root_group_branch)
+          project_group.namespace_settings.update!(default_branch_name: project_group_branch)
         end
 
-        context 'is missing or nil' do
-          let(:example_branch_name) { nil }
-
-          it "returns nil" do
-            expect(project.default_branch).to be_nil
-          end
-        end
-
-        context 'is blank' do
-          let(:example_branch_name) { '' }
-
-          it 'returns nil' do
-            expect(project.default_branch).to be_nil
-          end
-        end
-
-        context 'is present' do
-          let(:example_branch_name) { 'example_branch_name' }
-
-          it 'returns the expected branch name' do
-            expect(project.default_branch).to eq(example_branch_name)
-          end
-        end
+        it { expect(project.default_branch).to eq(project_branch) }
       end
     end
   end

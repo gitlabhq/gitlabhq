@@ -46,8 +46,6 @@ Rails/SaveBang:
   Exclude:
     - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'
     - 'ee/spec/controllers/subscriptions_controller_spec.rb'
-    - 'ee/spec/frontend/fixtures/analytics.rb'
-    - 'ee/spec/graphql/resolvers/vulnerabilities_resolver_spec.rb'
     - 'ee/spec/initializers/fog_google_https_private_urls_spec.rb'
     - 'ee/spec/lib/analytics/merge_request_metrics_calculator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'
@@ -182,8 +180,6 @@ Rails/SaveBang:
     - 'spec/lib/gitlab/email/handler/unsubscribe_handler_spec.rb'
     - 'spec/lib/gitlab/gfm/reference_rewriter_spec.rb'
     - 'spec/lib/gitlab/git_access_spec.rb'
-    - 'spec/lib/gitlab/gitaly_client/object_pool_service_spec.rb'
-    - 'spec/lib/gitlab/gitaly_client/repository_service_spec.rb'
     - 'spec/lib/gitlab/import_export/avatar_saver_spec.rb'
     - 'spec/lib/gitlab/import_export/base/relation_factory_spec.rb'
     - 'spec/lib/gitlab/import_export/design_repo_restorer_spec.rb'
@@ -424,7 +420,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
   Exclude:
     - ee/spec/controllers/admin/geo/projects_controller_spec.rb
     - ee/spec/controllers/admin/projects_controller_spec.rb
-    - ee/spec/controllers/ee/projects/jobs_controller_spec.rb
     - ee/spec/controllers/groups/analytics/cycle_analytics/stages_controller_spec.rb
     - ee/spec/controllers/groups/analytics/cycle_analytics/summary_controller_spec.rb
     - ee/spec/controllers/groups/analytics/cycle_analytics/value_streams_controller_spec.rb

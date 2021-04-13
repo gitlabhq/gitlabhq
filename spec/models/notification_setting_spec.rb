@@ -200,4 +200,18 @@ RSpec.describe NotificationSetting do
       subject.email_events
     end
   end
+
+  describe '#order_by_id_asc' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:other_project) { create(:project) }
+    let_it_be(:notification_setting_1) { create(:notification_setting, project: project) }
+    let_it_be(:notification_setting_2) { create(:notification_setting, project: other_project) }
+    let_it_be(:notification_setting_3) { create(:notification_setting, project: project) }
+
+    let(:ids) { [notification_setting_1, notification_setting_2, notification_setting_3].map(&:id) }
+
+    subject(:ordered_records) { described_class.where(id: ids, source: project).order_by_id_asc }
+
+    it { is_expected.to eq([notification_setting_1, notification_setting_3]) }
+  end
 end

@@ -32,6 +32,10 @@ exports[`Learn GitLab Section Card renders correctly 1`] = `
     value="[object Object]"
   />
   <learn-gitlab-section-link-stub
+    action="issueCreated"
+    value="[object Object]"
+  />
+  <learn-gitlab-section-link-stub
     action="gitWrite"
     value="[object Object]"
   />

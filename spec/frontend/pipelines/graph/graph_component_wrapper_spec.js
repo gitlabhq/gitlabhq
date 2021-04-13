@@ -2,9 +2,15 @@ import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
-import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW } from '~/pipelines/components/graph/constants';
+import {
+  IID_FAILURE,
+  LAYER_VIEW,
+  STAGE_VIEW,
+  VIEW_TYPE_KEY,
+} from '~/pipelines/components/graph/constants';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
 import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.vue';
@@ -21,6 +27,7 @@ const defaultProvide = {
 
 describe('Pipeline graph wrapper', () => {
   Vue.use(VueApollo);
+  useLocalStorageSpy();
 
   let wrapper;
   const getAlert = () => wrapper.find(GlAlert);
@@ -216,7 +223,7 @@ describe('Pipeline graph wrapper', () => {
   });
 
   describe('view dropdown', () => {
-    describe('when feature flag is off', () => {
+    describe('when pipelineGraphLayersView feature flag is off', () => {
       beforeEach(async () => {
         createComponentWithApollo();
         jest.runOnlyPendingTimers();
@@ -228,7 +235,7 @@ describe('Pipeline graph wrapper', () => {
       });
     });
 
-    describe('when feature flag is on', () => {
+    describe('when pipelineGraphLayersView feature flag is on', () => {
       let layersFn;
       beforeEach(async () => {
         layersFn = jest.spyOn(parsingUtils, 'listByLayers');
@@ -245,7 +252,7 @@ describe('Pipeline graph wrapper', () => {
         await wrapper.vm.$nextTick();
       });
 
-      it('appears', () => {
+      it('appears when pipeline uses needs', () => {
         expect(getViewSelector().exists()).toBe(true);
       });
 
@@ -259,6 +266,11 @@ describe('Pipeline graph wrapper', () => {
         expect(getStageColumnTitle().text()).toBe('');
       });
 
+      it('saves the view type to local storage', async () => {
+        await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        expect(localStorage.setItem.mock.calls).toEqual([[VIEW_TYPE_KEY, LAYER_VIEW]]);
+      });
+
       it('calls listByLayers only once no matter how many times view is switched', async () => {
         expect(layersFn).not.toHaveBeenCalled();
         await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
@@ -267,6 +279,54 @@ describe('Pipeline graph wrapper', () => {
         await getViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
         await getViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
         expect(layersFn).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('when feature flag is on and local storage is set', () => {
+      beforeEach(async () => {
+        localStorage.setItem(VIEW_TYPE_KEY, LAYER_VIEW);
+
+        createComponentWithApollo({
+          provide: {
+            glFeatures: {
+              pipelineGraphLayersView: true,
+            },
+          },
+          mountFn: mount,
+        });
+
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+      });
+
+      it('reads the view type from localStorage when available', () => {
+        expect(wrapper.find('[data-testid="pipeline-view-selector"] code').text()).toContain(
+          'needs:',
+        );
+      });
+    });
+
+    describe('when feature flag is on but pipeline does not use needs', () => {
+      beforeEach(async () => {
+        const nonNeedsResponse = { ...mockPipelineResponse };
+        nonNeedsResponse.data.project.pipeline.usesNeeds = false;
+
+        createComponentWithApollo({
+          provide: {
+            glFeatures: {
+              pipelineGraphLayersView: true,
+            },
+          },
+          mountFn: mount,
+          getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
+        });
+
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+      });
+
+      it('does not appear when pipeline does not use needs', () => {
+        expect(getViewSelector().exists()).toBe(false);
       });
     });
   });

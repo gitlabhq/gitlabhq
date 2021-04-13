@@ -18,6 +18,10 @@ module Types
       argument :search, GraphQL::STRING_TYPE,
                required: false,
                description: 'Search query for issue title or description.'
+
+      argument :assignee_wildcard_id, ::Types::Boards::AssigneeWildcardIdEnum,
+               required: false,
+               description: 'Filter by assignee wildcard. Incompatible with assigneeUsername.'
     end
   end
 end

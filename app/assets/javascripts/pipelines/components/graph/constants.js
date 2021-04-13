@@ -13,5 +13,6 @@ export const GRAPHQL = 'graphql';
 
 export const STAGE_VIEW = 'stage';
 export const LAYER_VIEW = 'layer';
+export const VIEW_TYPE_KEY = 'pipeline_graph_view_type';
 
 export const IID_FAILURE = 'missing_iid';

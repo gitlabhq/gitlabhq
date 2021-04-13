@@ -446,6 +446,134 @@ Now we need to make each **secondary** node listen to changes on the new **prima
 to [initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process) again but this time
 for another **primary** node. All the old replication settings will be overwritten.
 
+## Promoting a secondary Geo cluster in GitLab Cloud Native Helm Charts
+
+When updating a Cloud Native Geo deployment, the process for updating any node that is external to the secondary Kubernetes cluster does not differ from the non Cloud Native approach. As such, you can always defer to [Promoting a secondary Geo node in single-secondary configurations](#promoting-a-secondary-geo-node-in-single-secondary-configurations) for more information.
+
+The following sections assume you are using the `gitlab` namespace. If you used a different namespace when setting up your cluster, you should also replace `--namespace gitlab` with your namespace.
+
+WARNING:
+In GitLab 13.2 and 13.3, promoting a secondary site to a primary while the
+secondary is paused fails. Do not pause replication before promoting a
+secondary. If the site is paused, be sure to resume before promoting. This
+issue has been fixed in GitLab 13.4 and later.
+
+### Step 1. Permanently disable the **primary** cluster
+
+WARNING:
+If the **primary** site goes offline, there may be data saved on the **primary** site
+that has not been replicated to the **secondary** site. This data should be treated
+as lost if you proceed.
+
+If an outage on the **primary** site happens, you should do everything possible to
+avoid a split-brain situation where writes can occur in two different GitLab
+instances, complicating recovery efforts. So to prepare for the failover, you
+must disable the **primary** site:
+
+- If you have access to the **primary** Kubernetes cluster, connect to it and disable the GitLab webservice and Sidekiq pods:
+
+  ```shell
+  kubectl --namespace gitlab scale deploy gitlab-geo-webservice-default --replicas=0
+  kubectl --namespace gitlab scale deploy gitlab-geo-sidekiq-all-in-1-v1 --replicas=0
+  ```
+
+- If you do not have access to the **primary** Kubernetes cluster, take the cluster offline and
+  prevent it from coming back online by any means at your disposal.
+  Since there are many ways you may prefer to accomplish this, we will avoid a
+  single recommendation. You may need to:
+
+  - Reconfigure the load balancers.
+  - Change DNS records (for example, point the primary DNS record to the
+    **secondary** site to stop usage of the **primary** site).
+  - Stop the virtual servers.
+  - Block traffic through a firewall.
+  - Revoke object storage permissions from the **primary** site.
+  - Physically disconnect a machine.
+
+### Step 2. Promote all **secondary** nodes external to the cluster
+
+WARNING:
+If the secondary site [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
+a point-in-time recovery to the last known state.
+Data that was created on the primary while the secondary was paused will be lost.
+
+1. SSH in to the database node in the **secondary** and trigger PostgreSQL to
+   promote to read-write:
+
+   ```shell
+   sudo gitlab-ctl promote-db
+   ```
+
+   In GitLab 12.8 and earlier, see [Message: `sudo: gitlab-pg-ctl: command not found`](../replication/troubleshooting.md#message-sudo-gitlab-pg-ctl-command-not-found).
+
+1. Edit `/etc/gitlab/gitlab.rb` on the database node in the **secondary** site to
+   reflect its new status as **primary** by removing any lines that enabled the
+   `geo_secondary_role`:
+
+   NOTE:
+   Depending on your architecture these steps will need to be run on any GitLab node that is external to the **secondary** Kubernetes cluster.
+
+   ```ruby
+   ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
+   geo_secondary_role['enable'] = true
+
+   ## In 11.5+ documentation, the role was enabled as follows. Remove this line.
+   roles ['geo_secondary_role']
+   ```
+
+   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) on the database node.
+
+### Step 3. Promote the **secondary** cluster
+
+1. Find the task runner pod:
+
+   ```shell
+   kubectl --namespace gitlab get pods -lapp=task-runner
+   ```
+
+1. Promote the secondary:
+
+   ```shell
+   kubectl --namespace gitlab exec -ti gitlab-geo-task-runner-XXX -- gitlab-rake geo:set_secondary_as_primary
+   ```
+
+1. Update the existing cluster configuration.
+
+   You can retrieve the existing config with Helm:
+
+   ```shell
+   helm --namespace gitlab get values gitlab-geo > gitlab.yaml
+   ```
+
+   The existing config will contain a section for Geo that should resemble:
+
+   ```yaml
+   geo:
+      enabled: true
+      role: secondary
+      nodeName: secondary.example.com
+      psql:
+         host: geo-2.db.example.com
+         port: 5431
+         password:
+            secret: geo
+            key: geo-postgresql-password
+   ```
+
+   To promote the **secondary** cluster to a **primary** cluster, update `role: secondary` to `role: primary`.
+
+   You can remove the entire `psql` section if the cluster will remain as a primary site, this refers to the tracking database and will be ignored whilst the cluster is acting as a primary site.
+
+   Update the cluster with the new config:
+
+   ```shell
+   helm upgrade --install --version <current Chart version> gitlab-geo gitlab/gitlab --namespace gitlab -f gitlab.yaml
+   ```
+
+1. Verify you can connect to the newly promoted primary using the URL used previously for the secondary.
+
+1. Success! The secondary has now been promoted to primary.
+
 ## Troubleshooting
 
 This section was moved to [another location](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-node).

@@ -27,6 +27,7 @@ RSpec.describe LearnGitlabHelper do
 
     it 'has all actions' do
       expect(onboarding_actions_data.keys).to contain_exactly(
+        :issue_created,
         :git_write,
         :pipeline_created,
         :merge_request_created,

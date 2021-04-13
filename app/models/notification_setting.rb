@@ -30,6 +30,8 @@ class NotificationSetting < ApplicationRecord
 
   scope :preload_source_route, -> { preload(source: [:route]) }
 
+  scope :order_by_id_asc, -> { order(id: :asc) }
+
   # NOTE: Applicable unfound_translations.rb also needs to be updated when below events are changed.
   EMAIL_EVENTS = [
     :new_release,

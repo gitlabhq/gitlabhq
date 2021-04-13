@@ -2,11 +2,12 @@
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import { __ } from '~/locale';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import { reportToSentry } from '../../utils';
 import { listByLayers } from '../parsing_utils';
-import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW } from './constants';
+import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';
 import PipelineGraph from './graph_component.vue';
 import GraphViewSelector from './graph_view_selector.vue';
 import {
@@ -22,6 +23,7 @@ export default {
     GlAlert,
     GlLoadingIcon,
     GraphViewSelector,
+    LocalStorageSync,
     PipelineGraph,
   },
   mixins: [glFeatureFlagMixin()],
@@ -143,7 +145,7 @@ export default {
       return this.$apollo.queries.pipeline.loading && !this.pipeline;
     },
     showGraphViewSelector() {
-      return Boolean(this.glFeatures.pipelineGraphLayersView && this.pipeline);
+      return Boolean(this.glFeatures.pipelineGraphLayersView && this.pipeline?.usesNeeds);
     },
   },
   mounted() {
@@ -184,6 +186,7 @@ export default {
       this.currentViewType = type;
     },
   },
+  viewTypeKey: VIEW_TYPE_KEY,
 };
 </script>
 <template>
@@ -191,11 +194,17 @@ export default {
     <gl-alert v-if="showAlert" :variant="alert.variant" @dismiss="hideAlert">
       {{ alert.text }}
     </gl-alert>
-    <graph-view-selector
-      v-if="showGraphViewSelector"
-      :type="currentViewType"
-      @updateViewType="updateViewType"
-    />
+    <local-storage-sync
+      :storage-key="$options.viewTypeKey"
+      :value="currentViewType"
+      @input="updateViewType"
+    >
+      <graph-view-selector
+        v-if="showGraphViewSelector"
+        :type="currentViewType"
+        @updateViewType="updateViewType"
+      />
+    </local-storage-sync>
     <gl-loading-icon v-if="showLoadingIcon" class="gl-mx-auto gl-my-4" size="lg" />
     <pipeline-graph
       v-if="pipeline"

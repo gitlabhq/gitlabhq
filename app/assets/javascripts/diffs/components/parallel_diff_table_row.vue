@@ -3,6 +3,10 @@ import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gi
 import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { CONTEXT_LINE_CLASS_NAME, PARALLEL_DIFF_VIEW_TYPE } from '../constants';
+import {
+  getInteropOldSideAttributes,
+  getInteropNewSideAttributes,
+} from '../utils/interoperability';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import * as utils from './diff_row_utils';
 
@@ -107,6 +111,12 @@ export default {
         this.line.isMetaLineRight,
         this.line.hasDiscussionsRight,
       );
+    },
+    interopLeftAttributes() {
+      return getInteropOldSideAttributes(this.line.left);
+    },
+    interopRightAttributes() {
+      return getInteropNewSideAttributes(this.line.right);
     },
   },
   mounted() {
@@ -217,6 +227,7 @@ export default {
         :key="line.left.line_code"
         v-safe-html="line.left.rich_text"
         :class="parallelViewLeftLineType"
+        v-bind="interopLeftAttributes"
         class="line_content with-coverage parallel left-side"
         @mousedown="handleParallelLineMouseDown"
       ></td>
@@ -283,6 +294,7 @@ export default {
             hll: isHighlighted,
           },
         ]"
+        v-bind="interopRightAttributes"
         class="line_content with-coverage parallel right-side"
         @mousedown="handleParallelLineMouseDown"
       ></td>

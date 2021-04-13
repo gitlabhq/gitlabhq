@@ -136,6 +136,16 @@ export const fileLineCoverage = (state) => (file, line) => {
 };
 
 /**
+ * Returns the codequality diff data for a given file
+ * @param {string} filePath
+ * @returns {Array}
+ */
+export const fileCodequalityDiff = (state) => (filePath) => {
+  if (!state.codequalityDiff.files || !state.codequalityDiff.files[filePath]) return [];
+  return state.codequalityDiff.files[filePath];
+};
+
+/**
  * Returns index of a currently selected diff in diffFiles
  * @returns {number}
  */

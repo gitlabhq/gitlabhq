@@ -13,6 +13,11 @@ import {
   CONFLICT_THEIR,
   CONFLICT_MARKER,
 } from '../constants';
+import {
+  getInteropInlineAttributes,
+  getInteropOldSideAttributes,
+  getInteropNewSideAttributes,
+} from '../utils/interoperability';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import * as utils from './diff_row_utils';
 
@@ -116,6 +121,16 @@ export default {
     isLeftConflictMarker() {
       return [CONFLICT_MARKER_OUR, CONFLICT_MARKER_THEIR].includes(this.line.left?.type);
     },
+    interopLeftAttributes() {
+      if (this.inline) {
+        return getInteropInlineAttributes(this.line.left);
+      }
+
+      return getInteropOldSideAttributes(this.line.left);
+    },
+    interopRightAttributes() {
+      return getInteropNewSideAttributes(this.line.right);
+    },
   },
   mounted() {
     this.scrollToLineIfNeededParallel(this.line);
@@ -181,6 +196,7 @@ export default {
     <div
       data-testid="left-side"
       class="diff-grid-left left-side"
+      v-bind="interopLeftAttributes"
       @dragover.prevent
       @dragenter="onDragEnter(line.left, index)"
       @dragend="onDragEnd"
@@ -286,6 +302,7 @@ export default {
       v-if="!inline"
       data-testid="right-side"
       class="diff-grid-right right-side"
+      v-bind="interopRightAttributes"
       @dragover.prevent
       @dragenter="onDragEnter(line.right, index)"
       @dragend="onDragEnd"

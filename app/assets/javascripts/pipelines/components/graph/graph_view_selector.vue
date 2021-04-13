@@ -57,7 +57,7 @@ export default {
 <template>
   <div class="gl-display-flex gl-align-items-center gl-my-4">
     <span>{{ $options.i18n.labelText }}</span>
-    <gl-dropdown class="gl-ml-4">
+    <gl-dropdown data-testid="pipeline-view-selector" class="gl-ml-4">
       <template #button-content>
         <gl-sprintf :message="currentDropdownText">
           <template #code="{ content }">

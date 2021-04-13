@@ -57,21 +57,29 @@ module Gitlab
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
-    if Gitlab.ee?
-      ee_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
-        ee_path = config.root.join('ee', Pathname.new(path).relative_path_from(config.root))
-        memo << ee_path.to_s
+    load_paths = lambda do |dir:|
+      ext_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
+        ext_path = config.root.join(dir, Pathname.new(path).relative_path_from(config.root))
+        memo << ext_path.to_s
       end
 
-      ee_paths << "#{config.root}/ee/app/replicators"
+      ext_paths << "#{config.root}/#{dir}/app/replicators"
 
       # Eager load should load CE first
-      config.eager_load_paths.push(*ee_paths)
-      config.helpers_paths.push "#{config.root}/ee/app/helpers"
+      config.eager_load_paths.push(*ext_paths)
+      config.helpers_paths.push "#{config.root}/#{dir}/app/helpers"
 
-      # Other than Ruby modules we load EE first
-      config.paths['lib/tasks'].unshift "#{config.root}/ee/lib/tasks"
-      config.paths['app/views'].unshift "#{config.root}/ee/app/views"
+      # Other than Ruby modules we load extensions first
+      config.paths['lib/tasks'].unshift "#{config.root}/#{dir}/lib/tasks"
+      config.paths['app/views'].unshift "#{config.root}/#{dir}/app/views"
+    end
+
+    Gitlab.ee do
+      load_paths.call(dir: 'ee')
+    end
+
+    Gitlab.jh do
+      load_paths.call(dir: 'jh')
     end
 
     # Rake tasks ignore the eager loading settings, so we need to set the

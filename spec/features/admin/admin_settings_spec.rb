@@ -596,7 +596,7 @@ RSpec.describe 'Admin updates settings' do
 
     context 'Nav bar' do
       it 'shows default help links in nav' do
-        default_support_url = 'https://about.gitlab.com/getting-help/'
+        default_support_url = "https://#{ApplicationHelper.promo_host}/getting-help/"
 
         visit root_dashboard_path
 

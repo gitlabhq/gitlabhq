@@ -292,8 +292,7 @@ end
 
 ### Frontend
 
-Use the `push_frontend_feature_flag` method for frontend code, which is
-available to all controllers that inherit from `ApplicationController`. You can use
+Use the `push_frontend_feature_flag` method which is available to all controllers that inherit from `ApplicationController`. You can use
 this method to expose the state of a feature flag, for example:
 
 ```ruby

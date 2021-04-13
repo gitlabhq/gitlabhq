@@ -108,7 +108,7 @@ gem 'hashie-forbidden_attributes'
 gem 'kaminari', '~> 1.0'
 
 # HAML
-gem 'hamlit', '~> 2.14.4'
+gem 'hamlit', '~> 2.15.0'
 
 # Files attachments
 gem 'carrierwave', '~> 1.3'
@@ -294,7 +294,7 @@ gem 'terser', '1.0.2'
 
 gem 'addressable', '~> 2.7'
 gem 'gemojione', '~> 3.3'
-gem 'gon', '~> 6.2'
+gem 'gon', '~> 6.4.0'
 gem 'request_store', '~> 1.5'
 gem 'base32', '~> 0.3.0'
 
@@ -366,7 +366,7 @@ group :development, :test do
 
   gem 'database_cleaner', '~> 1.7.0'
   gem 'factory_bot_rails', '~> 6.1.0'
-  gem 'rspec-rails', '~> 4.1.2'
+  gem 'rspec-rails', '~> 5.0.1'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.11.0'

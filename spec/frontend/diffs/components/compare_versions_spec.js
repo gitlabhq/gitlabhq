@@ -211,19 +211,20 @@ describe('CompareVersions', () => {
     });
 
     describe('prev commit', () => {
-      const { location } = window;
-
       beforeAll(() => {
-        delete window.location;
-        window.location = { href: `${TEST_HOST}?commit_id=${mrCommit.id}` };
+        global.jsdom.reconfigure({
+          url: `${TEST_HOST}?commit_id=${mrCommit.id}`,
+        });
+      });
+
+      afterAll(() => {
+        global.jsdom.reconfigure({
+          url: TEST_HOST,
+        });
       });
 
       beforeEach(() => {
         jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
-      });
-
-      afterAll(() => {
-        window.location = location;
       });
 
       it('uses the correct href', () => {
@@ -253,19 +254,20 @@ describe('CompareVersions', () => {
     });
 
     describe('next commit', () => {
-      const { location } = window;
-
       beforeAll(() => {
-        delete window.location;
-        window.location = { href: `${TEST_HOST}?commit_id=${mrCommit.id}` };
+        global.jsdom.reconfigure({
+          url: `${TEST_HOST}?commit_id=${mrCommit.id}`,
+        });
+      });
+
+      afterAll(() => {
+        global.jsdom.reconfigure({
+          url: TEST_HOST,
+        });
       });
 
       beforeEach(() => {
         jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
-      });
-
-      afterAll(() => {
-        window.location = location;
       });
 
       it('uses the correct href', () => {

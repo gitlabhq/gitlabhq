@@ -12,7 +12,7 @@
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
       %span= s_("Project URL")
-    .input-group.flex-nowrap
+    .input-group.gl-flex-nowrap
       - if current_user.can_select_namespace?
         .input-group-prepend.flex-shrink-0.has-tooltip{ title: root_url }
           .input-group-text

@@ -5,6 +5,7 @@ export default (server) => {
     require('./projects'),
     require('./repository'),
     require('./ci'),
+    require('./diffs'),
     require('./404'),
   ].forEach(({ default: setup }) => {
     setup(server);
