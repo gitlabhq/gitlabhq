@@ -119,8 +119,7 @@
           %p
             = link_to _('GitLab'), general_admin_application_settings_path
             %span.float-right
-              = Gitlab::VERSION
-              = "(#{Gitlab.revision})"
+              = link_to_version
           %p
             = _('GitLab Shell')
             %span.float-right

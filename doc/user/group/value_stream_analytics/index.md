@@ -317,17 +317,16 @@ To create a value stream:
 1. Navigate to your group's **Analytics > Value Stream**.
 1. Click the Value stream dropdown and select **Create new Value Stream**
 1. Fill in a name for the new Value Stream
-   - You can [customize the stages](#creating-a-value-stream-with-stages) as the `value_stream_analytics_extended_form` feature flag is enabled.
+   - You can [customize the stages](#creating-a-value-stream-with-stages)
 1. Click the **Create Value Stream** button.
 
 ![New value stream](img/new_value_stream_v13_3.png "Creating a new value stream")
 
 #### Creating a value stream with stages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55572) in GitLab 13.10.
-> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../../../administration/feature_flags.md). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50229) in GitLab 13.7.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55572) in GitLab 13.10.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294190) in GitLab 13.11.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -348,27 +347,6 @@ To create a value stream with stages:
 1. Select the **Create Value Stream** button to save the value stream.
 
 ![Extended create value stream form](img/extended_value_stream_form_v13_10.png "Extended create value stream form")
-
-#### Enable or disable value stream with stages
-
-Value streams with stages is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-# For the instance
-Feature.enable(:value_stream_analytics_extended_form)
-```
-
-To disable it:
-
-```ruby
-# For the instance
-Feature.disable(:value_stream_analytics_extended_form)
-```
 
 ### Deleting a value stream
 

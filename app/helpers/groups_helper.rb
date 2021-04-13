@@ -65,14 +65,6 @@ module GroupsHelper
     can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
   end
 
-  def group_open_issues_count(group)
-    if Feature.enabled?(:cached_sidebar_open_issues_count, group, default_enabled: :yaml)
-      cached_issuables_count(group, type: :issues)
-    else
-      number_with_delimiter(group_issues_count(state: 'opened'))
-    end
-  end
-
   def group_issues_count(state:)
     IssuesFinder
       .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)

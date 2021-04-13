@@ -2,7 +2,7 @@
 import { GlButton, GlCard, GlSprintf } from '@gitlab/ui';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
-import { SUGGESTED_CI_TEMPLATES, HELLO_WORLD_TEMPLATE_KEY } from '../../constants';
+import { HELLO_WORLD_TEMPLATE_KEY } from '../../constants';
 
 export default {
   components: {
@@ -32,14 +32,14 @@ export default {
       description: s__('Pipelines|CI/CD template to test and deploy your %{name} project.'),
     },
   },
-  inject: ['addCiYmlPath'],
+  inject: ['addCiYmlPath', 'suggestedCiTemplates'],
   data() {
-    const templates = Object.keys(SUGGESTED_CI_TEMPLATES).map((key) => {
+    const templates = this.suggestedCiTemplates.map(({ name, logo }) => {
       return {
-        name: key,
-        logoPath: SUGGESTED_CI_TEMPLATES[key].logoPath,
-        link: mergeUrlParams({ template: key }, this.addCiYmlPath),
-        description: sprintf(this.$options.i18n.templates.description, { name: key }),
+        name,
+        logo,
+        link: mergeUrlParams({ template: name }, this.addCiYmlPath),
+        description: sprintf(this.$options.i18n.templates.description, { name }),
       };
     });
 
@@ -101,7 +101,7 @@ export default {
             <img
               width="64"
               height="64"
-              :src="template.logoPath"
+              :src="template.logo"
               class="gl-mr-6"
               data-testid="template-logo"
             />

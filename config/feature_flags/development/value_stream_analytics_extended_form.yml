@@ -1,8 +1,0 @@
----
-name: value_stream_analytics_extended_form
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50229
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/294190
-milestone: '13.7'
-type: development
-group: group::optimize
-default_enabled: true

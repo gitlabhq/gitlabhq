@@ -28,6 +28,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     noPipelinesSvgPath,
     newPipelinePath,
     addCiYmlPath,
+    suggestedCiTemplates,
     canCreatePipeline,
     hasGitlabCi,
     ciLintPath,
@@ -40,6 +41,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     el,
     provide: {
       addCiYmlPath,
+      suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
     },
     data() {
       return {

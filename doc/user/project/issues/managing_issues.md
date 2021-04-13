@@ -325,15 +325,8 @@ To enable it, you need to enable [ActionCable in-app mode](https://docs.gitlab.c
 
 ## Cached issue count **(FREE SELF)**
 
-> - [Introduced]([link-to-issue](https://gitlab.com/gitlab-org/gitlab/-/issues/243753)) in GitLab 13.9.
-> - It was [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/323493) in GitLab 13.10.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-cached-issue-count) **(FREE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243753) in GitLab 13.9.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323493) in GitLab 13.11.
 
 In a group, the sidebar displays the total count of open issues and this value is cached if higher
 than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
@@ -371,22 +364,3 @@ until the issue is reopened.
 
 You can then see issue statuses in the issues list and the
 [epic tree](../../group/epics/index.md#issue-health-status-in-epic-tree).
-
-## Enable or disable cached issue count **(FREE SELF)**
-
-Cached issue count in the left sidebar is under development but ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:cached_sidebar_open_issues_count)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:cached_sidebar_open_issues_count)
-```

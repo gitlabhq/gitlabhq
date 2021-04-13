@@ -481,36 +481,6 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#group_open_issues_count' do
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:group) { create(:group, :public) }
-    let_it_be(:count_service) { Groups::OpenIssuesCountService }
-
-    before do
-      allow(helper).to receive(:current_user) { current_user }
-    end
-
-    it 'returns count value from cache' do
-      allow_next_instance_of(count_service) do |service|
-        allow(service).to receive(:count).and_return(2500)
-      end
-
-      expect(helper.group_open_issues_count(group)).to eq('2.5k')
-    end
-
-    context 'when cached_sidebar_open_issues_count feature flag is disabled' do
-      before do
-        stub_feature_flags(cached_sidebar_open_issues_count: false)
-      end
-
-      it 'returns not cached issues count' do
-        allow(helper).to receive(:group_issues_count).and_return(2500)
-
-        expect(helper.group_open_issues_count(group)).to eq('2,500')
-      end
-    end
-  end
-
   describe '#cached_issuables_count' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:group) { create(:group, name: 'group') }

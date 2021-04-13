@@ -1,8 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
 import PipelinesCiTemplate from '~/pipelines/components/pipelines_list/pipelines_ci_templates.vue';
-import { SUGGESTED_CI_TEMPLATES } from '~/pipelines/constants';
 
 const addCiYmlPath = "/-/new/master?commit_message='Add%20.gitlab-ci.yml'";
+const suggestedCiTemplates = [
+  { name: 'Android', logo: '/assets/illustrations/logos/android.svg' },
+  { name: 'Bash', logo: '/assets/illustrations/logos/bash.svg' },
+  { name: 'C++', logo: '/assets/illustrations/logos/c_plus_plus.svg' },
+];
 
 describe('Pipelines CI Templates', () => {
   let wrapper;
@@ -13,6 +17,7 @@ describe('Pipelines CI Templates', () => {
     return shallowMount(PipelinesCiTemplate, {
       provide: {
         addCiYmlPath,
+        suggestedCiTemplates,
       },
       stubs: {
         GlEmoji,
@@ -51,9 +56,7 @@ describe('Pipelines CI Templates', () => {
     it('renders all suggested templates', () => {
       const content = wrapper.text();
 
-      const keys = Object.keys(SUGGESTED_CI_TEMPLATES);
-
-      expect(content).toContain(...keys);
+      expect(content).toContain('Android', 'Bash', 'C++');
     });
 
     it('has the correct template name', () => {

@@ -1,4 +1,4 @@
-- issues_count = group_open_issues_count(@group)
+- issues_count = cached_issuables_count(@group, type: :issues)
 - merge_requests_count = group_open_merge_requests_count(@group)
 - aside_title = @group.subgroup? ? _('Subgroup navigation') : _('Group navigation')
 - overview_title = @group.subgroup? ? _('Subgroup overview') : _('Group overview')

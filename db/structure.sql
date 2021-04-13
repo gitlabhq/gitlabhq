@@ -23018,9 +23018,9 @@ CREATE INDEX index_members_on_requested_at ON members USING btree (requested_at)
 
 CREATE INDEX index_members_on_source_id_and_source_type ON members USING btree (source_id, source_type);
 
-CREATE INDEX index_members_on_user_id ON members USING btree (user_id);
-
 CREATE INDEX index_members_on_user_id_created_at ON members USING btree (user_id, created_at) WHERE ((ldap = true) AND ((type)::text = 'GroupMember'::text) AND ((source_type)::text = 'Namespace'::text));
+
+CREATE INDEX index_members_on_user_id_source_id_source_type ON members USING btree (user_id, source_id, source_type);
 
 CREATE INDEX index_merge_request_assignees_on_merge_request_id ON merge_request_assignees USING btree (merge_request_id);
 
