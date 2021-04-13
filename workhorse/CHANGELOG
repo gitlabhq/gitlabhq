@@ -1,5 +1,11 @@
 # Changelog for gitlab-workhorse
 
+## v8.63.3
+
+### Security
+- Check image content type before running exiftool in workhorse
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
 ## v8.63.2
 
 ### Security
