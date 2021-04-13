@@ -1,5 +1,0 @@
----
-title: Check image content type before running exiftool in workhorse
-merge_request:
-author:
-type: security
