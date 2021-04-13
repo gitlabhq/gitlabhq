@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang Rubocop offenses for email handlers
+merge_request: 58095
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

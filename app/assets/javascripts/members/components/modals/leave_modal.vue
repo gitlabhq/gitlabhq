@@ -23,6 +23,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['namespace'],
   props: {
     member: {
       type: Object,
@@ -30,7 +31,11 @@ export default {
     },
   },
   computed: {
-    ...mapState(['memberPath']),
+    ...mapState({
+      memberPath(state) {
+        return state[this.namespace].memberPath;
+      },
+    }),
     leavePath() {
       return this.memberPath.replace(/:id$/, 'leave');
     },

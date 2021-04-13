@@ -9,8 +9,16 @@ import MembersTable from './table/members_table.vue';
 export default {
   name: 'MembersApp',
   components: { MembersTable, FilterSortContainer, GlAlert },
+  inject: ['namespace'],
   computed: {
-    ...mapState(['showError', 'errorMessage']),
+    ...mapState({
+      showError(state) {
+        return state[this.namespace].showError;
+      },
+      errorMessage(state) {
+        return state[this.namespace].errorMessage;
+      },
+    }),
   },
   watch: {
     showError(value) {
@@ -23,7 +31,9 @@ export default {
   },
   methods: {
     ...mapMutations({
-      hideError: HIDE_ERROR,
+      hideError(commit) {
+        return commit(`${this.namespace}/${HIDE_ERROR}`);
+      },
     }),
   },
 };

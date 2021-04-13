@@ -2,6 +2,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import RemoveMemberButton from '~/members/components/action_buttons/remove_member_button.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -11,9 +12,14 @@ describe('RemoveMemberButton', () => {
 
   const createStore = (state = {}) => {
     return new Vuex.Store({
-      state: {
-        memberPath: '/groups/foo-bar/-/group_members/:id',
-        ...state,
+      modules: {
+        [MEMBER_TYPES.user]: {
+          namespaced: true,
+          state: {
+            memberPath: '/groups/foo-bar/-/group_members/:id',
+            ...state,
+          },
+        },
       },
     });
   };
@@ -22,6 +28,9 @@ describe('RemoveMemberButton', () => {
     wrapper = shallowMount(RemoveMemberButton, {
       localVue,
       store: createStore(state),
+      provide: {
+        namespace: MEMBER_TYPES.user,
+      },
       propsData: {
         memberId: 1,
         memberType: 'GroupMember',

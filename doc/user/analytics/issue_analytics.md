@@ -13,7 +13,7 @@ Issue Analytics is a bar graph which illustrates the number of issues created ea
 The default time span is 13 months, which includes the current month, and the 12 months
 prior.
 
-To access the chart, navigate to your project sidebar and select **{chart}** **Analytics > Issue Analytics**.
+To access the chart, navigate to your project sidebar and select **Analytics > Issue**.
 
 Hover over each bar to see the total number of issues.
 
@@ -31,7 +31,7 @@ You can change the total number of months displayed by setting a URL parameter.
 For example, `https://gitlab.com/groups/gitlab-org/-/issues_analytics?months_back=15`
 shows a total of 15 months for the chart in the GitLab.org group.
 
-![Issues created per month](img/issues_created_per_month_v12_8.png)
+![Issues created per month](img/issues_created_per_month_v13_11.png)
 
 ## Drill into the information
 

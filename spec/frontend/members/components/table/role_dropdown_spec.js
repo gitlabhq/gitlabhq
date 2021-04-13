@@ -7,6 +7,7 @@ import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { BV_DROPDOWN_SHOW } from '~/lib/utils/constants';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 import { member } from '../../mock_data';
 
 const localVue = createLocalVue();
@@ -24,11 +25,18 @@ describe('RoleDropdown', () => {
       updateMemberRole: jest.fn(() => Promise.resolve()),
     };
 
-    return new Vuex.Store({ actions });
+    return new Vuex.Store({
+      modules: {
+        [MEMBER_TYPES.user]: { namespaced: true, actions },
+      },
+    });
   };
 
   const createComponent = (propsData = {}) => {
     wrapper = mount(RoleDropdown, {
+      provide: {
+        namespace: MEMBER_TYPES.user,
+      },
       propsData: {
         member,
         permissions: {},

@@ -2,6 +2,7 @@ import { GlFilteredSearchToken } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import MembersFilteredSearchBar from '~/members/components/filter_sort/members_filtered_search_bar.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 const localVue = createLocalVue();
@@ -12,15 +13,20 @@ describe('MembersFilteredSearchBar', () => {
 
   const createComponent = ({ state = {}, provide = {} } = {}) => {
     const store = new Vuex.Store({
-      state: {
-        filteredSearchBar: {
-          show: true,
-          tokens: ['two_factor'],
-          searchParam: 'search',
-          placeholder: 'Filter members',
-          recentSearchesStorageKey: 'group_members',
+      modules: {
+        [MEMBER_TYPES.user]: {
+          namespaced: true,
+          state: {
+            filteredSearchBar: {
+              show: true,
+              tokens: ['two_factor'],
+              searchParam: 'search',
+              placeholder: 'Filter members',
+              recentSearchesStorageKey: 'group_members',
+            },
+            ...state,
+          },
         },
-        ...state,
       },
     });
 
@@ -29,6 +35,7 @@ describe('MembersFilteredSearchBar', () => {
       provide: {
         sourceId: 1,
         canManageMembers: true,
+        namespace: MEMBER_TYPES.user,
         ...provide,
       },
       store,

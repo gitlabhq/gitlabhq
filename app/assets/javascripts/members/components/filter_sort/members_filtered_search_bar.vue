@@ -37,14 +37,18 @@ export default {
       ],
     },
   ],
-  inject: ['sourceId', 'canManageMembers'],
+  inject: ['namespace', 'sourceId', 'canManageMembers'],
   data() {
     return {
       initialFilterValue: [],
     };
   },
   computed: {
-    ...mapState(['filteredSearchBar']),
+    ...mapState({
+      filteredSearchBar(state) {
+        return state[this.namespace].filteredSearchBar;
+      },
+    }),
     tokens() {
       return this.$options.availableTokens.filter((token) => {
         if (

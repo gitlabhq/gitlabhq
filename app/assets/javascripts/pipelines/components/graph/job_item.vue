@@ -8,7 +8,7 @@ import { reportToSentry } from '../../utils';
 import ActionComponent from '../jobs_shared/action_component.vue';
 import JobNameComponent from '../jobs_shared/job_name_component.vue';
 import { accessValue } from './accessors';
-import { REST } from './constants';
+import { REST, SINGLE_JOB } from './constants';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -97,6 +97,11 @@ export default {
       required: false,
       default: '',
     },
+    type: {
+      type: String,
+      required: false,
+      default: SINGLE_JOB,
+    },
   },
   computed: {
     boundary() {
@@ -110,6 +115,9 @@ export default {
     },
     hasDetails() {
       return accessValue(this.dataMethod, 'hasDetails', this.status);
+    },
+    isSingleItem() {
+      return this.type === SINGLE_JOB;
     },
     nameComponent() {
       return this.hasDetails ? 'gl-link' : 'div';
@@ -177,6 +185,17 @@ export default {
     hideTooltips() {
       this.$root.$emit(BV_HIDE_TOOLTIP);
     },
+    jobItemClick(evt) {
+      if (this.isSingleItem) {
+        /*
+          This is so the jobDropdown still toggles. Issue to refactor:
+          https://gitlab.com/gitlab-org/gitlab/-/issues/267117 
+        */
+        evt.stopPropagation();
+      }
+
+      this.hideTooltips();
+    },
     pipelineActionRequestComplete() {
       this.$emit('pipelineActionRequestComplete');
     },
@@ -201,7 +220,7 @@ export default {
       :href="detailsPath"
       class="js-pipeline-graph-job-link qa-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-w-full"
       :data-testid="testId"
-      @click.stop="hideTooltips"
+      @click="jobItemClick"
       @mouseout="hideTooltips"
     >
       <div class="ci-job-name-component gl-display-flex gl-align-items-center">

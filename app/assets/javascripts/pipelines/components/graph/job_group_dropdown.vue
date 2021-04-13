@@ -1,5 +1,6 @@
 <script>
 import { reportToSentry } from '../../utils';
+import { JOB_DROPDOWN, SINGLE_JOB } from './constants';
 import JobItem from './job_item.vue';
 
 /**
@@ -27,6 +28,10 @@ export default {
       required: false,
       default: '',
     },
+  },
+  jobItemTypes: {
+    jobDropdown: JOB_DROPDOWN,
+    singleJob: SINGLE_JOB,
   },
   computed: {
     computedJobId() {
@@ -57,11 +62,10 @@ export default {
     >
       <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
         <job-item
-          :dropdown-length="group.size"
+          :type="$options.jobItemTypes.jobDropdown"
           :group-tooltip="tooltipText"
           :job="group"
           :stage-name="stageName"
-          @pipelineActionRequestComplete="pipelineActionRequestComplete"
         />
 
         <div class="gl-font-weight-100 gl-font-size-lg gl-ml-n4">{{ group.size }}</div>
@@ -75,6 +79,7 @@ export default {
             <job-item
               :dropdown-length="group.size"
               :job="job"
+              :type="$options.jobItemTypes.singleJob"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
               @pipelineActionRequestComplete="pipelineActionRequestComplete"
             />

@@ -1,5 +1,6 @@
 import { createWrapper } from '@vue/test-utils';
 import MembersApp from '~/members/components/app.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 import { initMembersApp } from '~/members/index';
 import { membersJsonString, members } from './mock_data';
 
@@ -10,6 +11,7 @@ describe('initMembersApp', () => {
 
   const setup = () => {
     vm = initMembersApp(el, {
+      namespace: MEMBER_TYPES.user,
       tableFields: ['account'],
       tableAttrs: { table: { 'data-qa-selector': 'members_list' } },
       tableSortableFields: ['account'],
@@ -45,42 +47,46 @@ describe('initMembersApp', () => {
   it('parses and sets `members` in Vuex store', () => {
     setup();
 
-    expect(vm.$store.state.members).toEqual(members);
+    expect(vm.$store.state[MEMBER_TYPES.user].members).toEqual(members);
   });
 
   it('sets `tableFields` in Vuex store', () => {
     setup();
 
-    expect(vm.$store.state.tableFields).toEqual(['account']);
+    expect(vm.$store.state[MEMBER_TYPES.user].tableFields).toEqual(['account']);
   });
 
   it('sets `tableAttrs` in Vuex store', () => {
     setup();
 
-    expect(vm.$store.state.tableAttrs).toEqual({ table: { 'data-qa-selector': 'members_list' } });
+    expect(vm.$store.state[MEMBER_TYPES.user].tableAttrs).toEqual({
+      table: { 'data-qa-selector': 'members_list' },
+    });
   });
 
   it('sets `tableSortableFields` in Vuex store', () => {
     setup();
 
-    expect(vm.$store.state.tableSortableFields).toEqual(['account']);
+    expect(vm.$store.state[MEMBER_TYPES.user].tableSortableFields).toEqual(['account']);
   });
 
   it('sets `requestFormatter` in Vuex store', () => {
     setup();
 
-    expect(vm.$store.state.requestFormatter()).toEqual({});
+    expect(vm.$store.state[MEMBER_TYPES.user].requestFormatter()).toEqual({});
   });
 
   it('sets `filteredSearchBar` in Vuex store', () => {
     setup();
 
-    expect(vm.$store.state.filteredSearchBar).toEqual({ show: false });
+    expect(vm.$store.state[MEMBER_TYPES.user].filteredSearchBar).toEqual({ show: false });
   });
 
   it('sets `memberPath` in Vuex store', () => {
     setup();
 
-    expect(vm.$store.state.memberPath).toBe('/groups/foo-bar/-/group_members/:id');
+    expect(vm.$store.state[MEMBER_TYPES.user].memberPath).toBe(
+      '/groups/foo-bar/-/group_members/:id',
+    );
   });
 });

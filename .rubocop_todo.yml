@@ -922,13 +922,6 @@ Style/RedundantRegexpEscape:
 Style/RedundantSelf:
   Enabled: false
 
-# Offense count: 213
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, AllowInnerSlashes.
-# SupportedStyles: slashes, percent_r, mixed
-Style/RegexpLiteral:
-  Enabled: false
-
 # Offense count: 53
 # Cop supports --auto-correct.
 Style/RescueModifier:

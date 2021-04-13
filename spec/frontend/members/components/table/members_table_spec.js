@@ -14,6 +14,7 @@ import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import MemberSource from '~/members/components/table/member_source.vue';
 import MembersTable from '~/members/components/table/members_table.vue';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 import * as initUserPopovers from '~/user_popovers';
 import { member as memberMock, directMember, invite, accessRequest } from '../../mock_data';
 
@@ -25,14 +26,19 @@ describe('MembersTable', () => {
 
   const createStore = (state = {}) => {
     return new Vuex.Store({
-      state: {
-        members: [],
-        tableFields: [],
-        tableAttrs: {
-          table: { 'data-qa-selector': 'members_list' },
-          tr: { 'data-qa-selector': 'member_row' },
+      modules: {
+        [MEMBER_TYPES.user]: {
+          namespaced: true,
+          state: {
+            members: [],
+            tableFields: [],
+            tableAttrs: {
+              table: { 'data-qa-selector': 'members_list' },
+              tr: { 'data-qa-selector': 'member_row' },
+            },
+            ...state,
+          },
         },
-        ...state,
       },
     });
   };
@@ -44,6 +50,7 @@ describe('MembersTable', () => {
       provide: {
         sourceId: 1,
         currentUserId: 1,
+        namespace: MEMBER_TYPES.user,
         ...provide,
       },
       stubs: [

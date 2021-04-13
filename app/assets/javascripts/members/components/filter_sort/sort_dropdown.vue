@@ -8,8 +8,16 @@ import { parseSortParam, buildSortHref } from '~/members/utils';
 export default {
   name: 'SortDropdown',
   components: { GlSorting, GlSortingItem },
+  inject: ['namespace'],
   computed: {
-    ...mapState(['tableSortableFields', 'filteredSearchBar']),
+    ...mapState({
+      tableSortableFields(state) {
+        return state[this.namespace].tableSortableFields;
+      },
+      filteredSearchBar(state) {
+        return state[this.namespace].filteredSearchBar;
+      },
+    }),
     sort() {
       return parseSortParam(this.tableSortableFields);
     },

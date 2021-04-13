@@ -12,6 +12,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['namespace'],
   props: {
     memberId: {
       type: Number,
@@ -19,7 +20,11 @@ export default {
     },
   },
   computed: {
-    ...mapState(['memberPath']),
+    ...mapState({
+      memberPath(state) {
+        return state[this.namespace].memberPath;
+      },
+    }),
     resendPath() {
       return this.memberPath.replace(/:id$/, `${this.memberId}/resend_invite`);
     },

@@ -22,8 +22,19 @@ export default {
   },
   modalId: REMOVE_GROUP_LINK_MODAL_ID,
   components: { GlModal, GlSprintf, GlForm },
+  inject: ['namespace'],
   computed: {
-    ...mapState(['memberPath', 'groupLinkToRemove', 'removeGroupLinkModalVisible']),
+    ...mapState({
+      memberPath(state) {
+        return state[this.namespace].memberPath;
+      },
+      groupLinkToRemove(state) {
+        return state[this.namespace].groupLinkToRemove;
+      },
+      removeGroupLinkModalVisible(state) {
+        return state[this.namespace].removeGroupLinkModalVisible;
+      },
+    }),
     groupLinkPath() {
       return this.memberPath.replace(/:id$/, this.groupLinkToRemove?.id);
     },
@@ -35,7 +46,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['hideRemoveGroupLinkModal']),
+    ...mapActions({
+      hideRemoveGroupLinkModal(dispatch) {
+        return dispatch(`${this.namespace}/hideRemoveGroupLinkModal`);
+      },
+    }),
     handlePrimary() {
       this.$refs.form.$el.submit();
     },

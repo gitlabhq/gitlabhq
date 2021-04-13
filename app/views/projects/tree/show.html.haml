@@ -1,4 +1,4 @@
-- current_route_path = request.fullpath.match(/-\/tree\/[^\/]+\/(.+$)/).to_a[1]
+- current_route_path = request.fullpath.match(%r{-/tree/[^/]+/(.+$)}).to_a[1]
 - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
 - add_page_startup_graphql_call('repository/permissions', { projectPath: @project.full_path })
 - add_page_startup_graphql_call('repository/files', { nextPageCursor: "", pageSize: 100, projectPath: @project.full_path, ref: current_ref, path: current_route_path || "/"})
