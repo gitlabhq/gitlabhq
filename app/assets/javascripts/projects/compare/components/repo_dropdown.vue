@@ -46,14 +46,7 @@ export default {
       this.emitTargetProject(repo.name);
     },
     setDefaultRepo() {
-      if (this.isSourceRevision) {
-        this.selectedRepo = this.projectTo;
-        return;
-      }
-
-      const [defaultTargetProject] = this.projectsFrom;
-      this.emitTargetProject(defaultTargetProject.name);
-      this.selectedRepo = defaultTargetProject;
+      this.selectedRepo = this.projectTo;
     },
     emitTargetProject(name) {
       if (!this.isSourceRevision) {

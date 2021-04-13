@@ -92,19 +92,19 @@ These job keywords can be defined inside a `default:` section:
 - [`tags`](#tags)
 - [`timeout`](#timeout)
 
-The following example sets the `ruby:2.5` image as the default for all jobs in the pipeline.
-The `rspec 2.6` job does not use the default, because it overrides the default with
+The following example sets the `ruby:3.0` image as the default for all jobs in the pipeline.
+The `rspec 2.7` job does not use the default, because it overrides the default with
 a job-specific `image:` section:
 
 ```yaml
 default:
-  image: ruby:2.5
+  image: ruby:3.0
 
 rspec:
   script: bundle exec rspec
 
-rspec 2.6:
-  image: ruby:2.6
+rspec 2.7:
+  image: ruby:2.7
   script: bundle exec rspec
 ```
 
@@ -3281,6 +3281,18 @@ artifacts:
     - binaries/**/*.o
 ```
 
+Unlike [`artifacts:paths`](#artifactspaths), `exclude` paths are not recursive. To exclude all of the contents of a directory, you can match them explicitly rather than matching the directory itself.
+
+For example, to store all files in `binaries/` but nothing located in the `temp/` subdirectory:
+
+```yaml
+artifacts:
+  paths:
+    - binaries/
+  exclude:
+    - binaries/temp/**/*
+```
+
 Files matched by [`artifacts:untracked`](#artifactsuntracked) can be excluded using
 `artifacts:exclude` too.
 
@@ -5076,13 +5088,14 @@ Use [`default:`](#custom-default-keyword-values) instead. For example:
 
 ```yaml
 default:
-  image: ruby:2.5
+  image: ruby:3.0
   services:
     - docker:dind
   cache:
     paths: [vendor/]
   before_script:
-    - bundle install --path vendor/
+    - bundle config set path vendor/bundle
+    - bundle install
   after_script:
     - rm -rf tmp/
 ```

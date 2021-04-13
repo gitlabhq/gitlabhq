@@ -1,4 +1,5 @@
 #import "../fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
 query usersSearch($search: String!, $fullPath: ID!) {
   workspace: project(fullPath: $fullPath) {
@@ -6,6 +7,7 @@ query usersSearch($search: String!, $fullPath: ID!) {
       nodes {
         user {
           ...User
+          ...UserAvailability
         }
       }
     }

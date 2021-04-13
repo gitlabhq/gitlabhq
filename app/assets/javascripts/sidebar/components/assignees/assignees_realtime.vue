@@ -1,7 +1,7 @@
 <script>
 import actionCable from '~/actioncable_consumer';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import query from '~/issuable_sidebar/queries/issue_sidebar.query.graphql';
+import { assigneesQueries } from '~/sidebar/constants';
 
 export default {
   subscription: null,
@@ -9,7 +9,8 @@ export default {
   props: {
     mediator: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
     issuableIid: {
       type: String,
@@ -19,10 +20,16 @@ export default {
       type: String,
       required: true,
     },
+    issuableType: {
+      type: String,
+      required: true,
+    },
   },
   apollo: {
-    project: {
-      query,
+    workspace: {
+      query() {
+        return assigneesQueries[this.issuableType].query;
+      },
       variables() {
         return {
           iid: this.issuableIid,
@@ -30,7 +37,9 @@ export default {
         };
       },
       result(data) {
-        this.handleFetchResult(data);
+        if (this.mediator) {
+          this.handleFetchResult(data);
+        }
       },
     },
   },
@@ -43,7 +52,7 @@ export default {
   methods: {
     received(data) {
       if (data.event === 'updated') {
-        this.$apollo.queries.project.refetch();
+        this.$apollo.queries.workspace.refetch();
       }
     },
     initActionCablePolling() {
@@ -57,7 +66,7 @@ export default {
       );
     },
     handleFetchResult({ data }) {
-      const { nodes } = data.project.issue.assignees;
+      const { nodes } = data.workspace.issuable.assignees;
 
       const assignees = nodes.map((n) => ({
         ...n,
@@ -69,7 +78,7 @@ export default {
     },
   },
   render() {
-    return this.$slots.default;
+    return null;
   },
 };
 </script>

@@ -30,29 +30,80 @@ RSpec.describe 'Issue Sidebar' do
       let(:user2) { create(:user) }
       let(:issue2) { create(:issue, project: project, author: user2) }
 
-      include_examples 'issuable invite members experiments' do
-        let(:issuable_path) { project_issue_path(project, issue2) }
+      context 'when a privileged user can invite' do
+        it 'shows a link for inviting members and launches invite modal' do
+          project.add_maintainer(user)
+          visit_issue(project, issue2)
+
+          open_assignees_dropdown
+
+          page.within '.dropdown-menu-user' do
+            expect(page).to have_link('Invite members')
+            expect(page).to have_selector('[data-track-event="click_invite_members"]')
+            expect(page).to have_selector('[data-track-label="edit_assignee"]')
+          end
+
+          click_link 'Invite members'
+
+          expect(page).to have_content("You're inviting members to the")
+        end
+      end
+
+      context 'when invite_members_version_b experiment is enabled' do
+        before do
+          stub_experiment_for_subject(invite_members_version_b: true)
+        end
+
+        it 'shows a link for inviting members and follows through to modal' do
+          project.add_developer(user)
+          visit_issue(project, issue2)
+
+          open_assignees_dropdown
+
+          page.within '.dropdown-menu-user' do
+            expect(page).to have_link('Invite members', href: '#')
+            expect(page).to have_selector('[data-track-event="click_invite_members_version_b"]')
+            expect(page).to have_selector('[data-track-label="edit_assignee"]')
+          end
+
+          click_link 'Invite members'
+
+          expect(page).to have_content("Oops, this feature isn't ready yet")
+        end
+      end
+
+      context 'when invite_members_version_b experiment is disabled' do
+        it 'shows author in assignee dropdown and no invite link' do
+          project.add_developer(user)
+          visit_issue(project, issue2)
+
+          open_assignees_dropdown
+
+          page.within '.dropdown-menu-user' do
+            expect(page).not_to have_link('Invite members')
+          end
+        end
       end
 
       context 'when user is a developer' do
         before do
           project.add_developer(user)
           visit_issue(project, issue2)
-
-          find('.block.assignee .edit-link').click
-
-          wait_for_requests
         end
 
         it 'shows author in assignee dropdown' do
+          open_assignees_dropdown
+
           page.within '.dropdown-menu-user' do
             expect(page).to have_content(user2.name)
           end
         end
 
         it 'shows author when filtering assignee dropdown' do
+          open_assignees_dropdown
+
           page.within '.dropdown-menu-user' do
-            find('.dropdown-input-field').set(user2.name)
+            find('.js-dropdown-input-field').find('input').set(user2.name)
 
             wait_for_requests
 
@@ -61,23 +112,18 @@ RSpec.describe 'Issue Sidebar' do
         end
 
         it 'assigns yourself' do
-          find('.block.assignee .dropdown-menu-toggle').click
-
           click_button 'assign yourself'
-
           wait_for_requests
 
-          find('.block.assignee .edit-link').click
-
-          page.within '.dropdown-menu-user' do
-            expect(page.find('.dropdown-header')).to be_visible
-            expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
+          page.within '.assignee' do
+            expect(page).to have_content(user.name)
           end
         end
 
         it 'keeps your filtered term after filtering and dismissing the dropdown' do
-          find('.dropdown-input-field').set(user2.name)
+          open_assignees_dropdown
 
+          find('.js-dropdown-input-field').find('input').set(user2.name)
           wait_for_requests
 
           page.within '.dropdown-menu-user' do
@@ -86,23 +132,15 @@ RSpec.describe 'Issue Sidebar' do
           end
 
           find('.js-right-sidebar').click
-          find('.block.assignee .edit-link').click
 
-          expect(page.all('.dropdown-menu-user li').length).to eq(1)
-          expect(find('.dropdown-input-field').value).to eq(user2.name)
+          open_assignees_dropdown
+
+          page.within('.assignee') do
+            expect(page.all('[data-testid="selected-participant"]').length).to eq(1)
+          end
+
+          expect(find('.js-dropdown-input-field').find('input').value).to eq(user2.name)
         end
-      end
-
-      it 'shows label text as "Apply" when assignees are changed' do
-        project.add_developer(user)
-        visit_issue(project, issue2)
-
-        find('.block.assignee .edit-link').click
-        wait_for_requests
-
-        click_on 'Unassigned'
-
-        expect(page).to have_link('Apply')
       end
     end
 
@@ -333,5 +371,12 @@ RSpec.describe 'Issue Sidebar' do
   def open_issue_sidebar
     find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').click
     find('aside.right-sidebar.right-sidebar-expanded')
+  end
+
+  def open_assignees_dropdown
+    page.within('.assignee') do
+      click_button('Edit')
+      wait_for_requests
+    end
   end
 end

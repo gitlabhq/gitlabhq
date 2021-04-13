@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 export default {
   components: { GlButton, GlLoadingIcon },
@@ -20,6 +21,16 @@ export default {
       required: false,
       default: false,
     },
+    initialLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isDirty: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     tracking: {
       type: Object,
       required: false,
@@ -34,6 +45,11 @@ export default {
     return {
       edit: false,
     };
+  },
+  computed: {
+    editButtonText() {
+      return this.isDirty ? __('Apply') : __('Edit');
+    },
   },
   destroyed() {
     window.removeEventListener('click', this.collapseWhenOffClick);
@@ -86,15 +102,15 @@ export default {
 <template>
   <div>
     <div class="gl-display-flex gl-align-items-center" @click.self="collapse">
-      <span class="hide-collapsed" data-testid="title">{{ title }}</span>
-      <gl-loading-icon v-if="loading" inline class="gl-ml-2 hide-collapsed" />
+      <span class="hide-collapsed" data-testid="title" @click="collapse">{{ title }}</span>
+      <gl-loading-icon v-if="loading || initialLoading" inline class="gl-ml-2 hide-collapsed" />
       <gl-loading-icon
         v-if="loading && isClassicSidebar"
         inline
         class="gl-mx-auto gl-my-0 hide-expanded"
       />
       <gl-button
-        v-if="canUpdate"
+        v-if="canUpdate && !initialLoading"
         variant="link"
         class="gl-text-gray-900! gl-hover-text-blue-800! gl-ml-auto hide-collapsed"
         data-testid="edit-button"
@@ -105,14 +121,16 @@ export default {
         @keyup.esc="toggle"
         @click="toggle"
       >
-        {{ __('Edit') }}
+        {{ editButtonText }}
       </gl-button>
     </div>
-    <div v-show="!edit" data-testid="collapsed-content">
-      <slot name="collapsed">{{ __('None') }}</slot>
-    </div>
-    <div v-show="edit" data-testid="expanded-content" :class="{ 'gl-mt-3': !isClassicSidebar }">
-      <slot :edit="edit"></slot>
-    </div>
+    <template v-if="!initialLoading">
+      <div v-show="!edit" data-testid="collapsed-content">
+        <slot name="collapsed">{{ __('None') }}</slot>
+      </div>
+      <div v-show="edit" data-testid="expanded-content" :class="{ 'gl-mt-3': !isClassicSidebar }">
+        <slot :edit="edit"></slot>
+      </div>
+    </template>
   </div>
 </template>

@@ -168,21 +168,19 @@ RSpec.describe "Issues > User edits issue", :js do
 
       describe 'update assignee' do
         context 'by authorized user' do
-          def close_dropdown_menu_if_visible
-            find('.dropdown-menu-toggle', visible: :all).tap do |toggle|
-              toggle.click if toggle.visible?
-            end
-          end
-
           it 'allows user to select unassigned' do
             visit project_issue_path(project, issue)
 
             page.within('.assignee') do
               expect(page).to have_content "#{user.name}"
 
-              click_link 'Edit'
-              click_link 'Unassigned'
-              first('.title').click
+              click_button('Edit')
+              wait_for_requests
+
+              find('[data-testid="unassign"]').click
+              find('[data-testid="title"]').click
+              wait_for_requests
+
               expect(page).to have_content 'None - assign yourself'
             end
           end
@@ -193,10 +191,8 @@ RSpec.describe "Issues > User edits issue", :js do
 
             page.within('.assignee') do
               expect(page).to have_content "None"
-            end
-
-            page.within '.assignee' do
-              click_link 'Edit'
+              click_button('Edit')
+              wait_for_requests
             end
 
             page.within '.dropdown-menu-user' do
@@ -204,6 +200,9 @@ RSpec.describe "Issues > User edits issue", :js do
             end
 
             page.within('.assignee') do
+              find('[data-testid="title"]').click
+              wait_for_requests
+
               expect(page).to have_content user.name
             end
           end
@@ -216,14 +215,14 @@ RSpec.describe "Issues > User edits issue", :js do
             page.within '.assignee' do
               expect(page).to have_content user.name
 
-              click_link 'Edit'
+              click_button('Edit')
+              wait_for_requests
               click_link user.name
 
-              close_dropdown_menu_if_visible
+              find('[data-testid="title"]').click
+              wait_for_requests
 
-              page.within '.value .assign-yourself' do
-                expect(page).to have_content "None"
-              end
+              expect(page).to have_content "None"
             end
           end
         end
@@ -324,24 +323,23 @@ RSpec.describe "Issues > User edits issue", :js do
         it 'adds due date to issue' do
           date = Date.today.at_beginning_of_month + 2.days
 
-          page.within '.due_date' do
-            click_link 'Edit'
-
+          page.within '[data-testid="due-date"]' do
+            click_button 'Edit'
             page.within '.pika-single' do
               click_button date.day
             end
 
             wait_for_requests
 
-            expect(find('.value').text).to have_content date.strftime('%b %-d, %Y')
+            expect(find('[data-testid="sidebar-duedate-value"]').text).to have_content date.strftime('%b %-d, %Y')
           end
         end
 
         it 'removes due date from issue' do
           date = Date.today.at_beginning_of_month + 2.days
 
-          page.within '.due_date' do
-            click_link 'Edit'
+          page.within '[data-testid="due-date"]' do
+            click_button 'Edit'
 
             page.within '.pika-single' do
               click_button date.day
@@ -351,7 +349,7 @@ RSpec.describe "Issues > User edits issue", :js do
 
             expect(page).to have_no_content 'None'
 
-            click_link 'remove due date'
+            click_button 'remove due date'
             expect(page).to have_content 'None'
           end
         end

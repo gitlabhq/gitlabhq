@@ -137,6 +137,14 @@ module Issuable
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
 
+    scope :includes_for_bulk_update, -> do
+      associations = %i[author assignees epic group labels metrics project source_project target_project].select do |association|
+        reflect_on_association(association)
+      end
+
+      includes(*associations)
+    end
+
     attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description
 

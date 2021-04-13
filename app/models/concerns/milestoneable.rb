@@ -39,11 +39,13 @@ module Milestoneable
     private
 
     def milestone_is_valid
-      errors.add(:milestone_id, 'is invalid') if respond_to?(:milestone_id) && milestone_id.present? && !milestone_available?
+      errors.add(:milestone_id, 'is invalid') if respond_to?(:milestone_id) && !milestone_available?
     end
   end
 
   def milestone_available?
+    return true if milestone_id.blank?
+
     project_id == milestone&.project_id || project.ancestors_upto.compact.include?(milestone&.group)
   end
 

@@ -348,34 +348,31 @@ db:check-migrations:
     - scripts/validate_migration_schema
   allow_failure: true
 
-# Temporarily disabled due to failures in https://gitlab.com/gitlab-org/gitlab/-/issues/325838
-
-# db:migrate-from-v12.10.0:
-#   extends: .db-job-base
-#   variables:
-#     SETUP_DB: "false"
-#   script:
-#     - export PROJECT_TO_CHECKOUT="gitlab"
-#     - export TAG_TO_CHECKOUT="v12.10.0-ee"
-#     - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab-foss"'
-#     - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="v12.10.0"'
-#     - retry 'git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT'
-#     - git checkout -f FETCH_HEAD
-#     - sed -i -e "s/gem 'grpc', '~> 1.24.0'/gem 'grpc', '~> 1.30.2'/" Gemfile  # Update gRPC for Ruby 2.7
-#     - sed -i -e "s/gem 'google-protobuf', '~> 3.8.0'/gem 'google-protobuf', '~> 3.12.0'/" Gemfile
-#     - gem install bundler:1.17.3
-#     - bundle update google-protobuf grpc bootsnap
-#     - bundle install $BUNDLE_INSTALL_FLAGS
-#     - date
-#     - cp config/gitlab.yml.example config/gitlab.yml
-#     - bundle exec rake db:drop db:create db:structure:load db:seed_fu
-#     - date
-#     - git checkout -f $CI_COMMIT_SHA
-#     - bundle install $BUNDLE_INSTALL_FLAGS
-#     - date
-#     - . scripts/prepare_build.sh
-#     - date
-#     - bundle exec rake db:migrate
+db:migrate-from-previous-major-version:
+  extends: .db-job-base
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+    SETUP_DB: "false"
+    PROJECT_TO_CHECKOUT: "gitlab-foss"
+    TAG_TO_CHECKOUT: "v12.10.14"
+  script:
+    - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'
+    - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="${TAG_TO_CHECKOUT}-ee"'
+    - retry 'git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT'
+    - git checkout -f FETCH_HEAD
+    # Patch Gemfile of the previous major version for compatibility.
+    - sed -i -e "s/gem 'grpc', '~> 1.24.0'/gem 'grpc', '~> 1.30.2'/" Gemfile  # Update gRPC for Ruby 2.7
+    - sed -i -e "s/gem 'google-protobuf', '~> 3.8.0'/gem 'google-protobuf', '~> 3.12'/" Gemfile
+    - sed -i -e "s/gem 'nokogiri', '~> 1.10.5'/gem 'nokogiri', '~> 1.11.0'/" Gemfile
+    - sed -i -e "s/gem 'mimemagic', '~> 0.3.2'/gem 'ruby-magic', '~> 0.3.2'/" Gemfile
+    - run_timed_command "gem install bundler:1.17.3"
+    - run_timed_command "bundle update google-protobuf nokogiri grpc mimemagic bootsnap"
+    - run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS}"
+    - cp config/gitlab.yml.example config/gitlab.yml
+    - run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
+    - git checkout -f $CI_COMMIT_SHA
+    - run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS}"
+    - run_timed_command "bundle exec rake db:migrate"
 
 db:rollback:
   extends: .db-job-base

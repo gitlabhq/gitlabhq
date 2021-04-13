@@ -20,7 +20,7 @@ RSpec.describe MergeRequests::HandleAssigneesChangeWorker do
   describe '#perform' do
     it 'calls MergeRequests::HandleAssigneesChangeService#execute to handle the changes' do
       expect_next(::MergeRequests::HandleAssigneesChangeService)
-        .to receive(:execute).with(merge_request, old_assignees, options)
+        .to receive(:execute).with(merge_request, match_array(old_assignees), options)
 
       worker.perform(merge_request.id, user.id, user_ids, options)
     end

@@ -41,7 +41,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
           first('.gl-avatar-labeled').click
         end
 
-        click_button('Edit')
+        click_button('Apply')
         wait_for_requests
 
         expect(page).to have_content(assignee)
@@ -63,7 +63,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
           find('[data-testid="unassign"]').click
         end
 
-        click_button('Edit')
+        click_button('Apply')
         wait_for_requests
 
         expect(page).to have_content('None')
@@ -102,7 +102,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js do
           first('.gl-avatar-labeled').click
         end
 
-        click_button('Edit')
+        click_button('Apply')
         wait_for_requests
 
         expect(page).to have_content(assignee)

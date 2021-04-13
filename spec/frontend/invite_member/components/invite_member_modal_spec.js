@@ -9,7 +9,7 @@ const memberPath = 'member_path';
 const GlEmoji = { template: '<img />' };
 const createComponent = () => {
   return shallowMount(InviteMemberModal, {
-    provide: {
+    propsData: {
       membersPath: memberPath,
     },
     stubs: {

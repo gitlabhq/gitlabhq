@@ -30,5 +30,8 @@ export default {
     <gl-dropdown-form>
       <slot name="items"></slot>
     </gl-dropdown-form>
+    <template #footer>
+      <slot name="footer"></slot>
+    </template>
   </gl-dropdown>
 </template>

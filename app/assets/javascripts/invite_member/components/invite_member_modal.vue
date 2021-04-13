@@ -19,8 +19,10 @@ export default {
     GlLink,
     GlModal,
   },
-  inject: {
+  props: {
     membersPath: {
+      type: String,
+      required: false,
       default: '',
     },
   },

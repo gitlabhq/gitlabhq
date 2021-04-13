@@ -249,6 +249,14 @@ RSpec.describe 'Admin updates settings' do
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.hide_third_party_offers).to be true
       end
+    end
+
+    context 'when the Slack Notifications Service template is active' do
+      before do
+        create(:service, :template, type: 'SlackService', active: true)
+
+        visit general_admin_application_settings_path
+      end
 
       it 'change Slack Notifications Service template settings', :js do
         first(:link, 'Service Templates').click

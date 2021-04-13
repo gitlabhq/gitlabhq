@@ -1,26 +1,28 @@
 <script>
-import {
-  GlDropdownItem,
-  GlDropdownDivider,
-  GlAvatarLabeled,
-  GlAvatarLink,
-  GlSearchBoxByType,
-  GlLoadingIcon,
-} from '@gitlab/ui';
+import { GlDropdownItem, GlDropdownDivider, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import createFlash from '~/flash';
 import searchUsers from '~/graphql_shared/queries/users_search.query.graphql';
 import { IssuableType } from '~/issue_show/constants';
 import { __, n__ } from '~/locale';
+import SidebarAssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import { assigneesQueries, ASSIGNEES_DEBOUNCE_DELAY } from '~/sidebar/constants';
 import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dropdown.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import SidebarInviteMembers from './sidebar_invite_members.vue';
+import SidebarParticipant from './sidebar_participant.vue';
 
 export const assigneesWidget = Vue.observable({
   updateAssignees: null,
 });
+
+const hideDropdownEvent = new CustomEvent('hiddenGlDropdown', {
+  bubbles: true,
+});
+
 export default {
   i18n: {
     unassigned: __('Unassigned'),
@@ -28,17 +30,26 @@ export default {
     assignees: __('Assignees'),
     assignTo: __('Assign to'),
   },
-  assigneesQueries,
   components: {
     SidebarEditableItem,
     IssuableAssignees,
     MultiSelectDropdown,
     GlDropdownItem,
     GlDropdownDivider,
-    GlAvatarLabeled,
-    GlAvatarLink,
     GlSearchBoxByType,
     GlLoadingIcon,
+    SidebarInviteMembers,
+    SidebarParticipant,
+    SidebarAssigneesRealtime,
+  },
+  mixins: [glFeatureFlagsMixin()],
+  inject: {
+    directlyInviteMembers: {
+      default: false,
+    },
+    indirectlyInviteMembers: {
+      default: false,
+    },
   },
   props: {
     iid: {
@@ -76,12 +87,13 @@ export default {
       selected: [],
       isSettingAssignees: false,
       isSearching: false,
+      isDirty: false,
     };
   },
   apollo: {
     issuable: {
       query() {
-        return this.$options.assigneesQueries[this.issuableType].query;
+        return assigneesQueries[this.issuableType].query;
       },
       variables() {
         return this.queryVariables;
@@ -134,6 +146,10 @@ export default {
     },
   },
   computed: {
+    shouldEnableRealtime() {
+      // Note: Realtime is only available on issues right now, future support for MR wil be built later.
+      return this.glFeatures.realTimeIssueSidebar && this.issuableType === IssuableType.Issue;
+    },
     queryVariables() {
       return {
         iid: this.iid,
@@ -155,6 +171,9 @@ export default {
     },
     assigneeText() {
       const items = this.$apollo.queries.issuable.loading ? this.initialAssignees : this.selected;
+      if (!items) {
+        return __('Assignee');
+      }
       return n__('Assignee', '%d Assignees', items.length);
     },
     selectedFiltered() {
@@ -197,8 +216,15 @@ export default {
     noUsersFound() {
       return !this.isSearchEmpty && this.searchUsers.length === 0;
     },
+    signedIn() {
+      return this.currentUser.username !== undefined;
+    },
     showCurrentUser() {
-      return !this.isCurrentUserInParticipants && (this.isSearchEmpty || this.isSearching);
+      return (
+        this.signedIn &&
+        !this.isCurrentUserInParticipants &&
+        (this.isSearchEmpty || this.isSearching)
+      );
     },
   },
   watch: {
@@ -221,7 +247,7 @@ export default {
       this.isSettingAssignees = true;
       return this.$apollo
         .mutate({
-          mutation: this.$options.assigneesQueries[this.issuableType].mutation,
+          mutation: assigneesQueries[this.issuableType].mutation,
           variables: {
             ...this.queryVariables,
             assigneeUsernames,
@@ -239,20 +265,22 @@ export default {
         });
     },
     selectAssignee(name) {
+      this.isDirty = true;
+
+      if (!this.multipleAssignees) {
+        this.selected = name ? [name] : [];
+        this.collapseWidget();
+        return;
+      }
       if (name === undefined) {
         this.clearSelected();
         return;
       }
-
-      if (!this.multipleAssignees) {
-        this.selected = [name];
-        this.collapseWidget();
-      } else {
-        this.selected = this.selected.concat(name);
-      }
+      this.selected = this.selected.concat(name);
     },
     unselect(name) {
       this.selected = this.selected.filter((user) => user.username !== name);
+      this.isDirty = true;
 
       if (!this.multipleAssignees) {
         this.collapseWidget();
@@ -265,7 +293,9 @@ export default {
       this.selected = [];
     },
     saveAssignees() {
+      this.isDirty = false;
       this.updateAssignees(this.selectedUserNames);
+      this.$el.dispatchEvent(hideDropdownEvent);
     },
     isChecked(id) {
       return this.selectedUserNames.includes(id);
@@ -291,6 +321,9 @@ export default {
     collapseWidget() {
       this.$refs.toggle.collapse();
     },
+    expandWidget() {
+      this.$refs.toggle.expand();
+    },
     showDivider(list) {
       return list.length > 0 && this.isSearchEmpty;
     },
@@ -299,121 +332,113 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="isAssigneesLoading"
-    class="gl-display-flex gl-align-items-center assignee"
-    data-testid="loading-assignees"
-  >
-    {{ __('Assignee') }}
-    <gl-loading-icon size="sm" class="gl-ml-2" />
-  </div>
-  <sidebar-editable-item
-    v-else
-    ref="toggle"
-    :loading="isSettingAssignees"
-    :title="assigneeText"
-    @open="focusSearch"
-    @close="saveAssignees"
-  >
-    <template #collapsed>
-      <issuable-assignees
-        :users="assignees"
-        :issuable-type="issuableType"
-        class="gl-mt-2"
-        @assign-self="assignSelf"
-      />
-    </template>
+  <div data-testid="assignees-widget">
+    <sidebar-assignees-realtime
+      v-if="shouldEnableRealtime"
+      :project-path="fullPath"
+      :issuable-iid="iid"
+      :issuable-type="issuableType"
+    />
+    <sidebar-editable-item
+      ref="toggle"
+      :loading="isSettingAssignees"
+      :initial-loading="isAssigneesLoading"
+      :title="assigneeText"
+      :is-dirty="isDirty"
+      @open="focusSearch"
+      @close="saveAssignees"
+    >
+      <template #collapsed>
+        <slot name="collapsed" :users="assignees" :on-click="expandWidget"></slot>
+        <issuable-assignees
+          :users="assignees"
+          :issuable-type="issuableType"
+          :signed-in="signedIn"
+          @assign-self="assignSelf"
+          @expand-widget="expandWidget"
+        />
+      </template>
 
-    <template #default>
-      <multi-select-dropdown
-        class="gl-w-full dropdown-menu-user"
-        :text="$options.i18n.assignees"
-        :header-text="$options.i18n.assignTo"
-        @toggle="collapseWidget"
-      >
-        <template #search>
-          <gl-search-box-by-type ref="search" v-model.trim="search" />
-        </template>
-        <template #items>
-          <gl-loading-icon
-            v-if="$apollo.queries.searchUsers.loading || $apollo.queries.issuable.loading"
-            data-testid="loading-participants"
-            size="lg"
-          />
-          <template v-else>
-            <template v-if="isSearchEmpty || isSearching">
+      <template #default>
+        <multi-select-dropdown
+          class="gl-w-full dropdown-menu-user"
+          :text="$options.i18n.assignees"
+          :header-text="$options.i18n.assignTo"
+          @toggle="collapseWidget"
+        >
+          <template #search>
+            <gl-search-box-by-type
+              ref="search"
+              v-model.trim="search"
+              class="js-dropdown-input-field"
+            />
+          </template>
+          <template #items>
+            <gl-loading-icon
+              v-if="$apollo.queries.searchUsers.loading || $apollo.queries.issuable.loading"
+              data-testid="loading-participants"
+              size="lg"
+            />
+            <template v-else>
+              <template v-if="isSearchEmpty || isSearching">
+                <gl-dropdown-item
+                  :is-checked="selectedIsEmpty"
+                  :is-check-centered="true"
+                  data-testid="unassign"
+                  @click="selectAssignee()"
+                >
+                  <span
+                    :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'"
+                    class="gl-font-weight-bold"
+                    >{{ $options.i18n.unassigned }}</span
+                  ></gl-dropdown-item
+                >
+              </template>
+              <gl-dropdown-divider v-if="showDivider(selectedFiltered)" />
               <gl-dropdown-item
-                :is-checked="selectedIsEmpty"
+                v-for="item in selectedFiltered"
+                :key="item.id"
+                :is-checked="isChecked(item.username)"
                 :is-check-centered="true"
-                data-testid="unassign"
-                @click="selectAssignee()"
+                data-testid="selected-participant"
+                @click.stop="unselect(item.username)"
               >
-                <span
-                  :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'"
-                  class="gl-font-weight-bold"
-                  >{{ $options.i18n.unassigned }}</span
-                ></gl-dropdown-item
-              >
-            </template>
-            <gl-dropdown-divider v-if="showDivider(selectedFiltered)" />
-            <gl-dropdown-item
-              v-for="item in selectedFiltered"
-              :key="item.id"
-              :is-checked="isChecked(item.username)"
-              :is-check-centered="true"
-              data-testid="selected-participant"
-              @click.stop="unselect(item.username)"
-            >
-              <gl-avatar-link>
-                <gl-avatar-labeled
-                  :size="32"
-                  :label="item.name"
-                  :sub-label="item.username"
-                  :src="item.avatarUrl || item.avatar || item.avatar_url"
-                  class="gl-align-items-center"
-                />
-              </gl-avatar-link>
-            </gl-dropdown-item>
-            <template v-if="showCurrentUser">
-              <gl-dropdown-divider />
+                <sidebar-participant :user="item" />
+              </gl-dropdown-item>
+              <template v-if="showCurrentUser">
+                <gl-dropdown-divider />
+                <gl-dropdown-item
+                  data-testid="current-user"
+                  @click.stop="selectAssignee(currentUser)"
+                >
+                  <sidebar-participant :user="currentUser" class="gl-pl-6!" />
+                </gl-dropdown-item>
+              </template>
+              <gl-dropdown-divider v-if="showDivider(unselectedFiltered)" />
               <gl-dropdown-item
-                data-testid="current-user"
-                @click.stop="selectAssignee(currentUser)"
+                v-for="unselectedUser in unselectedFiltered"
+                :key="unselectedUser.id"
+                data-testid="unselected-participant"
+                @click="selectAssignee(unselectedUser)"
               >
-                <gl-avatar-link>
-                  <gl-avatar-labeled
-                    :size="32"
-                    :label="currentUser.name"
-                    :sub-label="currentUser.username"
-                    :src="currentUser.avatarUrl"
-                    class="gl-align-items-center gl-pl-6!"
-                  />
-                </gl-avatar-link>
+                <sidebar-participant :user="unselectedUser" class="gl-pl-6!" />
+              </gl-dropdown-item>
+              <gl-dropdown-item
+                v-if="noUsersFound && !isSearching"
+                data-testid="empty-results"
+                class="gl-pl-6!"
+              >
+                {{ __('No matching results') }}
               </gl-dropdown-item>
             </template>
-            <gl-dropdown-divider v-if="showDivider(unselectedFiltered)" />
-            <gl-dropdown-item
-              v-for="unselectedUser in unselectedFiltered"
-              :key="unselectedUser.id"
-              data-testid="unselected-participant"
-              @click="selectAssignee(unselectedUser)"
-            >
-              <gl-avatar-link class="gl-pl-6!">
-                <gl-avatar-labeled
-                  :size="32"
-                  :label="unselectedUser.name"
-                  :sub-label="unselectedUser.username"
-                  :src="unselectedUser.avatarUrl || unselectedUser.avatar"
-                  class="gl-align-items-center"
-                />
-              </gl-avatar-link>
-            </gl-dropdown-item>
-            <gl-dropdown-item v-if="noUsersFound && !isSearching" data-testid="empty-results">
-              {{ __('No matching results') }}
+          </template>
+          <template #footer>
+            <gl-dropdown-item>
+              <sidebar-invite-members v-if="directlyInviteMembers || indirectlyInviteMembers" />
             </gl-dropdown-item>
           </template>
-        </template>
-      </multi-select-dropdown>
-    </template>
-  </sidebar-editable-item>
+        </multi-select-dropdown>
+      </template>
+    </sidebar-editable-item>
+  </div>
 </template>

@@ -1,6 +1,7 @@
 - issuable_type = issuable_sidebar[:type]
+- dropdown_options = assignees_dropdown_options(issuable_type)
 
-#js-vue-sidebar-assignees{ data: { field: issuable_type, signed_in: signed_in } }
+#js-vue-sidebar-assignees{ data: { field: issuable_type, signed_in: signed_in, max_assignees: dropdown_options[:data][:"max-select"], directly_invite_members: directly_invite_members?, indirectly_invite_members: indirectly_invite_members? } }
   .title.hide-collapsed
     = _('Assignee')
     = loading_icon(css_class: 'gl-vertical-align-text-bottom')
@@ -29,7 +30,6 @@
       null_user: true,
       display: 'static' } }
 
-  - dropdown_options = assignees_dropdown_options(issuable_type)
   - title = dropdown_options[:title]
   - options[:toggle_class] += ' js-multiselect js-save-user-data'
   - data = { field_name: "#{issuable_type}[assignee_ids][]" }
