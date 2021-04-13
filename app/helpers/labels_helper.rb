@@ -164,8 +164,8 @@ module LabelsHelper
   end
 
   def label_subscription_status(label, project)
-    return 'group-level' if label.lazy_subscribed?(current_user)
-    return 'project-level' if label.lazy_subscribed?(current_user, project)
+    return 'group-level' if label.subscribed?(current_user)
+    return 'project-level' if label.subscribed?(current_user, project)
 
     'unsubscribed'
   end
@@ -181,7 +181,7 @@ module LabelsHelper
   end
 
   def label_subscription_toggle_button_text(label, project = nil)
-    label.lazy_subscribed?(current_user, project) ? 'Unsubscribe' : 'Subscribe'
+    label.subscribed?(current_user, project) ? 'Unsubscribe' : 'Subscribe'
   end
 
   def create_label_title(subject)

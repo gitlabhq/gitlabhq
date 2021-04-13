@@ -27,8 +27,20 @@ export default {
     SidebarConfidentialityContent,
     SidebarConfidentialityForm,
   },
-  inject: ['fullPath', 'iid'],
+  inject: {
+    isClassicSidebar: {
+      default: false,
+    },
+  },
   props: {
+    iid: {
+      type: String,
+      required: true,
+    },
+    fullPath: {
+      type: String,
+      required: true,
+    },
     issuableType: {
       required: true,
       type: String,
@@ -126,6 +138,7 @@ export default {
           v-if="!isLoading"
           :confidential="confidential"
           :issuable-type="issuableType"
+          :class="{ 'gl-mt-3': !isClassicSidebar }"
           @expandSidebar="expandSidebar"
         />
       </div>
@@ -133,6 +146,8 @@ export default {
     <template #default>
       <sidebar-confidentiality-content :confidential="confidential" :issuable-type="issuableType" />
       <sidebar-confidentiality-form
+        :iid="iid"
+        :full-path="fullPath"
         :confidential="confidential"
         :issuable-type="issuableType"
         @closeForm="closeForm"

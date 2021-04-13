@@ -22,10 +22,10 @@ full list of reference architectures, see
 | PostgreSQL*                                | 3           | 8 vCPU, 30 GB memory    | `n1-standard-8`  | `m5.2xlarge` | `D8s v3`  |
 | PgBouncer*                                 | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
-| Redis - Cache*                             | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
-| Redis - Queues / Shared State*             | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
-| Redis Sentinel - Cache*                    | 3           | 1 vCPU, 1.7 GB memory   | `g1-small`       | `t3.small`   | `B1MS`    |
-| Redis Sentinel - Queues / Shared State*    | 3           | 1 vCPU, 1.7 GB memory   | `g1-small`       | `t3.small`   | `B1MS`    |
+| Redis - Cache**                            | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| Redis - Queues / Shared State**            | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| Redis Sentinel - Cache**                   | 3           | 1 vCPU, 1.7 GB memory   | `g1-small`       | `t3.small`   | `B1MS`    |
+| Redis Sentinel - Queues / Shared State**   | 3           | 1 vCPU, 1.7 GB memory   | `g1-small`       | `t3.small`   | `B1MS`    |
 | Gitaly                                     | 3           | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge` | `D16s v3` |
 | Praefect                                   | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
 | Praefect PostgreSQL*                       | 1+          | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
@@ -37,7 +37,9 @@ full list of reference architectures, see
 
 NOTE:
 Components marked with * can be optionally run on reputable
-third party external PaaS solutions such as Google Cloud SQL or Memorystore.
+third party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work.
+Components marked with ** can be optionally run on reputable
+third party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 
 ```plantuml
 @startuml 10k
@@ -2401,10 +2403,10 @@ services where applicable):
 | PostgreSQL*                                | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8`  |
 | PgBouncer*                                 | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Internal load balancing node               | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Redis - Cache*                             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Redis - Queues / Shared State*             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Redis Sentinel - Cache*                    | 3     | 1 vCPU, 1.7 GB memory   | `g1-small`       |
-| Redis Sentinel - Queues / Shared State*    | 3     | 1 vCPU, 1.7 GB memory   | `g1-small`       |
+| Redis - Cache**                            | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
+| Redis - Queues / Shared State**            | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
+| Redis Sentinel - Cache**                   | 3     | 1 vCPU, 1.7 GB memory   | `g1-small`       |
+| Redis Sentinel - Queues / Shared State**   | 3     | 1 vCPU, 1.7 GB memory   | `g1-small`       |
 | Gitaly                                     | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` |
 | Praefect                                   | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Praefect PostgreSQL*                       | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
@@ -2412,7 +2414,9 @@ services where applicable):
 
 NOTE:
 Components marked with * can be optionally run on reputable
-third party external PaaS solutions such as Google Cloud SQL or Memorystore.
+third party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work.
+Components marked with ** can be optionally run on reputable
+third party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 
 ```plantuml
 @startuml 10k

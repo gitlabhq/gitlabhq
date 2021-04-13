@@ -18,8 +18,15 @@ export default {
     GlSprintf,
     GlButton,
   },
-  inject: ['fullPath', 'iid'],
   props: {
+    iid: {
+      type: String,
+      required: true,
+    },
+    fullPath: {
+      type: String,
+      required: true,
+    },
     confidential: {
       required: true,
       type: Boolean,

@@ -115,6 +115,7 @@ class Issue < ApplicationRecord
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> { preload(:author, project: [:project_feature, :route, namespace: :route]) }
+  scope :preload_awardable, -> { preload(:award_emoji) }
   scope :with_label_attributes, ->(label_attributes) { joins(:labels).where(labels: label_attributes) }
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
@@ -342,6 +343,8 @@ class Issue < ApplicationRecord
 	                             (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
                        .preload(preload)
                        .reorder('issue_link_id')
+
+    related_issues = yield related_issues if block_given?
 
     cross_project_filter = -> (issues) { issues.where(project: project) }
     Ability.issues_readable_by_user(related_issues,

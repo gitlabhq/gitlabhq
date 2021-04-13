@@ -17,16 +17,6 @@ module Subscribable
   def subscribed?(user, project = nil)
     return false unless user
 
-    if (subscription = subscriptions.find_by(user: user, project: project))
-      subscription.subscribed
-    else
-      subscribed_without_subscriptions?(user, project)
-    end
-  end
-
-  def lazy_subscribed?(user, project = nil)
-    return false unless user
-
     if (subscription = lazy_subscription(user, project)&.itself)
       subscription.subscribed
     else
@@ -75,8 +65,10 @@ module Subscribable
   def toggle_subscription(user, project = nil)
     unsubscribe_from_other_levels(user, project)
 
+    new_value = !subscribed?(user, project)
+
     find_or_initialize_subscription(user, project)
-      .update(subscribed: !subscribed?(user, project))
+      .update(subscribed: new_value)
   end
 
   def subscribe(user, project = nil)
@@ -117,6 +109,8 @@ module Subscribable
   end
 
   def find_or_initialize_subscription(user, project)
+    BatchLoader::Executor.clear_current
+
     subscriptions
       .find_or_initialize_by(user_id: user.id, project_id: project.try(:id))
   end

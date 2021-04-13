@@ -194,10 +194,6 @@ RSpec.describe Subscribable, 'Subscribable' do
     end
   end
 
-  describe '#lazy_subscribed?' do
-    it_behaves_like 'returns expected values', :lazy_subscribed?
-  end
-
   describe '#lazy_subscription' do
     let(:labels) { create_list(:group_label, 5) }
 

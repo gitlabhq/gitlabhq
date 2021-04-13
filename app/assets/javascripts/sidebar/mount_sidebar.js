@@ -190,14 +190,14 @@ function mountConfidentialComponent() {
       SidebarConfidentialityWidget,
     },
     provide: {
-      iid: String(iid),
-      fullPath,
       canUpdate: initialData.is_editable,
     },
 
     render: (createElement) =>
       createElement('sidebar-confidentiality-widget', {
         props: {
+          iid: String(iid),
+          fullPath,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? IssuableType.Issue

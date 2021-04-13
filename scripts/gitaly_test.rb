@@ -52,8 +52,7 @@ module GitalyTest
       'RUBYOPT' => nil,
 
       # Git hooks can't run during tests as the internal API is not running.
-      'GITALY_TESTING_NO_GIT_HOOKS' => "1",
-      'GITALY_TESTING_ENABLE_ALL_FEATURE_FLAGS' => "true"
+      'GITALY_TESTING_NO_GIT_HOOKS' => "1"
     }
 
     env_hash

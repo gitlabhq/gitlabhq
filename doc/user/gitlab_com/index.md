@@ -113,7 +113,7 @@ or over the repository size limit, you can [reduce your repository size with Git
 
 | Setting                       | GitLab.com  | Default       |
 | -----------                   | ----------- | ------------- |
-| [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md) | 10 GB       | Unlimited     |
+| [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB       | Unlimited     |
 | Maximum import size           | 5 GB        | Unlimited ([Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to unlimited in GitLab 13.8.    |
 
 NOTE:

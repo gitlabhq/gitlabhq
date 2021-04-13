@@ -1,0 +1,5 @@
+---
+title: Reduce SQL requests number for issue links
+merge_request: 57602
+author:
+type: performance

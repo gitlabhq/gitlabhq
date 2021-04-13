@@ -938,6 +938,67 @@ In installations from source:
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source)
    for the changes to take effect.
 
+## ZIP storage
+
+In GitLab 14.0 the underlaying storage format of GitLab Pages is changing from
+files stored directly in disk to a single ZIP archive per project.
+
+These ZIP archives can be stored either locally on disk storage or on the [object storage](#using-object-storage) if it is configured.
+
+[Starting from GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/245308) ZIP archives are stored every time pages site is updated.
+
+### Migrate legacy storage to ZIP storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59003) in GitLab 13.11.
+
+GitLab will [try to automatically migrate](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54578) the old storage format to the new ZIP-based one when you upgrade to GitLab 13.11 or further.
+However, some projects may fail to be migrated for different reasons.
+To verify that all projects have been migrated successfully, you can manually run the migration:
+
+```shell
+gitlab-rake gitlab:pages:migrate_legacy_storage
+```
+
+It's safe to interrupt this task and run it multiple times.
+
+There are two most common problems this task can report:
+
+- `Missing public directory` error:
+
+  ```txt
+  E, [2021-04-09T13:11:52.534768 #911919] ERROR -- : project_id: 1 /home/vlad/gdk/gitlab/shared/pages/gitlab-org/gitlab-test failed to be migrated in 0.07 seconds: Archive not created. Missing public directory in /home/vlad/gdk/gitlab/shared/pages/gitlab-org/gitlab-test
+  ```
+
+  In this case, you should verify that these projects don't have pages deployed, and re-run the migration with an additional flag to mark those projects as not deployed with GitLab Pages:
+
+  ```shell
+  sudo PAGES_MIGRATION_MARK_PROJECTS_AS_NOT_DEPLOYED=true gitlab-rake gitlab:pages:migrate_legacy_storage
+  ```
+
+- File `is invalid` error:
+
+  ```txt
+  E, [2021-04-09T14:43:05.821767 #923322] ERROR -- : project_id: 1 /home/vlad/gdk/gitlab/shared/pages/gitlab-org/gitlab-test failed to be migrated: /home/vlad/gdk/gitlab/shared/pages/gitlab-org/gitlab-test/public/link is invalid, input_dir: /home/vlad/gdk/gitlab/shared/pages/gitlab-org/gitlab-test
+  ```
+
+  This error indicates invalid files on disk storage, most commonly symlinks leading outside of the `public` directory.
+  You can manually remove these files, or just ignore them during migration:
+
+  ```shell
+  sudo PAGES_MIGRATION_IGNORE_INVALID_ENTRIES=true gitlab-rake gitlab:pages:migrate_legacy_storage
+  ```
+
+### Rolling back ZIP migration
+
+If you find that migrated data is invalid, you can remove all migrated data by running:
+
+```shell
+sudo gitlab-rake gitlab:pages:clean_migrated_zip_storage
+```
+
+This will not remove any data from the legacy disk storage and the GitLab Pages daemon will automatically fallback
+to using that.
+
 ## Backup
 
 GitLab Pages are part of the [regular backup](../../raketasks/backup_restore.md), so there is no separate backup to configure.

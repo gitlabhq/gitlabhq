@@ -468,6 +468,12 @@
   }
 }
 
+.boards-sidebar {
+  .sidebar-collapsed-icon {
+    display: none;
+  }
+}
+
 .board-header-collapsed-info-icon:hover {
   color: var(--gray-900, $gray-900);
 }
