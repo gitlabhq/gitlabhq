@@ -3,15 +3,15 @@
     .table-mobile-header{ role: 'rowheader' }= _('Type')
     .table-mobile-content
       - if runner.instance_type?
-        %span.badge.badge-pill.gl-badge.sm.badge-success shared
+        %span.badge.badge-pill.gl-badge.sm.badge-success= _("shared")
       - elsif runner.group_type?
-        %span.badge.badge-pill.gl-badge.sm.badge-success group
+        %span.badge.badge-pill.gl-badge.sm.badge-success= _("group")
       - else
-        %span.badge.badge-pill.gl-badge.sm.badge-info specific
+        %span.badge.badge-pill.gl-badge.sm.badge-info= _("specific")
       - if runner.locked?
-        %span.badge.badge-pill.gl-badge.sm.badge-warning locked
+        %span.badge.badge-pill.gl-badge.sm.badge-warning= _("locked")
       - unless runner.active?
-        %span.badge.badge-pill.gl-badge.sm.badge-danger paused
+        %span.badge.badge-pill.gl-badge.sm.badge-danger= _("paused")
 
   .table-section.section-10
     .table-mobile-header{ role: 'rowheader' }= _('Runner token')

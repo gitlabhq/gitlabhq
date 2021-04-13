@@ -11547,6 +11547,9 @@ msgstr ""
 msgid "Editor Lite instance is required to set up an extension."
 msgstr ""
 
+msgid "Elapsed time"
+msgstr ""
+
 msgid "Elasticsearch AWS IAM credentials"
 msgstr ""
 
@@ -21356,6 +21359,9 @@ msgstr ""
 msgid "No prioritized labels with such name or description"
 msgstr ""
 
+msgid "No projects found"
+msgstr ""
+
 msgid "No public groups"
 msgstr ""
 
@@ -25767,6 +25773,9 @@ msgstr ""
 msgid "Recent Activity"
 msgstr ""
 
+msgid "Recent Deliveries"
+msgstr ""
+
 msgid "Recent Project Activity"
 msgstr ""
 
@@ -26578,6 +26587,9 @@ msgid "Request parameter %{param} is missing."
 msgstr ""
 
 msgid "Request review from"
+msgstr ""
+
+msgid "Request time"
 msgstr ""
 
 msgid "Request to link SAML account must be authorized"
@@ -35018,6 +35030,9 @@ msgstr ""
 msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
+msgid "When an event in GitLab triggers a webhook, you can use the request details to figure out if something went wrong."
+msgstr ""
+
 msgid "When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by an admin before they can sign in. This setting is effective only if sign-ups are enabled."
 msgstr ""
 
@@ -35645,6 +35660,9 @@ msgid "You don't have any projects available."
 msgstr ""
 
 msgid "You don't have any recent searches"
+msgstr ""
+
+msgid "You don't have any webhooks deliveries"
 msgstr ""
 
 msgid "You don't have sufficient permission to perform this action."
@@ -37554,6 +37572,9 @@ msgid "severity|None"
 msgstr ""
 
 msgid "severity|Unknown"
+msgstr ""
+
+msgid "shared"
 msgstr ""
 
 msgid "should be an array of %{object_name} objects"

@@ -1,0 +1,8 @@
+---
+name: gldropdown_tags
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58589
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327055
+milestone: '13.11'
+type: development
+group: group::continuous integration
+default_enabled: false

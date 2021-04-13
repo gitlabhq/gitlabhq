@@ -921,6 +921,7 @@ cluster.
 > - [Made generally available and enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/2951) in GitLab 13.3.
 > - [Disabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3178) in GitLab 13.5.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3334) in GitLab 13.8.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitaly/-/issues/3383) in GitLab 13.11.
 
 Praefect supports distribution of read operations across Gitaly nodes that are
 configured for the virtual node.

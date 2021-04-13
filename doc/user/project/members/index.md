@@ -109,6 +109,9 @@ had on the project you imported from are retained.
 
 ## Invite people using their e-mail address
 
+NOTE:
+In GitLab 13.11, you can [replace this form with a modal window](#add-a-member-modal-window).
+
 If a user you want to give access to doesn't have an account on your GitLab
 instance, you can invite them just by typing their e-mail address in the
 user search field.
@@ -134,6 +137,46 @@ GitLab account using the same e-mail address the invitation was sent to.
 
 NOTE:
 Unaccepted invites are automatically deleted after 90 days.
+
+### Add a member modal window
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11.
+> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+> - Replaces the existing form with buttons to open a modal window.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-modal-window). **(FREE SELF)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+In GitLab 13.11, you can optionally replace the form to add a member with a modal window.
+To add a member after enabling this feature:
+
+1. Go to your project's page.
+1. In the left sidebar, go to **Members**, and then select **Invite members**.
+1. Enter an email address, and select a role permission for this user.
+1. (Optional) Select an **Access expiration date**.
+1. Select **Invite**.
+
+### Enable or disable modal window **(FREE SELF)**
+
+The modal window for adding a member is under development and is ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:invite_members_group_modal)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:invite_members_group_modal)
+```
 
 ## Project membership and requesting access
 

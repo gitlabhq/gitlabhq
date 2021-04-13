@@ -790,15 +790,15 @@ Tiers: `free`
 
 ### `counts.confidential_epics`
 
-Missing description
+Count of confidential epics
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181205_confidential_epics.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181205_confidential_epics.yml)
 
-Group: `group::portfolio management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `counts.container_scanning_jobs`
 
@@ -962,7 +962,7 @@ Count of issues that are assigned to an epic
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181208_epic_issues.yml)
 
-Group: `group::portfolio management`
+Group: `group::product planning`
 
 Status: `data_available`
 
@@ -970,27 +970,27 @@ Tiers: `premium`, `ultimate`
 
 ### `counts.epics`
 
-Missing description
+Count of all epics
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181206_epics.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181206_epics.yml)
 
-Group: `group::portfolio management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `counts.epics_deepest_relationship_level`
 
-Missing description
+Count of the deepest relationship level for epics
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181212_epics_deepest_relationship_level.yml)
 
-Group: `group::portfolio management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `ultimate`
 
 ### `counts.failed_deployments`
 
@@ -2698,15 +2698,15 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.issues_with_health_status`
 
-Missing description
+Count of issues with health status
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181210_issues_with_health_status.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181210_issues_with_health_status.yml)
 
-Group: `group::portfolio management`
+Group: `group::product planning`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `ultimate`
 
 ### `counts.jira_imports_projects_count`
 

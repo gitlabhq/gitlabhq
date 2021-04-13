@@ -127,7 +127,7 @@ class User < ApplicationRecord
 
   # Groups
   has_many :members
-  has_many :group_members, -> { where(requested_at: nil).where("access_level >= ?", Gitlab::Access::GUEST) }, source: 'GroupMember'
+  has_many :group_members, -> { where(requested_at: nil).where("access_level >= ?", Gitlab::Access::GUEST) }, class_name: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }) }, through: :group_members, source: :group
   has_many :maintainers_groups, -> { where(members: { access_level: Gitlab::Access::MAINTAINER }) }, through: :group_members, source: :group
@@ -141,7 +141,7 @@ class User < ApplicationRecord
            -> { where(members: { access_level: [Gitlab::Access::REPORTER, Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
            through: :group_members,
            source: :group
-  has_many :minimal_access_group_members, -> { where(access_level: [Gitlab::Access::MINIMAL_ACCESS]) }, source: 'GroupMember', class_name: 'GroupMember'
+  has_many :minimal_access_group_members, -> { where(access_level: [Gitlab::Access::MINIMAL_ACCESS]) }, class_name: 'GroupMember'
   has_many :minimal_access_groups, through: :minimal_access_group_members, source: :group
 
   # Projects

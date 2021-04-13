@@ -571,9 +571,8 @@ Instructions are available in the [legacy template project](https://gitlab.com/g
 
 This is the current default behavior, because the job's status indicates success or failure of the analyzer itself.
 Analyzer results are displayed in the [job logs](../../ci/jobs/index.md#expand-and-collapse-job-log-sections),
-[Merge Request widget](sast/index.md)
+[Merge Request widget](#view-security-scan-information-in-merge-requests)
 or [Security Dashboard](security_dashboard/index.md).
-There is [an open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/235772) in which changes to this behavior are being discussed.
 
 ### Error: job `is used for configuration only, and its script should not be executed`
 

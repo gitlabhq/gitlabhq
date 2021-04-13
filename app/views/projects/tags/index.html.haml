@@ -9,20 +9,23 @@
       = s_('TagsPage|Tags give the ability to mark specific points in history as being important')
 
     .nav-controls
-      = form_tag(filter_tags_path, method: :get) do
-        = search_field_tag :search, params[:search], { placeholder: s_('TagsPage|Filter by tag name'), id: 'tag-search', class: 'form-control search-text-input input-short', spellcheck: false }
+      - unless Gitlab::Ci::Features.gldropdown_tags_enabled?
+        = form_tag(filter_tags_path, method: :get) do
+          = search_field_tag :search, params[:search], { placeholder: s_('TagsPage|Filter by tag name'), id: 'tag-search', class: 'form-control search-text-input input-short', spellcheck: false }
 
-      .dropdown
-        %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown'} }
-          %span.light
-            = tags_sort_options_hash[@sort]
-          = sprite_icon('chevron-down', css_class: 'dropdown-menu-toggle-icon gl-top-3')
-        %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
-          %li.dropdown-header
-            = s_('TagsPage|Sort by')
-          - tags_sort_options_hash.each do |value, title|
-            %li
-              = link_to title, filter_tags_path(sort: value), class: ("is-active" if @sort == value)
+        .dropdown
+          %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown'} }
+            %span.light
+              = tags_sort_options_hash[@sort]
+            = sprite_icon('chevron-down', css_class: 'dropdown-menu-toggle-icon gl-top-3')
+          %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
+            %li.dropdown-header
+              = s_('TagsPage|Sort by')
+            - tags_sort_options_hash.each do |value, title|
+              %li
+                = link_to title, filter_tags_path(sort: value), class: ("is-active" if @sort == value)
+      - else
+        #js-tags-sort-dropdown{ data: { filter_tags_path: filter_tags_path, sort_options: tags_sort_options_hash.to_json } }
       - if can?(current_user, :admin_tag, @project)
         = link_to new_project_tag_path(@project), class: 'btn gl-button btn-confirm', data: { qa_selector: "new_tag_button" } do
           = s_('TagsPage|New tag')

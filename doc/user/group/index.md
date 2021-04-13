@@ -262,6 +262,9 @@ To view the activity feed in Atom format, select the
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
 
+NOTE:
+In GitLab 13.11, you can [replace this form with a modal window](#share-a-group-modal-window).
+
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
 you can share a group with another group. Members get direct access
 to the shared group. This is not valid for inherited members.
@@ -277,6 +280,27 @@ To share a given group, for example, `Frontend` with another group, for example,
 1. Select **Invite**.
 
 All the members of the `Engineering` group are added to the `Frontend` group.
+
+### Share a group modal window
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11.
+> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+> - Replaces the existing form with buttons to open a modal window.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](../project/members/index.md#enable-or-disable-modal-window). **(FREE SELF)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+In GitLab 13.11, you can optionally replace the sharing form with a modal window.
+To share a group after enabling this feature:
+
+1. Go to your group's page.
+1. In the left sidebar, go to **Members**, and then select **Invite a group**.
+1. Select a group, and select a **Max access level**.
+1. (Optional) Select an **Access expiration date**.
+1. Select **Invite**.
 
 ## Manage group memberships via LDAP **(PREMIUM SELF)**
 
