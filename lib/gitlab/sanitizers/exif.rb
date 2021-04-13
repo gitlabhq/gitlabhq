@@ -45,6 +45,7 @@ module Gitlab
 
       ALLOWED_TAGS = WHITELISTED_TAGS + IGNORED_TAGS
       EXCLUDE_PARAMS = WHITELISTED_TAGS.map { |tag| "-#{tag}" }
+      ALLOWED_MIME_TYPES = %w(image/jpeg image/tiff).freeze
 
       attr_reader :logger
 
@@ -96,11 +97,11 @@ module Gitlab
         end
       end
 
+      private
+
       def extra_tags(path)
         exif_tags(path).keys - ALLOWED_TAGS
       end
-
-      private
 
       def remove_and_store(tmpdir, src_path, uploader)
         exec_remove_exif!(src_path)
@@ -133,13 +134,24 @@ module Gitlab
         # upload is stored into the file with the original name - this filename
         # is used by carrierwave when storing the file back to the storage
         filename = File.join(dir, uploader.filename)
+        contents = uploader.read
+
+        check_for_allowed_types(contents)
 
         File.open(filename, 'w') do |file|
           file.binmode
-          file.write uploader.read
+          file.write contents
         end
 
         filename
+      end
+
+      def check_for_allowed_types(contents)
+        mime_type = Gitlab::Utils::MimeType.from_string(contents)
+
+        unless ALLOWED_MIME_TYPES.include?(mime_type)
+          raise "File type #{mime_type} not supported. Only supports #{ALLOWED_MIME_TYPES.join(", ")}."
+        end
       end
 
       def upload_ref(upload)
