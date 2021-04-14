@@ -8,6 +8,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
   let_it_be(:project, refind: true)  { create :project, :repository }
   let_it_be(:resource, refind: true) { create(:merge_request, source_project: project, target_project: project) }
   let_it_be(:user)     { create(:user) }
+
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:request) { double('request', current_user: user, project: project) }

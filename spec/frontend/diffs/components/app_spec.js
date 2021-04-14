@@ -705,4 +705,24 @@ describe('diffs/components/app', () => {
       );
     });
   });
+
+  describe('diff file tree is aware of review bar', () => {
+    it('it does not have review-bar-visible class when review bar is not visible', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles = [{ file_hash: '111', file_path: '111.js' }];
+      });
+
+      expect(wrapper.find('.js-diff-tree-list').exists()).toBe(true);
+      expect(wrapper.find('.js-diff-tree-list.review-bar-visible').exists()).toBe(false);
+    });
+
+    it('it does have review-bar-visible class when review bar is visible', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles = [{ file_hash: '111', file_path: '111.js' }];
+        state.batchComments.drafts = ['draft message'];
+      });
+
+      expect(wrapper.find('.js-diff-tree-list.review-bar-visible').exists()).toBe(true);
+    });
+  });
 });

@@ -1,6 +1,6 @@
 # Installation
 
-To install GitLab Workhorse you need [Go 1.13 or
+To install GitLab Workhorse you need [Go 1.15 or
 newer](https://golang.org/dl) and [GNU
 Make](https://www.gnu.org/software/make/).
 

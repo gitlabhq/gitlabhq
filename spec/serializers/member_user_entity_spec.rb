@@ -6,6 +6,7 @@ RSpec.describe MemberUserEntity do
   let_it_be(:user) { create(:user) }
   let_it_be(:emoji) { 'slight_smile' }
   let_it_be(:user_status) { create(:user_status, user: user, emoji: emoji) }
+
   let(:entity) { described_class.new(user) }
   let(:entity_hash) { entity.as_json }
 

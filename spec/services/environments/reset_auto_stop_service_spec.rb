@@ -6,6 +6,7 @@ RSpec.describe Environments::ResetAutoStopService do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
   let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }
+
   let(:user) { developer }
   let(:service) { described_class.new(project, user) }
 

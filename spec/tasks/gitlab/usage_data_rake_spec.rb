@@ -3,22 +3,12 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:usage data take tasks' do
+  include UsageDataHelpers
+
   before do
     Rake.application.rake_require 'tasks/gitlab/usage_data'
     # stub prometheus external http calls https://gitlab.com/gitlab-org/gitlab/-/issues/245277
-    stub_request(:get, %r{^http[s]?://::1:9090/-/ready})
-      .to_return(
-        status: 200,
-        body: [{}].to_json,
-        headers: { 'Content-Type' => 'application/json' }
-      )
-
-    stub_request(:get, %r{^http[s]?://::1:9090/api/v1/query\?query=.*})
-      .to_return(
-        status: 200,
-        body: [{}].to_json,
-        headers: { 'Content-Type' => 'application/json' }
-      )
+    stub_prometheus_queries
   end
 
   describe 'dump_sql_in_yaml' do

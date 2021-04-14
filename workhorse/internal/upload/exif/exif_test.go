@@ -11,39 +11,57 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestIsExifFile(t *testing.T) {
+func TestFileTypeFromSuffix(t *testing.T) {
 	tests := []struct {
 		name     string
-		expected bool
+		expected FileType
 	}{
 		{
 			name:     "/full/path.jpg",
-			expected: true,
+			expected: TypeJPEG,
 		},
 		{
 			name:     "path.jpeg",
-			expected: true,
+			expected: TypeJPEG,
 		},
 		{
 			name:     "path.tiff",
-			expected: true,
+			expected: TypeTIFF,
 		},
 		{
 			name:     "path.JPG",
-			expected: true,
+			expected: TypeJPEG,
 		},
 		{
 			name:     "path.tar",
-			expected: false,
+			expected: TypeUnknown,
 		},
 		{
 			name:     "path",
-			expected: false,
+			expected: TypeUnknown,
+		},
+		{
+			name:     "something.jpg.py",
+			expected: TypeUnknown,
+		},
+		{
+			name:     "something.py.jpg",
+			expected: TypeJPEG,
+		},
+		{
+			name: `something.jpg
+			.py`,
+			expected: TypeUnknown,
+		},
+		{
+			name: `something.something
+			.jpg`,
+			expected: TypeUnknown,
 		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			require.Equal(t, test.expected, IsExifFile(test.name))
+			require.Equal(t, test.expected, FileTypeFromSuffix(test.name))
 		})
 	}
 }

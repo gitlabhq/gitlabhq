@@ -136,14 +136,6 @@ RSpec.describe Pages::LookupPath do
             )
           end
         end
-
-        context 'when pages_serve_from_migrated_zip feature flag is disabled' do
-          before do
-            stub_feature_flags(pages_serve_from_migrated_zip: false)
-          end
-
-          include_examples 'uses disk storage'
-        end
       end
     end
   end

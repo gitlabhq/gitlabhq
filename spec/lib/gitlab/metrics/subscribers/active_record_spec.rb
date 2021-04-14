@@ -124,6 +124,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
       with_them do
         let(:payload) { { name: name, sql: sql(sql_query, comments: comments), connection: connection } }
+        let(:record_wal_query) { false }
 
         it 'marks the current thread as using the database' do
           # since it would already have been toggled by other specs

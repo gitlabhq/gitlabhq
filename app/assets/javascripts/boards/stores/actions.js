@@ -10,6 +10,7 @@ import {
   flashAnimationDuration,
   ISSUABLE,
   titleQueries,
+  subscriptionQueries,
 } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
@@ -35,7 +36,6 @@ import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
 import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.graphql';
 import issueSetLabelsMutation from '../graphql/issue_set_labels.mutation.graphql';
 import issueSetMilestoneMutation from '../graphql/issue_set_milestone.mutation.graphql';
-import issueSetSubscriptionMutation from '../graphql/issue_set_subscription.mutation.graphql';
 import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
 import * as types from './mutation_types';
 
@@ -597,26 +597,31 @@ export default {
     });
   },
 
-  setActiveIssueSubscribed: async ({ commit, getters }, input) => {
+  setActiveItemSubscribed: async ({ commit, getters, state }, input) => {
+    const { activeBoardItem, isEpicBoard } = getters;
+    const { fullPath, issuableType } = state;
+    const workspacePath = isEpicBoard
+      ? { groupPath: fullPath }
+      : { projectPath: input.projectPath };
     const { data } = await gqlClient.mutate({
-      mutation: issueSetSubscriptionMutation,
+      mutation: subscriptionQueries[issuableType].mutation,
       variables: {
         input: {
-          iid: String(getters.activeBoardItem.iid),
-          projectPath: input.projectPath,
+          ...workspacePath,
+          iid: String(activeBoardItem.iid),
           subscribedState: input.subscribed,
         },
       },
     });
 
-    if (data.issueSetSubscription?.errors?.length > 0) {
-      throw new Error(data.issueSetSubscription.errors);
+    if (data.updateIssuableSubscription?.errors?.length > 0) {
+      throw new Error(data.updateIssuableSubscription[issuableType].errors);
     }
 
     commit(types.UPDATE_BOARD_ITEM_BY_ID, {
-      itemId: getters.activeBoardItem.id,
+      itemId: activeBoardItem.id,
       prop: 'subscribed',
-      value: data.issueSetSubscription.issue.subscribed,
+      value: data.updateIssuableSubscription[issuableType].subscribed,
     });
   },
 

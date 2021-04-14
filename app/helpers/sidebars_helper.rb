@@ -15,7 +15,7 @@ module SidebarsHelper
   end
 
   def project_sidebar_context(project, user)
-    Sidebars::Context.new(**project_sidebar_context_data(project, user))
+    Sidebars::Projects::Context.new(**project_sidebar_context_data(project, user))
   end
 
   private
@@ -35,8 +35,7 @@ module SidebarsHelper
   def project_sidebar_context_data(project, user)
     {
       current_user: user,
-      container: project,
-      project: project
+      container: project
     }
   end
 end

@@ -8,6 +8,7 @@ RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state d
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:service) { described_class.new }
 
   before_all do
@@ -19,6 +20,7 @@ RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state d
 
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user) }
+
     let(:environments) { Environment.all }
 
     before_all do

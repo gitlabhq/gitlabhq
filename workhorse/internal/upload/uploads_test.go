@@ -366,26 +366,10 @@ func TestInvalidFileNames(t *testing.T) {
 }
 
 func TestUploadHandlerRemovingExif(t *testing.T) {
-	tempPath, err := ioutil.TempDir("", "uploads")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempPath)
-
-	var buffer bytes.Buffer
-
 	content, err := ioutil.ReadFile("exif/testdata/sample_exif.jpg")
 	require.NoError(t, err)
 
-	writer := multipart.NewWriter(&buffer)
-	file, err := writer.CreateFormFile("file", "test.jpg")
-	require.NoError(t, err)
-
-	_, err = file.Write(content)
-	require.NoError(t, err)
-
-	err = writer.Close()
-	require.NoError(t, err)
-
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
+	runUploadTest(t, content, "sample_exif.jpg", 200, func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(100000)
 		require.NoError(t, err)
 
@@ -397,30 +381,54 @@ func TestUploadHandlerRemovingExif(t *testing.T) {
 		w.WriteHeader(200)
 		fmt.Fprint(w, "RESPONSE")
 	})
-	defer ts.Close()
-
-	httpRequest, err := http.NewRequest("POST", ts.URL+"/url/path", &buffer)
-	require.NoError(t, err)
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	httpRequest = httpRequest.WithContext(ctx)
-	httpRequest.ContentLength = int64(buffer.Len())
-	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
-	response := httptest.NewRecorder()
-
-	handler := newProxy(ts.URL)
-	apiResponse := &api.Response{TempPath: tempPath}
-	preparer := &DefaultPreparer{}
-	opts, _, err := preparer.Prepare(apiResponse)
-	require.NoError(t, err)
-
-	HandleFileUploads(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
-	require.Equal(t, 200, response.Code)
 }
 
-func TestUploadHandlerRemovingInvalidExif(t *testing.T) {
+func TestUploadHandlerRemovingExifTiff(t *testing.T) {
+	content, err := ioutil.ReadFile("exif/testdata/sample_exif.tiff")
+	require.NoError(t, err)
+
+	runUploadTest(t, content, "sample_exif.tiff", 200, func(w http.ResponseWriter, r *http.Request) {
+		err := r.ParseMultipartForm(100000)
+		require.NoError(t, err)
+
+		size, err := strconv.Atoi(r.FormValue("file.size"))
+		require.NoError(t, err)
+		require.True(t, size < len(content), "Expected the file to be smaller after removal of exif")
+		require.True(t, size > 0, "Expected to receive not empty file")
+
+		w.WriteHeader(200)
+		fmt.Fprint(w, "RESPONSE")
+	})
+}
+
+func TestUploadHandlerRemovingExifInvalidContentType(t *testing.T) {
+	content, err := ioutil.ReadFile("exif/testdata/sample_exif_invalid.jpg")
+	require.NoError(t, err)
+
+	runUploadTest(t, content, "sample_exif_invalid.jpg", 200, func(w http.ResponseWriter, r *http.Request) {
+		err := r.ParseMultipartForm(100000)
+		require.NoError(t, err)
+
+		output, err := ioutil.ReadFile(r.FormValue("file.path"))
+		require.NoError(t, err)
+		require.Equal(t, content, output, "Expected the file to be same as before")
+
+		w.WriteHeader(200)
+		fmt.Fprint(w, "RESPONSE")
+	})
+}
+
+func TestUploadHandlerRemovingExifCorruptedFile(t *testing.T) {
+	content, err := ioutil.ReadFile("exif/testdata/sample_exif_corrupted.jpg")
+	require.NoError(t, err)
+
+	runUploadTest(t, content, "sample_exif_corrupted.jpg", 422, func(w http.ResponseWriter, r *http.Request) {
+		err := r.ParseMultipartForm(100000)
+		require.Error(t, err)
+	})
+}
+
+func runUploadTest(t *testing.T, image []byte, filename string, httpCode int, tsHandler func(http.ResponseWriter, *http.Request)) {
 	tempPath, err := ioutil.TempDir("", "uploads")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempPath)
@@ -428,17 +436,16 @@ func TestUploadHandlerRemovingInvalidExif(t *testing.T) {
 	var buffer bytes.Buffer
 
 	writer := multipart.NewWriter(&buffer)
-	file, err := writer.CreateFormFile("file", "test.jpg")
+	file, err := writer.CreateFormFile("file", filename)
 	require.NoError(t, err)
 
-	fmt.Fprint(file, "this is not valid image data")
+	_, err = file.Write(image)
+	require.NoError(t, err)
+
 	err = writer.Close()
 	require.NoError(t, err)
 
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
-		err := r.ParseMultipartForm(100000)
-		require.Error(t, err)
-	})
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), tsHandler)
 	defer ts.Close()
 
 	httpRequest, err := http.NewRequest("POST", ts.URL+"/url/path", &buffer)
@@ -459,7 +466,7 @@ func TestUploadHandlerRemovingInvalidExif(t *testing.T) {
 	require.NoError(t, err)
 
 	HandleFileUploads(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
-	require.Equal(t, 422, response.Code)
+	require.Equal(t, httpCode, response.Code)
 }
 
 func newProxy(url string) *proxy.Proxy {

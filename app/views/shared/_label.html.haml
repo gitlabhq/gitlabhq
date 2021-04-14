@@ -38,7 +38,7 @@
                     = _('Promote to group label')
               %li
                 %span
-                  %button.text-danger.remove-row.js-delete-label-modal-button{ type: 'button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } }
+                  %button.text-danger.js-delete-label-modal-button{ type: 'button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } }
                     = _('Delete')
     - if current_user
       %li.inline.label-subscription

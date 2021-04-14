@@ -3758,42 +3758,15 @@ RSpec.describe Ci::Build do
         subject.drop!
       end
 
-      context 'when async_add_build_failure_todo flag enabled' do
-        it 'creates a todo async', :sidekiq_inline do
-          project.add_developer(user)
+      it 'creates a todo async', :sidekiq_inline do
+        project.add_developer(user)
 
-          expect_next_instance_of(TodoService) do |todo_service|
-            expect(todo_service)
-              .to receive(:merge_request_build_failed).with(merge_request)
-          end
-
-          subject.drop!
+        expect_next_instance_of(TodoService) do |todo_service|
+          expect(todo_service)
+            .to receive(:merge_request_build_failed).with(merge_request)
         end
 
-        it 'does not create a sync todo' do
-          project.add_developer(user)
-
-          expect(TodoService).not_to receive(:new)
-
-          subject.drop!
-        end
-      end
-
-      context 'when async_add_build_failure_todo flag disabled' do
-        before do
-          stub_feature_flags(async_add_build_failure_todo: false)
-        end
-
-        it 'creates a todo sync' do
-          project.add_developer(user)
-
-          expect_next_instance_of(TodoService) do |todo_service|
-            expect(todo_service)
-              .to receive(:merge_request_build_failed).with(merge_request)
-          end
-
-          subject.drop!
-        end
+        subject.drop!
       end
     end
 

@@ -257,7 +257,11 @@ function UsersSelect(currentUser, els, options = {}) {
           deprecatedJQueryDropdown.options.processData(term, users, callback);
         });
       },
-      processData(term, data, callback) {
+      processData(term, dataArg, callback) {
+        // Sometimes the `dataArg` can contain special dropdown items like
+        // dividers which we don't want to consider here.
+        const data = dataArg.filter((x) => !x.type);
+
         let users = data;
 
         // Only show assigned user list when there is no search term

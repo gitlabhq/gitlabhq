@@ -95,6 +95,7 @@ export default () => {
       assigneeListsAvailable: parseBoolean($boardApp.dataset.assigneeListsAvailable),
       iterationListsAvailable: parseBoolean($boardApp.dataset.iterationListsAvailable),
       issuableType: issuableTypes.issue,
+      emailsDisabled: parseBoolean($boardApp.dataset.emailsDisabled),
     },
     store,
     apolloProvider,

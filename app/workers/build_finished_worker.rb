@@ -37,7 +37,7 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
     ExpirePipelineCacheWorker.perform_async(build.pipeline_id)
     ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
 
-    if build.failed? && Feature.enabled?(:async_add_build_failure_todo, build.project, default_enabled: :yaml)
+    if build.failed?
       ::Ci::MergeRequests::AddTodoWhenBuildFailsWorker.perform_async(build.id)
     end
 

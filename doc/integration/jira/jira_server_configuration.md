@@ -45,7 +45,7 @@ group to assign permissions to the user:
    select **User Management**.
 1. From the sidebar, select **Groups**.
 
-   ![Jira create new user](../../user/project/integrations/img/jira_create_new_group.png)
+   ![Jira create new user](img/jira_create_new_group.png)
 
 1. In the **Add group** section, enter a **Name** for the group (for example,
    `gitlab-developers`), and then select **Add group**.
@@ -57,7 +57,7 @@ group to assign permissions to the user:
 Jira saves your selection, and `gitlab` should appear in the **Group member(s)**
 area.
 
-![Jira added user to group](../../user/project/integrations/img/jira_added_user_to_group.png)
+![Jira added user to group](img/jira_added_user_to_group.png)
 
 Next, create a permission scheme for your group.
 
@@ -76,8 +76,8 @@ After creating the group in Jira, grant permissions to the group by creating a p
 1. Next to **Administer Projects**, select **Edit**. In
    the **Group** list, select `gitlab-developers`.
 
-   ![Jira group access](../../user/project/integrations/img/jira_group_access.png)
+   ![Jira group access](img/jira_group_access.png)
 
 Write down the new Jira username and its
 password, as you need them when
-[configuring GitLab](../../user/project/integrations/jira.md#configure-gitlab).
+[configuring GitLab](development_panel.md#configure-gitlab).

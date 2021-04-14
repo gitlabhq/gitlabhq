@@ -31,6 +31,19 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
     end
   end
 
+  let(:overflow_max_bytes) { false }
+  let(:overflow_max_files) { false }
+  let(:overflow_max_lines) { false }
+
+  shared_examples 'overflow stuff' do
+    it 'returns the expected overflow values' do
+      subject.overflow?
+      expect(subject.overflow_max_bytes?).to eq(overflow_max_bytes)
+      expect(subject.overflow_max_files?).to eq(overflow_max_files)
+      expect(subject.overflow_max_lines?).to eq(overflow_max_lines)
+    end
+  end
+
   subject do
     Gitlab::Git::DiffCollection.new(
       iterator,
@@ -76,11 +89,18 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
   end
 
   context 'overflow handling' do
+    subject { super() }
+
+    let(:collapsed_safe_files) { false }
+    let(:collapsed_safe_lines) { false }
+
     context 'adding few enough files' do
       let(:file_count) { 3 }
 
       context 'and few enough lines' do
         let(:line_count) { 10 }
+
+        it_behaves_like 'overflow stuff'
 
         describe '#overflow?' do
           subject { super().overflow? }
@@ -117,6 +137,11 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
 
         context 'when limiting is disabled' do
           let(:limits) { false }
+          let(:overflow_max_bytes) { false }
+          let(:overflow_max_files) { false }
+          let(:overflow_max_lines) { false }
+
+          it_behaves_like 'overflow stuff'
 
           describe '#overflow?' do
             subject { super().overflow? }
@@ -155,6 +180,9 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
 
       context 'and too many lines' do
         let(:line_count) { 1000 }
+        let(:overflow_max_lines) { true }
+
+        it_behaves_like 'overflow stuff'
 
         describe '#overflow?' do
           subject { super().overflow? }
@@ -184,6 +212,11 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
 
         context 'when limiting is disabled' do
           let(:limits) { false }
+          let(:overflow_max_bytes) { false }
+          let(:overflow_max_files) { false }
+          let(:overflow_max_lines) { false }
+
+          it_behaves_like 'overflow stuff'
 
           describe '#overflow?' do
             subject { super().overflow? }
@@ -216,9 +249,12 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
 
     context 'adding too many files' do
       let(:file_count) { 11 }
+      let(:overflow_max_files) { true }
 
       context 'and few enough lines' do
         let(:line_count) { 1 }
+
+        it_behaves_like 'overflow stuff'
 
         describe '#overflow?' do
           subject { super().overflow? }
@@ -248,6 +284,11 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
 
         context 'when limiting is disabled' do
           let(:limits) { false }
+          let(:overflow_max_bytes) { false }
+          let(:overflow_max_files) { false }
+          let(:overflow_max_lines) { false }
+
+          it_behaves_like 'overflow stuff'
 
           describe '#overflow?' do
             subject { super().overflow? }
@@ -279,6 +320,10 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
 
       context 'and too many lines' do
         let(:line_count) { 30 }
+        let(:overflow_max_lines) { true }
+        let(:overflow_max_files) { false }
+
+        it_behaves_like 'overflow stuff'
 
         describe '#overflow?' do
           subject { super().overflow? }
@@ -308,6 +353,11 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
 
         context 'when limiting is disabled' do
           let(:limits) { false }
+          let(:overflow_max_bytes) { false }
+          let(:overflow_max_files) { false }
+          let(:overflow_max_lines) { false }
+
+          it_behaves_like 'overflow stuff'
 
           describe '#overflow?' do
             subject { super().overflow? }
@@ -344,6 +394,8 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
       context 'and few enough lines' do
         let(:line_count) { 1 }
 
+        it_behaves_like 'overflow stuff'
+
         describe '#overflow?' do
           subject { super().overflow? }
 
@@ -375,6 +427,9 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
     context 'adding too many bytes' do
       let(:file_count) { 10 }
       let(:line_length) { 5200 }
+      let(:overflow_max_bytes) { true }
+
+      it_behaves_like 'overflow stuff'
 
       describe '#overflow?' do
         subject { super().overflow? }
@@ -404,6 +459,11 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
 
       context 'when limiting is disabled' do
         let(:limits) { false }
+        let(:overflow_max_bytes) { false }
+        let(:overflow_max_files) { false }
+        let(:overflow_max_lines) { false }
+
+        it_behaves_like 'overflow stuff'
 
         describe '#overflow?' do
           subject { super().overflow? }
@@ -436,6 +496,8 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
 
   describe 'empty collection' do
     subject { Gitlab::Git::DiffCollection.new([]) }
+
+    it_behaves_like 'overflow stuff'
 
     describe '#overflow?' do
       subject { super().overflow? }
@@ -555,7 +617,7 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
               .and_return({ max_files: 2, max_lines: max_lines })
           end
 
-          it 'prunes diffs by default even little ones' do
+          it 'prunes diffs by default even little ones and sets collapsed_safe_files true' do
             subject.each_with_index do |d, i|
               if i < 2
                 expect(d.diff).not_to eq('')
@@ -563,6 +625,8 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
                 expect(d.diff).to eq('')
               end
             end
+
+            expect(subject.collapsed_safe_files?).to eq(true)
           end
         end
 
@@ -582,7 +646,7 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
               .and_return({ max_files: max_files, max_lines: 80 })
           end
 
-          it 'prunes diffs by default even little ones' do
+          it 'prunes diffs by default even little ones and sets collapsed_safe_lines true' do
             subject.each_with_index do |d, i|
               if i < 2
                 expect(d.diff).not_to eq('')
@@ -590,26 +654,30 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
                 expect(d.diff).to eq('')
               end
             end
+
+            expect(subject.collapsed_safe_lines?).to eq(true)
           end
         end
 
         context 'when go over safe limits on bytes' do
           let(:iterator) do
             [
-              fake_diff(1, 45),
-              fake_diff(1, 45),
-              fake_diff(1, 20480),
-              fake_diff(1, 1)
+              fake_diff(5, 10),
+              fake_diff(5000, 10),
+              fake_diff(5, 10),
+              fake_diff(5, 10)
             ]
           end
 
           before do
+            allow(Gitlab::CurrentSettings).to receive(:diff_max_patch_bytes).and_return(1.megabyte)
+
             allow(Gitlab::Git::DiffCollection)
               .to receive(:default_limits)
-              .and_return({ max_files: max_files, max_lines: 80 })
+              .and_return({ max_files: 4, max_lines: 3000 })
           end
 
-          it 'prunes diffs by default even little ones' do
+          it 'prunes diffs by default even little ones and sets collapsed_safe_bytes true' do
             subject.each_with_index do |d, i|
               if i < 2
                 expect(d.diff).not_to eq('')
@@ -617,6 +685,8 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
                 expect(d.diff).to eq('')
               end
             end
+
+            expect(subject.collapsed_safe_bytes?).to eq(true)
           end
         end
       end

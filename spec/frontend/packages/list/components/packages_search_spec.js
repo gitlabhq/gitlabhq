@@ -2,7 +2,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import component from '~/packages/list/components/package_search.vue';
 import PackageTypeToken from '~/packages/list/components/tokens/package_type_token.vue';
-import getTableHeaders from '~/packages/list/utils';
+import { sortableFields } from '~/packages/list/utils';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 
@@ -60,7 +60,7 @@ describe('Package Search', () => {
       tokens: expect.arrayContaining([
         expect.objectContaining({ token: PackageTypeToken, type: 'type', icon: 'package' }),
       ]),
-      sortableFields: getTableHeaders(),
+      sortableFields: sortableFields(),
     });
   });
 
@@ -77,7 +77,7 @@ describe('Package Search', () => {
       tokens: expect.arrayContaining([
         expect.objectContaining({ token: PackageTypeToken, type: 'type', icon: 'package' }),
       ]),
-      sortableFields: getTableHeaders(isGroupPage),
+      sortableFields: sortableFields(isGroupPage),
     });
   });
 

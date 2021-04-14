@@ -1,6 +1,8 @@
 import { __ } from '~/locale';
+import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
 import boardBlockingIssuesQuery from './graphql/board_blocking_issues.query.graphql';
+import issueSetSubscriptionMutation from './graphql/issue_set_subscription.mutation.graphql';
 import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
 
 export const issuableTypes = {
@@ -61,5 +63,14 @@ export const titleQueries = {
   },
   [issuableTypes.epic]: {
     mutation: updateEpicTitleMutation,
+  },
+};
+
+export const subscriptionQueries = {
+  [issuableTypes.issue]: {
+    mutation: issueSetSubscriptionMutation,
+  },
+  [issuableTypes.epic]: {
+    mutation: updateEpicSubscriptionMutation,
   },
 };

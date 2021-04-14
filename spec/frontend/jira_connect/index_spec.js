@@ -4,16 +4,13 @@ import { removeSubscription } from '~/jira_connect/api';
 
 jest.mock('~/jira_connect/api', () => ({
   removeSubscription: jest.fn().mockResolvedValue(),
+}));
+
+jest.mock('~/jira_connect/utils', () => ({
   getLocation: jest.fn().mockResolvedValue('test/location'),
 }));
 
 describe('initJiraConnect', () => {
-  window.AP = {
-    navigator: {
-      reload: jest.fn(),
-    },
-  };
-
   beforeEach(async () => {
     setFixtures(`
       <a class="js-jira-connect-sign-in" href="https://gitlab.com">Sign In</a>

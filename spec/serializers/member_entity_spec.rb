@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MemberEntity do
   let_it_be(:current_user) { create(:user) }
+
   let(:entity) { described_class.new(member, { current_user: current_user, group: group, source: source }) }
   let(:entity_hash) { entity.as_json }
 

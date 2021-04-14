@@ -65,8 +65,6 @@ module Gitlab
     private
 
     def metric_name_suggestion
-      return unless Feature.enabled?(:product_intelligence_metrics_names_suggestions, default_enabled: :yaml)
-
       "\nname: \"#{Usage::Metrics::NamesSuggestions::Generator.generate(key_path)}\""
     end
 

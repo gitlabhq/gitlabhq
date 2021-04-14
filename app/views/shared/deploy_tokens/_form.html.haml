@@ -22,29 +22,29 @@
     = f.label :scopes, _('Scopes [Select 1 or more]'), class: 'label-bold'
     %fieldset.form-group.form-check
       = f.check_box :read_repository, class: 'form-check-input qa-deploy-token-read-repository'
-      = label_tag ("deploy_token_read_repository"), 'read_repository', class: 'label-bold form-check-label'
+      = f.label :read_repository, 'read_repository', class: 'label-bold form-check-label'
       .text-secondary= s_('DeployTokens|Allows read-only access to the repository.')
 
     - if container_registry_enabled?(group_or_project)
       %fieldset.form-group.form-check
         = f.check_box :read_registry, class: 'form-check-input qa-deploy-token-read-registry'
-        = label_tag ("deploy_token_read_registry"), 'read_registry', class: 'label-bold form-check-label'
+        = f.label :read_registry, 'read_registry', class: 'label-bold form-check-label'
         .text-secondary= s_('DeployTokens|Allows read-only access to registry images.')
 
       %fieldset.form-group.form-check
         = f.check_box :write_registry, class: 'form-check-input'
-        = label_tag ("deploy_token_write_registry"), 'write_registry', class: 'label-bold form-check-label'
+        = f.label :write_registry, 'write_registry', class: 'label-bold form-check-label'
         .text-secondary= s_('DeployTokens|Allows write access to registry images.')
 
     - if packages_registry_enabled?(group_or_project)
       %fieldset.form-group.form-check
         = f.check_box :read_package_registry, class: 'form-check-input'
-        = label_tag ("deploy_token_read_package_registry"), 'read_package_registry', class: 'label-bold form-check-label'
+        = f.label :read_package_registry, 'read_package_registry', class: 'label-bold form-check-label'
         .text-secondary= s_('DeployTokens|Allows read access to the package registry.')
 
       %fieldset.form-group.form-check
         = f.check_box :write_package_registry, class: 'form-check-input'
-        = label_tag ("deploy_token_write_package_registry"), 'write_package_registry', class: 'label-bold form-check-label'
+        = f.label :write_package_registry, 'write_package_registry', class: 'label-bold form-check-label'
         .text-secondary= s_('DeployTokens|Allows write access to the package registry.')
 
   .gl-mt-3

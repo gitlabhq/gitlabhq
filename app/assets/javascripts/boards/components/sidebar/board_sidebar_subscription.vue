@@ -21,26 +21,30 @@ export default {
   components: {
     GlToggle,
   },
+  inject: ['emailsDisabled'],
   data() {
     return {
       loading: false,
     };
   },
   computed: {
-    ...mapGetters(['activeBoardItem', 'projectPathForActiveIssue']),
+    ...mapGetters(['activeBoardItem', 'projectPathForActiveIssue', 'isEpicBoard']),
+    isEmailsDisabled() {
+      return this.isEpicBoard ? this.emailsDisabled : this.activeBoardItem.emailsDisabled;
+    },
     notificationText() {
-      return this.activeBoardItem.emailsDisabled
+      return this.isEmailsDisabled
         ? this.$options.i18n.header.subscribeDisabledDescription
         : this.$options.i18n.header.title;
     },
   },
   methods: {
-    ...mapActions(['setActiveIssueSubscribed']),
+    ...mapActions(['setActiveItemSubscribed']),
     async handleToggleSubscription() {
       this.loading = true;
 
       try {
-        await this.setActiveIssueSubscribed({
+        await this.setActiveItemSubscribed({
           subscribed: !this.activeBoardItem.subscribed,
           projectPath: this.projectPathForActiveIssue,
         });
@@ -61,7 +65,7 @@ export default {
   >
     <span data-testid="notification-header-text"> {{ notificationText }} </span>
     <gl-toggle
-      v-if="!activeBoardItem.emailsDisabled"
+      v-if="!isEmailsDisabled"
       :value="activeBoardItem.subscribed"
       :is-loading="loading"
       :label="$options.i18n.header.title"

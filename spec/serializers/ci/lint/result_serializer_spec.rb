@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
   let_it_be(:project) { create(:project, :repository) }
+
   let(:result) do
     Gitlab::Ci::Lint
       .new(project: project, current_user: project.owner)

@@ -6,6 +6,7 @@ RSpec.describe DiffFileEntity do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
+
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diff_refs) { commit.diff_refs }
@@ -22,6 +23,7 @@ RSpec.describe DiffFileEntity do
 
   context 'when there is a merge request' do
     let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
     let(:user) { create(:user) }
     let(:code_navigation_path) { Gitlab::CodeNavigationPath.new(project, project.commit.sha) }
     let(:request) { EntityRequest.new(project: project, current_user: user) }

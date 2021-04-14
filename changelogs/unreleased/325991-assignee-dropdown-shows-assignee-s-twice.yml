@@ -1,0 +1,5 @@
+---
+title: Fix Assignee dropdown showing assignee(s) twice
+merge_request: 57513
+author:
+type: fixed

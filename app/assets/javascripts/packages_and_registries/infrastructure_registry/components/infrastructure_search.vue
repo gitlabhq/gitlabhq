@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { LIST_KEY_PACKAGE_TYPE } from '~/packages/list/constants';
-import getTableHeaders from '~/packages/list/utils';
+import { sortableFields } from '~/packages/list/utils';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 
@@ -14,7 +14,7 @@ export default {
       filter: (state) => state.filter,
     }),
     sortableFields() {
-      return getTableHeaders(this.isGroupPage).filter((h) => h.orderBy !== LIST_KEY_PACKAGE_TYPE);
+      return sortableFields(this.isGroupPage).filter((h) => h.orderBy !== LIST_KEY_PACKAGE_TYPE);
     },
   },
   methods: {

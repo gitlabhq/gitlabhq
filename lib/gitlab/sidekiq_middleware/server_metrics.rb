@@ -21,6 +21,16 @@ module Gitlab
         Thread.current.name ||= Gitlab::Metrics::Samplers::ThreadsSampler::SIDEKIQ_WORKER_THREAD_NAME
 
         labels = create_labels(worker.class, queue, job)
+        instrument(job, labels) do
+          yield
+        end
+      end
+
+      protected
+
+      attr_reader :metrics
+
+      def instrument(job, labels)
         queue_duration = ::Gitlab::InstrumentationHelper.queue_duration_for_job(job)
 
         @metrics[:sidekiq_jobs_queue_duration_seconds].observe(labels, queue_duration) if queue_duration
@@ -62,8 +72,6 @@ module Gitlab
         end
       end
 
-      private
-
       def init_metrics
         {
           sidekiq_jobs_cpu_seconds:                ::Gitlab::Metrics.histogram(:sidekiq_jobs_cpu_seconds, 'Seconds of cpu time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
@@ -81,6 +89,8 @@ module Gitlab
           sidekiq_concurrency:                     ::Gitlab::Metrics.gauge(:sidekiq_concurrency, 'Maximum number of Sidekiq jobs', {}, :all)
         }
       end
+
+      private
 
       def get_thread_cputime
         defined?(Process::CLOCK_THREAD_CPUTIME_ID) ? Process.clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID) : 0
@@ -108,3 +118,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::SidekiqMiddleware::ServerMetrics.prepend_if_ee('EE::Gitlab::SidekiqMiddleware::ServerMetrics')

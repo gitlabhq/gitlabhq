@@ -1,24 +1,5 @@
 import axios from 'axios';
-
-export const getJwt = () => {
-  return new Promise((resolve) => {
-    AP.context.getToken((token) => {
-      resolve(token);
-    });
-  });
-};
-
-export const getLocation = () => {
-  return new Promise((resolve) => {
-    if (typeof AP.getLocation !== 'function') {
-      resolve();
-    }
-
-    AP.getLocation((location) => {
-      resolve(location);
-    });
-  });
-};
+import { getJwt } from '~/jira_connect/utils';
 
 export const addSubscription = async (addPath, namespace) => {
   const jwt = await getJwt();

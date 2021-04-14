@@ -69,6 +69,14 @@ RSpec.describe Resolvers::IssueStatusCountsResolver do
       expect(result.closed).to eq 1
     end
 
+    context 'when both assignee_username and assignee_usernames are provided' do
+      it 'raises a mutually exclusive filter error' do
+        expect do
+          resolve_issue_status_counts(assignee_usernames: [current_user.username], assignee_username: current_user.username)
+        end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'only one of [assigneeUsernames, assigneeUsername] arguments is allowed at the same time.')
+      end
+    end
+
     private
 
     def resolve_issue_status_counts(args = {}, context = { current_user: current_user })

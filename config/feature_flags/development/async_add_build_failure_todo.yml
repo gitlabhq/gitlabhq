@@ -1,8 +1,0 @@
----
-name: async_add_build_failure_todo
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57490/diffs
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326726
-milestone: '13.11'
-type: development
-group: group::continuous integration
-default_enabled: true

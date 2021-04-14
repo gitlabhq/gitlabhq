@@ -12,10 +12,10 @@ module IssueResolverArguments
     argument :iids, [GraphQL::STRING_TYPE],
               required: false,
               description: 'List of IIDs of issues. For example, [1, 2].'
-    argument :label_name, GraphQL::STRING_TYPE.to_list_type,
+    argument :label_name, [GraphQL::STRING_TYPE, null: true],
               required: false,
               description: 'Labels applied to this issue.'
-    argument :milestone_title, GraphQL::STRING_TYPE.to_list_type,
+    argument :milestone_title, [GraphQL::STRING_TYPE, null: true],
               required: false,
               description: 'Milestone applied to this issue.'
     argument :author_username, GraphQL::STRING_TYPE,
@@ -55,6 +55,10 @@ module IssueResolverArguments
               as: :issue_types,
               description: 'Filter issues by the given issue types.',
               required: false
+    argument :not, Types::Issues::NegatedIssueFilterInputType,
+             description: 'List of negated params.',
+             prepare: ->(negated_args, ctx) { negated_args.to_h },
+             required: false
   end
 
   def resolve_with_lookahead(**args)
@@ -69,9 +73,20 @@ module IssueResolverArguments
     args[:iids] ||= [args.delete(:iid)].compact if args[:iid]
     args[:attempt_project_search_optimizations] = true if args[:search].present?
 
+    prepare_assignee_username_params(args)
+
     finder = IssuesFinder.new(current_user, args)
 
     continue_issue_resolve(parent, finder, **args)
+  end
+
+  def ready?(**args)
+    if args.slice(*mutually_exclusive_assignee_username_args).compact.size > 1
+      arg_str = mutually_exclusive_assignee_username_args.map { |x| x.to_s.camelize(:lower) }.join(', ')
+      raise Gitlab::Graphql::Errors::ArgumentError, "only one of [#{arg_str}] arguments is allowed at the same time."
+    end
+
+    super
   end
 
   class_methods do
@@ -81,5 +96,16 @@ module IssueResolverArguments
 
       complexity
     end
+  end
+
+  private
+
+  def prepare_assignee_username_params(args)
+    args[:assignee_username] = args.delete(:assignee_usernames) if args[:assignee_usernames].present?
+    args[:not][:assignee_username] = args[:not].delete(:assignee_usernames) if args.dig(:not, :assignee_usernames).present?
+  end
+
+  def mutually_exclusive_assignee_username_args
+    [:assignee_usernames, :assignee_username]
   end
 end

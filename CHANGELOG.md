@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.10.3 (2021-04-13)
+
+### Security (3 changes)
+
+- Check image content type before running exiftool in workhorse.
+- Clean only legitimate JPG and TIFF files.
+- Update ruby-saml and rexml gems.
+
+
 ## 13.10.2 (2021-04-01)
 
 ### Fixed (1 change)
@@ -560,6 +569,14 @@ entry.
 - Remove merge_request_rebase_nowait_lock flag. !56406
 - Update mobsf version in the SAST template. !56413
 - Convert mattermost alert to pajamas. !56556
+
+
+## 13.9.6 (2021-04-13)
+
+### Security (2 changes)
+
+- Clean only legitimate JPG and TIFF files.
+- Update ruby-saml and rexml gems.
 
 
 ## 13.9.5 (2021-03-31)
@@ -1197,6 +1214,14 @@ entry.
 - Update GitLab Workhorse to v8.63.0. !54315
 - Add btn-default to buttons in todos page. (Yogi (@yo))
 - Apply new GitLab UI for buttons in pipeline schedules.
+
+
+## 13.8.8 (2021-04-13)
+
+### Security (2 changes)
+
+- Clean only legitimate JPG and TIFF files.
+- Update ruby-saml and rexml gems.
 
 
 ## 13.8.7 (2021-03-31)

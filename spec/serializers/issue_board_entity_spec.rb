@@ -8,6 +8,7 @@ RSpec.describe IssueBoardEntity do
   let_it_be(:user)      { create(:user) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:label)     { create(:label, project: project, title: 'Test Label') }
+
   let(:request)         { double('request', current_user: user) }
 
   subject { described_class.new(resource, request: request).as_json }

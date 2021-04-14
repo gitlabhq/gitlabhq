@@ -555,6 +555,7 @@
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
+      when: manual
 
 .rails:rules:ee-and-foss-unit:
   rules:

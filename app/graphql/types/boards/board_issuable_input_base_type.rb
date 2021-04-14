@@ -4,7 +4,7 @@ module Types
   module Boards
     # Common arguments that we can be used to filter boards epics and issues
     class BoardIssuableInputBaseType < BaseInputObject
-      argument :label_name, GraphQL::STRING_TYPE.to_list_type,
+      argument :label_name, [GraphQL::STRING_TYPE, null: true],
                required: false,
                description: 'Filter by label name.'
 

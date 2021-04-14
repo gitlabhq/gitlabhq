@@ -22,7 +22,7 @@ RSpec.describe "User removes labels" do
       page.within(".other-labels") do
         page.first(".label-list-item") do
           first('.js-label-options-dropdown').click
-          first(".remove-row").click
+          first('.js-delete-label-modal-button').click
         end
       end
 

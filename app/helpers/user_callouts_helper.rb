@@ -5,7 +5,7 @@ module UserCalloutsHelper
   GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'
   GCP_SIGNUP_OFFER = 'gcp_signup_offer'
   SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
-  SERVICE_TEMPLATES_DEPRECATED = 'service_templates_deprecated'
+  SERVICE_TEMPLATES_DEPRECATED_CALLOUT = 'service_templates_deprecated_callout'
   TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
   WEBHOOKS_MOVED = 'webhooks_moved'
   CUSTOMIZE_HOMEPAGE = 'customize_homepage'
@@ -41,8 +41,11 @@ module UserCalloutsHelper
     !user_dismissed?(SUGGEST_POPOVER_DISMISSED)
   end
 
-  def show_service_templates_deprecated?
-    !user_dismissed?(SERVICE_TEMPLATES_DEPRECATED)
+  def show_service_templates_deprecated_callout?
+    !Gitlab.com? &&
+    current_user&.admin? &&
+    Service.for_template.active.exists? &&
+    !user_dismissed?(SERVICE_TEMPLATES_DEPRECATED_CALLOUT)
   end
 
   def show_webhooks_moved_alert?

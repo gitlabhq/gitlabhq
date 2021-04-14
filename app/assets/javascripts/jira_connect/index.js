@@ -1,6 +1,7 @@
 import setConfigs from '@gitlab/ui/dist/config';
 import Vue from 'vue';
-import { addSubscription, removeSubscription, getLocation } from '~/jira_connect/api';
+import { addSubscription, removeSubscription } from '~/jira_connect/api';
+import { getLocation, reloadPage, sizeToParent } from '~/jira_connect/utils';
 import GlFeatureFlagsPlugin from '~/vue_shared/gl_feature_flags_plugin';
 import Translate from '~/vue_shared/translate';
 
@@ -9,10 +10,6 @@ import createStore from './store';
 import { SET_ALERT } from './store/mutation_types';
 
 const store = createStore();
-
-const reqComplete = () => {
-  AP.navigator.reload();
-};
 
 const reqFailed = (res, fallbackErrorMessage) => {
   const { error = fallbackErrorMessage } = res || {};
@@ -35,7 +32,7 @@ const initRemoveSubscriptionButtonHandlers = () => {
 
       const removePath = e.target.getAttribute('href');
       removeSubscription(removePath)
-        .then(reqComplete)
+        .then(reloadPage)
         .catch((err) =>
           reqFailed(err.response.data, 'Failed to remove namespace. Please try again.'),
         );
@@ -56,7 +53,7 @@ const initAddSubscriptionFormHandler = () => {
     const namespace = (e.target.querySelector('#namespace-input') || {}).value;
 
     addSubscription(addPath, namespace)
-      .then(reqComplete)
+      .then(reloadPage)
       .catch((err) => reqFailed(err.response.data, 'Failed to add namespace. Please try again.'));
   });
 };
@@ -76,14 +73,15 @@ export async function initJiraConnect() {
   Vue.use(Translate);
   Vue.use(GlFeatureFlagsPlugin);
 
-  const { groupsPath, subscriptionsPath, usersPath } = el.dataset;
-  AP.sizeToParent();
+  const { groupsPath, subscriptions, subscriptionsPath, usersPath } = el.dataset;
+  sizeToParent();
 
   return new Vue({
     el,
     store,
     provide: {
       groupsPath,
+      subscriptions: JSON.parse(subscriptions),
       subscriptionsPath,
       usersPath,
     },

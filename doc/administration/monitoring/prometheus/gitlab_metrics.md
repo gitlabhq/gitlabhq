@@ -250,10 +250,11 @@ configuration option in `gitlab.yml`. These metrics are served from the
 
 The following metrics are available:
 
-| Metric                            | Type      | Since                                                         | Description                            |
-|:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |
-| `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)     | Current number of load balancing hosts |
-
+| Metric                            | Type      | Since                                                         | Description                            | Labels                                                    |
+|:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |:--------------------------------------------------------- |
+| `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)   | Current number of load balancing hosts | |
+| `sidekiq_load_balancing_count`    | Counter   | 13.11                                                         | Sidekiq jobs using load balancing with data consistency set to :sticky or :delayed | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `data_consistency`, `database_chosen` |
+ 
 ## Database partitioning metrics **(PREMIUM SELF)**
 
 The following metrics are available:

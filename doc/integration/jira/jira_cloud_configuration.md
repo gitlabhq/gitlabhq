@@ -15,8 +15,8 @@ on Atlassian cloud. To create the API token:
 1. Select **Create API token** to display a modal window with an API token.
 1. To copy the API token, select **Copy to clipboard**, or select **View** and write
    down the new API token. You need this value when you
-   [configure GitLab](../../user/project/integrations/jira.md#configure-gitlab).
+   [configure GitLab](development_panel.md#configure-gitlab).
 
 You need the newly created token, and the email
 address you used when you created it, when you
-[configure GitLab](../../user/project/integrations/jira.md#configure-gitlab).
+[configure GitLab](development_panel.md#configure-gitlab).

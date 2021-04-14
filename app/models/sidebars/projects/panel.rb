@@ -3,9 +3,9 @@
 module Sidebars
   module Projects
     class Panel < ::Sidebars::Panel
-      override :render_raw_menus_partial
-      def render_raw_scope_menu_partial
-        'layouts/nav/sidebar/project_scope_menu'
+      override :configure_menus
+      def configure_menus
+        set_scope_menu(Sidebars::Projects::Menus::Scope::Menu.new(context))
       end
 
       override :render_raw_menus_partial

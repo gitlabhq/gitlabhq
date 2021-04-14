@@ -12,6 +12,7 @@ RSpec.describe 'getting an issue list for a project' do
   let_it_be(:issues, reload: true) { [issue_a, issue_b] }
 
   let(:issues_data) { graphql_data['project']['issues']['edges'] }
+  let(:issue_filter_params) { {} }
 
   let(:fields) do
     <<~QUERY
@@ -27,7 +28,7 @@ RSpec.describe 'getting an issue list for a project' do
     graphql_query_for(
       'project',
       { 'fullPath' => project.full_path },
-      query_graphql_field('issues', {}, fields)
+      query_graphql_field('issues', issue_filter_params, fields)
     )
   end
 
@@ -48,6 +49,16 @@ RSpec.describe 'getting an issue list for a project' do
 
     expect(issues_data[0]['node']['discussionLocked']).to eq(false)
     expect(issues_data[1]['node']['discussionLocked']).to eq(true)
+  end
+
+  context 'when both assignee_username filters are provided' do
+    let(:issue_filter_params) { { assignee_username: current_user.username, assignee_usernames: [current_user.username] } }
+
+    it 'returns a mutually exclusive param error' do
+      post_graphql(query, current_user: current_user)
+
+      expect_graphql_errors_to_include('only one of [assigneeUsernames, assigneeUsername] arguments is allowed at the same time.')
+    end
   end
 
   context 'when limiting the number of results' do

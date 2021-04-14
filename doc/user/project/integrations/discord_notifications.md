@@ -10,7 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The Discord Notifications service sends event notifications from GitLab to the channel for which the webhook was created.
 
-To send GitLab event notifications to a Discord channel, create a webhook in Discord and configure it in GitLab.
+To send GitLab event notifications to a Discord channel, [create a webhook in Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
+and configure it in GitLab.
 
 ## Create webhook
 

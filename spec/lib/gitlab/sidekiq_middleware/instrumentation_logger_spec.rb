@@ -35,7 +35,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::InstrumentationLogger do
         :elasticsearch_calls,
         :elasticsearch_duration_s,
         :elasticsearch_timed_out_count,
-        :worker_data_consistency,
         :mem_objects,
         :mem_bytes,
         :mem_mallocs,

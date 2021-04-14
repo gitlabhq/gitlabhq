@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequestUserEntity do
   let_it_be(:user) { create(:user) }
   let_it_be(:merge_request) { create(:merge_request) }
+
   let(:request) { EntityRequest.new(project: merge_request.target_project, current_user: user) }
 
   let(:entity) do

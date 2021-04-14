@@ -174,6 +174,22 @@ module UsageDataHelpers
     allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
   end
 
+  def stub_prometheus_queries
+    stub_request(:get, %r{^https?://::1:9090/-/ready})
+      .to_return(
+        status: 200,
+        body: [{}].to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+
+    stub_request(:get, %r{^https?://::1:9090/api/v1/query\?query=.*})
+      .to_return(
+        status: 200,
+        body: [{}].to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+  end
+
   def clear_memoized_values(values)
     values.each { |v| described_class.clear_memoization(v) }
   end

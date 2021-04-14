@@ -13,6 +13,12 @@ describe('Infrastructure Search', () => {
 
   const sortableFields = () => [
     { orderBy: 'name', label: 'Name' },
+    { orderBy: 'version', label: 'Version' },
+    { orderBy: 'created_at', label: 'Published' },
+  ];
+
+  const groupSortableFields = () => [
+    { orderBy: 'name', label: 'Name' },
     { orderBy: 'project_path', label: 'Project' },
     { orderBy: 'version', label: 'Version' },
     { orderBy: 'created_at', label: 'Published' },
@@ -68,17 +74,17 @@ describe('Infrastructure Search', () => {
   });
 
   it.each`
-    isGroupPage | page
-    ${false}    | ${'project'}
-    ${true}     | ${'group'}
-  `('in a $page page binds the right props', ({ isGroupPage }) => {
+    isGroupPage | page         | fields
+    ${false}    | ${'project'} | ${sortableFields()}
+    ${true}     | ${'group'}   | ${groupSortableFields()}
+  `('in a $page page binds the right props', ({ isGroupPage, fields }) => {
     mountComponent(isGroupPage);
 
     expect(findRegistrySearch().props()).toMatchObject({
       filter: store.state.filter,
       sorting: store.state.sorting,
       tokens: [],
-      sortableFields: sortableFields(),
+      sortableFields: fields,
     });
   });
 

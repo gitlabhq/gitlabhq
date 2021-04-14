@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe Admin::UserEntity do
   let_it_be(:user) { build_stubbed(:user) }
+
   let(:request) { double('request') }
 
   let(:entity) do

@@ -35,12 +35,12 @@ describe('GroupsList', () => {
     wrapper.destroy();
   });
 
-  const findGlAlert = () => wrapper.find(GlAlert);
-  const findGlLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findGlAlert = () => wrapper.findComponent(GlAlert);
+  const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAllItems = () => wrapper.findAll(GroupsListItem);
   const findFirstItem = () => findAllItems().at(0);
   const findSecondItem = () => findAllItems().at(1);
-  const findSearchBox = () => wrapper.find(GlSearchBoxByType);
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findGroupsList = () => wrapper.findByTestId('groups-list');
 
   describe('when groups are loading', () => {

@@ -80,7 +80,7 @@ it completes, refreshes every 60 minutes:
 To connect additional GitLab projects from other GitLab top-level groups, or
 personal namespaces, repeat the previous steps with additional Jira DVCS accounts.
 
-After you configure the integration, read more about [how to test and use it](index.md#usage).
+After you configure the integration, read more about [how to test and use it](development_panel.md#usage).
 
 ## Refresh data imported to Jira
 

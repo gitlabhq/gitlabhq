@@ -220,6 +220,8 @@
   - 1
 - - merge_requests_resolve_todos
   - 1
+- - merge_requests_sync_code_owner_approval_rules
+  - 1
 - - metrics_dashboard_prune_old_annotations
   - 1
 - - metrics_dashboard_sync_dashboards

@@ -2327,6 +2327,9 @@ msgstr ""
 msgid "AdminSettings|Required pipeline configuration"
 msgstr ""
 
+msgid "AdminSettings|See affected service templates"
+msgstr ""
+
 msgid "AdminSettings|Select a pipeline configuration file"
 msgstr ""
 
@@ -2361,6 +2364,9 @@ msgid "AdminSettings|When creating a new environment variable it will be protect
 msgstr ""
 
 msgid "AdminSettings|You can't add new templates. To migrate or remove a Service template, create a new integration at %{settings_link_start}Settings &gt; Integrations%{link_end}. Learn more about %{doc_link_start}Project integration management%{link_end}."
+msgstr ""
+
+msgid "AdminSettings|You should migrate to %{doc_link_start}Project integration management%{link_end}, available at %{settings_link_start}Settings &gt; Integrations.%{link_end}"
 msgstr ""
 
 msgid "AdminStatistics|Active Users"
@@ -3982,6 +3988,9 @@ msgstr ""
 msgid "Applying suggestions..."
 msgstr ""
 
+msgid "Approval Gate"
+msgstr ""
+
 msgid "Approval Status"
 msgstr ""
 
@@ -4004,6 +4013,15 @@ msgid_plural "ApprovalRuleRemove|Approvals from these members are not revoked."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ApprovalRuleRemove|Remove approval gate"
+msgstr ""
+
+msgid "ApprovalRuleRemove|Remove approval gate?"
+msgstr ""
+
+msgid "ApprovalRuleRemove|You are about to remove the %{name} approval gate. Approval from this service is not revoked."
+msgstr ""
+
 msgid "ApprovalRuleRemove|You are about to remove the %{name} approver group which has %{nMembers}."
 msgstr ""
 
@@ -4017,19 +4035,34 @@ msgid_plural "ApprovalRuleSummary|%{count} approvals required from %{membersCoun
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ApprovalRule|Add approvel gate"
+msgstr ""
+
 msgid "ApprovalRule|Add approvers"
 msgstr ""
 
 msgid "ApprovalRule|Approval rules"
 msgstr ""
 
+msgid "ApprovalRule|Approval service API"
+msgstr ""
+
 msgid "ApprovalRule|Approvals required"
+msgstr ""
+
+msgid "ApprovalRule|Approvel gate"
+msgstr ""
+
+msgid "ApprovalRule|Approver Type"
 msgstr ""
 
 msgid "ApprovalRule|Approvers"
 msgstr ""
 
 msgid "ApprovalRule|Examples: QA, Security."
+msgstr ""
+
+msgid "ApprovalRule|Invoke an external API as part of the approvals"
 msgstr ""
 
 msgid "ApprovalRule|Name"
@@ -4039,6 +4072,9 @@ msgid "ApprovalRule|Rule name"
 msgstr ""
 
 msgid "ApprovalRule|Target branch"
+msgstr ""
+
+msgid "ApprovalRule|Users or groups"
 msgstr ""
 
 msgid "ApprovalStatusTooltip|Adheres to separation of duties"
@@ -11256,7 +11292,7 @@ msgstr ""
 msgid "DiscordService|Discord Notifications"
 msgstr ""
 
-msgid "DiscordService|Receive event notifications in Discord"
+msgid "DiscordService|Send notifications about project events to a Discord channel."
 msgstr ""
 
 msgid "Discover GitLab Geo"
@@ -13011,6 +13047,9 @@ msgid "External storage URL"
 msgstr ""
 
 msgid "External storage authentication token"
+msgstr ""
+
+msgid "External url has already been taken"
 msgstr ""
 
 msgid "ExternalAuthorizationService|Classification label"
@@ -18670,6 +18709,9 @@ msgid "Leave blank for no limit. Once set, existing personal access tokens may b
 msgstr ""
 
 msgid "Leave edit mode? All unsaved changes will be lost."
+msgstr ""
+
+msgid "Leave feedback"
 msgstr ""
 
 msgid "Leave group"
@@ -28298,6 +28340,9 @@ msgstr ""
 msgid "Send notifications about project events to Mattermost channels. %{docs_link}"
 msgstr ""
 
+msgid "Send notifications about project events to a Discord channel. %{docs_link}"
+msgstr ""
+
 msgid "Send report"
 msgstr ""
 
@@ -33349,6 +33394,9 @@ msgid "Unless otherwise agreed to in writing with GitLab, by clicking \"Upload L
 msgstr ""
 
 msgid "Unlimited"
+msgstr ""
+
+msgid "Unlink"
 msgstr ""
 
 msgid "Unlock"

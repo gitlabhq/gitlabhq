@@ -3,7 +3,7 @@ import { mapState, mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
-import getTableHeaders from '../utils';
+import { sortableFields } from '../utils';
 import PackageTypeToken from './tokens/package_type_token.vue';
 
 export default {
@@ -25,7 +25,7 @@ export default {
       filter: (state) => state.filter,
     }),
     sortableFields() {
-      return getTableHeaders(this.isGroupPage);
+      return sortableFields(this.isGroupPage);
     },
   },
   methods: {

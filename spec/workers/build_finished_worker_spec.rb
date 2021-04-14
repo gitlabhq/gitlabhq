@@ -39,18 +39,6 @@ RSpec.describe BuildFinishedWorker do
 
           subject
         end
-
-        context 'when async_add_build_failure_todo disabled' do
-          before do
-            stub_feature_flags(async_add_build_failure_todo: false)
-          end
-
-          it 'does not add a todo' do
-            expect(::Ci::MergeRequests::AddTodoWhenBuildFailsWorker).not_to receive(:perform_async)
-
-            subject
-          end
-        end
       end
 
       context 'when build has a chat' do

@@ -1,6 +1,15 @@
-import { getNewPaginationPage } from '~/packages/list/utils';
+import { SORT_FIELDS } from '~/packages/list/constants';
+import { getNewPaginationPage, sortableFields } from '~/packages/list/utils';
 
 describe('Packages list utils', () => {
+  describe('sortableFields', () => {
+    it('returns the correct list when is a project page', () => {
+      expect(sortableFields()).toEqual(SORT_FIELDS.filter((f) => f.orderBy !== 'project_path'));
+    });
+    it('returns the full list on the group page', () => {
+      expect(sortableFields(true)).toEqual(SORT_FIELDS);
+    });
+  });
   describe('packageTypeDisplay', () => {
     it('returns the current page when total items exceeds pagniation', () => {
       expect(getNewPaginationPage(2, 20, 21)).toBe(2);

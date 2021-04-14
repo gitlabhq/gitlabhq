@@ -1356,9 +1356,15 @@ describe('setActiveIssueDueDate', () => {
   });
 });
 
-describe('setActiveIssueSubscribed', () => {
-  const state = { boardItems: { [mockActiveIssue.id]: mockActiveIssue } };
-  const getters = { activeBoardItem: mockActiveIssue };
+describe('setActiveItemSubscribed', () => {
+  const state = {
+    boardItems: {
+      [mockActiveIssue.id]: mockActiveIssue,
+    },
+    fullPath: 'gitlab-org',
+    issuableType: 'issue',
+  };
+  const getters = { activeBoardItem: mockActiveIssue, isEpicBoard: false };
   const subscribedState = true;
   const input = {
     subscribedState,
@@ -1368,7 +1374,7 @@ describe('setActiveIssueSubscribed', () => {
   it('should commit subscribed status', (done) => {
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
-        issueSetSubscription: {
+        updateIssuableSubscription: {
           issue: {
             subscribed: subscribedState,
           },
@@ -1384,7 +1390,7 @@ describe('setActiveIssueSubscribed', () => {
     };
 
     testAction(
-      actions.setActiveIssueSubscribed,
+      actions.setActiveItemSubscribed,
       input,
       { ...state, ...getters },
       [
@@ -1401,9 +1407,9 @@ describe('setActiveIssueSubscribed', () => {
   it('throws error if fails', async () => {
     jest
       .spyOn(gqlClient, 'mutate')
-      .mockResolvedValue({ data: { issueSetSubscription: { errors: ['failed mutation'] } } });
+      .mockResolvedValue({ data: { updateIssuableSubscription: { errors: ['failed mutation'] } } });
 
-    await expect(actions.setActiveIssueSubscribed({ getters }, input)).rejects.toThrow(Error);
+    await expect(actions.setActiveItemSubscribed({ getters }, input)).rejects.toThrow(Error);
   });
 });
 

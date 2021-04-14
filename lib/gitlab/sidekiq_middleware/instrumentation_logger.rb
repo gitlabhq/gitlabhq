@@ -13,7 +13,6 @@ module Gitlab
           :elasticsearch_calls,
           :elasticsearch_duration_s,
           :elasticsearch_timed_out_count,
-          :worker_data_consistency,
           *::Gitlab::Memory::Instrumentation::KEY_MAPPING.values,
           *::Gitlab::Instrumentation::Redis.known_payload_keys,
           *::Gitlab::Metrics::Subscribers::ActiveRecord.known_payload_keys,

@@ -4,74 +4,88 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Jira Development panel integration **(FREE)**
+# Jira integrations **(FREE)**
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) to GitLab Free in 13.4.
+If your organization uses [Jira](https://www.atlassian.com/software/jira) issues,
+you can [migrate](../../user/project/import/jira.md) your issues from Jira and work
+exclusively in GitLab. However, if you'd like to continue to use Jira, you can
+integrate it with GitLab. GitLab offers two types of Jira integrations, and you
+can use one or both depending on the capabilities you need.
 
-The Jira Development panel integration allows you to reference Jira issues in GitLab, displaying
-activity in the [Development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
-in the issue.
+## Compare Jira integrations
 
-It complements the [GitLab Jira integration](../../user/project/integrations/jira.md). You may choose
-to configure both integrations to take advantage of both sets of features. See a
-[feature comparison](../../user/project/integrations/jira_integrations.md).
-
-## Features
-
-| Your mention of Jira issue ID in GitLab context   | Automated effect in Jira issue                                                                         |
-|---------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| In a merge request                                | Link to the MR is displayed in Development panel.                                                      |
-| In a branch name                                  | Link to the branch is displayed in Development panel.                                                  |
-| In a commit message                               | Link to the commit is displayed in Development panel.                                                  |
-| In a commit message with Jira Smart Commit format | Displays your custom comment or logged time spent and/or performs specified issue transition on merge. |
-
-With this integration, you can access related GitLab merge requests, branches, and commits directly from a Jira issue, reflecting your work in GitLab. From the Development panel, you can open a detailed view and take actions including creating a new merge request from a branch. For more information, see [Usage](#usage).
-
-This integration connects all GitLab projects to projects in the Jira instance in either:
-
-- A top-level group. A top-level GitLab group is one that does not have any parent group itself. All
-  the projects of that top-level group, as well as projects of the top-level group's subgroups nesting
-  down, are connected.
-- A personal namespace, which then connects the projects in that personal namespace to Jira.
-
-This differs from the [Jira integration](../../user/project/integrations/jira.md), where the mapping is between one GitLab project and the entire Jira instance.
-
-## Configuration
+After you set up one or both of these integrations, you can cross-reference activity
+in your GitLab project with any of your projects in Jira.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of how to configure Jira Development panel integration, see [Agile Management - GitLab Jira Development panel integration](https://www.youtube.com/watch?v=VjVTOmMl85M&feature=youtu.be).
+For an overview, see [Agile Management - GitLab-Jira Basic Integration](https://www.youtube.com/watch?v=fWvwkx5_00E&feature=youtu.be).
 
-We recommend that a GitLab group maintainer or group owner, or instance administrator (in the case of
-self-managed GitLab) set up the integration to simplify administration.
+### Per-project Jira integration
 
-| If you use Jira on: | GitLab.com customers need: | GitLab self-managed customers need: |
+This integration connects a single GitLab project to a Jira instance. The Jira instance
+can be hosted by you or in [Atlassian cloud](https://www.atlassian.com/cloud):
+
+- *If your installation uses GitLab.com and Jira Cloud,* use the
+  [GitLab for Jira app](connect-app.md).
+- *If either your Jira or GitLab installation is self-managed,* use the
+  [Jira DVCS Connector](dvcs.md).
+
+### Jira development panel integration
+
+The [Jira development panel integration](development_panel.md)
+connects all GitLab projects under a group or personal namespace. When configured,
+relevant GitLab information, including related branches, commits, and merge requests,
+displays in the [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/).
+
+### Direct feature comparison
+
+| Capability | Jira integration | Jira Development panel integration |
 |-|-|-|
-| [Atlassian cloud](https://www.atlassian.com/cloud) | The [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview) application installed from the [Atlassian Marketplace](https://marketplace.atlassian.com). This offers real-time sync between GitLab and Jira. | The [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview), using a workaround process. See the documentation for [installing the GitLab Jira Cloud application for self-managed instances](connect-app.md#install-the-gitlab-jira-cloud-application-for-self-managed-instances) for more information. |
-| Your own server | The Jira DVCS (distributed version control system) connector. This syncs data hourly. | The [Jira DVCS Connector](dvcs.md). |
+| Mention a Jira issue ID in a GitLab commit or merge request, and a link to the Jira issue is created. | Yes. | No. |
+| Mention a Jira issue ID in GitLab and the Jira issue shows the GitLab issue or merge request. | Yes. A Jira comment with the GitLab issue or MR title links to GitLab. The first mention is also added to the Jira issue under **Web links**. | Yes, in the issue's Development panel. |
+| Mention a Jira issue ID in a GitLab commit message and the Jira issue shows the commit message. | Yes. The entire commit message is displayed in the Jira issue as a comment and under **Web links**. Each message links back to the commit in GitLab. | Yes, in the issue's Development panel and optionally with a custom comment on the Jira issue using Jira [Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html). |
+| Mention a Jira issue ID in a GitLab branch name and the Jira issue shows the branch name. | No. | Yes, in the issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
+| Add Jira time tracking to an issue. | No. | Yes. Time can be specified using Jira Smart Commits. |
+| Use a Git commit or merge request to transition or close a Jira issue. | Yes. Only a single transition type, typically configured to close the issue by setting it to Done. | Yes. Transition to any state using Jira Smart Commits. |
+| Display a list of Jira issues. | Yes. **(PREMIUM)** | No. |
+| Create a Jira issue from a vulnerability or finding. **(ULTIMATE)** | Yes. | No. |
 
-## Usage
+## Authentication in Jira
 
-After the integration is set up on GitLab and Jira, you can:
+The process for configuring Jira depends on whether you host Jira on your own server or on
+[Atlassian cloud](https://www.atlassian.com/cloud):
 
-- Refer to any Jira issue by its ID in GitLab branch names, commit messages, and merge request
-  titles.
-- See the linked branches, commits, and merge requests in Jira issues (merge requests are
-  called "pull requests" in Jira issues).
+- **Jira Server** supports basic authentication. When connecting, a **username and password** are
+  required. Connecting to Jira Server via CAS is not possible. For more information, read
+  how to [set up a user in Jira Server](jira_server_configuration.md).
+- **Jira on Atlassian cloud** supports authentication through an API token. When connecting to Jira on
+  Atlassian cloud, an email and API token are required. For more information, read
+  [set up a user in Jira on Atlassian cloud](jira_cloud_configuration.md).
 
-Jira issue IDs must be formatted in uppercase for the integration to work.
+## Troubleshooting
 
-![Branch, Commit and Pull Requests links on Jira issue](img/jira_dev_panel_jira_setup_3.png)
+If these features do not work as expected, it is likely due to a problem with the way the integration settings were configured.
 
-Click the links to see your GitLab repository data.
+### GitLab is unable to comment on a Jira issue
 
-![GitLab commits details on a Jira issue](img/jira_dev_panel_jira_setup_4.png)
+Make sure that the Jira user you set up for the integration has the
+correct access permission to post comments on a Jira issue and also to transition
+the issue, if you'd like GitLab to also be able to do so.
+Jira issue references and update comments do not work if the GitLab issue tracker is disabled.
 
-![GitLab merge requests details on a Jira issue](img/jira_dev_panel_jira_setup_5.png)
+### GitLab is unable to close a Jira issue
 
-For more information on using Jira Smart Commits to track time against an issue, specify an issue transition, or add a custom comment, see the Atlassian page [Using Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html).
+Make sure the `Transition ID` you set within the Jira settings matches the one
+your project needs to close an issue.
 
-## Limitations
+Make sure that the Jira issue is not already marked as resolved; that is,
+the Jira issue resolution field is not set. (It should not be struck through in
+Jira lists.)
 
-This integration is not supported on GitLab instances under a
-[relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab).
-For example, `http://example.com/gitlab`.
+### CAPTCHA
+
+CAPTCHA may be triggered after several consecutive failed login attempts
+which may lead to a `401 unauthorized` error when testing your Jira integration.
+If CAPTCHA has been triggered, you can't use Jira's REST API to
+authenticate with the Jira site. You need to log in to your Jira instance
+and complete the CAPTCHA.

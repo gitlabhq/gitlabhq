@@ -1,50 +1,39 @@
 import { GlAlert, GlButton, GlModal, GlLink } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import JiraConnectApp from '~/jira_connect/components/app.vue';
 import createStore from '~/jira_connect/store';
 import { SET_ALERT } from '~/jira_connect/store/mutation_types';
-import { persistAlert } from '~/jira_connect/utils';
 import { __ } from '~/locale';
 
-jest.mock('~/jira_connect/api');
+jest.mock('~/jira_connect/utils', () => ({
+  retrieveAlert: jest.fn().mockReturnValue({ message: 'error message' }),
+  getLocation: jest.fn(),
+}));
 
 describe('JiraConnectApp', () => {
   let wrapper;
   let store;
 
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findAlertLink = () => findAlert().find(GlLink);
+  const findAlertLink = () => findAlert().findComponent(GlLink);
   const findGlButton = () => wrapper.findComponent(GlButton);
   const findGlModal = () => wrapper.findComponent(GlModal);
-  const findHeader = () => wrapper.findByTestId('new-jira-connect-ui-heading');
-  const findHeaderText = () => findHeader().text();
 
   const createComponent = ({ provide, mountFn = shallowMount } = {}) => {
     store = createStore();
 
-    wrapper = extendedWrapper(
-      mountFn(JiraConnectApp, {
-        store,
-        provide,
-      }),
-    );
+    wrapper = mountFn(JiraConnectApp, {
+      store,
+      provide,
+    });
   };
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('template', () => {
-    it('renders new UI', () => {
-      createComponent();
-
-      expect(findHeader().exists()).toBe(true);
-      expect(findHeaderText()).toBe('Linked namespaces');
-    });
-
     describe('when user is not logged in', () => {
       beforeEach(() => {
         createComponent({
@@ -128,7 +117,6 @@ describe('JiraConnectApp', () => {
 
       describe('when alert is set in localStoage', () => {
         it('renders alert on mount', () => {
-          persistAlert({ message: 'error message' });
           createComponent();
 
           const alert = findAlert();

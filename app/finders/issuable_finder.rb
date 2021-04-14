@@ -395,8 +395,6 @@ class IssuableFinder
     # We want CE users to be able to say "Issues not assigned to either PersonA nor PersonB"
     if not_params.assignees.present?
       items.not_assigned_to(not_params.assignees)
-    elsif not_params.assignee_id? || not_params.assignee_username? # assignee not found
-      items.none
     else
       items
     end

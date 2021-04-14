@@ -23864,6 +23864,8 @@ CREATE INDEX index_service_desk_enabled_projects_on_id_creator_id_created_at ON 
 
 CREATE INDEX index_services_on_inherit_from_id ON services USING btree (inherit_from_id);
 
+CREATE INDEX index_services_on_project_and_type_where_inherit_null ON services USING btree (project_id, type) WHERE (inherit_from_id IS NULL);
+
 CREATE UNIQUE INDEX index_services_on_project_id_and_type_unique ON services USING btree (project_id, type);
 
 CREATE INDEX index_services_on_template ON services USING btree (template);
@@ -24257,6 +24259,8 @@ CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id_and_note_id ON
 CREATE INDEX index_web_hook_logs_on_created_at_and_web_hook_id ON web_hook_logs USING btree (created_at, web_hook_id);
 
 CREATE INDEX index_web_hook_logs_on_web_hook_id ON web_hook_logs USING btree (web_hook_id);
+
+CREATE INDEX index_web_hook_logs_part_on_web_hook_id ON ONLY web_hook_logs_part_0c5294f417 USING btree (web_hook_id);
 
 CREATE INDEX index_web_hooks_on_group_id ON web_hooks USING btree (group_id) WHERE ((type)::text = 'GroupHook'::text);
 
