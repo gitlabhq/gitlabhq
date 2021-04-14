@@ -278,14 +278,22 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         end
       end
 
-      def update_job(token = job.token, **params)
+      context 'when job does not exist anymore' do
+        it 'returns 403 Forbidden' do
+          update_job(non_existing_record_id, state: 'success', trace: 'BUILD TRACE UPDATED')
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      def update_job(job_id = job.id, token = job.token, **params)
         new_params = params.merge(token: token)
-        put api("/jobs/#{job.id}"), params: new_params
+        put api("/jobs/#{job_id}"), params: new_params
       end
 
       def update_job_after_time(update_interval = 20.minutes, state = 'running')
         travel_to(job.updated_at + update_interval) do
-          update_job(job.token, state: state)
+          update_job(job.id, job.token, state: state)
         end
       end
     end

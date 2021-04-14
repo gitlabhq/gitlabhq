@@ -3169,6 +3169,76 @@ artifacts are restored after [caches](#cache).
 
 [Read more about artifacts](../pipelines/job_artifacts.md).
 
+#### `dependencies`
+
+By default, all `artifacts` from previous stages
+are passed to each job. However, you can use the `dependencies` keyword to
+define a limited list of jobs to fetch artifacts from. You can also set a job to download no artifacts at all.
+
+To use this feature, define `dependencies` in context of the job and pass
+a list of all previous jobs the artifacts should be downloaded from.
+
+You can define jobs from stages that were executed before the current one.
+An error occurs if you define jobs from the current or an upcoming stage.
+
+To prevent a job from downloading artifacts, define an empty array.
+
+When you use `dependencies`, the status of the previous job is not considered.
+If a job fails or it's a manual job that isn't triggered, no error occurs.
+
+The following example defines two jobs with artifacts: `build:osx` and
+`build:linux`. When the `test:osx` is executed, the artifacts from `build:osx`
+are downloaded and extracted in the context of the build. The same happens
+for `test:linux` and artifacts from `build:linux`.
+
+The job `deploy` downloads artifacts from all previous jobs because of
+the [stage](#stages) precedence:
+
+```yaml
+build:osx:
+  stage: build
+  script: make build:osx
+  artifacts:
+    paths:
+      - binaries/
+
+build:linux:
+  stage: build
+  script: make build:linux
+  artifacts:
+    paths:
+      - binaries/
+
+test:osx:
+  stage: test
+  script: make test:osx
+  dependencies:
+    - build:osx
+
+test:linux:
+  stage: test
+  script: make test:linux
+  dependencies:
+    - build:linux
+
+deploy:
+  stage: deploy
+  script: make deploy
+```
+
+##### When a dependent job fails
+
+> Introduced in GitLab 10.3.
+
+If the artifacts of the job that is set as a dependency are
+[expired](#artifactsexpire_in) or
+[erased](../pipelines/job_artifacts.md#erase-job-artifacts), then
+the dependent job fails.
+
+You can ask your administrator to
+[flip this switch](../../administration/job_artifacts.md#validation-for-dependencies)
+and bring back the old behavior.
+
 #### `artifacts:exclude`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15122) in GitLab 13.1
@@ -3716,76 +3786,6 @@ The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing re
 plan report uploads to GitLab as an artifact and displays
 in merge requests. For more information, see
 [Output `terraform plan` information into a merge request](../../user/infrastructure/mr_integration.md).
-
-##### `dependencies`
-
-By default, all `artifacts` from previous stages
-are passed to each job. However, you can use the `dependencies` keyword to
-define a limited list of jobs to fetch artifacts from. You can also set a job to download no artifacts at all.
-
-To use this feature, define `dependencies` in context of the job and pass
-a list of all previous jobs the artifacts should be downloaded from.
-
-You can define jobs from stages that were executed before the current one.
-An error occurs if you define jobs from the current or an upcoming stage.
-
-To prevent a job from downloading artifacts, define an empty array.
-
-When you use `dependencies`, the status of the previous job is not considered.
-If a job fails or it's a manual job that isn't triggered, no error occurs.
-
-The following example defines two jobs with artifacts: `build:osx` and
-`build:linux`. When the `test:osx` is executed, the artifacts from `build:osx`
-are downloaded and extracted in the context of the build. The same happens
-for `test:linux` and artifacts from `build:linux`.
-
-The job `deploy` downloads artifacts from all previous jobs because of
-the [stage](#stages) precedence:
-
-```yaml
-build:osx:
-  stage: build
-  script: make build:osx
-  artifacts:
-    paths:
-      - binaries/
-
-build:linux:
-  stage: build
-  script: make build:linux
-  artifacts:
-    paths:
-      - binaries/
-
-test:osx:
-  stage: test
-  script: make test:osx
-  dependencies:
-    - build:osx
-
-test:linux:
-  stage: test
-  script: make test:linux
-  dependencies:
-    - build:linux
-
-deploy:
-  stage: deploy
-  script: make deploy
-```
-
-###### When a dependent job fails
-
-> Introduced in GitLab 10.3.
-
-If the artifacts of the job that is set as a dependency are
-[expired](#artifactsexpire_in) or
-[erased](../pipelines/job_artifacts.md#erase-job-artifacts), then
-the dependent job fails.
-
-You can ask your administrator to
-[flip this switch](../../administration/job_artifacts.md#validation-for-dependencies)
-and bring back the old behavior.
 
 #### `artifacts:untracked`
 

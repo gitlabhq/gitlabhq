@@ -72,7 +72,7 @@ module Pages
         path: File.join(project.full_path, 'public/')
       }
     rescue LegacyStorageDisabledError => e
-      Gitlab::ErrorTracking.track_exception(e)
+      Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
 
       nil
     end

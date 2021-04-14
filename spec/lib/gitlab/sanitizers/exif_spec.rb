@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Sanitizers::Exif do
         it 'cleans only jpg/tiff images with the correct mime types' do
           expect(sanitizer).not_to receive(:extra_tags)
 
-          expect { subject }.to raise_error(RuntimeError, /File type text\/plain not supported/)
+          expect { subject }.to raise_error(RuntimeError, %r{File type text/plain not supported})
         end
       end
     end

@@ -180,6 +180,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                 it_behaves_like 'authorizes local file'
               end
             end
+
+            context 'when job does not exist anymore' do
+              before do
+                allow(job).to receive(:id).and_return(non_existing_record_id)
+              end
+
+              it 'returns 403 Forbidden' do
+                subject
+
+                expect(response).to have_gitlab_http_status(:forbidden)
+              end
+            end
           end
         end
 
@@ -315,6 +327,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             end
 
             it 'responds with forbidden' do
+              upload_artifacts(file_upload, headers_with_token)
+
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end
+          end
+
+          context 'when job does not exist anymore' do
+            before do
+              allow(job).to receive(:id).and_return(non_existing_record_id)
+            end
+
+            it 'returns 403 Forbidden' do
               upload_artifacts(file_upload, headers_with_token)
 
               expect(response).to have_gitlab_http_status(:forbidden)
@@ -864,6 +888,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             download_artifact
 
             expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when job does not exist anymore' do
+          before do
+            allow(job).to receive(:id).and_return(non_existing_record_id)
+          end
+
+          it 'responds with 403 Forbidden' do
+            get api("/jobs/#{job.id}/artifacts"), params: { token: token }, headers: headers
+
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
 
