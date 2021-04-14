@@ -220,7 +220,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
   describe '.local_warning_message' do
     it 'returns an informational message with rules that can run' do
-      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, changes_size, commit_messages, database, documentation, duplicate_yarn_dependencies, eslint, karma, pajamas, pipeline, prettier, product_intelligence, utility_css')
+      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, changes_size, commit_messages, database, datateam, documentation, duplicate_yarn_dependencies, eslint, karma, pajamas, pipeline, prettier, product_intelligence, utility_css')
     end
   end
 

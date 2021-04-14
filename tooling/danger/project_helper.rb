@@ -8,6 +8,7 @@ module Tooling
         changes_size
         commit_messages
         database
+        datateam
         documentation
         duplicate_yarn_dependencies
         eslint
