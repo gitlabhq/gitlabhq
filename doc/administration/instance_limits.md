@@ -376,7 +376,7 @@ Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37226) in GitLab 13.3.
 
-Job artifacts defined with [`artifacts:reports`](../ci/pipelines/job_artifacts.md#artifactsreports)
+Job artifacts defined with [`artifacts:reports`](../ci/yaml/README.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
 [maximum artifact size setting](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size)

@@ -154,7 +154,6 @@ Rails/SaveBang:
     - 'spec/controllers/boards/issues_controller_spec.rb'
     - 'spec/controllers/sent_notifications_controller_spec.rb'
     - 'spec/controllers/sessions_controller_spec.rb'
-    - 'spec/factories_spec.rb'
     - 'spec/frontend/fixtures/issues.rb'
     - 'spec/frontend/fixtures/merge_requests.rb'
     - 'spec/graphql/mutations/merge_requests/set_locked_spec.rb'

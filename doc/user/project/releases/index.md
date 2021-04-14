@@ -416,14 +416,14 @@ Evidence collection snapshots are visible on the Releases page, along with the t
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.
 
-When you create a release, if [job artifacts](../../../ci/pipelines/job_artifacts.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
+When you create a release, if [job artifacts](../../../ci/yaml/README.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
 
 Although job artifacts normally expire, artifacts included in release evidence do not expire.
 
 To enable job artifact collection you need to specify both:
 
 1. [`artifacts:paths`](../../../ci/yaml/README.md#artifactspaths)
-1. [`artifacts:reports`](../../../ci/pipelines/job_artifacts.md#artifactsreports)
+1. [`artifacts:reports`](../../../ci/yaml/README.md#artifactsreports)
 
 ```yaml
 ruby:

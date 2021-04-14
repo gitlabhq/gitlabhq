@@ -103,7 +103,7 @@ The included template:
   (see [requirements](#requirements)) and scans it for possible vulnerabilities.
 
 GitLab saves the results as a
-[Container Scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportscontainer_scanning)
+[Container Scanning report artifact](../../../ci/yaml/README.md#artifactsreportscontainer_scanning)
 that you can download and analyze later. When downloading, you always receive the most-recent
 artifact.
 

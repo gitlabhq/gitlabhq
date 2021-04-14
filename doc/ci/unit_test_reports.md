@@ -41,7 +41,7 @@ Consider the following workflow:
 ## How it works
 
 First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm.com/support/knowledgecenter/en/SSQ2R2_14.1.0/com.ibm.rsar.analysis.codereview.cobol.doc/topics/cac_useresults_junit.html)
-as [artifacts](pipelines/job_artifacts.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
+as [artifacts](yaml/README.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
 comparing the head and base branch's JUnit report format XML files, where:
 
 - The base branch is the target branch (usually the default branch).
@@ -77,7 +77,7 @@ If a test failed in the project's default branch in the last 14 days, a message 
 ## How to set it up
 
 To enable the Unit test reports in merge requests, you need to add
-[`artifacts:reports:junit`](pipelines/job_artifacts.md#artifactsreportsjunit)
+[`artifacts:reports:junit`](yaml/README.md#artifactsreportsjunit)
 in `.gitlab-ci.yml`, and specify the path(s) of the generated test reports.
 The reports must be `.xml` files, otherwise [GitLab returns an Error 500](https://gitlab.com/gitlab-org/gitlab/-/issues/216575).
 
@@ -344,7 +344,7 @@ When [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/6061) is complet
 
 If JUnit report format XML files contain an `attachment` tag, GitLab parses the attachment.
 
-Upload your screenshots as [artifacts](pipelines/job_artifacts.md#artifactsreportsjunit) to GitLab. The `attachment` tag **must** contain the absolute path to the screenshots you uploaded.
+Upload your screenshots as [artifacts](yaml/README.md#artifactsreportsjunit) to GitLab. The `attachment` tag **must** contain the absolute path to the screenshots you uploaded.
 
 ```xml
 <testcase time="1.00" name="Test">

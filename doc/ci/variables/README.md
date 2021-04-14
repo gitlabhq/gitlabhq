@@ -482,7 +482,7 @@ These variables cannot be used as CI/CD variables to configure a pipeline, but
 they can be used in job scripts.
 
 1. In the job script, save the variable as a `.env` file.
-1. Save the `.env` file as an [`artifacts:reports:dotenv`](../pipelines/job_artifacts.md#artifactsreportsdotenv)
+1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/README.md#artifactsreportsdotenv)
 artifact.
 1. Set a job in a later stage to receive the artifact by using the [`dependencies`](../yaml/README.md#dependencies)
    or the [`needs`](../yaml/README.md#artifact-downloads-with-needs) keywords.

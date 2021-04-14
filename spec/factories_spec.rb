@@ -44,7 +44,7 @@ RSpec.describe 'factories' do
       end
 
       it 'does not raise error when created' do
-        expect { create(factory.name) }.not_to raise_error
+        expect { create(factory.name) }.not_to raise_error # rubocop:disable Rails/SaveBang
       end
 
       factory.definition.defined_traits.map(&:name).each do |trait_name|

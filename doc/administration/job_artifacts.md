@@ -48,7 +48,7 @@ this is done when the job succeeds, but can also be done on failure, or always, 
 [`artifacts:when`](../ci/yaml/README.md#artifactswhen) parameter.
 
 Most artifacts are compressed by GitLab Runner before being sent to the coordinator. The exception to this is
-[reports artifacts](../ci/pipelines/job_artifacts.md#artifactsreports), which are compressed after uploading.
+[reports artifacts](../ci/yaml/README.md#artifactsreports), which are compressed after uploading.
 
 ### Using local storage
 
