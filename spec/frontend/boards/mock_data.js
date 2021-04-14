@@ -3,6 +3,7 @@
 import { keyBy } from 'lodash';
 import Vue from 'vue';
 import '~/boards/models/list';
+import { ListType } from '~/boards/constants';
 import boardsStore from '~/boards/stores/boards_store';
 
 export const boardObj = {
@@ -487,4 +488,39 @@ export const mockBlockedIssue2 = {
   id: '527',
   blockedByCount: 4,
   webUrl: 'http://gdk.test:3000/gitlab-org/my-project-1/-/issues/0',
+};
+
+export const mockMoveIssueParams = {
+  itemId: 1,
+  fromListId: 'gid://gitlab/List/1',
+  toListId: 'gid://gitlab/List/2',
+  moveBeforeId: undefined,
+  moveAfterId: undefined,
+};
+
+export const mockMoveState = {
+  boardLists: {
+    'gid://gitlab/List/1': {
+      listType: ListType.backlog,
+    },
+    'gid://gitlab/List/2': {
+      listType: ListType.closed,
+    },
+  },
+  boardItems: {
+    [mockMoveIssueParams.itemId]: { foo: 'bar' },
+  },
+  boardItemsByListId: {
+    [mockMoveIssueParams.fromListId]: [mockMoveIssueParams.itemId],
+    [mockMoveIssueParams.toListId]: [],
+  },
+};
+
+export const mockMoveData = {
+  reordering: false,
+  shouldClone: false,
+  itemNotInToList: true,
+  originalIndex: 0,
+  originalIssue: { foo: 'bar' },
+  ...mockMoveIssueParams,
 };

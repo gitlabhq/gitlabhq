@@ -394,41 +394,7 @@ describe('Board Store Mutations', () => {
     expectNotImplemented(mutations.RECEIVE_ADD_ISSUE_ERROR);
   });
 
-  describe('MOVE_ISSUE', () => {
-    it('updates boardItemsByListId, moving issue between lists', () => {
-      const listIssues = {
-        'gid://gitlab/List/1': [mockIssue.id, mockIssue2.id],
-        'gid://gitlab/List/2': [],
-      };
-
-      const issues = {
-        1: mockIssue,
-        2: mockIssue2,
-      };
-
-      state = {
-        ...state,
-        boardItemsByListId: listIssues,
-        boardLists: initialBoardListsState,
-        boardItems: issues,
-      };
-
-      mutations.MOVE_ISSUE(state, {
-        originalIssue: mockIssue2,
-        fromListId: 'gid://gitlab/List/1',
-        toListId: 'gid://gitlab/List/2',
-      });
-
-      const updatedListIssues = {
-        'gid://gitlab/List/1': [mockIssue.id],
-        'gid://gitlab/List/2': [mockIssue2.id],
-      };
-
-      expect(state.boardItemsByListId).toEqual(updatedListIssues);
-    });
-  });
-
-  describe('MOVE_ISSUE_SUCCESS', () => {
+  describe('MUTATE_ISSUE_SUCCESS', () => {
     it('updates issue in issues state', () => {
       const issues = {
         436: { id: rawIssue.id },
@@ -439,41 +405,11 @@ describe('Board Store Mutations', () => {
         boardItems: issues,
       };
 
-      mutations.MOVE_ISSUE_SUCCESS(state, {
+      mutations.MUTATE_ISSUE_SUCCESS(state, {
         issue: rawIssue,
       });
 
       expect(state.boardItems).toEqual({ 436: { ...mockIssue, id: 436 } });
-    });
-  });
-
-  describe('MOVE_ISSUE_FAILURE', () => {
-    it('updates boardItemsByListId, reverting moving issue between lists, and sets error message', () => {
-      const listIssues = {
-        'gid://gitlab/List/1': [mockIssue.id],
-        'gid://gitlab/List/2': [mockIssue2.id],
-      };
-
-      state = {
-        ...state,
-        boardItemsByListId: listIssues,
-        boardLists: initialBoardListsState,
-      };
-
-      mutations.MOVE_ISSUE_FAILURE(state, {
-        originalIssue: mockIssue2,
-        fromListId: 'gid://gitlab/List/1',
-        toListId: 'gid://gitlab/List/2',
-        originalIndex: 1,
-      });
-
-      const updatedListIssues = {
-        'gid://gitlab/List/1': [mockIssue.id, mockIssue2.id],
-        'gid://gitlab/List/2': [],
-      };
-
-      expect(state.boardItemsByListId).toEqual(updatedListIssues);
-      expect(state.error).toEqual('An error occurred while moving the issue. Please try again.');
     });
   });
 

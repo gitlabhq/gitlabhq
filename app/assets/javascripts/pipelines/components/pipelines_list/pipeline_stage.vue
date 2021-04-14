@@ -103,7 +103,7 @@ export default {
 <template>
   <gl-dropdown
     ref="dropdown"
-    v-gl-tooltip.hover
+    v-gl-tooltip.hover.ds0
     data-testid="mini-pipeline-graph-dropdown"
     :title="stage.title"
     variant="link"

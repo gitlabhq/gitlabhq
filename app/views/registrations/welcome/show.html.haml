@@ -1,12 +1,16 @@
 - page_title _('Your profile')
 - add_page_specific_style 'page_bundles/signup'
+- gitlab_experience_text = _('To personalize your GitLab experience, we\'d like to know a bit more about you')
 
 .row.gl-flex-grow-1
   .d-flex.gl-flex-direction-column.gl-align-items-center.gl-w-full.gl-p-5
     .edit-profile.login-page.d-flex.flex-column.gl-align-items-center.pt-lg-3
       = render_if_exists "registrations/welcome/progress_bar"
       %h2.gl-text-center= html_escape(_('Welcome to GitLab,%{br_tag}%{name}!')) % { name: html_escape(current_user.first_name), br_tag: '<br/>'.html_safe }
-      %p.gl-text-center= html_escape(_('To personalize your GitLab experience, we\'d like to know a bit more about you. We won\'t share this information with anyone.')) % { br_tag: '<br/>'.html_safe }
+      - if Gitlab.com?
+        %p.gl-text-center= html_escape(_('%{gitlab_experience_text}. We won\'t share this information with anyone.')) % { gitlab_experience_text: gitlab_experience_text }
+      - else
+        %p.gl-text-center= html_escape(_('%{gitlab_experience_text}. Don\'t worry, this information isn\'t shared outside of your self-managed GitLab instance.')) % { gitlab_experience_text: gitlab_experience_text }
       = form_for(current_user, url: users_sign_up_welcome_path, html: { class: 'card gl-w-full! gl-p-5', 'aria-live' => 'assertive' }) do |f|
         .devise-errors
           = render 'devise/shared/error_messages', resource: current_user

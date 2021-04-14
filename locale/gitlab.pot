@@ -539,6 +539,12 @@ msgstr ""
 msgid "%{firstMilestoneName} + %{numberOfOtherMilestones} more"
 msgstr ""
 
+msgid "%{gitlab_experience_text}. Don't worry, this information isn't shared outside of your self-managed GitLab instance."
+msgstr ""
+
+msgid "%{gitlab_experience_text}. We won't share this information with anyone."
+msgstr ""
+
 msgid "%{global_id} is not a valid ID for %{expected_type}."
 msgstr ""
 
@@ -8048,7 +8054,7 @@ msgstr ""
 msgid "ComplianceFrameworks|Invalid format: it should follow the format [PATH].y(a)ml@[GROUP]/[PROJECT]"
 msgstr ""
 
-msgid "ComplianceFrameworks|Once you have created a compliance framework it will appear here."
+msgid "ComplianceFrameworks|Once a compliance framework is added it will appear here."
 msgstr ""
 
 msgid "ComplianceFrameworks|Regulated"
@@ -29056,6 +29062,9 @@ msgstr ""
 msgid "Something went wrong on our end"
 msgstr ""
 
+msgid "Something went wrong on our end while loading the code quality diff."
+msgstr ""
+
 msgid "Something went wrong on our end."
 msgstr ""
 
@@ -31027,7 +31036,7 @@ msgstr ""
 msgid "The merge request can now be merged."
 msgstr ""
 
-msgid "The merge request has been updated, and the number of code quality violations in this file has changed."
+msgid "The merge request has made changes to this file that affect the number of code quality violations in it."
 msgstr ""
 
 msgid "The metric must be one of %{metrics}."
@@ -32576,7 +32585,7 @@ msgstr ""
 msgid "To pass variables to the triggered pipeline, add %{code_start}variables[VARIABLE]=VALUE%{code_end} to the API request."
 msgstr ""
 
-msgid "To personalize your GitLab experience, we'd like to know a bit more about you. We won't share this information with anyone."
+msgid "To personalize your GitLab experience, we'd like to know a bit more about you"
 msgstr ""
 
 msgid "To preserve performance only %{strong_open}%{display_size} of %{real_size}%{strong_close} files are displayed."

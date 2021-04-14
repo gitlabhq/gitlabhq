@@ -38,12 +38,6 @@ module Issues
       user_agent_detail_service.create
       resolve_discussions_with_issue(issue)
 
-      if Feature.disabled?(:issue_perform_after_creation_tasks_async, issue.project, default_enabled: :yaml)
-        Issues::AfterCreateService
-          .new(issue.project, current_user)
-          .execute(issue)
-      end
-
       super
     end
 

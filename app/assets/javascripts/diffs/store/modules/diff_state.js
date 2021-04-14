@@ -30,7 +30,6 @@ export default () => ({
   startVersion: null, // Null unless a target diff is selected for comparison that is not the "base" diff
   diffFiles: [],
   coverageFiles: {},
-  codequalityDiff: {},
   mergeRequestDiffs: [],
   mergeRequestDiff: null,
   diffViewType: getViewTypeFromQueryString() || viewTypeFromCookie || defaultViewType,

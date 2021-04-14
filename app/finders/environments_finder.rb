@@ -9,12 +9,7 @@ class EnvironmentsFinder
     @project, @current_user, @params = project, current_user, params
   end
 
-  # This method will eventually take the place of `#execute` as an
-  # efficient way to get relevant environment entries.
-  # Currently, `#execute` method has a serious technical debt and
-  # we will likely rework on it in the future.
-  # See more https://gitlab.com/gitlab-org/gitlab-foss/issues/63381
-  def find
+  def execute
     environments = project.environments
     environments = by_name(environments)
     environments = by_search(environments)

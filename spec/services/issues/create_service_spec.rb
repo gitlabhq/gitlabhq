@@ -120,30 +120,6 @@ RSpec.describe Issues::CreateService do
         described_class.new(project, user, opts).execute
       end
 
-      context 'with issue_perform_after_creation_tasks_async feature disabled' do
-        before do
-          stub_feature_flags(issue_perform_after_creation_tasks_async: false)
-        end
-
-        it 'calls Issues::AfterCreateService' do
-          expect_next(::Issues::AfterCreateService, project, user).to receive(:execute)
-
-          described_class.new(project, user, opts).execute
-        end
-      end
-
-      context 'with issue_perform_after_creation_tasks_async feature enabled' do
-        before do
-          stub_feature_flags(issue_perform_after_creation_tasks_async: true)
-        end
-
-        it 'does not call Issues::AfterCreateService' do
-          expect(::Issues::AfterCreateService).not_to receive(:new)
-
-          described_class.new(project, user, opts).execute
-        end
-      end
-
       context 'when label belongs to project group' do
         let(:group) { create(:group) }
         let(:group_labels) { create_pair(:group_label, group: group) }

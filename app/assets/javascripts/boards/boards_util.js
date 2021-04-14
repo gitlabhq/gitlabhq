@@ -1,4 +1,4 @@
-import { sortBy } from 'lodash';
+import { sortBy, cloneDeep } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ListType, NOT_FILTER } from './constants';
 
@@ -110,6 +110,37 @@ export function formatIssueInput(issueInput, boardConfig) {
     ...issueInput,
     labelIds: [...labelIds, ...(labels?.map((l) => fullLabelId(l)) || [])],
     assigneeIds: [...assigneeIds, ...(assigneeId ? [fullUserId(assigneeId)] : [])],
+  };
+}
+
+export function shouldCloneCard(fromListType, toListType) {
+  const involvesClosed = fromListType === ListType.closed || toListType === ListType.closed;
+  const involvesBacklog = fromListType === ListType.backlog || toListType === ListType.backlog;
+
+  if (involvesClosed || involvesBacklog) {
+    return false;
+  }
+
+  if (fromListType !== toListType) {
+    return true;
+  }
+
+  return false;
+}
+
+export function getMoveData(state, params) {
+  const { boardItems, boardItemsByListId, boardLists } = state;
+  const { itemId, fromListId, toListId } = params;
+  const fromListType = boardLists[fromListId].listType;
+  const toListType = boardLists[toListId].listType;
+
+  return {
+    reordering: fromListId === toListId,
+    shouldClone: shouldCloneCard(fromListType, toListType),
+    itemNotInToList: !boardItemsByListId[toListId].includes(itemId),
+    originalIssue: cloneDeep(boardItems[itemId]),
+    originalIndex: boardItemsByListId[fromListId].indexOf(itemId),
+    ...params,
   };
 }
 

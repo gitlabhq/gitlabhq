@@ -132,7 +132,7 @@ module Gitlab
 
             EnvironmentsFinder
               .new(project, nil, { name: environment_name })
-              .find
+              .execute
               .first
           end
         end

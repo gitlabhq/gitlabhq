@@ -17,11 +17,9 @@ class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
 
     issuable.create_cross_references!(user)
 
-    if Feature.enabled?(:issue_perform_after_creation_tasks_async, issuable.project, default_enabled: :yaml)
-      Issues::AfterCreateService
-        .new(issuable.project, user)
-        .execute(issuable)
-    end
+    Issues::AfterCreateService
+      .new(issuable.project, user)
+      .execute(issuable)
   end
 
   def issuable_class

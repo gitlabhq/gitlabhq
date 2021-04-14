@@ -1,8 +1,0 @@
----
-name: issue_perform_after_creation_tasks_async
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58588
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/21140
-milestone: '13.11'
-type: development
-group: group::geo
-default_enabled: true

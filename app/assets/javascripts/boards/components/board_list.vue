@@ -190,7 +190,7 @@ export default {
       }
 
       this.moveItem({
-        itemId,
+        itemId: Number(itemId),
         itemIid,
         itemPath,
         fromListId: from.dataset.listId,

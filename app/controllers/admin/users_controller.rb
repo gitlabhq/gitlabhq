@@ -13,7 +13,7 @@ class Admin::UsersController < Admin::ApplicationController
   def index
     @users = User.filter_items(params[:filter]).order_name_asc
     @users = @users.search_with_secondary_emails(params[:search_query]) if params[:search_query].present?
-    @users = @users.includes(:authorized_projects) # rubocop: disable CodeReuse/ActiveRecord
+    @users = users_with_included_associations(@users)
     @users = @users.sort_by_attribute(@sort = params[:sort])
     @users = @users.page(params[:page])
 
@@ -227,6 +227,10 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   protected
+
+  def users_with_included_associations(users)
+    users.includes(:authorized_projects) # rubocop: disable CodeReuse/ActiveRecord
+  end
 
   def admin_making_changes_for_another_user?
     user != current_user

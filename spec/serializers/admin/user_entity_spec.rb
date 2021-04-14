@@ -14,7 +14,7 @@ RSpec.describe Admin::UserEntity do
     subject { entity.as_json&.keys }
 
     it 'exposes correct attributes' do
-      is_expected.to contain_exactly(
+      is_expected.to include(
         :id,
         :name,
         :created_at,

@@ -2,7 +2,7 @@ import { pull, union } from 'lodash';
 import Vue from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
-import { formatIssue, moveItemListHelper } from '../boards_util';
+import { formatIssue } from '../boards_util';
 import { issuableTypes } from '../constants';
 import * as mutationTypes from './mutation_types';
 
@@ -183,38 +183,9 @@ export default {
     notImplemented();
   },
 
-  [mutationTypes.MOVE_ISSUE]: (
-    state,
-    { originalIssue, fromListId, toListId, moveBeforeId, moveAfterId },
-  ) => {
-    const fromList = state.boardLists[fromListId];
-    const toList = state.boardLists[toListId];
-
-    const issue = moveItemListHelper(originalIssue, fromList, toList);
-    Vue.set(state.boardItems, issue.id, issue);
-
-    removeItemFromList({ state, listId: fromListId, itemId: issue.id });
-    addItemToList({ state, listId: toListId, itemId: issue.id, moveBeforeId, moveAfterId });
-  },
-
-  [mutationTypes.MOVE_ISSUE_SUCCESS]: (state, { issue }) => {
+  [mutationTypes.MUTATE_ISSUE_SUCCESS]: (state, { issue }) => {
     const issueId = getIdFromGraphQLId(issue.id);
     Vue.set(state.boardItems, issueId, formatIssue({ ...issue, id: issueId }));
-  },
-
-  [mutationTypes.MOVE_ISSUE_FAILURE]: (
-    state,
-    { originalIssue, fromListId, toListId, originalIndex },
-  ) => {
-    state.error = s__('Boards|An error occurred while moving the issue. Please try again.');
-    Vue.set(state.boardItems, originalIssue.id, originalIssue);
-    removeItemFromList({ state, listId: toListId, itemId: originalIssue.id });
-    addItemToList({
-      state,
-      listId: fromListId,
-      itemId: originalIssue.id,
-      atIndex: originalIndex,
-    });
   },
 
   [mutationTypes.REQUEST_UPDATE_ISSUE]: () => {
