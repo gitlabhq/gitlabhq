@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.8.8 (2021-04-13)
+
+### Security (2 changes)
+
+- Clean only legitimate JPG and TIFF files.
+- Update ruby-saml and rexml gems.
+
+
 ## 13.8.7 (2021-03-31)
 
 ### Security (5 changes)
