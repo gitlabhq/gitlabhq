@@ -22,6 +22,14 @@ type cleaner struct {
 	eof    bool
 }
 
+type FileType int
+
+const (
+	TypeUnknown FileType = iota
+	TypeJPEG
+	TypeTIFF
+)
+
 func NewCleaner(ctx context.Context, stdin io.Reader) (io.ReadCloser, error) {
 	c := &cleaner{ctx: ctx}
 
@@ -100,8 +108,16 @@ func (c *cleaner) startProcessing(stdin io.Reader) error {
 	return nil
 }
 
-func IsExifFile(filename string) bool {
-	filenameMatch := regexp.MustCompile(`(?i)\.(jpg|jpeg|tiff)$`)
+func FileTypeFromSuffix(filename string) FileType {
+	jpegMatch := regexp.MustCompile(`(?i)^[^\n]*\.(jpg|jpeg)$`)
+	if jpegMatch.MatchString(filename) {
+		return TypeJPEG
+	}
 
-	return filenameMatch.MatchString(filename)
+	tiffMatch := regexp.MustCompile(`(?i)^[^\n]*\.tiff$`)
+	if tiffMatch.MatchString(filename) {
+		return TypeTIFF
+	}
+
+	return TypeUnknown
 }

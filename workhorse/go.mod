@@ -29,6 +29,7 @@ require (
 	gitlab.com/gitlab-org/gitaly v1.74.0
 	gitlab.com/gitlab-org/labkit v1.0.0
 	gocloud.dev v0.21.1-0.20201223184910-5094f54ed8bb
+	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
 	golang.org/x/sys v0.0.0-20210110051926-789bb1bd4061 // indirect
