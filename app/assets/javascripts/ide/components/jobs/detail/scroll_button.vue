@@ -55,6 +55,7 @@ export default {
       :disabled="disabled"
       class="btn-scroll btn-transparent btn-blank"
       type="button"
+      :aria-label="tooltipTitle"
       @click="clickedScroll"
     >
       <gl-icon :name="iconName" />

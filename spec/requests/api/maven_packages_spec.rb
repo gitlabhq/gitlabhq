@@ -387,7 +387,7 @@ RSpec.describe API::MavenPackages do
 
           subject
 
-          status = Feature.enabled?(:maven_packages_group_level_improvements) ? :not_found : :forbidden
+          status = Feature.enabled?(:maven_packages_group_level_improvements, default_enabled: :yaml) ? :not_found : :forbidden
           expect(response).to have_gitlab_http_status(status)
         end
 

@@ -13,7 +13,7 @@ module Packages
       return ::Packages::Package.none unless within_group
       return ::Packages::Package.none unless Ability.allowed?(user, :read_group, within_group)
 
-      projects = projects_visible_to_reporters(user, within_group.self_and_descendants.select(:id))
+      projects = projects_visible_to_reporters(user, within_group: within_group)
       ::Packages::Package.for_projects(projects.select(:id))
     end
 
@@ -21,12 +21,16 @@ module Packages
       return ::Project.none unless within_group
       return ::Project.none unless Ability.allowed?(user, :read_group, within_group)
 
-      projects_visible_to_reporters(user, within_group.self_and_descendants.select(:id))
+      projects_visible_to_reporters(user, within_group: within_group)
     end
 
-    def projects_visible_to_reporters(user, namespace_ids)
-      ::Project.in_namespace(namespace_ids)
-               .public_or_visible_to_user(user, ::Gitlab::Access::REPORTER)
+    def projects_visible_to_reporters(user, within_group:)
+      if user.is_a?(DeployToken) && Feature.enabled?(:packages_finder_helper_deploy_token)
+        user.accessible_projects
+      else
+        within_group.all_projects
+                    .public_or_visible_to_user(user, ::Gitlab::Access::REPORTER)
+      end
     end
 
     def package_type

@@ -137,7 +137,6 @@ linters:
       - Style/ParenthesesAroundCondition
       - Style/RedundantParentheses
       - Style/SelfAssignment
-      - Style/Semicolon
       - Style/TernaryParentheses
       - Style/TrailingCommaInHashLiteral
       - Style/UnlessElse

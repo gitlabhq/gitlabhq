@@ -143,8 +143,12 @@ module MergeRequests
         merge_request, merge_request.project, current_user, old_reviewers)
     end
 
-    def create_pipeline_for(merge_request, user)
-      MergeRequests::CreatePipelineService.new(project, user).execute(merge_request)
+    def create_pipeline_for(merge_request, user, async: false)
+      if async
+        MergeRequests::CreatePipelineWorker.perform_async(project.id, user.id, merge_request.id)
+      else
+        MergeRequests::CreatePipelineService.new(project, user).execute(merge_request)
+      end
     end
 
     def abort_auto_merge(merge_request, reason)

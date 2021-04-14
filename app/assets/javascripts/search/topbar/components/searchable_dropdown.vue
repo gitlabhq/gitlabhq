@@ -9,10 +9,13 @@ import {
   GlSkeletonLoader,
   GlTooltipDirective,
 } from '@gitlab/ui';
-
+import { __ } from '~/locale';
 import { ANY_OPTION } from '../constants';
 
 export default {
+  i18n: {
+    clearLabel: __('Clear'),
+  },
   name: 'SearchableDropdown',
   components: {
     GlDropdown,
@@ -96,7 +99,8 @@ export default {
         v-gl-tooltip
         name="clear"
         category="tertiary"
-        :title="__('Clear')"
+        :title="$options.i18n.clearLabel"
+        :aria-label="$options.i18n.clearLabel"
         class="gl-p-0! gl-mr-2"
         @keydown.enter.stop="resetDropdown"
         @click.stop="resetDropdown"

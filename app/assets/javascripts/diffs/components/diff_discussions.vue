@@ -68,6 +68,7 @@ export default {
             }"
             type="button"
             class="js-diff-notes-toggle"
+            :aria-label="__('Show comments')"
             @click="toggleDiscussion({ discussionId: discussion.id })"
           >
             <gl-icon v-if="discussion.expanded" name="collapse" class="collapse-icon" />

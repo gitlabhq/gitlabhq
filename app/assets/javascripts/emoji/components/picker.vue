@@ -105,6 +105,7 @@ export default {
           }"
           type="button"
           class="gl-border-0 gl-border-b-2 gl-border-b-solid gl-flex-fill-1 gl-text-gray-300 gl-pt-3 gl-pb-3 gl-bg-transparent emoji-picker-category-tab"
+          :aria-label="category.name"
           @click="scrollToCategory(category.name)"
         >
           <gl-icon :name="category.icon" :size="12" />

@@ -1227,6 +1227,14 @@
   :weight: 4
   :idempotent:
   :tags: []
+- :name: pipeline_creation:merge_requests_create_pipeline
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 4
+  :idempotent: true
+  :tags: []
 - :name: pipeline_creation:run_pipeline_schedule
   :feature_category: :continuous_integration
   :has_external_dependencies:

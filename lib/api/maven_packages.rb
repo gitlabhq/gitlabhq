@@ -80,7 +80,7 @@ module API
 
       def fetch_package(file_name:, project: nil, group: nil)
         order_by_package_file = false
-        if Feature.enabled?(:maven_packages_group_level_improvements)
+        if Feature.enabled?(:maven_packages_group_level_improvements, default_enabled: :yaml)
           order_by_package_file = file_name.include?(::Packages::Maven::Metadata.filename) &&
                                     !params[:path].include?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
         end

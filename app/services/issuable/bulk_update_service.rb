@@ -15,7 +15,7 @@ module Issuable
       set_update_params(type)
       items = update_issuables(type, ids)
 
-      response_success(payload: { count: items.size })
+      response_success(payload: { count: items.count })
     rescue ArgumentError => e
       response_error(e.message, 422)
     end
@@ -59,17 +59,10 @@ module Issuable
 
     def find_issuables(parent, model_class, ids)
       if parent.is_a?(Project)
-        projects = parent
+        model_class.id_in(ids).of_projects(parent)
       elsif parent.is_a?(Group)
-        projects = parent.all_projects
-      else
-        return
+        model_class.id_in(ids).of_projects(parent.all_projects)
       end
-
-      model_class
-        .id_in(ids)
-        .of_projects(projects)
-        .includes_for_bulk_update
     end
 
     def response_success(message: nil, payload: nil)

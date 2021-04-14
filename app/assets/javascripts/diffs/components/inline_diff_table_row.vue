@@ -146,6 +146,7 @@ export default {
           type="button"
           class="add-diff-note note-button js-add-diff-note-button"
           :disabled="line.commentsDisabled"
+          :aria-label="addCommentTooltip"
           @click="handleCommentButton"
         >
           <gl-icon :size="12" name="comment" />

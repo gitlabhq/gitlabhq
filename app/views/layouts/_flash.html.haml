@@ -1,5 +1,5 @@
 -# We currently only support `alert`, `notice`, `success`, 'toast'
-- icons = {'alert' => 'error', 'notice' => 'information-o', 'success' => 'check-circle'};
+- icons = {'alert' => 'error', 'notice' => 'information-o', 'success' => 'check-circle'}
 .flash-container.flash-container-page.sticky{ data: { qa_selector: 'flash_container' } }
   - flash.each do |key, value|
     - if key == 'toast' && value

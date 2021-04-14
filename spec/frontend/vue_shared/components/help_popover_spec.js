@@ -34,7 +34,6 @@ describe('HelpPopover', () => {
       icon: 'question',
       variant: 'link',
     });
-    expect(findQuestionButton().attributes().tabindex).toBe('0');
   });
 
   it('renders popover that uses the question button as target', () => {

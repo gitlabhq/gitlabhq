@@ -76,7 +76,7 @@ module Packages
 
       def group_level_improvements?
         strong_memoize(:group_level_improvements) do
-          Feature.enabled?(:maven_packages_group_level_improvements)
+          Feature.enabled?(:maven_packages_group_level_improvements, default_enabled: :yaml)
         end
       end
     end

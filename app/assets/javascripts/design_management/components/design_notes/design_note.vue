@@ -1,6 +1,7 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
+import { __ } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -10,6 +11,9 @@ import { findNoteId, extractDesignNoteId } from '../../utils/design_management_u
 import DesignReplyForm from './design_reply_form.vue';
 
 export default {
+  i18n: {
+    editCommentLabel: __('Edit comment'),
+  },
   components: {
     UserAvatarLink,
     TimelineEntryItem,
@@ -113,7 +117,8 @@ export default {
           v-if="isEditButtonVisible"
           v-gl-tooltip
           type="button"
-          :title="__('Edit comment')"
+          :title="$options.i18n.editCommentLabel"
+          :aria-label="$options.i18n.editCommentLabel"
           class="note-action-button js-note-edit btn btn-transparent qa-note-edit-button"
           @click="isEditing = true"
         >
