@@ -41,13 +41,17 @@ export default {
     titleText() {
       const file = this.discussion ? this.discussion.diff_file : this.draft;
 
-      if (file) {
+      if (file?.file_path) {
         return file.file_path;
       }
 
-      return sprintf(__("%{authorsName}'s thread"), {
-        authorsName: this.discussion.notes.find((note) => !note.system).author.name,
-      });
+      if (this.discussion) {
+        return sprintf(__("%{authorsName}'s thread"), {
+          authorsName: this.discussion.notes.find((note) => !note.system).author.name,
+        });
+      }
+
+      return __('Your new comment');
     },
     linePosition() {
       if (this.position?.position_type === IMAGE_DIFF_POSITION_TYPE) {
@@ -94,7 +98,7 @@ export default {
     <span class="review-preview-item-header">
       <gl-icon class="flex-shrink-0" :name="iconName" />
       <span class="bold text-nowrap gl-align-items-center">
-        <span class="review-preview-item-header-text block-truncated">
+        <span class="review-preview-item-header-text block-truncated gl-ml-2">
           {{ titleText }}
         </span>
         <template v-if="showLinePosition">

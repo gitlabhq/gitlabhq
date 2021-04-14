@@ -124,4 +124,16 @@ describe('Batch comments draft preview item component', () => {
       );
     });
   });
+
+  describe('for new comment', () => {
+    it('renders title', () => {
+      createComponent(false, {}, (store) => {
+        store.state.notes.discussions.push({});
+      });
+
+      expect(vm.$el.querySelector('.review-preview-item-header-text').textContent).toContain(
+        'Your new comment',
+      );
+    });
+  });
 });

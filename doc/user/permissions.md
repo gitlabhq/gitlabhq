@@ -108,6 +108,7 @@ The following table depicts the various user permission levels in a project.
 | Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
 | Create/edit [releases](project/releases/index.md)|   |            | ✓           | ✓        | ✓      |
 | Delete [releases](project/releases/index.md)|   |            |            | ✓        | ✓      |
+| Manage merge approval rules (project settings)    |         |            |             | ✓        | ✓      |
 | Create new merge request                          |         |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
 | Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
@@ -300,6 +301,7 @@ group.
 | View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Billing **(FREE SAAS)**                           |       |          |           |            | ✓ (4) |
 | View Usage Quotas **(FREE SAAS)**                      |       |          |           |            | ✓ (4) |
+| Manage [group push rules](group/index.md#group-push-rules) **(PREMIUM)** |         |            |             | ✓        | ✓      |
 | View 2FA status of members                             |       |          |           |            | ✓     |
 | Filter members by 2FA status                           |       |          |           |            | ✓     |
 | Administer project compliance frameworks               |       |          |           |            | ✓     |

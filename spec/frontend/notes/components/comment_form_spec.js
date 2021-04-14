@@ -1,10 +1,11 @@
-import { GlDropdown, GlAlert } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -29,8 +30,10 @@ describe('issue_comment_form component', () => {
 
   const findCloseReopenButton = () => wrapper.findByTestId('close-reopen-button');
   const findTextArea = () => wrapper.findByTestId('comment-field');
+  const findAddToReviewButton = () => wrapper.findByTestId('add-to-review-button');
+  const findAddCommentNowButton = () => wrapper.findByTestId('add-comment-now-button');
   const findConfidentialNoteCheckbox = () => wrapper.findByTestId('confidential-note-checkbox');
-  const findCommentGlDropdown = () => wrapper.find(GlDropdown);
+  const findCommentGlDropdown = () => wrapper.findByTestId('comment-button');
   const findCommentButton = () => findCommentGlDropdown().find('button');
   const findErrorAlerts = () => wrapper.findAllComponents(GlAlert).wrappers;
 
@@ -580,6 +583,66 @@ describe('issue_comment_form component', () => {
 
     it('should not render submission form', () => {
       expect(findTextArea().exists()).toBe(false);
+    });
+  });
+
+  describe('with batchComments in store', () => {
+    beforeEach(() => {
+      store.registerModule('batchComments', batchComments());
+    });
+
+    describe('add to review and comment now buttons', () => {
+      it('when no drafts exist, should not render', () => {
+        mountComponent();
+
+        expect(findCommentGlDropdown().exists()).toBe(true);
+        expect(findAddToReviewButton().exists()).toBe(false);
+        expect(findAddCommentNowButton().exists()).toBe(false);
+      });
+
+      describe('when drafts exist', () => {
+        beforeEach(() => {
+          store.state.batchComments.drafts = [{ note: 'A' }];
+        });
+
+        it('should render', () => {
+          mountComponent();
+
+          expect(findCommentGlDropdown().exists()).toBe(false);
+          expect(findAddToReviewButton().exists()).toBe(true);
+          expect(findAddCommentNowButton().exists()).toBe(true);
+        });
+
+        it('clicking `add to review`, should call draft endpoint, set `isDraft` true', () => {
+          mountComponent({ mountFunction: mount, initialData: { note: 'a draft note' } });
+
+          jest.spyOn(store, 'dispatch').mockResolvedValue();
+          findAddToReviewButton().trigger('click');
+
+          expect(store.dispatch).toHaveBeenCalledWith(
+            'saveNote',
+            expect.objectContaining({
+              endpoint: notesDataMock.draftsPath,
+              isDraft: true,
+            }),
+          );
+        });
+
+        it('clicking `add comment now`, should call note endpoint, set `isDraft` false ', () => {
+          mountComponent({ mountFunction: mount, initialData: { note: 'a comment' } });
+
+          jest.spyOn(store, 'dispatch').mockResolvedValue();
+          findAddCommentNowButton().trigger('click');
+
+          expect(store.dispatch).toHaveBeenCalledWith(
+            'saveNote',
+            expect.objectContaining({
+              endpoint: noteableDataMock.create_note_path,
+              isDraft: false,
+            }),
+          );
+        });
+      });
     });
   });
 });

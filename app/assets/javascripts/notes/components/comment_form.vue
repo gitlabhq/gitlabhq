@@ -84,6 +84,7 @@ export default {
       'getNoteableDataByProp',
       'getNotesData',
       'openState',
+      'hasDrafts',
     ]),
     ...mapState(['isToggleStateButtonLoading']),
     isNoteTypeComment() {
@@ -171,6 +172,9 @@ export default {
     endpoint() {
       return this.getNoteableData.create_note_path;
     },
+    draftEndpoint() {
+      return this.getNotesData.draftsPath;
+    },
     issuableTypeTitle() {
       return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
         ? this.$options.i18n.mergeRequest
@@ -214,12 +218,15 @@ export default {
         this.errors = [this.$options.i18n.GENERIC_UNSUBMITTABLE_NETWORK];
       }
     },
-    handleSave(withIssueAction) {
+    handleSaveDraft() {
+      this.handleSave({ isDraft: true });
+    },
+    handleSave({ withIssueAction = false, isDraft = false } = {}) {
       this.errors = [];
 
       if (this.note.length) {
         const noteData = {
-          endpoint: this.endpoint,
+          endpoint: isDraft ? this.draftEndpoint : this.endpoint,
           data: {
             note: {
               noteable_type: this.noteableType,
@@ -229,6 +236,7 @@ export default {
             },
             merge_request_diff_head_sha: this.getNoteableData.diff_head_sha,
           },
+          isDraft,
         };
 
         if (this.noteType === constants.DISCUSSION) {
@@ -392,62 +400,82 @@ export default {
               </markdown-field>
             </comment-field-layout>
             <div class="note-form-actions">
-              <gl-form-checkbox
-                v-if="confidentialNotesEnabled && canSetConfidential"
-                v-model="noteIsConfidential"
-                class="gl-mb-6"
-                data-testid="confidential-note-checkbox"
-              >
-                {{ $options.i18n.confidential }}
-                <gl-icon
-                  v-gl-tooltip:tooltipcontainer.bottom
-                  name="question"
-                  :size="16"
-                  :title="$options.i18n.confidentialVisibility"
-                  class="gl-text-gray-500"
-                />
-              </gl-form-checkbox>
-              <gl-dropdown
-                split
-                :text="commentButtonTitle"
-                class="gl-mr-3 js-comment-button js-comment-submit-button comment-type-dropdown"
-                category="primary"
-                variant="confirm"
-                :disabled="disableSubmitButton"
-                data-testid="comment-button"
-                data-qa-selector="comment_button"
-                :data-track-label="trackingLabel"
-                data-track-event="click_button"
-                @click="handleSave()"
-              >
-                <gl-dropdown-item
-                  is-check-item
-                  :is-checked="isNoteTypeComment"
-                  :selected="isNoteTypeComment"
-                  @click="setNoteTypeToComment"
+              <template v-if="hasDrafts">
+                <gl-button
+                  :disabled="disableSubmitButton"
+                  data-testid="add-to-review-button"
+                  type="submit"
+                  category="primary"
+                  variant="success"
+                  @click.prevent="handleSaveDraft()"
+                  >{{ __('Add to review') }}</gl-button
                 >
-                  <strong>{{ $options.i18n.submitButton.comment }}</strong>
-                  <p class="gl-m-0">{{ commentDescription }}</p>
-                </gl-dropdown-item>
-                <gl-dropdown-divider />
-                <gl-dropdown-item
-                  is-check-item
-                  :is-checked="isNoteTypeDiscussion"
-                  :selected="isNoteTypeDiscussion"
-                  data-qa-selector="discussion_menu_item"
-                  @click="setNoteTypeToDiscussion"
+                <gl-button
+                  :disabled="disableSubmitButton"
+                  data-testid="add-comment-now-button"
+                  category="secondary"
+                  @click.prevent="handleSave()"
+                  >{{ __('Add comment now') }}</gl-button
                 >
-                  <strong>{{ $options.i18n.submitButton.startThread }}</strong>
-                  <p class="gl-m-0">{{ startDiscussionDescription }}</p>
-                </gl-dropdown-item>
-              </gl-dropdown>
+              </template>
+              <template v-else>
+                <gl-form-checkbox
+                  v-if="confidentialNotesEnabled && canSetConfidential"
+                  v-model="noteIsConfidential"
+                  class="gl-mb-6"
+                  data-testid="confidential-note-checkbox"
+                >
+                  {{ $options.i18n.confidential }}
+                  <gl-icon
+                    v-gl-tooltip:tooltipcontainer.bottom
+                    name="question"
+                    :size="16"
+                    :title="$options.i18n.confidentialVisibility"
+                    class="gl-text-gray-500"
+                  />
+                </gl-form-checkbox>
+                <gl-dropdown
+                  split
+                  :text="commentButtonTitle"
+                  class="gl-mr-3 js-comment-button js-comment-submit-button comment-type-dropdown"
+                  category="primary"
+                  variant="confirm"
+                  :disabled="disableSubmitButton"
+                  data-testid="comment-button"
+                  data-qa-selector="comment_button"
+                  :data-track-label="trackingLabel"
+                  data-track-event="click_button"
+                  @click="handleSave()"
+                >
+                  <gl-dropdown-item
+                    is-check-item
+                    :is-checked="isNoteTypeComment"
+                    :selected="isNoteTypeComment"
+                    @click="setNoteTypeToComment"
+                  >
+                    <strong>{{ $options.i18n.submitButton.comment }}</strong>
+                    <p class="gl-m-0">{{ commentDescription }}</p>
+                  </gl-dropdown-item>
+                  <gl-dropdown-divider />
+                  <gl-dropdown-item
+                    is-check-item
+                    :is-checked="isNoteTypeDiscussion"
+                    :selected="isNoteTypeDiscussion"
+                    data-qa-selector="discussion_menu_item"
+                    @click="setNoteTypeToDiscussion"
+                  >
+                    <strong>{{ $options.i18n.submitButton.startThread }}</strong>
+                    <p class="gl-m-0">{{ startDiscussionDescription }}</p>
+                  </gl-dropdown-item>
+                </gl-dropdown>
+              </template>
               <gl-button
                 v-if="canToggleIssueState"
                 :loading="isToggleStateButtonLoading"
                 :class="[actionButtonClassNames, 'btn-comment btn-comment-and-close']"
                 :disabled="isSubmitting"
                 data-testid="close-reopen-button"
-                @click="handleSave(true)"
+                @click="handleSave({ withIssueAction: true })"
                 >{{ issueActionButtonTitle }}</gl-button
               >
             </div>

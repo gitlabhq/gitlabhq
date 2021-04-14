@@ -6,6 +6,7 @@ export const notesDataMock = {
   markdownDocsPath: '/help/user/markdown',
   newSessionPath: '/users/sign_in?redirect_to_referer=yes',
   notesPath: '/gitlab-org/gitlab-foss/noteable/issue/98/notes',
+  draftsPath: '/flightjs/flight/-/merge_requests/4/drafts',
   quickActionsDocsPath: '/help/user/project/quick_actions',
   registerPath: '/users/sign_up?redirect_to_referer=yes',
   prerenderedNotesCount: 1,
@@ -1270,3 +1271,12 @@ export const batchSuggestionsInfoMock = [
     discussionId: 'c003',
   },
 ];
+
+export const draftComments = [
+  { id: 7, note: 'test draft note' },
+  { id: 9, note: 'draft note 2' },
+];
+
+export const draftReply = { id: 8, note: 'draft reply', discussion_id: 1 };
+
+export const draftDiffDiscussion = { id: 6, note: 'draft diff discussion', line_code: 1 };

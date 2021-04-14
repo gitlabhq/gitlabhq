@@ -28,7 +28,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
     end
 
     it 'adds draft note' do
-      write_comment
+      write_diff_comment
 
       expect(find('.draft-note-component')).to have_content('Line is wrong')
 
@@ -38,7 +38,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
     end
 
     it 'publishes review' do
-      write_comment
+      write_diff_comment
 
       page.within('.review-bar-content') do
         click_button 'Submit review'
@@ -52,7 +52,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
     end
 
     it 'publishes single comment' do
-      write_comment
+      write_diff_comment
 
       click_button 'Add comment now'
 
@@ -64,7 +64,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
     end
 
     it 'deletes draft note' do
-      write_comment
+      write_diff_comment
 
       accept_alert { find('.js-note-delete').click }
 
@@ -74,21 +74,57 @@ RSpec.describe 'Merge request > Batch comments', :js do
     end
 
     it 'edits draft note' do
-      write_comment
+      write_diff_comment
 
       find('.js-note-edit').click
 
       # make sure comment form is in view
       execute_script("window.scrollBy(0, 200)")
 
-      page.within('.js-discussion-note-form') do
-        fill_in('note_note', with: 'Testing update')
-        click_button('Save comment')
-      end
-
-      wait_for_requests
+      write_comment(text: 'Testing update', button_text: 'Save comment')
 
       expect(page).to have_selector('.draft-note-component', text: 'Testing update')
+    end
+
+    context 'adding single comment to review' do
+      before do
+        visit_overview
+      end
+
+      it 'at first does not show `Add to review` and `Add comment now` buttons' do
+        expect(page).to have_no_button('Add to review')
+        expect(page).to have_no_button('Add comment now')
+      end
+
+      context 'when review has started' do
+        before do
+          visit_diffs
+
+          write_diff_comment
+
+          visit_overview
+        end
+
+        it 'can add comment to review' do
+          write_comment(selector: '.js-main-target-form', field: 'note-body', text: 'Its a draft comment', button_text: 'Add to review')
+
+          expect(page).to have_selector('.draft-note-component', text: 'Its a draft comment')
+
+          click_button('Pending comments')
+
+          expect(page).to have_text('2 pending comments')
+        end
+
+        it 'can add comment right away' do
+          write_comment(selector: '.js-main-target-form', field: 'note-body', text: 'Its a regular comment', button_text: 'Add comment now')
+
+          expect(page).to have_selector('.note:not(.draft-note)', text: 'Its a regular comment')
+
+          click_button('Pending comments')
+
+          expect(page).to have_text('1 pending comment')
+        end
+      end
     end
 
     context 'in parallel diff' do
@@ -197,46 +233,51 @@ RSpec.describe 'Merge request > Batch comments', :js do
     wait_for_requests
   end
 
-  def write_comment(button_text: 'Start a review', text: 'Line is wrong')
-    click_diff_line(find("[id='#{sample_compare.changes[0][:line_code]}']"))
-
-    page.within('.js-discussion-note-form') do
-      fill_in('note_note', with: text)
-      click_button(button_text)
-    end
+  def visit_overview
+    visit project_merge_request_path(merge_request.project, merge_request)
 
     wait_for_requests
   end
 
-  def write_parallel_comment(line, button_text: 'Start a review', text: 'Line is wrong')
+  def write_diff_comment(**params)
+    click_diff_line(find("[id='#{sample_compare.changes[0][:line_code]}']"))
+
+    write_comment(**params)
+  end
+
+  def write_parallel_comment(line, **params)
     find("td[id='#{line}']").hover
     find(".is-over button").click
 
-    page.within("form[data-line-code='#{line}']") do
-      fill_in('note_note', with: text)
+    write_comment(selector: "form[data-line-code='#{line}']", **params)
+  end
+
+  def write_comment(selector: '.js-discussion-note-form', field: 'note_note', button_text: 'Start a review', text: 'Line is wrong')
+    page.within(selector) do
+      fill_in(field, with: text)
       click_button(button_text)
     end
 
     wait_for_requests
   end
-end
 
-def write_reply_to_discussion(button_text: 'Start a review', text: 'Line is wrong', resolve: false, unresolve: false)
-  page.within(first('.diff-files-holder .discussion-reply-holder')) do
-    find_field('Reply…', match: :first).click
+  def write_reply_to_discussion(button_text: 'Start a review', text: 'Line is wrong', resolve: false, unresolve: false)
+    page.within(first('.diff-files-holder .discussion-reply-holder')) do
+      find_field('Reply…', match: :first).click
 
-    fill_in('note_note', with: text)
+      fill_in('note_note', with: text)
 
-    if resolve
-      page.check('Resolve thread')
+      if resolve
+        page.check('Resolve thread')
+      end
+
+      if unresolve
+        page.check('Unresolve thread')
+      end
+
+      click_button(button_text)
     end
 
-    if unresolve
-      page.check('Unresolve thread')
-    end
-
-    click_button(button_text)
+    wait_for_requests
   end
-
-  wait_for_requests
 end

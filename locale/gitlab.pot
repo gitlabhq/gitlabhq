@@ -23591,7 +23591,7 @@ msgstr ""
 msgid "Please enter a valid number"
 msgstr ""
 
-msgid "Please enter or upload a license."
+msgid "Please enter or upload a valid license."
 msgstr ""
 
 msgid "Please fill in a descriptive name for your group."
@@ -31872,6 +31872,9 @@ msgstr ""
 msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 
+msgid "This feature is part of your GitLab Ultimate trial."
+msgstr ""
+
 msgid "This feature requires local storage to be enabled"
 msgstr ""
 
@@ -36301,6 +36304,9 @@ msgid "Your new %{type}"
 msgstr ""
 
 msgid "Your new SCIM token"
+msgstr ""
+
+msgid "Your new comment"
 msgstr ""
 
 msgid "Your new personal access token has been created."

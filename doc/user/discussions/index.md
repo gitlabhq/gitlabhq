@@ -334,22 +334,28 @@ comment itself.
 
 ![Unresolve status](img/mr_review_unresolve.png)
 
+### Adding a new comment
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8225) in GitLab 13.10.
+
+If you have a review in progress, you will be presented with the option to **Add to review**:
+
+![New thread](img/mr_review_new_comment_v13_11.png)
+
 ### Submitting a review
 
 If you have any comments that have not been submitted, a bar displays at the
 bottom of the screen with two buttons:
 
-- **Discard**: Discards all comments that have not been submitted.
-- **Finish review**: Opens a list of comments ready to be submitted for review.
-  Clicking **Submit review** publishes all comments. Any quick actions
-  submitted are performed at this time.
+- **Pending comments**: Opens a list of comments ready to be submitted for review.
+- **Submit review**: Publishes all comments. Any quick actions submitted are performed at this time.
 
 Alternatively, to finish the entire review from a pending comment:
 
-- Click the **Finish review** button on the comment.
+- Click the **Submit review** button on the comment.
 - Use the `/submit_review` [quick action](../project/quick_actions.md) in the text of non-review comment.
 
-![Review submission](img/review_preview.png)
+![Review submission](img/review_preview_v13_11.png)
 
 Submitting the review sends a single email to every notifiable user of the
 merge request with all the comments associated to it.

@@ -2,7 +2,23 @@ import { flattenDeep, clone } from 'lodash';
 import * as constants from '../constants';
 import { collapseSystemNotes } from './collapse_utils';
 
-export const discussions = (state) => {
+const getDraftComments = (state) => {
+  if (!state.batchComments) {
+    return [];
+  }
+
+  return state.batchComments.drafts
+    .filter((draft) => !draft.line_code && !draft.discussion_id)
+    .map((x) => ({
+      ...x,
+      // Treat a top-level draft note as individual_note so it's not included in
+      // expand/collapse threads
+      individual_note: true,
+    }))
+    .sort((a, b) => a.id - b.id);
+};
+
+export const discussions = (state, getters, rootState) => {
   let discussionsInState = clone(state.discussions);
   // NOTE: not testing bc will be removed when backend is finished.
 
@@ -22,11 +38,15 @@ export const discussions = (state) => {
       .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
   }
 
+  discussionsInState = collapseSystemNotes(discussionsInState);
+
+  discussionsInState = discussionsInState.concat(getDraftComments(rootState));
+
   if (state.discussionSortOrder === constants.DESC) {
     discussionsInState = discussionsInState.reverse();
   }
 
-  return collapseSystemNotes(discussionsInState);
+  return discussionsInState;
 };
 
 export const convertedDisscussionIds = (state) => state.convertedDisscussionIds;
@@ -257,3 +277,6 @@ export const commentsDisabled = (state) => state.commentsDisabled;
 
 export const suggestionsCount = (state, getters) =>
   Object.values(getters.notesById).filter((n) => n.suggestions.length).length;
+
+export const hasDrafts = (state, getters, rootState, rootGetters) =>
+  Boolean(rootGetters['batchComments/hasDrafts']);
