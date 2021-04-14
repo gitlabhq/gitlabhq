@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.10.3 (2021-04-13)
+
+### Security (3 changes)
+
+- Check image content type before running exiftool in workhorse.
+- Clean only legitimate JPG and TIFF files.
+- Update ruby-saml and rexml gems.
+
+
 ## 13.10.2 (2021-04-01)
 
 ### Fixed (1 change)

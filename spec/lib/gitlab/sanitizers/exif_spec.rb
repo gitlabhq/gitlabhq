@@ -4,6 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Sanitizers::Exif do
   let(:sanitizer) { described_class.new }
+  let(:mime_type) { 'image/jpeg' }
+
+  before do
+    allow(Gitlab::Utils::MimeType).to receive(:from_string).and_return(mime_type)
+  end
 
   describe '#batch_clean' do
     context 'with image uploads' do
@@ -43,7 +48,7 @@ RSpec.describe Gitlab::Sanitizers::Exif do
       end
     end
 
-    it 'filters only jpg/tiff images' do
+    it 'filters only jpg/tiff images by filename' do
       create(:upload, path: 'filename.jpg')
       create(:upload, path: 'filename.jpeg')
       create(:upload, path: 'filename.JPG')
@@ -53,12 +58,16 @@ RSpec.describe Gitlab::Sanitizers::Exif do
       create(:upload, path: 'filename.txt')
 
       expect(sanitizer).to receive(:clean).exactly(5).times
+
       sanitizer.batch_clean
     end
   end
 
   describe '#clean' do
     let(:uploader) { create(:upload, :with_file, :issuable_upload).retrieve_uploader }
+    let(:dry_run) { false }
+
+    subject { sanitizer.clean(uploader, dry_run: dry_run) }
 
     context "no dry run" do
       it "removes exif from the image" do
@@ -76,7 +85,7 @@ RSpec.describe Gitlab::Sanitizers::Exif do
           [expected_args, 0]
         end
 
-        sanitizer.clean(uploader, dry_run: false)
+        subject
 
         expect(uploader.upload.id).not_to eq(original_upload.id)
         expect(uploader.upload.path).to eq(original_upload.path)
@@ -89,23 +98,35 @@ RSpec.describe Gitlab::Sanitizers::Exif do
         expect(sanitizer).not_to receive(:exec_remove_exif!)
         expect(uploader).not_to receive(:store!)
 
-        sanitizer.clean(uploader, dry_run: false)
+        subject
       end
 
       it "raises an error if the exiftool fails with an error" do
         expect(Gitlab::Popen).to receive(:popen).and_return(["error", 1])
 
-        expect { sanitizer.clean(uploader, dry_run: false) }.to raise_exception(RuntimeError, "failed to get exif tags: error")
+        expect { subject }.to raise_exception(RuntimeError, "failed to get exif tags: error")
+      end
+
+      context 'for files that do not have the correct MIME type' do
+        let(:mime_type) { 'text/plain' }
+
+        it 'cleans only jpg/tiff images with the correct mime types' do
+          expect(sanitizer).not_to receive(:extra_tags)
+
+          expect { subject }.to raise_error(RuntimeError, /File type text\/plain not supported/)
+        end
       end
     end
 
     context "dry run" do
+      let(:dry_run) { true }
+
       it "doesn't change the image" do
         expect(sanitizer).to receive(:extra_tags).and_return({ 'foo' => 'bar' })
         expect(sanitizer).not_to receive(:exec_remove_exif!)
         expect(uploader).not_to receive(:store!)
 
-        sanitizer.clean(uploader, dry_run: true)
+        subject
       end
     end
   end
@@ -119,7 +140,7 @@ RSpec.describe Gitlab::Sanitizers::Exif do
 
       expect(Gitlab::Popen).to receive(:popen).and_return([tags, 0])
 
-      expect(sanitizer.extra_tags('filename')).not_to be_empty
+      expect(sanitizer.send(:extra_tags, 'filename')).not_to be_empty
     end
 
     it "returns an empty list for file with only whitelisted and ignored tags" do
@@ -130,7 +151,7 @@ RSpec.describe Gitlab::Sanitizers::Exif do
 
       expect(Gitlab::Popen).to receive(:popen).and_return([tags, 0])
 
-      expect(sanitizer.extra_tags('some file')).to be_empty
+      expect(sanitizer.send(:extra_tags, 'some file')).to be_empty
     end
   end
 end
