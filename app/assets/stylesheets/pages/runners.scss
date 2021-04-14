@@ -11,17 +11,3 @@
     background: $blue-400;
   }
 }
-
-.runner-status {
-  &.runner-status-online {
-    background-color: $green-600;
-  }
-
-  &.runner-status-offline {
-    background-color: $gray-darkest;
-  }
-
-  &.runner-status-paused {
-    background-color: $red-500;
-  }
-}

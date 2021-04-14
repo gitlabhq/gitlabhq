@@ -1,10 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
-import { LIST_INTRO_TEXT, LIST_TITLE_TEXT } from '~/packages/list//constants';
-import PackageTitle from '~/packages/list/components/package_title.vue';
+import component from '~/packages_and_registries/infrastructure_registry/components/infrastructure_title.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
-describe('PackageTitle', () => {
+describe('Infrastructure Title', () => {
   let wrapper;
   let store;
 
@@ -12,7 +11,7 @@ describe('PackageTitle', () => {
   const findMetadataItem = () => wrapper.find(MetadataItem);
 
   const mountComponent = (propsData = { helpUrl: 'foo' }) => {
-    wrapper = shallowMount(PackageTitle, {
+    wrapper = shallowMount(component, {
       store,
       propsData,
       stubs: {
@@ -37,8 +36,13 @@ describe('PackageTitle', () => {
       mountComponent();
 
       expect(findTitleArea().props()).toMatchObject({
-        title: LIST_TITLE_TEXT,
-        infoMessages: [{ text: LIST_INTRO_TEXT, link: 'foo' }],
+        title: 'Infrastructure Registry',
+        infoMessages: [
+          {
+            text: 'Publish and share your modules. %{docLinkStart}More information%{docLinkEnd}',
+            link: 'foo',
+          },
+        ],
       });
     });
   });
@@ -47,9 +51,9 @@ describe('PackageTitle', () => {
     count        | exist    | text
     ${null}      | ${false} | ${''}
     ${undefined} | ${false} | ${''}
-    ${0}         | ${true}  | ${'0 Packages'}
-    ${1}         | ${true}  | ${'1 Package'}
-    ${2}         | ${true}  | ${'2 Packages'}
+    ${0}         | ${true}  | ${'0 Modules'}
+    ${1}         | ${true}  | ${'1 Module'}
+    ${2}         | ${true}  | ${'2 Modules'}
   `('when count is $count metadata item', ({ count, exist, text }) => {
     beforeEach(() => {
       mountComponent({ count, helpUrl: 'foo' });
@@ -62,7 +66,7 @@ describe('PackageTitle', () => {
     if (exist) {
       it('has the correct props', () => {
         expect(findMetadataItem().props()).toMatchObject({
-          icon: 'package',
+          icon: 'infrastructure-registry',
           text,
         });
       });

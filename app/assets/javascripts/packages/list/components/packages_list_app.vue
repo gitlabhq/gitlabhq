@@ -8,8 +8,6 @@ import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '../constants';
-import PackageSearch from './package_search.vue';
-import PackageTitle from './package_title.vue';
 import PackageList from './packages_list.vue';
 
 export default {
@@ -18,8 +16,38 @@ export default {
     GlLink,
     GlSprintf,
     PackageList,
-    PackageTitle,
-    PackageSearch,
+    PackageTitle: () =>
+      import(/* webpackChunkName: 'package_registry_components' */ './package_title.vue'),
+    PackageSearch: () =>
+      import(/* webpackChunkName: 'package_registry_components' */ './package_search.vue'),
+    InfrastructureTitle: () =>
+      import(
+        /* webpackChunkName: 'infrastructure_registry_components' */ '~/packages_and_registries/infrastructure_registry/components/infrastructure_title.vue'
+      ),
+    InfrastructureSearch: () =>
+      import(
+        /* webpackChunkName: 'infrastructure_registry_components' */ '~/packages_and_registries/infrastructure_registry/components/infrastructure_search.vue'
+      ),
+  },
+  inject: {
+    titleComponent: {
+      from: 'titleComponent',
+      default: 'PackageTitle',
+    },
+    searchComponent: {
+      from: 'searchComponent',
+      default: 'PackageSearch',
+    },
+    emptyPageTitle: {
+      from: 'emptyPageTitle',
+      default: s__('PackageRegistry|There are no packages yet'),
+    },
+    noResultsText: {
+      from: 'noResultsText',
+      default: s__(
+        'PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab.',
+      ),
+    },
   },
   computed: {
     ...mapState({
@@ -38,7 +66,7 @@ export default {
 
     emptyStateTitle() {
       return this.emptySearch
-        ? s__('PackageRegistry|There are no packages yet')
+        ? this.emptyPageTitle
         : s__('PackageRegistry|Sorry, your filter produced no results');
     },
   },
@@ -77,24 +105,21 @@ export default {
   },
   i18n: {
     widenFilters: s__('PackageRegistry|To widen your search, change or remove the filters above.'),
-    noResults: s__(
-      'PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab.',
-    ),
   },
 };
 </script>
 
 <template>
   <div>
-    <package-title :package-help-url="packageHelpUrl" :packages-count="packagesCount" />
-    <package-search @update="requestPackagesList" />
+    <component :is="titleComponent" :help-url="packageHelpUrl" :count="packagesCount" />
+    <component :is="searchComponent" @update="requestPackagesList" />
 
     <package-list @page:changed="onPageChanged" @package:delete="onPackageDeleteRequest">
       <template #empty-state>
         <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
           <template #description>
             <gl-sprintf v-if="!emptySearch" :message="$options.i18n.widenFilters" />
-            <gl-sprintf v-else :message="$options.i18n.noResults">
+            <gl-sprintf v-else :message="noResultsText">
               <template #noPackagesLink="{ content }">
                 <gl-link :href="emptyListHelpUrl" target="_blank">{{ content }}</gl-link>
               </template>

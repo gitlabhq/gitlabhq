@@ -2377,7 +2377,7 @@
   :idempotent:
   :tags: []
 - :name: update_highest_role
-  :feature_category: :authentication_and_authorization
+  :feature_category: :utilization
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :unknown

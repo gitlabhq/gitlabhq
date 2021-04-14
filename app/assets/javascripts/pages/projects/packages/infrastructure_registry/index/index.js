@@ -1,3 +1,3 @@
-import initPackageList from '~/packages/list/packages_list_app_bundle';
+import initList from '~/packages_and_registries/infrastructure_registry/list_app_bundle';
 
-initPackageList();
+initList();

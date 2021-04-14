@@ -117,7 +117,7 @@
     "mermaid": "^8.9.2",
     "minimatch": "^3.0.4",
     "monaco-editor": "^0.20.0",
-    "monaco-editor-webpack-plugin": "^1.9.0",
+    "monaco-editor-webpack-plugin": "^1.9.1",
     "monaco-yaml": "^2.5.1",
     "mousetrap": "1.6.5",
     "pdfjs-dist": "^2.0.943",

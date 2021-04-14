@@ -129,7 +129,7 @@ RSpec.describe 'Admin updates settings' do
 
       context 'Change Sign-up restrictions' do
         context 'Require Admin approval for new signup setting' do
-          it 'changes the setting' do
+          it 'changes the setting', :js do
             page.within('.as-signup') do
               check 'Require admin approval for new sign-ups'
               click_button 'Save changes'

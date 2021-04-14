@@ -91,6 +91,11 @@ msgid_plural "%d Approvals"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d Module"
+msgid_plural "%d Modules"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d Other"
 msgid_plural "%d Others"
 msgstr[0] ""
@@ -2220,9 +2225,6 @@ msgstr ""
 msgid "AdminArea|New user"
 msgstr ""
 
-msgid "AdminArea|Once the instance reaches the user cap, any user who is added or requests access will have to be approved by an admin. Leave the field empty for unlimited."
-msgstr ""
-
 msgid "AdminArea|Owner"
 msgstr ""
 
@@ -2245,9 +2247,6 @@ msgid "AdminArea|Stopping jobs failed"
 msgstr ""
 
 msgid "AdminArea|Total users"
-msgstr ""
-
-msgid "AdminArea|User cap"
 msgstr ""
 
 msgid "AdminArea|Users"
@@ -3242,9 +3241,6 @@ msgstr ""
 msgid "Allowed Geo IP"
 msgstr ""
 
-msgid "Allowed domains for sign-ups"
-msgstr ""
-
 msgid "Allowed email domain restriction only permitted for top-level groups"
 msgstr ""
 
@@ -3852,6 +3848,87 @@ msgid "Application was successfully updated."
 msgstr ""
 
 msgid "Application: %{name}"
+msgstr ""
+
+msgid "ApplicationSettings|After sign up text"
+msgstr ""
+
+msgid "ApplicationSettings|Allowed domains for sign-ups"
+msgstr ""
+
+msgid "ApplicationSettings|Denied domains for sign-ups"
+msgstr ""
+
+msgid "ApplicationSettings|Denylist file"
+msgstr ""
+
+msgid "ApplicationSettings|Domain denylist"
+msgstr ""
+
+msgid "ApplicationSettings|Email restrictions"
+msgstr ""
+
+msgid "ApplicationSettings|Email restrictions for sign-ups"
+msgstr ""
+
+msgid "ApplicationSettings|Enable domain denylist for sign ups"
+msgstr ""
+
+msgid "ApplicationSettings|Enable email restrictions for sign ups"
+msgstr ""
+
+msgid "ApplicationSettings|Enter denylist manually"
+msgstr ""
+
+msgid "ApplicationSettings|Markdown enabled"
+msgstr ""
+
+msgid "ApplicationSettings|Minimum password length (number of characters)"
+msgstr ""
+
+msgid "ApplicationSettings|ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com"
+msgstr ""
+
+msgid "ApplicationSettings|Once the instance reaches the user cap, any user who is added or requests access will have to be approved by an admin. Leave the field empty for unlimited."
+msgstr ""
+
+msgid "ApplicationSettings|Require admin approval for new sign-ups"
+msgstr ""
+
+msgid "ApplicationSettings|Restricts sign-ups for email addresses that match the given regex. See the %{linkStart}supported syntax%{linkEnd} for more information."
+msgstr ""
+
+msgid "ApplicationSettings|Save changes"
+msgstr ""
+
+msgid "ApplicationSettings|See GitLab's %{linkStart}Password Policy Guidelines%{linkEnd}"
+msgstr ""
+
+msgid "ApplicationSettings|Send confirmation email on sign-up"
+msgstr ""
+
+msgid "ApplicationSettings|Sign-up enabled"
+msgstr ""
+
+msgid "ApplicationSettings|Upload denylist file"
+msgstr ""
+
+msgid "ApplicationSettings|User cap"
+msgstr ""
+
+msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com"
+msgstr ""
+
+msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines or commas for multiple entries."
+msgstr ""
+
+msgid "ApplicationSettings|When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by an admin before they can sign in. This setting is effective only if sign-ups are enabled."
+msgstr ""
+
+msgid "ApplicationSettings|When enabled, any user visiting %{host} will be able to create an account."
+msgstr ""
+
+msgid "ApplicationSettings|domain.com"
 msgstr ""
 
 msgid "Applications"
@@ -10409,16 +10486,10 @@ msgstr ""
 msgid "Denied authorization of chat nickname %{user_name}."
 msgstr ""
 
-msgid "Denied domains for sign-ups"
-msgstr ""
-
 msgid "Deny"
 msgstr ""
 
 msgid "Deny access request"
-msgstr ""
-
-msgid "Denylist file"
 msgstr ""
 
 msgid "Dependencies"
@@ -11310,9 +11381,6 @@ msgstr ""
 msgid "Domain cannot be deleted while associated to one or more clusters."
 msgstr ""
 
-msgid "Domain denylist"
-msgstr ""
-
 msgid "Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled"
 msgstr ""
 
@@ -11640,12 +11708,6 @@ msgstr ""
 msgid "Email patch"
 msgstr ""
 
-msgid "Email restrictions"
-msgstr ""
-
-msgid "Email restrictions for sign-ups"
-msgstr ""
-
 msgid "Email sent"
 msgstr ""
 
@@ -11809,9 +11871,6 @@ msgid "Enable classification control using an external service"
 msgstr ""
 
 msgid "Enable container expiration and retention policies for projects created earlier than GitLab 12.7."
-msgstr ""
-
-msgid "Enable email restrictions for sign ups"
 msgstr ""
 
 msgid "Enable error tracking"
@@ -16851,6 +16910,21 @@ msgstr ""
 msgid "Infrastructure Registry"
 msgstr ""
 
+msgid "InfrastructureRegistry|Infrastructure Registry"
+msgstr ""
+
+msgid "InfrastructureRegistry|Publish and share your modules. %{docLinkStart}More information%{docLinkEnd}"
+msgstr ""
+
+msgid "InfrastructureRegistry|Terraform"
+msgstr ""
+
+msgid "InfrastructureRegistry|Terraform modules are the main way to package and reuse resource configurations with Terraform. Learn more about how to %{noPackagesLinkStart}create Terraform modules%{noPackagesLinkEnd} in GitLab."
+msgstr ""
+
+msgid "InfrastructureRegistry|You have no Terraform modules in your project"
+msgstr ""
+
 msgid "Inherited"
 msgstr ""
 
@@ -20386,9 +20460,6 @@ msgstr ""
 msgid "Minimum interval in days"
 msgstr ""
 
-msgid "Minimum password length (number of characters)"
-msgstr ""
-
 msgid "Minutes"
 msgstr ""
 
@@ -21132,9 +21203,6 @@ msgid "New requirement"
 msgstr ""
 
 msgid "New response for issue #%{issue_iid}:"
-msgstr ""
-
-msgid "New runner. Has not connected yet"
 msgstr ""
 
 msgid "New runners registration token has been generated!"
@@ -22723,9 +22791,6 @@ msgid "Password"
 msgstr ""
 
 msgid "Password (optional)"
-msgstr ""
-
-msgid "Password Policy Guidelines"
 msgstr ""
 
 msgid "Password authentication is unavailable."
@@ -26661,9 +26726,6 @@ msgstr ""
 msgid "Require additional authentication for administrative tasks"
 msgstr ""
 
-msgid "Require admin approval for new sign-ups"
-msgstr ""
-
 msgid "Require all users in this group to setup Two-factor authentication"
 msgstr ""
 
@@ -26863,9 +26925,6 @@ msgstr ""
 msgid "Restricted shift times are not available for hourly shifts"
 msgstr ""
 
-msgid "Restricts sign-ups for email addresses that match the given regex. See the %{supported_syntax_link_start}supported syntax%{supported_syntax_link_end} for more information."
-msgstr ""
-
 msgid "Resume"
 msgstr ""
 
@@ -27032,9 +27091,6 @@ msgstr ""
 msgid "Runner API"
 msgstr ""
 
-msgid "Runner is %{status}, last contact was %{runner_contact} ago"
-msgstr ""
-
 msgid "Runner token"
 msgstr ""
 
@@ -27113,6 +27169,9 @@ msgstr ""
 msgid "Runners|Name"
 msgstr ""
 
+msgid "Runners|New runner, has not connected yet"
+msgstr ""
+
 msgid "Runners|Platform"
 msgstr ""
 
@@ -27126,6 +27185,15 @@ msgid "Runners|Revision"
 msgstr ""
 
 msgid "Runners|Runner #%{runner_id}"
+msgstr ""
+
+msgid "Runners|Runner is offline, last contact was %{runner_contact} ago"
+msgstr ""
+
+msgid "Runners|Runner is online, last contact was %{runner_contact} ago"
+msgstr ""
+
+msgid "Runners|Runner is paused, last contact was %{runner_contact} ago"
 msgstr ""
 
 msgid "Runners|Shared"
@@ -27970,9 +28038,6 @@ msgid "SecurityReports|You must sign in as an authorized user to see this report
 msgstr ""
 
 msgid "SecurityReports|Your feedback is important to us! We will ask again in a week."
-msgstr ""
-
-msgid "See GitLab's %{password_policy_guidelines}"
 msgstr ""
 
 msgid "See metrics"
@@ -35085,12 +35150,6 @@ msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
 msgid "When an event in GitLab triggers a webhook, you can use the request details to figure out if something went wrong."
-msgstr ""
-
-msgid "When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by an admin before they can sign in. This setting is effective only if sign-ups are enabled."
-msgstr ""
-
-msgid "When enabled, any user visiting %{host} will be able to create an account."
 msgstr ""
 
 msgid "When enabled, if an npm package isn't found in the GitLab Registry, we will attempt to pull from the global npm registry."

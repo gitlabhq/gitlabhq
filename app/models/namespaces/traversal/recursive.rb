@@ -22,6 +22,7 @@ module Namespaces
         object_hierarchy(self.class.where(id: id))
           .all_objects
       end
+      alias_method :recursive_self_and_hierarchy, :self_and_hierarchy
 
       # Returns all the ancestors of the current namespaces.
       def ancestors
@@ -30,6 +31,7 @@ module Namespaces
         object_hierarchy(self.class.where(id: parent_id))
           .base_and_ancestors
       end
+      alias_method :recursive_ancestors, :ancestors
 
       # returns all ancestors upto but excluding the given namespace
       # when no namespace is given, all ancestors upto the top are returned
@@ -44,17 +46,20 @@ module Namespaces
         object_hierarchy(self.class.where(id: id))
           .base_and_ancestors(hierarchy_order: hierarchy_order)
       end
+      alias_method :recursive_self_and_ancestors, :self_and_ancestors
 
       # Returns all the descendants of the current namespace.
       def descendants
         object_hierarchy(self.class.where(parent_id: id))
           .base_and_descendants
       end
+      alias_method :recursive_descendants, :descendants
 
       def self_and_descendants
         object_hierarchy(self.class.where(id: id))
           .base_and_descendants
       end
+      alias_method :recursive_self_and_descendants, :self_and_descendants
 
       def object_hierarchy(ancestors_base)
         Gitlab::ObjectHierarchy.new(ancestors_base, options: { use_distinct: Feature.enabled?(:use_distinct_in_object_hierarchy, self) })

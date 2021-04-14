@@ -875,7 +875,7 @@ module Gitlab
             config = YAML.dump({ image: "ruby:2.7",
                                  services: ["mysql"],
                                  before_script: ["pwd"],
-                                 rspec: { image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
+                                 rspec: { image: { name: "ruby:3.0", entrypoint: ["/usr/local/bin/init", "run"] },
                                           services: [{ name: "postgresql", alias: "db-pg",
                                                        entrypoint: ["/usr/local/bin/init", "run"],
                                                        command: ["/usr/local/bin/init", "run"] }, "docker:dind"],
@@ -892,7 +892,7 @@ module Gitlab
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
-                image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
+                image: { name: "ruby:3.0", entrypoint: ["/usr/local/bin/init", "run"] },
                 services: [{ name: "postgresql", alias: "db-pg", entrypoint: ["/usr/local/bin/init", "run"],
                              command: ["/usr/local/bin/init", "run"] },
                            { name: "docker:dind" }]
@@ -941,7 +941,7 @@ module Gitlab
             config = YAML.dump({ image: "ruby:2.7",
                                  services: ["mysql"],
                                  before_script: ["pwd"],
-                                 rspec: { image: "ruby:2.5", services: ["postgresql", "docker:dind"], script: "rspec" } })
+                                 rspec: { image: "ruby:3.0", services: ["postgresql", "docker:dind"], script: "rspec" } })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
@@ -954,7 +954,7 @@ module Gitlab
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
-                image: { name: "ruby:2.5" },
+                image: { name: "ruby:3.0" },
                 services: [{ name: "postgresql" }, { name: "docker:dind" }]
               },
               allow_failure: false,

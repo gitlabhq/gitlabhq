@@ -1,11 +1,10 @@
 <script>
-import { n__ } from '~/locale';
+import { s__, n__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import { LIST_INTRO_TEXT, LIST_TITLE_TEXT } from '../constants';
 
 export default {
-  name: 'PackageTitle',
+  name: 'InfrastructureTitle',
   components: {
     TitleArea,
     MetadataItem,
@@ -22,18 +21,21 @@ export default {
     },
   },
   computed: {
-    showPackageCount() {
+    showModuleCount() {
       return Number.isInteger(this.count);
     },
-    packageAmountText() {
-      return n__(`%d Package`, `%d Packages`, this.count);
+    moduleAmountText() {
+      return n__(`%d Module`, `%d Modules`, this.count);
     },
     infoMessages() {
-      return [{ text: LIST_INTRO_TEXT, link: this.helpUrl }];
+      return [{ text: this.$options.i18n.LIST_INTRO_TEXT, link: this.helpUrl }];
     },
   },
   i18n: {
-    LIST_TITLE_TEXT,
+    LIST_TITLE_TEXT: s__('InfrastructureRegistry|Infrastructure Registry'),
+    LIST_INTRO_TEXT: s__(
+      'InfrastructureRegistry|Publish and share your modules. %{docLinkStart}More information%{docLinkEnd}',
+    ),
   },
 };
 </script>
@@ -41,7 +43,11 @@ export default {
 <template>
   <title-area :title="$options.i18n.LIST_TITLE_TEXT" :info-messages="infoMessages">
     <template #metadata-amount>
-      <metadata-item v-if="showPackageCount" icon="package" :text="packageAmountText" />
+      <metadata-item
+        v-if="showModuleCount"
+        icon="infrastructure-registry"
+        :text="moduleAmountText"
+      />
     </template>
   </title-area>
 </template>
