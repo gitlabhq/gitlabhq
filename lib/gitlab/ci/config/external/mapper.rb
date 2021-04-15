@@ -34,6 +34,7 @@ module Gitlab
               .compact
               .map(&method(:normalize_location))
               .flat_map(&method(:expand_project_files))
+              .flat_map(&method(:expand_wildcard_paths))
               .map(&method(:expand_variables))
               .each(&method(:verify_duplicates!))
               .map(&method(:select_first_matching))
@@ -60,6 +61,17 @@ module Gitlab
 
             Array.wrap(location[:file]).map do |file|
               location.merge(file: file)
+            end
+          end
+
+          def expand_wildcard_paths(location)
+            return location unless ::Feature.enabled?(:ci_wildcard_file_paths, context.project, default_enabled: :yaml)
+
+            # We only support local files for wildcard paths
+            return location unless location[:local] && location[:local].include?('*')
+
+            context.project.repository.search_files_by_wildcard_path(location[:local], context.sha).map do |path|
+              { local: path }
             end
           end
 

@@ -319,16 +319,19 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
     const nextFile = diffFilesToRender[currentDiffFileIndex];
 
     if (nextFile) {
+      let retryCount = 0;
       currentDiffFileIndex += 1;
       commit(types.RENDER_FILE, nextFile);
 
       const requestIdle = () =>
         requestIdleCallback((idleDeadline) => {
           // Wait for at least 5ms before trying to render
-          if (idleDeadline.timeRemaining() >= 6) {
+          // or for 5 tries and then force render the file
+          if (idleDeadline.timeRemaining() >= 5 || retryCount > 4) {
             checkItem();
           } else {
             requestIdle();
+            retryCount += 1;
           }
         });
 

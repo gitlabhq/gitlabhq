@@ -3856,6 +3856,15 @@ msgstr ""
 msgid "ApplicationSettings|Allowed domains for sign-ups"
 msgstr ""
 
+msgid "ApplicationSettings|Approve all users in the pending approval status?"
+msgstr ""
+
+msgid "ApplicationSettings|Approve users"
+msgstr ""
+
+msgid "ApplicationSettings|By making this change, you will automatically approve all users in pending approval status."
+msgstr ""
+
 msgid "ApplicationSettings|Denied domains for sign-ups"
 msgstr ""
 
@@ -17746,7 +17755,10 @@ msgstr ""
 msgid "IssueTracker|EWM work items tracker"
 msgstr ""
 
-msgid "IssueTracker|Redmine issue tracker"
+msgid "IssueTracker|Use Redmine as the issue tracker."
+msgstr ""
+
+msgid "IssueTracker|Use Redmine as the issue tracker. %{docs_link}"
 msgstr ""
 
 msgid "IssueTracker|YouTrack issue tracker"

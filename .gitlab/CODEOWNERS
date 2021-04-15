@@ -277,6 +277,7 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/experimentation/ @gitlab-org/growth/experiment-devs
 /lib/gitlab/experimentation.rb @gitlab-org/growth/experiment-devs
 /lib/gitlab/experimentation_logger.rb @gitlab-org/growth/experiment-devs
+/ee/spec/requests/api/experiments_spec.rb @gitlab-org/growth/experiment-devs
 
 [Legal]
 /config/dependency_decisions.yml @gitlab-org/legal-reviewers

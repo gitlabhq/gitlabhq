@@ -1,0 +1,8 @@
+---
+name: ci_wildcard_file_paths
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58999
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327315
+milestone: '13.11'
+type: development
+group: group::pipeline authoring
+default_enabled: false

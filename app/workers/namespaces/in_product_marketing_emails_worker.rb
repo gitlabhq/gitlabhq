@@ -9,10 +9,27 @@ module Namespaces
     urgency :low
 
     def perform
-      return unless Gitlab::CurrentSettings.in_product_marketing_emails_enabled
-      return if Gitlab.com? && !Gitlab::Experimentation.active?(:in_product_marketing_emails)
+      return if paid_self_managed_instance?
+      return if setting_disabled?
+      return if experiment_inactive?
 
       Namespaces::InProductMarketingEmailsService.send_for_all_tracks_and_intervals
     end
+
+    private
+
+    def paid_self_managed_instance?
+      false
+    end
+
+    def setting_disabled?
+      !Gitlab::CurrentSettings.in_product_marketing_emails_enabled
+    end
+
+    def experiment_inactive?
+      Gitlab.com? && !Gitlab::Experimentation.active?(:in_product_marketing_emails)
+    end
   end
 end
+
+Namespaces::InProductMarketingEmailsWorker.prepend_if_ee('EE::Namespaces::InProductMarketingEmailsWorker')

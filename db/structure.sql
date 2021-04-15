@@ -11572,6 +11572,13 @@ CREATE SEQUENCE clusters_id_seq
 
 ALTER SEQUENCE clusters_id_seq OWNED BY clusters.id;
 
+CREATE TABLE clusters_integration_prometheus (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    cluster_id bigint NOT NULL,
+    enabled boolean DEFAULT false NOT NULL
+);
+
 CREATE TABLE clusters_kubernetes_namespaces (
     id bigint NOT NULL,
     cluster_id integer NOT NULL,
@@ -20447,6 +20454,9 @@ ALTER TABLE ONLY clusters_applications_prometheus
 ALTER TABLE ONLY clusters_applications_runners
     ADD CONSTRAINT clusters_applications_runners_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY clusters_integration_prometheus
+    ADD CONSTRAINT clusters_integration_prometheus_pkey PRIMARY KEY (cluster_id);
+
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT clusters_kubernetes_namespaces_pkey PRIMARY KEY (id);
 
@@ -26676,6 +26686,9 @@ ALTER TABLE ONLY ci_builds_metadata
 
 ALTER TABLE ONLY vulnerability_finding_evidences
     ADD CONSTRAINT fk_rails_e3205a0c65 FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY clusters_integration_prometheus
+    ADD CONSTRAINT fk_rails_e44472034c FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_occurrence_identifiers
     ADD CONSTRAINT fk_rails_e4ef6d027c FOREIGN KEY (occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;

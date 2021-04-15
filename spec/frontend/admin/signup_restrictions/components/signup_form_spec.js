@@ -1,6 +1,7 @@
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlModal } from '@gitlab/ui';
 import { within, fireEvent } from '@testing-library/dom';
 import { shallowMount, mount } from '@vue/test-utils';
+import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import SignupForm from '~/pages/admin/application_settings/general/components/signup_form.vue';
 import { mockData } from '../mock_data';
@@ -35,8 +36,15 @@ describe('Signup Form', () => {
   const findDenyListRawInputGroup = () => wrapper.findByTestId('domain-denylist-raw-input-group');
   const findDenyListFileInputGroup = () => wrapper.findByTestId('domain-denylist-file-input-group');
 
+  const findRequireAdminApprovalCheckbox = () =>
+    wrapper.findByTestId('require-admin-approval-checkbox');
+  const findUserCapInput = () => wrapper.findByTestId('user-cap-input');
+  const findModal = () => wrapper.find(GlModal);
+
   afterEach(() => {
     wrapper.destroy();
+
+    formSubmitSpy = null;
   });
 
   describe('form data', () => {
@@ -89,20 +97,6 @@ describe('Signup Form', () => {
       expect(findInputCsrf().attributes('type')).toBe('hidden');
 
       expect(findInputCsrf().attributes('value')).toBe('mock-csrf-token');
-    });
-  });
-
-  describe('form submit', () => {
-    beforeEach(() => {
-      formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
-
-      mountComponent({ stubs: { GlButton } });
-    });
-
-    it('submits the form when the primary action is clicked', () => {
-      findFormSubmitButton().trigger('click');
-
-      expect(formSubmitSpy).toHaveBeenCalled();
     });
   });
 
@@ -192,6 +186,145 @@ describe('Signup Form', () => {
         it('file input is not displayed', () => {
           expect(findDenyListFileInputGroup().exists()).toBe(false);
         });
+      });
+    });
+  });
+
+  describe('form submit button confirmation modal for side-effect of adding possibly unwanted new users', () => {
+    it.each`
+      requireAdminApprovalAction | userCapAction                          | buttonEffect
+      ${'unchanged from true'}   | ${'unchanged'}                         | ${'submits form'}
+      ${'unchanged from false'}  | ${'unchanged'}                         | ${'submits form'}
+      ${'toggled off'}           | ${'unchanged'}                         | ${'shows confirmation modal'}
+      ${'toggled on'}            | ${'unchanged'}                         | ${'submits form'}
+      ${'unchanged from false'}  | ${'increased'}                         | ${'shows confirmation modal'}
+      ${'unchanged from true'}   | ${'increased'}                         | ${'shows confirmation modal'}
+      ${'toggled off'}           | ${'increased'}                         | ${'shows confirmation modal'}
+      ${'toggled on'}            | ${'increased'}                         | ${'shows confirmation modal'}
+      ${'toggled on'}            | ${'decreased'}                         | ${'submits form'}
+      ${'unchanged from false'}  | ${'changed from limited to unlimited'} | ${'shows confirmation modal'}
+      ${'unchanged from false'}  | ${'changed from unlimited to limited'} | ${'submits form'}
+      ${'unchanged from false'}  | ${'unchanged from unlimited'}          | ${'submits form'}
+    `(
+      '$buttonEffect if require admin approval for new sign-ups is $requireAdminApprovalAction and the user cap is $userCapAction',
+      async ({ requireAdminApprovalAction, userCapAction, buttonEffect }) => {
+        let isModalDisplayed;
+
+        switch (buttonEffect) {
+          case 'shows confirmation modal':
+            isModalDisplayed = true;
+            break;
+          case 'submits form':
+            isModalDisplayed = false;
+            break;
+          default:
+            isModalDisplayed = false;
+            break;
+        }
+
+        const isFormSubmittedWhenClickingFormSubmitButton = !isModalDisplayed;
+
+        const injectedProps = {};
+
+        const USER_CAP_DEFAULT = 5;
+
+        switch (userCapAction) {
+          case 'changed from unlimited to limited':
+            injectedProps.newUserSignupsCap = '';
+            break;
+          case 'unchanged from unlimited':
+            injectedProps.newUserSignupsCap = '';
+            break;
+          default:
+            injectedProps.newUserSignupsCap = USER_CAP_DEFAULT;
+            break;
+        }
+
+        switch (requireAdminApprovalAction) {
+          case 'unchanged from true':
+            injectedProps.requireAdminApprovalAfterUserSignup = true;
+            break;
+          case 'unchanged from false':
+            injectedProps.requireAdminApprovalAfterUserSignup = false;
+            break;
+          case 'toggled off':
+            injectedProps.requireAdminApprovalAfterUserSignup = true;
+            break;
+          case 'toggled on':
+            injectedProps.requireAdminApprovalAfterUserSignup = false;
+            break;
+          default:
+            injectedProps.requireAdminApprovalAfterUserSignup = false;
+            break;
+        }
+
+        formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
+
+        await mountComponent({
+          injectedProps,
+          stubs: { GlButton, GlModal: stubComponent(GlModal) },
+        });
+
+        findModal().vm.show = jest.fn();
+
+        if (
+          requireAdminApprovalAction === 'toggled off' ||
+          requireAdminApprovalAction === 'toggled on'
+        ) {
+          await findRequireAdminApprovalCheckbox().vm.$emit('input', false);
+        }
+
+        switch (userCapAction) {
+          case 'increased':
+            await findUserCapInput().vm.$emit('input', USER_CAP_DEFAULT + 1);
+            break;
+          case 'decreased':
+            await findUserCapInput().vm.$emit('input', USER_CAP_DEFAULT - 1);
+            break;
+          case 'changed from limited to unlimited':
+            await findUserCapInput().vm.$emit('input', '');
+            break;
+          case 'changed from unlimited to limited':
+            await findUserCapInput().vm.$emit('input', USER_CAP_DEFAULT);
+            break;
+          default:
+            break;
+        }
+
+        await findFormSubmitButton().trigger('click');
+
+        if (isFormSubmittedWhenClickingFormSubmitButton) {
+          expect(formSubmitSpy).toHaveBeenCalled();
+          expect(findModal().vm.show).not.toHaveBeenCalled();
+        } else {
+          expect(formSubmitSpy).not.toHaveBeenCalled();
+          expect(findModal().vm.show).toHaveBeenCalled();
+        }
+      },
+    );
+
+    describe('modal actions', () => {
+      beforeEach(async () => {
+        const INITIAL_USER_CAP = 5;
+
+        await mountComponent({
+          injectedProps: {
+            newUserSignupsCap: INITIAL_USER_CAP,
+          },
+          stubs: { GlButton, GlModal: stubComponent(GlModal) },
+        });
+
+        await findUserCapInput().vm.$emit('input', INITIAL_USER_CAP + 1);
+
+        await findFormSubmitButton().trigger('click');
+      });
+
+      it('submits the form after clicking approve users button', async () => {
+        formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
+
+        await findModal().vm.$emit('primary');
+
+        expect(formSubmitSpy).toHaveBeenCalled();
       });
     });
   });

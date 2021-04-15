@@ -19,6 +19,10 @@ module Gitlab
       end
 
       def cluster_prometheus_adapter
+        if cluster&.integration_prometheus
+          return cluster.integration_prometheus
+        end
+
         application = cluster&.application_prometheus
 
         application if application&.available?

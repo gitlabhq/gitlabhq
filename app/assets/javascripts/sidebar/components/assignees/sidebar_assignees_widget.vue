@@ -121,15 +121,20 @@ export default {
       },
       update(data) {
         const searchResults = data.workspace?.users?.nodes.map(({ user }) => user) || [];
-        const mergedSearchResults = this.participants.reduce((acc, current) => {
-          if (
-            !acc.some((user) => current.username === user.username) &&
-            (current.name.includes(this.search) || current.username.includes(this.search))
-          ) {
+        const filteredParticipants = this.participants.filter(
+          (user) =>
+            user.name.toLowerCase().includes(this.search.toLowerCase()) ||
+            user.username.toLowerCase().includes(this.search.toLowerCase()),
+        );
+        const mergedSearchResults = searchResults.reduce((acc, current) => {
+          // Some users are duplicated in the query result:
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/327822
+          if (!acc.some((user) => current.username === user.username)) {
             acc.push(current);
           }
           return acc;
-        }, searchResults);
+        }, filteredParticipants);
+
         return mergedSearchResults;
       },
       debounce: ASSIGNEES_DEBOUNCE_DELAY,

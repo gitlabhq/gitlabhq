@@ -64,24 +64,6 @@ RSpec.describe Projects::IssuesController do
           expect(response).to have_gitlab_http_status(:moved_permanently)
         end
       end
-
-      describe 'the null hypothesis experiment', :experiment do
-        before do
-          stub_experiments(null_hypothesis: :candidate)
-        end
-
-        it 'defines the expected before actions' do
-          expect(controller).to use_before_action(:run_null_hypothesis_experiment)
-        end
-
-        it 'assigns the candidate experience and tracks the event' do
-          expect(experiment(:null_hypothesis)).to track('index').for(:candidate)
-            .with_context(project: project)
-            .on_next_instance
-
-          get :index, params: { namespace_id: project.namespace, project_id: project }
-        end
-      end
     end
 
     context 'internal issue tracker' do

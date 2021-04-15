@@ -7,9 +7,11 @@ import {
   GlFormRadioGroup,
   GlSprintf,
   GlLink,
+  GlModal,
 } from '@gitlab/ui';
+import { toSafeInteger } from 'lodash';
 import csrf from '~/lib/utils/csrf';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import SignupCheckbox from './signup_checkbox.vue';
 
 const DENYLIST_TYPE_RAW = 'raw';
@@ -28,6 +30,7 @@ export default {
     GlSprintf,
     GlLink,
     SignupCheckbox,
+    GlModal,
   },
   inject: [
     'host',
@@ -51,6 +54,7 @@ export default {
   ],
   data() {
     return {
+      showModal: false,
       form: {
         signupEnabled: this.signupEnabled,
         requireAdminApproval: this.requireAdminApprovalAfterUserSignup,
@@ -74,6 +78,36 @@ export default {
     };
   },
   computed: {
+    isOldUserCapUnlimited() {
+      // User cap is set to unlimited if no value is provided in the field
+      return this.newUserSignupsCap === '';
+    },
+    isNewUserCapUnlimited() {
+      // User cap is set to unlimited if no value is provided in the field
+      return this.form.userCap === '';
+    },
+    hasUserCapChangedFromUnlimitedToLimited() {
+      return this.isOldUserCapUnlimited && !this.isNewUserCapUnlimited;
+    },
+    hasUserCapChangedFromLimitedToUnlimited() {
+      return !this.isOldUserCapUnlimited && this.isNewUserCapUnlimited;
+    },
+    hasUserCapBeenIncreased() {
+      if (this.hasUserCapChangedFromUnlimitedToLimited) {
+        return false;
+      }
+
+      const oldValueAsInteger = toSafeInteger(this.newUserSignupsCap);
+      const newValueAsInteger = toSafeInteger(this.form.userCap);
+
+      return this.hasUserCapChangedFromLimitedToUnlimited || newValueAsInteger > oldValueAsInteger;
+    },
+    canUsersBeAccidentallyApproved() {
+      const hasUserCapBeenToggledOff =
+        this.requireAdminApprovalAfterUserSignup && !this.form.requireAdminApproval;
+
+      return this.hasUserCapBeenIncreased || hasUserCapBeenToggledOff;
+    },
     signupEnabledHelpText() {
       const text = sprintf(
         s__(
@@ -99,9 +133,30 @@ export default {
       return text;
     },
   },
+  watch: {
+    showModal(value) {
+      if (value === true) {
+        this.$refs[this.$options.modal.id].show();
+      } else {
+        this.$refs[this.$options.modal.id].hide();
+      }
+    },
+  },
   methods: {
     submitButtonHandler() {
+      if (this.canUsersBeAccidentallyApproved) {
+        this.showModal = true;
+
+        return;
+      }
+
+      this.submitForm();
+    },
+    submitForm() {
       this.$refs.form.submit();
+    },
+    modalHideHandler() {
+      this.showModal = false;
     },
   },
   i18n: {
@@ -141,6 +196,22 @@ export default {
     afterSignUpTextGroupLabel: s__('ApplicationSettings|After sign up text'),
     afterSignUpTextGroupDescription: s__('ApplicationSettings|Markdown enabled'),
   },
+  modal: {
+    id: 'signup-settings-modal',
+    actionPrimary: {
+      text: s__('ApplicationSettings|Approve users'),
+      attributes: {
+        variant: 'confirm',
+      },
+    },
+    actionCancel: {
+      text: __('Cancel'),
+    },
+    title: s__('ApplicationSettings|Approve all users in the pending approval status?'),
+    text: s__(
+      'ApplicationSettings|By making this change, you will automatically approve all users in pending approval status.',
+    ),
+  },
 };
 </script>
 
@@ -174,6 +245,7 @@ export default {
         :help-text="requireAdminApprovalHelpText"
         :label="$options.i18n.requireAdminApprovalLabel"
         data-qa-selector="require_admin_approval_after_user_signup_checkbox"
+        data-testid="require-admin-approval-checkbox"
       />
 
       <signup-checkbox
@@ -191,6 +263,7 @@ export default {
           v-model="form.userCap"
           type="text"
           name="application_setting[new_user_signups_cap]"
+          data-testid="user-cap-input"
         />
       </gl-form-group>
 
@@ -320,12 +393,25 @@ export default {
         ></textarea>
       </gl-form-group>
     </section>
+
     <gl-button
       data-qa-selector="save_changes_button"
       variant="confirm"
-      @click="submitButtonHandler"
+      @click.prevent="submitButtonHandler"
     >
       {{ $options.i18n.buttonText }}
     </gl-button>
+
+    <gl-modal
+      :ref="$options.modal.id"
+      :modal-id="$options.modal.id"
+      :action-cancel="$options.modal.actionCancel"
+      :action-primary="$options.modal.actionPrimary"
+      :title="$options.modal.title"
+      @primary="submitForm"
+      @hide="modalHideHandler"
+    >
+      {{ $options.modal.text }}
+    </gl-modal>
   </form>
 </template>

@@ -17,9 +17,9 @@ RSpec.describe Clusters::Integrations::CreateService, '#execute' do
   it 'creates a new Prometheus instance' do
     expect(service.execute).to be_success
 
-    expect(cluster.application_prometheus).to be_present
-    expect(cluster.application_prometheus).to be_persisted
-    expect(cluster.application_prometheus).to be_externally_installed
+    expect(cluster.integration_prometheus).to be_present
+    expect(cluster.integration_prometheus).to be_persisted
+    expect(cluster.integration_prometheus).to be_enabled
   end
 
   context 'enabled param is false' do
@@ -30,9 +30,9 @@ RSpec.describe Clusters::Integrations::CreateService, '#execute' do
     it 'creates a new uninstalled Prometheus instance' do
       expect(service.execute).to be_success
 
-      expect(cluster.application_prometheus).to be_present
-      expect(cluster.application_prometheus).to be_persisted
-      expect(cluster.application_prometheus).to be_uninstalled
+      expect(cluster.integration_prometheus).to be_present
+      expect(cluster.integration_prometheus).to be_persisted
+      expect(cluster.integration_prometheus).not_to be_enabled
     end
   end
 
@@ -46,21 +46,21 @@ RSpec.describe Clusters::Integrations::CreateService, '#execute' do
     it 'does not create a new Prometheus instance' do
       expect(service.execute).to be_error
 
-      expect(cluster.application_prometheus).to be_nil
+      expect(cluster.integration_prometheus).to be_nil
     end
   end
 
   context 'prometheus record exists' do
     before do
-      create(:clusters_applications_prometheus, cluster: cluster)
+      create(:clusters_integrations_prometheus, cluster: cluster)
     end
 
     it 'updates the Prometheus instance' do
       expect(service.execute).to be_success
 
-      expect(cluster.application_prometheus).to be_present
-      expect(cluster.application_prometheus).to be_persisted
-      expect(cluster.application_prometheus).to be_externally_installed
+      expect(cluster.integration_prometheus).to be_present
+      expect(cluster.integration_prometheus).to be_persisted
+      expect(cluster.integration_prometheus).to be_enabled
     end
 
     context 'enabled param is false' do
@@ -71,9 +71,9 @@ RSpec.describe Clusters::Integrations::CreateService, '#execute' do
       it 'updates the Prometheus instance as uninstalled' do
         expect(service.execute).to be_success
 
-        expect(cluster.application_prometheus).to be_present
-        expect(cluster.application_prometheus).to be_persisted
-        expect(cluster.application_prometheus).to be_uninstalled
+        expect(cluster.integration_prometheus).to be_present
+        expect(cluster.integration_prometheus).to be_persisted
+        expect(cluster.integration_prometheus).not_to be_enabled
       end
     end
   end

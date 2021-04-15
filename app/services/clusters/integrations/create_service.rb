@@ -3,8 +3,6 @@
 module Clusters
   module Integrations
     class CreateService < BaseContainerService
-      InvalidApplicationError = Class.new(StandardError)
-
       attr_accessor :cluster
 
       def initialize(container:, cluster:, current_user: nil, params: {})
@@ -16,19 +14,26 @@ module Clusters
       def execute
         return ServiceResponse.error(message: 'Unauthorized') unless authorized?
 
-        application_class = Clusters::Cluster::APPLICATIONS[params[:application_type]]
-        application = cluster.find_or_build_application(application_class)
+        integration.enabled = params[:enabled]
+        integration.save!
 
-        if params[:enabled]
-          application.make_externally_installed!
-          ServiceResponse.success(message: s_('ClusterIntegration|Integration enabled'), payload: { application: application })
+        if integration.enabled?
+          ServiceResponse.success(message: s_('ClusterIntegration|Integration enabled'), payload: { integration: integration })
         else
-          application.make_externally_uninstalled!
-          ServiceResponse.success(message: s_('ClusterIntegration|Integration disabled'), payload: { application: application })
+          ServiceResponse.success(message: s_('ClusterIntegration|Integration disabled'), payload: { integration: integration })
         end
       end
 
       private
+
+      def integration
+        case params[:application_type]
+        when 'prometheus'
+          cluster.find_or_build_integration_prometheus
+        else
+          raise ArgumentError, "invalid application_type: #{params[:application_type]}"
+        end
+      end
 
       def authorized?
         Ability.allowed?(current_user, :admin_cluster, cluster)
