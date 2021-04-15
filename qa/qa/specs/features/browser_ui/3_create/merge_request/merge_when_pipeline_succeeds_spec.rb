@@ -29,7 +29,7 @@ module QA
                 content: <<~EOF
                   test:
                     tags: ["runner-for-#{project.name}"]
-                    script: sleep 5
+                    script: sleep 10
                     only:
                       - merge_requests
                 EOF
@@ -47,36 +47,50 @@ module QA
       end
 
       it 'merges when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1684' do
-        branch_name = "merge-request-test-#{SecureRandom.hex(8)}"
+        verify_merge_when_pipeline_succeeds
+      end
 
-        # Create a branch that will be merged into the default branch
-        Resource::Repository::ProjectPush.fabricate! do |project_push|
-          project_push.project = project
-          project_push.new_branch = true
-          project_push.branch_name = branch_name
-          project_push.file_name = "file-#{SecureRandom.hex(8)}.txt"
+      it 'reliably merges when pipeline succeeds', :transient, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1684' do
+        verify_merge_when_pipeline_succeeds(repeat: Runtime::Env.transient_trials) do |i|
+          QA::Runtime::Logger.info("Transient bug test - Trial #{i}")
         end
+      end
 
-        # Create a merge request to merge the branch we just created
-        merge_request = Resource::MergeRequest.fabricate_via_api! do |merge_request|
-          merge_request.project = project
-          merge_request.source_branch = branch_name
-          merge_request.no_preparation = true
-        end
+      def verify_merge_when_pipeline_succeeds(repeat: 1)
+        repeat.times do |i|
+          yield i if block_given?
 
-        merge_request.visit!
+          branch_name = "merge-request-test-#{SecureRandom.hex(8)}"
 
-        Page::MergeRequest::Show.perform do |mr|
-          mr.merge_when_pipeline_succeeds!
-
-          Support::Waiter.wait_until(sleep_interval: 5) do
-            merge_request = merge_request.reload!
-            merge_request.state == 'merged'
+          # Create a branch that will be merged into the default branch
+          Resource::Repository::ProjectPush.fabricate! do |project_push|
+            project_push.project = project
+            project_push.new_branch = true
+            project_push.branch_name = branch_name
+            project_push.file_name = "file-#{SecureRandom.hex(8)}.txt"
           end
 
-          aggregate_failures do
-            expect(merge_request.merge_when_pipeline_succeeds).to be_truthy
-            expect(mr.merged?).to be_truthy, "Expected content 'The changes were merged' but it did not appear."
+          # Create a merge request to merge the branch we just created
+          merge_request = Resource::MergeRequest.fabricate_via_api! do |merge_request|
+            merge_request.project = project
+            merge_request.source_branch = branch_name
+            merge_request.no_preparation = true
+          end
+
+          merge_request.visit!
+
+          Page::MergeRequest::Show.perform do |mr|
+            mr.merge_when_pipeline_succeeds!
+
+            Support::Waiter.wait_until(sleep_interval: 5) do
+              merge_request = merge_request.reload!
+              merge_request.state == 'merged'
+            end
+
+            aggregate_failures do
+              expect(merge_request.merge_when_pipeline_succeeds).to be_truthy
+              expect(mr.merged?).to be_truthy, "Expected content 'The changes were merged' but it did not appear."
+            end
           end
         end
       end

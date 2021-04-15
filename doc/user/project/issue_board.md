@@ -342,14 +342,16 @@ As in other list types, click the trash icon to remove a list.
 
 ### Iteration lists **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.10.
-> - It's [deployed behind the `board_new_lists` and `iteration_board_lists` feature flags](../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to enable the feature flags: [`board_new_lists`](#enable-or-disable-new-add-list-form) and [`iteration_board_lists`](#enable-or-disable-iteration-lists-in-boards).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11.
+> - [Deployed behind the `board_new_lists` and `iteration_board_lists` feature flags](../feature_flags.md), disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57439) in GitLab 13.11.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to disable the feature flags: [`board_new_lists`](#enable-or-disable-new-add-list-form) and [`iteration_board_lists`](#enable-or-disable-iteration-lists-in-boards). **(PREMIUM SELF)**
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+There can be
+[risks when disabling released features](../feature_flags.md#risks-when-disabling-released-features).
+Refer to this feature's version history for more details.
 
 You're also able to create lists of an iteration.
 These are lists that filter issues by the assigned
@@ -646,10 +648,10 @@ Feature.disable(:graphql_board_lists)
 
 ### Enable or disable new add list form **(FREE SELF)**
 
-The new form for adding lists is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+The new form for adding lists is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
+can disable it.
 
 To enable it:
 
@@ -666,12 +668,12 @@ Feature.disable(:board_new_list)
 ### Enable or disable iteration lists in boards **(PREMIUM SELF)**
 
 NOTE:
-To enable iteration lists in boards, you also need to enable the [new add list form](#enable-or-disable-new-add-list-form).
+When disabling iteration lists in boards, you also need to disable the [new add list form](#enable-or-disable-new-add-list-form).
 
-The iteration list is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+The iteration list is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
+can disable it.
 
 To enable it:
 

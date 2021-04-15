@@ -1,18 +1,38 @@
 import { waitFor } from '@testing-library/dom';
 import MockAdapter from 'axios-mock-adapter';
 import { cloneDeep } from 'lodash';
-import { getFixture, getJSONFixture } from 'helpers/fixtures';
+import { getJSONFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import UsersSelect from '~/users_select';
 
-const getUserSearchHTML = () => {
-  const html = getFixture('merge_requests/merge_request_of_current_user.html');
-  const parser = new DOMParser();
-
-  const el = parser.parseFromString(html, 'text/html').querySelector('.assignee');
-
-  return el.outerHTML;
-};
+// TODO: generate this from a fixture that guarantees the same output in CE and EE [(see issue)][1].
+// Hardcoding this HTML temproarily fixes a FOSS ~"master::broken" [(see issue)][2].
+// [1]: https://gitlab.com/gitlab-org/gitlab/-/issues/327809
+// [2]: https://gitlab.com/gitlab-org/gitlab/-/issues/327805
+const getUserSearchHTML = () => `
+<div class="js-sidebar-assignee-data selectbox hide-collapsed">
+<input type="hidden" name="merge_request[assignee_ids][]" value="0">
+<div class="dropdown js-sidebar-assignee-dropdown">
+<button class="dropdown-menu-toggle js-user-search js-author-search js-multiselect js-save-user-data js-invite-members-track" type="button" data-first-user="frontend-fixtures" data-current-user="true" data-iid="1" data-issuable-type="merge_request" data-project-id="1" data-author-id="1" data-field-name="merge_request[assignee_ids][]" data-issue-update="http://test.host/frontend-fixtures/merge-requests-project/-/merge_requests/1.json" data-ability-name="merge_request" data-null-user="true" data-display="static" data-multi-select="true" data-dropdown-title="Select assignee(s)" data-dropdown-header="Assignee(s)" data-track-event="show_invite_members" data-toggle="dropdown"><span class="dropdown-toggle-text ">Select assignee(s)</span><svg class="s16 dropdown-menu-toggle-icon gl-top-3" data-testid="chevron-down-icon"><use xlink:href="http://test.host/assets/icons-16c30bec0d8a57f0a33e6f6215c6aff7a6ec5e4a7e6b7de733a6b648541a336a.svg#chevron-down"></use></svg></button><div class="dropdown-menu dropdown-select dropdown-menu-user dropdown-menu-selectable dropdown-menu-author dropdown-extended-height">
+<div class="dropdown-title gl-display-flex">
+<span class="gl-ml-auto">Assign to</span><button class="dropdown-title-button dropdown-menu-close gl-ml-auto" aria-label="Close" type="button"><svg class="s16 dropdown-menu-close-icon" data-testid="close-icon"><use xlink:href="http://test.host/assets/icons-16c30bec0d8a57f0a33e6f6215c6aff7a6ec5e4a7e6b7de733a6b648541a336a.svg#close"></use></svg></button>
+</div>
+<div class="dropdown-input">
+<input type="search" id="" data-qa-selector="dropdown_input_field" class="dropdown-input-field" placeholder="Search users" autocomplete="off"><svg class="s16 dropdown-input-search" data-testid="search-icon"><use xlink:href="http://test.host/assets/icons-16c30bec0d8a57f0a33e6f6215c6aff7a6ec5e4a7e6b7de733a6b648541a336a.svg#search"></use></svg><svg class="s16 dropdown-input-clear js-dropdown-input-clear" data-testid="close-icon"><use xlink:href="http://test.host/assets/icons-16c30bec0d8a57f0a33e6f6215c6aff7a6ec5e4a7e6b7de733a6b648541a336a.svg#close"></use></svg>
+</div>
+<div data-qa-selector="dropdown_list_content" class="dropdown-content "></div>
+<div class="dropdown-footer">
+<ul class="dropdown-footer-list">
+<li>
+<div class="js-invite-members-trigger" data-display-text="Invite Members" data-event="click_invite_members" data-label="edit_assignee" data-trigger-element="anchor"></div>
+</li>
+</ul>
+</div>
+<div class="dropdown-loading"><div class="gl-spinner-container"><span class="gl-spinner gl-spinner-orange gl-spinner-md gl-mt-7" aria-label="Loading"></span></div></div>
+</div>
+</div>
+</div>
+`;
 
 const USER_SEARCH_HTML = getUserSearchHTML();
 const AUTOCOMPLETE_USERS = getJSONFixture('autocomplete/users.json');

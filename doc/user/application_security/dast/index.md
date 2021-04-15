@@ -164,7 +164,7 @@ stages:
   - build
   - dast
 
-include: 
+include:
   - template: DAST.gitlab-ci.yml
 
 # Deploys the container to the GitLab container registry
@@ -469,16 +469,14 @@ variables:
 
 #### Import API specification from a file
 
-If your API specification is in your repository, you can provide the specification's
-filename directly as the target. The specification file is expected to be in the
-`/zap/wrk` directory.
+If your API specification file is in your repository, you can provide its filename as the target.
+The API specification file must be in the `/zap/wrk` directory.
 
 ```yaml
 dast:
-  script:
+  before_script:
     - mkdir -p /zap/wrk
     - cp api-specification.yml /zap/wrk/api-specification.yml
-    - /analyze -t $DAST_WEBSITE
   variables:
     GIT_STRATEGY: fetch
     DAST_API_SPECIFICATION: api-specification.yml
@@ -495,6 +493,12 @@ Specifications often define a host, which contains a domain name and a port. The
 host referenced may be different than the host of the API's review instance.
 This can cause incorrect URLs to be imported, or a scan on an incorrect host.
 Use the `DAST_API_HOST_OVERRIDE` CI/CD variable to override these values.
+
+WARNING:
+When using the API host override feature, you cannot use the `$DAST_WEBSITE` variable to override the hostname.
+A host override is _only_ supported when importing the API specification from a URL. Attempts to override the
+host throw an error when the API specification is imported from a file. This is due to a limitation in the
+ZAP OpenAPI extension.
 
 For example, with a OpenAPI V3 specification containing:
 
@@ -514,10 +518,6 @@ variables:
   DAST_API_SPECIFICATION: http://api-test.host.com/api-specification.yml
   DAST_API_HOST_OVERRIDE: api-test.host.com
 ```
-
-Note that using a host override is ONLY supported when importing the API specification from a URL.
-It doesn't work and is ignored when importing the specification from a file. This is due to a
-limitation in the ZAP OpenAPI extension.
 
 #### Authentication using headers
 
@@ -963,7 +963,7 @@ follows:
 - _Header validation_ requires the header `Gitlab-On-Demand-DAST` be added to the target site,
   with a value unique to the project. The validation process checks that the header is present, and
   checks its value.
-  
+
 Both methods are equivalent in functionality. Use whichever is feasible.
 
 #### Create a site profile
