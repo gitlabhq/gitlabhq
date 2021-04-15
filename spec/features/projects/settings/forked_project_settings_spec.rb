@@ -15,7 +15,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
   end
 
   shared_examples 'project settings for a forked projects' do
-    it 'allows deleting the link to the forked project' do
+    it 'allows deleting the link to the forked project', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/327817' do
       visit edit_project_path(forked_project)
 
       click_button 'Remove fork relationship'

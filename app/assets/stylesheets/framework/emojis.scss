@@ -26,6 +26,13 @@ gl-emoji {
   height: 30px;
   // Create a width that fits 9 emojis per row
   width: 100 / 9 * 1%;
+  transition: transform 0.15s cubic-bezier(0.3, 0, 0.2, 2) !important;
+  will-change: transform;
+
+  &:hover,
+  &:focus {
+    transform: scale(1.3);
+  }
 }
 
 .emoji-picker .gl-new-dropdown .dropdown-menu {

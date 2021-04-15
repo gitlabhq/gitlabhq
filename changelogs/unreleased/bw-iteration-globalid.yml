@@ -1,0 +1,5 @@
+---
+title: Allow a Global ID to be used when filtering issue by iterationId in GraphQL
+merge_request: 57620
+author:
+type: changed

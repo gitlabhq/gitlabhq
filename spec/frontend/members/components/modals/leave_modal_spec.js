@@ -1,10 +1,12 @@
 import { GlModal, GlForm } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
+import { cloneDeep } from 'lodash';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import LeaveModal from '~/members/components/modals/leave_modal.vue';
 import { LEAVE_MODAL_ID, MEMBER_TYPES } from '~/members/constants';
+import OncallSchedulesList from '~/vue_shared/components/oncall_schedules_list.vue';
 import { member } from '../../mock_data';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -47,9 +49,9 @@ describe('LeaveModal', () => {
     });
   };
 
-  const findModal = () => wrapper.find(GlModal);
-
-  const findForm = () => findModal().find(GlForm);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findForm = () => findModal().findComponent(GlForm);
+  const findOncallSchedulesList = () => findModal().findComponent(OncallSchedulesList);
 
   const getByText = (text, options) =>
     createWrapper(within(findModal().element).getByText(text, options));
@@ -85,6 +87,24 @@ describe('LeaveModal', () => {
     expect(form.find('input[name="authenticity_token"]').attributes('value')).toBe(
       'mock-csrf-token',
     );
+  });
+
+  describe('On-call schedules list', () => {
+    it("displays oncall schedules list when member's user is part of on-call schedules ", () => {
+      const schedulesList = findOncallSchedulesList();
+      expect(schedulesList.exists()).toBe(true);
+      expect(schedulesList.props()).toMatchObject({
+        isCurrentUser: true,
+        schedules: member.user.oncallSchedules,
+      });
+    });
+
+    it("does NOT display oncall schedules list when member's user is NOT a part of on-call schedules ", () => {
+      const memberWithoutOncallSchedules = cloneDeep(member);
+      delete (memberWithoutOncallSchedules, 'user.oncallSchedules');
+      createComponent({ member: memberWithoutOncallSchedules });
+      expect(findOncallSchedulesList().exists()).toBe(false);
+    });
   });
 
   it('submits the form when "Leave" button is clicked', () => {

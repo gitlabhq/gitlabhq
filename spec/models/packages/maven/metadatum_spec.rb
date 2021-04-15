@@ -54,7 +54,7 @@ RSpec.describe Packages::Maven::Metadatum, type: :model do
         let_it_be(:metadatum3) { create(:maven_metadatum, package: package) }
         let_it_be(:metadatum4) { create(:maven_metadatum, package: package) }
 
-        subject { Packages::Maven::Metadatum.for_package_ids(package.id).order_created }
+        subject { described_class.for_package_ids(package.id).order_created }
 
         it { is_expected.to eq([metadatum1, metadatum2, metadatum3, metadatum4]) }
       end
@@ -64,9 +64,19 @@ RSpec.describe Packages::Maven::Metadatum, type: :model do
         let_it_be(:metadatum2) { create(:maven_metadatum, package: package, app_name: 'two') }
         let_it_be(:metadatum3) { create(:maven_metadatum, package: package, app_name: 'three') }
 
-        subject { Packages::Maven::Metadatum.for_package_ids(package.id).pluck_app_name }
+        subject { described_class.for_package_ids(package.id).pluck_app_name }
 
         it { is_expected.to match_array([metadatum1, metadatum2, metadatum3].map(&:app_name)) }
+      end
+
+      describe '.with_path' do
+        let_it_be(:metadatum1) { create(:maven_metadatum, package: package, path: 'one') }
+        let_it_be(:metadatum2) { create(:maven_metadatum, package: package, path: 'two') }
+        let_it_be(:metadatum3) { create(:maven_metadatum, package: package, path: 'three') }
+
+        subject { described_class.with_path('two') }
+
+        it { is_expected.to match_array([metadatum2]) }
       end
     end
   end

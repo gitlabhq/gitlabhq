@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ApplySuggestion from '~/vue_shared/components/markdown/apply_suggestion.vue';
 import SuggestionDiffHeader from '~/vue_shared/components/markdown/suggestion_diff_header.vue';
 
@@ -21,6 +22,9 @@ describe('Suggestion Diff component', () => {
       propsData: {
         ...DEFAULT_PROPS,
         ...props,
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
       },
     });
   };
@@ -218,15 +222,23 @@ describe('Suggestion Diff component', () => {
   });
 
   describe('tooltip message for apply button', () => {
+    const findTooltip = () => getBinding(findApplyButton().element, 'gl-tooltip');
+
     it('renders correct tooltip message when button is applicable', () => {
       createComponent();
-      expect(wrapper.vm.tooltipMessage).toBe('This also resolves this thread');
+      const tooltip = findTooltip();
+
+      expect(tooltip.modifiers.viewport).toBe(true);
+      expect(tooltip.value).toBe('This also resolves this thread');
     });
 
     it('renders the inapplicable reason in the tooltip when button is not applicable', () => {
       const inapplicableReason = 'lorem';
       createComponent({ canApply: false, inapplicableReason });
-      expect(wrapper.vm.tooltipMessage).toBe(inapplicableReason);
+      const tooltip = findTooltip();
+
+      expect(tooltip.modifiers.viewport).toBe(true);
+      expect(tooltip.value).toBe(inapplicableReason);
     });
   });
 });

@@ -1,14 +1,13 @@
 ---
 stage: Verify
-group: Continuous Integration
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
-# Multi-project pipelines
+# Multi-project pipelines **(FREE)**
 
-> - [Introduced](https://about.gitlab.com/releases/2015/08/22/gitlab-7-14-released/#build-triggers-api-gitlab-ci) in GitLab 7.14, as Build Triggers.
-> - [Made available](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) in all tiers in GitLab 12.8.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
 You can set up [GitLab CI/CD](README.md) across multiple projects, so that a pipeline
 in one project can trigger a pipeline in another project.
@@ -42,8 +41,6 @@ With Multi-Project Pipelines you can visualize the entire pipeline, including al
 
 ## Multi-project pipeline visualization **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2121) in [GitLab Premium 9.3](https://about.gitlab.com/releases/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
-
 When you configure GitLab CI/CD for your project, you can visualize the stages of your
 [jobs](pipelines/index.md#configure-a-pipeline) on a [pipeline graph](pipelines/index.md#visualize-pipelines).
 
@@ -56,8 +53,7 @@ and when hovering or tapping (on touchscreen devices) they expand and are shown 
 
 ## Triggering multi-project pipelines through API
 
-> - Use of `CI_JOB_TOKEN` for multi-project pipelines was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2017) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.3.
-> - Use of `CI_JOB_TOKEN` for multi-project pipelines was [made available](https://gitlab.com/gitlab-org/gitlab/-/issues/31573) in all tiers in GitLab 12.4.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/31573) to GitLab Free in 12.4.
 
 When you use the [`CI_JOB_TOKEN` to trigger pipelines](triggers/README.md#ci-job-token), GitLab
 recognizes the source of the job token, and thus internally ties these pipelines
@@ -76,8 +72,7 @@ When using:
 
 ## Creating multi-project pipelines from `.gitlab-ci.yml`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
-> - [Made available](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) in all tiers in 12.8.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
 ### Triggering a downstream pipeline using a bridge job
 
@@ -260,7 +255,7 @@ test:
 
 ### Mirroring status from triggered pipeline
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11238) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11238) in GitLab Premium 12.3.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
 You can mirror the pipeline status from the triggered pipeline to the source
@@ -309,7 +304,7 @@ Some features are not implemented yet. For example, support for environments.
 
 ## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab Premium 12.8.
 
 You can trigger a pipeline in your project whenever a pipeline finishes for a new
 tag in a different project:

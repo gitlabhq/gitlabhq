@@ -16,8 +16,6 @@ RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', type: :contr
   end
 
   before do
-    stub_feature_flags(boards_filtered_search: false)
-
     project.add_maintainer(user)
     sign_in(user)
   end

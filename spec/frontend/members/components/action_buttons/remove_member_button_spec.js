@@ -38,6 +38,7 @@ describe('RemoveMemberButton', () => {
         title: 'Remove member',
         isAccessRequest: true,
         isInvite: true,
+        oncallSchedules: { name: 'user', schedules: [] },
         ...propsData,
       },
       directives: {
@@ -59,6 +60,7 @@ describe('RemoveMemberButton', () => {
       'data-message': 'Are you sure you want to remove John Smith?',
       'data-is-access-request': 'true',
       'data-is-invite': 'true',
+      'data-oncall-schedules': '{"name":"user","schedules":[]}',
       'aria-label': 'Remove member',
       title: 'Remove member',
       icon: 'remove',

@@ -40,11 +40,15 @@ describe('UserActionButtons', () => {
       expect(findRemoveMemberButton().props()).toEqual({
         memberId: member.id,
         memberType: 'GroupMember',
-        message: `Are you sure you want to remove ${member.user.name} from "${member.source.fullName}"`,
+        message: `Are you sure you want to remove ${member.user.name} from "${member.source.fullName}"?`,
         title: 'Remove member',
         isAccessRequest: false,
         isInvite: false,
         icon: 'remove',
+        oncallSchedules: {
+          name: member.user.name,
+          schedules: member.user.oncallSchedules,
+        },
       });
     });
 
@@ -58,7 +62,7 @@ describe('UserActionButtons', () => {
         });
 
         expect(findRemoveMemberButton().props('message')).toBe(
-          `Are you sure you want to remove this orphaned member from "${orphanedMember.source.fullName}"`,
+          `Are you sure you want to remove this orphaned member from "${orphanedMember.source.fullName}"?`,
         );
       });
     });

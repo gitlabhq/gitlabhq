@@ -32,7 +32,7 @@
       %tbody
         - @user_map.each do |id, user|
           %tr
-            %td= (id)
+            %td= id
             %td= text_field_tag "users[#{id}][name]", user[:name], class: 'form-control'
             %td= text_field_tag "users[#{id}][email]", user[:email], class: 'form-control'
             %td

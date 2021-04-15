@@ -8,7 +8,7 @@
     %p
       = _('Allow rendering of PlantUML diagrams in Asciidoc documents.')
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-plantuml-settings'), html: { class: 'fieldset-form' } do |f|
+    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-plantuml-settings'), html: { class: 'fieldset-form', id: 'plantuml-settings' } do |f|
       = form_errors(@application_setting) if expanded
 
       %fieldset

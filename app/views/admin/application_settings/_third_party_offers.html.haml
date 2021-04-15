@@ -8,7 +8,7 @@
     %p
       = _('Control the display of third party offers.')
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-third-party-offers-settings'), html: { class: 'fieldset-form' } do |f|
+    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-third-party-offers-settings'), html: { class: 'fieldset-form', id: 'third-party-offers-settings' } do |f|
       = form_errors(@application_setting) if expanded
 
       %fieldset

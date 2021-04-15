@@ -23360,6 +23360,8 @@ CREATE INDEX index_packages_events_on_package_id ON packages_events USING btree 
 
 CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON packages_maven_metadata USING btree (package_id, path);
 
+CREATE INDEX index_packages_maven_metadata_on_path ON packages_maven_metadata USING btree (path);
+
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
 
 CREATE UNIQUE INDEX index_packages_on_project_id_name_version_unique_when_generic ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 7);

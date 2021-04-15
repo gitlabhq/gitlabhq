@@ -19,6 +19,7 @@ class Packages::Maven::Metadatum < ApplicationRecord
   validate :maven_package_type
 
   scope :for_package_ids, -> (package_ids) { where(package_id: package_ids) }
+  scope :with_path, ->(path) { where(path: path) }
   scope :order_created, -> { reorder('created_at ASC') }
 
   def self.pluck_app_name

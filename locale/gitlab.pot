@@ -19640,10 +19640,10 @@ msgstr ""
 msgid "Members|Are you sure you want to remove \"%{groupName}\"?"
 msgstr ""
 
-msgid "Members|Are you sure you want to remove %{usersName} from \"%{source}\""
+msgid "Members|Are you sure you want to remove %{usersName} from \"%{source}\"?"
 msgstr ""
 
-msgid "Members|Are you sure you want to remove this orphaned member from \"%{source}\""
+msgid "Members|Are you sure you want to remove this orphaned member from \"%{source}\"?"
 msgstr ""
 
 msgid "Members|Are you sure you want to revoke the invitation for %{inviteEmail} to join \"%{source}\""
@@ -22011,10 +22011,19 @@ msgstr ""
 msgid "OnCallSchedules|For this rotation, on-call will be:"
 msgstr ""
 
+msgid "OnCallSchedules|On-call schedule %{schedule} in Project %{project}"
+msgstr ""
+
 msgid "OnCallSchedules|On-call schedules"
 msgstr ""
 
 msgid "OnCallSchedules|Please note, rotations with shifts that are less than four hours are currently not supported in the weekly view."
+msgstr ""
+
+msgid "OnCallSchedules|Removing this user may put their on-call team at risk of missing a notification."
+msgstr ""
+
+msgid "OnCallSchedules|Removing yourself may put your on-call team at risk of missing a notification."
 msgstr ""
 
 msgid "OnCallSchedules|Restrict to time intervals"
@@ -22071,10 +22080,16 @@ msgstr ""
 msgid "OnCallSchedules|Try adding a rotation"
 msgstr ""
 
+msgid "OnCallSchedules|User %{name} is currently part of:"
+msgstr ""
+
 msgid "OnCallSchedules|View next timeframe"
 msgstr ""
 
 msgid "OnCallSchedules|View previous timeframe"
+msgstr ""
+
+msgid "OnCallSchedules|You are currently a part of:"
 msgstr ""
 
 msgid "OnCallSchedules|Your schedule has been successfully created and all alerts from this project will now be routed to this schedule. Currently, only one schedule can be created per project. More coming soon! To add individual users to this schedule, use the add a rotation button."
@@ -37323,13 +37338,13 @@ msgstr ""
 msgid "mrWidget|Fast-forward merge is not possible. To merge this request, first rebase locally."
 msgstr ""
 
-msgid "mrWidget|Fork merge requests do not create merge request pipelines which validate a post merge result"
-msgstr ""
-
 msgid "mrWidget|Fork project merge requests do not create merge request pipelines that validate a post merge result unless invoked by a project member."
 msgstr ""
 
 msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
+msgstr ""
+
+msgid "mrWidget|If the last pipeline ran in the fork project, it may be inaccurate. Before merge, we advise running a pipeline in this project."
 msgstr ""
 
 msgid "mrWidget|Jump to first unresolved thread"

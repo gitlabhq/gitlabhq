@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Pagination::OffsetHeaderBuilder, type: :controller do
   controller(ActionController::Base) do
     def index
-      relation = Project.where(archived: params[:archived]).page(params[:page]).per(1)
+      relation = Project.where(archived: params[:archived]).page(params[:page]).order(:id).per(1)
 
       params_for_pagination = { archived: params[:archived], page: params[:page] }
 
@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Pagination::OffsetHeaderBuilder, type: :controller do
     end
   end
 
-  let_it_be(:projects) { create_list(:project, 2, archived: true) }
+  let_it_be(:projects) { create_list(:project, 2, archived: true).sort_by(&:id) }
 
   describe 'pagination' do
     it 'returns correct result for the first page' do

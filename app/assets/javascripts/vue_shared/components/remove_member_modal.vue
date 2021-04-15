@@ -1,8 +1,10 @@
 <script>
 import { GlFormCheckbox, GlModal } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import { s__, __ } from '~/locale';
+import OncallSchedulesList from '~/vue_shared/components/oncall_schedules_list.vue';
 
 export default {
   actionCancel: {
@@ -12,6 +14,7 @@ export default {
   components: {
     GlFormCheckbox,
     GlModal,
+    OncallSchedulesList,
   },
   data() {
     return {
@@ -48,6 +51,18 @@ export default {
     showUnassignIssuablesCheckbox() {
       return !this.isAccessRequest && !this.isInvite;
     },
+    isPartOfOncallSchedules() {
+      return !this.isAccessRequest && this.oncallSchedules.schedules?.length;
+    },
+    oncallSchedules() {
+      let schedules = {};
+      try {
+        schedules = JSON.parse(this.modalData.oncallSchedules);
+      } catch (e) {
+        Sentry.captureException(e);
+      }
+      return schedules;
+    },
   },
   mounted() {
     document.addEventListener('click', this.handleClick);
@@ -82,6 +97,12 @@ export default {
   >
     <form ref="form" :action="modalData.memberPath" method="post">
       <p data-testid="modal-message">{{ modalData.message }}</p>
+
+      <oncall-schedules-list
+        v-if="isPartOfOncallSchedules"
+        :schedules="oncallSchedules.schedules"
+        :user-name="oncallSchedules.name"
+      />
 
       <input ref="method" type="hidden" name="_method" value="delete" />
       <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />

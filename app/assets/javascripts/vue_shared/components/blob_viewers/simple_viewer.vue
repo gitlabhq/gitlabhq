@@ -1,16 +1,17 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { GlIcon } from '@gitlab/ui';
-import EditorLite from '~/vue_shared/components/editor_lite.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { HIGHLIGHT_CLASS_NAME } from './constants';
 import ViewerMixin from './mixins';
 
 export default {
   components: {
     GlIcon,
-    EditorLite,
+    EditorLite: () =>
+      import(/* webpackChunkName: 'EditorLite' */ '~/vue_shared/components/editor_lite.vue'),
   },
-  mixins: [ViewerMixin],
+  mixins: [ViewerMixin, glFeatureFlagsMixin()],
   inject: ['blobHash'],
   data() {
     return {
@@ -20,6 +21,9 @@ export default {
   computed: {
     lineNumbers() {
       return this.content.split('\n').length;
+    },
+    refactorBlobViewerEnabled() {
+      return this.glFeatures.refactorBlobViewer;
     },
   },
   mounted() {
@@ -49,7 +53,7 @@ export default {
 <template>
   <div>
     <editor-lite
-      v-if="isRawContent"
+      v-if="isRawContent && refactorBlobViewerEnabled"
       :value="content"
       :file-name="fileName"
       :editor-options="{ readOnly: true }"

@@ -42,6 +42,11 @@ export default {
       required: false,
       default: false,
     },
+    oncallSchedules: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
   },
   computed: {
     ...mapState({
@@ -51,6 +56,9 @@ export default {
     }),
     computedMemberPath() {
       return this.memberPath.replace(':id', this.memberId);
+    },
+    stringifiedSchedules() {
+      return JSON.stringify(this.oncallSchedules);
     },
   },
 };
@@ -69,6 +77,7 @@ export default {
     :data-is-access-request="isAccessRequest"
     :data-is-invite="isInvite"
     :data-message="message"
+    :data-oncall-schedules="stringifiedSchedules"
     data-qa-selector="delete_member_button"
   />
 </template>

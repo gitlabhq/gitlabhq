@@ -183,7 +183,7 @@ RSpec.describe 'Project' do
       visit edit_project_path(project)
     end
 
-    it 'removes fork' do
+    it 'removes fork', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/327817' do
       expect(page).to have_content 'Remove fork relationship'
 
       remove_with_confirm('Remove fork relationship', project.path)

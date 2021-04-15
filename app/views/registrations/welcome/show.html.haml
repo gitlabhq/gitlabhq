@@ -20,7 +20,7 @@
             = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, {}, class: 'form-control js-user-role-dropdown', autofocus: true
         - if Feature.enabled?(:user_other_role_details)
           .row
-            .form-group.col-sm-12.js-other-role-group{ class: ("hidden") }
+            .form-group.col-sm-12.js-other-role-group.hidden
               = f.label :other_role, _('What is your job title? (optional)'), class: 'form-check-label gl-mb-3'
               = f.text_field :other_role, class: 'form-control'
         = render_if_exists "registrations/welcome/setup_for_company", f: f

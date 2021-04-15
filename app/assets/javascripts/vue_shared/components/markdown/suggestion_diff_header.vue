@@ -147,6 +147,7 @@ export default {
       </gl-button>
       <apply-suggestion
         v-if="isLoggedIn"
+        v-gl-tooltip.viewport="tooltipMessage"
         :disabled="isDisableButton"
         :default-commit-message="defaultCommitMessage"
         class="gl-ml-3"

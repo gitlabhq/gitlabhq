@@ -20,6 +20,7 @@ export const member = {
     avatarUrl: 'https://www.gravatar.com/avatar/4816142ef496f956a277bedf1a40607b?s=80&d=identicon',
     blocked: false,
     twoFactorEnabled: false,
+    oncallSchedules: [{ name: 'schedule 1' }],
   },
   id: 238,
   createdAt: '2020-07-17T16:22:46.923Z',

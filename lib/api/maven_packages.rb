@@ -23,6 +23,15 @@ module API
     helpers ::API::Helpers::PackagesHelpers
 
     helpers do
+      def path_exists?(path)
+        # return true when FF disabled so that processing the request is not stopped
+        return true unless Feature.enabled?(:check_maven_path_first)
+        return false if path.blank?
+
+        Packages::Maven::Metadatum.with_path(path)
+                                  .exists?
+      end
+
       def extract_format(file_name)
         name, _, format = file_name.rpartition('.')
 
@@ -104,6 +113,9 @@ module API
     end
     route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
     get 'packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
+      # return a similar failure to authorize_read_package!(project)
+      forbidden! unless path_exists?(params[:path])
+
       file_name, format = extract_format(params[:file_name])
 
       # To avoid name collision we require project path and project package be the same.
@@ -142,6 +154,9 @@ module API
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       get ':id/-/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
+        # return a similar failure to group = find_group(params[:id])
+        not_found!('Group') unless path_exists?(params[:path])
+
         file_name, format = extract_format(params[:file_name])
 
         group = find_group(params[:id])
@@ -181,6 +196,9 @@ module API
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       get ':id/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
+        # return a similar failure to user_project
+        not_found!('Project') unless path_exists?(params[:path])
+
         authorize_read_package!(user_project)
 
         file_name, format = extract_format(params[:file_name])
