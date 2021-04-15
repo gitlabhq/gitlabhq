@@ -1,15 +1,8 @@
 <script>
-import {
-  GlFormGroup,
-  GlFormCheckbox,
-  GlFormInput,
-  GlSprintf,
-  GlLink,
-  GlButton,
-  GlCard,
-} from '@gitlab/ui';
+import { GlFormGroup, GlFormCheckbox, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
+import JiraUpgradeCta from './jira_upgrade_cta.vue';
 
 export default {
   name: 'JiraIssuesFields',
@@ -19,8 +12,7 @@ export default {
     GlFormInput,
     GlSprintf,
     GlLink,
-    GlButton,
-    GlCard,
+    JiraUpgradeCta,
     JiraIssueCreationVulnerabilities: () =>
       import('ee_component/integrations/edit/components/jira_issue_creation_vulnerabilities.vue'),
   },
@@ -84,11 +76,13 @@ export default {
       return !this.enableJiraIssues || Boolean(this.projectKey) || !this.validated;
     },
     showJiraVulnerabilitiesOptions() {
-      return (
-        this.enableJiraIssues &&
-        this.showJiraVulnerabilitiesIntegration &&
-        this.glFeatures.jiraForVulnerabilities
-      );
+      return this.showJiraVulnerabilitiesIntegration && this.glFeatures.jiraForVulnerabilities;
+    },
+    showUltimateUpgrade() {
+      return this.showJiraIssuesIntegration && !this.showJiraVulnerabilitiesIntegration;
+    },
+    showPremiumUpgrade() {
+      return !this.showJiraIssuesIntegration;
     },
   },
   created() {
@@ -135,27 +129,23 @@ export default {
             </template>
           </gl-form-checkbox>
           <jira-issue-creation-vulnerabilities
-            v-if="showJiraVulnerabilitiesOptions"
+            v-if="enableJiraIssues"
             :project-key="projectKey"
             :initial-is-enabled="initialEnableJiraVulnerabilities"
             :initial-issue-type-id="initialVulnerabilitiesIssuetype"
+            :show-full-feature="showJiraVulnerabilitiesOptions"
             data-testid="jira-for-vulnerabilities"
             @request-get-issue-types="getJiraIssueTypes"
           />
         </template>
-        <gl-card v-else class="gl-mt-7">
-          <strong>{{ __('This is a Premium feature') }}</strong>
-          <p>{{ __('Upgrade your plan to enable this feature of the Jira Integration.') }}</p>
-          <gl-button
-            v-if="upgradePlanPath"
-            category="primary"
-            variant="info"
-            :href="upgradePlanPath"
-            target="_blank"
-          >
-            {{ __('Upgrade your plan') }}
-          </gl-button>
-        </gl-card>
+        <jira-upgrade-cta
+          v-if="showUltimateUpgrade || showPremiumUpgrade"
+          class="gl-mt-2"
+          :class="{ 'gl-ml-6': showUltimateUpgrade }"
+          :upgrade-plan-path="upgradePlanPath"
+          :show-ultimate-message="showUltimateUpgrade"
+          :show-premium-message="showPremiumUpgrade"
+        />
       </div>
     </gl-form-group>
     <template v-if="showJiraIssuesIntegration">

@@ -459,6 +459,86 @@ Example of response
 }
 ```
 
+## Get Kubernetes Agents by `CI_JOB_TOKEN` **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324269) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.11.
+
+Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed GitLab
+Kubernetes Agents.
+
+```plaintext
+GET /job/allowed_agents
+```
+
+Supported attributes:
+
+| Attribute      | Type     | Required | Description           |
+|:------------   |:---------|:---------|:----------------------|
+| `CI_JOB_TOKEN` | string   | yes      | Token value associated with the GitLab-provided `CI_JOB_TOKEN` variable. |
+
+Example request:
+
+```shell
+curl --header "JOB-TOKEN: <CI_JOB_TOKEN>" "https://gitlab.example.com/api/v4/job/allowed_agents"
+curl "https://gitlab.example.com/api/v4/job/allowed_agents?job_token=<CI_JOB_TOKEN>"
+```
+
+Example response:
+
+```json
+{
+  "allowed_agents":
+    [
+      {
+        "id": 1,
+        "config_project": {
+          "id": 1,
+          "description": null,
+          "name": "project1",
+          "name_with_namespace": "John Doe2 / project1",
+          "path": "project1",
+          "path_with_namespace": "namespace1/project1",
+          "created_at": "2021-03-26T14:51:50.579Z"
+        }
+      }
+    ],
+  "job": {
+    "id": 1,
+    "name": "test",
+    "stage": "test",
+    "project_id": 1,
+    "project_name": "project1"
+  },
+  "pipeline": {
+    "id": 1,
+    "project_id": 1,
+    "sha": "b83d6e391c22777fca1ed3012fce84f633d7fed0",
+    "ref": "master",
+    "status": "pending",
+    "created_at": "2021-03-26T14:51:51.107Z",
+    "updated_at": "2021-03-26T14:51:51.107Z",
+    "web_url": "http://localhost/namespace1/project1/-/pipelines/1"
+  },
+  "project": {
+    "id": 1,
+    "description": null,
+    "name": "project1",
+    "name_with_namespace": "John Doe2 / project1",
+    "path": "project1",
+    "path_with_namespace": "namespace1/project1",
+    "created_at": "2021-03-26T14:51:50.579Z"
+  },
+  "user": {
+    "id": 2,
+    "name": "John Doe3",
+    "username": "user2",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/10fc7f102b",
+    "web_url": "http://localhost/user2"
+  }
+}
+```
+
 ## Get a single job
 
 Get a single job of a project

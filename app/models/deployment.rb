@@ -171,7 +171,7 @@ class Deployment < ApplicationRecord
   end
 
   def commit
-    project.commit(sha)
+    @commit ||= project.commit(sha)
   end
 
   def commit_title
@@ -250,7 +250,7 @@ class Deployment < ApplicationRecord
     return unless on_stop.present?
     return unless manual_actions
 
-    @stop_action ||= manual_actions.find_by(name: on_stop)
+    @stop_action ||= manual_actions.find { |action| action.name == self.on_stop }
   end
 
   def finished_at

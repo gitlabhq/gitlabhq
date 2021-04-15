@@ -35,7 +35,8 @@ module SidebarsHelper
   def project_sidebar_context_data(project, user)
     {
       current_user: user,
-      container: project
+      container: project,
+      learn_gitlab_experiment_enabled: learn_gitlab_experiment_enabled?(project)
     }
   end
 end

@@ -17,15 +17,14 @@ describe('CommitFormModal', () => {
   let store;
   let axiosMock;
 
-  const createComponent = (method, state = {}, provide = {}) => {
+  const createComponent = (method, state = {}, provide = {}, propsData = {}) => {
     store = createStore({ ...mockData.mockModal, ...state });
     wrapper = extendedWrapper(
       method(CommitFormModal, {
         provide: {
           ...provide,
-          glFeatures: { pickIntoProject: true },
         },
-        propsData: { ...mockData.modalPropsData },
+        propsData: { ...mockData.modalPropsData, ...propsData },
         store,
         attrs: {
           static: true,
@@ -160,6 +159,12 @@ describe('CommitFormModal', () => {
     });
 
     it('Changes the target_project_id input value', async () => {
+      createComponent(
+        shallowMount,
+        {},
+        { glFeatures: { pickIntoProject: true } },
+        { isCherryPick: true },
+      );
       findProjectsDropdown().vm.$emit('selectProject', '_changed_project_value_');
 
       await wrapper.vm.$nextTick();

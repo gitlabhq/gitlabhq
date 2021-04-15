@@ -1,6 +1,9 @@
 - page_title _('Edit'), "#{@runner.description} ##{@runner.id}", _('Runners')
 
-%h4 Runner ##{@runner.id}
+%h2.page-title
+  = s_('Runners|Runner #%{runner_id}' % { runner_id: @runner.id })
+  = render 'shared/runners/runner_type_badge', runner: @runner
 
-%hr
-  = render 'shared/runners/form', runner: @runner, runner_form_url: group_runner_path(@group, @runner)
+= render 'shared/runners/runner_type_alert', runner: @runner
+
+= render 'shared/runners/form', runner: @runner, runner_form_url: group_runner_path(@group, @runner)

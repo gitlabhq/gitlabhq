@@ -2053,14 +2053,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
       let(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
 
       it { is_expected.to be_truthy }
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(codequality_backend_comparison: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
 
     context 'when head pipeline does not have a codequality report' do
@@ -3887,17 +3879,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     context 'when service class is Ci::CompareCodequalityReportsService' do
       let(:service_class) { 'Ci::CompareCodequalityReportsService' }
 
-      context 'when feature flag is enabled' do
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(codequality_backend_comparison: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'when service class is different' do

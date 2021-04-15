@@ -1803,8 +1803,8 @@ RSpec.describe User do
 
       it 'aborts all running pipelines and related jobs' do
         expect(user).to receive(:pipelines).and_return(pipelines)
-        expect(Ci::AbortPipelinesService).to receive(:new).and_return(service)
-        expect(service).to receive(:execute).with(pipelines, :user_blocked)
+        expect(Ci::DropPipelineService).to receive(:new).and_return(service)
+        expect(service).to receive(:execute_async_for_all).with(pipelines, :user_blocked, user)
 
         user.block
       end

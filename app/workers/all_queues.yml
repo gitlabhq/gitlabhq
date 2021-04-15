@@ -1251,6 +1251,14 @@
   :weight: 3
   :idempotent:
   :tags: []
+- :name: pipeline_default:ci_drop_pipeline
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 3
+  :idempotent: true
+  :tags: []
 - :name: pipeline_default:ci_merge_requests_add_todo_when_build_fails
   :feature_category: :continuous_integration
   :has_external_dependencies:

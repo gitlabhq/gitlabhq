@@ -1,17 +1,8 @@
 - page_title "#{@runner.description} ##{@runner.id}", _("Runners")
 
-%h3.page-title
-  = s_('Runners|Runner #%{id}' % { id: @runner.id })
-  .float-right
-    - if @runner.instance_type?
-      %span.runner-state.runner-state-shared
-        = s_('Runners|Shared')
-    - elsif @runner.group_type?
-      %span.runner-state.runner-state-shared
-        = s_('Runners|Group')
-    - else
-      %span.runner-state.runner-state-specific
-        = s_('Runners|Specific')
+%h2.page-title
+  = s_('Runners|Runner #%{runner_id}' % { runner_id: @runner.id })
+  = render 'shared/runners/runner_type_badge', runner: @runner
 
 .table-holder
   %table.table

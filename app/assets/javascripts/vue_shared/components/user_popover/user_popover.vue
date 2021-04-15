@@ -1,11 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import {
-  GlPopover,
-  GlLink,
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
-  GlIcon,
-} from '@gitlab/ui';
+import { GlPopover, GlLink, GlSkeletonLoader, GlIcon } from '@gitlab/ui';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import { glEmojiTag } from '../../../emoji';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
@@ -19,7 +14,7 @@ export default {
     GlIcon,
     GlLink,
     GlPopover,
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     UserAvatarImage,
     UserNameWithStatus,
   },
@@ -65,15 +60,13 @@ export default {
       <div class="gl-p-2 flex-shrink-1">
         <user-avatar-image :img-src="user.avatarUrl" :size="60" css-classes="gl-mr-3!" />
       </div>
-      <div class="gl-p-2 gl-w-full">
+      <div class="gl-p-2 gl-w-full gl-min-w-0">
         <template v-if="userIsLoading">
-          <!-- `gl-skeleton-loading` does not support equal length lines -->
-          <!-- This can be migrated to `gl-skeleton-loader` when https://gitlab.com/gitlab-org/gitlab-ui/-/issues/872 is completed -->
-          <gl-skeleton-loading
-            v-for="n in $options.maxSkeletonLines"
-            :key="n"
-            :lines="1"
-            class="animation-container-small gl-mb-2"
+          <gl-skeleton-loader
+            :lines="$options.maxSkeletonLines"
+            preserve-aspect-ratio="none"
+            equal-width-lines
+            :height="52"
           />
         </template>
         <template v-else>

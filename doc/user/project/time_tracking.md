@@ -44,9 +44,9 @@ with [Reporter and higher permission levels](../permissions.md).
 ### Estimates
 
 To enter an estimate, write `/estimate`, followed by the time. For example, if
-you need to enter an estimate of 3 days, 5 hours and 10 minutes, you would write
-`/estimate 3d 5h 10m`. Time units that we support are listed at the bottom of
-this help page.
+you need to enter an estimate of 1 month, 2 weeks, 3 days, 4 hours and 5 minutes,
+write `/estimate 1mo 2w 3d 4h 5m`.
+Check the [time units you can use](#configuration).
 
 Every time you enter a new time estimate, any previous time estimates are
 overridden by this new value. There should only be one valid estimate in an
@@ -56,7 +56,9 @@ To remove an estimation entirely, use `/remove_estimate`.
 
 ### Time spent
 
-To enter a time spent, use `/spend 3d 5h 10m`.
+To enter time spent, write `/spend`, followed by the time. For example, if you need 
+to log 1 month, 2 weeks, 3 days, 4 hours and 5 minutes, you would write `/spend 1mo 2w 3d 4h 5m`.
+Time units that we support are listed at the bottom of this help page.
 
 Every new time spent entry is added to the current total time spent for the
 issue or the merge request.
@@ -65,6 +67,11 @@ You can remove time by entering a negative amount: for example, `/spend -3d` rem
 days from the total time spent. You can't go below 0 minutes of time spent,
 so GitLab automatically resets the time spent if you remove a larger amount
 of time compared to the time that was entered already.
+
+You can log time in the past by providing a date after the time. 
+For example, if you want to log 1 hour of time spent on the 31 January 2021,
+you would write `/spend 1h 2021-01-31`. If you supply a date in the future, the
+command fails and no time is logged.
 
 To remove all the time spent at once, use `/remove_time_spent`.
 

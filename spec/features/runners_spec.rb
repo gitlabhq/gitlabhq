@@ -49,19 +49,19 @@ RSpec.describe 'Runners' do
         visit project_runners_path(project)
 
         within '.activated-specific-runners' do
-          expect(page).to have_content('Pause')
+          expect(page).to have_link('Pause')
         end
 
         click_on 'Pause'
 
         within '.activated-specific-runners' do
-          expect(page).to have_content('Resume')
+          expect(page).to have_link('Resume')
         end
 
         click_on 'Resume'
 
         within '.activated-specific-runners' do
-          expect(page).to have_content('Pause')
+          expect(page).to have_link('Pause')
         end
       end
 

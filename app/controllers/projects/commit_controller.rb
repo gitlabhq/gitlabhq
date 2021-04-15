@@ -20,7 +20,7 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
   before_action do
-    push_frontend_feature_flag(:pick_into_project)
+    push_frontend_feature_flag(:pick_into_project, @project, default_enabled: :yaml)
   end
 
   BRANCH_SEARCH_LIMIT = 1000

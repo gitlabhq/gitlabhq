@@ -23,7 +23,7 @@ class EnvironmentSerializer < BaseSerializer
           latest: super(item.latest, opts) }
       end
     else
-      super(resource, opts)
+      super(batch_load(resource), opts)
     end
   end
 
@@ -41,11 +41,59 @@ class EnvironmentSerializer < BaseSerializer
     # immediately.
     items = @paginator.paginate(items) if paginated?
 
-    environments = resource.where(id: items.map(&:last_id)).index_by(&:id)
+    environments = batch_load(resource.where(id: items.map(&:last_id)))
+    environments_by_id = environments.index_by(&:id)
 
     items.map do |item|
-      Item.new(item.folder, item.size, environments[item.last_id])
+      Item.new(item.folder, item.size, environments_by_id[item.last_id])
     end
+  end
+
+  def batch_load(resource)
+    resource = resource.preload(environment_associations)
+
+    resource.all.tap do |environments|
+      environments.each do |environment|
+        # Batch loading the commits of the deployments
+        environment.last_deployment&.commit&.try(:lazy_author)
+        environment.upcoming_deployment&.commit&.try(:lazy_author)
+      end
+    end
+  end
+
+  def environment_associations
+    {
+      last_deployment: deployment_associations,
+      upcoming_deployment: deployment_associations,
+      project: project_associations
+    }
+  end
+
+  def deployment_associations
+    {
+      user: [],
+      cluster: [],
+      project: [],
+      deployable: {
+        user: [],
+        metadata: [],
+        pipeline: {
+          manual_actions: [],
+          scheduled_actions: []
+        },
+        project: project_associations
+      }
+    }
+  end
+
+  def project_associations
+    {
+      project_feature: [],
+      route: [],
+      namespace: :route
+    }
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end
+
+EnvironmentSerializer.prepend_if_ee('EE::EnvironmentSerializer')

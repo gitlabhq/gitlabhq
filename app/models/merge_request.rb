@@ -37,7 +37,7 @@ class MergeRequest < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
   ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON = {
-    'Ci::CompareCodequalityReportsService' => ->(project) { ::Gitlab::Ci::Features.display_codequality_backend_comparison?(project) }
+    'Ci::CompareCodequalityReportsService' => ->(project) { true }
   }.freeze
 
   belongs_to :target_project, class_name: "Project"
@@ -1564,8 +1564,6 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_reports?
-    return false unless ::Gitlab::Ci::Features.display_codequality_backend_comparison?(project)
-
     actual_head_pipeline&.has_reports?(Ci::JobArtifact.codequality_reports)
   end
 

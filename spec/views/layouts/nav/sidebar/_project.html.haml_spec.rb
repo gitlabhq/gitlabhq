@@ -50,6 +50,16 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
+  describe 'Learn GitLab' do
+    it 'has a link to the learn GitLab experiment' do
+      allow(view).to receive(:learn_gitlab_experiment_enabled?).and_return(true)
+
+      render
+
+      expect(rendered).to have_link('Learn GitLab', href: project_learn_gitlab_path(project))
+    end
+  end
+
   describe 'issue boards' do
     it 'has board tab' do
       render

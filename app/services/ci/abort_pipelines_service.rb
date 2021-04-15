@@ -3,7 +3,7 @@
 module Ci
   class AbortPipelinesService
     # NOTE: This call fails pipelines in bulk without running callbacks.
-    # Only for pipeline abandonment scenarios (examples: project delete, user block)
+    # Only for pipeline abandonment scenarios (examples: project delete)
     def execute(pipelines, failure_reason)
       pipelines.cancelable.each_batch(of: 100) do |pipeline_batch|
         now = Time.current

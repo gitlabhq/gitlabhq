@@ -8,22 +8,10 @@
   #js-runner-detail{ data: {runner_id: @runner.id} }
 - else
   %h2.page-title
-    = sprintf(s_('Runners|Runner #%{runner_id}'), {runner_id: @runner.id})
+    = s_('Runners|Runner #%{runner_id}' % { runner_id: @runner.id })
+    = render 'shared/runners/runner_type_badge', runner: @runner
 
-- if @runner.instance_type?
-  .bs-callout.bs-callout-success
-    %h4= _('This runner processes jobs for all unassigned projects.')
-    %p
-      = _('If you want a runner to build only specific projects, restrict the project in the table below. After you restrict a runner to a project, you cannot change it back to a shared runner.')
-- elsif @runner.group_type?
-  .bs-callout.bs-callout-success
-    %h4= _('This runner processes jobs for all projects in its group and subgroups.')
-- else
-  .bs-callout.bs-callout-info
-    %h4= _('This runner processes jobs for assigned projects only.')
-    %p
-      = _('You cannot make this a shared runner.')
-%hr
+= render 'shared/runners/runner_type_alert', runner: @runner
 
 .gl-mb-6
   = render 'shared/runners/form', runner: @runner, runner_form_url: admin_runner_path(@runner), in_gitlab_com_admin_context: Gitlab.com?

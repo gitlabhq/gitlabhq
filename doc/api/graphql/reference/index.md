@@ -1960,7 +1960,7 @@ Represents a DAST Profile.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `branch` | [`DastProfileBranch`](#dastprofilebranch) | The associated branch. Will always return `null` if `dast_branch_selection` feature flag is disabled. |
+| `branch` | [`DastProfileBranch`](#dastprofilebranch) | The associated branch. |
 | `dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | The associated scanner profile. |
 | `dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | The associated site profile. |
 | `description` | [`String`](#string) | The description of the scan. |

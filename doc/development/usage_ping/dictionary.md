@@ -14640,7 +14640,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.create.merge_requests_with_added_rules`
 
-Merge Requests with added rules
+Merge requests with added rules
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175047_merge_requests_with_added_rules.yml)
 
@@ -16584,7 +16584,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.create.merge_requests_with_added_rules`
 
-Merge Requests with added rules
+Merge requests with added rules
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175103_merge_requests_with_added_rules.yml)
 

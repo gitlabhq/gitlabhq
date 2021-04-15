@@ -1,0 +1,5 @@
+---
+title: Exclude projects dropdown from revert modal
+merge_request: 59504
+author:
+type: fixed

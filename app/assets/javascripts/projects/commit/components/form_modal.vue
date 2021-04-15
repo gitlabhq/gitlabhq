@@ -37,6 +37,11 @@ export default {
       type: String,
       required: true,
     },
+    isCherryPick: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -111,7 +116,7 @@ export default {
       <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
 
       <gl-form-group
-        v-if="glFeatures.pickIntoProject"
+        v-if="glFeatures.pickIntoProject && isCherryPick"
         :label="i18n.projectLabel"
         label-for="start_project"
         data-testid="dropdown-group"

@@ -52,7 +52,7 @@ class ChangelogOptionParser
           options.force = value
         end
 
-        opts.on('-m', '--merge-request [integer]', Integer, 'Merge Request ID') do |value|
+        opts.on('-m', '--merge-request [integer]', Integer, 'Merge request ID') do |value|
           options.merge_request = value
         end
 

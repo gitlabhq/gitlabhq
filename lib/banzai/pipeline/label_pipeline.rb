@@ -6,7 +6,7 @@ module Banzai
       def self.filters
         @filters ||= FilterArray[
           Filter::SanitizationFilter,
-          Filter::LabelReferenceFilter
+          Filter::References::LabelReferenceFilter
         ]
       end
     end

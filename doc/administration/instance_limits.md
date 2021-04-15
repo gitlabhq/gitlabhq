@@ -145,13 +145,14 @@ limited to 1KiB, and descriptions (the rest of the message) will be limited to
 
 ## Number of issues in the milestone overview
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39453) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39453) in GitLab 12.10.
+> - [Set](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58168) to 500 in GitLab 13.11.
 
-The maximum number of issues loaded on the milestone overview page is 3000.
+The maximum number of issues loaded on the milestone overview page is 500.
 When the number exceeds the limit the page displays an alert and links to a paginated
 [issue list](../user/project/issues/managing_issues.md) of all issues in the milestone.
 
-- **Limit:** 3000 issues
+- **Limit:** 500 issues
 
 ## Number of pipelines per Git push
 

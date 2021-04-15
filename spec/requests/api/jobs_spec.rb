@@ -100,6 +100,18 @@ RSpec.describe API::Jobs do
       end
     end
 
+    context 'when token is valid but not CI_JOB_TOKEN' do
+      let(:token) { create(:personal_access_token, user: user) }
+
+      include_context 'with auth headers' do
+        let(:header) { { 'Private-Token' => token.token } }
+      end
+
+      it 'returns not found' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'with job token authentication header' do
       include_context 'with auth headers' do
         let(:header) { { API::Helpers::Runner::JOB_TOKEN_HEADER => running_job.token } }

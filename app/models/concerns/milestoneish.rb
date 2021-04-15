@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Milestoneish
-  DISPLAY_ISSUES_LIMIT = 3000
+  DISPLAY_ISSUES_LIMIT = 500
 
   def total_issues_count
     @total_issues_count ||= Milestones::IssuesCountService.new(self).count

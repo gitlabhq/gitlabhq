@@ -85,8 +85,7 @@ RSpec.describe 'Database schema' do
     users: %w[color_scheme_id created_by_id theme_id email_opted_in_source_id],
     users_star_projects: %w[user_id],
     vulnerability_identifiers: %w[external_id],
-    vulnerability_scanners: %w[external_id],
-    web_hook_logs_part_0c5294f417: %w[web_hook_id]
+    vulnerability_scanners: %w[external_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do

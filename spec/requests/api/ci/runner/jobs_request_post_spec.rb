@@ -143,7 +143,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
         context 'when there is a pending job' do
           let(:expected_job_info) do
-            { 'name' => job.name,
+            { 'id' => job.id,
+              'name' => job.name,
               'stage' => job.stage,
               'project_id' => job.project.id,
               'project_name' => job.project.name }

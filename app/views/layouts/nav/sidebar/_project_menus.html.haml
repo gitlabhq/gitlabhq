@@ -1,11 +1,3 @@
-- if project_nav_tab? :learn_gitlab
-  = nav_link(controller: :learn_gitlab, html_options: { class: 'home' }) do
-    = link_to project_learn_gitlab_path(@project) do
-      .nav-icon-container
-        = sprite_icon('home')
-      %span.nav-item-name
-        = _('Learn GitLab')
-
 - if project_nav_tab? :files
   = nav_link(controller: sidebar_repository_paths, unless: -> { current_path?('projects/graphs#charts') }) do
     = link_to project_tree_path(@project), class: 'shortcuts-tree', data: { qa_selector: "repository_link" } do

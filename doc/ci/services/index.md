@@ -18,6 +18,7 @@ case is to run a database container, for example:
 - [MySQL](mysql.md)
 - [PostgreSQL](postgres.md)
 - [Redis](redis.md)
+- [GitLab](gitlab.md) as an example for a microservice offering a JSON API
 
 It's easier and faster to use an existing image and run it as an additional container
 than to install `mysql`, for example, every time the project is built.
