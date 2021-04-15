@@ -6,10 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Container Registry administration **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4040) in GitLab 8.8.
-> - Container Registry manifest `v1` support was added in GitLab 8.9 to support
->   Docker versions earlier than 1.10.
-
 With the GitLab Container Registry, every project can have its
 own space to store Docker images.
 
@@ -832,8 +828,6 @@ no longer directly accessible via the `:latest` tag.
 
 ### Recycling unused tags
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/987) in Omnibus GitLab 8.12.
-
 Before you run the built-in command, note the following:
 
 - The built-in command stops the registry before it starts the garbage collection.
@@ -909,8 +903,6 @@ that you have backed up all registry data.
 When the command is used without the `-m` flag, the Container Registry only removes layers that are not referenced by any manifest, tagged or not.
 
 ### Performing garbage collection without downtime
-
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/764) in GitLab 8.8.
 
 You can perform garbage collection without stopping the Container Registry by putting
 it in read-only mode and by not using the built-in command. On large instances

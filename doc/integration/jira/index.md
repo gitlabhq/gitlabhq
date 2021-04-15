@@ -25,7 +25,7 @@ For an overview, see [Agile Management - GitLab-Jira Basic Integration](https://
 This integration connects a single GitLab project to a Jira instance. The Jira instance
 can be hosted by you or in [Atlassian cloud](https://www.atlassian.com/cloud):
 
-- *If your installation uses GitLab.com and Jira Cloud,* use the
+- *If your installation uses Jira Cloud,* use the
   [GitLab for Jira app](connect-app.md).
 - *If either your Jira or GitLab installation is self-managed,* use the
   [Jira DVCS Connector](dvcs.md).

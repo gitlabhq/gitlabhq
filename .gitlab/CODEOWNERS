@@ -135,7 +135,7 @@
 /doc/api/invitations.md @aqualls
 /doc/api/experiments.md @aqualls 
 /doc/development/experiment_guide/ @aqualls
-/doc/development/snowplow.md @aqualls
+/doc/development/snowplow/ @aqualls
 /doc/development/usage_ping/ @aqualls
 /doc/user/admin_area/license.md @aqualls
 

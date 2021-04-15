@@ -1,8 +1,0 @@
----
-name: feature_flags_cache_stale_read_fix
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57819
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325452
-milestone: '13.11'
-type: development
-group:
-default_enabled: false

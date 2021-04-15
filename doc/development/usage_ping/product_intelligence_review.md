@@ -14,7 +14,7 @@ general best practices for code reviews, refer to our [code review guide](../cod
 ## Resources for Product Intelligence reviewers
 
 - [Usage Ping Guide](index.md)
-- [Snowplow Guide](../snowplow.md)
+- [Snowplow Guide](../snowplow/index.md)
 - [Metrics Dictionary](metrics_dictionary.md)
 
 ## Review process
@@ -51,7 +51,7 @@ Product Intelligence files.
 ##### When adding or modifiying Snowplow events
 
 - For frontend events, when relevant, add a screenshot of the event in
-  the [testing tool](../snowplow.md#developing-and-testing-snowplow) used.
+  the [testing tool](../snowplow/index.md#developing-and-testing-snowplow) used.
 - For backend events, when relevant, add the output of the Snowplow Micro
   good events `GET http://localhost:9090/micro/good` (it might be a good idea
   to reset with `GET http://localhost:9090/micro/reset` first).
@@ -80,8 +80,8 @@ Any of the Product Intelligence engineers can be assigned for the Product Intell
   - Check the Redis slot.
   - Check if a [feature flag is needed](index.md#recommendations).
 - For tracking with Snowplow:
-  - Check that the [event taxonomy](../snowplow.md#structured-event-taxonomy) is correct.
-  - Check the [usage recomendations](../snowplow.md#usage-recommendations).
+  - Check that the [event taxonomy](../snowplow/index.md#structured-event-taxonomy) is correct.
+  - Check the [usage recomendations](../snowplow/index.md#usage-recommendations).
 - Metrics YAML definitions:
   - Check the metric `description`.
   - Check the metrics `key_path`.

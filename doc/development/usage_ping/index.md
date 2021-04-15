@@ -13,7 +13,7 @@ This guide describes Usage Ping's purpose and how it's implemented.
 For more information about Product Intelligence, see:
 
 - [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
-- [Snowplow Guide](../snowplow.md)
+- [Snowplow Guide](../snowplow/index.md)
 
 More links:
 

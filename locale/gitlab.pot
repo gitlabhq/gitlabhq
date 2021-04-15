@@ -4474,6 +4474,9 @@ msgstr ""
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr ""
 
+msgid "Attaching File - %{progress}"
+msgstr ""
+
 msgid "Attaching a file"
 msgid_plural "Attaching %d files"
 msgstr[0] ""
@@ -6243,6 +6246,9 @@ msgid "Child epic doesn't exist."
 msgstr ""
 
 msgid "Chinese language support using"
+msgstr ""
+
+msgid "Choose File..."
 msgstr ""
 
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
@@ -8938,7 +8944,10 @@ msgstr ""
 msgid "CorpusManagement|Latest Job:"
 msgstr ""
 
-msgid "CorpusManagement|New corpus"
+msgid "CorpusManagement|New corpus needs to be a upload in *.zip format. Maximum 10Gib"
+msgstr ""
+
+msgid "CorpusManagement|New upload"
 msgstr ""
 
 msgid "CorpusManagement|Not Set"
@@ -8948,6 +8957,9 @@ msgid "CorpusManagement|Target"
 msgstr ""
 
 msgid "CorpusManagement|Total Size: %{totalSize}"
+msgstr ""
+
+msgid "CorpusMnagement|New corpus"
 msgstr ""
 
 msgid "Could not add admins as members"

@@ -1,5 +1,4 @@
 ---
-# See Usage Ping metrics dictionary docs https://docs.gitlab.com/ee/development/usage_ping/metrics_dictionary.html
 key_path: <%= key_path %><%= metric_name_suggestion %>
 description:
 product_section:
@@ -14,7 +13,6 @@ time_frame: <%= time_frame %>
 data_source:
 distribution:
 <%= distribution %>
-# Add here corresponding tiers
 # tier:
 # - free
 # - premium
