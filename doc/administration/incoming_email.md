@@ -615,3 +615,59 @@ incoming_email:
     # Whether the IMAP server uses SSL
     ssl: true
 ```
+
+#### Microsoft Graph
+
+> Introduced in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/214900).
+
+GitLab can read incoming email using the Microsoft Graph API instead of
+IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in/ba-p/1330432), the Microsoft Graph API will soon be required for new Microsoft Exchange Online
+mailboxes.
+
+To configure GitLab for Microsoft Graph, you will need to register an
+OAuth2 application in your Azure Active Directory that has the
+`Mail.ReadWrite` permission for all mailboxes. See the [MailRoom step-by-step guide](https://github.com/tpitale/mail_room/#microsoft-graph-configuration)
+and [Microsoft instructions](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+for more details.
+
+Record the following when you configure your OAuth2 application:
+
+- Tenant ID for your Azure Active Directory
+- Client ID for your OAuth2 application
+- Client secret your OAuth2 application
+
+##### Restrict mailbox access
+
+For MailRoom to work as a service account, the application you create
+in Azure Active Directory requires that you set the `Mail.ReadWrite` property
+to read/write mail in *all* mailboxes.
+
+To mitigate security concerns, we recommend configuring an application access
+policy which limits the mailbox access for all accounts, as described in
+[Microsoft documentation](https://docs.microsoft.com/en-us/graph/auth-limit-mailbox-access).
+
+This example for Omnibus GitLab assumes you're using the following mailbox: `incoming@example.onmicrosoft.com`:
+
+##### Configure Microsoft Graph
+
+```ruby
+gitlab_rails['incoming_email_enabled'] = true
+
+# The email address including the `%{key}` placeholder that will be replaced
+# to reference the item being replied to. The placeholder can be omitted, but if
+# present, it must appear in the "user" part of the address (before the `@`).
+gitlab_rails['incoming_email_address'] = "incoming+%{key}@example.onmicrosoft.com"
+
+# Email account username
+gitlab_rails['incoming_email_email'] = "incoming@example.onmicrosoft.com"
+
+gitlab_rails['incoming_email_inbox_method'] = 'microsoft_graph'
+gitlab_rails['incoming_email_inbox_options'] = {
+   'tenant_id': '<YOUR-TENANT-ID>',
+   'client_id': '<YOUR-CLIENT-ID>',
+   'client_secret': '<YOUR-CLIENT-SECRET>',
+   'poll_interval': 60  # Optional
+}
+```
+
+The Microsoft Graph API is not yet supported in source installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.

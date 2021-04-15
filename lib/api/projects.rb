@@ -71,10 +71,10 @@ module API
       # This is to help determine which projects to use in https://gitlab.com/gitlab-org/gitlab/-/issues/325788
       def log_if_upload_exceed_max_size(user_project, file)
         return if file.size <= user_project.max_attachment_size
-        return if exempt_from_global_attachment_size?(user_project)
 
         if file.size > user_project.max_attachment_size
-          Gitlab::AppLogger.info({ message: "File exceeds maximum size", file_bytes: file.size, project_id: user_project.id, project_path: user_project.full_path })
+          allowed = exempt_from_global_attachment_size?(user_project)
+          Gitlab::AppLogger.info({ message: "File exceeds maximum size", file_bytes: file.size, project_id: user_project.id, project_path: user_project.full_path, upload_allowed: allowed })
         end
       end
     end

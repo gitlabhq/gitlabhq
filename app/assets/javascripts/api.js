@@ -796,7 +796,7 @@ const Api = {
     return axios.delete(url, { data });
   },
 
-  getRawFile(id, path, params = { ref: 'master' }) {
+  getRawFile(id, path, params = {}) {
     const url = Api.buildUrl(this.rawFilePath)
       .replace(':id', encodeURIComponent(id))
       .replace(':path', encodeURIComponent(path));

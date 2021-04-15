@@ -29,7 +29,7 @@ module QA
         user.remove_via_api!
       end
 
-      it 'imports a GitHub repo', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/385' do
+      it 'imports a GitHub repo', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1762' do
         Flow::Login.sign_in(as: user)
 
         imported_project # import the project

@@ -22,7 +22,8 @@ describe('ProjectsPipelinesChartsApp', () => {
         {},
         {
           provide: {
-            shouldRenderDeploymentFrequencyCharts: false,
+            shouldRenderDeploymentFrequencyCharts: true,
+            shouldRenderLeadTimeCharts: true,
           },
           stubs: {
             DeploymentFrequencyCharts: DeploymentFrequencyChartsStub,
@@ -34,45 +35,45 @@ describe('ProjectsPipelinesChartsApp', () => {
     );
   }
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   const findGlTabs = () => wrapper.find(GlTabs);
-  const findAllGlTab = () => wrapper.findAll(GlTab);
-  const findGlTabAt = (i) => findAllGlTab().at(i);
+  const findAllGlTabs = () => wrapper.findAll(GlTab);
   const findLeadTimeCharts = () => wrapper.find(LeadTimeChartsStub);
   const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
   const findPipelineCharts = () => wrapper.find(PipelineCharts);
 
-  it('renders the pipeline charts', () => {
-    expect(findPipelineCharts().exists()).toBe(true);
-  });
-
-  it('renders the lead time charts', () => {
-    expect(findLeadTimeCharts().exists()).toBe(true);
-  });
-
-  describe('when shouldRenderDeploymentFrequencyCharts is true', () => {
-    beforeEach(() => {
-      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
-    });
-
+  const expectCorrectTabs = ({ pipelines, leadTime, deploymentFreqency }) => {
     it('renders the expected tabs', () => {
       expect(findGlTabs().exists()).toBe(true);
-      expect(findGlTabAt(0).attributes('title')).toBe('Pipelines');
-      expect(findGlTabAt(1).attributes('title')).toBe('Deployments');
-      expect(findGlTabAt(2).attributes('title')).toBe('Lead Time');
+
+      const allTabTitles = findAllGlTabs().wrappers.map((w) => w.attributes('title'));
+
+      if (pipelines) {
+        expect(allTabTitles).toContain('Pipelines');
+        expect(findPipelineCharts().exists()).toBe(true);
+      }
+
+      if (deploymentFreqency) {
+        expect(allTabTitles).toContain('Deployments');
+        expect(findDeploymentFrequencyCharts().exists()).toBe(true);
+      }
+
+      if (leadTime) {
+        expect(allTabTitles).toContain('Lead Time');
+        expect(findLeadTimeCharts().exists()).toBe(true);
+      }
+    });
+  };
+
+  describe('when all charts are available', () => {
+    beforeEach(() => {
+      createComponent();
     });
 
-    it('renders the deployment frequency charts', () => {
-      expect(findDeploymentFrequencyCharts().exists()).toBe(true);
-    });
+    expectCorrectTabs({ pipelines: true, deploymentFreqency: true, leadTime: true });
 
     it('sets the tab and url when a tab is clicked', async () => {
       let chartsPath;
@@ -172,14 +173,33 @@ describe('ProjectsPipelinesChartsApp', () => {
       createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: false } });
     });
 
-    it('renders the expected tabs', () => {
-      expect(findGlTabs().exists()).toBe(true);
-      expect(findGlTabAt(0).attributes('title')).toBe('Pipelines');
-      expect(findGlTabAt(1).attributes('title')).toBe('Lead Time');
+    expectCorrectTabs({ pipelines: true, deploymentFreqency: false, leadTime: true });
+  });
+
+  describe('when shouldRenderLeadTimeCharts is false', () => {
+    beforeEach(() => {
+      createComponent({ provide: { shouldRenderLeadTimeCharts: false } });
     });
 
-    it('does not render the deployment frequency charts in a tab', () => {
-      expect(findDeploymentFrequencyCharts().exists()).toBe(false);
+    expectCorrectTabs({ pipelines: true, deploymentFreqency: true, leadTime: false });
+  });
+
+  describe('when shouldRenderDeploymentFrequencyCharts and shouldRenderLeadTimeCharts are false', () => {
+    beforeEach(() => {
+      createComponent({
+        provide: {
+          shouldRenderDeploymentFrequencyCharts: false,
+          shouldRenderLeadTimeCharts: false,
+        },
+      });
+    });
+
+    it('does not render tabs', () => {
+      expect(findGlTabs().exists()).toBe(false);
+    });
+
+    it('renders the pipeline charts', () => {
+      expect(findPipelineCharts().exists()).toBe(true);
     });
   });
 });

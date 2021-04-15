@@ -13784,6 +13784,30 @@ Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.testing.i_testing_summary_widget_total_monthly`
+
+Unique users that expand the test summary merge request widget by month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210413205507_i_testing_summary_widget_total_monthly.yml)
+
+Group: `group::testing`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.testing.i_testing_summary_widget_total_weekly`
+
+Unique users that expand the test summary merge request widget by week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210413205507_i_testing_summary_widget_total_weekly.yml)
+
+Group: `group::testing`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.testing.i_testing_test_case_parsed_monthly`
 
 Internal Tracking to count number of unit tests parsed for planning of future code testing features. Data available [here](https://app.periscopedata.com/app/gitlab/788674/Verify:Testing-Group-Metrics?widget=10454394&udv=0)

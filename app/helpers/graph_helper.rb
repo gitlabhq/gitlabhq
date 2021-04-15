@@ -26,6 +26,10 @@ module GraphHelper
   def should_render_deployment_frequency_charts
     false
   end
+
+  def should_render_lead_time_charts
+    false
+  end
 end
 
 GraphHelper.prepend_if_ee('EE::GraphHelper')

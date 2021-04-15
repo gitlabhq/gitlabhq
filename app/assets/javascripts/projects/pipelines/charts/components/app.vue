@@ -18,6 +18,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    shouldRenderLeadTimeCharts: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -26,11 +30,17 @@ export default {
   },
   computed: {
     charts() {
+      const chartsToShow = ['pipelines'];
+
       if (this.shouldRenderDeploymentFrequencyCharts) {
-        return ['pipelines', 'deployments', 'lead-time'];
+        chartsToShow.push('deployments');
       }
 
-      return ['pipelines', 'lead-time'];
+      if (this.shouldRenderLeadTimeCharts) {
+        chartsToShow.push('lead-time');
+      }
+
+      return chartsToShow;
     },
   },
   created() {
@@ -55,16 +65,17 @@ export default {
 </script>
 <template>
   <div>
-    <gl-tabs :value="selectedTab" @input="onTabChange">
+    <gl-tabs v-if="charts.length > 1" :value="selectedTab" @input="onTabChange">
       <gl-tab :title="__('Pipelines')">
         <pipeline-charts />
       </gl-tab>
       <gl-tab v-if="shouldRenderDeploymentFrequencyCharts" :title="__('Deployments')">
         <deployment-frequency-charts />
       </gl-tab>
-      <gl-tab :title="__('Lead Time')">
+      <gl-tab v-if="shouldRenderLeadTimeCharts" :title="__('Lead Time')">
         <lead-time-charts />
       </gl-tab>
     </gl-tabs>
+    <pipeline-charts v-else />
   </div>
 </template>

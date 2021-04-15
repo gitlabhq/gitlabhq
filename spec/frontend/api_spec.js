@@ -1222,11 +1222,24 @@ describe('Api', () => {
     )}/repository/files/${encodeURIComponent(dummyFilePath)}/raw`;
 
     describe('when the raw file is successfully fetched', () => {
-      it('resolves the Promise', () => {
+      beforeEach(() => {
         mock.onGet(expectedUrl).replyOnce(httpStatus.OK);
+      });
 
+      it('resolves the Promise', () => {
         return Api.getRawFile(dummyProjectPath, dummyFilePath).then(() => {
           expect(mock.history.get).toHaveLength(1);
+        });
+      });
+
+      describe('when the method is called with params', () => {
+        it('sets the params on the request', () => {
+          const params = { ref: 'main' };
+          jest.spyOn(axios, 'get');
+
+          Api.getRawFile(dummyProjectPath, dummyFilePath, params);
+
+          expect(axios.get).toHaveBeenCalledWith(expectedUrl, { params });
         });
       });
     });

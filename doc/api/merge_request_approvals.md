@@ -7,7 +7,9 @@ type: reference, api
 
 # Merge request approvals API **(PREMIUM)**
 
-Configuration for approvals on all Merge Requests (MR) in the project. Must be authenticated for all endpoints.
+Configuration for
+[approvals on all merge requests](../user/project/merge_requests/merge_request_approvals.md)
+in the project. Must be authenticated for all endpoints.
 
 ## Project-level MR approvals
 

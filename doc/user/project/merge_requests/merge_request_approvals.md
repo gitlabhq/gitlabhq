@@ -13,6 +13,7 @@ type: reference, concepts
 Code review is an essential practice of every successful project. Approving a
 merge request is an important part of the review
 process, as it clearly communicates the ability to merge the change.
+A [merge request approvals API](../../../api/merge_request_approvals.md) is also available.
 
 ## Optional Approvals
 

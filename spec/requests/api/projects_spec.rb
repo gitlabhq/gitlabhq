@@ -1587,14 +1587,6 @@ RSpec.describe API::Projects do
       expect(json_response['full_path']).to start_with("/#{project.namespace.path}/#{project.path}/uploads")
     end
 
-    it "logs a warning if file exceeds attachment size" do
-      allow(Gitlab::CurrentSettings).to receive(:max_attachment_size).and_return(0)
-
-      expect(Gitlab::AppLogger).to receive(:info).with(hash_including(message: 'File exceeds maximum size')).and_call_original
-
-      post api("/projects/#{project.id}/uploads", user), params: { file: file }
-    end
-
     it "does not leave the temporary file in place after uploading, even when the tempfile reaper does not run" do
       stub_env('GITLAB_TEMPFILE_IMMEDIATE_UNLINK', '1')
       tempfile = Tempfile.new('foo')
@@ -1613,7 +1605,7 @@ RSpec.describe API::Projects do
       expect(File.exist?(path)).to be(false)
     end
 
-    shared_examples 'capped upload attachments' do
+    shared_examples 'capped upload attachments' do |upload_allowed|
       it "limits the upload to 1 GB" do
         expect_next_instance_of(UploadService) do |instance|
           expect(instance).to receive(:override_max_attachment_size=).with(1.gigabyte).and_call_original
@@ -1623,6 +1615,16 @@ RSpec.describe API::Projects do
 
         expect(response).to have_gitlab_http_status(:created)
       end
+
+      it "logs a warning if file exceeds attachment size" do
+        allow(Gitlab::CurrentSettings).to receive(:max_attachment_size).and_return(0)
+
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(message: 'File exceeds maximum size', upload_allowed: upload_allowed))
+            .and_call_original
+
+        post api("/projects/#{project.id}/uploads", user), params: { file: file }
+      end
     end
 
     context 'with exempted project' do
@@ -1630,7 +1632,7 @@ RSpec.describe API::Projects do
         stub_env('GITLAB_UPLOAD_API_ALLOWLIST', project.id)
       end
 
-      it_behaves_like 'capped upload attachments'
+      it_behaves_like 'capped upload attachments', true
     end
 
     context 'with upload size enforcement disabled' do
@@ -1638,7 +1640,7 @@ RSpec.describe API::Projects do
         stub_feature_flags(enforce_max_attachment_size_upload_api: false)
       end
 
-      it_behaves_like 'capped upload attachments'
+      it_behaves_like 'capped upload attachments', false
     end
   end
 

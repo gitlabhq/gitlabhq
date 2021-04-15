@@ -16,6 +16,7 @@ const mountPipelineChartsApp = (el) => {
   const shouldRenderDeploymentFrequencyCharts = parseBoolean(
     el.dataset.shouldRenderDeploymentFrequencyCharts,
   );
+  const shouldRenderLeadTimeCharts = parseBoolean(el.dataset.shouldRenderLeadTimeCharts);
 
   return new Vue({
     el,
@@ -27,6 +28,7 @@ const mountPipelineChartsApp = (el) => {
     provide: {
       projectPath,
       shouldRenderDeploymentFrequencyCharts,
+      shouldRenderLeadTimeCharts,
     },
     render: (createElement) => createElement(ProjectPipelinesCharts, {}),
   });
