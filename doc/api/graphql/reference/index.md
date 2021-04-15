@@ -3128,7 +3128,7 @@ Represents an external issue.
 | `minimumReverificationInterval` | [`Int`](#int) | The interval (in days) in which the repository verification is valid. Once expired, it will be reverified. |
 | `name` | [`String`](#string) | The unique identifier for this Geo node. |
 | `packageFileRegistries` | [`PackageFileRegistryConnection`](#packagefileregistryconnection) | Package file registries of the GeoNode. |
-| `pipelineArtifactRegistries` | [`PipelineArtifactRegistryConnection`](#pipelineartifactregistryconnection) | Find pipeline artifact registries on this Geo node. Available only when feature flag `geo_pipeline_artifact_replication` is enabled. |
+| `pipelineArtifactRegistries` | [`PipelineArtifactRegistryConnection`](#pipelineartifactregistryconnection) | Find pipeline artifact registries on this Geo node. |
 | `primary` | [`Boolean`](#boolean) | Indicates whether this Geo node is the primary. |
 | `reposMaxCapacity` | [`Int`](#int) | The maximum concurrency of repository backfill for this secondary node. |
 | `selectiveSyncNamespaces` | [`NamespaceConnection`](#namespaceconnection) | The namespaces that should be synced, if `selective_sync_type` == `namespaces`. |

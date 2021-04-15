@@ -152,6 +152,24 @@ To run several tests inside one directory:
 
 - `bin/rspec spec/requests/api/` for the RSpec tests if you want to test API only
 
+### Run RSpec tests which failed in Merge Request pipeline on your machine
+
+If your Merge Request pipeline failed with RSpec test failures,
+you can run all the failed tests on your machine with the following Rake task:
+
+```shell
+bin/rake spec:merge_request_rspec_failure
+```
+
+There are a few caveats for this Rake task:
+
+- You need to be on the same branch on your machine as the source branch of the Merge Request.
+- The pipeline must have been completed.
+- You may need to wait for the test report to be parsed and retry again.
+
+This Rake task depends on the [unit test reports](../ci/unit_test_reports.md) feature,
+which only gets parsed when it is requested for the first time.
+
 ### Speed up tests, Rake tasks, and migrations
 
 [Spring](https://github.com/rails/spring) is a Rails application pre-loader. It

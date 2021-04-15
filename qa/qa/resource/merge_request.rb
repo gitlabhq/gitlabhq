@@ -62,7 +62,7 @@ module QA
         @labels = []
         @file_name = "added_file-#{SecureRandom.hex(8)}.txt"
         @file_content = "File Added"
-        @target_branch = "master"
+        @target_branch = project.default_branch
         @target_new_branch = true
         @no_preparation = false
         @wait_for_merge = true
