@@ -5,17 +5,61 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, api
 ---
 
-# UsageData API **(FREE SELF)**
+# Usage Data API **(FREE SELF)**
 
-The UsageData API, associated with [Usage Ping](../development/usage_ping/index.md), is available only for
-the use of GitLab instance [Administrator](../user/permissions.md) users.
+The Usage Data API is associated with [Usage Ping](../development/usage_ping/index.md).
 
-## UsageDataQueries API
+## Export metric definitions as a single YAML file
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57270) in GitLab 13.11.
+
+Export all metric definitions as a single YAML file, similar to the [Metrics Dictionary](../development/usage_ping/dictionary.md), for easier importing.
+
+```plaintext
+GET /usage_data/metric_definitions
+```
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/v4/usage_data/metric_definitions"
+```
+
+Example response:
+
+```yaml
+---
+- key_path: redis_hll_counters.search.i_search_paid_monthly
+  description: Calculated unique users to perform a search with a paid license enabled
+    by month
+  product_section: enablement
+  product_stage: enablement
+  product_group: group::global search
+  product_category: global_search
+  value_type: number
+  status: data_available
+  time_frame: 28d
+  data_source: redis_hll
+  distribution:
+  - ee
+  tier:
+  - premium
+  - ultimate
+...
+```
+
+## Export Usage Ping SQL queries
+
+This action is available only for the GitLab instance [Administrator](../user/permissions.md) users.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57016) in GitLab 13.11.
 > - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
 
-Return all of the raw SQL queries used to compute usage ping.
+Return all of the raw SQL queries used to compute Usage Ping.
+
+```plaintext
+GET /usage_data/queries
+```
 
 Example request:
 
@@ -23,7 +67,7 @@ Example request:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/usage_data/queries"
 ```
 
-Sample response
+Example response:
 
 ```json
 {

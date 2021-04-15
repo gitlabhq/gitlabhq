@@ -65,6 +65,23 @@ RSpec.describe Issuable do
     it { expect(issuable_class).to respond_to(:opened) }
     it { expect(issuable_class).to respond_to(:closed) }
     it { expect(issuable_class).to respond_to(:assigned) }
+
+    describe '.includes_for_bulk_update' do
+      before do
+        stub_const('Example', Class.new(ActiveRecord::Base))
+
+        Example.class_eval do
+          include Issuable # adds :labels and :metrics, among others
+
+          belongs_to :author
+          has_many :assignees
+        end
+      end
+
+      it 'includes available associations' do
+        expect(Example.includes_for_bulk_update.includes_values).to eq([:author, :assignees, :labels, :metrics])
+      end
+    end
   end
 
   describe 'author_name' do

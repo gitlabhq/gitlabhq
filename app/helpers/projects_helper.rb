@@ -729,14 +729,6 @@ module ProjectsHelper
     ]
   end
 
-  def sidebar_projects_paths
-    %w[
-      projects#show
-      projects#activity
-      releases#index
-    ]
-  end
-
   def sidebar_settings_paths
     %w[
       projects#edit

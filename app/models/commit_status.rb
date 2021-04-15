@@ -179,6 +179,12 @@ class CommitStatus < ApplicationRecord
         ExpireJobCacheWorker.perform_async(id)
       end
     end
+
+    after_transition any => :failed do |commit_status|
+      commit_status.run_after_commit do
+        ::Gitlab::Ci::Pipeline::Metrics.job_failure_reason_counter.increment(reason: commit_status.failure_reason)
+      end
+    end
   end
 
   def self.names

@@ -195,4 +195,17 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   describe '#batch_class_name=' do
     it_behaves_like 'an attr_writer that demodulizes assigned class names', :batch_class_name
   end
+
+  describe '#prometheus_labels' do
+    let(:batched_migration) { create(:batched_background_migration, job_class_name: 'TestMigration', table_name: 'foo', column_name: 'bar') }
+
+    it 'returns a hash with labels for the migration' do
+      labels = {
+        migration_id: batched_migration.id,
+        migration_identifier: 'TestMigration/foo.bar'
+      }
+
+      expect(batched_migration.prometheus_labels).to eq(labels)
+    end
+  end
 end

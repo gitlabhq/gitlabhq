@@ -44,6 +44,7 @@ module ServiceParams
     # make those event names plural as special case.
     :issues_events,
     :issues_url,
+    :jenkins_url,
     :jira_issue_transition_automatic,
     :jira_issue_transition_id,
     :manual_configuration,
@@ -56,6 +57,7 @@ module ServiceParams
     :password,
     :priority,
     :project_key,
+    :project_name,
     :project_url,
     :recipients,
     :restrict_to_branch,

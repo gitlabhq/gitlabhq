@@ -47,19 +47,4 @@ RSpec.describe BranchesHelper do
       end
     end
   end
-
-  describe '#gl_dropdown_branches_enabled?' do
-    context 'when the feature is enabled' do
-      it 'returns true' do
-        expect(helper.gldropdrown_branches_enabled?).to be_truthy
-      end
-    end
-
-    context 'when the feature is disabled' do
-      it 'returns false' do
-        stub_feature_flags(gldropdown_branches: false)
-        expect(helper.gldropdrown_branches_enabled?).to be_falsy
-      end
-    end
-  end
 end

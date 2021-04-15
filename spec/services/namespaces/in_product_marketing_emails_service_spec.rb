@@ -85,26 +85,46 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
   end
 
   describe 'experimentation' do
-    context 'when the experiment is enabled' do
-      it 'adds the group as an experiment subject in the experimental group' do
-        expect(Experiment).to receive(:add_group)
-          .with(:in_product_marketing_emails, variant: :experimental, group: group)
-
-        execute_service
-      end
-    end
-
-    context 'when the experiment is disabled' do
-      let(:experiment_enabled) { false }
-
-      it 'adds the group as an experiment subject in the control group' do
-        expect(Experiment).to receive(:add_group)
-          .with(:in_product_marketing_emails, variant: :control, group: group)
-
-        execute_service
+    context 'when on dotcom' do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(true)
       end
 
-      it { is_expected.not_to send_in_product_marketing_email }
+      context 'when the experiment is enabled' do
+        it 'adds the group as an experiment subject in the experimental group' do
+          expect(Experiment).to receive(:add_group)
+            .with(:in_product_marketing_emails, variant: :experimental, group: group)
+
+          execute_service
+        end
+      end
+
+      context 'when the experiment is disabled' do
+        let(:experiment_enabled) { false }
+
+        it 'adds the group as an experiment subject in the control group' do
+          expect(Experiment).to receive(:add_group)
+            .with(:in_product_marketing_emails, variant: :control, group: group)
+
+          execute_service
+        end
+
+        it { is_expected.not_to send_in_product_marketing_email }
+      end
+
+      context 'when not on dotcom' do
+        before do
+          allow(::Gitlab).to receive(:com?).and_return(false)
+        end
+
+        it 'does not add the group as an experiment subject' do
+          expect(Experiment).not_to receive(:add_group)
+
+          execute_service
+        end
+
+        it { is_expected.to send_in_product_marketing_email(user.id, group.id, :create, 0) }
+      end
     end
   end
 

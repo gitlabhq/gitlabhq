@@ -167,7 +167,8 @@ The following API resources are available outside of project and group contexts 
 | [Sidekiq metrics](sidekiq_metrics.md) **(FREE SELF)** | `/sidekiq`                                                           |
 | [Suggestions](suggestions.md)                      | `/suggestions`                                                          |
 | [System hooks](system_hooks.md)                    | `/hooks`                                                                |
-| [To-dos](todos.md)                                  | `/todos`                                                                |
+| [To-dos](todos.md)                                 | `/todos`                                                                |
+| [Usage data](usage_data.md)                        | `/usage_data` (For GitLab instance [Administrator](../user/permissions.md) users only) |
 | [Users](users.md)                                  | `/users`                                                                |
 | [Validate `.gitlab-ci.yml` file](lint.md)          | `/lint`                                                                 |
 | [Version](version.md)                              | `/version`                                                              |

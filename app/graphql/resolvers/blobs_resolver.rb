@@ -21,7 +21,7 @@ module Resolvers
     # We fetch blobs from Gitaly efficiently but it still scales O(N) with the
     # number of paths being fetched, so apply a scaling limit to that.
     def self.resolver_complexity(args, child_complexity:)
-      super + args.fetch(:paths, []).size
+      super + (args[:paths] || []).size
     end
 
     def resolve(paths:, ref:)

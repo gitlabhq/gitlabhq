@@ -12,10 +12,10 @@ RSpec.describe BulkImports::Stage do
         [1, BulkImports::Groups::Pipelines::LabelsPipeline],
         [1, BulkImports::Groups::Pipelines::MilestonesPipeline],
         [1, BulkImports::Groups::Pipelines::BadgesPipeline],
-        [1, 'EE::BulkImports::Groups::Pipelines::IterationsPipeline'.constantize],
-        [2, 'EE::BulkImports::Groups::Pipelines::EpicsPipeline'.constantize],
-        [3, 'EE::BulkImports::Groups::Pipelines::EpicAwardEmojiPipeline'.constantize],
-        [3, 'EE::BulkImports::Groups::Pipelines::EpicEventsPipeline'.constantize],
+        [1, 'BulkImports::Groups::Pipelines::IterationsPipeline'.constantize],
+        [2, 'BulkImports::Groups::Pipelines::EpicsPipeline'.constantize],
+        [3, 'BulkImports::Groups::Pipelines::EpicAwardEmojiPipeline'.constantize],
+        [3, 'BulkImports::Groups::Pipelines::EpicEventsPipeline'.constantize],
         [4, BulkImports::Groups::Pipelines::EntityFinisher]
       ]
     else

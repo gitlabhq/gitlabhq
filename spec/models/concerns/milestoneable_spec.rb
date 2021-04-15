@@ -50,13 +50,13 @@ RSpec.describe Milestoneable do
       it 'returns true with a milestone from the issue project' do
         milestone = create(:milestone, project: project)
 
-        expect(build_milestoneable(milestone.id).milestone_available?).to be_truthy
+        expect(build_milestoneable(milestone.id).milestone_available?).to be(true)
       end
 
       it 'returns true with a milestone from the issue project group' do
         milestone = create(:milestone, group: group)
 
-        expect(build_milestoneable(milestone.id).milestone_available?).to be_truthy
+        expect(build_milestoneable(milestone.id).milestone_available?).to be(true)
       end
 
       it 'returns true with a milestone from the the parent of the issue project group' do
@@ -64,19 +64,23 @@ RSpec.describe Milestoneable do
         group.update!(parent: parent)
         milestone = create(:milestone, group: parent)
 
-        expect(build_milestoneable(milestone.id).milestone_available?).to be_truthy
+        expect(build_milestoneable(milestone.id).milestone_available?).to be(true)
+      end
+
+      it 'returns true with a blank milestone' do
+        expect(build_milestoneable('').milestone_available?).to be(true)
       end
 
       it 'returns false with a milestone from another project' do
         milestone = create(:milestone)
 
-        expect(build_milestoneable(milestone.id).milestone_available?).to be_falsey
+        expect(build_milestoneable(milestone.id).milestone_available?).to be(false)
       end
 
       it 'returns false with a milestone from another group' do
         milestone = create(:milestone, group: create(:group))
 
-        expect(build_milestoneable(milestone.id).milestone_available?).to be_falsey
+        expect(build_milestoneable(milestone.id).milestone_available?).to be(false)
       end
     end
   end

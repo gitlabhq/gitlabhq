@@ -34,4 +34,22 @@ RSpec.describe Gitlab::UsageDataNonSqlMetrics do
       expect(described_class.histogram(JiraImportState.finished, :imported_issues_count, buckets: [], bucket_size: 0)).to eq(default_count)
     end
   end
+
+  describe 'min/max methods' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:model, :result) do
+      User       | nil
+      Issue      | nil
+      Deployment | nil
+      Project    | nil
+    end
+
+    with_them do
+      it 'returns nil' do
+        expect(described_class.minimum_id(model)).to eq(result)
+        expect(described_class.maximum_id(model)).to eq(result)
+      end
+    end
+  end
 end

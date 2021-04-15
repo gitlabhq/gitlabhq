@@ -17,6 +17,13 @@ module Sidebars
       {}
     end
 
+    # Attributes to pass to the html_options attribute
+    # in the helper method that sets the active class
+    # on each element.
+    def nav_link_html_options
+      {}
+    end
+
     def title
       raise NotImplementedError
     end

@@ -1,29 +1,3 @@
-= nav_link(path: sidebar_projects_paths, html_options: { class: 'home' }) do
-  = link_to project_path(@project), class: 'shortcuts-project rspec-project-link', data: { qa_selector: 'project_link' } do
-    .nav-icon-container
-      = sprite_icon('home')
-    %span.nav-item-name
-      = _('Project overview')
-
-  %ul.sidebar-sub-level-items
-    = nav_link(path: 'projects#show', html_options: { class: "fly-out-top-item" } ) do
-      = link_to project_path(@project) do
-        %strong.fly-out-top-item-name
-          = _('Project overview')
-    %li.divider.fly-out-top-item
-    = nav_link(path: 'projects#show') do
-      = link_to project_path(@project), title: _('Project details'), class: 'shortcuts-project' do
-        %span= _('Details')
-
-    = nav_link(path: 'projects#activity') do
-      = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity', data: { qa_selector: 'activity_link' } do
-        %span= _('Activity')
-
-    - if project_nav_tab?(:releases)
-      = nav_link(controller: :releases) do
-        = link_to project_releases_path(@project), title: _('Releases'), class: 'shortcuts-project-releases' do
-          %span= _('Releases')
-
 - if project_nav_tab? :learn_gitlab
   = nav_link(controller: :learn_gitlab, html_options: { class: 'home' }) do
     = link_to project_learn_gitlab_path(@project) do

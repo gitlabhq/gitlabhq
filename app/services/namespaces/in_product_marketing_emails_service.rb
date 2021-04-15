@@ -41,9 +41,11 @@ module Namespaces
     attr_reader :track, :interval, :in_product_marketing_email_records
 
     def send_email_for_group(group)
-      experiment_enabled_for_group = experiment_enabled_for_group?(group)
-      experiment_add_group(group, experiment_enabled_for_group)
-      return unless experiment_enabled_for_group
+      if Gitlab.com?
+        experiment_enabled_for_group = experiment_enabled_for_group?(group)
+        experiment_add_group(group, experiment_enabled_for_group)
+        return unless experiment_enabled_for_group
+      end
 
       users_for_group(group).each do |user|
         if can_perform_action?(user, group)

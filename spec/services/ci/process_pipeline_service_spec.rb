@@ -10,6 +10,14 @@ RSpec.describe Ci::ProcessPipelineService do
     create(:ci_empty_pipeline, ref: 'master', project: project)
   end
 
+  let(:pipeline_processing_events_counter) { double(increment: true) }
+  let(:legacy_update_jobs_counter) { double(increment: true) }
+
+  let(:metrics) do
+    double(pipeline_processing_events_counter: pipeline_processing_events_counter,
+           legacy_update_jobs_counter: legacy_update_jobs_counter)
+  end
+
   subject { described_class.new(pipeline) }
 
   before do
@@ -17,22 +25,13 @@ RSpec.describe Ci::ProcessPipelineService do
     stub_not_protect_default_branch
 
     project.add_developer(user)
+
+    allow(subject).to receive(:metrics).and_return(metrics)
   end
 
   describe 'processing events counter' do
-    let(:metrics) { double('pipeline metrics') }
-    let(:counter) { double('events counter') }
-
-    before do
-      allow(subject)
-        .to receive(:metrics).and_return(metrics)
-      allow(metrics)
-        .to receive(:pipeline_processing_events_counter)
-        .and_return(counter)
-    end
-
     it 'increments processing events counter' do
-      expect(counter).to receive(:increment)
+      expect(pipeline_processing_events_counter).to receive(:increment)
 
       subject.execute
     end
@@ -64,32 +63,21 @@ RSpec.describe Ci::ProcessPipelineService do
         expect(all_builds.retried).to contain_exactly(build_retried)
       end
 
-      context 'counter ci_legacy_update_jobs_as_retried_total' do
-        let(:counter) { double(increment: true) }
+      it 'increments the counter' do
+        expect(legacy_update_jobs_counter).to receive(:increment)
 
+        subject.execute
+      end
+
+      context 'when the previous build has already retried column true' do
         before do
-          allow(Gitlab::Metrics).to receive(:counter).and_call_original
-          allow(Gitlab::Metrics).to receive(:counter)
-                                      .with(:ci_legacy_update_jobs_as_retried_total, anything)
-                                      .and_return(counter)
+          build_retried.update_columns(retried: true)
         end
 
-        it 'increments the counter' do
-          expect(counter).to receive(:increment)
+        it 'does not increment the counter' do
+          expect(legacy_update_jobs_counter).not_to receive(:increment)
 
           subject.execute
-        end
-
-        context 'when the previous build has already retried column true' do
-          before do
-            build_retried.update_columns(retried: true)
-          end
-
-          it 'does not increment the counter' do
-            expect(counter).not_to receive(:increment)
-
-            subject.execute
-          end
         end
       end
     end

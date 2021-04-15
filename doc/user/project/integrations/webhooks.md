@@ -1311,7 +1311,6 @@ X-Gitlab-Event: Job Hook
     "name": "User",
     "email": "user@gitlab.com",
     "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
-    "email": "admin@example.com"
   },
   "commit": {
     "id": 2366,

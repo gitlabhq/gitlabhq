@@ -16,25 +16,7 @@
       = link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), title: s_('Branches|Show all branches')
 
   .nav-controls
-    - if !gldropdrown_branches_enabled?
-      = form_tag(project_branches_filtered_path(@project, state: 'all'), method: :get) do
-        = search_field_tag :search, params[:search], { placeholder: s_('Branches|Filter by branch name'), id: 'branch-search', class: 'form-control search-text-input input-short', spellcheck: false }
-
-      - unless @mode == 'overview'
-        .dropdown.inline>
-          %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
-            %span.light
-              = branches_sort_options_hash[@sort]
-            = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
-          %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
-            %li.dropdown-header
-              = s_('Branches|Sort by')
-            - branches_sort_options_hash.each do |value, title|
-              %li
-                = link_to title, project_branches_filtered_path(@project, state: 'all', search: params[:search], sort: value), class: ("is-active" if @sort == value)
-
-    - else
-      #js-branches-sort-dropdown{ data: { project_branches_filtered_path: project_branches_path(@project, state: 'all'), sort_options: branches_sort_options_hash.to_json, mode: @mode } }
+    #js-branches-sort-dropdown{ data: { project_branches_filtered_path: project_branches_path(@project, state: 'all'), sort_options: branches_sort_options_hash.to_json, mode: @mode } }
 
     - if can? current_user, :push_code, @project
       = link_to project_merged_branches_path(@project),

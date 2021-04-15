@@ -57,6 +57,13 @@ module Gitlab
         def batch_class_name=(class_name)
           write_attribute(:batch_class_name, class_name.demodulize)
         end
+
+        def prometheus_labels
+          @prometheus_labels ||= {
+            migration_id: id,
+            migration_identifier: "%s/%s.%s" % [job_class_name, table_name, column_name]
+          }
+        end
       end
     end
   end

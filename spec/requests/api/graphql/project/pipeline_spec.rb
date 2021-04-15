@@ -235,4 +235,51 @@ RSpec.describe 'getting pipeline information nested in a project' do
       end
     end
   end
+
+  context 'when requesting a specific test suite' do
+    let_it_be(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+    let(:suite_name) { 'test' }
+    let_it_be(:build_ids) { pipeline.latest_builds.pluck(:id) }
+
+    let(:variables) do
+      {
+        path: project.full_path,
+        pipelineIID: pipeline.iid.to_s
+      }
+    end
+
+    let(:query) do
+      <<~GQL
+      query($path: ID!, $pipelineIID: ID!, $buildIds: [ID!]!) {
+        project(fullPath: $path) {
+          pipeline(iid: $pipelineIID) {
+            testSuite(buildIds: $buildIds) {
+              name
+            }
+          }
+        }
+      }
+      GQL
+    end
+
+    it 'can request a test suite by an array of build_ids' do
+      vars = variables.merge(buildIds: build_ids)
+
+      post_graphql(query, current_user: current_user, variables: vars)
+
+      expect(graphql_data_at(:project, :pipeline, :testSuite, :name)).to eq(suite_name)
+    end
+
+    context 'when pipeline has no builds that matches the given build_ids' do
+      let_it_be(:build_ids) { [non_existing_record_id] }
+
+      it 'returns nil' do
+        vars = variables.merge(buildIds: build_ids)
+
+        post_graphql(query, current_user: current_user, variables: vars)
+
+        expect(graphql_data_at(*path, :test_suite)).to be_nil
+      end
+    end
+  end
 end

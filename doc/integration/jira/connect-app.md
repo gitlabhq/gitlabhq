@@ -11,6 +11,8 @@ You can integrate GitLab.com and Jira Cloud using the
 app in the Atlassian Marketplace. The user configuring GitLab for Jira must have
 [Maintainer](../../user/permissions.md) permissions in the GitLab namespace.
 
+This integration method supports [smart commits](dvcs.md#smart-commits).
+
 This method is recommended when using GitLab.com and Jira Cloud because data is
 synchronized in real-time. The DVCS connector updates data only once per hour.
 If you are not using both of these environments, use the [Jira DVCS Connector](dvcs.md) method.

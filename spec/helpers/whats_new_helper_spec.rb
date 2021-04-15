@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WhatsNewHelper do
+  include Devise::Test::ControllerHelpers
+
   describe '#whats_new_version_digest' do
     let(:digest) { 'digest' }
 
@@ -29,6 +31,32 @@ RSpec.describe WhatsNewHelper do
         allow(ReleaseHighlight).to receive(:most_recent_item_count).and_return(nil)
 
         expect(subject).to be_nil
+      end
+    end
+  end
+
+  describe '#display_whats_new?' do
+    subject { helper.display_whats_new? }
+
+    it 'returns true when gitlab.com' do
+      allow(Gitlab).to receive(:dev_env_org_or_com?).and_return(true)
+
+      expect(subject).to be true
+    end
+
+    context 'when self-managed' do
+      before do
+        allow(Gitlab).to receive(:dev_env_org_or_com?).and_return(false)
+      end
+
+      it 'returns true if user is signed in' do
+        sign_in(create(:user))
+
+        expect(subject).to be true
+      end
+
+      it "returns false if user isn't signed in" do
+        expect(subject).to be false
       end
     end
   end

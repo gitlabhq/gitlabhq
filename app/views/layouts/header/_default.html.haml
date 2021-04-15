@@ -120,7 +120,8 @@
         = sprite_icon('ellipsis_h', size: 12, css_class: 'more-icon js-navbar-toggle-right')
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
 
-#whats-new-app{ data: { version_digest: whats_new_version_digest } }
+- if display_whats_new?
+  #whats-new-app{ data: { version_digest: whats_new_version_digest } }
 
 - if can?(current_user, :update_user_status, current_user)
   .js-set-status-modal-wrapper{ data: user_status_data }

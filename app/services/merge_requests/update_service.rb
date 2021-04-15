@@ -11,18 +11,7 @@ module MergeRequests
     end
 
     def execute(merge_request)
-      # We don't allow change of source/target projects and source branch
-      # after merge request was created
-      params.delete(:source_project_id)
-      params.delete(:target_project_id)
-      params.delete(:source_branch)
-
-      if merge_request.closed_or_merged_without_fork?
-        params.delete(:target_branch)
-        params.delete(:force_remove_source_branch)
-      end
-
-      update_task_event(merge_request) || update(merge_request)
+      update_merge_request_with_specialized_service(merge_request) || general_fallback(merge_request)
     end
 
     def handle_changes(merge_request, options)
@@ -85,6 +74,21 @@ module MergeRequests
     private
 
     attr_reader :target_branch_was_deleted
+
+    def general_fallback(merge_request)
+      # We don't allow change of source/target projects and source branch
+      # after merge request was created
+      params.delete(:source_project_id)
+      params.delete(:target_project_id)
+      params.delete(:source_branch)
+
+      if merge_request.closed_or_merged_without_fork?
+        params.delete(:target_branch)
+        params.delete(:force_remove_source_branch)
+      end
+
+      update_task_event(merge_request) || update(merge_request)
+    end
 
     def track_title_and_desc_edits(changed_fields)
       tracked_fields = %w(title description)
@@ -271,6 +275,34 @@ module MergeRequests
     override :quick_action_options
     def quick_action_options
       { merge_request_diff_head_sha: params.delete(:merge_request_diff_head_sha) }
+    end
+
+    def update_merge_request_with_specialized_service(merge_request)
+      return unless params.delete(:use_specialized_service)
+
+      # If we're attempting to modify only a single attribute, look up whether
+      #   we have a specialized, targeted service we should use instead. We may
+      #   in the future extend this to include specialized services that operate
+      #   on multiple attributes, but for now limit to only single attribute
+      #   updates.
+      #
+      return unless params.one?
+
+      attempt_specialized_update_services(merge_request, params.each_key.first.to_sym)
+    end
+
+    def attempt_specialized_update_services(merge_request, attribute)
+      case attribute
+      when :assignee_ids
+        assignees_service.execute(merge_request)
+      else
+        nil
+      end
+    end
+
+    def assignees_service
+      @assignees_service ||= ::MergeRequests::UpdateAssigneesService
+        .new(project, current_user, params)
     end
   end
 end

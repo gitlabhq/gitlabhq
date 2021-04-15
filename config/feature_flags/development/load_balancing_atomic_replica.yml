@@ -1,0 +1,8 @@
+---
+name: load_balancing_atomic_replica
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49294
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/291193
+milestone: '13.11'
+type: development
+group:
+default_enabled: false

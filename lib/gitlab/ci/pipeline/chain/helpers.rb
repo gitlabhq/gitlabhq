@@ -13,16 +13,7 @@ module Gitlab
 
             pipeline.add_error_message(message)
 
-            if drop_reason && persist_pipeline?
-              if Feature.enabled?(:ci_pipeline_ensure_iid_on_drop, pipeline.project, default_enabled: :yaml)
-                # Project iid must be called outside a transaction, so we ensure it is set here
-                # otherwise it may be set within the state transition transaction of the drop! call
-                # which it will lock the InternalId row for the whole transaction
-                pipeline.ensure_project_iid!
-              end
-
-              pipeline.drop!(drop_reason)
-            end
+            drop_pipeline!(drop_reason)
 
             # TODO: consider not to rely on AR errors directly as they can be
             # polluted with other unrelated errors (e.g. state machine)
@@ -34,8 +25,23 @@ module Gitlab
             pipeline.add_warning_message(message)
           end
 
-          def persist_pipeline?
-            command.save_incompleted && !pipeline.readonly?
+          private
+
+          def drop_pipeline!(drop_reason)
+            return if pipeline.readonly?
+
+            if drop_reason && command.save_incompleted
+              if Feature.enabled?(:ci_pipeline_ensure_iid_on_drop, pipeline.project, default_enabled: :yaml)
+                # Project iid must be called outside a transaction, so we ensure it is set here
+                # otherwise it may be set within the state transition transaction of the drop! call
+                # which it will lock the InternalId row for the whole transaction
+                pipeline.ensure_project_iid!
+              end
+
+              pipeline.drop!(drop_reason)
+            else
+              command.increment_pipeline_failure_reason_counter(drop_reason)
+            end
           end
         end
       end

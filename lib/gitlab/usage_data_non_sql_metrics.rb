@@ -24,6 +24,12 @@ module Gitlab
       def histogram(relation, column, buckets:, bucket_size: buckets.size)
         SQL_METRIC_DEFAULT
       end
+
+      def maximum_id(model)
+      end
+
+      def minimum_id(model)
+      end
     end
   end
 end

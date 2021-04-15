@@ -12,10 +12,12 @@ RSpec.describe "User deletes branch", :js do
   end
 
   it "deletes branch" do
-    stub_feature_flags(gldropdown_branches: false)
     visit(project_branches_path(project))
 
-    fill_in("branch-search", with: "improve/awesome").native.send_keys(:enter)
+    branch_search = find('input[data-testid="branch-search"]')
+
+    branch_search.set('improve/awesome')
+    branch_search.native.send_keys(:enter)
 
     page.within(".js-branch-improve\\/awesome") do
       accept_alert { find(".btn-danger").click }
@@ -24,24 +26,5 @@ RSpec.describe "User deletes branch", :js do
     wait_for_requests
 
     expect(page).to have_css(".js-branch-improve\\/awesome", visible: :hidden)
-  end
-
-  context 'with gldropdown_branches enabled' do
-    it "deletes branch" do
-      visit(project_branches_path(project))
-
-      branch_search = find('input[data-testid="branch-search"]')
-
-      branch_search.set('improve/awesome')
-      branch_search.native.send_keys(:enter)
-
-      page.within(".js-branch-improve\\/awesome") do
-        accept_alert { find(".btn-danger").click }
-      end
-
-      wait_for_requests
-
-      expect(page).to have_css(".js-branch-improve\\/awesome", visible: :hidden)
-    end
   end
 end

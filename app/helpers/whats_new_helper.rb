@@ -8,4 +8,8 @@ module WhatsNewHelper
   def whats_new_version_digest
     ReleaseHighlight.most_recent_version_digest
   end
+
+  def display_whats_new?
+    Gitlab.dev_env_org_or_com? || user_signed_in?
+  end
 end

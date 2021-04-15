@@ -5,15 +5,50 @@ require 'spec_helper'
 RSpec.describe 'layouts/nav/sidebar/_project' do
   let_it_be_with_reload(:project) { create(:project, :repository) }
 
+  let(:user) { project.owner }
+
   before do
     assign(:project, project)
     assign(:repository, project.repository)
-    allow(view).to receive(:current_ref).and_return('master')
 
+    allow(view).to receive(:current_ref).and_return('master')
     allow(view).to receive(:can?).and_return(true)
+    allow(view).to receive(:current_user).and_return(user)
   end
 
   it_behaves_like 'has nav sidebar'
+
+  describe 'Project Overview' do
+    it 'has a link to the project path' do
+      render
+
+      expect(rendered).to have_link('Project overview', href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+    end
+
+    describe 'Details' do
+      it 'has a link to the projects path' do
+        render
+
+        expect(rendered).to have_link('Details', href: project_path(project), class: 'shortcuts-project')
+      end
+    end
+
+    describe 'Activity' do
+      it 'has a link to the project activity path' do
+        render
+
+        expect(rendered).to have_link('Activity', href: activity_project_path(project), class: 'shortcuts-project-activity')
+      end
+    end
+
+    describe 'Releases' do
+      it 'has a link to the project releases path' do
+        render
+
+        expect(rendered).to have_link('Releases', href: project_releases_path(project), class: 'shortcuts-project-releases')
+      end
+    end
+  end
 
   describe 'issue boards' do
     it 'has board tab' do
@@ -99,19 +134,11 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
-  describe 'releases entry' do
-    it 'renders releases link' do
-      render
-
-      expect(rendered).to have_link('Releases', href: project_releases_path(project))
-    end
-  end
-
   describe 'wiki entry tab' do
     let(:can_read_wiki) { true }
 
     before do
-      allow(view).to receive(:can?).with(nil, :read_wiki, project).and_return(can_read_wiki)
+      allow(view).to receive(:can?).with(user, :read_wiki, project).and_return(can_read_wiki)
     end
 
     describe 'when wiki is enabled' do
@@ -299,7 +326,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     let(:read_cycle_analytics) { true }
 
     before do
-      allow(view).to receive(:can?).with(nil, :read_cycle_analytics, project).and_return(read_cycle_analytics)
+      allow(view).to receive(:can?).with(user, :read_cycle_analytics, project).and_return(read_cycle_analytics)
     end
 
     describe 'when value stream analytics is enabled' do

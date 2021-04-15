@@ -14,7 +14,6 @@ module QA
         include SubMenus::Packages
 
         view 'app/views/layouts/nav/sidebar/_project_menus.html.haml' do
-          element :activity_link
           element :merge_requests_link
           element :snippets_link
           element :members_link
@@ -22,6 +21,10 @@ module QA
 
         view 'app/views/layouts/nav/sidebar/_wiki_link.html.haml' do
           element :wiki_link
+        end
+
+        view 'app/views/shared/nav/_sidebar_menu_item.html.haml' do
+          element :sidebar_menu_item_link
         end
 
         def click_merge_requests
@@ -38,7 +41,7 @@ module QA
 
         def click_activity
           within_sidebar do
-            click_element(:activity_link)
+            click_element(:sidebar_menu_item_link, menu_item: 'Activity')
           end
         end
 

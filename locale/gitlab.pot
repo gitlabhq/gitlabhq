@@ -5319,9 +5319,6 @@ msgstr ""
 msgid "Branches|Show stale branches"
 msgstr ""
 
-msgid "Branches|Sort by"
-msgstr ""
-
 msgid "Branches|Stale"
 msgstr ""
 
@@ -6656,9 +6653,6 @@ msgstr ""
 msgid "CloudLicense|Paste your activation code"
 msgstr ""
 
-msgid "CloudLicense|This instance is currently using the %{planName} plan."
-msgstr ""
-
 msgid "CloudLicense|This is the highest peak of users on your installation since the license started."
 msgstr ""
 
@@ -6675,9 +6669,6 @@ msgid "CloudLicense|Users with a Guest role or those who don't belong to a Proje
 msgstr ""
 
 msgid "CloudLicense|You'll be charged for %{trueUpLinkStart}users over license%{trueUpLinkEnd} on a quarterly or annual basis, depending on the terms of your agreement."
-msgstr ""
-
-msgid "CloudLicense|Your subscription"
 msgstr ""
 
 msgid "Cluster"
@@ -30376,6 +30367,12 @@ msgid "SuperSonics|Type"
 msgstr ""
 
 msgid "SuperSonics|Valid From"
+msgstr ""
+
+msgid "SuperSonics|You do not have an active subscription"
+msgstr ""
+
+msgid "SuperSonics|Your subscription"
 msgstr ""
 
 msgid "Support"
