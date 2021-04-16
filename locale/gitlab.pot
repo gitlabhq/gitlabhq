@@ -15283,6 +15283,9 @@ msgstr ""
 msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timeline"
 msgstr ""
 
+msgid "GroupRoadmap|To make your epics appear in the roadmap, add start or due dates to them."
+msgstr ""
+
 msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of the %{linkStart}child epics%{linkEnd}."
 msgstr ""
 
@@ -31549,6 +31552,9 @@ msgid "There was a problem fetching branches."
 msgstr ""
 
 msgid "There was a problem fetching emojis."
+msgstr ""
+
+msgid "There was a problem fetching epics."
 msgstr ""
 
 msgid "There was a problem fetching groups."

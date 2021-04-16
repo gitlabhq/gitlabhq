@@ -4,6 +4,7 @@ import Api from '~/api';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import BranchToken from '~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
+import EpicToken from '~/vue_shared/components/filtered_search_bar/tokens/epic_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 
@@ -60,6 +61,11 @@ export const mockMilestones = [
   mockEscapedMilestone,
 ];
 
+export const mockEpics = [
+  { iid: 1, id: 1, title: 'Foo' },
+  { iid: 2, id: 2, title: 'Bar' },
+];
+
 export const mockEmoji1 = {
   name: 'thumbsup',
 };
@@ -112,6 +118,18 @@ export const mockMilestoneToken = {
   token: MilestoneToken,
   operators: [{ value: '=', description: 'is', default: 'true' }],
   fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
+};
+
+export const mockEpicToken = {
+  type: 'epic_iid',
+  icon: 'clock',
+  title: 'Epic',
+  unique: true,
+  symbol: '&',
+  token: EpicToken,
+  operators: [{ value: '=', description: 'is', default: 'true' }],
+  fetchEpics: () => Promise.resolve({ data: mockEpics }),
+  fetchSingleEpic: () => Promise.resolve({ data: mockEpics[0] }),
 };
 
 export const mockReactionEmojiToken = {
@@ -187,6 +205,14 @@ export const tokenValueConfidential = {
 export const tokenValuePlain = {
   type: 'filtered-search-term',
   value: { data: 'foo' },
+};
+
+export const tokenValueEpic = {
+  type: 'epic_iid',
+  value: {
+    operator: '=',
+    data: '"foo"::&42',
+  },
 };
 
 export const mockHistoryItems = [
