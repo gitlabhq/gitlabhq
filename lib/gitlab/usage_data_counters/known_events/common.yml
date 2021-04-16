@@ -460,3 +460,19 @@
   redis_slot: pipeline_authoring
   aggregation: weekly
   feature_flag: usage_data_o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
+# Merge request widgets
+- name: users_expanding_secure_security_report
+  redis_slot: secure
+  category: secure
+  aggregation: weekly
+  feature_flag: users_expanding_widgets_usage_data
+- name: users_expanding_testing_code_quality_report
+  redis_slot: testing
+  category: testing
+  aggregation: weekly
+  feature_flag: users_expanding_widgets_usage_data
+- name: users_expanding_testing_accessibility_report
+  redis_slot: testing
+  category: testing
+  aggregation: weekly
+  feature_flag: users_expanding_widgets_usage_data

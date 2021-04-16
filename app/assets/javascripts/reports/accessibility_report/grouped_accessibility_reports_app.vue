@@ -46,6 +46,7 @@ export default {
     :loading-text="groupedSummaryText"
     :error-text="groupedSummaryText"
     :has-issues="shouldRenderIssuesList"
+    track-action="users_expanding_testing_accessibility_report"
     class="mr-widget-section grouped-security-reports mr-report"
   >
     <template #body>

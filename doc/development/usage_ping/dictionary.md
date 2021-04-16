@@ -9872,6 +9872,30 @@ Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.g_project_management_epic_destroyed_monthly`
+
+Count of MAU destroying epics
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210413174710_g_project_management_epic_destroyed_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_epic_destroyed_weekly`
+
+Count of WAU destroying epics
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210413174449_g_project_management_epic_destroyed_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.g_project_management_epic_issue_added_monthly`
 
 Count of MAU adding issues to epics
@@ -13448,6 +13472,30 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `redis_hll_counters.secure.users_expanding_secure_security_report_monthly`
+
+Count of expanding the security report widget
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210409095855_users_expanding_secure_security_report_monthly.yml)
+
+Group: `group::static analysis`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.secure.users_expanding_secure_security_report_weekly`
+
+Count of expanding the security report widget
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210409095855_users_expanding_secure_security_report_weekly.yml)
+
+Group: `group::static analysis`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.snippets.i_snippets_show_monthly`
 
 Missing description
@@ -13879,6 +13927,54 @@ Group: ``
 Status: `removed`
 
 Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.testing.users_expanding_testing_accessibility_report_monthly`
+
+Count of expanding the accessibility report widget
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210409100628_users_expanding_testing_accessibility_report_monthly.yml)
+
+Group: `group::testing`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.testing.users_expanding_testing_accessibility_report_weekly`
+
+Count of expanding the accessibility report widget
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210409100628_users_expanding_testing_accessibility_report_weekly.yml)
+
+Group: `group::testing`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.testing.users_expanding_testing_code_quality_report_monthly`
+
+Count of expanding the code quality widget
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210409100451_users_expanding_testing_code_quality_report_monthly.yml)
+
+Group: `group::testing`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.testing.users_expanding_testing_code_quality_report_weekly`
+
+Count of expanding the code quality widget
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210409100451_users_expanding_testing_code_quality_report_weekly.yml)
+
+Group: `group::testing`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.user_packages.i_package_composer_user_monthly`
 

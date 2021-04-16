@@ -57,7 +57,6 @@ module DeprecationToolkitEnv
     %w[
       activerecord-6.0.3.6/lib/active_record/migration.rb
       activesupport-6.0.3.6/lib/active_support/cache.rb
-      batch-loader-1.4.0/lib/batch_loader/graphql.rb
       carrierwave-1.3.1/lib/carrierwave/sanitized_file.rb
       activerecord-6.0.3.6/lib/active_record/relation.rb
       selenium-webdriver-3.142.7/lib/selenium/webdriver/firefox/driver.rb

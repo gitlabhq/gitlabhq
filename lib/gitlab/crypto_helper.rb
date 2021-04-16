@@ -16,30 +16,17 @@ module Gitlab
       ::Digest::SHA256.base64digest("#{value}#{salt}")
     end
 
-    def aes256_gcm_encrypt(value, nonce: nil)
-      aes256_gcm_encrypt_using_static_nonce(value)
+    def aes256_gcm_encrypt(value, nonce: AES256_GCM_IV_STATIC)
+      encrypted_token = Encryptor.encrypt(AES256_GCM_OPTIONS.merge(value: value, iv: nonce))
+      Base64.strict_encode64(encrypted_token)
     end
 
-    def aes256_gcm_decrypt(value)
+    def aes256_gcm_decrypt(value, nonce: AES256_GCM_IV_STATIC)
       return unless value
 
-      nonce = AES256_GCM_IV_STATIC
       encrypted_token = Base64.decode64(value)
       decrypted_token = Encryptor.decrypt(AES256_GCM_OPTIONS.merge(value: encrypted_token, iv: nonce))
       decrypted_token
-    end
-
-    def aes256_gcm_encrypt_using_static_nonce(value)
-      create_encrypted_token(value, AES256_GCM_IV_STATIC)
-    end
-
-    def read_only?
-      Gitlab::Database.read_only?
-    end
-
-    def create_encrypted_token(value, iv)
-      encrypted_token = Encryptor.encrypt(AES256_GCM_OPTIONS.merge(value: value, iv: iv))
-      Base64.strict_encode64(encrypted_token)
     end
   end
 end

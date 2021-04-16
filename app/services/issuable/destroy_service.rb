@@ -4,18 +4,26 @@ module Issuable
   class DestroyService < IssuableBaseService
     def execute(issuable)
       if issuable.destroy
-        delete_todos(issuable)
-        issuable.update_project_counter_caches
-        issuable.assignees.each(&:invalidate_cache_counts)
+        after_destroy(issuable)
       end
     end
 
     private
 
-    def delete_todos(issuable)
-      actor = issuable.is_a?(Epic) ? issuable.resource_parent : issuable.resource_parent.group
+    def after_destroy(issuable)
+      delete_todos(issuable)
+      issuable.update_project_counter_caches
+      issuable.assignees.each(&:invalidate_cache_counts)
+    end
 
-      if Feature.enabled?(:destroy_issuable_todos_async, actor, default_enabled: :yaml)
+    def group_for(issuable)
+      issuable.resource_parent
+    end
+
+    def delete_todos(issuable)
+      group = group_for(issuable)
+
+      if Feature.enabled?(:destroy_issuable_todos_async, group, default_enabled: :yaml)
         TodosDestroyer::DestroyedIssuableWorker
           .perform_async(issuable.id, issuable.class.name)
       else
@@ -26,3 +34,5 @@ module Issuable
     end
   end
 end
+
+Issuable::DestroyService.prepend_if_ee('EE::Issuable::DestroyService')

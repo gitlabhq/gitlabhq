@@ -1,0 +1,20 @@
+---
+key_path: redis_hll_counters.testing.users_expanding_testing_accessibility_report_weekly
+description: Count of expanding the accessibility report widget
+product_section: ops
+product_stage: verify
+product_group: group::testing
+product_category: accessibility_testing
+value_type: number
+status: implemented
+milestone: '13.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57133
+time_frame: 7d
+data_source: redis_hll
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate

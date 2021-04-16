@@ -20,14 +20,20 @@ RSpec.describe Gitlab::CryptoHelper do
       expect(encrypted).not_to include "\n"
     end
 
-    it 'does not save hashed token with iv value in database' do
-      expect { described_class.aes256_gcm_encrypt('some-value') }.not_to change { TokenWithIv.count }
-    end
-
     it 'encrypts using static iv' do
       expect(Encryptor).to receive(:encrypt).with(described_class::AES256_GCM_OPTIONS.merge(value: 'some-value', iv: described_class::AES256_GCM_IV_STATIC)).and_return('hashed_value')
 
       described_class.aes256_gcm_encrypt('some-value')
+    end
+
+    context 'with provided iv' do
+      let(:iv) { create_nonce }
+
+      it 'encrypts using provided iv' do
+        expect(Encryptor).to receive(:encrypt).with(described_class::AES256_GCM_OPTIONS.merge(value: 'some-value', iv: iv)).and_return('hashed_value')
+
+        described_class.aes256_gcm_encrypt('some-value', nonce: iv)
+      end
     end
   end
 
@@ -46,10 +52,22 @@ RSpec.describe Gitlab::CryptoHelper do
 
         expect(decrypted).to eq 'some-value'
       end
+    end
 
-      it 'does not save hashed token with iv value in database' do
-        expect { described_class.aes256_gcm_decrypt(encrypted) }.not_to change { TokenWithIv.count }
+    context 'when token was encrypted using random nonce' do
+      let(:value) { 'random-value' }
+      let(:iv) { create_nonce }
+      let(:encrypted) { described_class.aes256_gcm_encrypt(value, nonce: iv) }
+
+      it 'correctly decrypts encrypted string' do
+        decrypted = described_class.aes256_gcm_decrypt(encrypted, nonce: iv)
+
+        expect(decrypted).to eq value
       end
     end
+  end
+
+  def create_nonce
+    ::Digest::SHA256.hexdigest('my-value').bytes.take(TokenAuthenticatableStrategies::EncryptionHelper::NONCE_SIZE).pack('c*')
   end
 end

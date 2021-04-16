@@ -87,6 +87,7 @@ export default {
     :component="$options.componentNames.CodequalityIssueBody"
     :popover-options="codequalityPopover"
     :show-report-section-status-icon="false"
+    track-action="users_expanding_testing_code_quality_report"
     class="js-codequality-widget mr-widget-border-top mr-report"
   >
     <template v-if="hasError" #sub-heading>{{ statusReason }}</template>
