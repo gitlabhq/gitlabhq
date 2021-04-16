@@ -278,9 +278,6 @@ gem 'charlock_holmes', '~> 0.7.7'
 # Detect mime content type from content
 gem 'ruby-magic', '~> 0.4'
 
-# Fake version of the gem to trick bundler
-gem 'mimemagic', '0.3.7', path: 'vendor/shims/mimemagic', require: false
-
 # Faster blank
 gem 'fast_blank'
 

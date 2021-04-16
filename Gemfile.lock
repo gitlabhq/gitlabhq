@@ -5,11 +5,6 @@ PATH
       connection_pool (~> 2.0)
       mail (~> 2.7)
 
-PATH
-  remote: vendor/shims/mimemagic
-  specs:
-    mimemagic (0.3.7)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -1497,7 +1492,6 @@ DEPENDENCIES
   marginalia (~> 1.10.0)
   memory_profiler (~> 0.9)
   method_source (~> 1.0)
-  mimemagic (= 0.3.7)!
   mini_magick (~> 4.10.1)
   minitest (~> 5.11.0)
   multi_json (~> 1.14.1)
