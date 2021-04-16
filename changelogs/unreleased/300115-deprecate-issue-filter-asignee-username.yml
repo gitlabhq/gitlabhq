@@ -1,0 +1,5 @@
+---
+title: Deprecate assigneeUsername issue filter in GraphQL
+merge_request: 59538
+author:
+type: deprecated

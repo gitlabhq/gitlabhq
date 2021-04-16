@@ -23,7 +23,8 @@ module IssueResolverArguments
               description: 'Username of the author of the issue.'
     argument :assignee_username, GraphQL::STRING_TYPE,
               required: false,
-              description: 'Username of a user assigned to the issue.'
+              description: 'Username of a user assigned to the issue.',
+              deprecated: { reason: 'Use `assigneeUsernames`', milestone: '13.11' }
     argument :assignee_usernames, [GraphQL::STRING_TYPE],
               required: false,
               description: 'Usernames of users assigned to the issue.'
