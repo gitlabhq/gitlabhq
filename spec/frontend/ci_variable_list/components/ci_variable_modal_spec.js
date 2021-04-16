@@ -158,7 +158,6 @@ describe('Ci variable modal', () => {
           isGroup: true,
           provide: {
             glFeatures: {
-              scopedGroupVariables: true,
               groupScopedCiVariables: true,
             },
           },
@@ -168,29 +167,12 @@ describe('Ci variable modal', () => {
         expect(findCiEnvironmentsDropdown().isVisible()).toBe(true);
       });
 
-      describe('feature flag is disabled', () => {
-        it('hides the dropdown', () => {
-          createComponent(shallowMount, {
-            isGroup: true,
-            provide: {
-              glFeatures: {
-                scopedGroupVariables: false,
-                groupScopedCiVariables: true,
-              },
-            },
-          });
-
-          expect(findCiEnvironmentsDropdown().exists()).toBe(false);
-        });
-      });
-
       describe('licensed feature is not available', () => {
         it('disables the dropdown', () => {
           createComponent(mount, {
             isGroup: true,
             provide: {
               glFeatures: {
-                scopedGroupVariables: true,
                 groupScopedCiVariables: false,
               },
             },

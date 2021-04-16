@@ -16,6 +16,7 @@ RSpec.describe Projects::UpdatePagesService do
   subject { described_class.new(project, build) }
 
   before do
+    stub_feature_flags(skip_pages_deploy_to_legacy_storage: false)
     project.legacy_remove_pages
   end
 
@@ -63,6 +64,16 @@ RSpec.describe Projects::UpdatePagesService do
 
       it "doesn't deploy to legacy storage if it's disabled" do
         allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
+
+        expect(execute).to eq(:success)
+        expect(project.pages_deployed?).to be_truthy
+
+        expect(File.exist?(File.join(project.pages_path, 'public', 'index.html'))).to eq(false)
+      end
+
+      it "doesn't deploy to legacy storage if skip_pages_deploy_to_legacy_storage is enabled" do
+        allow(Settings.pages.local_store).to receive(:enabled).and_return(true)
+        stub_feature_flags(skip_pages_deploy_to_legacy_storage: true)
 
         expect(execute).to eq(:success)
         expect(project.pages_deployed?).to be_truthy

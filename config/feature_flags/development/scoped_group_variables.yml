@@ -1,8 +1,0 @@
----
-name: scoped_group_variables
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55256
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323298
-milestone: '13.10'
-type: development
-group: group::configure
-default_enabled: false

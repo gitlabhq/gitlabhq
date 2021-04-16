@@ -130,9 +130,6 @@ export default {
 
       return true;
     },
-    scopedVariablesEnabled() {
-      return !this.isGroup || this.glFeatures.scopedGroupVariables;
-    },
     scopedVariablesAvailable() {
       return !this.isGroup || this.glFeatures.groupScopedCiVariables;
     },
@@ -230,17 +227,11 @@ export default {
       </gl-form-group>
 
       <div class="d-flex">
-        <gl-form-group
-          :label="__('Type')"
-          label-for="ci-variable-type"
-          class="w-50 gl-mr-5"
-          :class="{ 'w-100': !scopedVariablesEnabled }"
-        >
+        <gl-form-group :label="__('Type')" label-for="ci-variable-type" class="w-50 gl-mr-5">
           <gl-form-select id="ci-variable-type" v-model="variable_type" :options="typeOptions" />
         </gl-form-group>
 
         <gl-form-group
-          v-if="scopedVariablesEnabled"
           :label="__('Environment scope')"
           label-for="ci-variable-env"
           class="w-50"

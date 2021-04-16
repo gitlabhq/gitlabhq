@@ -163,6 +163,9 @@ The output is:
 
 ### Group CI/CD variables
 
+> - Introduced in GitLab 9.4.
+> - Support for [environment scopes](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) added to GitLab Premium in 13.11
+
 To make a CI/CD variable available to all projects in a group, define a group CI/CD variable.
 
 Use group variables to store secrets like passwords, SSH keys, and credentials, if you:
@@ -178,6 +181,7 @@ To add a group variable:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
+   - **Environment scope** (optional): `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable).
    - **Protect variable** (Optional): If selected, the variable is only available
      in pipelines that run on protected branches or tags.
    - **Mask variable** (Optional): If selected, the variable's **Value** is masked

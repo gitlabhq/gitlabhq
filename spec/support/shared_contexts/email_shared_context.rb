@@ -185,6 +185,7 @@ RSpec.shared_examples :note_handler_shared_examples do |forwardable|
     let(:email_raw) { with_quick_actions }
 
     let!(:sent_notification) do
+      allow(Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
       SentNotification.record_note(note, support_bot.id, mail_key)
     end
 

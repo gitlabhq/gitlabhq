@@ -1755,30 +1755,6 @@ RSpec.describe Group do
              perfectly_matched_variable])
         end
       end
-
-      context 'when :scoped_group_variables feature flag is disabled' do
-        before do
-          stub_feature_flags(scoped_group_variables: false)
-        end
-
-        context 'when environment scope is exactly matched' do
-          let(:environment_scope) { 'review/name' }
-
-          it { is_expected.to contain_exactly(ci_variable) }
-        end
-
-        context 'when environment scope is partially matched' do
-          let(:environment_scope) { 'review/*' }
-
-          it { is_expected.to contain_exactly(ci_variable) }
-        end
-
-        context 'when environment scope does not match' do
-          let(:environment_scope) { 'review/*/special' }
-
-          it { is_expected.to contain_exactly(ci_variable) }
-        end
-      end
     end
 
     context 'when group has children' do

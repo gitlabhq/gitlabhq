@@ -824,13 +824,11 @@ class Group < Namespace
     variables = Ci::GroupVariable.where(group: list_of_ids)
     variables = variables.unprotected unless project.protected_for?(ref)
 
-    if Feature.enabled?(:scoped_group_variables, self, default_enabled: :yaml)
-      variables = if environment
-                    variables.on_environment(environment)
-                  else
-                    variables.where(environment_scope: '*')
-                  end
-    end
+    variables = if environment
+                  variables.on_environment(environment)
+                else
+                  variables.where(environment_scope: '*')
+                end
 
     variables = variables.group_by(&:group_id)
     list_of_ids.reverse.flat_map { |group| variables[group.id] }.compact

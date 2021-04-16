@@ -10,7 +10,6 @@ module Groups
       before_action :authorize_admin_group!
       before_action :authorize_update_max_artifacts_size!, only: [:update]
       before_action :define_variables, only: [:show]
-      before_action :push_feature_flags, only: [:show]
       before_action :push_licensed_features, only: [:show]
 
       feature_category :continuous_integration
@@ -92,10 +91,6 @@ module Groups
 
       def update_group_params
         params.require(:group).permit(:max_artifacts_size)
-      end
-
-      def push_feature_flags
-        push_frontend_feature_flag(:scoped_group_variables, group)
       end
 
       # Overridden in EE

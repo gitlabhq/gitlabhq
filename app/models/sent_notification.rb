@@ -48,7 +48,7 @@ class SentNotification < ApplicationRecord
     end
 
     def record_note(note, recipient_id, reply_key = self.reply_key, attrs = {})
-      attrs[:in_reply_to_discussion_id] = note.discussion_id if note.part_of_discussion?
+      attrs[:in_reply_to_discussion_id] = note.discussion_id if note.part_of_discussion? || note.can_be_discussion_note?
 
       record(note.noteable, recipient_id, reply_key, attrs)
     end

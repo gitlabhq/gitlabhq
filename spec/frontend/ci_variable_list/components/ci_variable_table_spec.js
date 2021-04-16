@@ -11,18 +11,13 @@ describe('Ci variable table', () => {
   let wrapper;
   let store;
 
-  const createComponent = (isGroup = false, scopedGroupVariables = false) => {
-    store = createStore({ isGroup });
+  const createComponent = () => {
+    store = createStore();
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = mount(CiVariableTable, {
       attachTo: document.body,
       localVue,
       store,
-      provide: {
-        glFeatures: {
-          scopedGroupVariables,
-        },
-      },
     });
   };
 
@@ -40,19 +35,6 @@ describe('Ci variable table', () => {
 
   it('dispatches fetchVariables when mounted', () => {
     expect(store.dispatch).toHaveBeenCalledWith('fetchVariables');
-  });
-
-  it('fields do not contain environment_scope if group level and feature is disabled', () => {
-    createComponent(true, false);
-
-    expect(wrapper.vm.fields).not.toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          key: 'environment_scope',
-          label: 'Environments',
-        }),
-      ]),
-    );
   });
 
   describe('Renders correct data', () => {

@@ -178,7 +178,7 @@ class Notify < ApplicationMailer
     headers['In-Reply-To'] = message_id(note.references.last)
     headers['References'] = note.references.map { |ref| message_id(ref) }
 
-    headers['X-GitLab-Discussion-ID'] = note.discussion.id if note.part_of_discussion?
+    headers['X-GitLab-Discussion-ID'] = note.discussion.id if note.part_of_discussion? || note.can_be_discussion_note?
 
     headers[:subject] = "Re: #{headers[:subject]}" if headers[:subject]
 

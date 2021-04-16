@@ -62,7 +62,7 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
-    ...mapState(['variables', 'valuesHidden', 'isGroup', 'isLoading', 'isDeleting']),
+    ...mapState(['variables', 'valuesHidden', 'isLoading', 'isDeleting']),
     valuesButtonText() {
       return this.valuesHidden ? __('Reveal values') : __('Hide values');
     },
@@ -70,9 +70,6 @@ export default {
       return this.variables && this.variables.length > 0;
     },
     fields() {
-      if (this.isGroup && !this.glFeatures.scopedGroupVariables) {
-        return this.$options.fields.filter((field) => field.key !== 'environment_scope');
-      }
       return this.$options.fields;
     },
   },
