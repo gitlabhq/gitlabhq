@@ -25,7 +25,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
   :feature_category: :authentication_and_authorization

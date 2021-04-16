@@ -94,6 +94,41 @@ RSpec.describe AuthorizedProjectUpdate::FindRecordsDueForRefreshService do
     end
   end
 
+  describe '#needs_refresh?' do
+    subject { service.needs_refresh? }
+
+    context 'when there are records due for either removal or addition' do
+      context 'when there are both removals and additions to be made' do
+        before do
+          user.project_authorizations.delete_all
+          create(:project_authorization, user: user)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when there are no removals, but there are additions to be made' do
+        before do
+          user.project_authorizations.delete_all
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when there are no additions, but there are removals to be made' do
+        before do
+          create(:project_authorization, user: user)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+    end
+
+    context 'when there are no additions or removals to be made' do
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe '#fresh_access_levels_per_project' do
     let(:hash) { service.fresh_access_levels_per_project }
 

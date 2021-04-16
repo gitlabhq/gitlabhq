@@ -62,6 +62,7 @@
             = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
 
         = render_if_exists 'namespaces/shared_runner_status', namespace: @group
+        = render_if_exists 'namespaces/additional_minutes_status', namespace: @group
 
     = render 'shared/custom_attributes', custom_attributes: @group.custom_attributes
 

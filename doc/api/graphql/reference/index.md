@@ -8597,6 +8597,7 @@ Name of the feature that the callout is for.
 | `GOLD_TRIAL_BILLINGS` | Callout feature name for gold_trial_billings. |
 | `NEW_USER_SIGNUPS_CAP_REACHED` | Callout feature name for new_user_signups_cap_reached. |
 | `PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for personal_access_token_expiry. |
+| `PIPELINE_NEEDS_BANNER` | Callout feature name for pipeline_needs_banner. |
 | `REGISTRATION_ENABLED_CALLOUT` | Callout feature name for registration_enabled_callout. |
 | `SERVICE_TEMPLATES_DEPRECATED_CALLOUT` | Callout feature name for service_templates_deprecated_callout. |
 | `SUGGEST_PIPELINE` | Callout feature name for suggest_pipeline. |

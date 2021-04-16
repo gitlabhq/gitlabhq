@@ -1,7 +1,7 @@
-<%= @resource.user.name %>, confirm your email address now!
+<%= _(" %{name},  confirm your email address now! ") % { name: @resource.user.name } %>
 
-Use the link below to confirm your email address (<%= @resource.email %>)
+<%= _("Use the link below to confirm your email address (%{email})") % { email: @resource.email } %>
 
 <%= confirmation_url(@resource, confirmation_token: @token) %>
 
-If this email was added in error, you can remove it here: <%= profile_emails_url %>
+<%= _("If this email was added in error, you can remove it here: %{profile_emails_url}") % { profile_emails_url: profile_emails_url } %>

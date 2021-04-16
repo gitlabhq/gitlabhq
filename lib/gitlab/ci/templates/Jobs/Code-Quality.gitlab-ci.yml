@@ -36,6 +36,7 @@ code_quality:
           REPORT_STDOUT \
           REPORT_FORMAT \
           ENGINE_MEMORY_LIMIT_BYTES \
+          CODECLIMATE_PREFIX \
         ) \
         --volume "$PWD":/code \
         --volume /var/run/docker.sock:/var/run/docker.sock \

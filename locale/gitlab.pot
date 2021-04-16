@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid " %{name},  confirm your email address now! "
+msgstr ""
+
 msgid " %{project_name}#%{issuable_iid} &middot; created %{issuable_created} by %{author} &middot; updated %{issuable_updated}"
 msgstr ""
 
@@ -2100,6 +2103,9 @@ msgid "Additional Metadata"
 msgstr ""
 
 msgid "Additional minutes"
+msgstr ""
+
+msgid "Additional minutes:"
 msgstr ""
 
 msgid "Additional text"
@@ -9514,6 +9520,9 @@ msgstr ""
 msgid "Crossplane"
 msgstr ""
 
+msgid "Crowd"
+msgstr ""
+
 msgid "Current"
 msgstr ""
 
@@ -16101,6 +16110,9 @@ msgid "If the number of active users exceeds the user limit, you will be charged
 msgstr ""
 
 msgid "If there is no previous license or if the previous license has expired, some GitLab functionality will be blocked until a new, valid license is uploaded."
+msgstr ""
+
+msgid "If this email was added in error, you can remove it here: %{profile_emails_url}"
 msgstr ""
 
 msgid "If this was a mistake you can %{leave_link_start}leave the %{source_type}%{link_end}."
@@ -34015,6 +34027,9 @@ msgid "Use shortcuts"
 msgstr ""
 
 msgid "Use template"
+msgstr ""
+
+msgid "Use the link below to confirm your email address (%{email})"
 msgstr ""
 
 msgid "Use the search bar on the top of this page"

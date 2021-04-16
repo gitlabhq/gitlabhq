@@ -54,6 +54,12 @@ module AuthorizedProjectUpdate
       [remove, add]
     end
 
+    def needs_refresh?
+      remove, add = execute
+
+      remove.present? || add.present?
+    end
+
     def fresh_access_levels_per_project
       fresh_authorizations.each_with_object({}) do |row, hash|
         hash[row.project_id] = row.access_level
