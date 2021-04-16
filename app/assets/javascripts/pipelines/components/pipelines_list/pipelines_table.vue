@@ -1,7 +1,6 @@
 <script>
 import { GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../event_hub';
 import PipelineMiniGraph from './pipeline_mini_graph.vue';
 import PipelineOperations from './pipeline_operations.vue';
@@ -10,7 +9,6 @@ import PipelineTriggerer from './pipeline_triggerer.vue';
 import PipelineUrl from './pipeline_url.vue';
 import PipelinesCommit from './pipelines_commit.vue';
 import PipelinesStatusBadge from './pipelines_status_badge.vue';
-import PipelinesTableRowComponent from './pipelines_table_row.vue';
 import PipelinesTimeago from './time_ago.vue';
 
 const DEFAULT_TD_CLASS = 'gl-p-5!';
@@ -83,7 +81,6 @@ export default {
     PipelineOperations,
     PipelinesStatusBadge,
     PipelineStopModal,
-    PipelinesTableRowComponent,
     PipelinesTimeago,
     PipelineTriggerer,
     PipelineUrl,
@@ -91,7 +88,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     pipelines: {
       type: Array,
@@ -149,41 +145,7 @@ export default {
 </script>
 <template>
   <div class="ci-table">
-    <div v-if="!glFeatures.newPipelinesTable" data-testid="legacy-ci-table">
-      <div class="gl-responsive-table-row table-row-header" role="row">
-        <div class="table-section section-10 js-pipeline-status" role="rowheader">
-          {{ s__('Pipeline|Status') }}
-        </div>
-        <div class="table-section section-10 js-pipeline-info pipeline-info" role="rowheader">
-          {{ s__('Pipeline|Pipeline') }}
-        </div>
-        <div class="table-section section-10 js-triggerer-info triggerer-info" role="rowheader">
-          {{ s__('Pipeline|Triggerer') }}
-        </div>
-        <div class="table-section section-20 js-pipeline-commit pipeline-commit" role="rowheader">
-          {{ s__('Pipeline|Commit') }}
-        </div>
-        <div class="table-section section-15 js-pipeline-stages pipeline-stages" role="rowheader">
-          {{ s__('Pipeline|Stages') }}
-        </div>
-        <div class="table-section section-15" role="rowheader"></div>
-        <div class="table-section section-20" role="rowheader">
-          <slot name="table-header-actions"></slot>
-        </div>
-      </div>
-      <pipelines-table-row-component
-        v-for="model in pipelines"
-        :key="model.id"
-        :pipeline="model"
-        :pipeline-schedule-url="pipelineScheduleUrl"
-        :update-graph-dropdown="updateGraphDropdown"
-        :view-type="viewType"
-        :canceling-pipeline="cancelingPipeline"
-      />
-    </div>
-
     <gl-table
-      v-else
       :fields="$options.fields"
       :items="pipelines"
       tbody-tr-class="commit"

@@ -58,6 +58,20 @@ RSpec.describe 'profiles/keys/_key.html.haml' do
       end
     end
 
+    context 'when the key has expired' do
+      let_it_be(:key) do
+        create(:personal_key,
+               user: user,
+               expires_at: 2.days.ago)
+      end
+
+      it 'renders "Expired:" as the expiration date label' do
+        render
+
+        expect(rendered).to have_text('Expired:')
+      end
+    end
+
     context 'when the key is not deletable' do
       # Turns out key.can_delete? is only false for LDAP keys
       # but LDAP keys don't exist outside EE

@@ -23,7 +23,7 @@
           = s_('Profiles|Last used:')
           = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
         %span.expires.gl-mr-3
-          = s_('Profiles|Expires:')
+          = key.expired? ? s_('Profiles|Expired:') : s_('Profiles|Expires:')
           = key.expires_at ? key.expires_at.to_date : _('Never')
     %span.key-created-at.gl-display-flex.gl-align-items-center
       - if key.can_delete?

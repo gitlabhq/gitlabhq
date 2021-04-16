@@ -54,8 +54,6 @@ class Projects::CommitController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def pipelines
-    set_pipeline_feature_flag
-
     @pipelines = @commit.pipelines.order(id: :desc)
     @pipelines = @pipelines.where(ref: params[:ref]).page(params[:page]).per(30) if params[:ref]
 
@@ -134,10 +132,6 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   private
-
-  def set_pipeline_feature_flag
-    push_frontend_feature_flag(:new_pipelines_table, @project, default_enabled: :yaml)
-  end
 
   def create_new_branch?
     params[:create_merge_request].present? || !can?(current_user, :push_code, @project)

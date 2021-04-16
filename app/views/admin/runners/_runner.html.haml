@@ -1,3 +1,6 @@
+-# Note: This file should stay aligned with:
+-# `app/views/groups/runners/_runner.html.haml`
+
 .gl-responsive-table-row{ id: dom_id(runner) }
   .table-section.section-10.section-wrap
     .table-mobile-header{ role: 'rowheader' }= _('Type')
@@ -13,15 +16,13 @@
       - unless runner.active?
         %span.badge.badge-pill.gl-badge.sm.badge-danger= _("paused")
 
-  .table-section.section-10
-    .table-mobile-header{ role: 'rowheader' }= _('Runner token')
+  .table-section.section-30
+    .table-mobile-header{ role: 'rowheader' }= s_('Runners|Runner')
     .table-mobile-content
-      = link_to runner.short_sha, admin_runner_path(runner)
-
-  .table-section.section-20
-    .table-mobile-header{ role: 'rowheader' }= _('Description')
-    .table-mobile-content.str-truncated.has-tooltip{ title: runner.description }
-      = runner.description
+      = link_to("##{runner.id} (#{runner.short_sha})", admin_runner_path(runner))
+      .gl-text-truncate
+        %span{ title: runner.description, data: { toggle: 'tooltip', container: 'body' } }
+          = runner.description
 
   .table-section.section-10
     .table-mobile-header{ role: 'rowheader' }= _('Version')

@@ -82,18 +82,18 @@ module Gitlab
             end
 
             def validation_service_timeout
-              timeout = ENV['EXTERNAL_VALIDATION_SERVICE_TIMEOUT'].to_i
+              timeout = Gitlab::CurrentSettings.external_pipeline_validation_service_timeout || ENV['EXTERNAL_VALIDATION_SERVICE_TIMEOUT'].to_i
               return timeout if timeout > 0
 
               DEFAULT_VALIDATION_REQUEST_TIMEOUT
             end
 
             def validation_service_url
-              ENV['EXTERNAL_VALIDATION_SERVICE_URL']
+              Gitlab::CurrentSettings.external_pipeline_validation_service_url || ENV['EXTERNAL_VALIDATION_SERVICE_URL']
             end
 
             def validation_service_token
-              ENV['EXTERNAL_VALIDATION_SERVICE_TOKEN']
+              Gitlab::CurrentSettings.external_pipeline_validation_service_token || ENV['EXTERNAL_VALIDATION_SERVICE_TOKEN']
             end
 
             def validation_service_payload

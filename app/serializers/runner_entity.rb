@@ -3,7 +3,7 @@
 class RunnerEntity < Grape::Entity
   include RequestAwareEntity
 
-  expose :id, :description
+  expose :id, :description, :short_sha
 
   expose :edit_path, if: -> (*) { can_edit_runner? } do |runner|
     edit_project_runner_path(project, runner)

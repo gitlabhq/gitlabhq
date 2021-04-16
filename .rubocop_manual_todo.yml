@@ -930,9 +930,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - spec/services/clusters/applications/prometheus_health_check_service_spec.rb
     - spec/services/container_expiration_policy_service_spec.rb
     - spec/services/dependency_proxy/find_or_create_manifest_service_spec.rb
-    - spec/services/design_management/copy_design_collection/copy_service_spec.rb
-    - spec/services/design_management/delete_designs_service_spec.rb
-    - spec/services/design_management/save_designs_service_spec.rb
     - spec/services/discussions/resolve_service_spec.rb
     - spec/services/discussions/unresolve_service_spec.rb
     - spec/services/feature_flags/create_service_spec.rb

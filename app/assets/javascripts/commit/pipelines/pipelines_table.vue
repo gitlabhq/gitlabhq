@@ -90,9 +90,6 @@ export default {
     canRenderPipelineButton() {
       return this.latestPipelineDetachedFlag;
     },
-    pipelineButtonClass() {
-      return !this.glFeatures.newPipelinesTable ? 'gl-md-display-none' : 'gl-lg-display-none';
-    },
     isForkMergeRequest() {
       return this.sourceProjectFullPath !== this.targetProjectFullPath;
     },
@@ -195,8 +192,7 @@ export default {
       <gl-button
         v-if="canRenderPipelineButton"
         block
-        class="gl-mt-3 gl-mb-3"
-        :class="pipelineButtonClass"
+        class="gl-mt-3 gl-mb-3 gl-lg-display-none"
         variant="confirm"
         data-testid="run_pipeline_button_mobile"
         :loading="state.isRunningMergeRequestPipeline"

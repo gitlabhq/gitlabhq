@@ -7,6 +7,7 @@ RSpec.describe DesignManagement::DeleteDesignsService do
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
+
   let(:designs) { create_designs }
 
   subject(:service) { described_class.new(project, user, issue: issue, designs: designs) }

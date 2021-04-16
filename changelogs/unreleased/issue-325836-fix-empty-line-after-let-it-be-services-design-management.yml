@@ -1,0 +1,5 @@
+---
+title: Fix EmptyLineAfterFinalLetItBe in spec/services/design_management
+merge_request: 58416
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

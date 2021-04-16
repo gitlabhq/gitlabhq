@@ -468,6 +468,13 @@ class ApplicationSetting < ApplicationRecord
   validates :admin_mode,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 
+  validates :external_pipeline_validation_service_url,
+            addressable_url: true, allow_blank: true
+
+  validates :external_pipeline_validation_service_timeout,
+            allow_nil: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,
@@ -496,6 +503,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :ci_jwt_signing_key, encryption_options_base_truncated_aes_256_gcm
   attr_encrypted :secret_detection_token_revocation_token, encryption_options_base_truncated_aes_256_gcm
   attr_encrypted :cloud_license_auth_token, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :external_pipeline_validation_service_token, encryption_options_base_truncated_aes_256_gcm
 
   validates :disable_feed_token,
             inclusion: { in: [true, false], message: _('must be a boolean value') }

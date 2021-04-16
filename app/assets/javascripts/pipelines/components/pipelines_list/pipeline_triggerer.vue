@@ -17,19 +17,11 @@ export default {
     user() {
       return this.pipeline.user;
     },
-    classes() {
-      const triggererClass = 'pipeline-triggerer';
-
-      if (this.glFeatures.newPipelinesTable) {
-        return triggererClass;
-      }
-      return `table-section section-10 d-none d-md-block ${triggererClass}`;
-    },
   },
 };
 </script>
 <template>
-  <div :class="classes" data-testid="pipeline-triggerer">
+  <div class="pipeline-triggerer" data-testid="pipeline-triggerer">
     <user-avatar-link
       v-if="user"
       :link-href="user.path"

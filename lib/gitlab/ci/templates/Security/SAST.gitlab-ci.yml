@@ -160,7 +160,7 @@ mobsf-android-sast:
   services:
     # this version must match with analyzer version mentioned in: https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/-/blob/master/Dockerfile
     # Unfortunately, we need to keep track of mobsf version in 2 different places for now.
-    - name: opensecurity/mobile-security-framework-mobsf:v3.3.3
+    - name: opensecurity/mobile-security-framework-mobsf:v3.4.0
       alias: mobsf
   image:
     name: "$SAST_ANALYZER_IMAGE"
@@ -186,7 +186,7 @@ mobsf-ios-sast:
   services:
     # this version must match with analyzer version mentioned in: https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/-/blob/master/Dockerfile
     # Unfortunately, we need to keep track of mobsf version in 2 different places for now.
-    - name: opensecurity/mobile-security-framework-mobsf:v3.3.3
+    - name: opensecurity/mobile-security-framework-mobsf:v3.4.0
       alias: mobsf
   image:
     name: "$SAST_ANALYZER_IMAGE"

@@ -128,7 +128,7 @@ To add the remote:
    For example:
 
    ```shell
-   conan search Hello* --all --remote=gitlab
+   conan search Hello* --remote=gitlab
    ```
 
 ### Add a remote for your instance

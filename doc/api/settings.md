@@ -87,7 +87,10 @@ Example response:
   "personal_access_token_prefix": "GL-",
   "rate_limiting_response_text": null,
   "keep_latest_artifact": true,
-  "admin_mode": false
+  "admin_mode": false,
+  "external_pipeline_validation_service_timeout": null,
+  "external_pipeline_validation_service_token": null,
+  "external_pipeline_validation_service_url": null
 }
 ```
 
@@ -183,7 +186,10 @@ Example response:
   "personal_access_token_prefix": "GL-",
   "rate_limiting_response_text": null,
   "keep_latest_artifact": true,
-  "admin_mode": false
+  "admin_mode": false,
+  "external_pipeline_validation_service_timeout": null,
+  "external_pipeline_validation_service_token": null,
+  "external_pipeline_validation_service_url": null
 }
 ```
 
@@ -283,6 +289,9 @@ listed in the descriptions of the relevant settings.
 | `external_authorization_service_enabled` | boolean          | no                                   | (**If enabled, requires:** `external_authorization_service_default_label`, `external_authorization_service_timeout` and `external_authorization_service_url`) Enable using an external authorization service for accessing projects |
 | `external_authorization_service_timeout` | float            | required by:<br>`external_authorization_service_enabled` | The timeout after which an authorization request is aborted, in seconds. When a request times out, access is denied to the user. (min: 0.001, max: 10, step: 0.001). |
 | `external_authorization_service_url`     | string           | required by:<br>`external_authorization_service_enabled` | URL to which authorization requests are directed. |
+| `external_pipeline_validation_service_url`  | string           | no | URL to which pipeline validation requests are directed. |
+| `external_pipeline_validation_service_token` | string           | no | An optional token to include as the `X-Gitlab-Token` header in requests to the URL in external_pipeline_validation_service_url. |
+| `external_pipeline_validation_service_timeout`  | integer           | no | How long to wait for a response from the pipeline validation service before giving up and assuming 'OK'. |
 | `file_template_project_id`               | integer          | no                                   | **(PREMIUM)** The ID of a project to load custom file templates from |
 | `first_day_of_week`                      | integer          | no                                   | Start day of the week for calendar views and date pickers. Valid values are `0` (default) for Sunday, `1` for Monday, and `6` for Saturday. |
 | `geo_node_allowed_ips`                   | string           | yes                                  | **(PREMIUM)** Comma-separated list of IPs and CIDRs of allowed secondary nodes. For example, `1.1.1.1, 2.2.2.0/24`. |

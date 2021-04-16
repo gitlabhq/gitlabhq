@@ -34,11 +34,22 @@ describe('Job Sidebar Details Container', () => {
   });
 
   describe('when no details are available', () => {
-    it('should render an empty container', () => {
+    beforeEach(() => {
       createWrapper();
+    });
 
+    it('should render an empty container', () => {
       expect(wrapper.html()).toBe('');
     });
+
+    it.each(['duration', 'erased_at', 'finished_at', 'queued', 'runner', 'coverage'])(
+      'should not render %s details when missing',
+      async (detail) => {
+        await store.dispatch('receiveJobSuccess', { [detail]: undefined });
+
+        expect(findAllDetailsRow()).toHaveLength(0);
+      },
+    );
   });
 
   describe('when some of the details are available', () => {
@@ -49,7 +60,7 @@ describe('Job Sidebar Details Container', () => {
       ['erased_at', 'Erased: 3 weeks ago'],
       ['finished_at', 'Finished: 3 weeks ago'],
       ['queued', 'Queued: 9 seconds'],
-      ['runner', 'Runner: local ci runner (#1)'],
+      ['runner', 'Runner: #1 (ABCDEFGH) local ci runner'],
       ['coverage', 'Coverage: 20%'],
     ])('uses %s to render job-%s', async (detail, value) => {
       await store.dispatch('receiveJobSuccess', { [detail]: job[detail] });

@@ -9,8 +9,11 @@ module QA
             element :pipeline_url_link
           end
 
-          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipelines_table_row.vue' do
+          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipelines_status_badge.vue' do
             element :pipeline_commit_status
+          end
+
+          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipeline_operations.vue' do
             element :pipeline_retry_button
           end
 

@@ -958,6 +958,7 @@ export default {
   artifacts: [null],
   runner: {
     id: 1,
+    short_sha: 'ABCDEFGH',
     description: 'local ci runner',
     edit_path: '/root/ci-mock/runners/1/edit',
   },

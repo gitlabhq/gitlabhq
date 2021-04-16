@@ -51,7 +51,9 @@ export default {
       });
     },
     runnerId() {
-      return `${this.job.runner.description} (#${this.job.runner.id})`;
+      const { id, short_sha: token, description } = this.job?.runner;
+
+      return `#${id} (${token}) ${description}`;
     },
     shouldRenderBlock() {
       return Boolean(this.hasAnyDetail || this.hasTimeout || this.hasTags);

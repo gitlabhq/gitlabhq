@@ -26,7 +26,7 @@ To view your project's dependencies, ensure you meet the following requirements:
 
 ## View a project's dependencies
 
-![Dependency list](img/dependency_list_v12_10.png)
+![Dependency list](img/dependency_list_v13_11.png)
 
 GitLab displays dependencies with the following information:
 
@@ -44,7 +44,8 @@ can also be sorted by name or by the packager that installed them.
 
 If a dependency has known vulnerabilities, view them by clicking the arrow next to the
 dependency's name or the badge that indicates how many known vulnerabilities exist. For each
-vulnerability, its severity and description appears below it.
+vulnerability, its severity and description appears below it. To view more details of a vulnerability,
+select the vulnerability’s description. The [vulnerability's details](../vulnerabilities) page is opened.
 
 ### Dependency paths
 
