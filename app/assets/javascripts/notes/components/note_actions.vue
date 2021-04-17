@@ -125,9 +125,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    // This can be undefined when `canAwardEmoji` is false
     awardPath: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
   computed: {

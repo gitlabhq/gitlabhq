@@ -39,24 +39,25 @@ Add details for required items and delete others.
 <!--
 Steps and the parts of the code that will need to get updated. The plan can also
 call-out responsibilities for other team members or teams.
--->
+
+e.g.:
 
 - [ ] ~frontend Step 1
   - [ ] `@person` Step 1a
 - [ ] ~frontend Step 2
 
+-->
+
 
 <!--
 Workflow and other relevant labels
 
-~"group::" ~"Category:" ~"GitLab Ultimate"
--->
-/label ~"workflow::refinement"
-
-<!--
+# ~"group::" ~"Category:" ~"GitLab Ultimate"
 Other settings you might want to include when creating the issue.
 
-/milestone %"Next 1-3 releases"
-/assign @
-/epic &
+# /assign @
+# /epic &
 -->
+
+/label ~"workflow::refinement"
+/milestone %Backlog
