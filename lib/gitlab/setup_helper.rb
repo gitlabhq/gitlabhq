@@ -100,6 +100,9 @@ module Gitlab
             socket_filename = options[:gitaly_socket] || "gitaly.socket"
             prometheus_listen_addr = options[:prometheus_listen_addr]
 
+            git_bin_path = File.expand_path('../gitaly/_build/deps/git/install/bin/git')
+            git_bin_path = nil unless File.exist?(git_bin_path)
+
             config = {
               # Override the set gitaly_address since Praefect is in the loop
               socket_path: File.join(gitaly_dir, socket_filename),
@@ -107,7 +110,10 @@ module Gitlab
               # Compared to production, tests run in constrained environments. This
               # number is meant to grow with the number of concurrent rails requests /
               # sidekiq jobs, and concurrency will be low anyway in test.
-              git: { catfile_cache_size: 5 },
+              git: {
+                catfile_cache_size: 5,
+                bin_path: git_bin_path
+              }.compact,
               prometheus_listen_addr: prometheus_listen_addr
             }.compact
 
