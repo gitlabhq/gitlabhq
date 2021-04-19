@@ -1,0 +1,5 @@
+---
+title: Added feature flag to show/hide assignees GraphQL widget
+merge_request: 59620
+author:
+type: fixed

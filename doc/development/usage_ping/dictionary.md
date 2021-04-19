@@ -6768,9 +6768,9 @@ Tiers: `premium`, `ultimate`
 
 The value of the SMTP server that is used
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174829_smtp_server.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210216174829_smtp_server.yml)
 
-Group: `group::acquisition`
+Group: `group::activation`
 
 Status: `data_available`
 

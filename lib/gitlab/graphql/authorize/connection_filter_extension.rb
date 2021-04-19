@@ -37,6 +37,8 @@ module Gitlab
         end
 
         def after_resolve(value:, context:, **rest)
+          return value if value.is_a?(GraphQL::Execution::Execute::Skip)
+
           if @field.connection?
             redact_connection(value, context)
           elsif @field.type.list?

@@ -225,7 +225,7 @@ RSpec.shared_examples 'handling nuget search requests' do |anonymous_requests_ex
   let(:take) { 26 }
   let(:skip) { 0 }
   let(:include_prereleases) { true }
-  let(:query_parameters) { { q: search_term, take: take, skip: skip, prerelease: include_prereleases } }
+  let(:query_parameters) { { q: search_term, take: take, skip: skip, prerelease: include_prereleases }.compact }
 
   subject { get api(url) }
 

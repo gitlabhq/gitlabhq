@@ -2911,33 +2911,6 @@ Gitlab/NamespacedClass:
     - 'spec/tasks/gitlab/task_helpers_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'
 
-# WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/322739
-Style/HashTransformation:
-  Exclude:
-    - 'ee/app/models/ee/ci/build.rb'
-    - 'ee/app/models/productivity_analytics.rb'
-    - 'ee/app/models/sca/license_compliance.rb'
-    - 'ee/app/services/security/store_report_service.rb'
-    - 'ee/lib/ee/gitlab/auth/ldap/sync/group.rb'
-    - 'ee/lib/ee/gitlab/usage_data.rb'
-    - 'ee/lib/gitlab/custom_file_templates.rb'
-    - 'ee/spec/elastic_integration/global_search_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/application_context_spec.rb'
-    - 'spec/lib/atlassian/jira_connect/serializers/pull_request_entity_spec.rb'
-    - 'spec/lib/gitlab/ci/status/composite_spec.rb'
-    - 'spec/lib/gitlab/conflict/file_spec.rb'
-    - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
-    - 'spec/models/concerns/featurable_spec.rb'
-    - 'spec/models/event_spec.rb'
-    - 'spec/models/packages/dependency_spec.rb'
-    - 'spec/requests/api/graphql/project/alert_management/alert/assignees_spec.rb'
-    - 'spec/requests/api/graphql/project/alert_management/alert/notes_spec.rb'
-    - 'spec/requests/api/graphql/project/alert_management/alert/todos_spec.rb'
-    - 'spec/requests/api/projects_spec.rb'
-    - 'spec/support/helpers/graphql_helpers.rb'
-    - 'spec/support/import_export/project_tree_expectations.rb'
-    - 'spec/support/shared_contexts/services/projects/container_repository/delete_tags_service_shared_context.rb'
-
 Style/ClassEqualityComparison:
   Exclude:
     - spec/lib/peek/views/active_record_spec.rb

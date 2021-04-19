@@ -376,6 +376,26 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
     end
   end
 
+  describe 'Authorization on GraphQL::Execution::Execute::SKIP' do
+    let(:type) do
+      type_factory do |type|
+        type.authorize permission_single
+      end
+    end
+
+    let(:query_type) do
+      query_factory do |query|
+        query.field :item, [type], null: true, resolver: new_resolver(GraphQL::Execution::Execute::SKIP)
+      end
+    end
+
+    it 'skips redaction' do
+      expect(Ability).not_to receive(:allowed?)
+
+      result
+    end
+  end
+
   private
 
   def permit(*permissions)

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe TodoService do
+  include AfterNextHelpers
+
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:author) { create(:user) }
   let_it_be(:assignee) { create(:user) }
@@ -343,19 +345,19 @@ RSpec.describe TodoService do
 
     describe '#destroy_target' do
       it 'refreshes the todos count cache for users with todos on the target' do
-        create(:todo, target: issue, user: john_doe, author: john_doe, project: issue.project)
+        create(:todo, state: :pending, target: issue, user: john_doe, author: john_doe, project: issue.project)
 
-        expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
+        expect_next(Users::UpdateTodoCountCacheService, [john_doe]).to receive(:execute)
 
-        service.destroy_target(issue) { }
+        service.destroy_target(issue) { issue.destroy! }
       end
 
       it 'does not refresh the todos count cache for users with only done todos on the target' do
         create(:todo, :done, target: issue, user: john_doe, author: john_doe, project: issue.project)
 
-        expect_any_instance_of(User).not_to receive(:update_todos_count_cache)
+        expect(Users::UpdateTodoCountCacheService).not_to receive(:new)
 
-        service.destroy_target(issue) { }
+        service.destroy_target(issue) { issue.destroy! }
       end
 
       it 'yields the target to the caller' do
@@ -1099,13 +1101,9 @@ RSpec.describe TodoService do
   it 'updates cached counts when a todo is created' do
     issue = create(:issue, project: project, assignees: [john_doe], author: author)
 
-    expect(john_doe.todos_pending_count).to eq(0)
-    expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+    expect_next(Users::UpdateTodoCountCacheService, [john_doe]).to receive(:execute)
 
     service.new_issue(issue, author)
-
-    expect(Todo.where(user_id: john_doe.id, state: :pending).count).to eq 1
-    expect(john_doe.todos_pending_count).to eq(1)
   end
 
   shared_examples 'updating todos state' do |state, new_state, new_resolved_by = nil|

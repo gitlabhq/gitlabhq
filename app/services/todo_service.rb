@@ -47,7 +47,7 @@ class TodoService
 
     yield target
 
-    todo_users.each(&:update_todos_count_cache)
+    Users::UpdateTodoCountCacheService.new(todo_users).execute if todo_users.present?
   end
 
   # When we reassign an assignable object (issuable, alert) we should:
@@ -227,14 +227,16 @@ class TodoService
     users_with_pending_todos = pending_todos(users, attributes).pluck_user_id
     users.reject! { |user| users_with_pending_todos.include?(user.id) && Feature.disabled?(:multiple_todos, user) }
 
-    users.map do |user|
+    todos = users.map do |user|
       issue_type = attributes.delete(:issue_type)
       track_todo_creation(user, issue_type)
 
-      todo = Todo.create(attributes.merge(user_id: user.id))
-      user.update_todos_count_cache
-      todo
+      Todo.create(attributes.merge(user_id: user.id))
     end
+
+    Users::UpdateTodoCountCacheService.new(users).execute
+
+    todos
   end
 
   def new_issuable(issuable, author)

@@ -1,8 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
-import { DRAW_FAILURE, DEFAULT, INVALID_CI_CONFIG, EMPTY_PIPELINE_DATA } from '../../constants';
+import { DRAW_FAILURE, DEFAULT } from '../../constants';
 import LinksLayer from '../graph_shared/links_layer.vue';
 import JobPill from './job_pill.vue';
 import StagePill from './stage_pill.vue';
@@ -21,10 +20,6 @@ export default {
   errorTexts: {
     [DRAW_FAILURE]: __('Could not draw the lines for job relationships'),
     [DEFAULT]: __('An unknown error occurred.'),
-    [EMPTY_PIPELINE_DATA]: __(
-      'The visualization will appear in this tab when the CI/CD configuration file is populated with valid syntax.',
-    ),
-    [INVALID_CI_CONFIG]: __('Your CI configuration file is invalid.'),
   },
   props: {
     pipelineData: {
@@ -55,18 +50,6 @@ export default {
             variant: 'danger',
             dismissible: true,
           };
-        case EMPTY_PIPELINE_DATA:
-          return {
-            text: this.$options.errorTexts[EMPTY_PIPELINE_DATA],
-            variant: 'tip',
-            dismissible: false,
-          };
-        case INVALID_CI_CONFIG:
-          return {
-            text: this.$options.errorTexts[INVALID_CI_CONFIG],
-            variant: 'danger',
-            dismissible: false,
-          };
         default:
           return {
             text: this.$options.errorTexts[DEFAULT],
@@ -81,18 +64,6 @@ export default {
     hasHighlightedJob() {
       return Boolean(this.highlightedJob);
     },
-    hideGraph() {
-      // We won't even try to render the graph with these condition
-      // because it would cause additional errors down the line for the user
-      // which is confusing.
-      return this.isPipelineDataEmpty || this.isInvalidCiConfig;
-    },
-    isInvalidCiConfig() {
-      return this.pipelineData?.status === CI_CONFIG_STATUS_INVALID;
-    },
-    isPipelineDataEmpty() {
-      return !this.isInvalidCiConfig && this.pipelineStages.length === 0;
-    },
     pipelineStages() {
       return this.pipelineData?.stages || [];
     },
@@ -101,15 +72,9 @@ export default {
     pipelineData: {
       immediate: true,
       handler() {
-        if (this.isPipelineDataEmpty) {
-          this.reportFailure(EMPTY_PIPELINE_DATA);
-        } else if (this.isInvalidCiConfig) {
-          this.reportFailure(INVALID_CI_CONFIG);
-        } else {
-          this.$nextTick(() => {
-            this.computeGraphDimensions();
-          });
-        }
+        this.$nextTick(() => {
+          this.computeGraphDimensions();
+        });
       },
     },
   },
@@ -172,12 +137,7 @@ export default {
     >
       {{ failure.text }}
     </gl-alert>
-    <div
-      v-if="!hideGraph"
-      :id="containerId"
-      :ref="$options.CONTAINER_REF"
-      data-testid="graph-container"
-    >
+    <div :id="containerId" :ref="$options.CONTAINER_REF" data-testid="graph-container">
       <links-layer
         :pipeline-data="pipelineStages"
         :pipeline-id="$options.PIPELINE_ID"

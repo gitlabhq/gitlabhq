@@ -390,7 +390,7 @@ export default {
             <gl-button
               :disabled="isDisabled"
               category="primary"
-              variant="success"
+              variant="confirm"
               class="gl-mr-3"
               data-qa-selector="start_review_button"
               @click="handleAddToReview"

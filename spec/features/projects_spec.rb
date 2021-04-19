@@ -174,26 +174,6 @@ RSpec.describe 'Project' do
     end
   end
 
-  describe 'remove forked relationship', :js do
-    let(:user)    { create(:user) }
-    let(:project) { fork_project(create(:project, :public), user, namespace: user.namespace) }
-
-    before do
-      sign_in user
-      visit edit_project_path(project)
-    end
-
-    it 'removes fork', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/327817' do
-      expect(page).to have_content 'Remove fork relationship'
-
-      remove_with_confirm('Remove fork relationship', project.path)
-
-      expect(page).to have_content 'The fork relationship has been removed.'
-      expect(project.reload.forked?).to be_falsey
-      expect(page).not_to have_content 'Remove fork relationship'
-    end
-  end
-
   describe 'showing information about source of a project fork' do
     let(:user) { create(:user) }
     let(:base_project) { create(:project, :public, :repository) }

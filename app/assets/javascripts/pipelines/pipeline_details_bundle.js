@@ -8,6 +8,7 @@ import GraphBundleMixin from './mixins/graph_pipeline_bundle_mixin';
 import createDagApp from './pipeline_details_dag';
 import { createPipelinesDetailApp } from './pipeline_details_graph';
 import { createPipelineHeaderApp } from './pipeline_details_header';
+import { createPipelineNotificationApp } from './pipeline_details_notification';
 import { apolloProvider } from './pipeline_shared_client';
 import createTestReportsStore from './stores/test_reports';
 import { reportToSentry } from './utils';
@@ -18,6 +19,7 @@ const SELECTORS = {
   PIPELINE_DETAILS: '.js-pipeline-details-vue',
   PIPELINE_GRAPH: '#js-pipeline-graph-vue',
   PIPELINE_HEADER: '#js-pipeline-header-vue',
+  PIPELINE_NOTIFICATION: '#js-pipeline-notification',
   PIPELINE_TESTS: '#js-pipeline-tests-detail',
 };
 
@@ -91,6 +93,14 @@ export default async function initPipelineDetailsBundle() {
     createPipelineHeaderApp(SELECTORS.PIPELINE_HEADER, apolloProvider, dataset.graphqlResourceEtag);
   } catch {
     Flash(__('An error occurred while loading a section of this page.'));
+  }
+
+  if (gon.features.pipelineGraphLayersView) {
+    try {
+      createPipelineNotificationApp(SELECTORS.PIPELINE_NOTIFICATION, apolloProvider);
+    } catch {
+      Flash(__('An error occurred while loading a section of this page.'));
+    }
   }
 
   if (canShowNewPipelineDetails) {

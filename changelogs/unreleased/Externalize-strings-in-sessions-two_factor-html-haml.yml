@@ -1,0 +1,5 @@
+---
+title: Externalize strings in sessions/two_factor.html.haml
+merge_request: 58275
+author: nuwe1
+type: other

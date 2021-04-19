@@ -22603,8 +22603,6 @@ CREATE INDEX index_epics_on_due_date_sourcing_milestone_id ON epics USING btree 
 
 CREATE INDEX index_epics_on_end_date ON epics USING btree (end_date);
 
-CREATE INDEX index_epics_on_group_id ON epics USING btree (group_id);
-
 CREATE UNIQUE INDEX index_epics_on_group_id_and_external_key ON epics USING btree (group_id, external_key) WHERE (external_key IS NOT NULL);
 
 CREATE UNIQUE INDEX index_epics_on_group_id_and_iid ON epics USING btree (group_id, iid);

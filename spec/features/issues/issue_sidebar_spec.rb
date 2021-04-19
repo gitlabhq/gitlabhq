@@ -30,116 +30,198 @@ RSpec.describe 'Issue Sidebar' do
       let(:user2) { create(:user) }
       let(:issue2) { create(:issue, project: project, author: user2) }
 
-      context 'when a privileged user can invite' do
-        it 'shows a link for inviting members and launches invite modal' do
-          project.add_maintainer(user)
-          visit_issue(project, issue2)
-
-          open_assignees_dropdown
-
-          page.within '.dropdown-menu-user' do
-            expect(page).to have_link('Invite members')
-            expect(page).to have_selector('[data-track-event="click_invite_members"]')
-            expect(page).to have_selector('[data-track-label="edit_assignee"]')
-          end
-
-          click_link 'Invite members'
-
-          expect(page).to have_content("You're inviting members to the")
-        end
-      end
-
-      context 'when invite_members_version_b experiment is enabled' do
+      context 'when GraphQL assignees widget feature flag is disabled' do
         before do
-          stub_experiment_for_subject(invite_members_version_b: true)
+          stub_feature_flags(issue_assignees_widget: false)
         end
 
-        it 'shows a link for inviting members and follows through to modal' do
-          project.add_developer(user)
-          visit_issue(project, issue2)
+        include_examples 'issuable invite members experiments' do
+          let(:issuable_path) { project_issue_path(project, issue2) }
+        end
 
-          open_assignees_dropdown
+        context 'when user is a developer' do
+          before do
+            project.add_developer(user)
+            visit_issue(project, issue2)
 
-          page.within '.dropdown-menu-user' do
-            expect(page).to have_link('Invite members', href: '#')
-            expect(page).to have_selector('[data-track-event="click_invite_members_version_b"]')
-            expect(page).to have_selector('[data-track-label="edit_assignee"]')
+            find('.block.assignee .edit-link').click
+            wait_for_requests
           end
 
-          click_link 'Invite members'
-
-          expect(page).to have_content("Oops, this feature isn't ready yet")
-        end
-      end
-
-      context 'when invite_members_version_b experiment is disabled' do
-        it 'shows author in assignee dropdown and no invite link' do
-          project.add_developer(user)
-          visit_issue(project, issue2)
-
-          open_assignees_dropdown
-
-          page.within '.dropdown-menu-user' do
-            expect(page).not_to have_link('Invite members')
+          it 'shows author in assignee dropdown' do
+            page.within '.dropdown-menu-user' do
+              expect(page).to have_content(user2.name)
+            end
           end
-        end
-      end
 
-      context 'when user is a developer' do
-        before do
-          project.add_developer(user)
-          visit_issue(project, issue2)
-        end
+          it 'shows author when filtering assignee dropdown' do
+            page.within '.dropdown-menu-user' do
+              find('.dropdown-input-field').set(user2.name)
 
-        it 'shows author in assignee dropdown' do
-          open_assignees_dropdown
+              wait_for_requests
 
-          page.within '.dropdown-menu-user' do
-            expect(page).to have_content(user2.name)
+              expect(page).to have_content(user2.name)
+            end
           end
-        end
 
-        it 'shows author when filtering assignee dropdown' do
-          open_assignees_dropdown
+          it 'assigns yourself' do
+            find('.block.assignee .dropdown-menu-toggle').click
 
-          page.within '.dropdown-menu-user' do
-            find('.js-dropdown-input-field').find('input').set(user2.name)
+            click_button 'assign yourself'
 
             wait_for_requests
 
-            expect(page).to have_content(user2.name)
+            find('.block.assignee .edit-link').click
+
+            page.within '.dropdown-menu-user' do
+              expect(page.find('.dropdown-header')).to be_visible
+              expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
+            end
+          end
+
+          it 'keeps your filtered term after filtering and dismissing the dropdown' do
+            find('.dropdown-input-field').set(user2.name)
+
+            wait_for_requests
+
+            page.within '.dropdown-menu-user' do
+              expect(page).not_to have_content 'Unassigned'
+              click_link user2.name
+            end
+
+            find('.js-right-sidebar').click
+            find('.block.assignee .edit-link').click
+
+            expect(page.all('.dropdown-menu-user li').length).to eq(1)
+            expect(find('.dropdown-input-field').value).to eq(user2.name)
+          end
+
+          it 'shows label text as "Apply" when assignees are changed' do
+            project.add_developer(user)
+            visit_issue(project, issue2)
+
+            find('.block.assignee .edit-link').click
+            wait_for_requests
+
+            click_on 'Unassigned'
+
+            expect(page).to have_link('Apply')
+          end
+        end
+      end
+
+      context 'when GraphQL assignees widget feature flag is enabled' do
+        context 'when a privileged user can invite' do
+          it 'shows a link for inviting members and launches invite modal' do
+            project.add_maintainer(user)
+            visit_issue(project, issue2)
+
+            open_assignees_dropdown
+
+            page.within '.dropdown-menu-user' do
+              expect(page).to have_link('Invite members')
+              expect(page).to have_selector('[data-track-event="click_invite_members"]')
+              expect(page).to have_selector('[data-track-label="edit_assignee"]')
+            end
+
+            click_link 'Invite members'
+
+            expect(page).to have_content("You're inviting members to the")
           end
         end
 
-        it 'assigns yourself' do
-          click_button 'assign yourself'
-          wait_for_requests
+        context 'when invite_members_version_b experiment is enabled' do
+          before do
+            stub_experiment_for_subject(invite_members_version_b: true)
+          end
 
-          page.within '.assignee' do
-            expect(page).to have_content(user.name)
+          it 'shows a link for inviting members and follows through to modal' do
+            project.add_developer(user)
+            visit_issue(project, issue2)
+
+            open_assignees_dropdown
+
+            page.within '.dropdown-menu-user' do
+              expect(page).to have_link('Invite members', href: '#')
+              expect(page).to have_selector('[data-track-event="click_invite_members_version_b"]')
+              expect(page).to have_selector('[data-track-label="edit_assignee"]')
+            end
+
+            click_link 'Invite members'
+
+            expect(page).to have_content("Oops, this feature isn't ready yet")
           end
         end
 
-        it 'keeps your filtered term after filtering and dismissing the dropdown' do
-          open_assignees_dropdown
+        context 'when invite_members_version_b experiment is disabled' do
+          it 'shows author in assignee dropdown and no invite link' do
+            project.add_developer(user)
+            visit_issue(project, issue2)
 
-          find('.js-dropdown-input-field').find('input').set(user2.name)
-          wait_for_requests
+            open_assignees_dropdown
 
-          page.within '.dropdown-menu-user' do
-            expect(page).not_to have_content 'Unassigned'
-            click_link user2.name
+            page.within '.dropdown-menu-user' do
+              expect(page).not_to have_link('Invite members')
+            end
+          end
+        end
+
+        context 'when user is a developer' do
+          before do
+            project.add_developer(user)
+            visit_issue(project, issue2)
           end
 
-          find('.js-right-sidebar').click
+          it 'shows author in assignee dropdown' do
+            open_assignees_dropdown
 
-          open_assignees_dropdown
-
-          page.within('.assignee') do
-            expect(page.all('[data-testid="selected-participant"]').length).to eq(1)
+            page.within '.dropdown-menu-user' do
+              expect(page).to have_content(user2.name)
+            end
           end
 
-          expect(find('.js-dropdown-input-field').find('input').value).to eq(user2.name)
+          it 'shows author when filtering assignee dropdown' do
+            open_assignees_dropdown
+
+            page.within '.dropdown-menu-user' do
+              find('.js-dropdown-input-field').find('input').set(user2.name)
+
+              wait_for_requests
+
+              expect(page).to have_content(user2.name)
+            end
+          end
+
+          it 'assigns yourself' do
+            click_button 'assign yourself'
+            wait_for_requests
+
+            page.within '.assignee' do
+              expect(page).to have_content(user.name)
+            end
+          end
+
+          it 'keeps your filtered term after filtering and dismissing the dropdown' do
+            open_assignees_dropdown
+
+            find('.js-dropdown-input-field').find('input').set(user2.name)
+            wait_for_requests
+
+            page.within '.dropdown-menu-user' do
+              expect(page).not_to have_content 'Unassigned'
+              click_link user2.name
+            end
+
+            find('.js-right-sidebar').click
+
+            open_assignees_dropdown
+
+            page.within('.assignee') do
+              expect(page.all('[data-testid="selected-participant"]').length).to eq(1)
+            end
+
+            expect(find('.js-dropdown-input-field').find('input').value).to eq(user2.name)
+          end
         end
       end
     end

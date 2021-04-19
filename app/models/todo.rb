@@ -152,6 +152,20 @@ class Todo < ApplicationRecord
     def pluck_user_id
       pluck(:user_id)
     end
+
+    # Count todos grouped by user_id and state, using an UNION query
+    # so we can utilize the partial indexes for each state.
+    def count_grouped_by_user_id_and_state
+      grouped_count = select(:user_id, 'count(id) AS count').group(:user_id)
+
+      done = grouped_count.where(state: :done).select("'done' AS state")
+      pending = grouped_count.where(state: :pending).select("'pending' AS state")
+      union = unscoped.from_union([done, pending], remove_duplicates: false)
+
+      connection.select_all(union).each_with_object({}) do |row, counts|
+        counts[[row['user_id'], row['state']]] = row['count']
+      end
+    end
   end
 
   def resource_parent

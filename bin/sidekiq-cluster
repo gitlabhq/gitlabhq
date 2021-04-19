@@ -5,6 +5,7 @@ require 'optparse'
 require_relative '../lib/gitlab'
 require_relative '../lib/gitlab/utils'
 require_relative '../lib/gitlab/sidekiq_config/cli_methods'
+require_relative '../lib/gitlab/sidekiq_config/worker_matcher'
 require_relative '../lib/gitlab/sidekiq_cluster'
 require_relative '../lib/gitlab/sidekiq_cluster/cli'
 

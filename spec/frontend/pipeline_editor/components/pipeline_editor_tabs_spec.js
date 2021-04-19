@@ -4,9 +4,12 @@ import { nextTick } from 'vue';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
+import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
 import {
+  EDITOR_APP_STATUS_EMPTY,
   EDITOR_APP_STATUS_ERROR,
   EDITOR_APP_STATUS_LOADING,
+  EDITOR_APP_STATUS_INVALID,
   EDITOR_APP_STATUS_VALID,
 } from '~/pipeline_editor/constants';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
@@ -44,6 +47,7 @@ describe('Pipeline editor tabs component', () => {
       provide: { ...mockProvide, ...provide },
       stubs: {
         TextEditor: MockTextEditor,
+        EditorTab,
       },
     });
   };
@@ -191,5 +195,25 @@ describe('Pipeline editor tabs component', () => {
         expect(findMergedPreview().exists()).toBe(false);
       });
     });
+  });
+
+  describe('show tab content based on status', () => {
+    it.each`
+      appStatus                    | editor  | viz      | lint     | merged
+      ${undefined}                 | ${true} | ${true}  | ${true}  | ${true}
+      ${EDITOR_APP_STATUS_EMPTY}   | ${true} | ${false} | ${false} | ${false}
+      ${EDITOR_APP_STATUS_INVALID} | ${true} | ${false} | ${true}  | ${false}
+      ${EDITOR_APP_STATUS_VALID}   | ${true} | ${true}  | ${true}  | ${true}
+    `(
+      'when status is $appStatus, we show - editor:$editor | viz:$viz | lint:$lint | merged:$merged ',
+      ({ appStatus, editor, viz, lint, merged }) => {
+        createComponent({ appStatus });
+
+        expect(findTextEditor().exists()).toBe(editor);
+        expect(findPipelineGraph().exists()).toBe(viz);
+        expect(findCiLint().exists()).toBe(lint);
+        expect(findMergedPreview().exists()).toBe(merged);
+      },
+    );
   });
 });

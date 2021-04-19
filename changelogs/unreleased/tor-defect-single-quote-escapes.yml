@@ -1,0 +1,5 @@
+---
+title: Fix character escaping in Resolved By tooltips
+merge_request: 59428
+author:
+type: fixed

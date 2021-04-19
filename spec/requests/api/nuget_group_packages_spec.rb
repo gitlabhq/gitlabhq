@@ -69,7 +69,7 @@ RSpec.describe API::NugetGroupPackages do
       let(:take) { 26 }
       let(:skip) { 0 }
       let(:include_prereleases) { true }
-      let(:query_parameters) { { q: search_term, take: take, skip: skip, prerelease: include_prereleases } }
+      let(:query_parameters) { { q: search_term, take: take, skip: skip, prerelease: include_prereleases }.compact }
 
       subject { get api(url), headers: {}}
 
@@ -145,7 +145,7 @@ RSpec.describe API::NugetGroupPackages do
         let(:take) { 26 }
         let(:skip) { 0 }
         let(:include_prereleases) { false }
-        let(:query_parameters) { { q: search_term, take: take, skip: skip, prerelease: include_prereleases } }
+        let(:query_parameters) { { q: search_term, take: take, skip: skip, prerelease: include_prereleases }.compact }
         let(:url) { "/groups/#{group.id}/-/packages/nuget/query?#{query_parameters.to_query}" }
 
         it_behaves_like 'returning response status', :forbidden

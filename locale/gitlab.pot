@@ -8305,6 +8305,9 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
+msgid "Confirm new password"
+msgstr ""
+
 msgid "Confirm your account"
 msgstr ""
 
@@ -11218,6 +11221,9 @@ msgid "DevopsReport|DevOps score metrics are based on usage over the last 30 day
 msgstr ""
 
 msgid "DevopsReport|Score"
+msgstr ""
+
+msgid "Didn't receive a confirmation email?"
 msgstr ""
 
 msgid "Diff content limits"
@@ -16128,6 +16134,9 @@ msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commit
 msgstr ""
 
 msgid "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} relationships between jobs in this tab as a %{linkStart}Directed Acyclic Graph (DAG)%{linkEnd}."
+msgstr ""
+
+msgid "If you did not initiate this change, please contact your administrator immediately."
 msgstr ""
 
 msgid "If you did not recently sign in, you should immediately %{password_link_start}change your password%{password_link_end}."
@@ -23150,6 +23159,18 @@ msgstr ""
 msgid "PipelineCharts|Total:"
 msgstr ""
 
+msgid "PipelineEditor|The CI/CD configuration is continuously validated. Errors and warnings are displayed when the CI/CD configuration file is not empty."
+msgstr ""
+
+msgid "PipelineEditor|The merged YAML view is displayed when the CI/CD configuration file has valid syntax."
+msgstr ""
+
+msgid "PipelineEditor|The pipeline visualization is displayed when the CI/CD configuration file has valid syntax."
+msgstr ""
+
+msgid "PipelineEditor|This tab will be usable when the CI/CD configuration file is populated with valid syntax."
+msgstr ""
+
 msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Cron syntax%{linkEnd})"
 msgstr ""
 
@@ -25700,6 +25721,9 @@ msgstr ""
 msgid "Protocol"
 msgstr ""
 
+msgid "Provide feedback"
+msgstr ""
+
 msgid "Provider"
 msgstr ""
 
@@ -26787,6 +26811,9 @@ msgid "RepositorySettingsAccessLevel|Select"
 msgstr ""
 
 msgid "Request Access"
+msgstr ""
+
+msgid "Request a new one"
 msgstr ""
 
 msgid "Request details"
@@ -31272,6 +31299,12 @@ msgstr ""
 msgid "The password for the Jenkins server."
 msgstr ""
 
+msgid "The password for your GitLab account on %{gitlab_url} has successfully been changed."
+msgstr ""
+
+msgid "The password for your GitLab account on %{link_to_gitlab} has successfully been changed."
+msgstr ""
+
 msgid "The phase of the development lifecycle."
 msgstr ""
 
@@ -31425,9 +31458,6 @@ msgstr ""
 msgid "The value of the provided variable exceeds the %{count} character limit"
 msgstr ""
 
-msgid "The visualization will appear in this tab when the CI/CD configuration file is populated with valid syntax."
-msgstr ""
-
 msgid "The vulnerability is known, and has not been remediated or mitigated, but is considered to be an acceptable business risk."
 msgstr ""
 
@@ -31561,6 +31591,9 @@ msgid "There is too much data to calculate. Please change your selection."
 msgstr ""
 
 msgid "There was a problem communicating with your device."
+msgstr ""
+
+msgid "There was a problem dismissing this notification."
 msgstr ""
 
 msgid "There was a problem fetching branches."
@@ -34497,6 +34530,9 @@ msgstr ""
 msgid "Verify SAML Configuration"
 msgstr ""
 
+msgid "Verify code"
+msgstr ""
+
 msgid "Verify configuration"
 msgstr ""
 
@@ -34586,6 +34622,9 @@ msgid "View it on GitLab"
 msgstr ""
 
 msgid "View job"
+msgstr ""
+
+msgid "View job dependencies in the pipeline graph!"
 msgstr ""
 
 msgid "View job log"
@@ -35778,6 +35817,9 @@ msgstr ""
 msgid "You can now export your security dashboard to a CSV report."
 msgstr ""
 
+msgid "You can now group jobs in the pipeline graph based on which jobs are configured to run first, if you use the %{codeStart}needs:%{codeEnd} keyword to establish job dependencies in your CI/CD pipelines. %{linkStart}Learn how to speed up your pipeline with needs.%{linkEnd}"
+msgstr ""
+
 msgid "You can now submit a merge request to get this change into the original branch."
 msgstr ""
 
@@ -36165,7 +36207,7 @@ msgstr ""
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not be able to create issues or merge requests as well as many other features."
 msgstr ""
 
-msgid "Your CI configuration file is invalid."
+msgid "Your CI/CD configuration syntax is invalid. View Lint tab for more details."
 msgstr ""
 
 msgid "Your CSV export has started. It will be emailed to %{email} when complete."

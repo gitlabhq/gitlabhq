@@ -12,35 +12,19 @@ module Gitlab
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       extend self
 
+      # The file names are misleading. Those files contain the metadata of the
+      # workers. They should be renamed to all_workers instead.
+      # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1018
       QUEUE_CONFIG_PATHS = begin
         result = %w[app/workers/all_queues.yml]
         result << 'ee/app/workers/all_queues.yml' if Gitlab.ee?
         result
       end.freeze
 
-      QUERY_OR_OPERATOR = '|'
-      QUERY_AND_OPERATOR = '&'
-      QUERY_CONCATENATE_OPERATOR = ','
-      QUERY_TERM_REGEX = %r{^(\w+)(!?=)([\w:#{QUERY_CONCATENATE_OPERATOR}]+)}.freeze
+      def worker_metadatas(rails_path = Rails.root.to_s)
+        @worker_metadatas ||= {}
 
-      QUERY_PREDICATES = {
-        feature_category: :to_sym,
-        has_external_dependencies: lambda { |value| value == 'true' },
-        name: :to_s,
-        resource_boundary: :to_sym,
-        tags: :to_sym,
-        urgency: :to_sym
-      }.freeze
-
-      QueryError = Class.new(StandardError)
-      InvalidTerm = Class.new(QueryError)
-      UnknownOperator = Class.new(QueryError)
-      UnknownPredicate = Class.new(QueryError)
-
-      def all_queues(rails_path = Rails.root.to_s)
-        @worker_queues ||= {}
-
-        @worker_queues[rails_path] ||= QUEUE_CONFIG_PATHS.flat_map do |path|
+        @worker_metadatas[rails_path] ||= QUEUE_CONFIG_PATHS.flat_map do |path|
           full_path = File.join(rails_path, path)
 
           File.exist?(full_path) ? YAML.load_file(full_path) : []
@@ -49,7 +33,7 @@ module Gitlab
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       def worker_queues(rails_path = Rails.root.to_s)
-        worker_names(all_queues(rails_path))
+        worker_names(worker_metadatas(rails_path))
       end
 
       def expand_queues(queues, all_queues = self.worker_queues)
@@ -62,13 +46,18 @@ module Gitlab
         end
       end
 
-      def query_workers(query_string, queues)
-        worker_names(queues.select(&query_string_to_lambda(query_string)))
+      def query_queues(query_string, worker_metadatas)
+        matcher = SidekiqConfig::WorkerMatcher.new(query_string)
+        selected_metadatas = worker_metadatas.select do |worker_metadata|
+          matcher.match?(worker_metadata)
+        end
+
+        worker_names(selected_metadatas)
       end
 
       def clear_memoization!
-        if instance_variable_defined?('@worker_queues')
-          remove_instance_variable('@worker_queues')
+        if instance_variable_defined?('@worker_metadatas')
+          remove_instance_variable('@worker_metadatas')
         end
       end
 
@@ -76,53 +65,6 @@ module Gitlab
 
       def worker_names(workers)
         workers.map { |queue| queue[:name] }
-      end
-
-      def query_string_to_lambda(query_string)
-        or_clauses = query_string.split(QUERY_OR_OPERATOR).map do |and_clauses_string|
-          and_clauses_predicates = and_clauses_string.split(QUERY_AND_OPERATOR).map do |term|
-            predicate_for_term(term)
-          end
-
-          lambda { |worker| and_clauses_predicates.all? { |predicate| predicate.call(worker) } }
-        end
-
-        lambda { |worker| or_clauses.any? { |predicate| predicate.call(worker) } }
-      end
-
-      def predicate_for_term(term)
-        match = term.match(QUERY_TERM_REGEX)
-
-        raise InvalidTerm.new("Invalid term: #{term}") unless match
-
-        _, lhs, op, rhs = *match
-
-        predicate_for_op(op, predicate_factory(lhs, rhs.split(QUERY_CONCATENATE_OPERATOR)))
-      end
-
-      def predicate_for_op(op, predicate)
-        case op
-        when '='
-          predicate
-        when '!='
-          lambda { |worker| !predicate.call(worker) }
-        else
-          # This is unreachable because InvalidTerm will be raised instead, but
-          # keeping it allows to guard against that changing in future.
-          raise UnknownOperator.new("Unknown operator: #{op}")
-        end
-      end
-
-      def predicate_factory(lhs, values)
-        values_block = QUERY_PREDICATES[lhs.to_sym]
-
-        raise UnknownPredicate.new("Unknown predicate: #{lhs}") unless values_block
-
-        lambda do |queue|
-          comparator = Array(queue[lhs.to_sym]).to_set
-
-          values.map(&values_block).to_set.intersect?(comparator)
-        end
       end
     end
   end

@@ -192,7 +192,10 @@ func handleExifUpload(ctx context.Context, r io.Reader, filename string, imageTy
 		return nil, err
 	}
 
-	tmpfile.Seek(0, io.SeekStart)
+	if _, err := tmpfile.Seek(0, io.SeekStart); err != nil {
+		return nil, err
+	}
+
 	isValidType := false
 	switch imageType {
 	case exif.TypeJPEG:
@@ -201,7 +204,10 @@ func handleExifUpload(ctx context.Context, r io.Reader, filename string, imageTy
 		isValidType = isTIFF(tmpfile)
 	}
 
-	tmpfile.Seek(0, io.SeekStart)
+	if _, err := tmpfile.Seek(0, io.SeekStart); err != nil {
+		return nil, err
+	}
+
 	if !isValidType {
 		log.WithContextFields(ctx, log.Fields{
 			"filename":  filename,

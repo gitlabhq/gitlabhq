@@ -3695,6 +3695,7 @@ Represents an iteration object.
 | `dueDate` | [`Time`](#time) | Timestamp of the iteration due date. |
 | `id` | [`ID!`](#id) | ID of the iteration. |
 | `iid` | [`ID!`](#id) | Internal ID of the iteration. |
+| `iterationCadence` | [`IterationCadence!`](#iterationcadence) | Cadence of the iteration. |
 | `report` | [`TimeboxReport`](#timeboxreport) | Historically accurate report about the timebox. |
 | `scopedPath` | [`String`](#string) | Web path of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts. |
 | `scopedUrl` | [`String`](#string) | Web URL of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts. |
