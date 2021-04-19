@@ -1,0 +1,52 @@
+query getJobs($fullPath: ID!, $statuses: [CiJobStatus!]) {
+  project(fullPath: $fullPath) {
+    jobs(first: 20, statuses: $statuses) {
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      nodes {
+        detailedStatus {
+          icon
+          label
+          text
+          tooltip
+          action {
+            buttonTitle
+            icon
+            method
+            path
+            title
+          }
+        }
+        id
+        refName
+        refPath
+        tags
+        shortSha
+        commitPath
+        pipeline {
+          id
+          path
+          user {
+            webPath
+            avatarUrl
+          }
+        }
+        stage {
+          name
+        }
+        name
+        duration
+        finishedAt
+        coverage
+        retryable
+        playable
+        cancelable
+        active
+      }
+    }
+  }
+}

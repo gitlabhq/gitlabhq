@@ -559,6 +559,9 @@ msgstr ""
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
+msgid "%{group_name} activity"
+msgstr ""
+
 msgid "%{group_name} group members"
 msgstr ""
 
@@ -4328,6 +4331,9 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
+msgid "Artifacts maximum size"
+msgstr ""
+
 msgid "As we continue to build more features for SAST, we'd love your feedback on the SAST configuration feature in %{linkStart}this issue%{linkEnd}."
 msgstr ""
 
@@ -4924,6 +4930,9 @@ msgid "Before this can be merged, a Jira issue must be linked in the title or de
 msgstr ""
 
 msgid "Begin with the selected commit"
+msgstr ""
+
+msgid "Below are the current settings regarding"
 msgstr ""
 
 msgid "Below are the fingerprints for the current instance SSH host keys."
@@ -10321,6 +10330,9 @@ msgstr ""
 msgid "Decrease"
 msgstr ""
 
+msgid "Default"
+msgstr ""
+
 msgid "Default CI configuration path"
 msgstr ""
 
@@ -14650,6 +14662,9 @@ msgstr ""
 msgid "GitLab Billing Team."
 msgstr ""
 
+msgid "GitLab CI"
+msgstr ""
+
 msgid "GitLab Import"
 msgstr ""
 
@@ -17156,6 +17171,9 @@ msgid "Integrations|Failed to link namespace. Please try again."
 msgstr ""
 
 msgid "Integrations|Failed to load namespaces. Please try again."
+msgstr ""
+
+msgid "Integrations|Failed to unlink namespace. Please try again."
 msgstr ""
 
 msgid "Integrations|Includes Standard plus entire commit message, commit hash, and issue IDs"
@@ -28841,6 +28859,9 @@ msgstr ""
 msgid "Sets weight to %{weight}."
 msgstr ""
 
+msgid "Setting"
+msgstr ""
+
 msgid "Setting this to 0 means using the system default timeout value."
 msgstr ""
 
@@ -31704,6 +31725,9 @@ msgstr ""
 msgid "There was an error fetching the environments information."
 msgstr ""
 
+msgid "There was an error fetching the jobs for your project."
+msgstr ""
+
 msgid "There was an error fetching the top labels for the selected group"
 msgstr ""
 
@@ -33673,6 +33697,9 @@ msgid "Update it"
 msgstr ""
 
 msgid "Update iteration"
+msgstr ""
+
+msgid "Update milestone"
 msgstr ""
 
 msgid "Update now"

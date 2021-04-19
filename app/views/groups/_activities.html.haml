@@ -1,7 +1,7 @@
 .nav-block.activities
   = render 'shared/event_filter', show_group_events: @group.supports_events?
   .controls
-    = link_to group_path(@group, rss_url_options), class: 'btn gl-button btn-default btn-icon d-none d-sm-inline-flex has-tooltip' , title: 'Subscribe' do
+    = link_to group_path(@group, rss_url_options), class: 'btn gl-button btn-default btn-icon d-none d-sm-inline-flex has-tooltip' , title: _('Subscribe') do
       = sprite_icon('rss', css_class: 'qa-rss-icon gl-icon')
 
 .content_list

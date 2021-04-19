@@ -1,10 +1,12 @@
 <script>
 import { GlButton, GlEmptyState, GlTable } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import { mapMutations } from 'vuex';
 import { removeSubscription } from '~/jira_connect/api';
 import { reloadPage } from '~/jira_connect/utils';
 import { __, s__ } from '~/locale';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { SET_ALERT } from '../store/mutation_types';
 import GroupItemName from './group_item_name.vue';
 
 export default {
@@ -46,8 +48,12 @@ export default {
     emptyDescription: s__(
       'Integrations|Namespaces are the GitLab groups and subgroups you link to this Jira instance.',
     ),
+    unlinkError: s__('Integrations|Failed to unlink namespace. Please try again.'),
   },
   methods: {
+    ...mapMutations({
+      setAlert: SET_ALERT,
+    }),
     isEmpty,
     isLoadingItem(item) {
       return this.loadingItem === item;
@@ -62,7 +68,11 @@ export default {
         .then(() => {
           reloadPage();
         })
-        .catch(() => {
+        .catch((error) => {
+          this.setAlert({
+            message: error?.response?.data?.error || this.$options.i18n.unlinkError,
+            variant: 'danger',
+          });
           this.loadingItem = null;
         });
     },
@@ -89,6 +99,7 @@ export default {
           :class="unlinkBtnClass(item)"
           category="secondary"
           :loading="isLoadingItem(item)"
+          :disabled="!isEmpty(loadingItem)"
           @click.prevent="onClick(item)"
           >{{ __('Unlink') }}</gl-button
         >

@@ -18,6 +18,21 @@ module Ci
         "retry_outdated_job_docs_url" => help_page_path('ci/pipelines/settings', anchor: 'retry-outdated-jobs')
       }
     end
+
+    def job_counts
+      {
+        "all" => limited_counter_with_delimiter(@all_builds),
+        "pending" => limited_counter_with_delimiter(@all_builds.pending),
+        "running" => limited_counter_with_delimiter(@all_builds.running),
+        "finished" => limited_counter_with_delimiter(@all_builds.finished)
+      }
+    end
+
+    def job_statuses
+      statuses = Ci::HasStatus::AVAILABLE_STATUSES
+
+      statuses.to_h { |status| [status, status.upcase] }
+    end
   end
 end
 

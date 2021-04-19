@@ -157,7 +157,7 @@ This should start the process with the default listening ports.
 Once you have Jaeger running, configure the `GITLAB_TRACING` variable with the
 appropriate configuration string.
 
-**TL;DR:** If you are running everything on the same host, use the following value:
+If you're running everything on the same host, use the following value:
 
 ```shell
 export GITLAB_TRACING="opentracing://jaeger?http_endpoint=http%3A%2F%2Flocalhost%3A14268%2Fapi%2Ftraces&sampler=const&sampler_param=1"

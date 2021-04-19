@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# Upgrading from Community Edition to Enterprise Edition from source
+# Upgrading from Community Edition to Enterprise Edition from source **(FREE SELF)**
 
 NOTE:
 In the past we used separate documents for upgrading from

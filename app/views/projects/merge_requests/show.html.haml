@@ -26,21 +26,21 @@
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", qa_selector: "notes_tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Overview")
-              %span.badge.badge-pill= @merge_request.related_notes.user.count
+              %span.badge.badge-pill.gl-badge.badge-muted.sm= @merge_request.related_notes.user.count
           - if @merge_request.source_project
             = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", qa_selector: "commits_tab" do
               = tab_link_for @merge_request, :commits do
                 = _("Commits")
-                %span.badge.badge-pill= @commits_count
+                %span.badge.badge-pill.gl-badge.badge-muted.sm= @commits_count
           - if number_of_pipelines.nonzero?
             = render "projects/merge_requests/tabs/tab", name: "pipelines", class: "pipelines-tab" do
               = tab_link_for @merge_request, :pipelines do
                 = _("Pipelines")
-                %span.badge.badge-pill.js-pipelines-mr-count= number_of_pipelines
+                %span.badge.badge-pill.gl-badge.badge-muted.sm.js-pipelines-mr-count= number_of_pipelines
           = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab", id: "diffs-tab", qa_selector: "diffs_tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
-              %span.badge.badge-pill= @merge_request.diff_size
+              %span.badge.badge-pill.gl-badge.badge-muted.sm= @merge_request.diff_size
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter
 

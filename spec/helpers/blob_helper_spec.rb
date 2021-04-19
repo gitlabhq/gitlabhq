@@ -304,6 +304,7 @@ RSpec.describe BlobHelper do
     let_it_be(:namespace) { create(:namespace, name: 'gitlab') }
     let_it_be(:project) { create(:project, :repository, namespace: namespace) }
     let_it_be(:current_user) { create(:user) }
+
     let(:can_push_code) { true }
     let(:blob) { project.repository.blob_at('refs/heads/master', 'README.md') }
 

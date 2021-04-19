@@ -397,7 +397,7 @@ Returns [`VulnerabilityConnection`](#vulnerabilityconnection).
 | `projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
 | `reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | `scanner` | [`[String!]`](#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |
-| `scannerId` | [`[Int!]`](#int) | Filter vulnerabilities by scanner ID. |
+| `scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
 | `severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | `sort` | [`VulnerabilitySort`](#vulnerabilitysort) | List vulnerabilities by sort order. |
 | `state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
@@ -9155,6 +9155,12 @@ An example `UserID` is: `"gid://gitlab/User/1"`.
 A `VulnerabilitiesExternalIssueLinkID` is a global ID. It is encoded as a string.
 
 An example `VulnerabilitiesExternalIssueLinkID` is: `"gid://gitlab/Vulnerabilities::ExternalIssueLink/1"`.
+
+### `VulnerabilitiesScannerID`
+
+A `VulnerabilitiesScannerID` is a global ID. It is encoded as a string.
+
+An example `VulnerabilitiesScannerID` is: `"gid://gitlab/Vulnerabilities::Scanner/1"`.
 
 ### `VulnerabilityID`
 

@@ -1,9 +1,12 @@
 - page_title _("Jobs")
 - add_page_specific_style 'page_bundles/ci_status'
 
-.top-area
-  - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }
-  = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
+- if Feature.enabled?(:jobs_table_vue, @project, default_enabled: :yaml)
+  #js-jobs-table{ data: { full_path: @project.full_path, job_counts: job_counts.to_json, job_statuses: job_statuses.to_json } }
+- else
+  .top-area
+    - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }
+    = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
 
-.content-list.builds-content-list
-  = render "table", builds: @builds, project: @project
+  .content-list.builds-content-list
+    = render "table", builds: @builds, project: @project

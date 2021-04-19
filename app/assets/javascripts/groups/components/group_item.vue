@@ -182,7 +182,10 @@ export default {
         </div>
         <div class="metadata d-flex flex-grow-1 flex-shrink-0 flex-wrap justify-content-md-between">
           <item-actions v-if="isGroup" :group="group" :parent-group="parentGroup" />
-          <item-stats :item="group" class="group-stats gl-mt-2 d-none d-md-flex" />
+          <item-stats
+            :item="group"
+            class="group-stats gl-mt-2 d-none d-md-flex gl-align-items-center"
+          />
         </div>
       </div>
     </div>

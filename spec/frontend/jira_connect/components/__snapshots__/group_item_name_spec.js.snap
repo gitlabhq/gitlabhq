@@ -26,16 +26,13 @@ exports[`GroupItemName template matches the snapshot 1`] = `
   <div>
     <span
       class="gl-mr-3 gl-text-gray-900! gl-font-weight-bold"
-      data-testid="group-list-item-name"
     >
       
       Gitlab Org
     
     </span>
      
-    <div
-      data-testid="group-list-item-description"
-    >
+    <div>
       <p
         class="gl-mt-2! gl-mb-0 gl-text-gray-600"
       >

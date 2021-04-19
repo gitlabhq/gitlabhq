@@ -155,6 +155,33 @@ RSpec.describe Namespace do
     end
   end
 
+  describe 'scopes' do
+    let_it_be(:namespace1) { create(:group, name: 'Namespace 1', path: 'namespace-1') }
+    let_it_be(:namespace2) { create(:group, name: 'Namespace 2', path: 'namespace-2') }
+    let_it_be(:namespace1sub) { create(:group, name: 'Sub Namespace', path: 'sub-namespace', parent: namespace1) }
+    let_it_be(:namespace2sub) { create(:group, name: 'Sub Namespace', path: 'sub-namespace', parent: namespace2) }
+
+    describe '.by_parent' do
+      it 'includes correct namespaces' do
+        expect(described_class.by_parent(namespace1.id)).to eq([namespace1sub])
+        expect(described_class.by_parent(namespace2.id)).to eq([namespace2sub])
+        expect(described_class.by_parent(nil)).to match_array([namespace, namespace1, namespace2])
+      end
+    end
+
+    describe '.filter_by_path' do
+      it 'includes correct namespaces' do
+        expect(described_class.filter_by_path(namespace1.path)).to eq([namespace1])
+        expect(described_class.filter_by_path(namespace2.path)).to eq([namespace2])
+        expect(described_class.filter_by_path('sub-namespace')).to match_array([namespace1sub, namespace2sub])
+      end
+
+      it 'filters case-insensitive' do
+        expect(described_class.filter_by_path(namespace1.path.upcase)).to eq([namespace1])
+      end
+    end
+  end
+
   describe 'delegate' do
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix.with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:avatar_url).to(:owner).with_arguments(allow_nil: true) }

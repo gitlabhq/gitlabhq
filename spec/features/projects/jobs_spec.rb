@@ -20,6 +20,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
   end
 
   before do
+    stub_feature_flags(jobs_table_vue: false)
     project.add_role(user, user_access_level)
     sign_in(user)
   end

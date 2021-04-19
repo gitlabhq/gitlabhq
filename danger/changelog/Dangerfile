@@ -74,3 +74,26 @@ elsif changelog.required?
 elsif changelog.optional?
   message changelog.optional_text
 end
+
+message <<~MSG
+  We are in the process of rolling out a new workflow for adding changelog entries. This new workflow uses Git commit subjects and Git trailers to generate changelogs. This new approach will soon replace the current YAML based approach.
+
+  To ease the transition process, we recommend you start using both the old and new approach in parallel. This is not required at this time, but will make it easier to transition to the new approach in the future. To do so, pick the commit that should go in the changelog and add a `Changelog` trailer to it.  For example:
+
+  ```
+  This is my commit's subject line
+
+  This is the optional commit body.
+
+  Changelog: added
+  ```
+
+  The value of the `Changelog` trailer should be one of the following: added, fixed, changed, deprecated, removed, security, performance, other.
+
+  For more information, take a look at the following resources:
+
+  - https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/1564
+  - https://docs.gitlab.com/ee/api/repositories.html#generate-changelog-data
+
+  If you'd like to see the new approach in action, take a look at the commits in [the Omnibus repository](https://gitlab.com/gitlab-org/omnibus-gitlab/-/commits/master).
+MSG

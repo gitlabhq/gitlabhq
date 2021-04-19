@@ -13,6 +13,7 @@ RSpec.describe MarkupHelper do
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let_it_be(:snippet) { create(:project_snippet, project: project) }
+
   let(:commit) { project.commit }
 
   before do
@@ -453,6 +454,7 @@ FooBar
 
     let_it_be(:project_base) { create(:project, :repository) }
     let_it_be(:context) { { project: project_base } }
+
     let(:file_name) { 'foo.bar' }
     let(:text) { 'Noël' }
 

@@ -62,6 +62,7 @@ RSpec.describe Boards::Issues::MoveService do
       let_it_be(:testing) { create(:group_label, group: group, name: 'Testing') }
       let_it_be(:list1) { create(:list, board: board1, label: development, position: 0) }
       let_it_be(:list2) { create(:list, board: board1, label: testing, position: 1) }
+
       let(:params) { { board_id: board1.id, from_list_id: list1.id, to_list_id: list2.id } }
 
       before do

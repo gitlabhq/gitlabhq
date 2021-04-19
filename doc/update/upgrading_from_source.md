@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# Upgrading Community Edition and Enterprise Edition from source
+# Upgrading Community Edition and Enterprise Edition from source **(FREE SELF)**
 
 NOTE:
 Users wishing to upgrade to 12.0.0 must take some extra steps. See the

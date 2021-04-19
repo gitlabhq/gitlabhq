@@ -1,24 +1,24 @@
 - content_for :table_content do
-  %li= link_to 'GitLab CI', '#gitlab-ci'
+  %li= link_to _('GitLab CI'), '#gitlab-ci'
 
 - content_for :settings_content do
   %h2#gitlab-ci
-    GitLab CI
+    = _('GitLab CI')
 
   %p
-    Below are the current settings regarding
-    = succeed('.') { link_to('GitLab CI', 'https://about.gitlab.com/gitlab-ci', target: '_blank') }
+    = _('Below are the current settings regarding')
+    = succeed('.') { link_to(_('GitLab CI'), 'https://about.gitlab.com/gitlab-ci', target: '_blank') }
 
   .table-responsive
     %table
       %thead
         %tr
-          %th Setting
+          %th= _('Setting')
           %th= instance_configuration_host(@instance_configuration.settings[:host])
-          %th Default
+          %th= _('Default')
       %tbody
         %tr
           - artifacts_size = @instance_configuration.settings[:gitlab_ci][:artifacts_max_size]
-          %td Artifacts maximum size
+          %td= _('Artifacts maximum size')
           %td= instance_configuration_human_size_cell(artifacts_size[:value])
           %td= instance_configuration_human_size_cell(artifacts_size[:default])

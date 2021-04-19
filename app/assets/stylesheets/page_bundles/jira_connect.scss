@@ -8,7 +8,6 @@
 // We should only import styles that we actually use.
 @import '@gitlab/ui/src/components/base/alert/alert';
 @import '@gitlab/ui/src/components/base/avatar/avatar';
-@import '@gitlab/ui/src/components/base/badge/badge';
 @import '@gitlab/ui/src/components/base/button/button';
 @import '@gitlab/ui/src/components/base/icon/icon';
 @import '@gitlab/ui/src/components/base/link/link';
@@ -19,21 +18,7 @@
 @import '@gitlab/ui/src/components/base/tooltip/tooltip';
 @import '@gitlab/ui/src/components/base/search_box_by_type/search_box_by_type';
 
-$atlaskit-border-color: #dfe1e6;
 $header-height: 40px;
-
-.subscription-form {
-  .field-group-input {
-    display: flex;
-    padding-top: $gl-padding-4;
-
-    .ak-button {
-      align-items: center;
-      height: auto;
-      margin-left: $btn-margin-5;
-    }
-  }
-}
 
 .jira-connect-header {
   min-height: $header-height;
@@ -59,42 +44,4 @@ $header-height: 40px;
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
-}
-
-// for external_link buttons
-svg {
-  fill: currentColor;
-
-  &.s16 {
-    height: 16px;
-    width: 16px;
-  }
-}
-
-.ak-field-group label {
-  text-align: left;
-}
-
-.ak-button__appearance-primary {
-  &:hover {
-    color: $white;
-    text-decoration: none;
-  }
-
-  svg {
-    align-self: center;
-    margin-left: 4px;
-  }
-}
-
-.subscriptions {
-  tbody {
-    tr {
-      border-bottom: 1px solid $atlaskit-border-color;
-    }
-
-    td {
-      padding: $gl-padding-8;
-    }
-  }
 }

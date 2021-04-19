@@ -84,6 +84,7 @@ RSpec.describe Ci::RunnersHelper do
 
   describe '#toggle_shared_runners_settings_data' do
     let_it_be(:group) { create(:group) }
+
     let(:project_with_runners) { create(:project, namespace: group, shared_runners_enabled: true) }
     let(:project_without_runners) { create(:project, namespace: group, shared_runners_enabled: false) }
 

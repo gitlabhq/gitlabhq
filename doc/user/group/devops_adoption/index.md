@@ -17,6 +17,8 @@ This feature might not be available to you. Check the **version history** note a
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321083) in GitLab 13.11 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
 
+To access Group DevOps Adoption, navigate to your group sidebar and select **Analytics > DevOps Adoption**
+
 Group DevOps Adoption shows you how individual groups and sub-groups within your organization use the following features:
 
 - Issues

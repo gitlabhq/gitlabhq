@@ -12,6 +12,8 @@ RSpec.describe 'Project Jobs Permissions' do
   let_it_be(:job) { create(:ci_build, :running, :coverage, :trace_artifact, pipeline: pipeline) }
 
   before do
+    stub_feature_flags(jobs_table_vue: false)
+
     sign_in(user)
 
     project.enable_ci

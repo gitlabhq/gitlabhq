@@ -230,6 +230,29 @@ RSpec.describe 'Group' do
         end
       end
     end
+
+    describe 'real-time group url validation', :js do
+      let_it_be(:subgroup) { create(:group, path: 'sub', parent: group) }
+
+      before do
+        group.add_owner(user)
+        visit new_group_path(parent_id: group.id)
+      end
+
+      it 'shows a message if group url is available' do
+        fill_in 'Group URL', with: group.path
+        wait_for_requests
+
+        expect(page).to have_content('Group path is available')
+      end
+
+      it 'shows an error if group url is taken' do
+        fill_in 'Group URL', with: subgroup.path
+        wait_for_requests
+
+        expect(page).to have_content('Group path is already taken')
+      end
+    end
   end
 
   it 'checks permissions to avoid exposing groups by parent_id' do

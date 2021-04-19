@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::TerraformHelper do
   describe '#js_terraform_list_data' do
     let_it_be(:project) { create(:project) }
+
     let(:current_user) { project.creator }
 
     subject { helper.js_terraform_list_data(current_user, project) }

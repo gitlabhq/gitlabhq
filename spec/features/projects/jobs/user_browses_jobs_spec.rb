@@ -9,6 +9,7 @@ RSpec.describe 'User browses jobs' do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(jobs_table_vue: false)
     project.add_maintainer(user)
     project.enable_ci
     project.update_attribute(:build_coverage_regex, /Coverage (\d+)%/)

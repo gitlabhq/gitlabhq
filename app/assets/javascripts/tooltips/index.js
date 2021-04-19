@@ -44,10 +44,7 @@ const addTooltips = (elements, config) => {
 const handleTooltipEvent = (rootTarget, e, selector, config = {}) => {
   for (let { target } = e; target && target !== rootTarget; target = target.parentNode) {
     if (isTooltip(target, selector)) {
-      addTooltips([target], {
-        show: true,
-        ...config,
-      });
+      addTooltips([target], config);
       break;
     }
   }

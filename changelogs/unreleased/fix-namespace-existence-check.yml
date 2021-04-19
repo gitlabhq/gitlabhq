@@ -1,0 +1,5 @@
+---
+title: Fix namespace validation (unique path) on group creation
+merge_request: 57563
+author: Jonas Wälter @wwwjon
+type: fixed
