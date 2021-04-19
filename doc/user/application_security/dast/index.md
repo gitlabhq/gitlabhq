@@ -72,6 +72,13 @@ To include the DAST template:
    For more information about template versioning, see the
    [CI/CD documentation](../../../development/cicd/templates.md#latest-version).
 
+1. Add a `dast` stage to your GitLab CI stages configuration:
+
+    ```yaml
+    stages:
+      - dast
+    ```
+
 1. Add the template to GitLab, based on your version of GitLab:
 
    - In GitLab 11.9 and later, [include](../../../ci/yaml/README.md#includetemplate)

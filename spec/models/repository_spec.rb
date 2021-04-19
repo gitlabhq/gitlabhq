@@ -1103,7 +1103,8 @@ RSpec.describe Repository do
 
   describe '#create_ref' do
     it 'redirects the call to write_ref' do
-      ref, ref_path = '1', '2'
+      ref = '1'
+      ref_path = '2'
 
       expect(repository.raw_repository).to receive(:write_ref).with(ref_path, ref)
 

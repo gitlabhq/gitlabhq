@@ -352,3 +352,4 @@ spotbugs-sast:
         - '**/*.groovy'
         - '**/*.java'
         - '**/*.scala'
+        - '**/*.kt'

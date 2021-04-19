@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class ExternalWikiService < Service
+  include ActionView::Helpers::UrlHelper
   prop_accessor :external_wiki_url
-
   validates :external_wiki_url, presence: true, public_url: true, if: :activated?
 
   def title
@@ -10,7 +10,7 @@ class ExternalWikiService < Service
   end
 
   def description
-    s_('ExternalWikiService|Replaces the link to the internal wiki with a link to an external wiki.')
+    s_('ExternalWikiService|Link to an external wiki from the sidebar.')
   end
 
   def self.to_param
@@ -23,10 +23,17 @@ class ExternalWikiService < Service
         type: 'text',
         name: 'external_wiki_url',
         title: s_('ExternalWikiService|External wiki URL'),
-        placeholder: s_('ExternalWikiService|The URL of the external wiki'),
+        placeholder: s_('ExternalWikiService|https://example.com/xxx/wiki/...'),
+        help: 'Enter the URL to the external wiki.',
         required: true
       }
     ]
+  end
+
+  def help
+    docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/wiki/index', anchor: 'link-an-external-wiki'), target: '_blank', rel: 'noopener noreferrer'
+
+    s_('Link an external wiki from the project\'s sidebar. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
   end
 
   def execute(_data)

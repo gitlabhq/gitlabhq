@@ -5,7 +5,9 @@ module JiraConnectSubscriptions
     attr_accessor :jira_connect_installation, :current_user, :params
 
     def initialize(jira_connect_installation, user = nil, params = {})
-      @jira_connect_installation, @current_user, @params = jira_connect_installation, user, params.dup
+      @jira_connect_installation = jira_connect_installation
+      @current_user = user
+      @params = params.dup
     end
   end
 end

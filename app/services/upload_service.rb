@@ -5,7 +5,10 @@ class UploadService
   attr_accessor :override_max_attachment_size
 
   def initialize(model, file, uploader_class = FileUploader, **uploader_context)
-    @model, @file, @uploader_class, @uploader_context = model, file, uploader_class, uploader_context
+    @model = model
+    @file = file
+    @uploader_class = uploader_class
+    @uploader_context = uploader_context
   end
 
   def execute

@@ -237,6 +237,49 @@ Group wikis can be edited by members with [Developer permissions](../../permissi
 and above. Group wiki repositories can be moved using the
 [Group repository storage moves API](../../../api/group_repository_storage_moves.md).
 
+## Link an external wiki
+
+To add a link to an external wiki from a project's left sidebar:
+
+1. In your project, go to **Settings > Integrations**.
+1. Select **External wiki**.
+1. Add the URL to your external wiki.
+1. (Optional) Select **Test settings** to verify the connection.
+1. Select **Save changes**.
+
+You can now see the **External wiki** option from your project's
+left sidebar.
+
+When you enable this integration, the link to the external
+wiki won't replace the link to the internal wiki.
+To hide the internal wiki from the sidebar, [disable the project's wiki](#disable-the-projects-wiki).
+
+To hide the link to an external wiki:
+
+1. In your project, go to **Settings > Integrations**.
+1. Select **External wiki**.
+1. Unselect **Enable integration**.
+1. Select **Save changes**.
+
+## Disable the project's wiki
+
+To disable a project's internal wiki:
+
+1. In your project, go to **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Scroll down to find **Wiki** and toggle it off (in gray).
+1. Select **Save changes**.
+
+The internal wiki is now disabled, and users and project members:
+
+- Cannot find the link to the wiki from the project's sidebar.
+- Cannot add, delete, or edit wiki pages.
+- Cannot view any wiki page.
+
+Previously added wiki pages are preserved in case you
+want to re-enable the wiki. To re-enable it, repeat the process
+to disable the wiki but toggle it on (in blue).
+
 ## Resources
 
 - [Wiki settings for administrators](../../../administration/wikis/index.md)

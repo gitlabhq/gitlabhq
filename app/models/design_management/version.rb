@@ -14,7 +14,9 @@ module DesignManagement
       attr_reader :sha, :issue_id, :actions
 
       def initialize(sha, issue_id, actions)
-        @sha, @issue_id, @actions = sha, issue_id, actions
+        @sha = sha
+        @issue_id = issue_id
+        @actions = actions
       end
 
       def message

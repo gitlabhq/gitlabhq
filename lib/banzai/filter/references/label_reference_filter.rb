@@ -18,7 +18,8 @@ module Banzai
         def references_in(text, pattern = Label.reference_pattern)
           labels = {}
           unescaped_html = unescape_html_entities(text).gsub(pattern) do |match|
-            namespace, project = $~[:namespace], $~[:project]
+            namespace = $~[:namespace]
+            project = $~[:project]
             project_path = full_project_path(namespace, project)
             label = find_label_cached(project_path, $~[:label_id], $~[:label_name])
 

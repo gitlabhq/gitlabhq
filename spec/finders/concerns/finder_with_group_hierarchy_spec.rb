@@ -9,7 +9,8 @@ RSpec.describe FinderWithGroupHierarchy do
       include Gitlab::Utils::StrongMemoize
 
       def initialize(current_user, params = {})
-        @current_user, @params = current_user, params
+        @current_user = current_user
+        @params = params
       end
 
       def execute(skip_authorization: false)

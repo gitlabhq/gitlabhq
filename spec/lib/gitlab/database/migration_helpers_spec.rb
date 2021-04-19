@@ -835,7 +835,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:check_trigger_permissions!).with(:users)
 
           expect(model).to receive(:install_rename_triggers_for_postgresql)
-            .with(trigger_name, '"users"', '"old"', '"new"')
+            .with(:users, :old, :new)
 
           expect(model).to receive(:add_column)
             .with(:users, :new, :integer,
@@ -860,14 +860,18 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         context 'with existing records and type casting' do
           let(:trigger_name) { model.rename_trigger_name(:users, :id, :new) }
           let(:user) { create(:user) }
+          let(:copy_trigger) { double('copy trigger') }
+
+          before do
+            expect(Gitlab::Database::UnidirectionalCopyTrigger).to receive(:on_table)
+              .with(:users).and_return(copy_trigger)
+          end
 
           it 'copies the value to the new column using the type_cast_function', :aggregate_failures do
             expect(model).to receive(:copy_indexes).with(:users, :id, :new)
             expect(model).to receive(:add_not_null_constraint).with(:users, :new)
             expect(model).to receive(:execute).with("UPDATE \"users\" SET \"new\" = cast_to_jsonb_with_default(\"users\".\"id\") WHERE \"users\".\"id\" >= #{user.id}")
-            expect(model).to receive(:execute).with("DROP TRIGGER IF EXISTS #{trigger_name}\nON \"users\"\n")
-            expect(model).to receive(:execute).with("CREATE TRIGGER #{trigger_name}\nBEFORE INSERT OR UPDATE\nON \"users\"\nFOR EACH ROW\nEXECUTE FUNCTION #{trigger_name}()\n")
-            expect(model).to receive(:execute).with("CREATE OR REPLACE FUNCTION #{trigger_name}()\nRETURNS trigger AS\n$BODY$\nBEGIN\n  NEW.\"new\" := NEW.\"id\";\n  RETURN NEW;\nEND;\n$BODY$\nLANGUAGE 'plpgsql'\nVOLATILE\n")
+            expect(copy_trigger).to receive(:create).with(:id, :new, trigger_name: nil)
 
             model.rename_column_concurrently(:users, :id, :new, type_cast_function: 'cast_to_jsonb_with_default')
           end
@@ -996,7 +1000,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:check_trigger_permissions!).with(:users)
 
         expect(model).to receive(:install_rename_triggers_for_postgresql)
-          .with(trigger_name, '"users"', '"old"', '"new"')
+          .with(:users, :old, :new)
 
         expect(model).to receive(:add_column)
           .with(:users, :old, :integer,
@@ -1156,7 +1160,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           .with(:users, temp_undo_cleanup_column, :old)
 
         expect(model).to receive(:install_rename_triggers_for_postgresql)
-          .with(trigger_name, '"users"', '"old"', '"old_for_type_change"')
+          .with(:users, :old, 'old_for_type_change')
 
         model.undo_cleanup_concurrent_column_type_change(:users, :old, :string)
       end
@@ -1182,7 +1186,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           .with(:users, temp_undo_cleanup_column, :old)
 
         expect(model).to receive(:install_rename_triggers_for_postgresql)
-          .with(trigger_name, '"users"', '"old"', '"old_for_type_change"')
+          .with(:users, :old, 'old_for_type_change')
 
         model.undo_cleanup_concurrent_column_type_change(
           :users,
@@ -1204,28 +1208,25 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
   describe '#install_rename_triggers_for_postgresql' do
     it 'installs the triggers for PostgreSQL' do
-      expect(model).to receive(:execute)
-        .with(/CREATE OR REPLACE FUNCTION foo()/m)
+      copy_trigger = double('copy trigger')
 
-      expect(model).to receive(:execute)
-        .with(/DROP TRIGGER IF EXISTS foo/m)
+      expect(Gitlab::Database::UnidirectionalCopyTrigger).to receive(:on_table)
+        .with(:users).and_return(copy_trigger)
 
-      expect(model).to receive(:execute)
-        .with(/CREATE TRIGGER foo/m)
+      expect(copy_trigger).to receive(:create).with(:old, :new, trigger_name: 'foo')
 
-      model.install_rename_triggers_for_postgresql('foo', :users, :old, :new)
-    end
-
-    it 'does not fail if trigger already exists' do
-      model.install_rename_triggers_for_postgresql('foo', :users, :old, :new)
-      model.install_rename_triggers_for_postgresql('foo', :users, :old, :new)
+      model.install_rename_triggers_for_postgresql(:users, :old, :new, trigger_name: 'foo')
     end
   end
 
   describe '#remove_rename_triggers_for_postgresql' do
     it 'removes the function and trigger' do
-      expect(model).to receive(:execute).with('DROP TRIGGER IF EXISTS foo ON bar')
-      expect(model).to receive(:execute).with('DROP FUNCTION IF EXISTS foo()')
+      copy_trigger = double('copy trigger')
+
+      expect(Gitlab::Database::UnidirectionalCopyTrigger).to receive(:on_table)
+        .with('bar').and_return(copy_trigger)
+
+      expect(copy_trigger).to receive(:drop).with('foo')
 
       model.remove_rename_triggers_for_postgresql('bar', 'foo')
     end

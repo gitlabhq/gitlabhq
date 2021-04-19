@@ -553,7 +553,7 @@ msgstr ""
 msgid "%{gitlab_experience_text}. We won't share this information with anyone."
 msgstr ""
 
-msgid "%{global_id} is not a valid ID for %{expected_type}."
+msgid "%{global_id} is not a valid ID for %{expected_types}."
 msgstr ""
 
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
@@ -4938,6 +4938,9 @@ msgstr ""
 msgid "Below are the fingerprints for the current instance SSH host keys."
 msgstr ""
 
+msgid "Below are the settings for %{link_to_gitlab_pages}."
+msgstr ""
+
 msgid "Below you will find all the groups that are public."
 msgstr ""
 
@@ -6642,9 +6645,6 @@ msgid "Closed: %{closed}"
 msgstr ""
 
 msgid "Closes this %{quick_action_target}."
-msgstr ""
-
-msgid "Cloud License"
 msgstr ""
 
 msgid "CloudLicense|Activate"
@@ -11444,6 +11444,9 @@ msgstr ""
 msgid "Domain"
 msgstr ""
 
+msgid "Domain Name"
+msgstr ""
+
 msgid "Domain cannot be deleted while associated to one or more clusters."
 msgstr ""
 
@@ -13094,10 +13097,10 @@ msgstr ""
 msgid "ExternalWikiService|External wiki URL"
 msgstr ""
 
-msgid "ExternalWikiService|Replaces the link to the internal wiki with a link to an external wiki."
+msgid "ExternalWikiService|Link to an external wiki from the sidebar."
 msgstr ""
 
-msgid "ExternalWikiService|The URL of the external wiki"
+msgid "ExternalWikiService|https://example.com/xxx/wiki/..."
 msgstr ""
 
 msgid "Externally installed"
@@ -19037,6 +19040,9 @@ msgstr ""
 msgid "Link Prometheus monitoring to GitLab."
 msgstr ""
 
+msgid "Link an external wiki from the project's sidebar. %{docs_link}"
+msgstr ""
+
 msgid "Link copied"
 msgstr ""
 
@@ -23811,6 +23817,9 @@ msgid "Polling interval multiplier"
 msgstr ""
 
 msgid "Popularity"
+msgstr ""
+
+msgid "Port"
 msgstr ""
 
 msgid "Postman collection"
@@ -31281,6 +31290,9 @@ msgstr ""
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
 msgstr ""
 
+msgid "The maximum size of your Pages site is regulated by the artifacts maximum size which is part of %{link_to_gitlab_ci}."
+msgstr ""
+
 msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."
 msgstr ""
 
@@ -32815,6 +32827,9 @@ msgstr ""
 msgid "To get started, please enter your Gitea Host URL and a %{link_to_personal_token}."
 msgstr ""
 
+msgid "To get started, use the link below to confirm your account."
+msgstr ""
+
 msgid "To help improve GitLab and its user experience, GitLab will periodically collect usage information."
 msgstr ""
 
@@ -34108,6 +34123,9 @@ msgid "Use template"
 msgstr ""
 
 msgid "Use the link below to confirm your email address (%{email})"
+msgstr ""
+
+msgid "Use the link below to confirm your email address."
 msgstr ""
 
 msgid "Use the search bar on the top of this page"

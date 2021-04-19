@@ -7,7 +7,8 @@ module IssuableLinks
     attr_reader :issuable, :current_user
 
     def initialize(issuable, user)
-      @issuable, @current_user = issuable, user
+      @issuable = issuable
+      @current_user = user
     end
 
     def execute

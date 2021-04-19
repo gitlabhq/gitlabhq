@@ -46,7 +46,8 @@ module Gitlab
     def initialize(namespace, queue_id)
       raise ArgumentError if namespace.empty? || queue_id.empty?
 
-      @namespace, @queue_id = namespace, queue_id
+      @namespace = namespace
+      @queue_id = queue_id
     end
 
     ##

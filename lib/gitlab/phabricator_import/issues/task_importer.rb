@@ -4,7 +4,8 @@ module Gitlab
     module Issues
       class TaskImporter
         def initialize(project, task)
-          @project, @task = project, task
+          @project = project
+          @task = task
         end
 
         def execute

@@ -5,11 +5,12 @@ module Projects
     include ValidatesClassificationLabel
 
     def initialize(user, params)
-      @current_user, @params  = user, params.dup
-      @skip_wiki              = @params.delete(:skip_wiki)
+      @current_user = user
+      @params = params.dup
+      @skip_wiki = @params.delete(:skip_wiki)
       @initialize_with_readme = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_readme))
-      @import_data            = @params.delete(:import_data)
-      @relations_block        = @params.delete(:relations_block)
+      @import_data = @params.delete(:import_data)
+      @relations_block = @params.delete(:relations_block)
     end
 
     def execute

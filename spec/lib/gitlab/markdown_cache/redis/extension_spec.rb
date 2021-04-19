@@ -7,7 +7,8 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cach
       include CacheMarkdownField
 
       def initialize(title: nil, description: nil)
-        @title, @description = title, description
+        @title = title
+        @description = description
       end
 
       attr_reader :title, :description

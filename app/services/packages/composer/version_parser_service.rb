@@ -4,7 +4,8 @@ module Packages
   module Composer
     class VersionParserService
       def initialize(tag_name: nil, branch_name: nil)
-        @tag_name, @branch_name = tag_name, branch_name
+        @tag_name = tag_name
+        @branch_name = branch_name
       end
 
       def execute

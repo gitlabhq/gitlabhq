@@ -7,7 +7,8 @@ module Projects
     ].freeze
 
     def initialize(project, url)
-      @project, @url = project, url
+      @project = project
+      @url = url
     end
 
     def execute

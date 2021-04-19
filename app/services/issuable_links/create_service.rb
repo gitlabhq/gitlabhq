@@ -7,7 +7,9 @@ module IssuableLinks
     attr_reader :issuable, :current_user, :params
 
     def initialize(issuable, user, params)
-      @issuable, @current_user, @params = issuable, user, params.dup
+      @issuable = issuable
+      @current_user = user
+      @params = params.dup
     end
 
     def execute

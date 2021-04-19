@@ -4,7 +4,9 @@ class EnvironmentsByDeploymentsFinder
   attr_reader :project, :current_user, :params
 
   def initialize(project, current_user, params = {})
-    @project, @current_user, @params = project, current_user, params
+    @project = project
+    @current_user = current_user
+    @params = params
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -5,7 +5,8 @@ module Keys
     attr_accessor :user, :params
 
     def initialize(user, params = {})
-      @user, @params = user, params
+      @user = user
+      @params = params
       @ip_address = @params.delete(:ip_address)
     end
 

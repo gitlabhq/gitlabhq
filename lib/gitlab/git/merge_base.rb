@@ -6,7 +6,8 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       def initialize(repository, refs)
-        @repository, @refs = repository, refs
+        @repository = repository
+        @refs = refs
       end
 
       # Returns the SHA of the first common ancestor

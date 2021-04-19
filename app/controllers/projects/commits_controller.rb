@@ -63,7 +63,8 @@ class Projects::CommitsController < Projects::ApplicationController
 
   def set_commits
     render_404 unless @path.empty? || request.format == :atom || @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?
-    @limit, @offset = (params[:limit] || 40).to_i, (params[:offset] || 0).to_i
+    @limit = (params[:limit] || 40).to_i
+    @offset = (params[:offset] || 0).to_i
     search = params[:search]
     author = params[:author]
 

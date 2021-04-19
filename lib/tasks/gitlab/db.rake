@@ -221,7 +221,8 @@ namespace :gitlab do
       result_file = args[:result_file] || raise("Please specify result_file argument")
       raise "File exists already, won't overwrite: #{result_file}" if File.exist?(result_file)
 
-      verbose_was, ActiveRecord::Migration.verbose = ActiveRecord::Migration.verbose, true
+      verbose_was = ActiveRecord::Migration.verbose
+      ActiveRecord::Migration.verbose = true
 
       ctx = ActiveRecord::Base.connection.migration_context
       existing_versions = ctx.get_all_versions.to_set

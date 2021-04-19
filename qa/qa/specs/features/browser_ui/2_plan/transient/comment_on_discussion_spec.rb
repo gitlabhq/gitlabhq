@@ -29,7 +29,7 @@ module QA
 
             expect(issue_page).to have_comment(my_first_reply)
 
-            issue_page.reply_to_discussion(1, my_second_reply)
+            issue_page.reply_to_discussion(1, "#{my_second_reply}\n")
 
             expect(issue_page).to have_comment(my_second_reply)
 

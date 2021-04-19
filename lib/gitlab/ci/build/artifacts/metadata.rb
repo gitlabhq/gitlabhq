@@ -17,7 +17,9 @@ module Gitlab
           attr_reader :stream, :path, :full_version
 
           def initialize(stream, path, **opts)
-            @stream, @path, @opts = stream, path, opts
+            @stream = stream
+            @path = path
+            @opts = opts
             @full_version = read_version
           end
 

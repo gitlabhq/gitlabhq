@@ -30,8 +30,10 @@ module Gitlab
       end
 
       def process_raw_blame(output)
-        lines, final = [], []
-        info, commits = {}, {}
+        lines = []
+        final = []
+        info = {}
+        commits = {}
 
         # process the output
         output.split("\n").each do |line|

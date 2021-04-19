@@ -577,17 +577,7 @@ module Gitlab
       # old_column - The name of the old column.
       # new_column - The name of the new column.
       def install_rename_triggers(table, old_column, new_column)
-        trigger_name = rename_trigger_name(table, old_column, new_column)
-        quoted_table = quote_table_name(table)
-        quoted_old = quote_column_name(old_column)
-        quoted_new = quote_column_name(new_column)
-
-        install_rename_triggers_for_postgresql(
-          trigger_name,
-          quoted_table,
-          quoted_old,
-          quoted_new
-        )
+        install_rename_triggers_for_postgresql(table, old_column, new_column)
       end
 
       # Changes the type of a column concurrently.
@@ -1054,43 +1044,18 @@ module Gitlab
       end
 
       # Performs a concurrent column rename when using PostgreSQL.
-      def install_rename_triggers_for_postgresql(trigger, table, old, new)
-        execute <<-EOF.strip_heredoc
-        CREATE OR REPLACE FUNCTION #{trigger}()
-        RETURNS trigger AS
-        $BODY$
-        BEGIN
-          NEW.#{new} := NEW.#{old};
-          RETURN NEW;
-        END;
-        $BODY$
-        LANGUAGE 'plpgsql'
-        VOLATILE
-        EOF
-
-        execute <<-EOF.strip_heredoc
-        DROP TRIGGER IF EXISTS #{trigger}
-        ON #{table}
-        EOF
-
-        execute <<-EOF.strip_heredoc
-        CREATE TRIGGER #{trigger}
-        BEFORE INSERT OR UPDATE
-        ON #{table}
-        FOR EACH ROW
-        EXECUTE FUNCTION #{trigger}()
-        EOF
+      def install_rename_triggers_for_postgresql(table, old, new, trigger_name: nil)
+        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table).create(old, new, trigger_name: trigger_name)
       end
 
       # Removes the triggers used for renaming a PostgreSQL column concurrently.
       def remove_rename_triggers_for_postgresql(table, trigger)
-        execute("DROP TRIGGER IF EXISTS #{trigger} ON #{table}")
-        execute("DROP FUNCTION IF EXISTS #{trigger}()")
+        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table).drop(trigger)
       end
 
       # Returns the (base) name to use for triggers when renaming columns.
       def rename_trigger_name(table, old, new)
-        'trigger_' + Digest::SHA256.hexdigest("#{table}_#{old}_#{new}").first(12)
+        Gitlab::Database::UnidirectionalCopyTrigger.on_table(table).name(old, new)
       end
 
       # Returns an Array containing the indexes for the given column

@@ -9,9 +9,11 @@ class TaskListToggleService
   attr_reader :updated_markdown, :updated_markdown_html
 
   def initialize(markdown, markdown_html, line_source:, line_number:, toggle_as_checked:)
-    @markdown, @markdown_html  = markdown, markdown_html
-    @line_source, @line_number = line_source, line_number
-    @toggle_as_checked         = toggle_as_checked
+    @markdown = markdown
+    @markdown_html = markdown_html
+    @line_source = line_source
+    @line_number = line_number
+    @toggle_as_checked = toggle_as_checked
 
     @updated_markdown, @updated_markdown_html = nil
   end

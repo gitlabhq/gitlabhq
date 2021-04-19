@@ -6,7 +6,8 @@ module Gitlab
       VALIDITY_TIME = 6.hours
 
       def initialize(user, label)
-        @user, @label = user, label
+        @user = user
+        @label = label
       end
 
       def load

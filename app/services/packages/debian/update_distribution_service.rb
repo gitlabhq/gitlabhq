@@ -4,7 +4,8 @@ module Packages
   module Debian
     class UpdateDistributionService
       def initialize(distribution, params)
-        @distribution, @params = distribution, params
+        @distribution = distribution
+        @params = params
 
         @components = params.delete(:components)
 

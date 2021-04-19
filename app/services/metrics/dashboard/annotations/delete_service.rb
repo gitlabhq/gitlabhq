@@ -11,7 +11,8 @@ module Metrics
               :delete
 
         def initialize(user, annotation)
-          @user, @annotation = user, annotation
+          @user = user
+          @annotation = annotation
         end
 
         def execute

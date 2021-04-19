@@ -26,13 +26,10 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 ## The Rollout Plan
 
-<!-- Describe how the feature should be rolled out, and check the right boxes. You can check multiple if applicable -->
-
-- [ ] Partial Rollout on GitLab.com with beta groups
-- [ ] Rollout on GitLab.com for a certain period (How long)
-- [ ] Percentage Rollout on GitLab.com - XX%
-    If it is possible to perform an incremental rollout, this should be preferred. Proposed increments are: `10%`, `50%`, `100%`. Proposed minimum time between increments is 15 minutes.
-- [ ] Rollout Feature for everyone as soon as it's ready
+- Partial Rollout on GitLab.com with beta groups
+- Rollout on GitLab.com for a certain period (How long)
+- Percentage Rollout on GitLab.com
+- Rollout Feature for everyone as soon as it's ready
 
 <!-- Which dashboards from https://dashboards.gitlab.net are most relevant? Sentry errors reports can also be useful to review -->
 
@@ -78,20 +75,12 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 - [ ] Verify behaviour (See Beta Groups) and add details with screenshots as a comment on this issue
 
-
-**Global Availability** ([More Info](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change))
-*(Please Note that Beta,Alpha and General Availability (GA) are handled on a product level and not the feature-flag)*
-<!-- The next checkboxes are probably only needed for high visibility and/or critical rollouts. Please refer to the official documentation linked above for more clarification -->
-
-- [ ] Coordinate a time to enable the flag with `#production` and `#g_delivery` on slack.
-
-- [ ] Announce on the issue an estimated time this will be enabled on GitLab.com
+- [ ] If it is possible to perform an incremental rollout, this should be preferred. Proposed increments are: `10%`, `50%`, `100%`. Proposed minimum time between increments is 15 minutes.
+  - When setting percentages, make sure that the feature works correctly between feature checks. See https://gitlab.com/gitlab-org/gitlab/-/issues/327117 for more information
+  - For actor-based rollout: `/chatops run feature set feature_name 10 --actors`
+  - For time-based rollout: `/chatops run feature set feature_name 10`
 
 - [ ] Make the feature flag enabled by default i.e. Change `default_enabled` to `true`
-
-- [ ] Enable on GitLab.com by running chatops command in `#production` (`/chatops run feature set feature_name true`)
-
-- [ ] Announce on the issue that the flag has been enabled
 
 - [ ] Cross post chatops slack command to `#support_gitlab-com` ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#where-to-run-commands)) and in your team channel
 

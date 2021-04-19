@@ -10,7 +10,8 @@ module Packages
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
 
       def initialize(package_file, creator)
-        @package_file, @creator = package_file, creator
+        @package_file = package_file
+        @creator = creator
       end
 
       def execute

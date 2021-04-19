@@ -13,7 +13,8 @@ module Gitlab
       }.freeze
 
       def initialize(user, label)
-        @user, @label = user, label
+        @user = user
+        @label = label
       end
 
       def request_access

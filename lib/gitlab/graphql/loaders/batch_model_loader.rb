@@ -7,7 +7,8 @@ module Gitlab
         attr_reader :model_class, :model_id
 
         def initialize(model_class, model_id)
-          @model_class, @model_id = model_class, model_id
+          @model_class = model_class
+          @model_id = model_id
         end
 
         # rubocop: disable CodeReuse/ActiveRecord

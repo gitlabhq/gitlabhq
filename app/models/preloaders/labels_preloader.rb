@@ -13,7 +13,9 @@ module Preloaders
     attr_reader :labels, :user, :project
 
     def initialize(labels, user, project = nil)
-      @labels, @user, @project = labels, user, project
+      @labels = labels
+      @user = user
+      @project = project
     end
 
     def preload_all

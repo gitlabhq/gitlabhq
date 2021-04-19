@@ -5,7 +5,9 @@ module Groups
     attr_accessor :group, :current_user, :params
 
     def initialize(group, user, params = {})
-      @group, @current_user, @params = group, user, params.dup
+      @group = group
+      @current_user = user
+      @params = params.dup
     end
 
     private

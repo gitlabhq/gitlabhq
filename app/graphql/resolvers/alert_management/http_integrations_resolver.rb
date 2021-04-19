@@ -3,19 +3,39 @@
 module Resolvers
   module AlertManagement
     class HttpIntegrationsResolver < BaseResolver
+      include ::Gitlab::Graphql::Laziness
+
       alias_method :project, :object
+
+      argument :id, Types::GlobalIDType[::AlertManagement::HttpIntegration],
+               required: false,
+               description: 'ID of the integration.'
 
       type Types::AlertManagement::HttpIntegrationType.connection_type, null: true
 
-      def resolve(**args)
-        http_integrations
+      def resolve(id: nil)
+        return [] unless Ability.allowed?(current_user, :admin_operations, project)
+
+        if id
+          integrations_by(gid: id)
+        else
+          http_integrations
+        end
       end
 
       private
 
-      def http_integrations
-        return [] unless Ability.allowed?(current_user, :admin_operations, project)
+      def integrations_by(gid:)
+        id = Types::GlobalIDType[::AlertManagement::HttpIntegration].coerce_isolated_input(gid)
+        object = GitlabSchema.find_by_gid(id)
 
+        defer { object }.then do |integration|
+          ret = integration if project == integration&.project
+          Array.wrap(ret)
+        end
+      end
+
+      def http_integrations
         ::AlertManagement::HttpIntegrationsFinder.new(project, {}).execute
       end
     end

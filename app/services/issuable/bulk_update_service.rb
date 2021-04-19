@@ -7,7 +7,9 @@ module Issuable
     attr_accessor :parent, :current_user, :params
 
     def initialize(parent, user = nil, params = {})
-      @parent, @current_user, @params = parent, user, params.dup
+      @parent = parent
+      @current_user = user
+      @params = params.dup
     end
 
     def execute(type)

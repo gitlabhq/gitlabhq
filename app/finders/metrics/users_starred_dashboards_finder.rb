@@ -3,7 +3,9 @@
 module Metrics
   class UsersStarredDashboardsFinder
     def initialize(user:, project:, params: {})
-      @user, @project, @params = user, project, params
+      @user = user
+      @project = project
+      @params = params
     end
 
     def execute

@@ -7,6 +7,8 @@ class BaseContainerService
   attr_reader :container, :current_user, :params
 
   def initialize(container:, current_user: nil, params: {})
-    @container, @current_user, @params = container, current_user, params.dup
+    @container = container
+    @current_user = current_user
+    @params = params.dup
   end
 end

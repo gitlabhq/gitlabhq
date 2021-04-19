@@ -23,7 +23,8 @@ module Projects
     attr_reader :build
 
     def initialize(project, build)
-      @project, @build = project, build
+      @project = project
+      @build = build
     end
 
     def execute

@@ -4,7 +4,8 @@ module Packages
   module Debian
     class DistributionsFinder
       def initialize(container, params = {})
-        @container, @params = container, params
+        @container = container
+        @params = params
       end
 
       def execute

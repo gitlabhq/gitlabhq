@@ -62,7 +62,8 @@ class Commit
       collection.sort do |a, b|
         operands = [a, b].tap { |o| o.reverse! if sort == 'desc' }
 
-        attr1, attr2 = operands.first.public_send(order_by), operands.second.public_send(order_by) # rubocop:disable GitlabSecurity/PublicSend
+        attr1 = operands.first.public_send(order_by) # rubocop:disable GitlabSecurity/PublicSend
+        attr2 = operands.second.public_send(order_by) # rubocop:disable GitlabSecurity/PublicSend
 
         # use case insensitive comparison for string values
         order_by.in?(%w[email name]) ? attr1.casecmp(attr2) : attr1 <=> attr2

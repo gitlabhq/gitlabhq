@@ -29,9 +29,8 @@ module Gitlab
             lines_above, lines_below = nil
 
             if lang_param && suggestion_params = fetch_suggestion_params(lang_param)
-              lines_above, lines_below =
-                suggestion_params[:above],
-                suggestion_params[:below]
+              lines_above = suggestion_params[:above]
+              lines_below = suggestion_params[:below]
             end
 
             Gitlab::Diff::Suggestion.new(node.text,

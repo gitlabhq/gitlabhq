@@ -438,11 +438,14 @@ module ApplicationSettingImplementation
   def parse_addr_and_port(str)
     case str
     when /\A\[(?<address> .* )\]:(?<port> \d+ )\z/x      # string like "[::1]:80"
-      address, port = $~[:address], $~[:port]
+      address = $~[:address]
+      port = $~[:port]
     when /\A(?<address> [^:]+ ):(?<port> \d+ )\z/x       # string like "127.0.0.1:80"
-      address, port = $~[:address], $~[:port]
+      address = $~[:address]
+      port = $~[:port]
     else                                                 # string with no port number
-      address, port = str, nil
+      address = str
+      port = nil
     end
 
     [address, port&.to_i]

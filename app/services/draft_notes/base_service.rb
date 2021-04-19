@@ -5,7 +5,9 @@ module DraftNotes
     attr_accessor :merge_request, :current_user, :params
 
     def initialize(merge_request, current_user, params = nil)
-      @merge_request, @current_user, @params = merge_request, current_user, params.dup
+      @merge_request = merge_request
+      @current_user = current_user
+      @params = params.dup
     end
 
     def merge_request_activity_counter

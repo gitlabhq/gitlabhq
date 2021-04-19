@@ -302,7 +302,8 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
         new_diff_lines = subject.unfolded_diff_lines
 
         new_diff_lines.each_with_index do |line, i|
-          old_pos, new_pos = expected_diff_lines[i][0], expected_diff_lines[i][1]
+          old_pos = expected_diff_lines[i][0]
+          new_pos = expected_diff_lines[i][1]
 
           unless line.type == 'match'
             expect(line.line_code).to eq(Gitlab::Git.diff_line_code(diff_file.file_path, new_pos, old_pos))
@@ -396,7 +397,8 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
         new_diff_lines = subject.unfolded_diff_lines
 
         new_diff_lines.each_with_index do |line, i|
-          old_pos, new_pos = expected_diff_lines[i][0], expected_diff_lines[i][1]
+          old_pos = expected_diff_lines[i][0]
+          new_pos = expected_diff_lines[i][1]
 
           unless line.type == 'match'
             expect(line.line_code).to eq(Gitlab::Git.diff_line_code(diff_file.file_path, new_pos, old_pos))
@@ -490,7 +492,8 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
         new_diff_lines = subject.unfolded_diff_lines
 
         new_diff_lines.each_with_index do |line, i|
-          old_pos, new_pos = expected_diff_lines[i][0], expected_diff_lines[i][1]
+          old_pos = expected_diff_lines[i][0]
+          new_pos = expected_diff_lines[i][1]
 
           unless line.type == 'match'
             expect(line.line_code).to eq(Gitlab::Git.diff_line_code(diff_file.file_path, new_pos, old_pos))
@@ -581,7 +584,8 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
         new_diff_lines = subject.unfolded_diff_lines
 
         new_diff_lines.each_with_index do |line, i|
-          old_pos, new_pos = expected_diff_lines[i][0], expected_diff_lines[i][1]
+          old_pos = expected_diff_lines[i][0]
+          new_pos = expected_diff_lines[i][1]
 
           unless line.type == 'match'
             expect(line.line_code).to eq(Gitlab::Git.diff_line_code(diff_file.file_path, new_pos, old_pos))
@@ -691,7 +695,8 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
         new_diff_lines = subject.unfolded_diff_lines
 
         new_diff_lines.each_with_index do |line, i|
-          old_pos, new_pos = expected_diff_lines[i][0], expected_diff_lines[i][1]
+          old_pos = expected_diff_lines[i][0]
+          new_pos = expected_diff_lines[i][1]
 
           unless line.type == 'match'
             expect(line.line_code).to eq(Gitlab::Git.diff_line_code(diff_file.file_path, new_pos, old_pos))
@@ -783,7 +788,8 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
           new_diff_lines = subject.unfolded_diff_lines
 
           new_diff_lines.each_with_index do |line, i|
-            old_pos, new_pos = expected_diff_lines[i][0], expected_diff_lines[i][1]
+            old_pos = expected_diff_lines[i][0]
+            new_pos = expected_diff_lines[i][1]
 
             unless line.type == 'match'
               expect(line.line_code).to eq(Gitlab::Git.diff_line_code(diff_file.file_path, new_pos, old_pos))

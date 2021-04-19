@@ -41,7 +41,8 @@ module Prometheus
     #        }
     #      })
     def initialize(environment, params = {})
-      @environment, @params = environment, params.deep_dup
+      @environment = environment
+      @params = params.deep_dup
     end
 
     # @return - params [Hash<Symbol,Any>] Returns a Hash containing a params key which is

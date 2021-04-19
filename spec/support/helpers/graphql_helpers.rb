@@ -307,7 +307,10 @@ module GraphqlHelpers
 
   def query_graphql_field(name, attributes = {}, fields = nil, type = nil)
     type ||= name.to_s.classify
-    attributes, fields = [nil, attributes] if fields.nil? && !attributes.is_a?(Hash)
+    if fields.nil? && !attributes.is_a?(Hash)
+      fields = attributes
+      attributes = nil
+    end
 
     field = field_with_params(name, attributes)
 

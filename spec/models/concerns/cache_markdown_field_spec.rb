@@ -17,9 +17,13 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
       include CacheMarkdownField
 
       def initialize(args = {})
-        @title, @description, @cached_markdown_version = args[:title], args[:description], args[:cached_markdown_version]
-        @title_html, @description_html = args[:title_html], args[:description_html]
-        @author, @project = args[:author], args[:project]
+        @title = args[:title]
+        @description = args[:description]
+        @cached_markdown_version = args[:cached_markdown_version]
+        @title_html = args[:title_html]
+        @description_html = args[:description_html]
+        @author = args[:author]
+        @project = args[:project]
         @parent_user = args[:parent_user]
       end
 

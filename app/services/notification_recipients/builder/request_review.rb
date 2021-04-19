@@ -6,7 +6,9 @@ module NotificationRecipients
       attr_reader :merge_request, :current_user, :reviewer
 
       def initialize(merge_request, current_user, reviewer)
-        @merge_request, @current_user, @reviewer = merge_request, current_user, reviewer
+        @merge_request = merge_request
+        @current_user = current_user
+        @reviewer = reviewer
       end
 
       def target

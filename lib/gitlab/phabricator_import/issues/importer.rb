@@ -4,7 +4,8 @@ module Gitlab
     module Issues
       class Importer
         def initialize(project, after = nil)
-          @project, @after = project, after
+          @project = project
+          @after = after
         end
 
         def execute

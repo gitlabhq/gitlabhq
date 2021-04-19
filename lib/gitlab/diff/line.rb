@@ -13,8 +13,11 @@ module Gitlab
       attr_accessor :index, :type, :old_pos, :new_pos
 
       def initialize(text, type, index, old_pos, new_pos, parent_file: nil, line_code: nil, rich_text: nil)
-        @text, @type, @index = text, type, index
-        @old_pos, @new_pos = old_pos, new_pos
+        @text = text
+        @type = type
+        @index = index
+        @old_pos = old_pos
+        @new_pos = new_pos
         @parent_file = parent_file
         @rich_text = rich_text
 

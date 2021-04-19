@@ -5,7 +5,8 @@ module ContainerRegistry
     attr_reader :tag, :blob, :data
 
     def initialize(tag, blob)
-      @tag, @blob = tag, blob
+      @tag = tag
+      @blob = blob
       @data = Gitlab::Json.parse(blob.data)
     end
 

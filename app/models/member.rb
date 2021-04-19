@@ -291,7 +291,9 @@ class Member < ApplicationRecord
     private
 
     def parse_users_list(source, list)
-      emails, user_ids, users = [], [], []
+      emails = []
+      user_ids = []
+      users = []
       existing_members = {}
 
       list.each do |item|

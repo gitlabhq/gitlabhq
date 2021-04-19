@@ -82,12 +82,9 @@ The "Time" metrics near the top of the page are measured as follows:
 
 ## How the stages are measured
 
-Value Stream Analytics records stage time and data based on the project issues with the
-exception of the staging stage, where only data deployed to
-production are measured.
-
-Specifically, if your CI is not set up and you have not defined a [production environment](#how-the-production-environment-is-identified), then you will not have any
-data for this stage.
+Value Stream Analytics measures each stage from its start event to its stop event.
+For example, a stage might start when one label is added to an issue, and end when another label is added.
+Value Stream Analytics excludes work in progress, meaning it ignores any items that have not reached the stop event.
 
 Each stage of Value Stream Analytics is further described in the table below.
 
