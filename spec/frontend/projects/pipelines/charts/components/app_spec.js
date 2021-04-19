@@ -22,8 +22,7 @@ describe('ProjectsPipelinesChartsApp', () => {
         {},
         {
           provide: {
-            shouldRenderDeploymentFrequencyCharts: true,
-            shouldRenderLeadTimeCharts: true,
+            shouldRenderDoraCharts: true,
           },
           stubs: {
             DeploymentFrequencyCharts: DeploymentFrequencyChartsStub,
@@ -41,39 +40,35 @@ describe('ProjectsPipelinesChartsApp', () => {
 
   const findGlTabs = () => wrapper.find(GlTabs);
   const findAllGlTabs = () => wrapper.findAll(GlTab);
+  const findGlTabAtIndex = (index) => findAllGlTabs().at(index);
   const findLeadTimeCharts = () => wrapper.find(LeadTimeChartsStub);
   const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
   const findPipelineCharts = () => wrapper.find(PipelineCharts);
-
-  const expectCorrectTabs = ({ pipelines, leadTime, deploymentFreqency }) => {
-    it('renders the expected tabs', () => {
-      expect(findGlTabs().exists()).toBe(true);
-
-      const allTabTitles = findAllGlTabs().wrappers.map((w) => w.attributes('title'));
-
-      if (pipelines) {
-        expect(allTabTitles).toContain('Pipelines');
-        expect(findPipelineCharts().exists()).toBe(true);
-      }
-
-      if (deploymentFreqency) {
-        expect(allTabTitles).toContain('Deployments');
-        expect(findDeploymentFrequencyCharts().exists()).toBe(true);
-      }
-
-      if (leadTime) {
-        expect(allTabTitles).toContain('Lead Time');
-        expect(findLeadTimeCharts().exists()).toBe(true);
-      }
-    });
-  };
 
   describe('when all charts are available', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    expectCorrectTabs({ pipelines: true, deploymentFreqency: true, leadTime: true });
+    it('renders tabs', () => {
+      expect(findGlTabs().exists()).toBe(true);
+
+      expect(findGlTabAtIndex(0).attributes('title')).toBe('Pipelines');
+      expect(findGlTabAtIndex(1).attributes('title')).toBe('Deployments');
+      expect(findGlTabAtIndex(2).attributes('title')).toBe('Lead Time');
+    });
+
+    it('renders the pipeline charts', () => {
+      expect(findPipelineCharts().exists()).toBe(true);
+    });
+
+    it('renders the deployment frequency charts', () => {
+      expect(findDeploymentFrequencyCharts().exists()).toBe(true);
+    });
+
+    it('renders the lead time charts', () => {
+      expect(findLeadTimeCharts().exists()).toBe(true);
+    });
 
     it('sets the tab and url when a tab is clicked', async () => {
       let chartsPath;
@@ -131,7 +126,7 @@ describe('ProjectsPipelinesChartsApp', () => {
         expect(name).toBe('chart');
         return chart ? [chart] : [];
       });
-      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
+      createComponent();
       expect(findGlTabs().attributes('value')).toBe(tab);
     });
 
@@ -151,7 +146,7 @@ describe('ProjectsPipelinesChartsApp', () => {
         return [];
       });
 
-      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
+      createComponent();
 
       expect(findGlTabs().attributes('value')).toBe('0');
 
@@ -168,30 +163,9 @@ describe('ProjectsPipelinesChartsApp', () => {
     });
   });
 
-  describe('when shouldRenderDeploymentFrequencyCharts is false', () => {
+  describe('when the dora charts are not available', () => {
     beforeEach(() => {
-      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: false } });
-    });
-
-    expectCorrectTabs({ pipelines: true, deploymentFreqency: false, leadTime: true });
-  });
-
-  describe('when shouldRenderLeadTimeCharts is false', () => {
-    beforeEach(() => {
-      createComponent({ provide: { shouldRenderLeadTimeCharts: false } });
-    });
-
-    expectCorrectTabs({ pipelines: true, deploymentFreqency: true, leadTime: false });
-  });
-
-  describe('when shouldRenderDeploymentFrequencyCharts and shouldRenderLeadTimeCharts are false', () => {
-    beforeEach(() => {
-      createComponent({
-        provide: {
-          shouldRenderDeploymentFrequencyCharts: false,
-          shouldRenderLeadTimeCharts: false,
-        },
-      });
+      createComponent({ provide: { shouldRenderDoraCharts: false } });
     });
 
     it('does not render tabs', () => {

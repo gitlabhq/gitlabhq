@@ -412,8 +412,6 @@ Rails/TimeZone:
 # WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/325836
 RSpec/EmptyLineAfterFinalLetItBe:
   Exclude:
-    - ee/spec/controllers/admin/geo/projects_controller_spec.rb
-    - ee/spec/controllers/admin/projects_controller_spec.rb
     - ee/spec/controllers/groups/analytics/cycle_analytics/stages_controller_spec.rb
     - ee/spec/controllers/groups/analytics/cycle_analytics/summary_controller_spec.rb
     - ee/spec/controllers/groups/analytics/cycle_analytics/value_streams_controller_spec.rb

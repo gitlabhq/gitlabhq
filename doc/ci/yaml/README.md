@@ -1474,7 +1474,9 @@ job:
 
 Paths are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly link outside it.
 
-You can use glob patterns to match multiple files in any directory in the repository:
+You can use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
+patterns to match multiple files in any directory
+in the repository:
 
 ```yaml
 job:
@@ -1911,7 +1913,8 @@ WARNING:
 If you use `only:changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
 you should [also use `only:merge_requests`](#use-onlychanges-with-pipelines-for-merge-requests). Otherwise it may not work as expected.
 
-You can also use glob patterns to match multiple files in either the root directory
+You can also use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
+patterns to match multiple files in either the root directory
 of the repository, or in _any_ directory in the repository. However, they must be wrapped
 in double quotes or GitLab can't parse them:
 
@@ -3285,7 +3288,7 @@ archive.
 Similar to [`artifacts:paths`](#artifactspaths), `exclude` paths are relative
 to the project directory. You can use Wildcards that use
 [glob](https://en.wikipedia.org/wiki/Glob_(programming)) or
-[`filepath.Match`](https://golang.org/pkg/path/filepath/#Match) patterns.
+[`doublestar.PathMatch`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#PathMatch) patterns.
 
 For example, to store all files in `binaries/`, but not `*.o` files located in
 subdirectories of `binaries/`:

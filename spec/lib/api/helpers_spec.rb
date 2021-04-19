@@ -47,6 +47,58 @@ RSpec.describe API::Helpers do
     end
   end
 
+  describe '#find_project!' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+
+    shared_examples 'private project without access' do
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+      end
+
+      it 'returns not found' do
+        expect(subject).to receive(:not_found!)
+
+        subject.find_project!(project.id)
+      end
+    end
+
+    context 'when user is authenticated' do
+      before do
+        subject.instance_variable_set(:@current_user, user)
+        subject.instance_variable_set(:@initial_current_user, user)
+      end
+
+      context 'public project' do
+        it 'returns requested project' do
+          expect(subject.find_project!(project.id)).to eq(project)
+        end
+      end
+
+      context 'private project' do
+        it_behaves_like 'private project without access'
+      end
+    end
+
+    context 'when user is not authenticated' do
+      before do
+        subject.instance_variable_set(:@current_user, nil)
+        subject.instance_variable_set(:@initial_current_user, nil)
+      end
+
+      context 'public project' do
+        it 'returns requested project' do
+          expect(subject.find_project!(project.id)).to eq(project)
+        end
+      end
+
+      context 'private project' do
+        it_behaves_like 'private project without access'
+      end
+    end
+  end
+
   describe '#find_namespace' do
     let(:namespace) { create(:namespace) }
 

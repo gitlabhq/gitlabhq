@@ -14,11 +14,7 @@ export default {
       import('ee_component/projects/pipelines/charts/components/lead_time_charts.vue'),
   },
   inject: {
-    shouldRenderDeploymentFrequencyCharts: {
-      type: Boolean,
-      default: false,
-    },
-    shouldRenderLeadTimeCharts: {
+    shouldRenderDoraCharts: {
       type: Boolean,
       default: false,
     },
@@ -32,12 +28,8 @@ export default {
     charts() {
       const chartsToShow = ['pipelines'];
 
-      if (this.shouldRenderDeploymentFrequencyCharts) {
-        chartsToShow.push('deployments');
-      }
-
-      if (this.shouldRenderLeadTimeCharts) {
-        chartsToShow.push('lead-time');
+      if (this.shouldRenderDoraCharts) {
+        chartsToShow.push('deployments', 'lead-time');
       }
 
       return chartsToShow;
@@ -69,12 +61,14 @@ export default {
       <gl-tab :title="__('Pipelines')">
         <pipeline-charts />
       </gl-tab>
-      <gl-tab v-if="shouldRenderDeploymentFrequencyCharts" :title="__('Deployments')">
-        <deployment-frequency-charts />
-      </gl-tab>
-      <gl-tab v-if="shouldRenderLeadTimeCharts" :title="__('Lead Time')">
-        <lead-time-charts />
-      </gl-tab>
+      <template v-if="shouldRenderDoraCharts">
+        <gl-tab :title="__('Deployments')">
+          <deployment-frequency-charts />
+        </gl-tab>
+        <gl-tab :title="__('Lead Time')">
+          <lead-time-charts />
+        </gl-tab>
+      </template>
     </gl-tabs>
     <pipeline-charts v-else />
   </div>

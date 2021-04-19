@@ -7,10 +7,10 @@ module BoardIssueFilterable
 
   def issue_filters(args)
     filters = args.to_h
+
     set_filter_values(filters)
 
     if filters[:not]
-      filters[:not] = filters[:not].to_h
       set_filter_values(filters[:not])
     end
 

@@ -23,11 +23,7 @@ module GraphHelper
     ratio.to_i
   end
 
-  def should_render_deployment_frequency_charts
-    false
-  end
-
-  def should_render_lead_time_charts
+  def should_render_dora_charts
     false
   end
 end
