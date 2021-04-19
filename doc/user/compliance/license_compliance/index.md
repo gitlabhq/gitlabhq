@@ -157,7 +157,7 @@ The `license_management` image already embeds many auto-detection scripts, langu
 and packages. Nevertheless, it's almost impossible to cover all cases for all projects.
 That's why sometimes it's necessary to install extra packages, or to have extra steps
 in the project automated setup, like the download and installation of a certificate.
-For that, a `LICENSE_MANAGEMENT_SETUP_CMD` CI/CD variable can be passed to the container,
+For that, a `SETUP_CMD` CI/CD variable can be passed to the container,
 with the required commands to run before the license detection.
 
 If present, this variable overrides the setup step necessary to install all the packages
@@ -171,7 +171,7 @@ include:
   - template: Security/License-Scanning.gitlab-ci.yml
 
 variables:
-  LICENSE_MANAGEMENT_SETUP_CMD: sh my-custom-install-script.sh
+  SETUP_CMD: sh my-custom-install-script.sh
 ```
 
 In this example, `my-custom-install-script.sh` is a shell script at the root

@@ -1,8 +1,6 @@
 #content
-  = email_default_heading("Hello, #{@resource.name}!")
+  = email_default_heading(_("Hello, %{name}!") % { name: @resource.name })
   %p
-    Your GitLab account has been locked due to an excessive amount of unsuccessful
-    sign in attempts. Your account will automatically unlock in #{distance_of_time_in_words(Devise.unlock_in)}
-    or you may click the link below to unlock now.
+    = _("Your GitLab account has been locked due to an excessive amount of unsuccessful sign in attempts. Your account will automatically unlock in %{duration} or you may click the link below to unlock now.") % { duration: distance_of_time_in_words(Devise.unlock_in) }
   #cta
-    = link_to('Unlock account', unlock_url(@resource, unlock_token: @token))
+    = link_to(_('Unlock account'), unlock_url(@resource, unlock_token: @token))
