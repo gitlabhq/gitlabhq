@@ -13869,7 +13869,9 @@ CREATE TABLE jira_connect_installations (
     client_key character varying,
     encrypted_shared_secret character varying,
     encrypted_shared_secret_iv character varying,
-    base_url character varying
+    base_url character varying,
+    instance_url text,
+    CONSTRAINT check_4c6abed669 CHECK ((char_length(instance_url) <= 255))
 );
 
 CREATE SEQUENCE jira_connect_installations_id_seq

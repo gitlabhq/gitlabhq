@@ -33,7 +33,7 @@ Code Quality:
 Going a step further, GitLab can show the Code Quality report right
 in the merge request widget area if a report from the target branch is available to compare to:
 
-![Code Quality Widget](img/code_quality.png)
+![Code Quality Widget](img/code_quality_widget_13_11.png)
 
 Watch a quick walkthrough of Code Quality in action:
 
@@ -366,7 +366,11 @@ NOTE:
 Although the Code Climate spec supports more properties, those are ignored by
 GitLab.
 
-## Code Quality reports
+## Code Quality reports **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21527) in GitLab Premium 12.9.
+
+![Code Quality Report](img/code_quality_report_13_11.png)
 
 After the Code Quality job completes:
 
