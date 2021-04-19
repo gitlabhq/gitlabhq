@@ -132,6 +132,14 @@
   - "config/webpack.config.js"
   - "config/helpers/*.js"
 
+.frontend-build-patterns: &frontend-build-patterns
+  - "{package.json,yarn.lock}"
+  - "babel.config.js"
+  - "config/webpack.config.js"
+  - "config/**/*.js"
+  - "vendor/assets/**/*"
+  - "{,ee/}app/assets/**/*"
+
 .frontend-patterns: &frontend-patterns
   - "{package.json,yarn.lock}"
   - "babel.config.js"
@@ -467,7 +475,7 @@
     - <<: *if-not-canonical-namespace
       when: never
     - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
-      changes: *frontend-patterns
+      changes: *frontend-build-patterns
       allow_failure: true
 
 ################
