@@ -14,9 +14,7 @@ class MergeRequest::MetricsFinder
     items = init_collection
     items = by_target_project(items)
     items = by_merged_after(items)
-    items = by_merged_before(items)
-
-    items
+    by_merged_before(items)
   end
 
   private

@@ -43,7 +43,7 @@ module GitalyTest
   end
 
   def env
-    env_hash = {
+    {
       'HOME' => File.expand_path('tmp/tests'),
       'GEM_PATH' => Gem.path.join(':'),
       'BUNDLE_APP_CONFIG' => File.join(gemfile_dir, '.bundle'),
@@ -54,8 +54,6 @@ module GitalyTest
       # Git hooks can't run during tests as the internal API is not running.
       'GITALY_TESTING_NO_GIT_HOOKS' => "1"
     }
-
-    env_hash
   end
 
   # rubocop:disable GitlabSecurity/SystemCommandInjection

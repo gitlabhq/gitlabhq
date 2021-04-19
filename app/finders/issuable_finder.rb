@@ -119,9 +119,7 @@ class IssuableFinder
     # https://www.postgresql.org/docs/current/static/queries-with.html
     items = by_search(items)
 
-    items = sort(items)
-
-    items
+    sort(items)
   end
 
   def filter_items(items)

@@ -39,8 +39,7 @@ module Namespaces
 
     def filter_projects(collection)
       collection = by_ids(collection)
-      collection = by_similarity(collection)
-      collection
+      by_similarity(collection)
     end
 
     def by_ids(items)

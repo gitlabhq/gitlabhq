@@ -27,7 +27,7 @@
 
 .rails-cache:
   cache:
-    key: "rails-v4"
+    key: "rails-v5"
     paths:
       - vendor/ruby/
       - vendor/gitaly-ruby/

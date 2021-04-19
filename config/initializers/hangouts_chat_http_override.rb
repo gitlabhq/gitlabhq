@@ -17,9 +17,8 @@ module HangoutsChat
             headers: { 'Content-Type' => 'application/json' },
             parse: nil # disables automatic response parsing
           )
-          net_http_response = httparty_response.response
+          httparty_response.response
           # The rest of the integration expects a Net::HTTP response
-          net_http_response
         end
       end
 

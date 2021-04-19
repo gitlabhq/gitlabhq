@@ -33,9 +33,7 @@ class DeploymentsFinder
     items = by_environment(items)
     items = by_status(items)
     items = preload_associations(items)
-    items = sort(items)
-
-    items
+    sort(items)
   end
 
   private

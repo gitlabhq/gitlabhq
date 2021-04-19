@@ -25,8 +25,7 @@ module Gitlab
       return unless value
 
       encrypted_token = Base64.decode64(value)
-      decrypted_token = Encryptor.decrypt(AES256_GCM_OPTIONS.merge(value: encrypted_token, iv: nonce))
-      decrypted_token
+      Encryptor.decrypt(AES256_GCM_OPTIONS.merge(value: encrypted_token, iv: nonce))
     end
   end
 end

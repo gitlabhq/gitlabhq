@@ -26,9 +26,7 @@ class PendingTodosFinder
     todos = by_project(todos)
     todos = by_target_id(todos)
     todos = by_target_type(todos)
-    todos = by_commit_id(todos)
-
-    todos
+    by_commit_id(todos)
   end
 
   def by_project(todos)

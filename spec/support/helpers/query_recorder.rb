@@ -3,37 +3,53 @@
 module ActiveRecord
   class QueryRecorder
     attr_reader :log, :skip_cached, :cached, :data
-    UNKNOWN = %w(unknown unknown).freeze
 
-    def initialize(skip_cached: true, query_recorder_debug: false, &block)
-      @data = Hash.new { |h, k| h[k] = { count: 0, occurrences: [], backtrace: [] } }
+    UNKNOWN = %w[unknown unknown].freeze
+
+    def initialize(skip_cached: true, log_file: nil, query_recorder_debug: false, &block)
+      @data = Hash.new { |h, k| h[k] = { count: 0, occurrences: [], backtrace: [], durations: [] } }
       @log = []
       @cached = []
       @skip_cached = skip_cached
-      @query_recorder_debug = query_recorder_debug
+      @query_recorder_debug = ENV['QUERY_RECORDER_DEBUG'] || query_recorder_debug
+      @log_file = log_file
       # force replacement of bind parameters to give tests the ability to check for ids
       ActiveRecord::Base.connection.unprepared_statement do
         ActiveSupport::Notifications.subscribed(method(:callback), 'sql.active_record', &block)
       end
     end
 
-    def show_backtrace(values)
-      Rails.logger.debug("QueryRecorder SQL: #{values[:sql]}")
+    def show_backtrace(values, duration)
+      values[:sql].lines.each do |line|
+        print_to_log(:SQL, line)
+      end
+      print_to_log(:DURATION, duration)
       Gitlab::BacktraceCleaner.clean_backtrace(caller).each do |line|
-        Rails.logger.debug("QueryRecorder backtrace:  --> #{line}")
+        print_to_log(:backtrace, line)
+      end
+    end
+
+    def print_to_log(label, line)
+      msg = "QueryRecorder #{label}:  --> #{line}"
+
+      if @log_file
+        @log_file.puts(msg)
+      else
+        Rails.logger.debug(msg)
       end
     end
 
     def get_sql_source(sql)
-      matches = sql.match(/,line:(?<line>.*):in\s+`(?<method>.*)'\*\//)
+      matches = sql.match(%r{,line:(?<line>.*):in\s+`(?<method>.*)'\*/})
       matches ? [matches[:line], matches[:method]] : UNKNOWN
     end
 
-    def store_sql_by_source(values: {}, backtrace: nil)
+    def store_sql_by_source(values: {}, duration: nil, backtrace: nil)
       full_name = get_sql_source(values[:sql]).join(':')
       @data[full_name][:count] += 1
       @data[full_name][:occurrences] << values[:sql]
       @data[full_name][:backtrace] << backtrace
+      @data[full_name][:durations] << duration
     end
 
     def find_query(query_regexp, limit, first_only: false)
@@ -55,14 +71,14 @@ module ActiveRecord
     end
 
     def callback(name, start, finish, message_id, values)
-      store_backtrace = ENV['QUERY_RECORDER_DEBUG'] || @query_recorder_debug
-      backtrace = store_backtrace ? show_backtrace(values) : nil
+      duration = finish - start
 
       if values[:cached] && skip_cached
         @cached << values[:sql]
       elsif !values[:name]&.include?("SCHEMA")
+        backtrace = @query_recorder_debug ? show_backtrace(values, duration) : nil
         @log << values[:sql]
-        store_sql_by_source(values: values, backtrace: backtrace)
+        store_sql_by_source(values: values, duration: duration, backtrace: backtrace)
       end
     end
 

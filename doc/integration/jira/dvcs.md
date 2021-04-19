@@ -87,7 +87,7 @@ it completes, refreshes every 60 minutes:
 
 1. In the **Host URL** field, enter the URI appropriate for your version of GitLab,
    replacing `<gitlab.example.com>` with your GitLab instance domain:
-   - *For GitLab versions 11.3 and later,* use `https://<gitlab.example.com>/`.
+   - *For GitLab versions 11.3 and later,* use `https://<gitlab.example.com>`.
    - *For GitLab versions 11.2 and earlier,* use
      `https://<gitlab.example.com>/-/jira`.
 

@@ -14,15 +14,13 @@ module Gitlab
 
             # ex: "(relative_position IS NULL AND id > 500)"
             def first_attribute_condition
-              condition = <<~SQL
+              <<~SQL
                 (
                   #{table_condition(order_list.first, nil, 'is_null').to_sql}
                   AND
                   #{table_condition(order_list[1], values[1], operators[1]).to_sql}
                 )
               SQL
-
-              condition
             end
 
             # ex: " OR (relative_position IS NOT NULL)"

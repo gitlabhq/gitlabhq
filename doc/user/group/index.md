@@ -7,22 +7,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Groups **(FREE)**
 
-In GitLab, you can put related projects together in a group.
+In GitLab, you use groups to manage one or more related projects at the same time.
 
-For example, you might create a group for your company members and a subgroup for each individual team.
-You can name the group `company-team`, and the subgroups `backend-team`, `frontend-team`, and `production-team`.
+You can use groups to manage permissions for your projects. If someone has access to
+the group, they get access to all the projects in the group.
 
-Then you can:
+You can also view all of the issues and merge requests for the projects in the group,
+and view analytics that show the group's activity.
 
-- Grant members access to multiple projects at once.
-- Add to-do items for all of the group members at once.
-- View the [issues](../project/issues/index.md) and
-  [merge requests](../project/merge_requests/reviewing_and_managing_merge_requests.md#view-merge-requests-for-all-projects-in-a-group)
-  for all projects in the group, together in a single list view.
-- [Bulk edit](../group/bulk_editing/index.md) issues, epics, and merge requests.
-- [Create a wiki](../project/wiki/index.md) for the group.
+You can use groups to communicate with all of the members of the group at once.
 
-You can also create [subgroups](subgroups/index.md).
+For larger organizations, you can also create [subgroups](subgroups/index.md).
 
 ## View groups
 

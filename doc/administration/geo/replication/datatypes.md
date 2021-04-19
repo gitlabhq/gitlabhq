@@ -33,8 +33,9 @@ verification methods:
 | Git      | Project wiki repository                         | Geo with Gitaly                       | Gitaly Checksum        |
 | Git      | Project designs repository                      | Geo with Gitaly                       | Gitaly Checksum        |
 | Git      | Object pools for forked project deduplication   | Geo with Gitaly                       | _Not implemented_      |
-| Git      | Project Snippets                                | Geo with Gitaly                       | _Not implemented_      |
-| Git      | Personal Snippets                               | Geo with Gitaly                       | _Not implemented_      |
+| Git      | Project Snippets                                | Geo with Gitaly                       | Gitaly Checksum        |
+| Git      | Personal Snippets                               | Geo with Gitaly                       | Gitaly Checksum        |
+| Git      | Group wiki repository                           | Geo with Gitaly                       | _Not implemented_      |
 | Blobs    | User uploads _(file system)_                    | Geo with API                          | _Not implemented_      |
 | Blobs    | User uploads _(object storage)_                 | Geo with API/Managed (*2*)            | _Not implemented_      |
 | Blobs    | LFS objects _(file system)_                     | Geo with API                          | _Not implemented_      |
@@ -51,6 +52,8 @@ verification methods:
 | Blobs    | Versioned Terraform State _(object storage)_    | Geo with API/Managed (*2*)            | _Not implemented_      |
 | Blobs    | External Merge Request Diffs _(file system)_    | Geo with API                          | _Not implemented_      |
 | Blobs    | External Merge Request Diffs _(object storage)_ | Geo with API/Managed (*2*)            | _Not implemented_      |
+| Blobs    | Pipeline artifacts _(file system)_              | Geo with API                          | SHA256 checksum        |
+| Blobs    | Pipeline artifacts _(object storage)_           | Geo with API/Managed (*2*)            | SHA256 checksum        |
 
 - (*1*): Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo sites.
 - (*2*): Object storage replication can be performed by Geo or by your object storage provider/appliance

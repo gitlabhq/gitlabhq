@@ -51,16 +51,15 @@ class TeamcityService < CiService
   end
 
   def title
-    'JetBrains TeamCity CI'
+    'JetBrains TeamCity'
   end
 
   def description
-    'A continuous integration and build server'
+    s_('ProjectService|Run CI/CD pipelines with JetBrains TeamCity.')
   end
 
   def help
-    'You will want to configure monitoring of all branches so merge '\
-    'requests build, that setting is in the vsc root advanced settings.'
+    s_('To run CI/CD pipelines with JetBrains TeamCity, input the GitLab project details in the TeamCity project Version Control Settings.')
   end
 
   def fields
@@ -68,20 +67,20 @@ class TeamcityService < CiService
       {
         type: 'text',
         name: 'teamcity_url',
-        title: s_('ProjectService|TeamCity URL'),
-        placeholder: 'TeamCity root URL like https://teamcity.example.com',
+        title: s_('ProjectService|TeamCity server URL'),
+        placeholder: 'https://teamcity.example.com',
         required: true
       },
       {
         type: 'text',
         name: 'build_type',
-        placeholder: 'Build configuration ID',
+        help: s_('ProjectService|The build configuration ID of the TeamCity project.'),
         required: true
       },
       {
         type: 'text',
         name: 'username',
-        placeholder: 'A user with permissions to trigger a manual build'
+        help: s_('ProjectService|Must have permission to trigger a manual build in TeamCity.')
       },
       {
         type: 'password',

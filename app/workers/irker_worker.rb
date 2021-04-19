@@ -147,8 +147,7 @@ class IrkerWorker # rubocop:disable Scalability/IdempotentWorker
   def files_count(commit)
     diff_size = commit.raw_deltas.size
 
-    files = "#{diff_size} file".pluralize(diff_size)
-    files
+    "#{diff_size} file".pluralize(diff_size)
   end
 
   def colorize_sha(sha)

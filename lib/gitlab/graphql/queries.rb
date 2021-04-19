@@ -224,11 +224,9 @@ module Gitlab
           frag_path = frag_path.gsub(DOTS_RE) do |dots|
             rel_dir(dots.split('/').count)
           end
-          frag_path = frag_path.gsub(IMPLICIT_ROOT) do
+          frag_path.gsub(IMPLICIT_ROOT) do
             (Rails.root / 'app').to_s + '/'
           end
-
-          frag_path
         end
 
         def rel_dir(n_steps_up)

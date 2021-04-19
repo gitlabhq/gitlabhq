@@ -209,10 +209,8 @@ module API
           end
 
           def find_personal_access_token
-            personal_access_token = find_personal_access_token_from_conan_jwt ||
+            find_personal_access_token_from_conan_jwt ||
               find_personal_access_token_from_http_basic_auth
-
-            personal_access_token
           end
 
           def find_user_from_job_token

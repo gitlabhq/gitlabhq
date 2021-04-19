@@ -11,8 +11,7 @@ module Ci
     def execute
       variables = resource.variables
       variables = by_key(variables)
-      variables = by_environment_scope(variables)
-      variables
+      by_environment_scope(variables)
     end
 
     private

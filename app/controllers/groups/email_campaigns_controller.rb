@@ -17,16 +17,19 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
   private
 
   def track_click
-    data = {
-      namespace_id: group.id,
-      track: @track.to_s,
-      series: @series,
-      subject_line: subject_line(@track, @series)
-    }
+    if Gitlab.com?
+      data = {
+        namespace_id: group.id,
+        track: @track.to_s,
+        series: @series,
+        subject_line: subject_line(@track, @series)
+      }
+      context = SnowplowTracker::SelfDescribingJson.new(EMAIL_CAMPAIGNS_SCHEMA_URL, data)
 
-    context = SnowplowTracker::SelfDescribingJson.new(EMAIL_CAMPAIGNS_SCHEMA_URL, data)
-
-    ::Gitlab::Tracking.event(self.class.name, 'click', context: [context])
+      ::Gitlab::Tracking.event(self.class.name, 'click', context: [context])
+    else
+      ::Users::InProductMarketingEmail.save_cta_click(current_user, @track, @series)
+    end
   end
 
   def redirect_link

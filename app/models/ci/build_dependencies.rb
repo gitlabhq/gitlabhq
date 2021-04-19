@@ -21,8 +21,7 @@ module Ci
       deps = model_class.where(pipeline_id: processable.pipeline_id).latest
       deps = from_previous_stages(deps)
       deps = from_needs(deps)
-      deps = from_dependencies(deps)
-      deps
+      from_dependencies(deps)
     end
 
     # Dependencies from the same parent-pipeline hierarchy excluding

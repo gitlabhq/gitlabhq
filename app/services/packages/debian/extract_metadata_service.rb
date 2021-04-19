@@ -58,21 +58,22 @@ module Packages
         file_type == :dsc || file_type == :buildinfo || file_type == :changes
       end
 
-      def extracted_fields
-        if file_type_debian?
-          package_file.file.use_file do |file_path|
-            ::Packages::Debian::ExtractDebMetadataService.new(file_path).execute
-          end
-        elsif file_type_meta?
-          package_file.file.use_file do |file_path|
-            ::Packages::Debian::ParseDebian822Service.new(File.read(file_path)).execute.each_value.first
+      def fields
+        strong_memoize(:fields) do
+          if file_type_debian?
+            package_file.file.use_file do |file_path|
+              ::Packages::Debian::ExtractDebMetadataService.new(file_path).execute
+            end
+          elsif file_type_meta?
+            package_file.file.use_file do |file_path|
+              ::Packages::Debian::ParseDebian822Service.new(File.read(file_path)).execute.each_value.first
+            end
           end
         end
       end
 
       def extract_metadata
-        fields = extracted_fields
-        architecture = fields.delete('Architecture') if file_type_debian?
+        architecture = fields['Architecture'] if file_type_debian?
 
         {
           file_type: file_type,

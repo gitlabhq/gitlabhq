@@ -99,7 +99,7 @@ pair for all the sites. The **secondary** site will use this key to
 generate a short-lived JWT that is pull-only-capable to access the
 **primary** site Container Registry.
 
-For each application node on the **secondary** site: 
+For each application and Sidekiq node on the **secondary** site: 
 
 1. SSH into the node and login as the `root` user:
 

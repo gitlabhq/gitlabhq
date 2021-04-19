@@ -96,9 +96,7 @@ module Gitlab
         initial_config = Config::External::Processor.new(initial_config, @context).perform
         initial_config = Config::Extendable.new(initial_config).to_hash
         initial_config = Config::Yaml::Tags::Resolver.new(initial_config).to_hash
-        initial_config = Config::EdgeStagesInjector.new(initial_config).to_hash
-
-        initial_config
+        Config::EdgeStagesInjector.new(initial_config).to_hash
       end
 
       def find_sha(project)

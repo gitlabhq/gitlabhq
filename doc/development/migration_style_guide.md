@@ -254,10 +254,10 @@ def up
     t.bigint :project_id, null: false
     t.bigint :user_id, null: false
     t.string :jid, limit: 255
-  end
 
-  add_index :imports, :project_id
-  add_index :imports, :user_id
+    t.index :project_id
+    t.index :user_id
+  end
 end
 
 def down

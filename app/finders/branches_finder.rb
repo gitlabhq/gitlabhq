@@ -11,8 +11,7 @@ class BranchesFinder < GitRefsFinder
     else
       branches = repository.branches_sorted_by(sort)
       branches = by_search(branches)
-      branches = by_names(branches)
-      branches
+      by_names(branches)
     end
   end
 

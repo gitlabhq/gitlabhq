@@ -127,10 +127,9 @@ module Gitlab
       end
 
       def decorate!
-        collection = each_with_index do |element, i|
+        each_with_index do |element, i|
           @array[i] = yield(element)
         end
-        collection
       end
 
       alias_method :to_ary, :to_a

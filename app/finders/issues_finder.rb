@@ -81,8 +81,7 @@ class IssuesFinder < IssuableFinder
     issues = super
     issues = by_due_date(issues)
     issues = by_confidential(issues)
-    issues = by_issue_types(issues)
-    issues
+    by_issue_types(issues)
   end
 
   def by_confidential(items)

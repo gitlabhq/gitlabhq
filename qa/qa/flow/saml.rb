@@ -53,12 +53,10 @@ module QA
       end
 
       def run_saml_idp_service(group_name)
-        service = Service::DockerRun::SamlIdp.new(Runtime::Scenario.gitlab_address, group_name).tap do |runner|
+        Service::DockerRun::SamlIdp.new(Runtime::Scenario.gitlab_address, group_name).tap do |runner|
           runner.pull
           runner.register!
         end
-
-        service
       end
 
       def remove_saml_idp_service(saml_idp_service)

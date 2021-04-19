@@ -15,9 +15,7 @@ class UsersStarProjectsFinder
     stars = UsersStarProject.all
     stars = by_project(stars)
     stars = by_search(stars)
-    stars = filter_visible_profiles(stars)
-
-    stars
+    filter_visible_profiles(stars)
   end
 
   private

@@ -83,8 +83,7 @@ class ProjectsFinder < UnionFinder
     collection = by_deleted_status(collection)
     collection = by_last_activity_after(collection)
     collection = by_last_activity_before(collection)
-    collection = by_repository_storage(collection)
-    collection
+    by_repository_storage(collection)
   end
 
   def collection_with_user

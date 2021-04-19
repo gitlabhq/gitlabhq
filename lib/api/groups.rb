@@ -52,9 +52,7 @@ module API
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         order_options = { params[:order_by] => params[:sort] }
         order_options["id"] ||= "asc"
-        groups = groups.reorder(order_options)
-
-        groups
+        groups.reorder(order_options)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

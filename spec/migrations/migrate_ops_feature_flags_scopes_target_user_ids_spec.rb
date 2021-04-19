@@ -12,9 +12,7 @@ RSpec.describe MigrateOpsFeatureFlagsScopesTargetUserIds do
   def setup
     namespace = namespaces.create!(name: 'foo', path: 'foo')
     project = projects.create!(namespace_id: namespace.id)
-    flag = flags.create!(project_id: project.id, active: true, name: 'test_flag')
-
-    flag
+    flags.create!(project_id: project.id, active: true, name: 'test_flag')
   end
 
   it 'migrates successfully when there are no scopes in the database' do

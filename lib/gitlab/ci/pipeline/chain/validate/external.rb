@@ -70,7 +70,7 @@ module Gitlab
 
             def validate_service_request
               headers = {
-                'X-Request-ID' => Labkit::Correlation::CorrelationId.current_id,
+                'X-Gitlab-Correlation-id' => Labkit::Correlation::CorrelationId.current_id,
                 'X-Gitlab-Token' => validation_service_token
               }.compact
 

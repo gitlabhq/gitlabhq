@@ -38,17 +38,43 @@ RSpec.describe Groups::EmailCampaignsController do
         expect(subject).to have_gitlab_http_status(:redirect)
       end
 
-      it 'emits a snowplow event', :snowplow do
-        subject
+      context 'on .com' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+        end
 
-        expect_snowplow_event(
-          category: described_class.name,
-          action: 'click',
-          context: [{
-                      schema: described_class::EMAIL_CAMPAIGNS_SCHEMA_URL,
-                      data: { namespace_id: group.id, series: series.to_i, subject_line: subject_line_text, track: track.to_s }
-                    }]
-        )
+        it 'emits a snowplow event', :snowplow do
+          subject
+
+          expect_snowplow_event(
+            category: described_class.name,
+            action: 'click',
+            context: [{
+                        schema: described_class::EMAIL_CAMPAIGNS_SCHEMA_URL,
+                        data: { namespace_id: group.id, series: series.to_i, subject_line: subject_line_text, track: track.to_s }
+                      }]
+          )
+        end
+
+        it 'does not save the cta_click' do
+          expect(Users::InProductMarketingEmail).not_to receive(:save_cta_click)
+
+          subject
+        end
+      end
+
+      context 'when not on.com' do
+        it 'saves the cta_click' do
+          expect(Users::InProductMarketingEmail).to receive(:save_cta_click)
+
+          subject
+        end
+
+        it 'does not track snowplow events' do
+          subject
+
+          expect_no_snowplow_event
+        end
       end
     end
 

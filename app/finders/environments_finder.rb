@@ -15,9 +15,7 @@ class EnvironmentsFinder
     environments = by_search(environments)
 
     # Raises InvalidStatesError if params[:states] contains invalid states.
-    environments = by_states(environments)
-
-    environments
+    by_states(environments)
   end
 
   private

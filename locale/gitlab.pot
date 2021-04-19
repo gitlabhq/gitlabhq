@@ -24707,6 +24707,9 @@ msgstr ""
 msgid "ProjectService|Mock service URL"
 msgstr ""
 
+msgid "ProjectService|Must have permission to trigger a manual build in TeamCity."
+msgstr ""
+
 msgid "ProjectService|New issue URL"
 msgstr ""
 
@@ -24716,7 +24719,13 @@ msgstr ""
 msgid "ProjectService|Run CI/CD pipelines with Drone."
 msgstr ""
 
-msgid "ProjectService|TeamCity URL"
+msgid "ProjectService|Run CI/CD pipelines with JetBrains TeamCity."
+msgstr ""
+
+msgid "ProjectService|TeamCity server URL"
+msgstr ""
+
+msgid "ProjectService|The build configuration ID of the TeamCity project."
 msgstr ""
 
 msgid "ProjectService|To configure this integration, you should:"
@@ -32825,6 +32834,9 @@ msgid "To protect this issue's confidentiality, a private fork of this project w
 msgstr ""
 
 msgid "To receive alerts from manually configured Prometheus services, add the following URL and Authorization key to your Prometheus webhook config file. Learn more about %{linkStart}configuring Prometheus%{linkEnd} to send alerts to GitLab."
+msgstr ""
+
+msgid "To run CI/CD pipelines with JetBrains TeamCity, input the GitLab project details in the TeamCity project Version Control Settings."
 msgstr ""
 
 msgid "To see all the user's personal access tokens you must impersonate them first."

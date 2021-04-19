@@ -2016,9 +2016,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     def setup
       namespace = namespaces.create!(name: 'foo', path: 'foo')
-      project = projects.create!(namespace_id: namespace.id)
-
-      project
+      projects.create!(namespace_id: namespace.id)
     end
 
     it 'generates iids properly for models created after the migration' do

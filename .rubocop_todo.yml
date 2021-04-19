@@ -864,11 +864,6 @@ Style/RaiseArgs:
   Enabled: false
   EnforcedStyle: exploded
 
-# Offense count: 73
-# Cop supports --auto-correct.
-Style/RedundantAssignment:
-  Enabled: false
-
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/RedundantBegin:

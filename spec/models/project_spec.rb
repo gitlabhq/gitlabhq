@@ -5816,7 +5816,7 @@ RSpec.describe Project, factory_default: :keep do
         services = subject.find_or_initialize_services
 
         expect(services.size).to eq(2)
-        expect(services.map(&:title)).to eq(['JetBrains TeamCity CI', 'Pushover'])
+        expect(services.map(&:title)).to eq(['JetBrains TeamCity', 'Pushover'])
       end
     end
   end

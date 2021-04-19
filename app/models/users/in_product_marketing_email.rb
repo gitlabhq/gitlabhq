@@ -35,5 +35,15 @@ module Users
         .where(in_product_marketing_emails: { id: nil })
         .select(Arel.sql("DISTINCT ON(#{users.table_name}.id) #{users.table_name}.*"))
     end
+
+    scope :for_user_with_track_and_series, -> (user, track, series) do
+      where(user: user, track: track, series: series)
+    end
+
+    def self.save_cta_click(user, track, series)
+      email = for_user_with_track_and_series(user, track, series).take
+
+      email.update(cta_clicked_at: Time.zone.now) if email && email.cta_clicked_at.blank?
+    end
   end
 end
