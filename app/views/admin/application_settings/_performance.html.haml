@@ -6,7 +6,7 @@
       .form-check
         = f.check_box :authorized_keys_enabled, class: 'form-check-input'
         = f.label :authorized_keys_enabled, class: 'form-check-label' do
-          Write to "authorized_keys" file
+          = _('Write to "authorized_keys" file')
         .form-text.text-muted
           By default, we write to the "authorized_keys" file to support Git
           over SSH without additional configuration. GitLab can be optimized
@@ -31,4 +31,4 @@
       .form-text.text-muted
         = _('Number of changes (branches or tags) in a single push to determine whether individual push events or bulk push event will be created. Bulk push event will be created if it surpasses that value.')
 
-  = f.submit 'Save changes', class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

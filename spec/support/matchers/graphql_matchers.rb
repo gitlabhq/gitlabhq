@@ -30,11 +30,13 @@ RSpec::Matchers.define :have_graphql_fields do |*expected|
   end
 
   match do |kls|
-    if @allow_extra
-      expect(kls.fields.keys).to include(*expected_field_names)
-    else
-      expect(kls.fields.keys).to contain_exactly(*expected_field_names)
-    end
+    keys   = kls.fields.keys.to_set
+    fields = expected_field_names.to_set
+
+    next true if fields == keys
+    next true if @allow_extra && fields.proper_subset?(keys)
+
+    false
   end
 
   failure_message do |kls|
@@ -108,7 +110,7 @@ RSpec::Matchers.define :have_graphql_arguments do |*expected|
     names = expected_names(field).inspect
     args = field.arguments.keys.inspect
 
-    "expected that #{field.name} would have the following arguments: #{names}, but it has #{args}."
+    "expected #{field.name} to have the following arguments: #{names}, but it has #{args}."
   end
 end
 

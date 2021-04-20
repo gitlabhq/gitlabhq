@@ -68,8 +68,8 @@ RSpec.describe BulkUpdateIntegrationService do
       it 'updates the data fields from the integration', :aggregate_failures do
         described_class.new(subgroup_integration, batch).execute
 
-        expect(integration.data_fields.attributes.except(*excluded_attributes))
-          .to eq(subgroup_integration.data_fields.attributes.except(*excluded_attributes))
+        expect(integration.reload.data_fields.attributes.except(*excluded_attributes))
+          .to eq(subgroup_integration.reload.data_fields.attributes.except(*excluded_attributes))
 
         expect(integration.data_fields.attributes.except(*excluded_attributes))
           .not_to eq(excluded_integration.data_fields.attributes.except(*excluded_attributes))

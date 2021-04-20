@@ -33,7 +33,12 @@ describe('BoardContent', () => {
     });
   };
 
-  const createComponent = ({ state, props = {}, graphqlBoardListsEnabled = false } = {}) => {
+  const createComponent = ({
+    state,
+    props = {},
+    graphqlBoardListsEnabled = false,
+    canAdminList = true,
+  } = {}) => {
     const store = createStore({
       ...defaultState,
       ...state,
@@ -42,11 +47,11 @@ describe('BoardContent', () => {
       localVue,
       propsData: {
         lists: mockListsWithModel,
-        canAdminList: true,
         disabled: false,
         ...props,
       },
       provide: {
+        canAdminList,
         glFeatures: { graphqlBoardLists: graphqlBoardListsEnabled },
       },
       store,
@@ -82,7 +87,7 @@ describe('BoardContent', () => {
 
     describe('can admin list', () => {
       beforeEach(() => {
-        createComponent({ graphqlBoardListsEnabled: true, props: { canAdminList: true } });
+        createComponent({ graphqlBoardListsEnabled: true, canAdminList: true });
       });
 
       it('renders draggable component', () => {
@@ -92,7 +97,7 @@ describe('BoardContent', () => {
 
     describe('can not admin list', () => {
       beforeEach(() => {
-        createComponent({ graphqlBoardListsEnabled: true, props: { canAdminList: false } });
+        createComponent({ graphqlBoardListsEnabled: true, canAdminList: false });
       });
 
       it('does not render draggable component', () => {

@@ -23,7 +23,8 @@ module Projects
     attr_reader :build
 
     def initialize(project, build)
-      @project, @build = project, build
+      @project = project
+      @build = build
     end
 
     def execute
@@ -31,9 +32,9 @@ module Projects
 
       # Create status notifying the deployment of pages
       @status = create_status
+      @status.update_older_statuses_retried! if Feature.enabled?(:ci_fix_commit_status_retried, project, default_enabled: :yaml)
       @status.enqueue!
       @status.run!
-      @status.update_older_statuses_retried! if Feature.enabled?(:ci_fix_commit_status_retried, project, default_enabled: :yaml)
 
       raise InvalidStateError, 'missing pages artifacts' unless build.artifacts?
       raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
@@ -83,7 +84,9 @@ module Projects
     def deploy_to_legacy_storage(artifacts_path)
       # path today used by one project can later be used by another
       # so we can't really scope this feature flag by project or group
-      return unless Feature.enabled?(:pages_update_legacy_storage, default_enabled: true)
+      return unless ::Settings.pages.local_store.enabled
+
+      return if Feature.enabled?(:skip_pages_deploy_to_legacy_storage, project, default_enabled: :yaml)
 
       # Create temporary directory in which we will extract the artifacts
       make_secure_tmp_dir(tmp_path) do |tmp_path|
@@ -250,12 +253,16 @@ module Projects
 
     def make_secure_tmp_dir(tmp_path)
       FileUtils.mkdir_p(tmp_path)
-      path = Dir.mktmpdir(nil, tmp_path)
+      path = Dir.mktmpdir(tmp_dir_prefix, tmp_path)
       begin
         yield(path)
       ensure
         FileUtils.remove_entry_secure(path)
       end
+    end
+
+    def tmp_dir_prefix
+      "project-#{project.id}-build-#{build.id}-"
     end
   end
 end

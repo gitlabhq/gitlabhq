@@ -7,6 +7,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   include DependencyProxyHelpers
 
   let_it_be(:user) { create(:user) }
+
   let(:group) { create(:group) }
   let(:token_response) { { status: :success, token: 'abcd1234' } }
   let(:jwt) { build_jwt(user) }
@@ -102,6 +103,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
 
   describe 'GET #manifest' do
     let_it_be(:manifest) { create(:dependency_proxy_manifest) }
+
     let(:pull_response) { { status: :success, manifest: manifest } }
 
     before do
@@ -182,6 +184,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
 
   describe 'GET #blob' do
     let_it_be(:blob) { create(:dependency_proxy_blob) }
+
     let(:blob_sha) { blob.file_name.sub('.gz', '') }
     let(:blob_response) { { status: :success, blob: blob } }
 

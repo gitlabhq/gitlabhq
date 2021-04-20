@@ -12,7 +12,7 @@
 
 
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-gitpod-settings'), html: { class: 'fieldset-form' } do |f|
+    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-gitpod-settings'), html: { class: 'fieldset-form', id: 'gitpod-settings' } do |f|
       = form_errors(@application_setting)
 
       %fieldset

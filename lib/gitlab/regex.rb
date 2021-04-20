@@ -181,7 +181,7 @@ module Gitlab
       end
 
       def generic_package_version_regex
-        /\A\d+\.\d+\.\d+\z/
+        maven_version_regex
       end
 
       def generic_package_name_regex
@@ -385,11 +385,11 @@ module Gitlab
     end
 
     def merge_request_wip
-      /(?i)(\[WIP\]\s*|WIP:\s*|WIP$)/
+      /(?i)(\[WIP\]\s*|WIP:\s*|\AWIP\z)/
     end
 
     def merge_request_draft
-      /(?i)(\[draft\]|\(draft\)|draft:|draft\s\-\s|draft$)/
+      /\A(?i)(\[draft\]|\(draft\)|draft:|draft\s\-\s|draft\z)/
     end
 
     def issue

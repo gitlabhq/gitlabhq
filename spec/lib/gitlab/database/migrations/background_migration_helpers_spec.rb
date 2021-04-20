@@ -263,7 +263,15 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
   end
 
   describe '#queue_batched_background_migration' do
+    let(:pgclass_info) { instance_double('Gitlab::Database::PgClass', cardinality_estimate: 42) }
+
+    before do
+      allow(Gitlab::Database::PgClass).to receive(:for_table).and_call_original
+    end
+
     it 'creates the database record for the migration' do
+      expect(Gitlab::Database::PgClass).to receive(:for_table).with(:projects).and_return(pgclass_info)
+
       expect do
         model.queue_batched_background_migration(
           'MyJobClass',
@@ -288,7 +296,8 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
         batch_size: 100,
         sub_batch_size: 10,
         job_arguments: %w[],
-        status: 'active')
+        status: 'active',
+        total_tuple_count: pgclass_info.cardinality_estimate)
     end
 
     context 'when the job interval is lower than the minimum' do
@@ -429,6 +438,23 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       expect(Gitlab::ApplicationContext).to receive(:with_context).with(caller_id: model.class.to_s)
 
       model.bulk_migrate_in(10.minutes, [%w(Class hello world)])
+    end
+  end
+
+  describe '#delete_queued_jobs' do
+    let(:job1) { double }
+    let(:job2) { double }
+
+    it 'deletes all queued jobs for the given background migration' do
+      expect(Gitlab::BackgroundMigration).to receive(:steal).with('BackgroundMigrationClassName') do |&block|
+        expect(block.call(job1)).to be(false)
+        expect(block.call(job2)).to be(false)
+      end
+
+      expect(job1).to receive(:delete)
+      expect(job2).to receive(:delete)
+
+      model.delete_queued_jobs('BackgroundMigrationClassName')
     end
   end
 end

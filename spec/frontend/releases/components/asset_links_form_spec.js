@@ -44,7 +44,7 @@ describe('Release edit component', () => {
 
     const store = new Vuex.Store({
       modules: {
-        detail: {
+        editNew: {
           namespaced: true,
           actions,
           state,

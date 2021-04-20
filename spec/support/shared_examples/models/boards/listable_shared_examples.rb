@@ -16,18 +16,23 @@ RSpec.shared_examples 'boards listable model' do |list_factory|
   end
 
   describe 'scopes' do
+    let_it_be(:list1) { create(list_factory, list_type: :backlog) }
+    let_it_be(:list2) { create(list_factory, list_type: :closed) }
+    let_it_be(:list3) { create(list_factory, position: 1) }
+    let_it_be(:list4) { create(list_factory, position: 2) }
+
     describe '.ordered' do
       it 'returns lists ordered by type and position' do
-        # rubocop:disable Rails/SaveBang
-        lists = [
-          create(list_factory, list_type: :backlog),
-          create(list_factory, list_type: :closed),
-          create(list_factory, position: 1),
-          create(list_factory, position: 2)
-        ]
-        # rubocop:enable Rails/SaveBang
+        expect(described_class.where(id: [list1, list2, list3, list4]).ordered)
+          .to eq([list1, list3, list4, list2])
+      end
+    end
 
-        expect(described_class.where(id: lists).ordered).to eq([lists[0], lists[2], lists[3], lists[1]])
+    describe '.without_types' do
+      it 'excludes lists of given types' do
+        lists = described_class.without_types([:label, :closed])
+
+        expect(lists).to match_array([list1])
       end
     end
   end

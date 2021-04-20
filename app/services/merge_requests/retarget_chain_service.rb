@@ -17,7 +17,7 @@ module MergeRequests
         .opened
         .by_target_branch(merge_request.source_branch)
         .preload_source_project
-        .at_most(MAX_RETARGET_MERGE_REQUESTS)
+        .limit(MAX_RETARGET_MERGE_REQUESTS)
 
       other_merge_requests.find_each do |other_merge_request|
         # Update only MRs on projects that we have access to

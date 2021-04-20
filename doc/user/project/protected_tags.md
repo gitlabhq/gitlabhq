@@ -23,9 +23,7 @@ anyone without Maintainer [permissions](../permissions.md) is prevented from cre
 
 To protect a tag, you need to have at least Maintainer [permissions](../permissions.md).
 
-1. Navigate to the project's **Settings > Repository**:
-
-   ![Repository Settings](img/project_repository_settings.png)
+1. Go to the project's **Settings > Repository**.
 
 1. From the **Tag** dropdown menu, select the tag you want to protect or type and click **Create wildcard**. In the screenshot below, we chose to protect all tags matching `v*`:
 

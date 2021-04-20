@@ -9,20 +9,20 @@
   <div><%= f.label :name %><br />
     <%= f.text_field :name %></div>
 
-  <div><%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
+  <div><%= f.label :password %> <i><%= _("(leave blank if you don't want to change it)") %></i><br />
   <%= f.password_field :password %></div>
 
   <div><%= f.label :password_confirmation %><br />
   <%= f.password_field :password_confirmation %></div>
 
-  <div><%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
+  <div><%= f.label :current_password %> <i><%= _("(we need your current password to confirm your changes)") %></i><br />
   <%= f.password_field :current_password %></div>
 
-<div><%= f.submit "Update", class: "input_button" %></div>
+<div><%= f.submit _("Update"), class: "input_button" %></div>
 <% end %>
 
-<h3>Cancel your account</h3>
+<h3><%= _('Cancel your account') %></h3>
 
-<p>Unhappy? <%= link_to "Cancel your account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %>.</p>
+<p><%= _('Unhappy?') %> <%= link_to _("Cancel your account"), registration_path(resource_name), data: { confirm: _("Are you sure?") }, method: :delete %>.</p>
 
-<%= link_to "Back", :back %>
+<%= link_to _("Back"), :back %>

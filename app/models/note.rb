@@ -19,6 +19,7 @@ class Note < ApplicationRecord
   include Gitlab::SQL::Pattern
   include ThrottledTouch
   include FromUnion
+  include Sortable
 
   cache_markdown_field :note, pipeline: :note, issuable_state_filter_enabled: true
 
@@ -103,12 +104,12 @@ class Note < ApplicationRecord
   scope :system, -> { where(system: true) }
   scope :user, -> { where(system: false) }
   scope :common, -> { where(noteable_type: ["", nil]) }
-  scope :fresh, -> { order(created_at: :asc, id: :asc) }
+  scope :fresh, -> { order_created_asc.with_order_id_asc }
   scope :updated_after, ->(time) { where('updated_at > ?', time) }
   scope :with_updated_at, ->(time) { where(updated_at: time) }
-  scope :by_updated_at, -> { reorder(:updated_at, :id) }
   scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
+  scope :with_api_entity_associations, -> { preload(:note_diff_file, :author) }
   scope :inc_relations_for_view, -> do
     includes(:project, { author: :status }, :updated_by, :resolved_by, :award_emoji,
              { system_note_metadata: :description_version }, :note_diff_file, :diff_note_positions, :suggestions)
@@ -135,6 +136,7 @@ class Note < ApplicationRecord
              project: [:project_members, :namespace, { group: [:group_members] }])
   end
   scope :with_metadata, -> { includes(:system_note_metadata) }
+  scope :with_web_entity_associations, -> { preload(:project, :author, :noteable) }
 
   scope :for_note_or_capitalized_note, ->(text) { where(note: [text, text.capitalize]) }
   scope :like_note_or_capitalized_note, ->(text) { where('(note LIKE ? OR note LIKE ?)', text, text.capitalize) }
@@ -148,6 +150,8 @@ class Note < ApplicationRecord
   after_commit :notify_after_destroy, on: :destroy
 
   class << self
+    extend Gitlab::Utils::Override
+
     def model_name
       ActiveModel::Name.new(self, nil, 'note')
     end
@@ -203,6 +207,17 @@ class Note < ApplicationRecord
 
     def search(query)
       fuzzy_search(query, [:note])
+    end
+
+    # Override the `Sortable` module's `.simple_sorts` to remove name sorting,
+    # as a `Note` does not have any property that correlates to a "name".
+    override :simple_sorts
+    def simple_sorts
+      super.except('name_asc', 'name_desc')
+    end
+
+    def cherry_picked_merge_requests(shas)
+      where(noteable_type: 'MergeRequest', commit_id: shas).select(:noteable_id)
     end
   end
 

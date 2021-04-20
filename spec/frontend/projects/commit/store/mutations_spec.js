@@ -27,7 +27,7 @@ describe('Commit form modal mutations', () => {
 
   describe('CLEAR_MODAL', () => {
     it('should clear modal state ', () => {
-      stateCopy = { branch: '_master_', defaultBranch: '_default_branch_' };
+      stateCopy = { branch: '_main_', defaultBranch: '_default_branch_' };
 
       mutations[types.CLEAR_MODAL](stateCopy);
 
@@ -47,7 +47,7 @@ describe('Commit form modal mutations', () => {
 
   describe('SET_BRANCH', () => {
     it('should set branch', () => {
-      stateCopy = { branch: '_master_' };
+      stateCopy = { branch: '_main_' };
 
       mutations[types.SET_BRANCH](stateCopy, '_changed_branch_');
 
@@ -57,7 +57,7 @@ describe('Commit form modal mutations', () => {
 
   describe('SET_SELECTED_BRANCH', () => {
     it('should set selectedBranch', () => {
-      stateCopy = { selectedBranch: '_master_' };
+      stateCopy = { selectedBranch: '_main_' };
 
       mutations[types.SET_SELECTED_BRANCH](stateCopy, '_changed_branch_');
 

@@ -126,6 +126,7 @@ export default {
             category="secondary"
             variant="danger"
             icon="remove"
+            :aria-label="__('Remove user')"
             data-testid="delete-user-id"
             @click="removeUserId(id)"
           />

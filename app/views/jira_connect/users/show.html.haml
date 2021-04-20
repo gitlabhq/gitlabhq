@@ -1,11 +1,11 @@
 .jira-connect-users-container.gl-text-center
   - user_link = link_to(current_user.to_reference, user_path(current_user), target: '_blank', rel: 'noopener noreferrer')
-  %h2= _('You are signed into GitLab as %{user_link}').html_safe % { user_link: user_link }
+  %h2= _('You are signed in to GitLab as %{user_link}').html_safe % { user_link: user_link }
 
   %p= s_('Integrations|You can now close this window and return to the GitLab for Jira application.')
 
   - if @jira_app_link
-    %p= external_link s_('Integrations|Return to GitLab for Jira'), @jira_app_link, class: 'btn btn-success'
+    %p= external_link s_('Integrations|Return to GitLab for Jira'), @jira_app_link, class: 'gl-button btn btn-confirm'
 
   %p= link_to _('Sign out'), destroy_user_session_path, method: :post
 

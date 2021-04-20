@@ -49,19 +49,19 @@ RSpec.describe 'Runners' do
         visit project_runners_path(project)
 
         within '.activated-specific-runners' do
-          expect(page).to have_content('Pause')
+          expect(page).to have_link('Pause')
         end
 
         click_on 'Pause'
 
         within '.activated-specific-runners' do
-          expect(page).to have_content('Resume')
+          expect(page).to have_link('Resume')
         end
 
         click_on 'Resume'
 
         within '.activated-specific-runners' do
-          expect(page).to have_content('Pause')
+          expect(page).to have_link('Pause')
         end
       end
 
@@ -79,7 +79,7 @@ RSpec.describe 'Runners' do
         visit project_runners_path(project)
 
         within '.activated-specific-runners' do
-          first('.edit-runner > a').click
+          first('[data-testid="edit-runner-link"]').click
         end
 
         expect(page.find_field('runner[access_level]')).not_to be_checked
@@ -92,14 +92,14 @@ RSpec.describe 'Runners' do
 
       context 'when a runner has a tag' do
         before do
-          specific_runner.update(tag_list: ['tag'])
+          specific_runner.update!(tag_list: ['tag'])
         end
 
         it 'user edits runner not to run untagged jobs' do
           visit project_runners_path(project)
 
           within '.activated-specific-runners' do
-            first('.edit-runner > a').click
+            first('[data-testid="edit-runner-link"]').click
           end
 
           expect(page.find_field('runner[run_untagged]')).to be_checked
@@ -370,7 +370,7 @@ RSpec.describe 'Runners' do
 
       context 'when a runner has a tag' do
         before do
-          runner.update(tag_list: ['tag'])
+          runner.update!(tag_list: ['tag'])
         end
 
         it 'user edits runner not to run untagged jobs' do
@@ -450,7 +450,7 @@ RSpec.describe 'Runners' do
 
       context 'when a runner has a tag' do
         before do
-          runner.update(tag_list: ['tag'])
+          runner.update!(tag_list: ['tag'])
         end
 
         it 'user edits runner not to run untagged jobs' do

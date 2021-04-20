@@ -1,0 +1,8 @@
+---
+name: use_marker_ranges
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56361
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/324638
+milestone: '13.10'
+type: development
+group: group::source code
+default_enabled: false

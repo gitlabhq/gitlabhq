@@ -36,7 +36,7 @@ module Todos
         items = Todo.where(project_id: project_id)
         items = items.where(user_id: user_id) if user_id
 
-        items.where('user_id NOT IN (?)', authorized_users)
+        items.where.not(user_id: authorized_users)
           .where(target_type: target_types)
           .delete_all
       end

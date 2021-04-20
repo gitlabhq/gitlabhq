@@ -15,6 +15,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :authorize_create_proxy_build!, only: :proxy_websocket_authorize
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
+  before_action :push_jobs_table_vue, only: [:index]
 
   layout 'project'
 
@@ -255,5 +256,9 @@ class Projects::JobsController < Projects::ApplicationController
     service[:url] = ::Gitlab::UrlHelpers.as_wss(service[:url])
 
     ::Gitlab::Workhorse.channel_websocket(service)
+  end
+
+  def push_jobs_table_vue
+    push_frontend_feature_flag(:jobs_table_vue, @project, default_enabled: :yaml)
   end
 end

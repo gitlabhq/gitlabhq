@@ -97,13 +97,13 @@ module ImportExport
     def normalize_elements(elem)
       case elem
       when Hash
-        elem.map do |key, value|
+        elem.to_h do |key, value|
           if ignore_key?(key, value)
             [key, :ignored]
           else
             [key, normalize_elements(value)]
           end
-        end.to_h
+        end
       when Array
         elem.map { |a| normalize_elements(a) }
       else

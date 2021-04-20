@@ -288,6 +288,10 @@ class Repository
     false
   end
 
+  def search_branch_names(pattern)
+    redis_set_cache.search('branch_names', pattern) { branch_names }
+  end
+
   def languages
     return [] if empty?
 
@@ -829,12 +833,6 @@ class Repository
     end
   end
 
-  def merge_to_ref(user, source_sha, merge_request, target_ref, message, first_parent_ref, allow_conflicts = false)
-    branch = merge_request.target_branch
-
-    raw.merge_to_ref(user, source_sha, branch, target_ref, message, first_parent_ref, allow_conflicts)
-  end
-
   def delete_refs(*ref_names)
     raw.delete_refs(*ref_names)
   end
@@ -993,6 +991,12 @@ class Repository
     return [] if empty?
 
     raw_repository.search_files_by_name(query, ref)
+  end
+
+  def search_files_by_wildcard_path(path, ref = 'HEAD')
+    # We need to use RE2 to match Gitaly's regexp engine
+    regexp_string = RE2::Regexp.escape(path).gsub('\*', '.*?')
+    raw_repository.search_files_by_regexp("^#{regexp_string}$", ref)
   end
 
   def copy_gitattributes(ref)

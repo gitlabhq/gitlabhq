@@ -80,7 +80,7 @@ export default {
     genericError: GENERIC_ERROR,
   },
   computed: {
-    ...mapState('diffs', ['currentDiffFileId']),
+    ...mapState('diffs', ['currentDiffFileId', 'codequalityDiff']),
     ...mapGetters(['isNotesFetched']),
     ...mapGetters('diffs', ['getDiffFileDiscussions']),
     viewBlobHref() {
@@ -147,6 +147,11 @@ export default {
       const featureOn = this.glFeatures.localFileReviews;
 
       return loggedIn && featureOn;
+    },
+    hasCodequalityChanges() {
+      return (
+        this.codequalityDiff?.files && this.codequalityDiff?.files[this.file.file_path]?.length > 0
+      );
     },
   },
   watch: {
@@ -294,6 +299,7 @@ export default {
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :show-local-file-reviews="showLocalFileReviews"
+      :has-codequality-changes="hasCodequalityChanges"
       class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
       :class="hasBodyClasses.header"
       @toggleFile="handleToggle"

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'languages and percentages JSON response' do
-  let(:expected_languages) { project.repository.languages.map { |language| language.values_at(:label, :value)}.to_h }
+  let(:expected_languages) { project.repository.languages.to_h { |language| language.values_at(:label, :value) } }
 
   before do
     allow(project.repository).to receive(:languages).and_return(
@@ -810,6 +810,54 @@ RSpec.describe API::Projects do
         end
       end
     end
+
+    context 'with forked projects', :use_clean_rails_memory_store_caching do
+      include ProjectForksHelper
+
+      let_it_be(:admin) { create(:admin) }
+
+      it 'avoids N+1 queries' do
+        get api('/projects', admin)
+
+        base_project = create(:project, :public, namespace: admin.namespace)
+
+        fork_project1 = fork_project(base_project, admin, namespace: create(:user).namespace)
+        fork_project2 = fork_project(fork_project1, admin, namespace: create(:user).namespace)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api('/projects', admin)
+        end
+
+        fork_project(fork_project2, admin, namespace: create(:user).namespace)
+
+        expect do
+          get api('/projects', admin)
+        end.not_to exceed_query_limit(control.count)
+      end
+    end
+
+    context 'when service desk is enabled', :use_clean_rails_memory_store_caching do
+      let_it_be(:admin) { create(:admin) }
+
+      it 'avoids N+1 queries' do
+        allow(Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(true)
+        allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
+
+        get api('/projects', admin)
+
+        create(:project, :public, :service_desk_enabled, namespace: admin.namespace)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api('/projects', admin)
+        end
+
+        create_list(:project, 2, :public, :service_desk_enabled, namespace: admin.namespace)
+
+        expect do
+          get api('/projects', admin)
+        end.not_to exceed_query_limit(control.count)
+      end
+    end
   end
 
   describe 'POST /projects' do
@@ -1461,20 +1509,138 @@ RSpec.describe API::Projects do
     end
   end
 
+  describe "POST /projects/:id/uploads/authorize" do
+    include WorkhorseHelpers
+
+    let(:headers) { workhorse_internal_api_request_header.merge({ 'HTTP_GITLAB_WORKHORSE' => 1 }) }
+
+    context 'with authorized user' do
+      it "returns 200" do
+        post api("/projects/#{project.id}/uploads/authorize", user), headers: headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['MaximumSize']).to eq(project.max_attachment_size)
+      end
+    end
+
+    context 'with unauthorized user' do
+      it "returns 404" do
+        post api("/projects/#{project.id}/uploads/authorize", user2), headers: headers
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with exempted project' do
+      before do
+        stub_env('GITLAB_UPLOAD_API_ALLOWLIST', project.id)
+      end
+
+      it "returns 200" do
+        post api("/projects/#{project.id}/uploads/authorize", user), headers: headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['MaximumSize']).to eq(1.gigabyte)
+      end
+    end
+
+    context 'with upload size enforcement disabled' do
+      before do
+        stub_feature_flags(enforce_max_attachment_size_upload_api: false)
+      end
+
+      it "returns 200" do
+        post api("/projects/#{project.id}/uploads/authorize", user), headers: headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['MaximumSize']).to eq(1.gigabyte)
+      end
+    end
+
+    context 'with no Workhorse headers' do
+      it "returns 403" do
+        post api("/projects/#{project.id}/uploads/authorize", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
   describe "POST /projects/:id/uploads" do
+    let(:file) { fixture_file_upload("spec/fixtures/dk.png", "image/png") }
+
     before do
       project
     end
 
     it "uploads the file and returns its info" do
-      post api("/projects/#{project.id}/uploads", user), params: { file: fixture_file_upload("spec/fixtures/dk.png", "image/png") }
+      expect_next_instance_of(UploadService) do |instance|
+        expect(instance).to receive(:override_max_attachment_size=).with(project.max_attachment_size).and_call_original
+      end
+
+      post api("/projects/#{project.id}/uploads", user), params: { file: file }
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['alt']).to eq("dk")
       expect(json_response['url']).to start_with("/uploads/")
       expect(json_response['url']).to end_with("/dk.png")
-
       expect(json_response['full_path']).to start_with("/#{project.namespace.path}/#{project.path}/uploads")
+    end
+
+    it "does not leave the temporary file in place after uploading, even when the tempfile reaper does not run" do
+      stub_env('GITLAB_TEMPFILE_IMMEDIATE_UNLINK', '1')
+      tempfile = Tempfile.new('foo')
+      path = tempfile.path
+
+      allow_any_instance_of(Rack::TempfileReaper).to receive(:call) do |instance, env|
+        instance.instance_variable_get(:@app).call(env)
+      end
+
+      expect(path).not_to be(nil)
+      expect(Rack::Multipart::Parser::TEMPFILE_FACTORY).to receive(:call).and_return(tempfile)
+
+      post api("/projects/#{project.id}/uploads", user), params: { file: fixture_file_upload("spec/fixtures/dk.png", "image/png") }
+
+      expect(tempfile.path).to be(nil)
+      expect(File.exist?(path)).to be(false)
+    end
+
+    shared_examples 'capped upload attachments' do |upload_allowed|
+      it "limits the upload to 1 GB" do
+        expect_next_instance_of(UploadService) do |instance|
+          expect(instance).to receive(:override_max_attachment_size=).with(1.gigabyte).and_call_original
+        end
+
+        post api("/projects/#{project.id}/uploads", user), params: { file: file }
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it "logs a warning if file exceeds attachment size" do
+        allow(Gitlab::CurrentSettings).to receive(:max_attachment_size).and_return(0)
+
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(message: 'File exceeds maximum size', upload_allowed: upload_allowed))
+            .and_call_original
+
+        post api("/projects/#{project.id}/uploads", user), params: { file: file }
+      end
+    end
+
+    context 'with exempted project' do
+      before do
+        stub_env('GITLAB_UPLOAD_API_ALLOWLIST', project.id)
+      end
+
+      it_behaves_like 'capped upload attachments', true
+    end
+
+    context 'with upload size enforcement disabled' do
+      before do
+        stub_feature_flags(enforce_max_attachment_size_upload_api: false)
+      end
+
+      it_behaves_like 'capped upload attachments', false
     end
   end
 

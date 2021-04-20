@@ -1,0 +1,5 @@
+---
+title: Fix select2 dropdowns in dark mode
+merge_request: 58862
+author:
+type: fixed

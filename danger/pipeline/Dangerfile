@@ -3,9 +3,9 @@
 MESSAGE = <<~MESSAGE
 ## Pipeline Changes
 
-This Merge Request contains changes to the pipeline configuration for the GitLab project.
+This merge request contains changes to the pipeline configuration for the GitLab project.
 
-Please consider the effect of the changes in this Merge Request on the following:
+Please consider the effect of the changes in this merge request on the following:
 - Effects on different [pipeline types](https://docs.gitlab.com/ee/development/pipelines.html#pipelines-for-merge-requests)
 - Effects on non-canonical projects:
   - `gitlab-foss`

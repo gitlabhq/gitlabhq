@@ -40,8 +40,8 @@
 
 [data-page$='epic_boards:index'],
 [data-page$='epic_boards:show'] {
-  .filter-form {
-    display: none;
+  .filtered-search-wrapper {
+    display: none !important;
   }
 }
 
@@ -365,7 +365,7 @@
   margin: 5px;
 }
 
-.right-sidebar.issue-boards-sidebar {
+.right-sidebar.boards-sidebar {
   .gutter-toggle {
     bottom: 15px;
     width: 22px;
@@ -399,99 +399,6 @@
     padding-left: 0;
     padding-right: 0;
   }
-}
-
-.add-issues-modal {
-  background-color: rgba($black, 0.3);
-  z-index: 9999;
-}
-
-.add-issues-container {
-  width: 90vw;
-  height: 85vh;
-  max-width: 1100px;
-  min-height: 500px;
-  padding: 25px 15px 0;
-  background-color: var(--white, $white);
-  box-shadow: 0 2px 12px rgba(var(--black, $black), 0.5);
-
-  .empty-state {
-    &.add-issues-empty-state-filter {
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .svg-content {
-      margin-top: -40px;
-    }
-  }
-}
-
-.add-issues-header {
-  margin: -25px -15px -5px;
-  border-bottom: 1px solid $border-color;
-  border-top-right-radius: $border-radius-default;
-  border-top-left-radius: $border-radius-default;
-
-  > h2 {
-    font-size: 18px;
-  }
-}
-
-.add-issues-list-column {
-  width: 100%;
-
-  @include media-breakpoint-up(sm) {
-    width: 50%;
-  }
-
-  @include media-breakpoint-up(md) {
-    width: (100% / 3);
-  }
-}
-
-.add-issues-list {
-  padding-top: 3px;
-  margin-left: -$gl-vert-padding;
-  margin-right: -$gl-vert-padding;
-  overflow-y: scroll;
-
-  .board-card-parent {
-    padding: 0 5px 5px;
-  }
-
-  .board-card {
-    border: 1px solid var(--gray-900, $gray-900);
-    box-shadow: 0 1px 2px rgba(var(--black, $black), 0.4);
-    cursor: pointer;
-  }
-}
-
-.add-issues-footer {
-  margin: auto -15px 0;
-  padding-left: 15px;
-  padding-right: 15px;
-  border-bottom-right-radius: $border-radius-default;
-  border-bottom-left-radius: $border-radius-default;
-}
-
-.add-issues-footer-to-list {
-  padding-left: $gl-vert-padding;
-  padding-right: $gl-vert-padding;
-  line-height: $input-height;
-}
-
-.issue-card-selected {
-  position: absolute;
-  right: -3px;
-  top: -3px;
-  width: 17px;
-  background-color: var(--blue-500, $blue-500);
-  color: $white;
-  border: 1px solid var(--blue-600, $blue-600);
-  font-size: 9px;
-  line-height: 15px;
-  border-radius: 50%;
 }
 
 .board-card-info {
@@ -555,12 +462,28 @@
     overflow-x: scroll;
   }
 
-  .issue-boards-sidebar {
+  .boards-sidebar {
     height: 100%;
     top: 0;
   }
 }
 
+.boards-sidebar {
+  .sidebar-collapsed-icon {
+    display: none;
+  }
+}
+
 .board-header-collapsed-info-icon:hover {
   color: var(--gray-900, $gray-900);
+}
+
+.board-card-skeleton {
+  height: 110px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+  .board-card-skeleton-inner {
+    width: 340px;
+    height: 100px;
+  }
 }

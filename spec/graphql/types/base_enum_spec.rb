@@ -3,6 +3,38 @@
 require 'spec_helper'
 
 RSpec.describe Types::BaseEnum do
+  describe '.from_rails_enum' do
+    let(:enum_type) { Class.new(described_class) }
+    let(:template) { "The name is '%{name}', James %{name}." }
+
+    let(:enum) do
+      {
+        'foo' => 1,
+        'bar' => 2,
+        'baz' => 100
+      }
+    end
+
+    it 'contructs the correct values' do
+      enum_type.from_rails_enum(enum, description: template)
+
+      expect(enum_type.values).to match(
+        'FOO' => have_attributes(
+          description: "The name is 'foo', James foo.",
+          value: 'foo'
+        ),
+        'BAR' => have_attributes(
+          description: "The name is 'bar', James bar.",
+          value: 'bar'
+        ),
+        'BAZ' => have_attributes(
+          description: "The name is 'baz', James baz.",
+          value: 'baz'
+        )
+      )
+    end
+  end
+
   describe '.declarative_enum' do
     let(:use_name) { true }
     let(:use_description) { true }
@@ -26,12 +58,15 @@ RSpec.describe Types::BaseEnum do
       end
     end
 
-    subject(:set_declarative_enum) { enum_type.declarative_enum(enum_module, use_name: use_name, use_description: use_description) }
+    subject(:set_declarative_enum) do
+      enum_type.declarative_enum(enum_module, use_name: use_name, use_description: use_description)
+    end
 
     describe '#graphql_name' do
       context 'when the use_name is `true`' do
         it 'changes the graphql_name' do
-          expect { set_declarative_enum }.to change { enum_type.graphql_name }.from('OriginalName').to('Name')
+          expect { set_declarative_enum }
+            .to change(enum_type, :graphql_name).from('OriginalName').to('Name')
         end
       end
 
@@ -39,7 +74,8 @@ RSpec.describe Types::BaseEnum do
         let(:use_name) { false }
 
         it 'does not change the graphql_name' do
-          expect { set_declarative_enum }.not_to change { enum_type.graphql_name }.from('OriginalName')
+          expect { set_declarative_enum }
+            .not_to change(enum_type, :graphql_name).from('OriginalName')
         end
       end
     end
@@ -47,7 +83,8 @@ RSpec.describe Types::BaseEnum do
     describe '#description' do
       context 'when the use_description is `true`' do
         it 'changes the description' do
-          expect { set_declarative_enum }.to change { enum_type.description }.from('Original description').to('Description')
+          expect { set_declarative_enum }
+            .to change(enum_type, :description).from('Original description').to('Description')
         end
       end
 
@@ -55,7 +92,8 @@ RSpec.describe Types::BaseEnum do
         let(:use_description) { false }
 
         it 'does not change the description' do
-          expect { set_declarative_enum }.not_to change { enum_type.description }.from('Original description')
+          expect { set_declarative_enum }
+            .not_to change(enum_type, :description).from('Original description')
         end
       end
     end

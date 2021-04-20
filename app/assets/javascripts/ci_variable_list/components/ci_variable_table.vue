@@ -2,6 +2,7 @@
 import { GlTable, GlButton, GlModalDirective, GlIcon } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import { s__, __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ADD_CI_VARIABLE_MODAL_ID } from '../constants';
 import CiVariablePopover from './ci_variable_popover.vue';
 
@@ -59,8 +60,9 @@ export default {
   directives: {
     GlModalDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   computed: {
-    ...mapState(['variables', 'valuesHidden', 'isGroup', 'isLoading', 'isDeleting']),
+    ...mapState(['variables', 'valuesHidden', 'isLoading', 'isDeleting']),
     valuesButtonText() {
       return this.valuesHidden ? __('Reveal values') : __('Hide values');
     },
@@ -68,9 +70,6 @@ export default {
       return this.variables && this.variables.length > 0;
     },
     fields() {
-      if (this.isGroup) {
-        return this.$options.fields.filter((field) => field.key !== 'environment_scope');
-      }
       return this.$options.fields;
     },
   },

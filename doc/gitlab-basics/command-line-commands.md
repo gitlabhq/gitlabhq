@@ -33,9 +33,9 @@ The list below is not exhaustive, but contains many of the most commonly used co
 |--------------------------------|---------------------------------------------|
 | `cd NAME-OF-DIRECTORY`         | Go into a directory to work in it           |
 | `cd ..`                        | Go back one directory                       |
-| `ls`                           | List what’s in the current directory        |
-| `ls a*`                        | List what’s in the current directory that starts with `a` |
-| `ls *.md`                      | List what’s in the current directory that ends with `.md` |
+| `ls`                           | List what's in the current directory        |
+| `ls a*`                        | List what's in the current directory that starts with `a` |
+| `ls *.md`                      | List what's in the current directory that ends with `.md` |
 | `mkdir NAME-OF-YOUR-DIRECTORY` | Create a new directory                      |
 | `cat README.md`                | Display the contents of a [text file you created previously](#create-a-text-file-in-the-current-directory) |
 | `pwd`                          | Show the current directory                  |

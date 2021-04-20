@@ -10,6 +10,9 @@ module Gitlab
             include EachBatch
             include Concerns::MentionableMigrationMethods
 
+            self.table_name = 'design_management_designs'
+            self.inheritance_column = :_type_disabled
+
             def self.user_mention_model
               Gitlab::BackgroundMigration::UserMentions::Models::DesignUserMention
             end

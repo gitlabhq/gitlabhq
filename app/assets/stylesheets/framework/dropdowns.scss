@@ -133,13 +133,15 @@
   }
 }
 
-.dropdown-menu-toggle {
+// This is double classed to solve a specificity issue with the gitlab ui buttons
+.dropdown-menu-toggle.dropdown-menu-toggle {
   @extend .dropdown-toggle;
+  justify-content: flex-start;
+  overflow: hidden;
   padding-right: 25px;
   position: relative;
-  width: 160px;
   text-overflow: ellipsis;
-  overflow: hidden;
+  width: 160px;
 
   .fa {
     position: absolute;
@@ -376,11 +378,13 @@
       }
 
       > a,
-      > button {
+      > button,
+      > .gl-button {
         display: flex;
+        justify-content: flex-start;
         margin: 0;
-        text-overflow: inherit;
         text-align: left;
+        text-overflow: inherit;
 
         &.btn .fa:not(:last-child) {
           margin-left: 5px;

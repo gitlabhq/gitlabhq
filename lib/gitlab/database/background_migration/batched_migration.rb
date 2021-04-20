@@ -5,7 +5,7 @@ module Gitlab
     module BackgroundMigration
       class BatchedMigration < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
         JOB_CLASS_MODULE = 'Gitlab::BackgroundMigration'
-        BATCH_CLASS_MODULE = "#{JOB_CLASS_MODULE}::BatchingStrategies".freeze
+        BATCH_CLASS_MODULE = "#{JOB_CLASS_MODULE}::BatchingStrategies"
 
         self.table_name = :batched_background_migrations
 
@@ -23,8 +23,15 @@ module Gitlab
           finished: 3
         }
 
-        def interval_elapsed?
-          last_job.nil? || last_job.created_at <= Time.current - interval
+        def self.active_migration
+          active.queue_order.first
+        end
+
+        def interval_elapsed?(variance: 0)
+          return true unless last_job
+
+          interval_with_variance = interval - variance
+          last_job.created_at <= Time.current - interval_with_variance
         end
 
         def create_batched_job!(min, max)
@@ -49,6 +56,13 @@ module Gitlab
 
         def batch_class_name=(class_name)
           write_attribute(:batch_class_name, class_name.demodulize)
+        end
+
+        def prometheus_labels
+          @prometheus_labels ||= {
+            migration_id: id,
+            migration_identifier: "%s/%s.%s" % [job_class_name, table_name, column_name]
+          }
         end
       end
     end

@@ -9,7 +9,7 @@ RSpec.describe 'Admin updates settings' do
 
   let(:admin) { create(:admin) }
 
-  context 'feature flag :user_mode_in_session is enabled', :request_store do
+  context 'application setting :admin_mode is enabled', :request_store do
     before do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
       sign_in(admin)
@@ -129,7 +129,7 @@ RSpec.describe 'Admin updates settings' do
 
       context 'Change Sign-up restrictions' do
         context 'Require Admin approval for new signup setting' do
-          it 'changes the setting' do
+          it 'changes the setting', :js do
             page.within('.as-signup') do
               check 'Require admin approval for new sign-ups'
               click_button 'Save changes'
@@ -248,6 +248,14 @@ RSpec.describe 'Admin updates settings' do
 
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.hide_third_party_offers).to be true
+      end
+    end
+
+    context 'when the Slack Notifications Service template is active' do
+      before do
+        create(:service, :template, type: 'SlackService', active: true)
+
+        visit general_admin_application_settings_path
       end
 
       it 'change Slack Notifications Service template settings', :js do
@@ -588,7 +596,7 @@ RSpec.describe 'Admin updates settings' do
 
     context 'Nav bar' do
       it 'shows default help links in nav' do
-        default_support_url = 'https://about.gitlab.com/getting-help/'
+        default_support_url = "https://#{ApplicationHelper.promo_host}/getting-help/"
 
         visit root_dashboard_path
 
@@ -615,9 +623,9 @@ RSpec.describe 'Admin updates settings' do
     end
   end
 
-  context 'feature flag :user_mode_in_session is disabled' do
+  context 'application setting :admin_mode is disabled' do
     before do
-      stub_feature_flags(user_mode_in_session: false)
+      stub_application_setting(admin_mode: false)
 
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 

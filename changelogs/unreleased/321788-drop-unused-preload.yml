@@ -1,0 +1,5 @@
+---
+title: Drop unused preload from PipelineSerializer
+merge_request: 56988
+author:
+type: performance

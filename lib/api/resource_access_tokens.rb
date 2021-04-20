@@ -19,7 +19,7 @@ module API
         get ":id/access_tokens" do
           resource = find_source(source_type, params[:id])
 
-          next unauthorized! unless has_permission_to_read?(resource)
+          next unauthorized! unless current_user.can?(:read_resource_access_tokens, resource)
 
           tokens = PersonalAccessTokensFinder.new({ user: resource.bots, impersonation: false }).execute
 
@@ -84,10 +84,6 @@ module API
 
       def find_token(resource, token_id)
         PersonalAccessTokensFinder.new({ user: resource.bots, impersonation: false }).find_by_id(token_id)
-      end
-
-      def has_permission_to_read?(resource)
-        can?(current_user, :project_bot_access, resource) || can?(current_user, :admin_resource_access_tokens, resource)
       end
     end
   end

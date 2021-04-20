@@ -1,8 +1,0 @@
----
-name: codequality_backend_comparison
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53068
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/300796
-milestone: '13.9'
-type: development
-group: group::testing
-default_enabled: true

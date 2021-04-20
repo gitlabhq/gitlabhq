@@ -72,16 +72,16 @@ module Gitlab
 
       def key
         @key ||= begin
-                   key_data = if Feature.enabled?(:ci_jwt_signing_key, build.project, default_enabled: true)
-                                Gitlab::CurrentSettings.ci_jwt_signing_key
-                              else
-                                Rails.application.secrets.openid_connect_signing_key
-                              end
+          key_data = if Feature.enabled?(:ci_jwt_signing_key, build.project, default_enabled: true)
+                       Gitlab::CurrentSettings.ci_jwt_signing_key
+                     else
+                       Rails.application.secrets.openid_connect_signing_key
+                     end
 
-                   raise NoSigningKeyError unless key_data
+          raise NoSigningKeyError unless key_data
 
-                   OpenSSL::PKey::RSA.new(key_data)
-                 end
+          OpenSSL::PKey::RSA.new(key_data)
+        end
       end
 
       def public_key

@@ -14,7 +14,7 @@ module RuboCop
         include MigrationHelpers
 
         MSG = 'Text columns should always have a limit set (255 is suggested). ' \
-          'You can add a limit to a `text` column by using `add_text_limit`'.freeze
+          'You can add a limit to a `text` column by using `add_text_limit`'
 
         def_node_matcher :reverting?, <<~PATTERN
           (def :down ...)

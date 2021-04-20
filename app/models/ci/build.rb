@@ -14,8 +14,6 @@ module Ci
 
     BuildArchivedError = Class.new(StandardError)
 
-    ignore_columns :artifacts_file, :artifacts_file_store, :artifacts_metadata, :artifacts_metadata_store, :artifacts_size, :commands, remove_after: '2019-12-15', remove_with: '12.7'
-
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
@@ -35,6 +33,7 @@ module Ci
     }.freeze
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
+    RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
@@ -75,7 +74,14 @@ module Ci
       return unless has_environment?
 
       strong_memoize(:persisted_environment) do
-        Environment.find_by(name: expanded_environment_name, project: project)
+        # This code path has caused N+1s in the past, since environments are only indirectly
+        # associated to builds and pipelines; see https://gitlab.com/gitlab-org/gitlab/-/issues/326445
+        # We therefore batch-load them to prevent dormant N+1s until we found a proper solution.
+        BatchLoader.for(expanded_environment_name).batch(key: project_id) do |names, loader, args|
+          Environment.where(name: names, project: args[:key]).find_each do |environment|
+            loader.call(environment.name, environment)
+          end
+        end
       end
     end
 
@@ -88,8 +94,7 @@ module Ci
     validates :ref, presence: true
 
     scope :not_interruptible, -> do
-      joins(:metadata).where('ci_builds_metadata.id NOT IN (?)',
-        Ci::BuildMetadata.scoped_build.with_interruptible.select(:id))
+      joins(:metadata).where.not('ci_builds_metadata.id' => Ci::BuildMetadata.scoped_build.with_interruptible.select(:id))
     end
 
     scope :unstarted, -> { where(runner_id: nil) }
@@ -319,7 +324,7 @@ module Ci
         end
       end
 
-      before_transition any => [:failed] do |build|
+      after_transition any => [:failed] do |build|
         next unless build.project
         next unless build.deployment
 
@@ -372,11 +377,11 @@ module Ci
     end
 
     def other_manual_actions
-      pipeline.manual_actions.where.not(name: name)
+      pipeline.manual_actions.reject { |action| action.name == self.name }
     end
 
     def other_scheduled_actions
-      pipeline.scheduled_actions.where.not(name: name)
+      pipeline.scheduled_actions.reject { |action| action.name == self.name }
     end
 
     def pages_generator?
@@ -698,7 +703,23 @@ module Ci
     end
 
     def any_runners_online?
-      project.any_active_runners? { |runner| runner.match_build_if_online?(self) }
+      if Feature.enabled?(:runners_cached_states, project, default_enabled: :yaml)
+        cache_for_online_runners do
+          project.any_online_runners? { |runner| runner.match_build_if_online?(self) }
+        end
+      else
+        project.any_active_runners? { |runner| runner.match_build_if_online?(self) }
+      end
+    end
+
+    def any_runners_available?
+      if Feature.enabled?(:runners_cached_states, project, default_enabled: :yaml)
+        cache_for_available_runners do
+          project.active_runners.exists?
+        end
+      else
+        project.any_active_runners?
+      end
     end
 
     def stuck?
@@ -1102,6 +1123,20 @@ module Ci
         .dig(:allow_failure_criteria, :exit_codes)
         .to_a
         .include?(exit_code)
+    end
+
+    def cache_for_online_runners(&block)
+      Rails.cache.fetch(
+        ['has-online-runners', id],
+        expires_in: RUNNERS_STATUS_CACHE_EXPIRATION
+      ) { yield }
+    end
+
+    def cache_for_available_runners(&block)
+      Rails.cache.fetch(
+        ['has-available-runners', project.id],
+        expires_in: RUNNERS_STATUS_CACHE_EXPIRATION
+      ) { yield }
     end
   end
 end

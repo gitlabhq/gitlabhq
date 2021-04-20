@@ -11,7 +11,7 @@ RSpec.shared_examples 'User updates wiki page' do
     sign_in(user)
   end
 
-  context 'when wiki is empty' do
+  context 'when wiki is empty', :js do
     before do |example|
       visit(wiki_path(wiki))
 
@@ -57,7 +57,7 @@ RSpec.shared_examples 'User updates wiki page' do
     it_behaves_like 'wiki file attachments'
   end
 
-  context 'when wiki is not empty' do
+  context 'when wiki is not empty', :js do
     let!(:wiki_page) { create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page') }
 
     before do
@@ -147,7 +147,7 @@ RSpec.shared_examples 'User updates wiki page' do
     it_behaves_like 'wiki file attachments'
   end
 
-  context 'when the page is in a subdir' do
+  context 'when the page is in a subdir', :js do
     let(:page_name) { 'page_name' }
     let(:page_dir) { "foo/bar/#{page_name}" }
     let!(:wiki_page) { create(:wiki_page, wiki: wiki, title: page_dir, content: 'Home page') }

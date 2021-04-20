@@ -59,7 +59,7 @@ class RemoveDuplicateLabelsFromGroup < ActiveRecord::Migration[6.0]
     # group_id title template description type color
 
     duplicate_labels = ApplicationRecord.connection.execute(<<-SQL.squish)
-WITH data AS (
+WITH data AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
   SELECT labels.*,
   row_number() OVER (PARTITION BY labels.group_id, labels.title, labels.template, labels.description, labels.type, labels.color ORDER BY labels.id) AS row_number,
   #{CREATE} AS restore_action
@@ -87,7 +87,7 @@ WITH data AS (
     # then add `_duplicate#{ID}`
 
     soft_duplicates = ApplicationRecord.connection.execute(<<-SQL.squish)
-WITH data AS (
+WITH data AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
   SELECT
      *,
      substring(title from 1 for 245 - length(id::text)) || '_duplicate' || id::text as new_title,
@@ -112,7 +112,7 @@ WHERE labels.id IN (#{soft_duplicates.map { |dup| dup["id"] }.join(", ")});
   def restore_renamed_labels(start_id, stop_id)
     # the backup label IDs are not incremental, they are copied directly from the Labels table
     ApplicationRecord.connection.execute(<<-SQL.squish)
-WITH backups AS (
+WITH backups AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
   SELECT id, title
   FROM backup_labels
   WHERE id BETWEEN #{start_id} AND #{stop_id}

@@ -6,7 +6,7 @@ module MembershipActions
 
   def create
     create_params = params.permit(:user_ids, :access_level, :expires_at)
-    result = Members::CreateService.new(current_user, create_params).execute(membershipable)
+    result = Members::CreateService.new(current_user, create_params.merge({ source: membershipable })).execute
 
     if result[:status] == :success
       redirect_to members_page_url, notice: _('Users were successfully added.')
@@ -43,10 +43,11 @@ module MembershipActions
 
   def destroy
     member = membershipable.members_and_requesters.find(params[:id])
+    skip_subresources = !ActiveRecord::Type::Boolean.new.cast(params.delete(:remove_sub_memberships))
     # !! is used in case unassign_issuables contains empty string which would result in nil
     unassign_issuables = !!ActiveRecord::Type::Boolean.new.cast(params.delete(:unassign_issuables))
 
-    Members::DestroyService.new(current_user).execute(member, unassign_issuables: unassign_issuables)
+    Members::DestroyService.new(current_user).execute(member, skip_subresources: skip_subresources, unassign_issuables: unassign_issuables)
 
     respond_to do |format|
       format.html do
@@ -54,7 +55,11 @@ module MembershipActions
           begin
             case membershipable
             when Namespace
-              _("User was successfully removed from group and any subresources.")
+              if skip_subresources
+                _("User was successfully removed from group.")
+              else
+                _("User was successfully removed from group and any subgroups and projects.")
+              end
             else
               _("User was successfully removed from project.")
             end

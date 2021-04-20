@@ -35,7 +35,7 @@ RSpec.describe Projects::UpdatePagesConfigurationService do
         end
 
         it "doesn't update configuration files if updates on legacy storage are disabled" do
-          stub_feature_flags(pages_update_legacy_storage: false)
+          allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
 
           expect(service).not_to receive(:update_file)
 

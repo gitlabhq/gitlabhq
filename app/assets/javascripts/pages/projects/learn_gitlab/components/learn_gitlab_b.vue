@@ -1,5 +1,6 @@
 <script>
 import { GlProgressBar, GlSprintf } from '@gitlab/ui';
+import { pick } from 'lodash';
 import { s__ } from '~/locale';
 import { ACTION_LABELS } from '../constants';
 import LearnGitlabInfoCard from './learn_gitlab_info_card.vue';
@@ -42,7 +43,7 @@ export default {
     infoProps(action) {
       return {
         ...this.actions[action],
-        ...ACTION_LABELS[action],
+        ...pick(ACTION_LABELS[action], ['title', 'actionLabel', 'description', 'trialRequired']),
       };
     },
     progressValue() {
@@ -95,6 +96,9 @@ export default {
     <p class="gl-text-gray-700 gl-mb-6">{{ $options.i18n.plan.description }}</p>
 
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4">
+      <div class="col gl-mb-6">
+        <learn-gitlab-info-card v-bind="infoProps('issueCreated')" />
+      </div>
       <div class="col gl-mb-6">
         <learn-gitlab-info-card v-bind="infoProps('mergeRequestCreated')" />
       </div>

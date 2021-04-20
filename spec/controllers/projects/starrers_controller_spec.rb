@@ -170,7 +170,7 @@ RSpec.describe Projects::StarrersController do
 
     context 'when project is private' do
       before do
-        project.update(visibility_level: Project::PRIVATE)
+        project.update!(visibility_level: Project::PRIVATE)
       end
 
       it 'starrers are not visible for non logged in users' do

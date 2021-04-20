@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'Issue Boards new issue', :js do
-  let(:project) { create(:project, :public) }
-  let(:board)   { create(:board, project: project) }
-  let!(:list)   { create(:list, board: board, position: 0) }
-  let(:user)    { create(:user) }
+  let_it_be(:project)      { create(:project, :public) }
+  let_it_be(:board)        { create(:board, project: project) }
+  let_it_be(:backlog_list) { create(:backlog_list, board: board) }
+  let_it_be(:label)        { create(:label, project: project, name: 'Label 1') }
+  let_it_be(:list)         { create(:list, board: board, label: label, position: 0) }
+  let_it_be(:user)         { create(:user) }
 
   context 'authorized user' do
     before do
@@ -15,6 +17,7 @@ RSpec.describe 'Issue Boards new issue', :js do
       sign_in(user)
 
       visit project_board_path(project, board)
+
       wait_for_requests
 
       expect(page).to have_selector('.board', count: 3)
@@ -57,7 +60,7 @@ RSpec.describe 'Issue Boards new issue', :js do
 
       page.within(first('.board-new-issue-form')) do
         find('.form-control').set('bug')
-        click_button 'Submit issue'
+        click_button 'Create issue'
       end
 
       wait_for_requests
@@ -70,23 +73,24 @@ RSpec.describe 'Issue Boards new issue', :js do
         issue = project.issues.find_by_title('bug')
 
         expect(page).to have_content(issue.to_reference)
-        expect(page).to have_link(issue.title, href: issue_path(issue))
+        expect(page).to have_link(issue.title, href: /#{issue_path(issue)}/)
       end
     end
 
-    it 'shows sidebar when creating new issue' do
+    # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/323446
+    xit 'shows sidebar when creating new issue' do
       page.within(first('.board')) do
         find('.issue-count-badge-add-button').click
       end
 
       page.within(first('.board-new-issue-form')) do
         find('.form-control').set('bug')
-        click_button 'Submit issue'
+        click_button 'Create issue'
       end
 
       wait_for_requests
 
-      expect(page).to have_selector('.issue-boards-sidebar')
+      expect(page).to have_selector('[data-testid="issue-boards-sidebar"]')
     end
 
     it 'successfuly loads labels to be added to newly created issue' do
@@ -96,17 +100,21 @@ RSpec.describe 'Issue Boards new issue', :js do
 
       page.within(first('.board-new-issue-form')) do
         find('.form-control').set('new issue')
-        click_button 'Submit issue'
+        click_button 'Create issue'
       end
 
       wait_for_requests
 
-      page.within(first('.issue-boards-sidebar')) do
-        find('.labels .edit-link').click
+      page.within(first('.board')) do
+        find('.board-card').click
+      end
+
+      page.within(first('[data-testid="issue-boards-sidebar"]')) do
+        find('.labels [data-testid="edit-button"]').click
 
         wait_for_requests
 
-        expect(page).to have_selector('.labels .dropdown-content li a')
+        expect(page).to have_selector('.labels-select-contents-list .dropdown-content li a')
       end
     end
   end

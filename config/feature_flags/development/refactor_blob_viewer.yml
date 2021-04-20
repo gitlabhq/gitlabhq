@@ -1,0 +1,8 @@
+---
+name: refactor_blob_viewer
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57326
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/324351
+milestone: '13.11'
+type: development
+group: group::source code
+default_enabled: false

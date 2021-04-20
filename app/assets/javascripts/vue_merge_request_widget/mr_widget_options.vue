@@ -480,6 +480,7 @@ export default {
         v-if="mr.testResultsPath"
         class="js-reports-container"
         :endpoint="mr.testResultsPath"
+        :head-blob-path="mr.headBlobPath"
         :pipeline-path="mr.pipeline.path"
       />
 
@@ -513,7 +514,7 @@ export default {
           >
             {{
               s__(
-                'mrWidget|Fork merge requests do not create merge request pipelines which validate a post merge result',
+                'mrWidget|If the last pipeline ran in the fork project, it may be inaccurate. Before merge, we advise running a pipeline in this project.',
               )
             }}
           </mr-widget-alert-message>

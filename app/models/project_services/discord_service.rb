@@ -3,6 +3,8 @@
 require "discordrb/webhooks"
 
 class DiscordService < ChatNotificationService
+  include ActionView::Helpers::UrlHelper
+
   ATTACHMENT_REGEX = /: (?<entry>.*?)\n - (?<name>.*)\n*/.freeze
 
   def title
@@ -10,7 +12,7 @@ class DiscordService < ChatNotificationService
   end
 
   def description
-    s_("DiscordService|Receive event notifications in Discord")
+    s_("DiscordService|Send notifications about project events to a Discord channel.")
   end
 
   def self.to_param
@@ -18,13 +20,8 @@ class DiscordService < ChatNotificationService
   end
 
   def help
-    "This service sends notifications about project events to Discord channels.<br />
-    To set up this service:
-    <ol>
-      <li><a href='https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks'>Setup a custom Incoming Webhook</a>.</li>
-      <li>Paste the <strong>Webhook URL</strong> into the field below.</li>
-      <li>Select events below to enable notifications.</li>
-    </ol>"
+    docs_link = link_to _('How do I set up this service?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/discord_notifications'), target: '_blank', rel: 'noopener noreferrer'
+    s_('Send notifications about project events to a Discord channel. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
   end
 
   def event_field(event)
@@ -36,13 +33,12 @@ class DiscordService < ChatNotificationService
   end
 
   def self.supported_events
-    %w[push issue confidential_issue merge_request note confidential_note tag_push
-       pipeline wiki_page]
+    %w[push issue confidential_issue merge_request note confidential_note tag_push pipeline wiki_page]
   end
 
   def default_fields
     [
-      { type: "text", name: "webhook", placeholder: "e.g. https://discordapp.com/api/webhooks/…" },
+      { type: "text", name: "webhook", placeholder: "https://discordapp.com/api/webhooks/…", help: "URL to the webhook for the Discord channel." },
       { type: "checkbox", name: "notify_only_broken_pipelines" },
       { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }
     ]

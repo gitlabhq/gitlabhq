@@ -54,4 +54,4 @@
                     = s_('CICD|Automatic deployment to staging, manual deployment to production')
                     = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/customize.md', anchor: 'incremental-rollout-to-production'), target: '_blank'
 
-          = f.submit _('Save changes'), class: "btn gl-button btn-success gl-mt-5", data: { qa_selector: 'save_changes_button' }
+          = f.submit _('Save changes'), class: "btn gl-button btn-confirm gl-mt-5", data: { qa_selector: 'save_changes_button' }

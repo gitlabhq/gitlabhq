@@ -143,8 +143,12 @@ module MergeRequests
         merge_request, merge_request.project, current_user, old_reviewers)
     end
 
-    def create_pipeline_for(merge_request, user)
-      MergeRequests::CreatePipelineService.new(project, user).execute(merge_request)
+    def create_pipeline_for(merge_request, user, async: false)
+      if async
+        MergeRequests::CreatePipelineWorker.perform_async(project.id, user.id, merge_request.id)
+      else
+        MergeRequests::CreatePipelineService.new(project, user).execute(merge_request)
+      end
     end
 
     def abort_auto_merge(merge_request, reason)
@@ -164,7 +168,7 @@ module MergeRequests
 
     def pipeline_merge_requests(pipeline)
       pipeline.all_merge_requests.opened.each do |merge_request|
-        next unless pipeline == merge_request.head_pipeline
+        next unless pipeline.id == merge_request.head_pipeline_id
 
         yield merge_request
       end
@@ -194,6 +198,12 @@ module MergeRequests
       Gitlab::GitLogger.error(data)
 
       merge_request.update(merge_error: message) if save_message_on_model
+    end
+
+    def delete_milestone_total_merge_requests_counter_cache(milestone)
+      return unless milestone
+
+      Milestones::MergeRequestsCountService.new(milestone).delete_cache
     end
   end
 end

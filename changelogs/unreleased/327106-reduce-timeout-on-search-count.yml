@@ -1,0 +1,5 @@
+---
+title: Reduce timeouts on tab counts for searches to 5s
+merge_request: 59435
+author:
+type: performance

@@ -246,7 +246,8 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :
 
       subject.track_rename('namespace', 'path/to/namespace', 'path/to/renamed')
 
-      old_path, new_path = [nil, nil]
+      old_path = nil
+      new_path = nil
       Gitlab::Redis::SharedState.with do |redis|
         rename_info = redis.lpop(key)
         old_path, new_path = Gitlab::Json.parse(rename_info)

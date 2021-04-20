@@ -65,6 +65,14 @@ RSpec.describe Gitlab::Diff::Highlight do
 
           expect(subject[5].rich_text).to eq(code)
         end
+
+        context 'when use_marker_ranges feature flag is false too' do
+          it 'does not affect the result' do
+            code = %Q{+<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="no"><span class="idiff left">RuntimeError</span></span><span class="p"><span class="idiff">,</span></span><span class="idiff right"> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n}
+
+            expect(subject[5].rich_text).to eq(code)
+          end
+        end
       end
 
       context 'when no diff_refs' do
@@ -129,6 +137,18 @@ RSpec.describe Gitlab::Diff::Highlight do
           expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).and_call_original
 
           expect { subject }. to raise_exception(RangeError)
+        end
+      end
+
+      context 'when `use_marker_ranges` feature flag is disabled' do
+        it 'returns the same result' do
+          with_feature_flag = described_class.new(diff_file, repository: project.repository).highlight
+
+          stub_feature_flags(use_marker_ranges: false)
+
+          without_feature_flag = described_class.new(diff_file, repository: project.repository).highlight
+
+          expect(with_feature_flag.map(&:rich_text)).to eq(without_feature_flag.map(&:rich_text))
         end
       end
 

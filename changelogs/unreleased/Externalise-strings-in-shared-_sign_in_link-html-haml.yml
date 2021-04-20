@@ -1,0 +1,5 @@
+---
+title: Externalize strings in shared/_sign_in_link.html.haml
+merge_request: 58283
+author: nuwe1
+type: other

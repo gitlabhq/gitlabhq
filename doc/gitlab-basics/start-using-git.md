@@ -13,11 +13,11 @@ handle everything from small to very large projects with speed and efficiency. G
 on top of Git.
 
 While GitLab has a powerful user interface from which you can do a great amount of Git operations
-directly in the browser, you’ll eventually need to use Git through the command line for advanced
+directly in the browser, you'll eventually need to use Git through the command line for advanced
 tasks.
 
 For example, if you need to fix complex merge conflicts, rebase branches,
-merge manually, or undo and roll back commits, you musto use Git from
+merge manually, or undo and roll back commits, you must use Git from
 the command line and then push your changes to the remote server.
 
 This guide helps you get started with Git through the command line and can be your reference
@@ -27,7 +27,7 @@ can download the GitLab [Git Cheat Sheet](https://about.gitlab.com/images/press/
 > For more information about the advantages of working with Git and GitLab:
 >
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch the [GitLab Source Code Management Walkthrough](https://www.youtube.com/watch?v=wTQ3aXJswtM) video.
-> - Learn how GitLab became the backbone of [Worldline](https://about.gitlab.com/customers/worldline/)’s development environment.
+> - Learn how GitLab became the backbone of [Worldline](https://about.gitlab.com/customers/worldline/)'s development environment.
 
 NOTE:
 To help you visualize what you're doing locally, there are

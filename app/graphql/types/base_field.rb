@@ -2,28 +2,30 @@
 
 module Types
   class BaseField < GraphQL::Schema::Field
-    prepend Gitlab::Graphql::Authorize
     include GitlabStyleDeprecations
 
     argument_class ::Types::BaseArgument
 
     DEFAULT_COMPLEXITY = 1
 
+    attr_reader :deprecation
+
     def initialize(**kwargs, &block)
       @calls_gitaly = !!kwargs.delete(:calls_gitaly)
       @constant_complexity = kwargs[:complexity].is_a?(Integer) && kwargs[:complexity] > 0
       @requires_argument = !!kwargs.delete(:requires_argument)
+      @authorize = Array.wrap(kwargs.delete(:authorize))
       kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
       @feature_flag = kwargs[:feature_flag]
       kwargs = check_feature_flag(kwargs)
-      kwargs = gitlab_deprecation(kwargs)
+      @deprecation = gitlab_deprecation(kwargs)
 
       super(**kwargs, &block)
 
       # We want to avoid the overhead of this in prod
       extension ::Gitlab::Graphql::CallsGitaly::FieldExtension if Gitlab.dev_or_test_env?
-
       extension ::Gitlab::Graphql::Present::FieldExtension
+      extension ::Gitlab::Graphql::Authorize::ConnectionFilterExtension
     end
 
     def may_call_gitaly?
@@ -32,6 +34,19 @@ module Types
 
     def requires_argument?
       @requires_argument || arguments.values.any? { |argument| argument.type.non_null? }
+    end
+
+    # By default fields authorize against the current object, but that is not how our
+    # resolvers work - they use declarative permissions to authorize fields
+    # manually (so we make them opt in).
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/300922
+    #       (separate out authorize into permissions on the object, and on the
+    #       resolved values)
+    # We do not support argument authorization in our schema. If/when we do,
+    # we should call `super` here, to apply argument authorization checks.
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/324647
+    def authorized?(object, args, ctx)
+      field_authorized?(object, ctx) && resolver_authorized?(object, ctx)
     end
 
     def base_complexity
@@ -57,6 +72,26 @@ module Types
     private
 
     attr_reader :feature_flag
+
+    def field_authorized?(object, ctx)
+      authorization.ok?(object, ctx[:current_user])
+    end
+
+    # Historically our resolvers have used declarative permission checks only
+    # for _what they resolved_, not the _object they resolved these things from_
+    # We preserve these semantics here, and only apply resolver authorization
+    # if the resolver has opted in.
+    def resolver_authorized?(object, ctx)
+      if @resolver_class && @resolver_class.try(:authorizes_object?)
+        @resolver_class.authorized?(object, ctx)
+      else
+        true
+      end
+    end
+
+    def authorization
+      @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(@authorize)
+    end
 
     def feature_documentation_message(key, description)
       "#{description} Available only when feature flag `#{key}` is enabled."

@@ -55,14 +55,14 @@ module Gitlab
       #   scope :created_at_ordered, -> {
       #     keyset_order = Gitlab::Pagination::Keyset::Order.build([
       #       Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-      #         attribute: :created_at,
+      #         attribute_name: :created_at,
       #         column_expression: Project.arel_table[:created_at],
       #         order_expression: Project.arel_table[:created_at].asc,
       #         distinct: false, # values in the column are not unique
       #         nullable: :nulls_last # we might see NULL values (bottom)
       #       ),
       #       Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-      #         attribute: :id,
+      #         attribute_name: :id,
       #         order_expression: Project.arel_table[:id].asc
       #       )
       #     ])
@@ -93,7 +93,7 @@ module Gitlab
         end
 
         def cursor_attributes_for_node(node)
-          column_definitions.each_with_object({}) do |column_definition, hash|
+          column_definitions.each_with_object({}.with_indifferent_access) do |column_definition, hash|
             field_value = node[column_definition.attribute_name]
             hash[column_definition.attribute_name] = if field_value.is_a?(Time)
                                                        field_value.strftime('%Y-%m-%d %H:%M:%S.%N %Z')
@@ -162,7 +162,7 @@ module Gitlab
         # rubocop: disable CodeReuse/ActiveRecord
         def apply_cursor_conditions(scope, values = {})
           scope = apply_custom_projections(scope)
-          scope.where(build_where_values(values))
+          scope.where(build_where_values(values.with_indifferent_access))
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

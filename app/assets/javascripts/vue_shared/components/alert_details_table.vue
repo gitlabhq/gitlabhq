@@ -7,6 +7,7 @@ import {
   splitCamelCase,
 } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
+import { PAGE_CONFIG } from '~/vue_shared/alert_details/constants';
 
 const thClass = 'gl-bg-transparent! gl-border-1! gl-border-b-solid! gl-border-gray-200!';
 const tdClass = 'gl-border-gray-100! gl-p-5!';
@@ -42,6 +43,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    statuses: {
+      type: Object,
+      required: false,
+      default: () => PAGE_CONFIG.OPERATIONS.STATUSES,
+    },
   },
   fields: [
     {
@@ -71,6 +77,8 @@ export default {
             let value;
             if (fieldName === 'environment') {
               value = fieldValue?.name;
+            } else if (fieldName === 'status') {
+              value = this.statuses[fieldValue] || fieldValue;
             } else {
               value = fieldValue;
             }

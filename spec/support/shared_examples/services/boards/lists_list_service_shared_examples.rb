@@ -2,14 +2,34 @@
 
 RSpec.shared_examples 'lists list service' do
   context 'when the board has a backlog list' do
-    let!(:backlog_list) { create(:backlog_list, board: board) }
+    let!(:backlog_list) { create_backlog_list(board) }
 
     it 'does not create a backlog list' do
       expect { service.execute(board) }.not_to change(board.lists, :count)
     end
 
     it "returns board's lists" do
-      expect(service.execute(board)).to eq [backlog_list, list, board.closed_list]
+      expect(service.execute(board)).to eq [backlog_list, list, board.lists.closed.first]
+    end
+
+    context 'when hide_backlog_list is true' do
+      before do
+        board.update_column(:hide_backlog_list, true)
+      end
+
+      it 'hides backlog list' do
+        expect(service.execute(board)).to match_array([board.lists.closed.first, list])
+      end
+    end
+
+    context 'when hide_closed_list is true' do
+      before do
+        board.update_column(:hide_closed_list, true)
+      end
+
+      it 'hides closed list' do
+        expect(service.execute(board)).to match_array([backlog_list, list])
+      end
     end
   end
 
@@ -23,25 +43,21 @@ RSpec.shared_examples 'lists list service' do
     end
 
     it "returns board's lists" do
-      expect(service.execute(board)).to eq [board.backlog_list, list, board.closed_list]
+      expect(service.execute(board)).to eq [board.lists.backlog.first, list, board.lists.closed.first]
     end
   end
 
   context 'when wanting a specific list' do
-    let!(:list1) { create(:list, board: board) }
-
     it 'returns list specified by id' do
-      service = described_class.new(parent, user, list_id: list1.id)
+      service = described_class.new(parent, user, list_id: list.id)
 
-      expect(service.execute(board, create_default_lists: false)).to eq [list1]
+      expect(service.execute(board, create_default_lists: false)).to eq [list]
     end
 
     it 'returns empty result when list is not found' do
-      external_board = create(:board, resource_parent: create(:project))
-      external_list = create(:list, board: external_board)
-      service = described_class.new(parent, user, list_id: external_list.id)
+      service = described_class.new(parent, user, list_id: unrelated_list.id)
 
-      expect(service.execute(board, create_default_lists: false)).to eq(List.none)
+      expect(service.execute(board, create_default_lists: false)).to be_empty
     end
   end
 end

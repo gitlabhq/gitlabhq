@@ -6,7 +6,7 @@ class IrkerService < Service
   prop_accessor :server_host, :server_port, :default_irc_uri
   prop_accessor :recipients, :channels
   boolean_accessor :colorize_messages
-  validates :recipients, presence: true, if: :valid_recipients?
+  validates :recipients, presence: true, if: :validate_recipients?
 
   before_validation :get_channels
 

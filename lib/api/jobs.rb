@@ -6,8 +6,6 @@ module API
 
     before { authenticate! }
 
-    feature_category :continuous_integration
-
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
         requires :id, type: String, desc: 'The ID of a project'
@@ -40,7 +38,7 @@ module API
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get ':id/jobs' do
+      get ':id/jobs', feature_category: :continuous_integration do
         authorize_read_builds!
 
         builds = user_project.builds.order('id DESC')
@@ -57,7 +55,7 @@ module API
       params do
         requires :job_id, type: Integer, desc: 'The ID of a job'
       end
-      get ':id/jobs/:job_id' do
+      get ':id/jobs/:job_id', feature_category: :continuous_integration do
         authorize_read_builds!
 
         build = find_build!(params[:job_id])
@@ -72,7 +70,7 @@ module API
       params do
         requires :job_id, type: Integer, desc: 'The ID of a job'
       end
-      get ':id/jobs/:job_id/trace' do
+      get ':id/jobs/:job_id/trace', feature_category: :continuous_integration do
         authorize_read_builds!
 
         build = find_build!(params[:job_id])
@@ -94,7 +92,7 @@ module API
       params do
         requires :job_id, type: Integer, desc: 'The ID of a job'
       end
-      post ':id/jobs/:job_id/cancel' do
+      post ':id/jobs/:job_id/cancel', feature_category: :continuous_integration do
         authorize_update_builds!
 
         build = find_build!(params[:job_id])
@@ -111,7 +109,7 @@ module API
       params do
         requires :job_id, type: Integer, desc: 'The ID of a build'
       end
-      post ':id/jobs/:job_id/retry' do
+      post ':id/jobs/:job_id/retry', feature_category: :continuous_integration do
         authorize_update_builds!
 
         build = find_build!(params[:job_id])
@@ -129,7 +127,7 @@ module API
       params do
         requires :job_id, type: Integer, desc: 'The ID of a build'
       end
-      post ':id/jobs/:job_id/erase' do
+      post ':id/jobs/:job_id/erase', feature_category: :continuous_integration do
         authorize_update_builds!
 
         build = find_build!(params[:job_id])
@@ -148,7 +146,7 @@ module API
         requires :job_id, type: Integer, desc: 'The ID of a Job'
       end
 
-      post ":id/jobs/:job_id/play" do
+      post ":id/jobs/:job_id/play", feature_category: :continuous_integration do
         authorize_read_builds!
 
         job = find_job!(params[:job_id])
@@ -174,10 +172,8 @@ module API
         success Entities::Ci::Job
       end
       route_setting :authentication, job_token_allowed: true
-      get do
-        # current_authenticated_job will be nil if user is using
-        # a valid authentication that is not CI_JOB_TOKEN
-        not_found!('Job') unless current_authenticated_job
+      get '', feature_category: :continuous_integration do
+        validate_current_authenticated_job
 
         present current_authenticated_job, with: Entities::Ci::Job
       end
@@ -196,6 +192,14 @@ module API
         builds.where(status: available_statuses && scope)
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def validate_current_authenticated_job
+        # current_authenticated_job will be nil if user is using
+        # a valid authentication (like PRIVATE-TOKEN) that is not CI_JOB_TOKEN
+        not_found!('Job') unless current_authenticated_job
+      end
     end
   end
 end
+
+API::Jobs.prepend_if_ee('EE::API::Jobs')

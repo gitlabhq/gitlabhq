@@ -90,8 +90,10 @@ Example response:
 
 Gets a list of group or project members viewable by the authenticated user, including inherited members and permissions through ancestor groups.
 
-WARNING:
-Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/249523), the users effective `access_level` may actually be higher than returned value when listing group members.
+If a user is a member of this group or project and also of one or more ancestor groups,
+only its membership with the highest `access_level` is returned.
+([Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56677)] in GitLab 13.11.)
+This represents the effective permission of the user.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -310,6 +312,67 @@ Example response:
 ]
 ```
 
+## List memberships for a billable member of a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321560) in GitLab 13.11.
+
+Gets a list of memberships for a billable member of a group.
+
+Lists all projects and groups a user is a member of. Only projects and groups within the group hierarchy are included.
+For instance, if the requested group is `Root Group`, and the requested user is a direct member of both `Root Group / Sub Group One` and `Other Group / Sub Group Two`, then only `Root Group / Sub Group One` will be returned, because `Other Group / Sub Group Two` is not within the `Root Group` hierarchy.
+
+The response represents only direct memberships. Inherited memberships are not included.
+
+This API endpoint works on top-level groups only. It does not work on subgroups.
+
+This API endpoint requires permission to admin memberships for the group.
+
+This API endpoint takes [pagination](README.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
+
+```plaintext
+GET /groups/:id/billable_members/:user_id/memberships
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `user_id` | integer        | yes | The user ID of the billable member |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/billable_members/:user_id/memberships"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 168,
+    "source_id": 131,
+    "source_full_name": "Root Group / Sub Group One",
+    "source_members_url": "https://gitlab.example.com/groups/root-group/sub-group-one/-/group_members",
+    "created_at": "2021-03-31T17:28:44.812Z",
+    "expires_at": "2022-03-21",
+    "access_level": {
+      "string_value": "Developer",
+      "integer_value": 30
+    }
+  },
+  {
+    "id": 169,
+    "source_id": 63,
+    "source_full_name": "Root Group / Sub Group One / My Project",
+    "source_members_url": "https://gitlab.example.com/root-group/sub-group-one/my-project/-/project_members",
+    "created_at": "2021-03-31T17:29:14.934Z",
+    "expires_at": null,
+    "access_level": {
+      "string_value": "Maintainer",
+      "integer_value": 40
+    }
+  }
+]
+```
+
 ## Remove a billable member from a group
 
 Removes a billable member from a group and its subgroups and projects.
@@ -494,7 +557,10 @@ DELETE /projects/:id/members/:user_id
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
-| `unassign_issuables` | boolean | false   | Flag indicating if the removed member should be unassigned from any issues or merge requests inside a given group or project |
+| `skip_subresources` | boolean | false   | Whether the deletion of direct memberships of the removed member in subgroups and projects should be skipped. Default is `false`. |
+| `unassign_issuables` | boolean | false   | Whether the removed member should be unassigned from any issues or merge requests inside a given group or project. Default is `false`. |
+
+Example request:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id"

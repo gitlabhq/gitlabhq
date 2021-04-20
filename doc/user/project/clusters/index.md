@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Health
+group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -86,7 +86,7 @@ differentiates the new cluster from the rest.
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
-[environment-specific CI/CD variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-cicd-variables) work.
+[environment-specific CI/CD variables](../../../ci/variables/README.md#limit-the-environment-scope-of-a-cicd-variable) work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, use that cluster. Each scope can be used only by a single cluster
@@ -189,7 +189,7 @@ your cluster. This can cause deployment jobs to fail.
 
 To clear the cache:
 
-1. Navigate to your project’s **Operations > Kubernetes** page, and select your cluster.
+1. Navigate to your project's **Operations > Kubernetes** page, and select your cluster.
 1. Expand the **Advanced settings** section.
 1. Click **Clear cluster cache**.
 

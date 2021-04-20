@@ -238,7 +238,7 @@ export default {
         : '';
     },
     statusIcon() {
-      return this.isClosed ? 'mobile-issue-close' : 'issue-open-m';
+      return this.isClosed ? 'issue-close' : 'issue-open-m';
     },
     statusText() {
       return IssuableStatusText[this.issuableStatus];

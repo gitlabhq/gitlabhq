@@ -121,7 +121,7 @@ RSpec.describe 'Users > Terms' do
 
         enforce_terms
 
-        click_button 'Submit issue'
+        click_button 'Create issue'
 
         expect(current_path).to eq(terms_path)
 

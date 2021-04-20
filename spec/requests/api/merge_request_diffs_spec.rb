@@ -75,5 +75,13 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
         let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}" }
       end
     end
+
+    context 'caching merge request diffs', :use_clean_rails_redis_caching do
+      it 'is performed' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}", user)
+
+        expect(Rails.cache.fetch(merge_request_diff.cache_key)).to be_present
+      end
+    end
   end
 end

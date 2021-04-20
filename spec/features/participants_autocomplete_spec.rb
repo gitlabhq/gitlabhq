@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Member autocomplete', :js do
-  let(:project) { create(:project, :public) }
-  let(:user) { create(:user) }
-  let(:author) { create(:user) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:author) { create(:user) }
   let(:note) { create(:note, noteable: noteable, project: noteable.project) }
 
   before do
@@ -15,20 +15,16 @@ RSpec.describe 'Member autocomplete', :js do
 
   shared_examples "open suggestions when typing @" do |resource_name|
     before do
-      page.within('.new-note') do
-        if resource_name == 'commit'
-          find('#note_note').send_keys('@')
-        else
-          find('#note-body').send_keys('@')
-        end
+      if resource_name == 'commit'
+        fill_in 'note[note]', with: '@'
+      else
+        fill_in 'Comment', with: '@'
       end
     end
 
     it 'suggests noteable author and note author' do
-      page.within('.atwho-view', visible: true) do
-        expect(page).to have_content(author.username)
-        expect(page).to have_content(note.author.username)
-      end
+      expect(find_autocomplete_menu).to have_text(author.username)
+      expect(find_autocomplete_menu).to have_text(note.author.username)
     end
   end
 
@@ -51,22 +47,17 @@ RSpec.describe 'Member autocomplete', :js do
         stub_feature_flags(tribute_autocomplete: true)
         visit project_issue_path(project, noteable)
 
-        page.within('.new-note') do
-          find('#note-body').send_keys('@')
-        end
+        fill_in 'Comment', with: '@'
       end
 
       it 'suggests noteable author and note author' do
-        page.within('.tribute-container', visible: true) do
-          expect(page).to have_content(author.username)
-          expect(page).to have_content(note.author.username)
-        end
+        expect(find_tribute_autocomplete_menu).to have_content(author.username)
+        expect(find_tribute_autocomplete_menu).to have_content(note.author.username)
       end
     end
   end
 
   context 'adding a new note on a Merge Request' do
-    let(:project) { create(:project, :public, :repository) }
     let(:noteable) do
       create(:merge_request, source_project: project,
                              target_project: project, author: author)
@@ -80,7 +71,6 @@ RSpec.describe 'Member autocomplete', :js do
   end
 
   context 'adding a new note on a Commit' do
-    let(:project) { create(:project, :public, :repository) }
     let(:noteable) { project.commit }
     let(:note) { create(:note_on_commit, project: project, commit_id: project.commit.id) }
 
@@ -93,5 +83,15 @@ RSpec.describe 'Member autocomplete', :js do
     end
 
     include_examples "open suggestions when typing @", 'commit'
+  end
+
+  private
+
+  def find_autocomplete_menu
+    find('.atwho-view ul', visible: true)
+  end
+
+  def find_tribute_autocomplete_menu
+    find('.tribute-container ul', visible: true)
   end
 end

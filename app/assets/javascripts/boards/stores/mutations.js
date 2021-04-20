@@ -2,7 +2,7 @@ import { pull, union } from 'lodash';
 import Vue from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
-import { formatIssue, moveItemListHelper } from '../boards_util';
+import { formatIssue } from '../boards_util';
 import { issuableTypes } from '../constants';
 import * as mutationTypes from './mutation_types';
 
@@ -158,13 +158,13 @@ export default {
     });
   },
 
-  [mutationTypes.UPDATE_ISSUE_BY_ID]: (state, { issueId, prop, value }) => {
-    if (!state.boardItems[issueId]) {
+  [mutationTypes.UPDATE_BOARD_ITEM_BY_ID]: (state, { itemId, prop, value }) => {
+    if (!state.boardItems[itemId]) {
       /* eslint-disable-next-line @gitlab/require-i18n-strings */
       throw new Error('No issue found.');
     }
 
-    Vue.set(state.boardItems[issueId], prop, value);
+    Vue.set(state.boardItems[itemId], prop, value);
   },
 
   [mutationTypes.SET_ASSIGNEE_LOADING](state, isLoading) {
@@ -183,38 +183,9 @@ export default {
     notImplemented();
   },
 
-  [mutationTypes.MOVE_ISSUE]: (
-    state,
-    { originalIssue, fromListId, toListId, moveBeforeId, moveAfterId },
-  ) => {
-    const fromList = state.boardLists[fromListId];
-    const toList = state.boardLists[toListId];
-
-    const issue = moveItemListHelper(originalIssue, fromList, toList);
-    Vue.set(state.boardItems, issue.id, issue);
-
-    removeItemFromList({ state, listId: fromListId, itemId: issue.id });
-    addItemToList({ state, listId: toListId, itemId: issue.id, moveBeforeId, moveAfterId });
-  },
-
-  [mutationTypes.MOVE_ISSUE_SUCCESS]: (state, { issue }) => {
+  [mutationTypes.MUTATE_ISSUE_SUCCESS]: (state, { issue }) => {
     const issueId = getIdFromGraphQLId(issue.id);
     Vue.set(state.boardItems, issueId, formatIssue({ ...issue, id: issueId }));
-  },
-
-  [mutationTypes.MOVE_ISSUE_FAILURE]: (
-    state,
-    { originalIssue, fromListId, toListId, originalIndex },
-  ) => {
-    state.error = s__('Boards|An error occurred while moving the issue. Please try again.');
-    Vue.set(state.boardItems, originalIssue.id, originalIssue);
-    removeItemFromList({ state, listId: toListId, itemId: originalIssue.id });
-    addItemToList({
-      state,
-      listId: fromListId,
-      itemId: originalIssue.id,
-      atIndex: originalIndex,
-    });
   },
 
   [mutationTypes.REQUEST_UPDATE_ISSUE]: () => {
@@ -229,28 +200,23 @@ export default {
     notImplemented();
   },
 
-  [mutationTypes.CREATE_ISSUE_FAILURE]: (state) => {
-    state.error = s__('Boards|An error occurred while creating the issue. Please try again.');
+  [mutationTypes.ADD_BOARD_ITEM_TO_LIST]: (
+    state,
+    { itemId, listId, moveBeforeId, moveAfterId, atIndex },
+  ) => {
+    addItemToList({ state, listId, itemId, moveBeforeId, moveAfterId, atIndex });
   },
 
-  [mutationTypes.ADD_ISSUE_TO_LIST]: (state, { list, issue, position }) => {
-    addItemToList({
-      state,
-      listId: list.id,
-      itemId: issue.id,
-      atIndex: position,
-    });
-    Vue.set(state.boardItems, issue.id, issue);
+  [mutationTypes.REMOVE_BOARD_ITEM_FROM_LIST]: (state, { itemId, listId }) => {
+    removeItemFromList({ state, listId, itemId });
   },
 
-  [mutationTypes.ADD_ISSUE_TO_LIST_FAILURE]: (state, { list, issueId }) => {
-    state.error = s__('Boards|An error occurred while creating the issue. Please try again.');
-    removeItemFromList({ state, listId: list.id, itemId: issueId });
+  [mutationTypes.UPDATE_BOARD_ITEM]: (state, item) => {
+    Vue.set(state.boardItems, item.id, item);
   },
 
-  [mutationTypes.REMOVE_ISSUE_FROM_LIST]: (state, { list, issue }) => {
-    removeItemFromList({ state, listId: list.id, itemId: issue.id });
-    Vue.delete(state.boardItems, issue.id);
+  [mutationTypes.REMOVE_BOARD_ITEM]: (state, itemId) => {
+    Vue.delete(state.boardItems, itemId);
   },
 
   [mutationTypes.SET_CURRENT_PAGE]: () => {
@@ -308,5 +274,9 @@ export default {
 
   [mutationTypes.RESET_BOARD_ITEM_SELECTION]: (state) => {
     state.selectedBoardItems = [];
+  },
+
+  [mutationTypes.SET_ERROR]: (state, error) => {
+    state.error = error;
   },
 };

@@ -89,6 +89,12 @@ describe('Application Row', () => {
       checkButtonState('Install', false, true);
     });
 
+    it('has disabled "Externally installed" when APPLICATION_STATUS.EXTERNALLY_INSTALLED', () => {
+      mountComponent({ status: APPLICATION_STATUS.EXTERNALLY_INSTALLED });
+
+      checkButtonState('Externally installed', false, true);
+    });
+
     it('has disabled "Installed" when application is installed and not uninstallable', () => {
       mountComponent({
         status: APPLICATION_STATUS.INSTALLED,

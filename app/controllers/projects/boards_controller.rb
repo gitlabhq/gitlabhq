@@ -8,7 +8,8 @@ class Projects::BoardsController < Projects::ApplicationController
   before_action :authorize_read_board!, only: [:index, :show]
   before_action :assign_endpoint_vars
   before_action do
-    push_frontend_feature_flag(:add_issues_button)
+    push_frontend_feature_flag(:swimlanes_buffered_rendering, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:graphql_board_lists, project, default_enabled: :yaml)
   end
 
   feature_category :boards

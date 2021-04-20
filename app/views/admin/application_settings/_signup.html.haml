@@ -1,80 +1,20 @@
-= form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-signup-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting)
+= form_errors(@application_setting)
 
-  %fieldset
-    .form-group
-      .form-check
-        = f.check_box :signup_enabled, class: 'form-check-input', data: { qa_selector: 'signup_enabled_checkbox' }
-        = f.label :signup_enabled, class: 'form-check-label' do
-          Sign-up enabled
-          .form-text.text-muted
-            = _("When enabled, any user visiting %{host} will be able to create an account.") % { host: "#{new_user_session_url(host: Gitlab.config.gitlab.host)}" }
-    .form-group
-      .form-check
-        = f.check_box :require_admin_approval_after_user_signup, class: 'form-check-input', data: { qa_selector: 'require_admin_approval_after_user_signup_checkbox' }
-        = f.label :require_admin_approval_after_user_signup, class: 'form-check-label' do
-          = _('Require admin approval for new sign-ups')
-          .form-text.text-muted
-            = _("When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by an admin before they can sign in. This setting is effective only if sign-ups are enabled.") % { host: "#{new_user_session_url(host: Gitlab.config.gitlab.host)}" }
-    .form-group
-      .form-check
-        = f.check_box :send_user_confirmation_email, class: 'form-check-input'
-        = f.label :send_user_confirmation_email, class: 'form-check-label' do
-          Send confirmation email on sign-up
-
-    = render_if_exists 'admin/application_settings/new_user_signups_cap', form: f
-
-    .form-group
-      = f.label :minimum_password_length, _('Minimum password length (number of characters)'), class: 'label-bold'
-      = f.number_field :minimum_password_length, class: 'form-control gl-form-input', rows: 4, min: ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH, max: Devise.password_length.max
-      - password_policy_guidelines_link = link_to _('Password Policy Guidelines'), 'https://about.gitlab.com/handbook/security/#gitlab-password-policy-guidelines', target: '_blank', rel: 'noopener noreferrer nofollow'
-      .form-text.text-muted
-        = _("See GitLab's %{password_policy_guidelines}").html_safe % { password_policy_guidelines: password_policy_guidelines_link }
-    .form-group
-      = f.label :domain_allowlist, _('Allowed domains for sign-ups'), class: 'label-bold'
-      = f.text_area :domain_allowlist_raw, placeholder: 'domain.com', class: 'form-control gl-form-input', rows: 8
-      .form-text.text-muted ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
-    .form-group
-      = f.label :domain_denylist_enabled, _('Domain denylist'), class: 'label-bold'
-      .form-check
-        = f.check_box :domain_denylist_enabled, class: 'form-check-input'
-        = f.label :domain_denylist_enabled, class: 'form-check-label' do
-          Enable domain denylist for sign ups
-    .form-group
-      .form-check
-        = radio_button_tag :denylist_type, :file, false, class: 'form-check-input'
-        = label_tag :denylist_type_file, class: 'form-check-label' do
-          .option-title
-            Upload denylist file
-      .form-check
-        = radio_button_tag :denylist_type, :raw, @application_setting.domain_denylist.present? || @application_setting.domain_denylist.blank?, class: 'form-check-input'
-        = label_tag :denylist_type_raw, class: 'form-check-label' do
-          .option-title
-            Enter denylist manually
-    .form-group.js-denylist-file
-      = f.label :domain_denylist_file, _('Denylist file'), class: 'label-bold'
-      = f.file_field :domain_denylist_file, class: 'form-control gl-form-input', accept: '.txt,.conf'
-      .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines or commas for multiple entries.
-    .form-group.js-denylist-raw
-      = f.label :domain_denylist, _('Denied domains for sign-ups'), class: 'label-bold'
-      = f.text_area :domain_denylist_raw, placeholder: 'domain.com', class: 'form-control gl-form-input', rows: 8
-      .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
-    .form-group
-      = f.label :email_restrictions_enabled, _('Email restrictions'), class: 'label-bold'
-      .form-check
-        = f.check_box :email_restrictions_enabled, class: 'form-check-input'
-        = f.label :email_restrictions_enabled, class: 'form-check-label' do
-          = _('Enable email restrictions for sign ups')
-    .form-group
-      = f.label :email_restrictions, _('Email restrictions for sign-ups'), class: 'label-bold'
-      = f.text_area :email_restrictions, class: 'form-control gl-form-input', rows: 4
-      .form-text.text-muted
-      - supported_syntax_link_url = 'https://github.com/google/re2/wiki/Syntax'
-      - supported_syntax_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: supported_syntax_link_url }
-      = _('Restricts sign-ups for email addresses that match the given regex. See the %{supported_syntax_link_start}supported syntax%{supported_syntax_link_end} for more information.').html_safe % { supported_syntax_link_start: supported_syntax_link_start, supported_syntax_link_end: '</a>'.html_safe }
-
-    .form-group
-      = f.label :after_sign_up_text, class: 'label-bold'
-      = f.text_area :after_sign_up_text, class: 'form-control gl-form-input', rows: 4
-      .form-text.text-muted Markdown enabled
-  = f.submit 'Save changes', class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
+#js-signup-form{ data: { host: new_user_session_url(host: Gitlab.config.gitlab.host),
+  settings_path: general_admin_application_settings_path(anchor: 'js-signup-settings'),
+  signup_enabled: @application_setting[:signup_enabled].to_s,
+  require_admin_approval_after_user_signup: @application_setting[:require_admin_approval_after_user_signup].to_s,
+  send_user_confirmation_email: @application_setting[:send_user_confirmation_email].to_s,
+  minimum_password_length: @application_setting[:minimum_password_length],
+  minimum_password_length_min: ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH,
+  minimum_password_length_max: Devise.password_length.max,
+  minimum_password_length_help_link: 'https://about.gitlab.com/handbook/security/#gitlab-password-policy-guidelines',
+  domain_allowlist_raw: @application_setting.domain_allowlist_raw,
+  new_user_signups_cap: @application_setting[:new_user_signups_cap].to_s,
+  domain_denylist_enabled: @application_setting[:domain_denylist_enabled].to_s,
+  denylist_type_raw_selected: (@application_setting.domain_denylist.present? || @application_setting.domain_denylist.blank?).to_s,
+  domain_denylist_raw: @application_setting.domain_denylist_raw,
+  email_restrictions_enabled: @application_setting[:email_restrictions_enabled].to_s,
+  supported_syntax_link_url: 'https://github.com/google/re2/wiki/Syntax',
+  email_restrictions: @application_setting.email_restrictions,
+  after_sign_up_text: @application_setting[:after_sign_up_text] } }

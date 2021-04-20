@@ -16,7 +16,7 @@ module IdeHelper
       'branch-name' => @branch,
       'file-path' => @path,
       'merge-request' => @merge_request,
-      'forked-project' => convert_to_project_entity_json(@forked_project),
+      'fork-info' => @fork_info&.to_json,
       'project' => convert_to_project_entity_json(@project)
     }
   end

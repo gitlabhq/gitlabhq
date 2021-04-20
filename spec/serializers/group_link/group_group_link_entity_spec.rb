@@ -6,6 +6,7 @@ RSpec.describe GroupLink::GroupGroupLinkEntity do
   include_context 'group_group_link'
 
   let_it_be(:current_user) { create(:user) }
+
   let(:entity) { described_class.new(group_group_link) }
 
   before do

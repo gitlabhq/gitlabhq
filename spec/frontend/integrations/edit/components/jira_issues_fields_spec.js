@@ -1,7 +1,7 @@
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
+import JiraUpgradeCta from '~/integrations/edit/components/jira_upgrade_cta.vue';
 import eventHub from '~/integrations/edit/event_hub';
 
 describe('JiraIssuesFields', () => {
@@ -28,21 +28,44 @@ describe('JiraIssuesFields', () => {
     }
   });
 
-  const findEnableCheckbox = () => wrapper.find(GlFormCheckbox);
-  const findProjectKey = () => wrapper.find(GlFormInput);
-  const expectedBannerText = 'This is a Premium feature';
+  const findEnableCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findProjectKey = () => wrapper.findComponent(GlFormInput);
+  const findJiraUpgradeCta = () => wrapper.findComponent(JiraUpgradeCta);
   const findJiraForVulnerabilities = () => wrapper.find('[data-testid="jira-for-vulnerabilities"]');
   const setEnableCheckbox = async (isEnabled = true) =>
     findEnableCheckbox().vm.$emit('input', isEnabled);
+
+  describe('jira issues call to action', () => {
+    it('shows the premium message', () => {
+      createComponent({
+        props: { showJiraIssuesIntegration: false },
+      });
+
+      expect(findJiraUpgradeCta().props()).toMatchObject({
+        showPremiumMessage: true,
+        showUltimateMessage: false,
+      });
+    });
+
+    it('shows the ultimate message', () => {
+      createComponent({
+        props: {
+          showJiraIssuesIntegration: true,
+          showJiraVulnerabilitiesIntegration: false,
+        },
+      });
+
+      expect(findJiraUpgradeCta().props()).toMatchObject({
+        showPremiumMessage: false,
+        showUltimateMessage: true,
+      });
+    });
+  });
 
   describe('template', () => {
     describe('upgrade banner for non-Premium user', () => {
       beforeEach(() => {
         createComponent({ props: { initialProjectKey: '', showJiraIssuesIntegration: false } });
-      });
-
-      it('shows upgrade banner', () => {
-        expect(wrapper.text()).toContain(expectedBannerText);
       });
 
       it('does not show checkbox and input field', () => {
@@ -57,7 +80,7 @@ describe('JiraIssuesFields', () => {
       });
 
       it('does not show upgrade banner', () => {
-        expect(wrapper.text()).not.toContain(expectedBannerText);
+        expect(findJiraUpgradeCta().exists()).toBe(false);
       });
 
       // As per https://vuejs.org/v2/guide/forms.html#Checkbox-1,
@@ -124,6 +147,14 @@ describe('JiraIssuesFields', () => {
           expect(findJiraForVulnerabilities().exists()).toBe(hasJiraIssuesEnabled);
         },
       );
+
+      it('passes down the correct show-full-feature property', async () => {
+        await setEnableCheckbox(true);
+        expect(findJiraForVulnerabilities().attributes('show-full-feature')).toBe('true');
+        wrapper.setProps({ showJiraVulnerabilitiesIntegration: false });
+        await wrapper.vm.$nextTick();
+        expect(findJiraForVulnerabilities().attributes('show-full-feature')).toBeUndefined();
+      });
 
       it('passes down the correct initial-issue-type-id value when value is empty', async () => {
         await setEnableCheckbox(true);

@@ -16,46 +16,28 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js do
 
     let(:build) { create(:ci_build, pipeline: pipeline, status: :running) }
 
-    shared_examples 'shows ci icon and mini pipeline' do
-      before do
-        build.run
-        visit project_commit_path(project, project.commit.id)
-      end
+    before do
+      build.run
+      visit project_commit_path(project, project.commit.id)
+    end
 
-      it 'display icon with status' do
+    it 'display icon with status' do
+      expect(page).to have_selector('.ci-status-icon-running')
+    end
+
+    it 'displays a mini pipeline graph' do
+      expect(page).to have_selector('[data-testid="pipeline-mini-graph"]')
+
+      first('.mini-pipeline-graph-dropdown-toggle').click
+
+      wait_for_requests
+
+      page.within '.js-builds-dropdown-list' do
         expect(page).to have_selector('.ci-status-icon-running')
+        expect(page).to have_content(build.stage)
       end
 
-      it 'displays a mini pipeline graph' do
-        expect(page).to have_selector('.mr-widget-pipeline-graph')
-
-        first('.mini-pipeline-graph-dropdown-toggle').click
-
-        wait_for_requests
-
-        page.within '.js-builds-dropdown-list' do
-          expect(page).to have_selector('.ci-status-icon-running')
-          expect(page).to have_content(build.stage)
-        end
-
-        build.drop
-      end
-    end
-
-    context 'when ci_commit_pipeline_mini_graph_vue is disabled' do
-      before do
-        stub_feature_flags(ci_commit_pipeline_mini_graph_vue: false)
-      end
-
-      it_behaves_like 'shows ci icon and mini pipeline'
-    end
-
-    context 'when ci_commit_pipeline_mini_graph_vue is enabled' do
-      before do
-        stub_feature_flags(ci_commit_pipeline_mini_graph_vue: true)
-      end
-
-      it_behaves_like 'shows ci icon and mini pipeline'
+      build.drop
     end
   end
 
@@ -65,7 +47,7 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js do
     end
 
     it 'does not display a mini pipeline graph' do
-      expect(page).not_to have_selector('.mr-widget-pipeline-graph')
+      expect(page).not_to have_selector('[data-testid="pipeline-mini-graph"]')
     end
   end
 end

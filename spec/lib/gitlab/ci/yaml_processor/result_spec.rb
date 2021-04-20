@@ -24,7 +24,7 @@ module Gitlab
 
           let(:included_yml) do
             YAML.dump(
-              another_test: { stage: 'test', script: 'echo 2' }
+              { another_test: { stage: 'test', script: 'echo 2' } }.deep_stringify_keys
             )
           end
 

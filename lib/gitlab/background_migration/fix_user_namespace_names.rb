@@ -14,7 +14,7 @@ module Gitlab
 
       def fix_namespace_names(from_id, to_id)
         ActiveRecord::Base.connection.execute <<~UPDATE_NAMESPACES
-          WITH namespaces_to_update AS (
+          WITH namespaces_to_update AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
               SELECT
                   namespaces.id,
                   users.name AS correct_name
@@ -39,7 +39,7 @@ module Gitlab
 
       def fix_namespace_route_names(from_id, to_id)
         ActiveRecord::Base.connection.execute <<~ROUTES_UPDATE
-          WITH routes_to_update AS (
+          WITH routes_to_update AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
               SELECT
                   routes.id,
                   users.name AS correct_name

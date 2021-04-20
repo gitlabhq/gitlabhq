@@ -33,6 +33,7 @@ export default {
       endpointMetadata,
       endpointBatch,
       endpointCoverage,
+      endpointUpdateUser,
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
@@ -45,6 +46,7 @@ export default {
       endpointMetadata,
       endpointBatch,
       endpointCoverage,
+      endpointUpdateUser,
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
@@ -77,15 +79,10 @@ export default {
   },
 
   [types.SET_DIFF_DATA_BATCH](state, data) {
-    const files = prepareDiffData({
+    state.diffFiles = prepareDiffData({
       diff: data,
       priorFiles: state.diffFiles,
     });
-
-    Object.assign(state, {
-      ...convertObjectPropsToCamelCase(data),
-    });
-    updateDiffFilesInState(state, files);
   },
 
   [types.SET_COVERAGE_DATA](state, coverageFiles) {

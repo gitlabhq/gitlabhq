@@ -3,12 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe API::DeployKeys do
-  let(:user)        { create(:user) }
-  let(:maintainer)  { create(:user) }
-  let(:admin)       { create(:admin) }
-  let(:project)     { create(:project, creator_id: user.id) }
-  let(:project2)    { create(:project, creator_id: user.id) }
-  let(:deploy_key)  { create(:deploy_key, public: true) }
+  let_it_be(:user)        { create(:user) }
+  let_it_be(:maintainer)  { create(:user) }
+  let_it_be(:admin)       { create(:admin) }
+  let_it_be(:project)     { create(:project, creator_id: user.id) }
+  let_it_be(:project2)    { create(:project, creator_id: user.id) }
+
+  let(:deploy_key) { create(:deploy_key, public: true) }
 
   let!(:deploy_keys_project) do
     create(:deploy_keys_project, project: project, deploy_key: deploy_key)
@@ -44,17 +45,29 @@ RSpec.describe API::DeployKeys do
   end
 
   describe 'GET /projects/:id/deploy_keys' do
-    before do
-      deploy_key
+    let(:deploy_key) { create(:deploy_key, public: true, user: admin) }
+
+    def perform_request
+      get api("/projects/#{project.id}/deploy_keys", admin)
     end
 
     it 'returns array of ssh keys' do
-      get api("/projects/#{project.id}/deploy_keys", admin)
+      perform_request
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(deploy_key.title)
+    end
+
+    it 'returns multiple deploy keys without N + 1' do
+      perform_request
+
+      control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+
+      create(:deploy_key, public: true, projects: [project], user: maintainer)
+
+      expect { perform_request }.not_to exceed_query_limit(control_count)
     end
   end
 

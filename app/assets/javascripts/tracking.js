@@ -27,22 +27,33 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
   pageUnloadTimer: 10,
 };
 
+const addExperimentContext = (opts) => {
+  const { experiment, ...options } = opts;
+  if (experiment) {
+    const data = getExperimentData(experiment);
+    if (data) {
+      const context = { schema: TRACKING_CONTEXT_SCHEMA, data };
+      return { ...options, context };
+    }
+  }
+  return options;
+};
+
 const createEventPayload = (el, { suffix = '' } = {}) => {
-  const action = el.dataset.trackEvent + (suffix || '');
+  const action = (el.dataset.trackAction || el.dataset.trackEvent) + (suffix || '');
   let value = el.dataset.trackValue || el.value || undefined;
   if (el.type === 'checkbox' && !el.checked) value = false;
 
-  let context = el.dataset.trackContext;
-  if (el.dataset.trackExperiment) {
-    const data = getExperimentData(el.dataset.trackExperiment);
-    if (data) context = { schema: TRACKING_CONTEXT_SCHEMA, data };
-  }
+  const context = addExperimentContext({
+    experiment: el.dataset.trackExperiment,
+    context: el.dataset.trackContext,
+  });
 
   const data = {
     label: el.dataset.trackLabel,
     property: el.dataset.trackProperty,
     value,
-    context,
+    ...context,
   };
 
   return {
@@ -52,7 +63,7 @@ const createEventPayload = (el, { suffix = '' } = {}) => {
 };
 
 const eventHandler = (e, func, opts = {}) => {
-  const el = e.target.closest('[data-track-event]');
+  const el = e.target.closest('[data-track-event], [data-track-action]');
 
   if (!el) return;
 
@@ -130,7 +141,9 @@ export default class Tracking {
   static trackLoadEvents(category = document.body.dataset.page, parent = document) {
     if (!this.enabled()) return [];
 
-    const loadEvents = parent.querySelectorAll('[data-track-event="render"]');
+    const loadEvents = parent.querySelectorAll(
+      '[data-track-action="render"], [data-track-event="render"]',
+    );
 
     loadEvents.forEach((element) => {
       const { action, data } = createEventPayload(element);
@@ -148,7 +161,8 @@ export default class Tracking {
           return localCategory || opts.category;
         },
         trackingOptions() {
-          return { ...opts, ...this.tracking };
+          const options = addExperimentContext(opts);
+          return { ...options, ...this.tracking };
         },
       },
       methods: {

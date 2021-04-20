@@ -11,6 +11,10 @@ module Gitlab
           def perform!
             raise ArgumentError, 'missing YAML processor result' unless @command.yaml_processor_result
 
+            if ::Feature.enabled?(:ci_workflow_rules_variables, pipeline.project, default_enabled: :yaml)
+              raise ArgumentError, 'missing workflow rules result' unless @command.workflow_rules_result
+            end
+
             # Allocate next IID. This operation must be outside of transactions of pipeline creations.
             pipeline.ensure_project_iid!
             pipeline.ensure_ci_ref!
@@ -38,7 +42,21 @@ module Gitlab
           def pipeline_seed
             strong_memoize(:pipeline_seed) do
               stages_attributes = @command.yaml_processor_result.stages_attributes
-              Gitlab::Ci::Pipeline::Seed::Pipeline.new(pipeline, stages_attributes)
+              Gitlab::Ci::Pipeline::Seed::Pipeline.new(context, stages_attributes)
+            end
+          end
+
+          def context
+            Gitlab::Ci::Pipeline::Seed::Context.new(pipeline, root_variables: root_variables)
+          end
+
+          def root_variables
+            if ::Feature.enabled?(:ci_workflow_rules_variables, pipeline.project, default_enabled: :yaml)
+              ::Gitlab::Ci::Variables::Helpers.merge_variables(
+                @command.yaml_processor_result.root_variables, @command.workflow_rules_result.variables
+              )
+            else
+              @command.yaml_processor_result.root_variables
             end
           end
         end

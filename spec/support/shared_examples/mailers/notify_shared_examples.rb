@@ -225,7 +225,7 @@ RSpec.shared_examples 'a note email' do
     sender = subject.header[:from].addrs[0]
 
     aggregate_failures do
-      expect(sender.display_name).to eq(note_author.name)
+      expect(sender.display_name).to eq("#{note_author.name} (@#{note_author.username})")
       expect(sender.address).to eq(gitlab_sender)
       expect(subject).to deliver_to(recipient.notification_email)
     end

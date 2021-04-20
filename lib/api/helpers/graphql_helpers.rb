@@ -6,8 +6,8 @@ module API
     # against the graphql API. Helper code for the graphql server implementation
     # should be in app/graphql/ or lib/gitlab/graphql/
     module GraphqlHelpers
-      def run_graphql!(query:, context: {}, transform: nil)
-        result = GitlabSchema.execute(query, context: context)
+      def run_graphql!(query:, context: {}, variables: nil, transform: nil)
+        result = GitlabSchema.execute(query, variables: variables, context: context)
 
         if transform
           transform.call(result)

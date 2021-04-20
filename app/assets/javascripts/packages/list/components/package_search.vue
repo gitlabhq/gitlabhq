@@ -2,7 +2,8 @@
 import { mapState, mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
-import getTableHeaders from '../utils';
+import UrlSync from '~/vue_shared/components/url_sync.vue';
+import { sortableFields } from '../utils';
 import PackageTypeToken from './tokens/package_type_token.vue';
 
 export default {
@@ -16,7 +17,7 @@ export default {
       operators: [{ value: '=', description: __('is'), default: 'true' }],
     },
   ],
-  components: { RegistrySearch },
+  components: { RegistrySearch, UrlSync },
   computed: {
     ...mapState({
       isGroupPage: (state) => state.config.isGroupPage,
@@ -24,7 +25,7 @@ export default {
       filter: (state) => state.filter,
     }),
     sortableFields() {
-      return getTableHeaders(this.isGroupPage);
+      return sortableFields(this.isGroupPage);
     },
   },
   methods: {
@@ -38,13 +39,18 @@ export default {
 </script>
 
 <template>
-  <registry-search
-    :filter="filter"
-    :sorting="sorting"
-    :tokens="$options.tokens"
-    :sortable-fields="sortableFields"
-    @sorting:changed="updateSorting"
-    @filter:changed="setFilter"
-    @filter:submit="$emit('update')"
-  />
+  <url-sync>
+    <template #default="{ updateQuery }">
+      <registry-search
+        :filter="filter"
+        :sorting="sorting"
+        :tokens="$options.tokens"
+        :sortable-fields="sortableFields"
+        @sorting:changed="updateSorting"
+        @filter:changed="setFilter"
+        @filter:submit="$emit('update')"
+        @query:changed="updateQuery"
+      />
+    </template>
+  </url-sync>
 </template>

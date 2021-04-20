@@ -100,7 +100,7 @@ RSpec.shared_examples 'job token for package GET requests' do
   end
 end
 
-RSpec.shared_examples 'job token for package uploads' do
+RSpec.shared_examples 'job token for package uploads' do |authorize_endpoint: false|
   context 'with job token headers' do
     let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token).merge(workhorse_headers) }
 
@@ -111,6 +111,17 @@ RSpec.shared_examples 'job token for package uploads' do
 
     context 'valid token' do
       it_behaves_like 'returning response status', :success
+
+      unless authorize_endpoint
+        it 'creates a package with build info' do
+          expect { subject }.to change { Packages::Package.count }.by(1)
+
+          pkg = ::Packages::Package.order_created
+                                   .last
+
+          expect(pkg.build_infos).to be
+        end
+      end
     end
 
     context 'invalid token' do

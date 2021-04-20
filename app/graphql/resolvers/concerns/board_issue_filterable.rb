@@ -7,10 +7,10 @@ module BoardIssueFilterable
 
   def issue_filters(args)
     filters = args.to_h
+
     set_filter_values(filters)
 
     if filters[:not]
-      filters[:not] = filters[:not].to_h
       set_filter_values(filters[:not])
     end
 
@@ -18,6 +18,17 @@ module BoardIssueFilterable
   end
 
   def set_filter_values(filters)
+    filter_by_assignee(filters)
+  end
+
+  def filter_by_assignee(filters)
+    if filters[:assignee_username] && filters[:assignee_wildcard_id]
+      raise ::Gitlab::Graphql::Errors::ArgumentError, 'Incompatible arguments: assigneeUsername, assigneeWildcardId.'
+    end
+
+    if filters[:assignee_wildcard_id]
+      filters[:assignee_id] = filters.delete(:assignee_wildcard_id)
+    end
   end
 end
 

@@ -15,9 +15,11 @@ This document now describes the new Vulnerabilities API that provides access to
 [Vulnerabilities](https://gitlab.com/groups/gitlab-org/-/epics/634).
 
 WARNING:
-This API is in an alpha stage and considered unstable.
+This API is in the process of being deprecated and considered unstable.
 The response payload may be subject to change or breakage
-across GitLab releases.
+across GitLab releases. Please use the
+[GraphQL API](graphql/reference/index.md#vulnerabilities)
+instead.
 
 Every API call to vulnerabilities must be [authenticated](README.md#authentication).
 

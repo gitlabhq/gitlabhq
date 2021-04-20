@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Health
+group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -25,5 +25,5 @@ Explore our features to monitor your GitLab instance:
 - [`nginx_status`](https://docs.gitlab.com/omnibus/settings/nginx.html#enablingdisabling-nginx_status):
   Monitor your NGINX server status.
 - [Auto Monitoring](../../topics/autodevops/stages.md#auto-monitoring): Automated
-  monitoring for your application’s server and response metrics, provided by
+  monitoring for your application's server and response metrics, provided by
   [Auto DevOps](../../topics/autodevops/index.md).

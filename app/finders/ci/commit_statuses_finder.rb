@@ -21,9 +21,9 @@ module Ci
 
     def latest_commits
       strong_memoize(:latest_commits) do
-        refs.map do |ref|
+        refs.to_h do |ref|
           [ref.name, @repository.commit(ref.dereferenced_target).sha]
-        end.to_h
+        end
       end
     end
 

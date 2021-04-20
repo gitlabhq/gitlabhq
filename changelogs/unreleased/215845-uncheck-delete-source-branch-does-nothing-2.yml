@@ -1,0 +1,5 @@
+---
+title: Fix delete source branch status message
+merge_request: 58605
+author:
+type: fixed

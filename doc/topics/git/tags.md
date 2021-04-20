@@ -28,7 +28,7 @@ git checkout master
 git tag my_lightweight_tag
 
 # Annotated tag
-git tag -a v1.0 -m ‘Version 1.0’
+git tag -a v1.0 -m 'Version 1.0'
 
 # Show list of the existing tags
 git tag

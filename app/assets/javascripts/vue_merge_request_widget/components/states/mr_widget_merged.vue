@@ -130,6 +130,7 @@ export default {
           size="small"
           category="secondary"
           variant="warning"
+          data-qa-selector="revert_button"
           @click="openRevertModal"
         >
           {{ revertLabel }}
@@ -151,6 +152,7 @@ export default {
           v-gl-tooltip.hover
           :title="cherryPickTitle"
           size="small"
+          data-qa-selector="cherry_pick_button"
           @click="openCherryPickModal"
         >
           {{ cherryPickLabel }}

@@ -19,10 +19,6 @@ export default {
     projectId: {
       default: '',
     },
-    // TODO remove this limitation in https://gitlab.com/gitlab-org/gitlab/-/issues/296717
-    isThreatMonitoringPage: {
-      default: false,
-    },
   },
   props: {
     alert: {
@@ -66,7 +62,6 @@ export default {
         @alert-error="$emit('alert-error', $event)"
       />
       <sidebar-status
-        v-if="!isThreatMonitoringPage"
         :project-path="projectPath"
         :alert="alert"
         @toggle-sidebar="$emit('toggle-sidebar')"

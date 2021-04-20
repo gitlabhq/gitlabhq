@@ -1,0 +1,5 @@
+---
+title: Fix style for adding a related issue in free tiers
+merge_request: 58893
+author: Michael Telgkamp @michael.telgkamp
+type: fixed

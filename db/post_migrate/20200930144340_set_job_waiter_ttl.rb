@@ -3,7 +3,7 @@
 class SetJobWaiterTtl < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
-  SCRIPT = <<~LUA.freeze
+  SCRIPT = <<~LUA
     if redis.call("ttl", KEYS[1]) < 0 then
       redis.call("expire", KEYS[1], 21600)
     end

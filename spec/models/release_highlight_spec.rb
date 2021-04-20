@@ -13,26 +13,6 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
     ReleaseHighlight.instance_variable_set(:@file_paths, nil)
   end
 
-  describe '.for_version' do
-    subject { ReleaseHighlight.for_version(version: version) }
-
-    let(:version) { '1.1' }
-
-    context 'with version param that exists' do
-      it 'returns items from that version' do
-        expect(subject.items.first['title']).to eq("It's gonna be a bright")
-      end
-    end
-
-    context 'with version param that does NOT exist' do
-      let(:version) { '84.0' }
-
-      it 'returns nil' do
-        expect(subject).to be_nil
-      end
-    end
-  end
-
   describe '.paginated' do
     let(:dot_com) { false }
 
@@ -143,28 +123,27 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
     end
   end
 
-  describe '.versions' do
-    subject { described_class.versions }
+  describe '.most_recent_version_digest' do
+    subject { ReleaseHighlight.most_recent_version_digest }
 
     it 'uses process memory cache' do
-      expect(Gitlab::ProcessMemoryCache.cache_backend).to receive(:fetch).with("release_highlight:versions:#{Gitlab.revision}", { expires_in: described_class::CACHE_DURATION })
+      expect(Gitlab::ProcessMemoryCache.cache_backend).to receive(:fetch).with("release_highlight:most_recent_version_digest:#{Gitlab.revision}", expires_in: described_class::CACHE_DURATION)
 
       subject
     end
 
-    it 'returns versions from the file paths' do
-      expect(subject).to eq(['1.5', '1.2', '1.1'])
+    context 'when recent release items exist' do
+      it 'returns a digest from the release of the first item of the most recent file' do
+        # this value is coming from fixture data
+        expect(subject).to eq(Digest::SHA256.hexdigest('01.05'))
+      end
     end
 
-    context 'when there are more than 12 versions' do
-      let(:file_paths) do
-        i = 0
-        Array.new(20) { "20201225_01_#{i += 1}.yml" }
-      end
+    context 'when recent release items do NOT exist' do
+      it 'returns nil' do
+        allow(ReleaseHighlight).to receive(:paginated).and_return(nil)
 
-      it 'limits to 12 versions' do
-        allow(ReleaseHighlight).to receive(:file_paths).and_return(file_paths)
-        expect(subject.count).to eq(12)
+        expect(subject).to be_nil
       end
     end
   end

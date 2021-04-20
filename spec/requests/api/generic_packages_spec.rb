@@ -16,6 +16,7 @@ RSpec.describe API::GenericPackages do
   let_it_be(:project_deploy_token_ro) { create(:project_deploy_token, deploy_token: deploy_token_ro, project: project) }
   let_it_be(:deploy_token_wo) { create(:deploy_token, read_package_registry: false, write_package_registry: true) }
   let_it_be(:project_deploy_token_wo) { create(:project_deploy_token, deploy_token: deploy_token_wo, project: project) }
+
   let(:user) { personal_access_token.user }
   let(:ci_build) { create(:ci_build, :running, user: user) }
 
@@ -326,6 +327,34 @@ RSpec.describe API::GenericPackages do
               end
             end
           end
+
+          context 'different versions' do
+            where(:version, :expected_status) do
+              '1.3.350-20201230123456'                   | :created
+              '1.2.3'                                    | :created
+              '1.2.3g'                                   | :created
+              '1.2'                                      | :created
+              '1.2.bananas'                              | :created
+              'v1.2.4-build'                             | :created
+              'd50d836eb3de6177ce6c7a5482f27f9c2c84b672' | :created
+              '..1.2.3'                                  | :bad_request
+              '1.2.3-4/../../'                           | :bad_request
+              '%2e%2e%2f1.2.3'                           | :bad_request
+            end
+
+            with_them do
+              let(:expected_package_diff_count) { expected_status == :created ? 1 : 0 }
+              let(:headers) { workhorse_headers.merge(auth_header) }
+
+              subject { upload_file(params, headers, package_version: version) }
+
+              it "returns the #{params[:expected_status]}", :aggregate_failures do
+                expect { subject }.to change { project.packages.generic.count }.by(expected_package_diff_count)
+
+                expect(response).to have_gitlab_http_status(expected_status)
+              end
+            end
+          end
         end
       end
 
@@ -418,8 +447,8 @@ RSpec.describe API::GenericPackages do
       end
     end
 
-    def upload_file(params, request_headers, send_rewritten_field: true, package_name: 'mypackage', file_name: 'myfile.tar.gz')
-      url = "/projects/#{project.id}/packages/generic/#{package_name}/0.0.1/#{file_name}"
+    def upload_file(params, request_headers, send_rewritten_field: true, package_name: 'mypackage', package_version: '0.0.1', file_name: 'myfile.tar.gz')
+      url = "/projects/#{project.id}/packages/generic/#{package_name}/#{package_version}/#{file_name}"
 
       workhorse_finalize(
         api(url),

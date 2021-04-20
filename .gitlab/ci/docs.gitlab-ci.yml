@@ -10,17 +10,18 @@
     # because some repos are private and CI_JOB_TOKEN cannot access files.
     # See https://gitlab.com/gitlab-org/gitlab/issues/191273
     GIT_DEPTH: 1
+    # By default, deploy the Review App using the `master` branch of the `gitlab-org/gitlab-docs` project
+    DOCS_BRANCH: master
   environment:
-    name: review-docs/$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID
+    name: review-docs/mr-${CI_MERGE_REQUEST_IID}
     # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
     # Discussion: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14236/diffs#note_40140693
     auto_stop_in: 2 weeks
-    url: http://docs-preview-$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
+    url: http://${DOCS_BRANCH}-${DOCS_GITLAB_REPO_SUFFIX}-${CI_MERGE_REQUEST_IID}.${DOCS_REVIEW_APPS_DOMAIN}/${DOCS_GITLAB_REPO_SUFFIX}
     on_stop: review-docs-cleanup
   before_script:
-    - apk add --update openssl
-    - gem install httparty --no-document --version 0.17.3
-    - gem install gitlab --no-document --version 4.13.0
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
 
 # Always trigger a docs build in gitlab-docs only on docs-only branches.
 # Useful to preview the docs changes live.
@@ -33,7 +34,7 @@ review-docs-deploy:
 review-docs-cleanup:
   extends: .review-docs
   environment:
-    name: review-docs/$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID
+    name: review-docs/mr-${CI_MERGE_REQUEST_IID}
     action: stop
   script:
     - ./scripts/trigger-build docs cleanup
@@ -64,10 +65,8 @@ docs-lint links:
     - cd /tmp/gitlab-docs
     # Build HTML from Markdown
     - bundle exec nanoc
-    # Check the internal links
-    - bundle exec nanoc check internal_links
-    # Check the internal anchor links
-    - bundle exec nanoc check internal_anchors
+    # Check the internal links and anchors (in parallel)
+    - "parallel time bundle exec nanoc check ::: internal_links internal_anchors"
 
 ui-docs-links lint:
   extends:

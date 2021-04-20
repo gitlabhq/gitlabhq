@@ -214,7 +214,7 @@ RSpec.describe API::Environments do
     context 'as a maintainer' do
       context 'with a stoppable environment' do
         before do
-          environment.update(state: :available)
+          environment.update!(state: :available)
 
           post api("/projects/#{project.id}/environments/#{environment.id}/stop", user)
         end

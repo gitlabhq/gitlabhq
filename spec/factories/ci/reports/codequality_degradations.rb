@@ -95,4 +95,47 @@ FactoryBot.define do
       }.with_indifferent_access
     end
   end
+
+  # TODO: Use this in all other specs and remove the previous numbered factories
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/325886
+  factory :codequality_degradation, class: Hash do
+    skip_create
+
+    # Feel free to add in more configurable properties here
+    # as the need arises
+    fingerprint { SecureRandom.hex }
+    severity { "major" }
+
+    Gitlab::Ci::Reports::CodequalityReports::SEVERITY_PRIORITIES.keys.each do |s|
+      trait s.to_sym do
+        severity { s }
+      end
+    end
+
+    initialize_with do
+      {
+        "categories": [
+          "Complexity"
+        ],
+        "check_name": "argument_count",
+        "content": {
+          "body": ""
+        },
+        "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
+        "fingerprint": fingerprint,
+        "location": {
+          "path": "file_a.rb",
+          "lines": {
+            "begin": 10,
+            "end": 10
+          }
+        },
+        "other_locations": [],
+        "remediation_points": 900000,
+        "severity": severity,
+        "type": "issue",
+        "engine_name": "structure"
+      }.with_indifferent_access
+    end
+  end
 end

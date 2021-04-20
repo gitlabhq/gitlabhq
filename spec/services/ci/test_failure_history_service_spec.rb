@@ -11,15 +11,15 @@ RSpec.describe Ci::TestFailureHistoryService, :aggregate_failures do
 
     context 'when pipeline has failed builds with test reports' do
       before do
-        # The test report has 2 test case failures
+        # The test report has 2 unit test failures
         create(:ci_build, :failed, :test_reports, pipeline: pipeline, project: project)
       end
 
-      it 'creates test case failures records' do
+      it 'creates unit test failures records' do
         execute_service
 
-        expect(Ci::TestCase.count).to eq(2)
-        expect(Ci::TestCaseFailure.count).to eq(2)
+        expect(Ci::UnitTest.count).to eq(2)
+        expect(Ci::UnitTestFailure.count).to eq(2)
       end
 
       context 'when pipeline is not for the default branch' do
@@ -30,8 +30,8 @@ RSpec.describe Ci::TestFailureHistoryService, :aggregate_failures do
         it 'does not persist data' do
           execute_service
 
-          expect(Ci::TestCase.count).to eq(0)
-          expect(Ci::TestCaseFailure.count).to eq(0)
+          expect(Ci::UnitTest.count).to eq(0)
+          expect(Ci::UnitTestFailure.count).to eq(0)
         end
       end
 
@@ -43,12 +43,12 @@ RSpec.describe Ci::TestFailureHistoryService, :aggregate_failures do
         it 'does not fail but does not persist new data' do
           expect { described_class.new(pipeline).execute }.not_to raise_error
 
-          expect(Ci::TestCase.count).to eq(2)
-          expect(Ci::TestCaseFailure.count).to eq(2)
+          expect(Ci::UnitTest.count).to eq(2)
+          expect(Ci::UnitTestFailure.count).to eq(2)
         end
       end
 
-      context 'when number of failed test cases exceed the limit' do
+      context 'when number of failed unit tests exceed the limit' do
         before do
           stub_const("#{described_class.name}::MAX_TRACKABLE_FAILURES", 1)
         end
@@ -56,16 +56,16 @@ RSpec.describe Ci::TestFailureHistoryService, :aggregate_failures do
         it 'does not persist data' do
           execute_service
 
-          expect(Ci::TestCase.count).to eq(0)
-          expect(Ci::TestCaseFailure.count).to eq(0)
+          expect(Ci::UnitTest.count).to eq(0)
+          expect(Ci::UnitTestFailure.count).to eq(0)
         end
       end
 
-      context 'when number of failed test cases across multiple builds exceed the limit' do
+      context 'when number of failed unit tests across multiple builds exceed the limit' do
         before do
           stub_const("#{described_class.name}::MAX_TRACKABLE_FAILURES", 2)
 
-          # This other test report has 1 unique test case failure which brings us to 3 total failures across all builds
+          # This other test report has 1 unique unit test failure which brings us to 3 total failures across all builds
           # thus exceeding the limit of 2 for MAX_TRACKABLE_FAILURES
           create(:ci_build, :failed, :test_reports_with_duplicate_failed_test_names, pipeline: pipeline, project: project)
         end
@@ -73,23 +73,23 @@ RSpec.describe Ci::TestFailureHistoryService, :aggregate_failures do
         it 'does not persist data' do
           execute_service
 
-          expect(Ci::TestCase.count).to eq(0)
-          expect(Ci::TestCaseFailure.count).to eq(0)
+          expect(Ci::UnitTest.count).to eq(0)
+          expect(Ci::UnitTestFailure.count).to eq(0)
         end
       end
     end
 
-    context 'when test failure data have duplicates within the same payload (happens when the JUnit report has duplicate test case names but have different failures)' do
+    context 'when test failure data have duplicates within the same payload (happens when the JUnit report has duplicate unit test names but have different failures)' do
       before do
-        # The test report has 2 test case failures but with the same test case keys
+        # The test report has 2 unit test failures but with the same unit test keys
         create(:ci_build, :failed, :test_reports_with_duplicate_failed_test_names, pipeline: pipeline, project: project)
       end
 
       it 'does not fail but does not persist duplicate data' do
         expect { execute_service }.not_to raise_error
 
-        expect(Ci::TestCase.count).to eq(1)
-        expect(Ci::TestCaseFailure.count).to eq(1)
+        expect(Ci::UnitTest.count).to eq(1)
+        expect(Ci::UnitTestFailure.count).to eq(1)
       end
     end
 
@@ -102,8 +102,8 @@ RSpec.describe Ci::TestFailureHistoryService, :aggregate_failures do
       it 'does not persist data' do
         execute_service
 
-        expect(Ci::TestCase.count).to eq(0)
-        expect(Ci::TestCaseFailure.count).to eq(0)
+        expect(Ci::UnitTest.count).to eq(0)
+        expect(Ci::UnitTestFailure.count).to eq(0)
       end
     end
   end

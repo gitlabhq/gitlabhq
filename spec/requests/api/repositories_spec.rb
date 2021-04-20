@@ -6,6 +6,7 @@ require 'mime/types'
 RSpec.describe API::Repositories do
   include RepoHelpers
   include WorkhorseHelpers
+  include ProjectForksHelper
 
   let(:user) { create(:user) }
   let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
@@ -386,6 +387,28 @@ RSpec.describe API::Repositories do
 
       it "compares commits in reverse order" do
         get api(route, current_user), params: { from: sample_commit.parent_id, to: sample_commit.id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['commits']).to be_present
+        expect(json_response['diffs']).to be_present
+      end
+
+      it "compare commits between different projects with non-forked relation" do
+        public_project = create(:project, :repository, :public)
+
+        get api(route, current_user), params: { from: sample_commit.parent_id, to: sample_commit.id, from_project_id: public_project.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it "compare commits between different projects" do
+        group = create(:group)
+        group.add_owner(current_user)
+
+        forked_project = fork_project(project, current_user, repository: true, namespace: group)
+        forked_project.repository.create_ref('refs/heads/improve/awesome', 'refs/heads/improve/more-awesome')
+
+        get api(route, current_user), params: { from: 'improve/awesome', to: 'feature', from_project_id: forked_project.id }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['commits']).to be_present

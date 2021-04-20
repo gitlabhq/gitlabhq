@@ -10,4 +10,5 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
   end
 
   it_behaves_like 'has nav sidebar'
+  it_behaves_like 'sidebar includes snowplow attributes', 'render', 'groups_side_navigation', 'groups_side_navigation'
 end

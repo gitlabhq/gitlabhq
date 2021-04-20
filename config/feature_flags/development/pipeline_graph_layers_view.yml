@@ -1,0 +1,8 @@
+---
+name: pipeline_graph_layers_view
+introduced_by_url:
+rollout_issue_url:
+milestone: '13.11'
+type: development
+group: group::pipeline authoring
+default_enabled: false

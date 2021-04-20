@@ -10,6 +10,7 @@ export default {
     GlSprintf,
     ModalCopyButton,
   },
+  inject: ['defaultBranchName'],
   props: {
     modalId: {
       type: String,
@@ -28,7 +29,11 @@ export default {
   modalInfo: {
     closeText: s__('EnableReviewApp|Close'),
     copyToClipboardText: s__('EnableReviewApp|Copy snippet text'),
-    copyString: `deploy_review:
+    title: s__('ReviewApp|Enable Review App'),
+  },
+  computed: {
+    modalInfoCopyStr() {
+      return `deploy_review:
   stage: deploy
   script:
     - echo "Deploy a review app"
@@ -38,8 +43,8 @@ export default {
   only:
     - branches
   except:
-    - master`,
-    title: s__('ReviewApp|Enable Review App'),
+    - ${this.defaultBranchName}`;
+    },
   },
 };
 </script>
@@ -75,7 +80,9 @@ export default {
         </gl-sprintf>
       </p>
       <div class="gl-display-flex align-items-start">
-        <pre class="gl-w-full"> {{ $options.modalInfo.copyString }} </pre>
+        <pre class="gl-w-full" data-testid="enable-review-app-copy-string">
+ {{ modalInfoCopyStr }} </pre
+        >
         <modal-copy-button
           :title="$options.modalInfo.copyToClipboardText"
           :text="$options.modalInfo.copyString"
@@ -90,7 +97,9 @@ export default {
           <strong>{{ content }}</strong>
         </template>
         <template #link="{ content }">
-          <gl-link href="blob/master/.gitlab-ci.yml" target="_blank">{{ content }}</gl-link>
+          <gl-link :href="`blob/${defaultBranchName}/.gitlab-ci.yml`" target="_blank">{{
+            content
+          }}</gl-link>
         </template>
       </gl-sprintf>
     </p>

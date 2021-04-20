@@ -3,7 +3,7 @@
 class Import::ManifestController < Import::BaseController
   extend ::Gitlab::Utils::Override
 
-  before_action :whitelist_query_limiting, only: [:create]
+  before_action :disable_query_limiting, only: [:create]
   before_action :verify_import_enabled
   before_action :ensure_import_vars, only: [:create, :status]
 
@@ -115,7 +115,7 @@ class Import::ManifestController < Import::BaseController
     render_404 unless manifest_import_enabled?
   end
 
-  def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/48939')
+  def disable_query_limiting
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/23147')
   end
 end

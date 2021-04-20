@@ -1,0 +1,5 @@
+---
+title: Add index on file_store for pages_deployments table
+merge_request: 58355
+author:
+type: performance

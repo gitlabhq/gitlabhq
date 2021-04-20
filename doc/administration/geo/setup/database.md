@@ -672,7 +672,7 @@ For each Patroni instance on the secondary site:
 ## Migrating from repmgr to Patroni
 
 1. Before migrating, it is recommended that there is no replication lag between the primary and secondary sites and that replication is paused. In GitLab 13.2 and later, you can pause and resume replication with `gitlab-ctl geo-replication-pause` and `gitlab-ctl geo-replication-resume` on a Geo secondary database node.
-1. Follow the [instructions to migrate repmgr to Patroni](../../postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni). When configuring Patroni on each primary site database node, add `patroni['replicaton_slots'] = { '<slot_name>' => 'physical' }`
+1. Follow the [instructions to migrate repmgr to Patroni](../../postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni). When configuring Patroni on each primary site database node, add `patroni['replication_slots'] = { '<slot_name>' => 'physical' }`
 to `gitlab.rb` where `<slot_name>` is the name of the replication slot for your Geo secondary. This will ensure that Patroni recognizes the replication slot as permanent and will not drop it upon restarting.
 1. If database replication to the secondary was paused before migration, resume replication once Patroni is confirmed working on the primary.
 

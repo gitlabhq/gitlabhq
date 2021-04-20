@@ -113,37 +113,9 @@ RSpec.describe SystemHooksService do
         expect(data[:old_path]).to eq('old-path')
       end
     end
-
-    context 'user_rename' do
-      it 'contains old and new username' do
-        allow(user).to receive(:username_before_last_save).and_return('old-username')
-
-        data = event_data(user, :rename)
-
-        expect(data).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username, :old_username)
-        expect(data[:username]).to eq(user.username)
-        expect(data[:old_username]).to eq(user.username_before_last_save)
-      end
-    end
-
-    context 'user_failed_login' do
-      it 'contains state of user' do
-        user.ldap_block!
-
-        data = event_data(user, :failed_login)
-
-        expect(data).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username, :state)
-        expect(data[:username]).to eq(user.username)
-        expect(data[:state]).to eq('ldap_blocked')
-      end
-    end
   end
 
   context 'event names' do
-    it { expect(event_name(user, :create)).to eq "user_create" }
-    it { expect(event_name(user, :destroy)).to eq "user_destroy" }
-    it { expect(event_name(user, :rename)).to eq 'user_rename' }
-    it { expect(event_name(user, :failed_login)).to eq 'user_failed_login' }
     it { expect(event_name(project, :create)).to eq "project_create" }
     it { expect(event_name(project, :destroy)).to eq "project_destroy" }
     it { expect(event_name(project, :rename)).to eq "project_rename" }

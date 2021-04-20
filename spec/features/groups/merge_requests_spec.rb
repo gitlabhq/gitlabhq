@@ -27,7 +27,7 @@ RSpec.describe 'Group merge requests page' do
     end
 
     it 'ignores archived merge request count badges in navbar' do
-      expect(first(:link, text: 'Merge Requests').find('.badge').text).to eq("1")
+      expect(first(:link, text: 'Merge requests').find('.badge').text).to eq("1")
     end
 
     it 'ignores archived merge request count badges in state-filters' do

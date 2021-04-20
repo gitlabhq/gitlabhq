@@ -180,10 +180,10 @@ module QA
         wait_for_reliable_connection
       end
 
-      def verify_storage_move(source_storage, destination_storage)
-        return if QA::Runtime::Env.dot_com?
+      def verify_storage_move(source_storage, destination_storage, repo_type: :project)
+        return if Specs::Helpers::ContextSelector.dot_com?
 
-        repo_path = verify_storage_move_from_gitaly(source_storage[:name])
+        repo_path = verify_storage_move_from_gitaly(source_storage[:name], repo_type: repo_type)
 
         destination_storage[:type] == :praefect ? verify_storage_move_to_praefect(repo_path, destination_storage[:name]) : verify_storage_move_to_gitaly(repo_path, destination_storage[:name])
       end
@@ -225,6 +225,10 @@ module QA
         )
       end
 
+      def health_check_failure_message?(msg)
+        ['error when pinging healthcheck', 'failed checking node health'].include?(msg)
+      end
+
       def wait_for_no_praefect_storage_error
         # If a healthcheck error was the last message to be logged, we'll keep seeing that message even if it's no longer a problem
         # That is, there's no message shown in the Praefect logs when the healthcheck succeeds
@@ -241,7 +245,7 @@ module QA
             QA::Runtime::Logger.debug(line.chomp)
             log = JSON.parse(line)
 
-            break true if log['msg'] != 'error when pinging healthcheck'
+            break true unless health_check_failure_message?(log['msg'])
           rescue JSON::ParserError
             # Ignore lines that can't be parsed as JSON
           end
@@ -302,7 +306,7 @@ module QA
           QA::Runtime::Logger.debug(line.chomp)
           log = JSON.parse(line)
 
-          log['msg'] == 'error when pinging healthcheck' && log['storage'] == node
+          health_check_failure_message?(log['msg']) && log['storage'] == node
         rescue JSON::ParserError
           # Ignore lines that can't be parsed as JSON
         end
@@ -404,13 +408,13 @@ module QA
         Service::Shellout.sql_to_docker_exec_cmd(sql, 'postgres', 'SQL_PASSWORD', 'praefect_production', 'postgres.test', @postgres)
       end
 
-      def verify_storage_move_from_gitaly(storage)
+      def verify_storage_move_from_gitaly(storage, repo_type: :project)
         wait_until_shell_command("docker exec #{@gitlab} bash -c 'tail -n 50 /var/log/gitlab/gitaly/current'") do |line|
           log = JSON.parse(line)
 
           if (log['grpc.method'] == 'RenameRepository' || log['grpc.method'] == 'RemoveRepository') &&
               log['grpc.request.repoStorage'] == storage &&
-              !log['grpc.request.repoPath'].include?('wiki')
+              repo_type(log['grpc.request.repoPath']) == repo_type
             break log['grpc.request.repoPath']
           end
         rescue JSON::ParserError
@@ -443,6 +447,17 @@ module QA
           QA::Runtime::Logger.debug(line.chomp)
           yield JSON.parse(line)
         end
+      end
+
+      def repo_type(repo_path)
+        return :snippet if repo_path.start_with?('@snippets')
+        return :design if repo_path.end_with?('.design.git')
+
+        if repo_path.end_with?('.wiki.git')
+          return repo_path.start_with?('@groups') ? :group_wiki : :wiki
+        end
+
+        :project
       end
     end
   end

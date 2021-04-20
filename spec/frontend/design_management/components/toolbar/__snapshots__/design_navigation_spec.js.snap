@@ -13,6 +13,7 @@ exports[`Design management pagination component renders navigation buttons 1`] =
     class="gl-mx-5"
   >
     <gl-button-stub
+      aria-label="Go to previous design"
       buttontextclasses=""
       category="primary"
       class="js-previous-design"
@@ -24,6 +25,7 @@ exports[`Design management pagination component renders navigation buttons 1`] =
     />
      
     <gl-button-stub
+      aria-label="Go to next design"
       buttontextclasses=""
       category="primary"
       class="js-next-design"

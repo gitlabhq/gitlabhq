@@ -8,6 +8,7 @@ RSpec.describe ProjectSnippetPolicy do
   let_it_be(:other_user) { create(:user) }
   let_it_be(:external_user) { create(:user, :external) }
   let_it_be(:project) { create(:project, :public) }
+
   let(:snippet) { create(:project_snippet, snippet_visibility, project: project, author: author) }
   let(:author) { other_user }
   let(:author_permissions) do

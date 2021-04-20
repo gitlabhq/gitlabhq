@@ -186,39 +186,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let(:multiline_commits) { subject.commits.select(&is_multiline) }
     let(:singleline_commits) { subject.commits.reject(&is_multiline) }
 
-    context 'when the total number of commits is safe' do
-      it 'returns the oldest multiline commit message' do
-        expect(subject.default_squash_commit_message).to eq(multiline_commits.last.message)
-      end
-    end
-
-    context 'when the total number of commits is big' do
-      let(:safe_number) { 20 }
-
-      before do
-        stub_const('MergeRequestDiff::COMMITS_SAFE_SIZE', safe_number)
-      end
-
-      it 'returns the oldest multiline commit message from safe number of commits' do
-        expect(subject.default_squash_commit_message).to eq(
-          "remove emtpy file.(beacase git ignore empty file)\nadd whitespace test file.\n"
-        )
-      end
-    end
-
-    it 'returns the merge request title if there are no multiline commits' do
-      expect(subject).to receive(:commits).and_return(
-        CommitCollection.new(project, singleline_commits)
-      )
-
-      expect(subject.default_squash_commit_message).to eq(subject.title)
-    end
-
-    it 'does not return commit messages from multiline merge commits' do
-      collection = CommitCollection.new(project, multiline_commits).enrich!
-
-      expect(collection.commits).to all( receive(:merge_commit?).and_return(true) )
-      expect(subject).to receive(:commits).and_return(collection)
+    it 'returns the merge request title' do
       expect(subject.default_squash_commit_message).to eq(subject.title)
     end
   end
@@ -420,6 +388,19 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '.by_merge_or_squash_commit_sha' do
+    subject { described_class.by_merge_or_squash_commit_sha([sha1, sha2]) }
+
+    let(:sha1) { '123abc' }
+    let(:sha2) { '456abc' }
+    let(:mr1) { create(:merge_request, :merged, squash_commit_sha: sha1) }
+    let(:mr2) { create(:merge_request, :merged, merge_commit_sha: sha2) }
+
+    it 'returns merge requests that match the given squash and merge commits' do
+      is_expected.to include(mr1, mr2)
+    end
+  end
+
   describe '.by_related_commit_sha' do
     subject { described_class.by_related_commit_sha(sha) }
 
@@ -459,16 +440,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
 
       it { is_expected.to eq([merge_request]) }
-    end
-  end
-
-  describe '.by_cherry_pick_sha' do
-    it 'returns merge requests that match the given merge commit' do
-      note = create(:track_mr_picking_note, commit_id: '456abc')
-
-      create(:track_mr_picking_note, project: create(:project), commit_id: '456def')
-
-      expect(described_class.by_cherry_pick_sha('456abc')).to eq([note.noteable])
     end
   end
 
@@ -1353,6 +1324,24 @@ RSpec.describe MergeRequest, factory_default: :keep do
       expect(subject.work_in_progress?).to eq false
     end
 
+    it 'does not detect Draft: in the middle of the title' do
+      subject.title = 'Something with Draft: in the middle'
+
+      expect(subject.work_in_progress?).to eq false
+    end
+
+    it 'does not detect WIP at the end of the title' do
+      subject.title = 'Something ends with WIP'
+
+      expect(subject.work_in_progress?).to eq false
+    end
+
+    it 'does not detect Draft at the end of the title' do
+      subject.title = 'Something ends with Draft'
+
+      expect(subject.work_in_progress?).to eq false
+    end
+
     it "doesn't detect WIP for words starting with WIP" do
       subject.title = "Wipwap #{subject.title}"
       expect(subject.work_in_progress?).to eq false
@@ -1360,6 +1349,11 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     it "doesn't detect WIP for words containing with WIP" do
       subject.title = "WupWipwap #{subject.title}"
+      expect(subject.work_in_progress?).to eq false
+    end
+
+    it "doesn't detect draft for words containing with draft" do
+      subject.title = "Drafting #{subject.title}"
       expect(subject.work_in_progress?).to eq false
     end
 
@@ -1392,6 +1386,42 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
         expect(subject.work_in_progress?).to eq false
       end
+    end
+
+    it 'removes only WIP prefix from the MR title' do
+      subject.title = 'WIP: Implement feature called WIP'
+
+      expect(subject.wipless_title).to eq 'Implement feature called WIP'
+    end
+
+    it 'removes only draft prefix from the MR title' do
+      subject.title = 'Draft: Implement feature called draft'
+
+      expect(subject.wipless_title).to eq 'Implement feature called draft'
+    end
+
+    it 'does not remove WIP in the middle of the title' do
+      subject.title = 'Something with WIP in the middle'
+
+      expect(subject.wipless_title).to eq subject.title
+    end
+
+    it 'does not remove Draft in the middle of the title' do
+      subject.title = 'Something with Draft in the middle'
+
+      expect(subject.wipless_title).to eq subject.title
+    end
+
+    it 'does not remove WIP at the end of the title' do
+      subject.title = 'Something ends with WIP'
+
+      expect(subject.wipless_title).to eq subject.title
+    end
+
+    it 'does not remove Draft at the end of the title' do
+      subject.title = 'Something ends with Draft'
+
+      expect(subject.wipless_title).to eq subject.title
     end
   end
 
@@ -2023,14 +2053,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
       let(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
 
       it { is_expected.to be_truthy }
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(codequality_backend_comparison: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
 
     context 'when head pipeline does not have a codequality report' do
@@ -3857,17 +3879,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     context 'when service class is Ci::CompareCodequalityReportsService' do
       let(:service_class) { 'Ci::CompareCodequalityReportsService' }
 
-      context 'when feature flag is enabled' do
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(codequality_backend_comparison: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'when service class is different' do

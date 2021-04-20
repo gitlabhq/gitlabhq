@@ -5,7 +5,7 @@ module Banzai
     class WikiPipeline < FullPipeline
       def self.filters
         @filters ||= begin
-          super.insert_after(Filter::TableOfContentsFilter, Filter::GollumTagsFilter)
+          super.insert_before(Filter::ImageLazyLoadFilter, Filter::GollumTagsFilter)
                .insert_before(Filter::TaskListFilter, Filter::WikiLinkFilter)
         end
       end

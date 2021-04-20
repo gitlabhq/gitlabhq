@@ -26,7 +26,7 @@ export default {
       <gl-tab :title="__('Branches')">
         <branches-search-list />
       </gl-tab>
-      <gl-tab :title="__('Merge Requests')">
+      <gl-tab :title="__('Merge requests')">
         <merge-request-search-list />
       </gl-tab>
     </gl-tabs>

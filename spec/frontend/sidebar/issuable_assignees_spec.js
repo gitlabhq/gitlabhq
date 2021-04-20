@@ -5,12 +5,15 @@ import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_
 describe('IssuableAssignees', () => {
   let wrapper;
 
-  const createComponent = (props = { users: [] }) => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(IssuableAssignees, {
       provide: {
         rootPath: '',
       },
-      propsData: { ...props },
+      propsData: {
+        users: [],
+        ...props,
+      },
     });
   };
   const findUncollapsedAssigneeList = () => wrapper.find(UncollapsedAssigneeList);
@@ -22,12 +25,14 @@ describe('IssuableAssignees', () => {
   });
 
   describe('when no assignees are present', () => {
-    beforeEach(() => {
-      createComponent();
+    it('renders "None - assign yourself" when user is logged in', () => {
+      createComponent({ signedIn: true });
+      expect(findEmptyAssignee().text()).toBe('None - assign yourself');
     });
 
-    it('renders "None - assign yourself"', () => {
-      expect(findEmptyAssignee().text()).toBe('None - assign yourself');
+    it('renders "None" when user is not logged in', () => {
+      createComponent();
+      expect(findEmptyAssignee().text()).toBe('None');
     });
   });
 
@@ -41,7 +46,7 @@ describe('IssuableAssignees', () => {
 
   describe('when clicking "assign yourself"', () => {
     it('emits "assign-self"', () => {
-      createComponent();
+      createComponent({ signedIn: true });
       wrapper.find('[data-testid="assign-yourself"]').vm.$emit('click');
       expect(wrapper.emitted('assign-self')).toHaveLength(1);
     });

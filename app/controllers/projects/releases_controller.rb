@@ -12,7 +12,6 @@ class Projects::ReleasesController < Projects::ApplicationController
     push_frontend_feature_flag(:graphql_release_data, project, default_enabled: true)
     push_frontend_feature_flag(:graphql_milestone_stats, project, default_enabled: true)
     push_frontend_feature_flag(:graphql_releases_page, project, default_enabled: true)
-    push_frontend_feature_flag(:graphql_individual_release_page, project, default_enabled: true)
   end
   before_action :authorize_update_release!, only: %i[edit update]
   before_action :authorize_create_release!, only: :new

@@ -1,6 +1,5 @@
 <script>
 import { flatten } from 'lodash';
-import { CI_CONFIG_STATUS_VALID } from '../../constants';
 import CiLintResults from './ci_lint_results.vue';
 
 export default {
@@ -13,15 +12,16 @@ export default {
     },
   },
   props: {
+    isValid: {
+      type: Boolean,
+      required: true,
+    },
     ciConfig: {
       type: Object,
       required: true,
     },
   },
   computed: {
-    isValid() {
-      return this.ciConfig?.status === CI_CONFIG_STATUS_VALID;
-    },
     stages() {
       return this.ciConfig?.stages || [];
     },
@@ -45,9 +45,9 @@ export default {
 
 <template>
   <ci-lint-results
-    :valid="isValid"
-    :jobs="jobs"
     :errors="ciConfig.errors"
+    :is-valid="isValid"
+    :jobs="jobs"
     :lint-help-page-path="lintHelpPagePath"
   />
 </template>

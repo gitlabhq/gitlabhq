@@ -48,7 +48,7 @@ this is done when the job succeeds, but can also be done on failure, or always, 
 [`artifacts:when`](../ci/yaml/README.md#artifactswhen) parameter.
 
 Most artifacts are compressed by GitLab Runner before being sent to the coordinator. The exception to this is
-[reports artifacts](../ci/pipelines/job_artifacts.md#artifactsreports), which are compressed after uploading.
+[reports artifacts](../ci/yaml/README.md#artifactsreports), which are compressed after uploading.
 
 ### Using local storage
 
@@ -89,7 +89,7 @@ _The artifacts are stored by default in
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1762) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-> - Since version 9.5, artifacts are [browsable](../ci/pipelines/job_artifacts.md#browsing-artifacts),
+> - Since version 9.5, artifacts are [browsable](../ci/pipelines/job_artifacts.md#download-job-artifacts),
 >   when object storage is enabled. 9.4 lacks this feature.
 > - Since version 10.6, available in [GitLab Free](https://about.gitlab.com/pricing/).
 > - Since version 11.0, we support `direct_upload` to S3.
@@ -509,7 +509,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
    NOTE:
    This step also erases artifacts that users have chosen to
-   ["keep"](../ci/pipelines/job_artifacts.md#browsing-artifacts).
+   ["keep"](../ci/pipelines/job_artifacts.md#download-job-artifacts).
 
    ```ruby
    builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
@@ -525,6 +525,9 @@ If you need to manually remove job artifacts associated with multiple jobs while
    - `7.days.ago`
    - `3.months.ago`
    - `1.year.ago`
+
+   `erase_erasable_artifacts!` is a synchronous method, and upon execution, the artifacts are removed immediately.
+   They are not scheduled via some background queue.
 
 #### Delete job artifacts and logs from jobs completed before a specific date
 
@@ -580,3 +583,40 @@ If you need to manually remove **all** job artifacts associated with multiple jo
    - `7.days.ago`
    - `3.months.ago`
    - `1.year.ago`
+
+### Error `Downloading artifacts from coordinator... not found`
+
+When a job tries to download artifacts from an earlier job, you might receive an error similar to:
+
+```plaintext
+Downloading artifacts from coordinator... not found  id=12345678 responseStatus=404 Not Found
+```
+
+This might be caused by a `gitlab.rb` file with the following configuration:
+
+```ruby
+gitlab_rails['artifacts_object_store_background_upload'] = false
+gitlab_rails['artifacts_object_store_direct_upload'] = true
+```
+
+To prevent this, comment out or remove those lines, or switch to their [default values](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template),
+then run `sudo gitlab-ctl reconfigure`.
+
+### Job artifact upload fails with error 500
+
+If you are using object storage for artifacts and a job artifact fails to upload,
+you can check:
+
+- The job log for an error similar to:
+
+  ```plaintext
+  WARNING: Uploading artifacts as "archive" to coordinator... failed id=12345 responseStatus=500 Internal Server Error status=500 token=abcd1234
+  ```
+
+- The [workhorse log](logs.md#workhorse-logs) for an error similar to:
+
+  ```json
+  {"error":"MissingRegion: could not find region configuration","level":"error","msg":"error uploading S3 session","time":"2021-03-16T22:10:55-04:00"}
+  ```
+
+In both cases, you might need to add `region` to the job artifact [object storage configuration](#connection-settings).

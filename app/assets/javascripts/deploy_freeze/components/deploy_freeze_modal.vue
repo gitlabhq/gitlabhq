@@ -18,7 +18,6 @@ export default {
   modalOptions: {
     ref: 'modal',
     modalId: 'deploy-freeze-modal',
-    title: __('Add deploy freeze'),
     actionCancel: {
       text: __('Cancel'),
     },
@@ -30,10 +29,13 @@ export default {
     cronSyntaxInstructions: __(
       'Define a custom deploy freeze pattern with %{cronSyntaxStart}cron syntax%{cronSyntaxEnd}',
     ),
+    addTitle: __('Add deploy freeze'),
+    editTitle: __('Edit deploy freeze'),
   },
   computed: {
     ...mapState([
       'projectId',
+      'selectedId',
       'selectedTimezone',
       'timezoneData',
       'freezeStartCron',
@@ -45,9 +47,9 @@ export default {
     ]),
     addDeployFreezeButton() {
       return {
-        text: __('Add deploy freeze'),
+        text: this.isEditing ? __('Save deploy freeze') : __('Add deploy freeze'),
         attributes: [
-          { variant: 'success' },
+          { variant: 'confirm' },
           {
             disabled:
               !isValidCron(this.freezeStartCron) ||
@@ -77,9 +79,17 @@ export default {
         this.setSelectedTimezone(selectedTimezone);
       },
     },
+    isEditing() {
+      return Boolean(this.selectedId);
+    },
+    modalTitle() {
+      return this.isEditing
+        ? this.$options.translations.editTitle
+        : this.$options.translations.addTitle;
+    },
   },
   methods: {
-    ...mapActions(['addFreezePeriod', 'setSelectedTimezone', 'resetModal']),
+    ...mapActions(['addFreezePeriod', 'updateFreezePeriod', 'setSelectedTimezone', 'resetModal']),
     resetModalHandler() {
       this.resetModal();
     },
@@ -89,6 +99,13 @@ export default {
       }
       return '';
     },
+    submit() {
+      if (this.isEditing) {
+        this.updateFreezePeriod();
+      } else {
+        this.addFreezePeriod();
+      }
+    },
   },
 };
 </script>
@@ -96,8 +113,9 @@ export default {
 <template>
   <gl-modal
     v-bind="$options.modalOptions"
+    :title="modalTitle"
     :action-primary="addDeployFreezeButton"
-    @primary="addFreezePeriod"
+    @primary="submit"
     @canceled="resetModalHandler"
   >
     <p>

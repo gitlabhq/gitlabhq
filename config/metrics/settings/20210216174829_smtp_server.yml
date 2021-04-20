@@ -1,0 +1,18 @@
+---
+key_path: mail.smtp_server
+description: The value of the SMTP server that is used
+product_section: growth
+product_stage: growth
+product_group: group::activation
+product_category: onboarding
+value_type: number
+status: data_available
+time_frame: all
+data_source: ruby
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

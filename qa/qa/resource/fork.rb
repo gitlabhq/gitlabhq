@@ -3,6 +3,8 @@
 module QA
   module Resource
     class Fork < Base
+      attr_accessor :namespace_path
+
       attribute :name do
         upstream.name
       end
@@ -31,6 +33,8 @@ module QA
       def fabricate!
         populate(:upstream, :user)
 
+        namespace_path ||= user.name
+
         # Sign out as admin and sign is as the fork user
         Page::Main::Menu.perform(&:sign_out)
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -43,11 +47,11 @@ module QA
         Page::Project::Show.perform(&:fork_project)
 
         Page::Project::Fork::New.perform do |fork_new|
-          fork_new.choose_namespace(user.name)
+          fork_new.fork_project(namespace_path)
         end
 
-        Page::Layout::Banner.perform do |banner|
-          banner.has_notice?('The project was successfully forked.')
+        Page::Project::Show.perform do |project_page|
+          raise ResourceFabricationFailedError, "Forking failed!" unless project_page.forked_from?(upstream.name)
         end
 
         populate(:project)

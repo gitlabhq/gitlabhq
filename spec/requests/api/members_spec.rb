@@ -273,7 +273,7 @@ RSpec.describe API::Members do
             user_ids = [stranger.id, access_requester.id].join(',')
 
             allow_next_instance_of(::Members::CreateService) do |service|
-              expect(service).to receive(:execute).with(source).and_return({ status: :error, message: error_message })
+              expect(service).to receive(:execute).and_return({ status: :error, message: error_message })
             end
 
             expect do
@@ -552,6 +552,34 @@ RSpec.describe API::Members do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+    end
+  end
+
+  describe 'DELETE /groups/:id/members/:user_id' do
+    let(:other_user) { create(:user) }
+    let(:nested_group) { create(:group, parent: group) }
+
+    before do
+      nested_group.add_developer(developer)
+      nested_group.add_developer(other_user)
+    end
+
+    it 'deletes only the member with skip_subresources=true' do
+      expect do
+        delete api("/groups/#{group.id}/members/#{developer.id}", maintainer), params: { skip_subresources: true }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end.to change { group.members.count }.by(-1)
+          .and change { nested_group.members.count }.by(0)
+    end
+
+    it 'deletes member and its sub memberships with skip_subresources=false' do
+      expect do
+        delete api("/groups/#{group.id}/members/#{developer.id}", maintainer), params: { skip_subresources: false }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end.to change { group.members.count }.by(-1)
+          .and change { nested_group.members.count }.by(-1)
     end
   end
 

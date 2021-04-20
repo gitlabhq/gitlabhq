@@ -38,10 +38,17 @@ module API
         end
       end
 
+      # HTTP status codes to terminate the job on GitLab Runner:
+      # - 403
       def authenticate_job!(require_running: true)
         job = current_job
 
-        not_found! unless job
+        # 404 is not returned here because we want to terminate the job if it's
+        # running. A 404 can be returned from anywhere in the networking stack which is why
+        # we are explicit about a 403, we should improve this in
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/327703
+        forbidden! unless job
+
         forbidden! unless job_token_valid?(job)
 
         forbidden!('Project has been deleted!') if job.project.nil? || job.project.pending_delete?

@@ -1,5 +1,6 @@
 <script>
-import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+/* eslint-disable vue/no-v-html */
+import { GlTooltipDirective } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -12,17 +13,20 @@ import {
   CONFLICT_THEIR,
   CONFLICT_MARKER,
 } from '../constants';
+import {
+  getInteropInlineAttributes,
+  getInteropOldSideAttributes,
+  getInteropNewSideAttributes,
+} from '../utils/interoperability';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import * as utils from './diff_row_utils';
 
 export default {
   components: {
-    GlIcon,
     DiffGutterAvatars,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -117,6 +121,16 @@ export default {
     isLeftConflictMarker() {
       return [CONFLICT_MARKER_OUR, CONFLICT_MARKER_THEIR].includes(this.line.left?.type);
     },
+    interopLeftAttributes() {
+      if (this.inline) {
+        return getInteropInlineAttributes(this.line.left);
+      }
+
+      return getInteropOldSideAttributes(this.line.left);
+    },
+    interopRightAttributes() {
+      return getInteropNewSideAttributes(this.line.right);
+    },
   },
   mounted() {
     this.scrollToLineIfNeededParallel(this.line);
@@ -182,6 +196,7 @@ export default {
     <div
       data-testid="left-side"
       class="diff-grid-left left-side"
+      v-bind="interopLeftAttributes"
       @dragover.prevent
       @dragenter="onDragEnter(line.left, index)"
       @dragend="onDragEnd"
@@ -203,14 +218,13 @@ export default {
               <button
                 :draggable="glFeatures.dragCommentSelection"
                 type="button"
-                class="add-diff-note note-button js-add-diff-note-button qa-diff-comment"
+                class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button qa-diff-comment"
+                data-qa-selector="diff_comment_button"
                 :class="{ 'gl-cursor-grab': dragging }"
                 :disabled="line.left.commentsDisabled"
                 @click="handleCommentButton(line.left)"
                 @dragstart="onDragStart({ ...line.left, index })"
-              >
-                <gl-icon :size="12" name="comment" />
-              </button>
+              ></button>
             </span>
           </template>
           <a
@@ -258,7 +272,7 @@ export default {
           @mousedown="handleParallelLineMouseDown"
         >
           <strong v-if="isLeftConflictMarker">{{ conflictText(line.left) }}</strong>
-          <span v-else v-safe-html="line.left.rich_text"></span>
+          <span v-else v-html="line.left.rich_text"></span>
         </div>
       </template>
       <template v-else-if="!inline || (line.left && line.left.type === $options.CONFLICT_MARKER)">
@@ -288,6 +302,7 @@ export default {
       v-if="!inline"
       data-testid="right-side"
       class="diff-grid-right right-side"
+      v-bind="interopRightAttributes"
       @dragover.prevent
       @dragenter="onDragEnter(line.right, index)"
       @dragend="onDragEnd"
@@ -305,14 +320,12 @@ export default {
               <button
                 :draggable="glFeatures.dragCommentSelection"
                 type="button"
-                class="add-diff-note note-button js-add-diff-note-button qa-diff-comment"
+                class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button qa-diff-comment"
                 :class="{ 'gl-cursor-grab': dragging }"
                 :disabled="line.right.commentsDisabled"
                 @click="handleCommentButton(line.right)"
                 @dragstart="onDragStart({ ...line.right, index })"
-              >
-                <gl-icon :size="12" name="comment" />
-              </button>
+              ></button>
             </span>
           </template>
           <a
@@ -349,7 +362,6 @@ export default {
         <div
           :id="line.right.line_code"
           :key="line.right.rich_text"
-          v-safe-html="line.right.rich_text"
           :class="[
             line.right.type,
             {
@@ -364,7 +376,7 @@ export default {
           <strong v-if="line.right.type === $options.CONFLICT_MARKER_THEIR">{{
             conflictText(line.right)
           }}</strong>
-          <span v-else v-safe-html="line.right.rich_text"></span>
+          <span v-else v-html="line.right.rich_text"></span>
         </div>
       </template>
       <template v-else>

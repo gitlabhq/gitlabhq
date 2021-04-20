@@ -3,14 +3,12 @@
 
 CHANGED_FILES_MESSAGE = <<~MSG
 For the following files, a review from the [Data team and Product Intelligence team](https://gitlab.com/groups/gitlab-org/growth/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
-Please check the ~"product intelligence" [guide](https://docs.gitlab.com/ee/development/usage_ping.html) and reach out to %<engineers_group>s group for a review.
+Please check the ~"product intelligence" [guide](https://docs.gitlab.com/ee/development/usage_ping.html).
 
 
 %<changed_files>s
 
 MSG
-
-ENGINEERS_GROUP = '@gitlab-org/growth/product-intelligence/engineers'
 
 UPDATE_DICTIONARY_MESSAGE = <<~MSG
   When adding, changing, or updating metrics, please update the [Metrics Dictionary](https://docs.gitlab.com/ee/development/usage_ping/dictionary.html)
@@ -30,8 +28,10 @@ tracking_files = [
   'app/assets/javascripts/tracking.js',
   'spec/frontend/tracking_spec.js',
   'generator_templates/usage_metric_definition/metric_definition.yml',
-  'lib/generators/rails/usage_metric_definition_generator.rb',
-  'spec/lib/generators/usage_metric_definition_generator_spec.rb',
+  'lib/generators/gitlab/usage_metric_definition_generator.rb',
+  'lib/generators/gitlab/usage_metric_definition/redis_hll_generator.rb',
+  'spec/lib/generators/gitlab/usage_metric_definition_generator_spec.rb',
+  'spec/lib/generators/gitlab/usage_metric_definition/redis_hll_generator_spec.rb',
   'config/metrics/schema.json'
 ]
 
@@ -49,7 +49,8 @@ end
 js_patterns = Regexp.union(
   'Tracking.event',
   /\btrack\(/,
-  'data-track-event'
+  'data-track-event',
+  'data-track-action'
 )
 
 dictionary_pattern = Regexp.union(
@@ -81,13 +82,7 @@ matching_changed_files = usage_data_changed_files +
 
 if matching_changed_files.any?
 
-  mention = if helper.draft_mr?
-              "`#{ENGINEERS_GROUP}`"
-            else
-              ENGINEERS_GROUP
-            end
-
-  warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files), engineers_group: mention)
+  warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files))
 
   fail format(UPDATE_DICTIONARY_MESSAGE) if required_dictionary_update_changed_files.any? && dictionary_changed_file.empty?
 

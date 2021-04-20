@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StubRequests
-  IP_ADDRESS_STUB = '8.8.8.9'.freeze
+  IP_ADDRESS_STUB = '8.8.8.9'
 
   # Fully stubs a request using WebMock class. This class also
   # stubs the IP address the URL is translated to (DNS lookup).

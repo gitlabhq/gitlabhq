@@ -151,6 +151,22 @@ describe('noteActions', () => {
         const assignUserButton = wrapper.find('[data-testid="assign-user"]');
         expect(assignUserButton.exists()).toBe(false);
       });
+
+      it('should render the correct (unescaped) name in the Resolved By tooltip', () => {
+        const complexUnescapedName = 'This is a Ǝ\'𝞓\'E "cat"?';
+        wrapper = mountNoteActions({
+          ...props,
+          canResolve: true,
+          isResolving: false,
+          isResolved: true,
+          resolvedBy: {
+            name: complexUnescapedName,
+          },
+        });
+
+        const { resolveButton } = wrapper.vm.$refs;
+        expect(resolveButton.$el.getAttribute('title')).toBe(`Resolved by ${complexUnescapedName}`);
+      });
     });
   });
 

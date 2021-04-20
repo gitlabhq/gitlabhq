@@ -1,8 +1,0 @@
----
-name: attachment_with_filename
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55066
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323714
-milestone: '13.10'
-type: development
-group: group::editor
-default_enabled: false

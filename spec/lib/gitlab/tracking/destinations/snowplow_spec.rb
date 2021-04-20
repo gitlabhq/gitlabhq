@@ -41,21 +41,6 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow do
           .with('category', 'action', 'label', 'property', 1.5, nil, (Time.now.to_f * 1000).to_i)
       end
     end
-
-    describe '#self_describing_event' do
-      it 'sends event to tracker' do
-        allow(tracker).to receive(:track_self_describing_event).and_call_original
-
-        subject.self_describing_event('iglu:com.gitlab/foo/jsonschema/1-0-0', data: { foo: 'bar' })
-
-        expect(tracker).to have_received(:track_self_describing_event) do |event, context, timestamp|
-          expect(event.to_json[:schema]).to eq('iglu:com.gitlab/foo/jsonschema/1-0-0')
-          expect(event.to_json[:data]).to eq(foo: 'bar')
-          expect(context).to eq(nil)
-          expect(timestamp).to eq((Time.now.to_f * 1000).to_i)
-        end
-      end
-    end
   end
 
   context 'when snowplow is not enabled' do
@@ -64,14 +49,6 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow do
         expect_any_instance_of(SnowplowTracker::Tracker).not_to receive(:track_struct_event)
 
         subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-      end
-    end
-
-    describe '#self_describing_event' do
-      it 'does not send event to tracker' do
-        expect_any_instance_of(SnowplowTracker::Tracker).not_to receive(:track_self_describing_event)
-
-        subject.self_describing_event('iglu:com.gitlab/foo/jsonschema/1-0-0', data: { foo: 'bar' })
       end
     end
   end

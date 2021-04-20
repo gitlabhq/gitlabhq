@@ -58,19 +58,13 @@ GitLab provides the ability to filter analytics based on a date range. To filter
 The "Time" metrics near the top of the page are measured as follows:
 
 - **Lead time**: median time from issue created to issue closed.
-- **Cycle time**: median time from first commit to issue closed.
-
-NOTE:
-A commit is associated with an issue by [crosslinking](../project/issues/crosslinking_issues.md) in the commit message or by manually linking the merge request containing the commit.
+- **Cycle time**: median time from first commit to issue closed. (You can associate a commit with an issue by [crosslinking in the commit message](../project/issues/crosslinking_issues.md#from-commit-messages).)
 
 ## How the stages are measured
 
-Value Stream Analytics records stage time and data based on the project issues with the
-exception of the staging stage, where only data deployed to
-production are measured.
-
-Specifically, if your CI is not set up and you have not defined a [production environment](#how-the-production-environment-is-identified), then you will not have any
-data for this stage.
+Value Stream Analytics uses start events and stop events to measure the time that an Issue or MR spends in each stage.
+For example, a stage might start when one label is added to an issue, and end when another label is added.
+Items are not included in the stage time calculation if they have not reached the stop event.
 
 Each stage of Value Stream Analytics is further described in the table below.
 
@@ -103,14 +97,8 @@ In short, the Value Stream Analytics dashboard tracks data related to [GitLab fl
 
 ## How the production environment is identified
 
-Value Stream Analytics identifies production environments by looking for project [environments](../../ci/yaml/README.md#environment) with a name matching any of these patterns:
-
-- `prod` or `prod/*`
-- `production` or `production/*`
-
-These patterns are not case-sensitive.
-
-You can change the name of a project environment in your GitLab CI/CD configuration.
+Value Stream Analytics identifies production environments based on
+[the deployment tier of environments](../../ci/environments/index.md#deployment-tier-of-environments).
 
 ## Example workflow
 

@@ -5,7 +5,7 @@ module Suggestible
   include Gitlab::Utils::StrongMemoize
 
   # This translates into limiting suggestion changes to `suggestion:-100+100`.
-  MAX_LINES_CONTEXT = 100.freeze
+  MAX_LINES_CONTEXT = 100
 
   def diff_lines
     strong_memoize(:diff_lines) do

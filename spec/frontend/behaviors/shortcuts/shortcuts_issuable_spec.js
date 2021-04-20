@@ -329,7 +329,7 @@ describe('ShortcutsIssuable', () => {
       window.shortcut = new ShortcutsIssuable();
 
       [sidebarCollapsedBtn, sidebarExpandedBtn] = document.querySelectorAll(
-        '.sidebar-source-branch button',
+        '.js-sidebar-source-branch button',
       );
 
       [sidebarCollapsedBtn, sidebarExpandedBtn].forEach((btn) => jest.spyOn(btn, 'click'));

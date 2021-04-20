@@ -2,7 +2,7 @@
 - user_status_data = user_status_properties(current_user)
 
 %header.navbar.navbar-gitlab.navbar-expand-sm.js-navbar{ data: { qa_selector: 'navbar' } }
-  %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
+  %a.gl-sr-only.gl-accessibility{ href: "#content-body" } Skip to content
   .container-fluid
     .header-content
       .title-container
@@ -19,10 +19,13 @@
               %span.gl-badge.gl-bg-green-500.gl-text-white.gl-rounded-pill.gl-font-weight-bold.gl-py-1
                 = _('Next')
 
-        - if current_user
-          = render "layouts/nav/dashboard"
+        - if Feature.enabled?(:combined_menu, current_user, default_enabled: :yaml)
+          = render "layouts/nav/combined_menu"
         - else
-          = render "layouts/nav/explore"
+          - if current_user
+            = render "layouts/nav/dashboard"
+          - else
+            = render "layouts/nav/explore"
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
@@ -110,14 +113,15 @@
             %li.nav-item
               %div
                 - sign_in_text = allow_signup? ? _('Sign in / Register') : _('Sign in')
-                = link_to sign_in_text, new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'
+                = link_to sign_in_text, new_session_path(:user, redirect_to_referer: 'yes'), class: 'gl-button btn btn-default btn-sign-in'
 
       %button.navbar-toggler.d-block.d-sm-none{ type: 'button' }
         %span.sr-only= _('Toggle navigation')
         = sprite_icon('ellipsis_h', size: 12, css_class: 'more-icon js-navbar-toggle-right')
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
 
-#whats-new-app{ data: { storage_key: whats_new_storage_key, versions: whats_new_versions, gitlab_dot_com: Gitlab.dev_env_org_or_com? } }
+- if display_whats_new?
+  #whats-new-app{ data: { version_digest: whats_new_version_digest } }
 
 - if can?(current_user, :update_user_status, current_user)
   .js-set-status-modal-wrapper{ data: user_status_data }

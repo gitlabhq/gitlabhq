@@ -73,3 +73,9 @@ You can also use the API to [retrieve the current value](../../api/settings.md#g
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings"
 ```
+
+## Related topics
+
+- [User documentation for wikis](../../user/project/wiki/index.md)
+- [Project wikis API](../../api/wikis.md)
+- [Group wikis API](../../api/group_wikis.md)

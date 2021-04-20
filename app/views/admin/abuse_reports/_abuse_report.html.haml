@@ -25,10 +25,10 @@
   %td
     - if user
       = link_to _('Remove user & report'), admin_abuse_report_path(abuse_report, remove_user: true),
-        data: { confirm: _("USER %{user} WILL BE REMOVED! Are you sure?") % { user: user.name } }, remote: true, method: :delete, class: "gl-button btn btn-sm btn-block btn-danger js-remove-tr"
+        data: { confirm: _("USER %{user} WILL BE REMOVED! Are you sure?") % { user: user.name } }, remote: true, method: :delete, class: "gl-button btn btn-block btn-danger js-remove-tr"
     - if user && !user.blocked?
-      = link_to _('Block user'), block_admin_user_path(user), data: {confirm: _('USER WILL BE BLOCKED! Are you sure?')}, method: :put, class: "gl-button btn btn-sm btn-block"
+      = link_to _('Block user'), block_admin_user_path(user), data: {confirm: _('USER WILL BE BLOCKED! Are you sure?')}, method: :put, class: "gl-button btn btn-default btn-block"
     - else
-      .btn.btn-sm.disabled.btn-block
+      .gl-button.btn.btn-default.disabled.btn-block
         = _('Already blocked')
-    = link_to _('Remove report'), [:admin, abuse_report], remote: true, method: :delete, class: "gl-button btn btn-sm btn-block btn-close js-remove-tr"
+    = link_to _('Remove report'), [:admin, abuse_report], remote: true, method: :delete, class: "gl-button btn btn-default btn-block btn-close js-remove-tr"

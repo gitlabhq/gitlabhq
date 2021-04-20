@@ -1,5 +1,5 @@
 %div
-  = render 'devise/shared/tab_single', tab_title: 'Two-Factor Authentication'
+  = render 'devise/shared/tab_single', tab_title: _('Two-Factor Authentication')
   .login-box
     .login-body
       - if @user.two_factor_otp_enabled?
@@ -7,10 +7,10 @@
           - resource_params = params[resource_name].presence || params
           = f.hidden_field :remember_me, value: resource_params.fetch(:remember_me, 0)
           %div
-            = f.label 'Two-Factor Authentication code', name: :otp_attempt
-            = f.text_field :otp_attempt, class: 'form-control gl-form-input', required: true, autofocus: true, autocomplete: 'off', title: 'This field is required.', data: { qa_selector: 'two_fa_code_field' }
-            %p.form-text.text-muted.hint Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.
+            = f.label _('Two-Factor Authentication code'), name: :otp_attempt
+            = f.text_field :otp_attempt, class: 'form-control gl-form-input', required: true, autofocus: true, autocomplete: 'off', title: _('This field is required.'), data: { qa_selector: 'two_fa_code_field' }
+            %p.form-text.text-muted.hint= _("Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes.")
             .prepend-top-20
-              = f.submit "Verify code", class: "gl-button btn btn-confirm", data: { qa_selector: 'verify_code_button' }
+              = f.submit _("Verify code"), class: "gl-button btn btn-confirm", data: { qa_selector: 'verify_code_button' }
       - if @user.two_factor_webauthn_u2f_enabled?
         = render "authentication/authenticate", params: params, resource: resource, resource_name: resource_name, render_remember_me: true, target_path: new_user_session_path

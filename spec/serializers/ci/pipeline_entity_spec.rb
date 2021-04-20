@@ -7,6 +7,7 @@ RSpec.describe Ci::PipelineEntity do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
+
   let(:request) { double('request', current_user: user) }
   let(:entity) { described_class.represent(pipeline, request: request) }
 
@@ -165,6 +166,7 @@ RSpec.describe Ci::PipelineEntity do
 
       context 'when pipeline is detached merge request pipeline' do
         let_it_be(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
+
         let(:project) { merge_request.target_project }
         let(:pipeline) { merge_request.pipelines_for_merge_request.first }
 
@@ -213,6 +215,7 @@ RSpec.describe Ci::PipelineEntity do
 
       context 'when pipeline is merge request pipeline' do
         let_it_be(:merge_request) { create(:merge_request, :with_merge_request_pipeline, merge_sha: 'abc') }
+
         let(:project) { merge_request.target_project }
         let(:pipeline) { merge_request.pipelines_for_merge_request.first }
 

@@ -202,7 +202,7 @@ RSpec.describe Ci::CreatePipelineService do
         YAML
       end
 
-      it 'creates a pipeline with build_a and test_b pending; deploy_b manual' do
+      it 'creates a pipeline with build_a and test_b pending; deploy_b manual', :sidekiq_inline do
         processables = pipeline.processables
 
         build_a = processables.find { |processable| processable.name == 'build_a' }

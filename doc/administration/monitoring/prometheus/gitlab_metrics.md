@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Health
+group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -139,6 +139,18 @@ The following metrics can be controlled by feature flags:
 | `gitlab_method_call_duration_seconds`                          | `prometheus_metrics_method_instrumentation`                        |
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
 
+## Praefect metrics
+
+You can [configure Praefect to report metrics](../../gitaly/praefect.md#praefect).
+These are some of the Praefect metrics served from the `/metrics` path on the [configured port](index.md#changing-the-port-and-address-prometheus-listens-on)
+(9652 by default).
+
+| Metric | Type | Since | Description | Labels |
+| :----- | :--- | ----: | :---------- | :----- |
+| `gitaly_praefect_replication_latency_bucket` | Histogram | 12.10 | The amount of time it takes for replication to complete once the replication job starts. |  |
+| `gitaly_praefect_replication_delay_bucket` | Histogram | 12.10 | A measure of how much time passes between when the replication job is created and when it starts. |  |
+| `gitaly_praefect_node_latency_bucket` | Histogram | 12.10 | The latency in Gitaly returning health check information to Praefect. This indicates Praefect connection saturation. |  |
+
 ## Sidekiq metrics
 
 Sidekiq jobs may also gather metrics, and these metrics can be accessed if the
@@ -238,10 +250,11 @@ configuration option in `gitlab.yml`. These metrics are served from the
 
 The following metrics are available:
 
-| Metric                            | Type      | Since                                                         | Description                            |
-|:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |
-| `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)     | Current number of load balancing hosts |
-
+| Metric                            | Type      | Since                                                         | Description                            | Labels                                                    |
+|:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |:--------------------------------------------------------- |
+| `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)   | Current number of load balancing hosts | |
+| `sidekiq_load_balancing_count`    | Counter   | 13.11                                                         | Sidekiq jobs using load balancing with data consistency set to :sticky or :delayed | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `data_consistency`, `database_chosen` |
+ 
 ## Database partitioning metrics **(PREMIUM SELF)**
 
 The following metrics are available:

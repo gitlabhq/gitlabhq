@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe TodoService do
+  include AfterNextHelpers
+
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:author) { create(:user) }
   let_it_be(:assignee) { create(:user) }
@@ -343,19 +345,19 @@ RSpec.describe TodoService do
 
     describe '#destroy_target' do
       it 'refreshes the todos count cache for users with todos on the target' do
-        create(:todo, target: issue, user: john_doe, author: john_doe, project: issue.project)
+        create(:todo, state: :pending, target: issue, user: john_doe, author: john_doe, project: issue.project)
 
-        expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
+        expect_next(Users::UpdateTodoCountCacheService, [john_doe]).to receive(:execute)
 
-        service.destroy_target(issue) { }
+        service.destroy_target(issue) { issue.destroy! }
       end
 
       it 'does not refresh the todos count cache for users with only done todos on the target' do
         create(:todo, :done, target: issue, user: john_doe, author: john_doe, project: issue.project)
 
-        expect_any_instance_of(User).not_to receive(:update_todos_count_cache)
+        expect(Users::UpdateTodoCountCacheService).not_to receive(:new)
 
-        service.destroy_target(issue) { }
+        service.destroy_target(issue) { issue.destroy! }
       end
 
       it 'yields the target to the caller' do
@@ -1007,7 +1009,8 @@ RSpec.describe TodoService do
   end
 
   describe '#update_note' do
-    let(:noteable) { create(:issue, project: project) }
+    let_it_be(:noteable) { create(:issue, project: project) }
+
     let(:note) { create(:note, project: project, note: mentions, noteable: noteable) }
     let(:addressed_note) { create(:note, project: project, note: "#{directly_addressed}", noteable: noteable) }
 
@@ -1044,12 +1047,34 @@ RSpec.describe TodoService do
       should_not_create_todo(user: skipped, target: noteable, action: Todo::DIRECTLY_ADDRESSED)
     end
 
-    it 'does not create a todo if user was already mentioned and todo is pending' do
-      stub_feature_flags(multiple_todos: false)
+    context 'users already have pending todos and the multiple_todos feature is off' do
+      before do
+        stub_feature_flags(multiple_todos: false)
+      end
 
-      create(:todo, :mentioned, user: member, project: project, target: noteable, author: author)
+      let_it_be(:pending_todo_for_member) { create(:todo, :mentioned, user: member, project: project, target: noteable) }
+      let_it_be(:pending_todo_for_guest) { create(:todo, :mentioned, user: guest, project: project, target: noteable) }
+      let_it_be(:pending_todo_for_admin) { create(:todo, :mentioned, user: admin, project: project, target: noteable) }
+      let_it_be(:note_mentioning_1_user) do
+        create(:note, project: project, note: "FYI #{member.to_reference}", noteable: noteable)
+      end
 
-      expect { service.update_note(note, author, skip_users) }.not_to change(member.todos, :count)
+      let_it_be(:note_mentioning_3_users) do
+        create(:note, project: project, note: 'FYI: ' + [member, guest, admin].map(&:to_reference).join(' '), noteable: noteable)
+      end
+
+      it 'does not create a todo if user was already mentioned and todo is pending' do
+        expect { service.update_note(note_mentioning_1_user, author, skip_users) }.not_to change(member.todos, :count)
+      end
+
+      it 'does not create N+1 queries for pending todos' do
+        # Excluding queries for user permissions because those do execute N+1 queries
+        allow_any_instance_of(User).to receive(:can?).and_return(true)
+
+        control_count = ActiveRecord::QueryRecorder.new { service.update_note(note_mentioning_1_user, author, skip_users) }.count
+
+        expect { service.update_note(note_mentioning_3_users, author, skip_users) }.not_to exceed_query_limit(control_count)
+      end
     end
 
     it 'does not create a todo if user was already mentioned and todo is done' do
@@ -1076,13 +1101,9 @@ RSpec.describe TodoService do
   it 'updates cached counts when a todo is created' do
     issue = create(:issue, project: project, assignees: [john_doe], author: author)
 
-    expect(john_doe.todos_pending_count).to eq(0)
-    expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+    expect_next(Users::UpdateTodoCountCacheService, [john_doe]).to receive(:execute)
 
     service.new_issue(issue, author)
-
-    expect(Todo.where(user_id: john_doe.id, state: :pending).count).to eq 1
-    expect(john_doe.todos_pending_count).to eq(1)
   end
 
   shared_examples 'updating todos state' do |state, new_state, new_resolved_by = nil|

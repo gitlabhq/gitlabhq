@@ -7,7 +7,7 @@ module SystemCheck
       set_check_pass -> { "yes (#{self.current_version})" }
 
       def self.required_version
-        @required_version ||= Gitlab::VersionInfo.parse('2.29.0')
+        @required_version ||= Gitlab::VersionInfo.parse('2.31.0')
       end
 
       def self.current_version

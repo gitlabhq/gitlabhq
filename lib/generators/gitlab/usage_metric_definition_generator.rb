@@ -5,6 +5,11 @@ require 'rails/generators'
 module Gitlab
   class UsageMetricDefinitionGenerator < Rails::Generators::Base
     Directory = Struct.new(:name, :time_frame, :value_type) do
+      def initialize(...)
+        super
+        freeze
+      end
+
       def match?(str)
         (name == str || time_frame == str) && str != 'none'
       end
@@ -60,9 +65,7 @@ module Gitlab
     private
 
     def metric_name_suggestion
-      return unless Feature.enabled?(:product_intelligence_metrics_names_suggestions, default_enabled: :yaml)
-
-      "\nname: #{Usage::Metrics::NamesSuggestions::Generator.generate(key_path)}"
+      "\nname: \"#{Usage::Metrics::NamesSuggestions::Generator.generate(key_path)}\""
     end
 
     def file_path
@@ -101,7 +104,7 @@ module Gitlab
     end
 
     def metric_definitions
-      @definitions ||= Gitlab::Usage::MetricDefinition.definitions
+      @definitions ||= Gitlab::Usage::MetricDefinition.definitions(skip_validation: true)
     end
 
     def metric_definition_exists?

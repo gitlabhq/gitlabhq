@@ -1,4 +1,5 @@
 - related_branches_path = related_branches_project_issue_path(@project, issuable)
+- api_awards_path = local_assigns.fetch(:api_awards_path, nil)
 
 .issue-details.issuable-details
   .detail-page-description.content-block
@@ -24,7 +25,7 @@
       #related-branches{ data: { url: related_branches_path } }
         -# This element is filled in using JavaScript.
 
-  = render 'shared/issue_type/emoji_block', issuable: issuable
+  = render 'shared/issue_type/emoji_block', issuable: issuable, api_awards_path: api_awards_path
 
   = render 'projects/issues/discussion'
 

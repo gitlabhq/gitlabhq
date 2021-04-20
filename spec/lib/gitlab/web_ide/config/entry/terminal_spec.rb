@@ -132,7 +132,7 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Terminal do
           { before_script: %w[ls pwd],
             script: 'sleep 100',
             tags: ['webide'],
-            image: 'ruby:2.5',
+            image: 'ruby:3.0',
             services: ['mysql'],
             variables: { KEY: 'value' } }
         end
@@ -142,8 +142,9 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Terminal do
             .to eq(
               tag_list: ['webide'],
               yaml_variables: [{ key: 'KEY', value: 'value', public: true }],
+              job_variables: [{ key: 'KEY', value: 'value', public: true }],
               options: {
-                image: { name: "ruby:2.5" },
+                image: { name: "ruby:3.0" },
                 services: [{ name: "mysql" }],
                 before_script: %w[ls pwd],
                 script: ['sleep 100']

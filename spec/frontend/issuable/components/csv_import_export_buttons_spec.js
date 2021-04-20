@@ -9,6 +9,9 @@ describe('CsvImportExportButtons', () => {
   let wrapper;
   let glModalDirective;
 
+  const exportCsvPath = '/gitlab-org/gitlab-test/-/issues/export_csv';
+  const issuableCount = 10;
+
   function createComponent(injectedProperties = {}) {
     glModalDirective = jest.fn();
     return extendedWrapper(
@@ -23,6 +26,10 @@ describe('CsvImportExportButtons', () => {
         },
         provide: {
           ...injectedProperties,
+        },
+        propsData: {
+          exportCsvPath,
+          issuableCount,
         },
       }),
     );
@@ -57,7 +64,7 @@ describe('CsvImportExportButtons', () => {
       });
 
       it('renders the export modal', () => {
-        expect(findExportCsvModal().exists()).toBe(true);
+        expect(findExportCsvModal().props()).toMatchObject({ exportCsvPath, issuableCount });
       });
 
       it('opens the export modal', () => {

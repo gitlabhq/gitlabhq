@@ -107,6 +107,8 @@ module Gitlab
         entry.data = data.join
 
         entry unless entry.oid.blank?
+      rescue GRPC::NotFound
+        nil
       end
 
       def tree_entries(repository, revision, path, recursive)

@@ -6,6 +6,7 @@ RSpec.describe ApplicationSetting::TermPolicy do
   include TermsHelper
 
   let_it_be(:term) { create(:term) }
+
   let(:user) { create(:user) }
 
   subject(:policy) { described_class.new(user, term) }

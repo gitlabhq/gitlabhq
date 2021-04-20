@@ -6,6 +6,7 @@ require 'test_prof/recipes/rspec/let_it_be'
 RSpec.describe ::Gitlab::Graphql::BatchKey do
   let_it_be(:rect) { Struct.new(:len, :width) }
   let_it_be(:circle) { Struct.new(:radius) }
+
   let(:lookahead) { nil }
   let(:object) { rect.new(2, 3) }
 

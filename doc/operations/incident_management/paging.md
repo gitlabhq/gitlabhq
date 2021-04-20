@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Health
+group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -32,3 +32,9 @@ a single email notification for new alerts.
 1. In the **Alert Integration** tab, select the checkbox
    **Send a single email notification to Owners and Maintainers for new alerts**.
 1. Select **Save changes**.
+
+## Paging **(PREMIUM)**
+
+In projects that have an [on-call schedule](oncall_schedules.md) configured, on-call responders are
+paged through email for triggered alerts. The on-call responder(s) receive one email for triggered
+alerts.

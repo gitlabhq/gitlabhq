@@ -26,14 +26,14 @@ export default {
   },
   directives: { GlTooltip: GlTooltipDirective },
   computed: {
-    ...mapState('detail', ['release', 'releaseAssetsDocsPath']),
-    ...mapGetters('detail', ['validationErrors']),
+    ...mapState('editNew', ['release', 'releaseAssetsDocsPath']),
+    ...mapGetters('editNew', ['validationErrors']),
   },
   created() {
     this.ensureAtLeastOneLink();
   },
   methods: {
-    ...mapActions('detail', [
+    ...mapActions('editNew', [
       'addEmptyAssetLink',
       'updateAssetLinkUrl',
       'updateAssetLinkName',

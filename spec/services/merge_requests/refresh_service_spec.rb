@@ -198,7 +198,7 @@ RSpec.describe MergeRequests::RefreshService do
       end
     end
 
-    describe 'Pipelines for merge requests' do
+    shared_examples 'Pipelines for merge requests' do
       before do
         stub_ci_pipeline_yaml_file(config)
       end
@@ -256,7 +256,7 @@ RSpec.describe MergeRequests::RefreshService do
             stub_feature_flags(ci_disallow_to_create_merge_request_pipelines_in_target_project: false)
           end
 
-          it 'creates detached merge request pipeline for fork merge request', :sidekiq_inline do
+          it 'creates detached merge request pipeline for fork merge request' do
             expect { subject }
               .to change { @fork_merge_request.pipelines_for_merge_request.count }.by(1)
 
@@ -362,6 +362,18 @@ RSpec.describe MergeRequests::RefreshService do
           expect(@merge_request.pipelines_for_merge_request.last).to be_config_error
         end
       end
+    end
+
+    context 'when the code_review_async_pipeline_creation feature flag is on', :sidekiq_inline do
+      it_behaves_like 'Pipelines for merge requests'
+    end
+
+    context 'when the code_review_async_pipeline_creation feature flag is off', :sidekiq_inline do
+      before do
+        stub_feature_flags(code_review_async_pipeline_creation: false)
+      end
+
+      it_behaves_like 'Pipelines for merge requests'
     end
 
     context 'push to origin repo source branch' do

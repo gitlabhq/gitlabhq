@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import { pickBy } from 'lodash';
 import { createNodeDict } from './components/parsing_utils';
 import { SUPPORTED_FILTER_PARAMETERS } from './constants';
@@ -64,4 +65,11 @@ export const generateJobNeedsDict = (jobs = {}) => {
 
     return { ...acc, [value]: uniqueValues };
   }, {});
+};
+
+export const reportToSentry = (component, failureType) => {
+  Sentry.withScope((scope) => {
+    scope.setTag('component', component);
+    Sentry.captureException(failureType);
+  });
 };

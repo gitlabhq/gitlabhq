@@ -57,6 +57,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
 
       describe 'basic verification that references work' do
         let_it_be(:project) { create(:project, :public) }
+
         let(:issue) { create(:issue, project: project) }
         let(:note) { build(:note, note: "Referencing #{issue.to_reference(full: true)}") }
 

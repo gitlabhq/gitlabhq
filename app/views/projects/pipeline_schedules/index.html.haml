@@ -9,7 +9,7 @@
 
   - if can?(current_user, :create_pipeline_schedule, @project)
     .nav-controls
-      = link_to new_project_pipeline_schedule_path(@project), class: 'btn gl-button btn-success' do
+      = link_to new_project_pipeline_schedule_path(@project), class: 'btn gl-button btn-confirm' do
         %span= _('New schedule')
 
 - if @schedules.present?

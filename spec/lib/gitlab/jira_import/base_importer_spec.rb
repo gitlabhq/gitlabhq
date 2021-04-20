@@ -27,6 +27,7 @@ RSpec.describe Gitlab::JiraImport::BaseImporter do
         context 'when import data exists' do
           let_it_be(:project) { create(:project) }
           let_it_be(:jira_import) { create(:jira_import_state, project: project) }
+
           let(:subject) { described_class.new(project) }
 
           context 'when #imported_items_cache_key is not implemented' do

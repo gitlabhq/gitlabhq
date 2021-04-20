@@ -8,6 +8,7 @@
     "requested_at",
     "source",
     "valid_roles",
+    "type",
     "can_update",
     "can_remove",
     "is_direct_member"
@@ -40,6 +41,7 @@
       "additionalProperties": false
     },
     "valid_roles": { "type": "object" },
+    "type": { "type": "string" },
     "created_by": {
       "type": "object",
       "required": ["name", "web_url"],

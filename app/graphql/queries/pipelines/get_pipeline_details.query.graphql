@@ -27,6 +27,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
       __typename
       id
       iid
+      usesNeeds
       downstream {
         __typename
         nodes {

@@ -81,6 +81,7 @@ RSpec.describe Emails::Projects do
 
     context 'with environment' do
       let_it_be(:environment) { create(:environment, project: project) }
+
       let(:payload) { { 'gitlab_environment_name' => environment.name } }
       let(:metrics_url) { metrics_project_environment_url(project, environment) }
 

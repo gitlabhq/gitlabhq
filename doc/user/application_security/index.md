@@ -178,43 +178,6 @@ authorization credentials. By default, content of specific headers are masked in
 reports. You can specify the list of all headers to be masked. For details, see
 [Hide sensitive information](dast/index.md#hide-sensitive-information).
 
-## View details of an API Fuzzing vulnerability
-
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.7.
-
-Faults detected by API Fuzzing occur in the live web application, and require manual investigation
-to determine if they are vulnerabilities. Fuzzing faults are included as vulnerabilities with a
-severity of Unknown. To facilitate investigation of the fuzzing faults, detailed information is
-provided about the HTTP messages sent and received along with a description of the modification(s)
-made.
-
-Follow these steps to view details of a fuzzing fault:
-
-1. You can view faults in a project, or a merge request:
-
-   - In a project, go to the project's **{shield}** **Security & Compliance > Vulnerability Report**
-     page. This page shows all vulnerabilities from the default branch only.
-   - In a merge request, go the merge request's **Security** section and click the **Expand**
-     button. API Fuzzing faults are available in a section labeled
-     **API Fuzzing detected N potential vulnerabilities**. Click the title to display the fault
-     details.
-
-1. Click the fault's title to display the fault's details. The table below describes these details.
-
-| Field            | Description                                                        |
-|:-----------------|:------------------------------------------------------------------ |
-| Description      | Description of the fault including what was modified.              |
-| Project          | Namespace and project in which the vulnerability was detected.     |
-| Method           | HTTP method used to detect the vulnerability.                      |
-| URL              | URL at which the vulnerability was detected.                       |
-| Request          | The HTTP request that caused the fault.                       |
-| Unmodified Response | Response from an unmodified request. This is what a normal working response looks like. |
-| Actual Response  | Response received from fuzzed request.                             |
-| Evidence         | How we determined a fault occurred.                                |
-| Identifiers      | The fuzzing check used to find this fault.                         |
-| Severity         | Severity of the finding is always Unknown.                          |
-| Scanner Type     | Scanner used to perform testing.                                   |
-
 ## Addressing vulnerabilities
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.8.
@@ -265,15 +228,7 @@ If you already have an open issue, you can link to it from the vulnerability.
 To link to an existing issue:
 
 1. Open the vulnerability.
-1. In the **Related Issues** section, select the plus (**{plus}**) icon.
-1. In the text box that appears, type an issue number or paste an issue link.
-   - Type `#` followed by a number to show an autocomplete menu.
-   - You can enter multiple issues at once. Press the space bar after each issue number or link to converts them to tags.
-1. Select **Add**.
-
-To remove an issue, to the right of the issue number, select **{close}**.
-
-![Vulnerability related issues text box tags animation](img/vulnerability_related_issues_text_box_tags_v13_2.gif)
+1. [Add a linked issue](../project/issues/related_issues.md).
 
 ### Apply an automatic remediation for a vulnerability
 
@@ -311,7 +266,7 @@ request created to automatically solve the issue.
 If this action is available:
 
 1. Select the **Resolve with merge request** dropdown, then select **Resolve with merge request**.
-   
+
    ![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
 
 A merge request is created. It that applies the solution to the source branch.
@@ -407,7 +362,7 @@ to pass a username and password. You can set it under your project's settings
 so that your credentials aren't exposed in `.gitlab-ci.yml`.
 
 If the username is `myuser` and the password is `verysecret` then you would
-[set the following variable](../../ci/variables/README.md#create-a-custom-variable-in-the-ui)
+[set the following variable](../../ci/variables/README.md#custom-cicd-variables)
 under your project's settings:
 
 | Type     | Key              | Value |
@@ -616,9 +571,8 @@ Instructions are available in the [legacy template project](https://gitlab.com/g
 
 This is the current default behavior, because the job's status indicates success or failure of the analyzer itself.
 Analyzer results are displayed in the [job logs](../../ci/jobs/index.md#expand-and-collapse-job-log-sections),
-[Merge Request widget](sast/index.md)
+[Merge Request widget](#view-security-scan-information-in-merge-requests)
 or [Security Dashboard](security_dashboard/index.md).
-There is [an open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/235772) in which changes to this behavior are being discussed.
 
 ### Error: job `is used for configuration only, and its script should not be executed`
 

@@ -8,15 +8,16 @@ module Resolvers
 
       argument :path, GraphQL::STRING_TYPE,
                required: true,
-               description: "Path to a file which defines metrics dashboard " \
-                            "eg: 'config/prometheus/common_metrics.yml'."
+               description: <<~MD
+                 Path to a file which defines a metrics dashboard eg: `"config/prometheus/common_metrics.yml"`.
+               MD
 
       alias_method :environment, :object
 
-      def resolve(**args)
+      def resolve(path:)
         return unless environment
 
-        ::PerformanceMonitoring::PrometheusDashboard.find_for(**args, **service_params)
+        ::PerformanceMonitoring::PrometheusDashboard.find_for(path: path, **service_params)
       end
 
       private

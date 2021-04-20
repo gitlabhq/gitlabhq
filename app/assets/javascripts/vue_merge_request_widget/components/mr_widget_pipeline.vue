@@ -14,6 +14,7 @@ import { s__, n__ } from '~/locale';
 import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import { MT_MERGE_STRATEGY } from '../constants';
 
@@ -28,6 +29,7 @@ export default {
     GlTooltip,
     PipelineArtifacts,
     PipelineMiniGraph,
+    TimeAgoTooltip,
     TooltipOnTruncate,
     LinkedPipelinesMiniList: () =>
       import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
@@ -114,6 +116,9 @@ export default {
     showSourceBranch() {
       return Boolean(this.pipeline.ref.branch);
     },
+    finishedAt() {
+      return this.pipeline?.details?.finished_at;
+    },
     coverageDeltaClass() {
       const delta = this.pipelineCoverageDelta;
       if (delta && parseFloat(delta) > 0) {
@@ -127,10 +132,20 @@ export default {
     pipelineCoverageJobNumberText() {
       return n__('from %d job', 'from %d jobs', this.buildsWithCoverage.length);
     },
+    pipelineCoverageTooltipDeltaDescription() {
+      const delta = parseFloat(this.pipelineCoverageDelta) || 0;
+      if (delta > 0) {
+        return s__('Pipeline|This change will increase the overall test coverage if merged.');
+      }
+      if (delta < 0) {
+        return s__('Pipeline|This change will decrease the overall test coverage if merged.');
+      }
+      return s__('Pipeline|This change will not change the overall test coverage if merged.');
+    },
     pipelineCoverageTooltipDescription() {
       return n__(
-        'Coverage value for this pipeline was calculated by the coverage value of %d job.',
-        'Coverage value for this pipeline was calculated by averaging the resulting coverage values of %d jobs.',
+        'Test coverage value for this pipeline was calculated by the coverage value of %d job.',
+        'Test coverage value for this pipeline was calculated by averaging the resulting coverage values of %d jobs.',
         this.buildsWithCoverage.length,
       );
     },
@@ -216,15 +231,24 @@ export default {
                   class="label-branch label-truncate gl-font-weight-normal"
                 />
               </template>
+              <template v-if="finishedAt">
+                <time-ago-tooltip
+                  :time="finishedAt"
+                  tooltip-placement="bottom"
+                  data-testid="finished-at"
+                />
+              </template>
             </div>
             <div v-if="pipeline.coverage" class="coverage" data-testid="pipeline-coverage">
-              {{ s__('Pipeline|Coverage') }} {{ pipeline.coverage }}%
+              {{ s__('Pipeline|Test coverage') }} {{ pipeline.coverage }}%
               <span
                 v-if="pipelineCoverageDelta"
+                ref="pipelineCoverageDelta"
                 :class="coverageDeltaClass"
                 data-testid="pipeline-coverage-delta"
-                >({{ pipelineCoverageDelta }}%)</span
               >
+                ({{ pipelineCoverageDelta }}%)
+              </span>
               {{ pipelineCoverageJobNumberText }}
               <span ref="pipelineCoverageQuestion">
                 <gl-icon name="question" :size="12" />
@@ -241,6 +265,12 @@ export default {
                 >
                   {{ build.name }} ({{ build.coverage }}%)
                 </div>
+              </gl-tooltip>
+              <gl-tooltip
+                :target="() => $refs.pipelineCoverageDelta"
+                data-testid="pipeline-coverage-delta-tooltip"
+              >
+                {{ pipelineCoverageTooltipDeltaDescription }}
               </gl-tooltip>
             </div>
           </div>

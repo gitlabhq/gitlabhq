@@ -85,6 +85,7 @@ RSpec.describe ProjectsHelper do
 
   describe "can_change_visibility_level?" do
     let_it_be(:user) { create(:project_member, :reporter, user: create(:user), project: project).user }
+
     let(:forked_project) { fork_project(project, user) }
 
     it "returns false if there are no appropriate permissions" do

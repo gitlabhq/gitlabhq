@@ -12,25 +12,39 @@ RSpec.describe API::IssueLinks do
   end
 
   describe 'GET /links' do
+    def perform_request(user = nil, params = {})
+      get api("/projects/#{project.id}/issues/#{issue.iid}/links", user), params: params
+    end
+
     context 'when unauthenticated' do
       it 'returns 401' do
-        get api("/projects/#{project.id}/issues/#{issue.iid}/links")
+        perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
     context 'when authenticated' do
-      it 'returns related issues' do
-        target_issue = create(:issue, project: project)
-        create(:issue_link, source: issue, target: target_issue)
+      let_it_be(:issue_link1) { create(:issue_link, source: issue, target: create(:issue, project: project)) }
+      let_it_be(:issue_link2) { create(:issue_link, source: issue, target: create(:issue, project: project)) }
 
-        get api("/projects/#{project.id}/issues/#{issue.iid}/links", user)
+      it 'returns related issues' do
+        perform_request(user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
+        expect(json_response.length).to eq(2)
         expect(response).to match_response_schema('public_api/v4/issue_links')
+      end
+
+      it 'returns multiple links without N + 1' do
+        perform_request(user)
+
+        control_count = ActiveRecord::QueryRecorder.new { perform_request(user) }.count
+
+        create(:issue_link, source: issue, target: create(:issue, project: project))
+
+        expect { perform_request(user) }.not_to exceed_query_limit(control_count)
       end
     end
   end
@@ -82,7 +96,7 @@ RSpec.describe API::IssueLinks do
                params: { target_project_id: unauthorized_project.id, target_issue_iid: target_issue.iid }
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('No Issue found for given params')
+          expect(json_response['message']).to eq('No matching issue found. Make sure that you are adding a valid issue URL.')
         end
       end
 

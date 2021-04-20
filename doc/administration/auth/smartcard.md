@@ -123,8 +123,8 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
    NOTE: **Note**
    Assign a value to at least one of the following variables:
-   gitlab_rails['smartcard_client_certificate_required_host'] or
-   gitlab_rails['smartcard_client_certificate_required_port'].
+   `gitlab_rails['smartcard_client_certificate_required_host']` or
+   `gitlab_rails['smartcard_client_certificate_required_port']`.
 
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
    GitLab for the changes to take effect.

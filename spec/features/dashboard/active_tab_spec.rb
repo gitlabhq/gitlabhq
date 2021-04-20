@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard Active Tab', :js do
   before do
+    stub_feature_flags(combined_menu: false)
+
     sign_in(create(:user))
   end
 

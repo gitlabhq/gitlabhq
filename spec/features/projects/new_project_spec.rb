@@ -12,6 +12,72 @@ RSpec.describe 'New project', :js do
       sign_in(user)
     end
 
+    context 'new repo experiment', :experiment do
+      it 'when in control renders "project"' do
+        stub_experiments(new_repo: :control)
+
+        visit new_project_path
+
+        find('li.header-new.dropdown').click
+
+        page.within('li.header-new.dropdown') do
+          expect(page).to have_selector('a', text: 'New project')
+          expect(page).to have_no_selector('a', text: 'New project/repository')
+        end
+
+        expect(page).to have_selector('.blank-state-title', text: 'Create blank project')
+        expect(page).to have_no_selector('.blank-state-title', text: 'Create blank project/repository')
+      end
+
+      it 'when in candidate renders "project/repository"' do
+        stub_experiments(new_repo: :candidate)
+
+        visit new_project_path
+
+        find('li.header-new.dropdown').click
+
+        page.within('li.header-new.dropdown') do
+          expect(page).to have_selector('a', text: 'New project/repository')
+        end
+
+        expect(page).to have_selector('.blank-state-title', text: 'Create blank project/repository')
+      end
+
+      context 'with combined_menu feature disabled' do
+        before do
+          stub_feature_flags(combined_menu: false)
+        end
+
+        it 'when in control it renders "project" in the new projects dropdown' do
+          stub_experiments(new_repo: :control)
+
+          visit new_project_path
+
+          find('#nav-projects-dropdown').click
+
+          page.within('#nav-projects-dropdown') do
+            expect(page).to have_selector('a', text: 'Create blank project')
+            expect(page).to have_selector('a', text: 'Import project')
+            expect(page).to have_no_selector('a', text: 'Create blank project/repository')
+            expect(page).to have_no_selector('a', text: 'Import project/repository')
+          end
+        end
+
+        it 'when in candidate it renders "project/repository" in the new projects dropdown' do
+          stub_experiments(new_repo: :candidate)
+
+          visit new_project_path
+
+          find('#nav-projects-dropdown').click
+
+          page.within('#nav-projects-dropdown') do
+            expect(page).to have_selector('a', text: 'Create blank project/repository')
+            expect(page).to have_selector('a', text: 'Import project/repository')
+          end
+        end
+      end
+    end
+
     it 'shows a message if multiple levels are restricted' do
       Gitlab::CurrentSettings.update!(
         restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL]

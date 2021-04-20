@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::MilestoneFinder, :clean_gitlab_redis_cache do
   let_it_be(:project) { create(:project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
+
   let(:finder) { described_class.new(project) }
 
   describe '#id_for' do

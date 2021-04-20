@@ -141,6 +141,30 @@ RSpec.describe 'Group' do
         end
       end
     end
+
+    describe 'showing recaptcha on group creation when it is enabled' do
+      before do
+        stub_application_setting(recaptcha_enabled: true)
+        allow(Gitlab::Recaptcha).to receive(:load_configurations!)
+        visit new_group_path
+      end
+
+      it 'renders recaptcha' do
+        expect(page).to have_css('.recaptcha')
+      end
+    end
+
+    describe 'not showing recaptcha on group creation when it is disabled' do
+      before do
+        stub_feature_flags(recaptcha_on_top_level_group_creation: false)
+        stub_application_setting(recaptcha_enabled: true)
+        visit new_group_path
+      end
+
+      it 'does not render recaptcha' do
+        expect(page).not_to have_css('.recaptcha')
+      end
+    end
   end
 
   describe 'create a nested group' do
@@ -189,6 +213,46 @@ RSpec.describe 'Group' do
         expect(page).to have_content("Group 'bar' was successfully created.")
       end
     end
+
+    context 'when recaptcha is enabled' do
+      before do
+        stub_application_setting(recaptcha_enabled: true)
+        allow(Gitlab::Recaptcha).to receive(:load_configurations!)
+      end
+
+      context 'when creating subgroup' do
+        let(:path) { new_group_path(group, parent_id: group.id) }
+
+        it 'does not render recaptcha' do
+          visit path
+
+          expect(page).not_to have_css('.recaptcha')
+        end
+      end
+    end
+
+    describe 'real-time group url validation', :js do
+      let_it_be(:subgroup) { create(:group, path: 'sub', parent: group) }
+
+      before do
+        group.add_owner(user)
+        visit new_group_path(parent_id: group.id)
+      end
+
+      it 'shows a message if group url is available' do
+        fill_in 'Group URL', with: group.path
+        wait_for_requests
+
+        expect(page).to have_content('Group path is available')
+      end
+
+      it 'shows an error if group url is taken' do
+        fill_in 'Group URL', with: subgroup.path
+        wait_for_requests
+
+        expect(page).to have_content('Group path is already taken')
+      end
+    end
   end
 
   it 'checks permissions to avoid exposing groups by parent_id' do
@@ -203,6 +267,7 @@ RSpec.describe 'Group' do
 
   describe 'group edit', :js do
     let_it_be(:group) { create(:group, :public) }
+
     let(:path) { edit_group_path(group) }
     let(:new_name) { 'new-name' }
 
@@ -248,6 +313,7 @@ RSpec.describe 'Group' do
 
   describe 'group page with markdown description' do
     let_it_be(:group) { create(:group) }
+
     let(:path) { group_path(group) }
 
     before do

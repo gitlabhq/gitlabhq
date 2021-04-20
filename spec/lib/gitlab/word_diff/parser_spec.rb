@@ -36,15 +36,26 @@ RSpec.describe Gitlab::WordDiff::Parser do
       aggregate_failures do
         expect(diff_lines.count).to eq(7)
 
-        expect(diff_lines.map(&:to_hash)).to match_array(
+        expect(diff_lines.map { |line| diff_line_attributes(line) }).to eq(
           [
-            a_hash_including(index: 0, old_pos: 1, new_pos: 1, text: '', type: nil),
-            a_hash_including(index: 1, old_pos: 2, new_pos: 2, text: 'Unchanged line', type: nil),
-            a_hash_including(index: 2, old_pos: 3, new_pos: 3, text: '', type: nil),
-            a_hash_including(index: 3, old_pos: 4, new_pos: 4, text: 'Old changeNew addition unchanged content', type: nil),
-            a_hash_including(index: 4, old_pos: 50, new_pos: 50, text: '@@ -50,14 +50,13 @@', type: 'match'),
-            a_hash_including(index: 5, old_pos: 50, new_pos: 50, text: 'First change same same same_removed_added_end of the line', type: nil),
-            a_hash_including(index: 6, old_pos: 51, new_pos: 51, text: '', type: nil)
+            { index: 0, old_pos: 1, new_pos: 1, text: '', type: nil, marker_ranges: [] },
+            { index: 1, old_pos: 2, new_pos: 2, text: 'Unchanged line', type: nil, marker_ranges: [] },
+            { index: 2, old_pos: 3, new_pos: 3, text: '', type: nil, marker_ranges: [] },
+            { index: 3, old_pos: 4, new_pos: 4, text: 'Old changeNew addition unchanged content', type: nil,
+                             marker_ranges: [
+                               Gitlab::MarkerRange.new(0, 9, mode: :deletion),
+                               Gitlab::MarkerRange.new(10, 21, mode: :addition)
+                             ] },
+
+            { index: 4, old_pos: 50, new_pos: 50, text: '@@ -50,14 +50,13 @@', type: 'match', marker_ranges: [] },
+            { index: 5, old_pos: 50, new_pos: 50, text: 'First change same same same_removed_added_end of the line', type: nil,
+                             marker_ranges: [
+                               Gitlab::MarkerRange.new(0, 11, mode: :addition),
+                               Gitlab::MarkerRange.new(28, 35, mode: :deletion),
+                               Gitlab::MarkerRange.new(36, 41, mode: :addition)
+                             ] },
+
+            { index: 6, old_pos: 51, new_pos: 51, text: '', type: nil, marker_ranges: [] }
           ]
         )
       end
@@ -63,5 +74,18 @@ RSpec.describe Gitlab::WordDiff::Parser do
 
       it { is_expected.to eq([]) }
     end
+  end
+
+  private
+
+  def diff_line_attributes(diff_line)
+    {
+      index: diff_line.index,
+      old_pos: diff_line.old_pos,
+      new_pos: diff_line.new_pos,
+      text: diff_line.text,
+      type: diff_line.type,
+      marker_ranges: diff_line.marker_ranges
+    }
   end
 end

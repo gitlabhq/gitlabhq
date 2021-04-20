@@ -891,6 +891,7 @@ RSpec.describe Project, factory_default: :keep do
   describe '#get_issue' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
+
     let!(:issue) { create(:issue, project: project) }
 
     before_all do
@@ -1351,6 +1352,34 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '.with_remote_mirrors' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    subject { described_class.with_remote_mirrors }
+
+    context 'when some remote mirrors are enabled for the project' do
+      let!(:remote_mirror) { create(:remote_mirror, project: project, enabled: true) }
+
+      it "returns a project" do
+        is_expected.to eq([project])
+      end
+    end
+
+    context 'when some remote mirrors exists but disabled for the project' do
+      let!(:remote_mirror) { create(:remote_mirror, project: project, enabled: false) }
+
+      it "returns a project" do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when no remote mirrors exist for the project' do
+      it "returns an empty list" do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.with_active_jira_services' do
     it 'returns the correct project' do
       active_jira_service = create(:jira_service)
@@ -1600,6 +1629,8 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#any_active_runners?' do
+    subject { project.any_active_runners? }
+
     context 'shared runners' do
       let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
       let(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
@@ -1609,19 +1640,19 @@ RSpec.describe Project, factory_default: :keep do
         let(:shared_runners_enabled) { false }
 
         it 'has no runners available' do
-          expect(project.any_active_runners?).to be_falsey
+          is_expected.to be_falsey
         end
 
         it 'has a specific runner' do
           specific_runner
 
-          expect(project.any_active_runners?).to be_truthy
+          is_expected.to be_truthy
         end
 
         it 'has a shared runner, but they are prohibited to use' do
           shared_runner
 
-          expect(project.any_active_runners?).to be_falsey
+          is_expected.to be_falsey
         end
 
         it 'checks the presence of specific runner' do
@@ -1643,7 +1674,7 @@ RSpec.describe Project, factory_default: :keep do
         it 'has a shared runner' do
           shared_runner
 
-          expect(project.any_active_runners?).to be_truthy
+          is_expected.to be_truthy
         end
 
         it 'checks the presence of shared runner' do
@@ -1669,13 +1700,13 @@ RSpec.describe Project, factory_default: :keep do
         let(:group_runners_enabled) { false }
 
         it 'has no runners available' do
-          expect(project.any_active_runners?).to be_falsey
+          is_expected.to be_falsey
         end
 
         it 'has a group runner, but they are prohibited to use' do
           group_runner
 
-          expect(project.any_active_runners?).to be_falsey
+          is_expected.to be_falsey
         end
       end
 
@@ -1685,7 +1716,7 @@ RSpec.describe Project, factory_default: :keep do
         it 'has a group runner' do
           group_runner
 
-          expect(project.any_active_runners?).to be_truthy
+          is_expected.to be_truthy
         end
 
         it 'checks the presence of group runner' do
@@ -1698,6 +1729,126 @@ RSpec.describe Project, factory_default: :keep do
           group_runner
 
           expect(project.any_active_runners? { false }).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe '#any_online_runners?' do
+    subject { project.any_online_runners? }
+
+    context 'shared runners' do
+      let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
+      let(:specific_runner) { create(:ci_runner, :project, :online, projects: [project]) }
+      let(:shared_runner) { create(:ci_runner, :instance, :online) }
+      let(:offline_runner) { create(:ci_runner, :instance) }
+
+      context 'for shared runners disabled' do
+        let(:shared_runners_enabled) { false }
+
+        it 'has no runners available' do
+          is_expected.to be_falsey
+        end
+
+        it 'has a specific runner' do
+          specific_runner
+
+          is_expected.to be_truthy
+        end
+
+        it 'has a shared runner, but they are prohibited to use' do
+          shared_runner
+
+          is_expected.to be_falsey
+        end
+
+        it 'checks the presence of specific runner' do
+          specific_runner
+
+          expect(project.any_online_runners? { |runner| runner == specific_runner }).to be_truthy
+        end
+
+        it 'returns false if match cannot be found' do
+          specific_runner
+
+          expect(project.any_online_runners? { false }).to be_falsey
+        end
+
+        it 'returns false if runner is offline' do
+          offline_runner
+
+          is_expected.to be_falsey
+        end
+      end
+
+      context 'for shared runners enabled' do
+        let(:shared_runners_enabled) { true }
+
+        it 'has a shared runner' do
+          shared_runner
+
+          is_expected.to be_truthy
+        end
+
+        it 'checks the presence of shared runner' do
+          shared_runner
+
+          expect(project.any_online_runners? { |runner| runner == shared_runner }).to be_truthy
+        end
+
+        it 'returns false if match cannot be found' do
+          shared_runner
+
+          expect(project.any_online_runners? { false }).to be_falsey
+        end
+      end
+    end
+
+    context 'group runners' do
+      let(:project) { create(:project, group_runners_enabled: group_runners_enabled) }
+      let(:group) { create(:group, projects: [project]) }
+      let(:group_runner) { create(:ci_runner, :group, :online, groups: [group]) }
+      let(:offline_runner) { create(:ci_runner, :group, groups: [group]) }
+
+      context 'for group runners disabled' do
+        let(:group_runners_enabled) { false }
+
+        it 'has no runners available' do
+          is_expected.to be_falsey
+        end
+
+        it 'has a group runner, but they are prohibited to use' do
+          group_runner
+
+          is_expected.to be_falsey
+        end
+      end
+
+      context 'for group runners enabled' do
+        let(:group_runners_enabled) { true }
+
+        it 'has a group runner' do
+          group_runner
+
+          is_expected.to be_truthy
+        end
+
+        it 'has an offline group runner' do
+          offline_runner
+
+          is_expected.to be_falsey
+        end
+
+        it 'checks the presence of group runner' do
+          group_runner
+
+          expect(project.any_online_runners? { |runner| runner == group_runner }).to be_truthy
+        end
+
+        it 'returns false if match cannot be found' do
+          group_runner
+
+          expect(project.any_online_runners? { false }).to be_falsey
         end
       end
     end
@@ -2378,6 +2529,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#latest_pipeline' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:second_branch) { project.repository.branches[2] }
 
     let!(:pipeline_for_default_branch) do
@@ -2842,6 +2994,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#emails_disabled?' do
     let_it_be(:namespace) { create(:namespace) }
+
     let(:project) { build(:project, namespace: namespace, emails_disabled: false) }
 
     context 'emails disabled in group' do
@@ -3162,6 +3315,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#ci_variables_for' do
     let_it_be(:project) { create(:project) }
+
     let(:environment_scope) { '*' }
 
     let!(:ci_variable) do
@@ -3649,49 +3803,74 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#default_merge_request_target' do
+    let_it_be(:project) { create(:project, :public) }
+
+    let!(:forked) { fork_project(project) }
+
+    context 'when mr_default_target_self is set to true' do
+      it 'returns the current project' do
+        expect(forked.project_setting).to receive(:mr_default_target_self)
+          .and_return(true)
+
+        expect(forked.default_merge_request_target).to eq(forked)
+      end
+    end
+
+    context 'when merge request can not target upstream' do
+      it 'returns the current project' do
+        expect(forked).to receive(:mr_can_target_upstream?).and_return(false)
+
+        expect(forked.default_merge_request_target).to eq(forked)
+      end
+    end
+
+    context 'when merge request can target upstream' do
+      it 'returns the source project' do
+        expect(forked).to receive(:mr_can_target_upstream?).and_return(true)
+
+        expect(forked.default_merge_request_target).to eq(project)
+      end
+    end
+  end
+
+  describe '#mr_can_target_upstream?' do
+    let_it_be(:project) { create(:project, :public) }
+
+    let!(:forked) { fork_project(project) }
+
     context 'when forked from a more visible project' do
-      it 'returns the more restrictive project' do
-        project = create(:project, :public)
-        forked = fork_project(project)
+      it 'can not target the upstream project' do
         forked.visibility = Gitlab::VisibilityLevel::PRIVATE
         forked.save!
 
         expect(project.visibility).to eq 'public'
         expect(forked.visibility).to eq 'private'
 
-        expect(forked.default_merge_request_target).to eq(forked)
+        expect(forked.mr_can_target_upstream?).to be_falsey
       end
     end
 
     context 'when forked from a project with disabled merge requests' do
-      it 'returns the current project' do
-        project = create(:project, :merge_requests_disabled)
-        forked = fork_project(project)
+      it 'can not target the upstream project' do
+        project.project_feature
+          .update!(merge_requests_access_level: ProjectFeature::DISABLED)
 
         expect(forked.forked_from_project).to receive(:merge_requests_enabled?)
           .and_call_original
 
-        expect(forked.default_merge_request_target).to eq(forked)
+        expect(forked.mr_can_target_upstream?).to be_falsey
       end
     end
 
     context 'when forked from a project with enabled merge requests' do
-      it 'returns the source project' do
-        project = create(:project, :public)
-        forked = fork_project(project)
-
-        expect(project.visibility).to eq 'public'
-        expect(forked.visibility).to eq 'public'
-
-        expect(forked.default_merge_request_target).to eq(project)
+      it 'can target the upstream project' do
+        expect(forked.mr_can_target_upstream?).to be_truthy
       end
     end
 
     context 'when not forked' do
-      it 'returns the current project' do
-        project = build_stubbed(:project)
-
-        expect(project.default_merge_request_target).to eq(project)
+      it 'can not target the upstream project' do
+        expect(project.mr_can_target_upstream?).to be_falsey
       end
     end
   end
@@ -4007,6 +4186,7 @@ RSpec.describe Project, factory_default: :keep do
     include ProjectHelpers
 
     let_it_be(:group) { create(:group) }
+
     let!(:project) { create(:project, project_level, namespace: group ) }
     let(:user) { create_user_from_membership(project, membership) }
 
@@ -4109,7 +4289,7 @@ RSpec.describe Project, factory_default: :keep do
     subject { described_class.wrap_with_cte(projects) }
 
     it 'wrapped query matches original' do
-      expect(subject.to_sql).to match(/^WITH "projects_cte" AS/)
+      expect(subject.to_sql).to match(/^WITH "projects_cte" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
       expect(subject).to match_array(projects)
     end
   end
@@ -4200,7 +4380,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'does nothing if updates on legacy storage are disabled' do
-      stub_feature_flags(pages_update_legacy_storage: false)
+      allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
 
       expect(Gitlab::PagesTransfer).not_to receive(:new)
       expect(PagesWorker).not_to receive(:perform_in)
@@ -4272,6 +4452,7 @@ RSpec.describe Project, factory_default: :keep do
 
   context 'legacy storage' do
     let_it_be(:project) { create(:project, :repository, :legacy_storage) }
+
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:project_storage) { project.send(:storage) }
 
@@ -4371,6 +4552,7 @@ RSpec.describe Project, factory_default: :keep do
 
   context 'hashed storage' do
     let_it_be(:project) { create(:project, :repository, skip_disk_validation: true) }
+
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
     let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
@@ -4461,6 +4643,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#has_ci?' do
     let_it_be(:project, reload: true) { create(:project) }
+
     let(:repository) { double }
 
     before do
@@ -4957,6 +5140,7 @@ RSpec.describe Project, factory_default: :keep do
 
     context 'branch protection' do
       let_it_be(:namespace) { create(:namespace) }
+
       let(:project) { create(:project, :repository, namespace: namespace) }
 
       before do
@@ -5041,57 +5225,27 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#default_branch' do
-    context 'with an empty repository' do
-      let_it_be(:project) { create(:project_empty_repo) }
+    context 'with default_branch_name' do
+      let_it_be_with_refind(:root_group) { create(:group) }
+      let_it_be_with_refind(:project_group) { create(:group, parent: root_group) }
+      let_it_be_with_refind(:project) { create(:project, path: 'avatar', namespace: project_group) }
 
-      context 'group.default_branch_name is available' do
-        let(:project_group) { create(:group) }
-        let(:project) { create(:project, path: 'avatar', namespace: project_group) }
-
-        before do
-          expect(Gitlab::CurrentSettings)
-            .not_to receive(:default_branch_name)
-
-          expect(project.group)
-            .to receive(:default_branch_name)
-            .and_return('example_branch')
-        end
-
-        it 'returns the group default value' do
-          expect(project.default_branch).to eq('example_branch')
-        end
+      where(:instance_branch, :root_group_branch, :project_group_branch, :project_branch) do
+        ''      | nil           | nil            | nil
+        nil     | nil           | nil            | nil
+        'main'  | nil           | nil            | 'main'
+        'main'  | 'root_branch' | nil            | 'root_branch'
+        'main'  | 'root_branch' | 'group_branch' | 'group_branch'
       end
 
-      context 'Gitlab::CurrentSettings.default_branch_name is available' do
+      with_them do
         before do
-          expect(Gitlab::CurrentSettings)
-            .to receive(:default_branch_name)
-            .and_return(example_branch_name)
+          allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return(instance_branch)
+          root_group.namespace_settings.update!(default_branch_name: root_group_branch)
+          project_group.namespace_settings.update!(default_branch_name: project_group_branch)
         end
 
-        context 'is missing or nil' do
-          let(:example_branch_name) { nil }
-
-          it "returns nil" do
-            expect(project.default_branch).to be_nil
-          end
-        end
-
-        context 'is blank' do
-          let(:example_branch_name) { '' }
-
-          it 'returns nil' do
-            expect(project.default_branch).to be_nil
-          end
-        end
-
-        context 'is present' do
-          let(:example_branch_name) { 'example_branch_name' }
-
-          it 'returns the expected branch name' do
-            expect(project.default_branch).to eq(example_branch_name)
-          end
-        end
+        it { expect(project.default_branch).to eq(project_branch) }
       end
     end
   end
@@ -5636,16 +5790,34 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#find_or_initialize_services' do
-    before do
-      allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover teamcity])
-      allow(subject).to receive(:disabled_services).and_return(%w[prometheus])
+    let_it_be(:subject) { create(:project) }
+
+    it 'avoids N+1 database queries' do
+      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_services }.count
+
+      expect(control_count).to be <= 4
     end
 
-    it 'returns only enabled services' do
-      services = subject.find_or_initialize_services
+    it 'avoids N+1 database queries with more available services' do
+      allow(Service).to receive(:available_services_names).and_return(%w[pushover])
+      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_services }
 
-      expect(services.count).to eq(2)
-      expect(services.map(&:title)).to eq(['JetBrains TeamCity CI', 'Pushover'])
+      allow(Service).to receive(:available_services_names).and_call_original
+      expect { subject.find_or_initialize_services }.not_to exceed_query_limit(control_count)
+    end
+
+    context 'with disabled services' do
+      before do
+        allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover teamcity])
+        allow(subject).to receive(:disabled_services).and_return(%w[prometheus])
+      end
+
+      it 'returns only enabled services sorted' do
+        services = subject.find_or_initialize_services
+
+        expect(services.size).to eq(2)
+        expect(services.map(&:title)).to eq(['JetBrains TeamCity', 'Pushover'])
+      end
     end
   end
 
@@ -6074,12 +6246,15 @@ RSpec.describe Project, factory_default: :keep do
       project.set_first_pages_deployment!(deployment)
 
       expect(project.pages_metadatum.reload.pages_deployment).to eq(deployment)
+      expect(project.pages_metadatum.reload.deployed).to eq(true)
     end
 
     it "updates the existing metadara record with deployment" do
       expect do
         project.set_first_pages_deployment!(deployment)
       end.to change { project.pages_metadatum.reload.pages_deployment }.from(nil).to(deployment)
+
+      expect(project.pages_metadatum.reload.deployed).to eq(true)
     end
 
     it 'only updates metadata for this project' do
@@ -6088,6 +6263,8 @@ RSpec.describe Project, factory_default: :keep do
       expect do
         project.set_first_pages_deployment!(deployment)
       end.not_to change { other_project.pages_metadatum.reload.pages_deployment }.from(nil)
+
+      expect(other_project.pages_metadatum.reload.deployed).to eq(false)
     end
 
     it 'does nothing if metadata already references some deployment' do
@@ -6097,6 +6274,14 @@ RSpec.describe Project, factory_default: :keep do
       expect do
         project.set_first_pages_deployment!(deployment)
       end.not_to change { project.pages_metadatum.reload.pages_deployment }.from(existing_deployment)
+    end
+
+    it 'marks project as not deployed if deployment is nil' do
+      project.mark_pages_as_deployed
+
+      expect do
+        project.set_first_pages_deployment!(nil)
+      end.to change { project.pages_metadatum.reload.deployed }.from(true).to(false)
     end
   end
 
@@ -6556,6 +6741,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#latest_jira_import' do
     let_it_be(:project) { create(:project) }
+
     context 'when no jira imports' do
       it 'returns nil' do
         expect(project.latest_jira_import).to be nil

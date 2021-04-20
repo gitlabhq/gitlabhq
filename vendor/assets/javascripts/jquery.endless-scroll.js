@@ -19,7 +19,6 @@
  * // using some custom options
  * $(document).endlessScroll({
  *   fireOnce: false,
- *   fireDelay: false,
  *   loader: "<div class=\"loading\"><div>",
  *   callback: function(){
  *     alert("test");
@@ -30,7 +29,6 @@
  *
  * bottomPixels  integer          the number of pixels from the bottom of the page that triggers the event
  * fireOnce      boolean          only fire once until the execution of the current event is completed
- * fireDelay     integer          delay the subsequent firing, in milliseconds, 0 or false to disable delay
  * loader        string           the HTML to be displayed during loading
  * data          string|function  plain HTML data, can be either a string or a function that returns a string,
  *                                when passed as a function it accepts one argument: fire sequence (the number
@@ -55,7 +53,6 @@
     var defaults = {
       bottomPixels  : 50,
       fireOnce      : true,
-      fireDelay     : 150,
       loader        : "<br />Loading...<br />",
       data          : "",
       insertAfter   : "div:last",
@@ -102,21 +99,11 @@
           data = typeof options.data == 'function' ? options.data.apply(this, [fireSequence]) : options.data;
 
           if (data !== false) {
-            $(options.insertAfter).after("<div id=\"endless_scroll_data\">" + data + "</div>");
-            $("#endless_scroll_data").hide().fadeIn(250, function() {$(this).removeAttr("id");});
+            $(options.insertAfter).after("<div>" + data + "</div>");
 
             options.callback.apply(this, [fireSequence]);
 
-            if (options.fireDelay !== false || options.fireDelay !== 0) {
-              $("body").after("<div id=\"endless_scroll_marker\"></div>");
-              // slight delay for preventing event firing twice
-              $("#endless_scroll_marker").fadeTo(options.fireDelay, 1, function() {
-                $(this).remove();
-                fired = false;
-              });
-            }
-            else
-              fired = false;
+            fired = false;
           }
 
           $("#endless_scroll_loader").remove();

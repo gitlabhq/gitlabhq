@@ -70,6 +70,7 @@
     "can_create_group": { "type": "boolean" },
     "can_create_project": { "type": "boolean" },
     "two_factor_enabled": { "type": "boolean" },
-    "external": { "type": "boolean" }
+    "external": { "type": "boolean" },
+    "commit_email": { "type": "string" }
   }
 }

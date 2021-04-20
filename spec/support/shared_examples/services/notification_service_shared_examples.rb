@@ -45,7 +45,7 @@ RSpec.shared_examples 'group emails are disabled' do
 
   before do
     reset_delivered_emails!
-    target_group.clear_memoization(:emails_disabled)
+    target_group.clear_memoization(:emails_disabled_memoized)
   end
 
   it 'sends no emails with group emails disabled' do

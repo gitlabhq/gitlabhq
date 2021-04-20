@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe ::API::Entities::MergeRequestChanges do
   let_it_be(:user) { create(:user) }
   let_it_be(:merge_request) { create(:merge_request) }
+
   let(:entity) { described_class.new(merge_request, current_user: user) }
 
   subject(:basic_entity) { entity.as_json }

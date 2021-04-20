@@ -7,9 +7,7 @@ RSpec.shared_examples 'cannot search settings' do
 end
 
 RSpec.shared_examples 'can search settings' do |search_term, non_match_section|
-  it 'has search settings field' do
-    expect(page).to have_field(placeholder: SearchHelpers::INPUT_PLACEHOLDER)
-  end
+  it_behaves_like 'can highlight results', search_term
 
   it 'hides unmatching sections on search' do
     expect(page).to have_content(non_match_section)
@@ -21,22 +19,19 @@ RSpec.shared_examples 'can search settings' do |search_term, non_match_section|
   end
 end
 
-RSpec.shared_examples 'can search settings with feature flag check' do |search_term, non_match_section|
-  let(:flag) { true }
-
-  before do
-    stub_feature_flags(search_settings_in_page: flag)
-
-    visit(visit_path)
+RSpec.shared_examples 'can highlight results' do |search_term|
+  it 'has search settings field' do
+    expect(page).to have_field(placeholder: SearchHelpers::INPUT_PLACEHOLDER)
   end
 
-  context 'with feature flag on' do
-    it_behaves_like 'can search settings', search_term, non_match_section
-  end
+  it 'highlights the search terms' do
+    selector = '.gl-bg-orange-100'
+    fill_in SearchHelpers::INPUT_PLACEHOLDER, with: search_term
 
-  context 'with feature flag off' do
-    let(:flag) { false }
+    expect(page).to have_css(selector)
 
-    it_behaves_like 'cannot search settings'
+    page.find_all(selector) do |element|
+      expect(element).to have_content(search_term)
+    end
   end
 end

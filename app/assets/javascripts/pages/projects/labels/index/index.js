@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import initDeleteLabelModal from '~/delete_label_modal';
 import initLabels from '~/init_labels';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
@@ -9,6 +10,7 @@ Vue.use(Translate);
 
 const initLabelIndex = () => {
   initLabels();
+  initDeleteLabelModal();
 
   const onRequestFinished = ({ labelUrl, successful }) => {
     const button = document.querySelector(

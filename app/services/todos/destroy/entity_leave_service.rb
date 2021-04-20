@@ -65,8 +65,10 @@ module Todos
       end
 
       def remove_group_todos
+        return unless entity.is_a?(Namespace)
+
         Todo
-          .for_group(non_authorized_groups)
+          .for_group(non_authorized_non_public_groups)
           .for_user(user)
           .delete_all
       end
@@ -102,12 +104,19 @@ module Todos
         GroupsFinder.new(user, min_access_level: Gitlab::Access::REPORTER).execute.select(:id)
       end
 
-      def non_authorized_groups
+      # since the entity is a private group, we can assume all subgroups are also
+      # private.  We can therefore limit GroupsFinder with `all_available: false`.
+      # Otherwise it tries to include all public groups. This generates an expensive
+      # SQL queries: https://gitlab.com/gitlab-org/gitlab/-/issues/325133
+      # rubocop: disable CodeReuse/ActiveRecord
+      def non_authorized_non_public_groups
         return [] unless entity.is_a?(Namespace)
+        return [] unless entity.private?
 
         entity.self_and_descendants.select(:id)
-          .id_not_in(GroupsFinder.new(user).execute.select(:id))
+          .id_not_in(GroupsFinder.new(user, all_available: false).execute.select(:id).reorder(nil))
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def non_authorized_reporter_groups
         entity.self_and_descendants.select(:id)

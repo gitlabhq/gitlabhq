@@ -20,12 +20,29 @@ class ProjectFeatureUsage < ApplicationRecord
   end
 
   def log_jira_dvcs_integration_usage(cloud: true)
-    transaction(requires_new: true) do
-      save unless persisted?
-      touch(self.class.jira_dvcs_integration_field(cloud: cloud))
-    end
+    integration_field = self.class.jira_dvcs_integration_field(cloud: cloud)
+
+    # The feature usage is used only once later to query the feature usage in a
+    # long date range. Therefore, we just need to update the timestamp once per
+    # day
+    return if persisted? && updated_today?(integration_field)
+
+    persist_jira_dvcs_usage(integration_field)
+  end
+
+  private
+
+  def updated_today?(integration_field)
+    self[integration_field].present? && self[integration_field].today?
+  end
+
+  def persist_jira_dvcs_usage(integration_field)
+    assign_attributes(integration_field => Time.current)
+    save
   rescue ActiveRecord::RecordNotUnique
     reset
     retry
   end
 end
+
+ProjectFeatureUsage.prepend_if_ee('EE::ProjectFeatureUsage')

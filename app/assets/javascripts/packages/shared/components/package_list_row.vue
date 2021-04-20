@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
+import { GlButton, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { getPackageTypeLabel } from '../utils';
@@ -11,7 +11,6 @@ export default {
   name: 'PackageListRow',
   components: {
     GlButton,
-    GlIcon,
     GlLink,
     GlSprintf,
     GlTruncate,
@@ -19,11 +18,23 @@ export default {
     PackagePath,
     PublishMethod,
     ListItem,
+    PackageIconAndName: () =>
+      import(/* webpackChunkName: 'package_registry_components' */ './package_icon_and_name.vue'),
+    InfrastructureIconAndName: () =>
+      import(
+        /* webpackChunkName: 'infrastructure_registry_components' */ '~/packages_and_registries/infrastructure_registry/components/infrastructure_icon_and_name.vue'
+      ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [timeagoMixin],
+  inject: {
+    iconComponent: {
+      from: 'iconComponent',
+      default: 'PackageIconAndName',
+    },
+  },
   props: {
     packageEntity: {
       type: Object,
@@ -94,10 +105,9 @@ export default {
           </gl-sprintf>
         </div>
 
-        <div v-if="showPackageType" class="d-flex align-items-center" data-testid="package-type">
-          <gl-icon name="package" class="gl-ml-3 gl-mr-2" />
-          <span>{{ packageType }}</span>
-        </div>
+        <component :is="iconComponent" v-if="showPackageType">
+          {{ packageType }}
+        </component>
 
         <package-path v-if="hasProjectLink" :path="packageEntity.project_path" />
       </div>

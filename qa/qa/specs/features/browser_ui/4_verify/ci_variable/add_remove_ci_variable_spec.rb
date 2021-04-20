@@ -16,7 +16,7 @@ module QA
         add_ci_variable
       end
 
-      it 'user adds a CI variable', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/395' do
+      it 'user adds a CI variable', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1759' do
         Page::Project::Settings::CiVariables.perform do |ci_variable|
           expect(ci_variable).to have_text('VARIABLE_KEY')
           expect(ci_variable).not_to have_text('some_CI_variable')
@@ -27,7 +27,7 @@ module QA
         end
       end
 
-      it 'user removes a CI variable', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/394' do
+      it 'user removes a CI variable', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1758' do
         Page::Project::Settings::CiVariables.perform do |ci_variable|
           ci_variable.click_edit_ci_variable
           ci_variable.click_ci_variable_delete_button

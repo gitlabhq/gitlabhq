@@ -13,8 +13,7 @@ class AwardEmojisFinder
   def execute
     awards = awardable.award_emoji
     awards = by_name(awards)
-    awards = by_awarded_by(awards)
-    awards
+    by_awarded_by(awards)
   end
 
   private

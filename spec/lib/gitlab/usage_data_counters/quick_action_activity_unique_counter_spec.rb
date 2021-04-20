@@ -115,6 +115,26 @@ RSpec.describe Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter, :cle
     end
   end
 
+  context 'tracking spent' do
+    let(:quickaction_name) { 'spent' }
+
+    context 'adding time' do
+      let(:args) { '1d' }
+
+      it_behaves_like 'a tracked quick action unique event' do
+        let(:action) { 'i_quickactions_spend_add' }
+      end
+    end
+
+    context 'removing time' do
+      let(:args) { '-1d' }
+
+      it_behaves_like 'a tracked quick action unique event' do
+        let(:action) { 'i_quickactions_spend_subtract' }
+      end
+    end
+  end
+
   context 'tracking unassign' do
     let(:quickaction_name) { 'unassign' }
 

@@ -86,7 +86,7 @@ your cluster, which can cause deployment jobs to fail.
 
 To clear the cache:
 
-1. Navigate to your group’s **Kubernetes** page,
+1. Navigate to your group's **Kubernetes** page,
    and select your cluster.
 1. Expand the **Advanced settings** section.
 1. Click **Clear cluster cache**.
@@ -107,7 +107,7 @@ The domain should have a wildcard DNS configured to the Ingress IP address.
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with
 [environments](../../../ci/environments/index.md) similar to how the
-[environment-specific variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-cicd-variables)
+[environment-specific CI/CD variables](../../../ci/variables/README.md#limit-the-environment-scope-of-a-cicd-variable)
 work.
 
 While evaluating which environment matches the environment scope of a

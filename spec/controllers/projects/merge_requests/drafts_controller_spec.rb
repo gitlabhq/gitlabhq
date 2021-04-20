@@ -297,7 +297,7 @@ RSpec.describe Projects::MergeRequests::DraftsController do
       expect { post :publish, params: params }.to change { Note.count }.by(0).and change { DraftNote.count }.by(0)
     end
 
-    it 'publishes a draft note with quick actions and applies them' do
+    it 'publishes a draft note with quick actions and applies them', :sidekiq_inline do
       project.add_developer(user2)
       create(:draft_note, merge_request: merge_request, author: user,
                           note: "/assign #{user2.to_reference}")

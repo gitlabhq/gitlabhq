@@ -10,6 +10,7 @@ RSpec.describe Gitlab::JiraImport::HandleLabelsService do
     let_it_be(:project_label)       { create(:label, project: project, title: 'bug') }
     let_it_be(:other_project_label) { create(:label, title: 'feature') }
     let_it_be(:group_label)         { create(:group_label, group: group, title: 'dev') }
+
     let(:jira_labels)               { %w(bug feature dev group::new) }
 
     subject { described_class.new(project, jira_labels).execute }

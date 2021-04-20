@@ -1,0 +1,7 @@
+- content_for :new_repo_experiment do
+  - if current_user&.can_create_project?
+    - experiment(:new_repo, user: current_user) do |e|
+      - e.use do
+        %li= link_to _('New project'), new_project_path, class: 'qa-global-new-project-link', data: { track_experiment: 'new_repo', track_event: 'click_link', track_label: 'plus_menu_dropdown' }
+      - e.try do
+        %li= link_to _('New project/repository'), new_project_path, class: 'qa-global-new-project-link', data: { track_experiment: 'new_repo', track_event: 'click_link', track_label: 'plus_menu_dropdown' }

@@ -159,13 +159,20 @@ module PageLayoutHelper
   end
 
   def user_status_properties(user)
-    default_properties = { current_emoji: '', current_message: '', can_set_user_availability: Feature.enabled?(:set_user_availability_status, user, default_enabled: :yaml), default_emoji: UserStatus::DEFAULT_EMOJI }
+    default_properties = {
+      current_emoji: '',
+      current_message: '',
+      can_set_user_availability: Feature.enabled?(:set_user_availability_status, user, default_enabled: :yaml),
+      default_emoji: UserStatus::DEFAULT_EMOJI
+    }
+
     return default_properties unless user&.status
 
     default_properties.merge({
       current_emoji: user.status.emoji.to_s,
       current_message: user.status.message.to_s,
-      current_availability: user.status.availability.to_s
+      current_availability: user.status.availability.to_s,
+      current_clear_status_after: user.status.clear_status_at.to_s
     })
   end
 

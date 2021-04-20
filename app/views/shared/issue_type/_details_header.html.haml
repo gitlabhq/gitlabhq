@@ -1,7 +1,7 @@
 .detail-page-header
   .detail-page-header-body
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_status_visibility(issuable, status_box: :closed) }
-      = sprite_icon('mobile-issue-close', css_class: 'gl-display-block gl-sm-display-none!')
+      = sprite_icon('issue-close', css_class: 'gl-display-block gl-sm-display-none!')
       .gl-display-none.gl-sm-display-block!
         = issue_closed_text(issuable, current_user)
     .issuable-status-box.status-box.status-box-open{ class: issue_status_visibility(issuable, status_box: :open) }
@@ -13,7 +13,7 @@
       #js-issuable-header-warnings
       = issuable_meta(issuable, @project)
 
-    %a.btn.gl-button.btn-default.float-right.gl-display-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
+    %a.btn.gl-button.btn-default.btn-icon.float-right.gl-display-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
       = sprite_icon('chevron-double-lg-left')
 
   .js-issue-header-actions{ data: issue_header_actions_data(@project, issuable, current_user) }

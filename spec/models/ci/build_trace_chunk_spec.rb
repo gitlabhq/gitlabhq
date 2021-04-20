@@ -6,6 +6,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
   let_it_be(:build) { create(:ci_build, :running) }
+
   let(:chunk_index) { 0 }
   let(:data_store) { :redis }
   let(:raw_data) { nil }

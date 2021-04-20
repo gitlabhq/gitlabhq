@@ -140,6 +140,7 @@ project_setting:
     - squash_option
     - updated_at
     - cve_id_request_enabled
+    - mr_default_target_self
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

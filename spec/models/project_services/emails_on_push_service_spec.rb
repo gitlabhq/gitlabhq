@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe EmailsOnPushService do
+  let_it_be(:project) { create_default(:project).freeze }
+
   describe 'Validations' do
     context 'when service is active' do
       before do
@@ -18,6 +20,42 @@ RSpec.describe EmailsOnPushService do
       end
 
       it { is_expected.not_to validate_presence_of(:recipients) }
+    end
+
+    describe 'validates number of recipients' do
+      before do
+        stub_const("#{described_class}::RECIPIENTS_LIMIT", 2)
+      end
+
+      subject(:service) { described_class.new(project: project, recipients: recipients, active: true) }
+
+      context 'valid number of recipients' do
+        let(:recipients) { 'foo@bar.com duplicate@example.com Duplicate@example.com invalid-email' }
+
+        it 'does not count duplicates and invalid emails' do
+          is_expected.to be_valid
+        end
+      end
+
+      context 'invalid number of recipients' do
+        let(:recipients) { 'foo@bar.com bar@foo.com bob@gitlab.com' }
+
+        it { is_expected.not_to be_valid }
+
+        it 'adds an error message' do
+          service.valid?
+
+          expect(service.errors).to contain_exactly('Recipients can\'t exceed 2')
+        end
+
+        context 'when service is not active' do
+          before do
+            service.active = false
+          end
+
+          it { is_expected.to be_valid }
+        end
+      end
     end
   end
 
@@ -36,6 +74,14 @@ RSpec.describe EmailsOnPushService do
       it 'does not overwrite it with the default value' do
         expect(subject.branches_to_be_notified).to eq('protected')
       end
+    end
+  end
+
+  describe '.valid_recipients' do
+    let(:recipients) { '<invalid> foobar Valid@recipient.com Dup@lica.te dup@lica.te Dup@Lica.te' }
+
+    it 'removes invalid email addresses and removes duplicates by keeping the original capitalization' do
+      expect(described_class.valid_recipients(recipients)).to contain_exactly('Valid@recipient.com', 'Dup@lica.te')
     end
   end
 

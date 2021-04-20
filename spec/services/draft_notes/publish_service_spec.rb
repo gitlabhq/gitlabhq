@@ -229,7 +229,7 @@ RSpec.describe DraftNotes::PublishService do
     expect(DraftNote.count).to eq(2)
   end
 
-  context 'with quick actions' do
+  context 'with quick actions', :sidekiq_inline do
     it 'performs quick actions' do
       other_user = create(:user)
       project.add_developer(other_user)

@@ -51,19 +51,19 @@ module Banzai
 
       def self.reference_filters
         [
-          Filter::UserReferenceFilter,
-          Filter::ProjectReferenceFilter,
-          Filter::DesignReferenceFilter,
-          Filter::IssueReferenceFilter,
-          Filter::ExternalIssueReferenceFilter,
-          Filter::MergeRequestReferenceFilter,
-          Filter::SnippetReferenceFilter,
-          Filter::CommitRangeReferenceFilter,
-          Filter::CommitReferenceFilter,
-          Filter::LabelReferenceFilter,
-          Filter::MilestoneReferenceFilter,
-          Filter::AlertReferenceFilter,
-          Filter::FeatureFlagReferenceFilter
+          Filter::References::UserReferenceFilter,
+          Filter::References::ProjectReferenceFilter,
+          Filter::References::DesignReferenceFilter,
+          Filter::References::IssueReferenceFilter,
+          Filter::References::ExternalIssueReferenceFilter,
+          Filter::References::MergeRequestReferenceFilter,
+          Filter::References::SnippetReferenceFilter,
+          Filter::References::CommitRangeReferenceFilter,
+          Filter::References::CommitReferenceFilter,
+          Filter::References::LabelReferenceFilter,
+          Filter::References::MilestoneReferenceFilter,
+          Filter::References::AlertReferenceFilter,
+          Filter::References::FeatureFlagReferenceFilter
         ]
       end
 

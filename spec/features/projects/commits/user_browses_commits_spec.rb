@@ -20,9 +20,14 @@ RSpec.describe 'User browses commits' do
       .and have_content('Side-by-side')
   end
 
-  it 'fill commit sha when click new tag from commit page' do
+  it 'fill commit sha when click new tag from commit page', :js do
+    dropdown_selector = '[data-testid="commit-options-dropdown"]'
     visit project_commit_path(project, sample_commit.id)
-    click_link 'Tag'
+    find(dropdown_selector).click
+
+    page.within(dropdown_selector) do
+      click_link 'Tag'
+    end
 
     expect(page).to have_selector("input[value='#{sample_commit.id}']", visible: false)
   end

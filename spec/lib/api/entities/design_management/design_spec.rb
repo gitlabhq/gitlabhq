@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Entities::DesignManagement::Design do
   let_it_be(:design) { create(:design) }
+
   let(:entity) { described_class.new(design, request: double) }
 
   subject { entity.as_json }

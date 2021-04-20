@@ -4,6 +4,7 @@ import { ApolloLink } from 'apollo-link';
 import { BatchHttpLink } from 'apollo-link-batch-http';
 import { createHttpLink } from 'apollo-link-http';
 import { createUploadLink } from 'apollo-upload-client';
+import { apolloCaptchaLink } from '~/captcha/apollo_captcha_link';
 import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 import csrf from '~/lib/utils/csrf';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
@@ -78,6 +79,7 @@ export default (resolvers = {}, config = {}) => {
       requestCounterLink,
       performanceBarLink,
       new StartupJSLink(),
+      apolloCaptchaLink,
       uploadsLink,
     ]),
     cache: new InMemoryCache({

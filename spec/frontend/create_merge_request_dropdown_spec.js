@@ -20,7 +20,9 @@ describe('CreateMergeRequestDropdown', () => {
         </div>
         <div class="js-ref"></div>
         <div class="js-create-mr"></div>
-        <div class="js-create-merge-request"></div>
+        <div class="js-create-merge-request">
+          <span class="js-spinner"></span>
+        </div>
         <div class="js-create-target"></div>
         <div class="js-dropdown-toggle"></div>
       </div>
@@ -98,6 +100,20 @@ describe('CreateMergeRequestDropdown', () => {
       dropdown.enable();
 
       expect(dropdown.createMergeRequestButton.classList).toContain('disabled');
+    });
+  });
+
+  describe('setLoading', () => {
+    it.each`
+      loading  | hasClass
+      ${true}  | ${false}
+      ${false} | ${true}
+    `('it toggle loading spinner when loading is $loading', ({ loading, hasClass }) => {
+      dropdown.setLoading(loading);
+
+      expect(document.querySelector('.js-spinner').classList.contains('gl-display-none')).toEqual(
+        hasClass,
+      );
     });
   });
 });

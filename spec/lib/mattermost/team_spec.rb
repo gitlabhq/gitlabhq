@@ -71,7 +71,7 @@ RSpec.describe Mattermost::Team do
   end
 
   describe '#create' do
-    subject { described_class.new(nil).create(name: "devteam", display_name: "Dev Team", type: "O") }
+    subject { described_class.new(nil).create(name: "devteam", display_name: "Dev Team", type: "O") } # rubocop:disable Rails/SaveBang
 
     context 'for a new team' do
       let(:response) do

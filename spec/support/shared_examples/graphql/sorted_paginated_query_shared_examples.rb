@@ -44,7 +44,7 @@
 #         end
 #       end
 #
-RSpec.shared_examples 'sorted paginated query' do
+RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
   # Provided as a convenience when constructing queries using string concatenation
   let(:page_info) { 'pageInfo { startCursor endCursor }' }
   # Convenience for using default implementation of pagination_results_data
@@ -121,6 +121,16 @@ RSpec.shared_examples 'sorted paginated query' do
           post_graphql(bwds, current_user: current_user)
 
           expect(results).to eq first_page
+        end
+      end
+
+      context 'when last and sort params are present', if: conditions[:is_reversible] do
+        let(:params) { sort_argument.merge(last: 1) }
+
+        it 'fetches last elements without error' do
+          post_graphql(pagination_query(params), current_user: current_user)
+
+          expect(results.first).to eq(expected_results.last)
         end
       end
     end

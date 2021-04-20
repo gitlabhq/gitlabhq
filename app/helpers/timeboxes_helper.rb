@@ -115,17 +115,6 @@ module TimeboxesHelper
     end
   end
 
-  def milestones_filter_dropdown_path
-    project = @target_project || @project
-    if project
-      project_milestones_path(project, :json)
-    elsif @group
-      group_milestones_path(@group, :json)
-    else
-      dashboard_milestones_path(:json)
-    end
-  end
-
   def milestone_time_for(date, date_type)
     title = date_type == :start ? "Start date" : "End date"
 

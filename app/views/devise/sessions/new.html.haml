@@ -13,7 +13,7 @@
   -# Show a message if none of the mechanisms above are enabled
   - if !password_authentication_enabled_for_web? && !ldap_sign_in_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
     %div
-      No authentication methods configured.
+      = _('No authentication methods configured.')
 
   - if allow_signup?
     %p.gl-mt-3

@@ -4,7 +4,6 @@ class Projects::NetworkController < Projects::ApplicationController
   include ExtractsPath
   include ApplicationHelper
 
-  before_action :whitelist_query_limiting
   before_action :require_non_empty_project
   before_action :assign_ref_vars
   before_action :authorize_download_code!
@@ -40,9 +39,5 @@ class Projects::NetworkController < Projects::ApplicationController
     return if @options[:extended_sha1].blank?
 
     @commit = @repo.commit(@options[:extended_sha1])
-  end
-
-  def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42333')
   end
 end

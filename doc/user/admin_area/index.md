@@ -173,6 +173,8 @@ The following data is included in the export:
 - Path
 - Access level ([Project](../permissions.md#project-members-permissions) and [Group](../permissions.md#group-members-permissions))
 
+![user permission export button](img/export_permissions_v13_11.png)
+
 #### Users statistics
 
 The **Users statistics** page provides an overview of user accounts by role. These statistics are

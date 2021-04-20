@@ -11,23 +11,22 @@
 # change the various `by_*` methods in this finder, without having to touch
 # everything that uses it.
 class PendingTodosFinder
-  attr_reader :current_user, :params
+  attr_reader :users, :params
 
-  # current_user - The user to retrieve the todos for.
+  # users - The list of users to retrieve the todos for.
   # params - A Hash containing columns and values to use for filtering todos.
-  def initialize(current_user, params = {})
-    @current_user = current_user
+  def initialize(users, params = {})
+    @users = users
     @params = params
   end
 
   def execute
-    todos = current_user.todos.pending
+    todos = Todo.for_user(users)
+    todos = todos.pending
     todos = by_project(todos)
     todos = by_target_id(todos)
     todos = by_target_type(todos)
-    todos = by_commit_id(todos)
-
-    todos
+    by_commit_id(todos)
   end
 
   def by_project(todos)

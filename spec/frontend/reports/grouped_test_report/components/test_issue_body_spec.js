@@ -52,7 +52,7 @@ describe('Test issue body', () => {
     });
 
     it('renders issue name', () => {
-      expect(findDescription().text()).toBe(failedIssue.name);
+      expect(findDescription().text()).toContain(failedIssue.name);
     });
 
     it('renders failed status icon', () => {

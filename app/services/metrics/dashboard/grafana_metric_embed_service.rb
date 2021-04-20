@@ -122,7 +122,8 @@ module Metrics
     # Identifies the uid of the dashboard based on url format
     class GrafanaUidParser
       def initialize(grafana_url, project)
-        @grafana_url, @project = grafana_url, project
+        @grafana_url = grafana_url
+        @project = project
       end
 
       def parse
@@ -145,7 +146,8 @@ module Metrics
     # If no panel is specified, defaults to the first valid panel.
     class DatasourceNameParser
       def initialize(grafana_url, grafana_dashboard)
-        @grafana_url, @grafana_dashboard = grafana_url, grafana_dashboard
+        @grafana_url = grafana_url
+        @grafana_dashboard = grafana_dashboard
       end
 
       def parse

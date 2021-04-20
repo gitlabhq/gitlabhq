@@ -140,7 +140,7 @@ module Gitlab
     end
 
     def mapped_options
-      options.keys.map { |k| [gitlab_http_key(k), options[k]] }.to_h
+      options.keys.to_h { |k| [gitlab_http_key(k), options[k]] }
     end
 
     def http_options

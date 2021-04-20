@@ -175,7 +175,7 @@ RSpec.describe 'Project members list', :js do
     click_on 'Invite members'
 
     page.within '#invite-members-modal' do
-      fill_in 'Search for members to invite', with: id
+      fill_in 'Select members or type email addresses', with: id
 
       wait_for_requests
       click_button id

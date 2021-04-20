@@ -40,7 +40,7 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Store, :clean_gitlab_redis_cache do
 
   describe '.bulk_read' do
     before do
-      store.save(field_1_html: "hello", field_2_html: "world", cached_markdown_version: 1)
+      store.save(field_1_html: "hello", field_2_html: "world", cached_markdown_version: 1) # rubocop:disable Rails/SaveBang
     end
 
     it 'returns a hash of values from store' do
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Store, :clean_gitlab_redis_cache do
     it 'stores updates to html fields and version' do
       values_to_store = { field_1_html: "hello", field_2_html: "world", cached_markdown_version: 1 }
 
-      store.save(values_to_store)
+      store.save(values_to_store) # rubocop:disable Rails/SaveBang
 
       expect(read_values)
         .to eq(field_1_html: "hello", field_2_html: "world", cached_markdown_version: "1")

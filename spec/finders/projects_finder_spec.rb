@@ -129,6 +129,12 @@ RSpec.describe ProjectsFinder do
 
           it { is_expected.to eq([public_project]) }
         end
+
+        context 'as string' do
+          let(:params) { { visibility_level: Gitlab::VisibilityLevel::INTERNAL.to_s } }
+
+          it { is_expected.to eq([internal_project]) }
+        end
       end
 
       describe 'filter by tags' do

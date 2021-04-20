@@ -273,7 +273,7 @@ module EventsHelper
 
   def event_user_info(event)
     content_tag(:div, class: "event-user-info") do
-      concat content_tag(:span, link_to_author(event), class: "author_name")
+      concat content_tag(:span, link_to_author(event), class: "author-name")
       concat "&nbsp;".html_safe
       concat content_tag(:span, event.author.to_reference, class: "username")
     end

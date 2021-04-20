@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::AlertManagement::Payload::Base do
   let_it_be(:project) { create(:project) }
+
   let(:raw_payload) { {} }
   let(:payload_class) { described_class }
 

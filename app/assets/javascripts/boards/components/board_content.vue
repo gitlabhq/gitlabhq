@@ -17,20 +17,19 @@ export default {
       gon.features?.graphqlBoardLists || gon.features?.epicBoards
         ? BoardColumn
         : BoardColumnDeprecated,
-    BoardContentSidebar: () => import('ee_component/boards/components/board_content_sidebar.vue'),
+    BoardContentSidebar: () => import('~/boards/components/board_content_sidebar.vue'),
+    EpicBoardContentSidebar: () =>
+      import('ee_component/boards/components/epic_board_content_sidebar.vue'),
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
   mixins: [glFeatureFlagMixin()],
+  inject: ['canAdminList'],
   props: {
     lists: {
       type: Array,
       required: false,
       default: () => [],
-    },
-    canAdminList: {
-      type: Boolean,
-      required: true,
     },
     disabled: {
       type: Boolean,
@@ -69,7 +68,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['moveList']),
+    ...mapActions(['moveList', 'unsetError']),
     afterFormEnters() {
       const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
@@ -99,8 +98,8 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-alert v-if="error" variant="danger" :dismissible="false">
+  <div v-cloak data-qa-selector="boards_list">
+    <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="unsetError">
       {{ error }}
     </gl-alert>
     <component
@@ -127,13 +126,23 @@ export default {
     </component>
 
     <epics-swimlanes
-      v-else
+      v-else-if="boardListsToUse.length"
       ref="swimlanes"
       :lists="boardListsToUse"
       :can-admin-list="canAdminList"
       :disabled="disabled"
     />
 
-    <board-content-sidebar v-if="isSwimlanesOn || glFeatures.graphqlBoardLists" />
+    <board-content-sidebar
+      v-if="isSwimlanesOn || glFeatures.graphqlBoardLists"
+      class="boards-sidebar"
+      data-testid="issue-boards-sidebar"
+    />
+
+    <epic-board-content-sidebar
+      v-else-if="isEpicBoard"
+      class="boards-sidebar"
+      data-testid="epic-boards-sidebar"
+    />
   </div>
 </template>

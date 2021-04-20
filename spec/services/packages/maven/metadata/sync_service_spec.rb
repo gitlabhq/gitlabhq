@@ -131,7 +131,7 @@ RSpec.describe ::Packages::Maven::Metadata::SyncService do
             expect(::Packages::Maven::Metadata::CreateVersionsXmlService).not_to receive(:new)
           end
 
-          it_behaves_like 'returning an error service response', message: 'Non existing versionless package'
+          it_behaves_like 'returning a success service response', message: 'Non existing versionless package(s). Nothing to do.'
         end
 
         context 'without a metadata package file for versions' do
@@ -141,7 +141,7 @@ RSpec.describe ::Packages::Maven::Metadata::SyncService do
             expect(::Packages::Maven::Metadata::CreateVersionsXmlService).not_to receive(:new)
           end
 
-          it_behaves_like 'returning an error service response', message: 'Non existing metadata file for versions'
+          it_behaves_like 'returning a success service response', message: 'Non existing versionless package(s). Nothing to do.'
         end
 
         context 'without a project' do
@@ -205,7 +205,7 @@ RSpec.describe ::Packages::Maven::Metadata::SyncService do
             it_behaves_like 'returning a success service response', message: 'Versionless package for versions destroyed'
           end
 
-          context 'with a too big maven metadata file for versions' do
+          context 'with a too big maven metadata file for plugins' do
             before do
               metadata_file_for_plugins.update!(size: 100.megabytes)
             end
@@ -242,6 +242,15 @@ RSpec.describe ::Packages::Maven::Metadata::SyncService do
             end
 
             it_behaves_like 'returning a success service response', message: 'New metadata package files created'
+          end
+
+          context 'without a versionless package for versions' do
+            before do
+              versionless_package_for_versions.package_files.update_all(file_name: 'test.txt')
+              expect(::Packages::Maven::Metadata::CreateVersionsXmlService).not_to receive(:new)
+            end
+
+            it_behaves_like 'returning a success service response', message: 'No changes for plugins xml'
           end
 
           context 'without a metadata package file for plugins' do

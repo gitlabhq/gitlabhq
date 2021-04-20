@@ -59,7 +59,10 @@ describe('Maven Settings', () => {
     mountComponent();
 
     expect(findToggle().exists()).toBe(true);
-    expect(findToggle().props('value')).toBe(defaultProps.mavenDuplicatesAllowed);
+    expect(findToggle().props()).toMatchObject({
+      label: component.i18n.MAVEN_TOGGLE_LABEL,
+      value: defaultProps.mavenDuplicatesAllowed,
+    });
   });
 
   it('toggle emits an update event', () => {

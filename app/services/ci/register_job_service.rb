@@ -10,7 +10,11 @@ module Ci
 
     Result = Struct.new(:build, :build_json, :valid?)
 
-    MAX_QUEUE_DEPTH = 50
+    ##
+    # The queue depth limit number has been determined by observing 95
+    # percentile of effective queue depth on gitlab.com. This is only likely to
+    # affect 5% of the worst case scenarios.
+    MAX_QUEUE_DEPTH = 45
 
     def initialize(runner)
       @runner = runner
@@ -20,7 +24,7 @@ module Ci
     def execute(params = {})
       @metrics.increment_queue_operation(:queue_attempt)
 
-      @metrics.observe_queue_time do
+      @metrics.observe_queue_time(:process, @runner.runner_type) do
         process_queue(params)
       end
     end
@@ -105,21 +109,29 @@ module Ci
         builds = builds.queued_before(params[:job_age].seconds.ago)
       end
 
-      if Feature.enabled?(:ci_register_job_service_one_by_one, runner)
-        build_ids = builds.pluck(:id)
+      if Feature.enabled?(:ci_register_job_service_one_by_one, runner, default_enabled: true)
+        build_ids = retrieve_queue(-> { builds.pluck(:id) })
 
-        @metrics.observe_queue_size(-> { build_ids.size })
+        @metrics.observe_queue_size(-> { build_ids.size }, @runner.runner_type)
 
         build_ids.each do |build_id|
           yield Ci::Build.find(build_id)
         end
       else
-        @metrics.observe_queue_size(-> { builds.to_a.size })
+        builds_array = retrieve_queue(-> { builds.to_a })
 
-        builds.each(&blk)
+        @metrics.observe_queue_size(-> { builds_array.size }, @runner.runner_type)
+
+        builds_array.each(&blk)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def retrieve_queue(queue_query_proc)
+      @metrics.observe_queue_time(:retrieve, @runner.runner_type) do
+        queue_query_proc.call
+      end
+    end
 
     def process_build(build, params)
       unless build.pending?
@@ -171,7 +183,7 @@ module Ci
 
     def max_queue_depth
       @max_queue_depth ||= begin
-        if Feature.enabled?(:gitlab_ci_builds_queue_limit, runner, default_enabled: false)
+        if Feature.enabled?(:gitlab_ci_builds_queue_limit, runner, default_enabled: true)
           MAX_QUEUE_DEPTH
         else
           ::Gitlab::Database::MAX_INT_VALUE
@@ -266,7 +278,7 @@ module Ci
       # Workaround for weird Rails bug, that makes `runner.groups.to_sql` to return `runner_id = NULL`
       groups = ::Group.joins(:runner_namespaces).merge(runner.runner_namespaces)
 
-      hierarchy_groups = Gitlab::ObjectHierarchy.new(groups).base_and_descendants
+      hierarchy_groups = Gitlab::ObjectHierarchy.new(groups, options: { use_distinct: Feature.enabled?(:use_distinct_in_register_job_object_hierarchy) }).base_and_descendants
       projects = Project.where(namespace_id: hierarchy_groups)
         .with_group_runners_enabled
         .with_builds_enabled

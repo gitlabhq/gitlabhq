@@ -1,11 +1,11 @@
 - @hide_top_links = true
-- page_title _("Merge Requests")
+- page_title _("Merge requests")
 - @breadcrumb_link = merge_requests_dashboard_path(assignee_username: current_user.username)
 
 = render_dashboard_ultimate_trial(current_user)
 
 .page-title-holder.d-flex.align-items-start.flex-column.flex-sm-row.align-items-sm-center
-  %h1.page-title= _('Merge Requests')
+  %h1.page-title= _('Merge requests')
 
   - if current_user
     .page-title-controls.ml-0.mb-3.ml-sm-auto.mb-sm-0

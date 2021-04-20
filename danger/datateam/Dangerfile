@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+# rubocop:disable Style/SignalException
+
+CHANGED_SCHEMA_MESSAGE = <<~MSG
+Mentioning @gitlab-data/engineers to notify the team about changes to the db/structure.sql file.
+
+MSG
+
+db_schema_updated = !git.modified_files.grep(%r{\Adb/structure\.sql}).empty?
+
+if db_schema_updated
+
+  markdown(CHANGED_SCHEMA_MESSAGE)
+
+end

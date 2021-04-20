@@ -31,22 +31,18 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
-    ciFileContent: {
-      type: String,
-      required: true,
-    },
     ciConfigData: {
       type: Object,
       required: true,
     },
-    isCiConfigDataLoading: {
+    isNewCiConfigFile: {
       type: Boolean,
       required: true,
     },
   },
   computed: {
     showPipelineStatus() {
-      return this.glFeatures.pipelineStatusForPipelineEditor;
+      return this.glFeatures.pipelineStatusForPipelineEditor && !this.isNewCiConfigFile;
     },
     // make sure corners are rounded correctly depending on if
     // pipeline status is rendered
@@ -61,11 +57,6 @@ export default {
 <template>
   <div class="gl-mb-5">
     <pipeline-status v-if="showPipelineStatus" :class="$options.pipelineStatusClasses" />
-    <validation-segment
-      :class="validationStyling"
-      :loading="isCiConfigDataLoading"
-      :ci-file-content="ciFileContent"
-      :ci-config="ciConfigData"
-    />
+    <validation-segment :class="validationStyling" :ci-config="ciConfigData" />
   </div>
 </template>

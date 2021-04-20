@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::AlertManagement::Payload do
   describe '#parse' do
     let_it_be(:project) { build_stubbed(:project) }
+
     let(:payload) { {} }
 
     context 'without a monitoring_tool specified by caller' do

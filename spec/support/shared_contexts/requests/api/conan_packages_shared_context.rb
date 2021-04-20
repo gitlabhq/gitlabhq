@@ -41,13 +41,6 @@ RSpec.shared_context 'conan recipe endpoints' do
   let(:jwt) { build_jwt(personal_access_token) }
   let(:headers) { build_token_auth_header(jwt.encoded) }
   let(:conan_package_reference) { '123456789' }
-  let(:presenter) { double('::Packages::Conan::PackagePresenter') }
-
-  before do
-    allow(::Packages::Conan::PackagePresenter).to receive(:new)
-      .with(package, user, package.project, any_args)
-      .and_return(presenter)
-  end
 end
 
 RSpec.shared_context 'conan file download endpoints' do

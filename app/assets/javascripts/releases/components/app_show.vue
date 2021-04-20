@@ -1,5 +1,8 @@
 <script>
-import { mapState, mapActions } from 'vuex';
+import createFlash from '~/flash';
+import { s__ } from '~/locale';
+import oneReleaseQuery from '../queries/one_release.query.graphql';
+import { convertGraphQLRelease } from '../util';
 import ReleaseBlock from './release_block.vue';
 import ReleaseSkeletonLoader from './release_skeleton_loader.vue';
 
@@ -9,21 +12,58 @@ export default {
     ReleaseBlock,
     ReleaseSkeletonLoader,
   },
-  computed: {
-    ...mapState('detail', ['isFetchingRelease', 'fetchError', 'release']),
+  inject: {
+    fullPath: {
+      default: '',
+    },
+    tagName: {
+      default: '',
+    },
   },
-  created() {
-    this.fetchRelease();
+  apollo: {
+    release: {
+      query: oneReleaseQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          tagName: this.tagName,
+        };
+      },
+      update(data) {
+        if (data.project?.release) {
+          return convertGraphQLRelease(data.project.release);
+        }
+
+        return null;
+      },
+      result(result) {
+        // Handle the case where the query succeeded but didn't return any data
+        if (!result.error && !this.release) {
+          this.showFlash(
+            new Error(`No release found in project "${this.fullPath}" with tag "${this.tagName}"`),
+          );
+        }
+      },
+      error(error) {
+        this.showFlash(error);
+      },
+    },
   },
   methods: {
-    ...mapActions('detail', ['fetchRelease']),
+    showFlash(error) {
+      createFlash({
+        message: s__('Release|Something went wrong while getting the release details.'),
+        captureError: true,
+        error,
+      });
+    },
   },
 };
 </script>
 <template>
   <div class="gl-mt-3">
-    <release-skeleton-loader v-if="isFetchingRelease" />
+    <release-skeleton-loader v-if="$apollo.queries.release.loading" />
 
-    <release-block v-else-if="!fetchError" :release="release" />
+    <release-block v-else-if="release" :release="release" />
   </div>
 </template>

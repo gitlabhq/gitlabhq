@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang rubocop offenses in profiles & projects controllers
+merge_request: 57890
+author: Abdul Wadood @abdulwd
+type: fixed

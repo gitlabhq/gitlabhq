@@ -7,7 +7,10 @@ module Gitlab
         include Gitlab::Git::WrapsGitalyErrors
 
         def initialize(user, repository, branch, patch_collection)
-          @user, @repository, @branch, @patches = user, repository, branch, patch_collection
+          @user = user
+          @repository = repository
+          @branch = branch
+          @patches = patch_collection
         end
 
         def commit

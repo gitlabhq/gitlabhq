@@ -19,7 +19,7 @@ module RuboCop
       class ElementWithPattern < RuboCop::Cop::Cop
         include QAHelpers
 
-        MESSAGE = "Don't use a pattern for element, create a corresponding `%s` instead.".freeze
+        MESSAGE = "Don't use a pattern for element, create a corresponding `%s` instead."
 
         def on_send(node)
           return unless in_qa_file?(node)

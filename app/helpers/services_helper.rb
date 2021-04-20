@@ -4,29 +4,29 @@ module ServicesHelper
   def service_event_description(event)
     case event
     when "push", "push_events"
-      s_("ProjectService|Event will be triggered by a push to the repository")
+      s_("ProjectService|Trigger event for pushes to the repository.")
     when "tag_push", "tag_push_events"
-      s_("ProjectService|Event will be triggered when a new tag is pushed to the repository")
+      s_("ProjectService|Trigger event for new tags pushed to the repository.")
     when "note", "note_events"
-      s_("ProjectService|Event will be triggered when someone adds a comment")
+      s_("ProjectService|Trigger event for new comments.")
     when "confidential_note", "confidential_note_events"
-      s_("ProjectService|Event will be triggered when someone adds a comment on a confidential issue")
+      s_("ProjectService|Trigger event for new comments on confidential issues.")
     when "issue", "issue_events"
-      s_("ProjectService|Event will be triggered when an issue is created/updated/closed")
+      s_("ProjectService|Trigger event when an issue is created, updated, or closed.")
     when "confidential_issue", "confidential_issue_events"
-      s_("ProjectService|Event will be triggered when a confidential issue is created/updated/closed")
+      s_("ProjectService|Trigger event when a confidential issue is created, updated, or closed.")
     when "merge_request", "merge_request_events"
-      s_("ProjectService|Event will be triggered when a merge request is created/updated/merged")
+      s_("ProjectService|Trigger event when a merge request is created, updated, or merged.")
     when "pipeline", "pipeline_events"
-      s_("ProjectService|Event will be triggered when a pipeline status changes")
+      s_("ProjectService|Trigger event when a pipeline status changes.")
     when "wiki_page", "wiki_page_events"
-      s_("ProjectService|Event will be triggered when a wiki page is created/updated")
+      s_("ProjectService|Trigger event when a wiki page is created or updated.")
     when "commit", "commit_events"
-      s_("ProjectService|Event will be triggered when a commit is created/updated")
+      s_("ProjectService|Trigger event when a commit is created or updated.")
     when "deployment"
-      s_("ProjectService|Event will be triggered when a deployment starts or finishes")
+      s_("ProjectService|Trigger event when a deployment starts or finishes.")
     when "alert"
-      s_("ProjectService|Event will be triggered when a new, unique alert is recorded")
+      s_("ProjectService|Trigger event when a new, unique alert is recorded.")
     end
   end
 
@@ -86,7 +86,7 @@ module ServicesHelper
   end
 
   def integration_form_data(integration, group: nil)
-    {
+    form_data = {
       id: integration.id,
       show_active: integration.show_active_box?.to_s,
       activated: (integration.active || integration.new_record?).to_s,
@@ -105,6 +105,19 @@ module ServicesHelper
       can_test: integration.can_test?.to_s,
       test_path: scoped_test_integration_path(integration),
       reset_path: scoped_reset_integration_path(integration, group: group)
+    }
+
+    if integration.is_a?(JiraService)
+      form_data[:jira_issue_transition_automatic] = integration.jira_issue_transition_automatic
+      form_data[:jira_issue_transition_id] = integration.jira_issue_transition_id
+    end
+
+    form_data
+  end
+
+  def integration_list_data(integrations)
+    {
+      integrations: integrations.map { |i| serialize_integration(i) }.to_json
     }
   end
 
@@ -147,6 +160,17 @@ module ServicesHelper
     else
       'project'
     end
+  end
+
+  def serialize_integration(integration)
+    {
+      active: integration.operating?,
+      title: integration.title,
+      description: integration.description,
+      updated_at: integration.updated_at,
+      edit_path: scoped_edit_integration_path(integration),
+      name: integration.to_param
+    }
   end
 end
 

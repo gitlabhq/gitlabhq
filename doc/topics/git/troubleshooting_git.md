@@ -47,15 +47,15 @@ errors can sometimes be caused by underlying issues with SSH (such as
 authentication). Make sure that SSH is correctly configured by following the
 instructions in the [SSH troubleshooting](../../ssh/README.md#troubleshooting-ssh-connections) documentation.
 
-If you're a GitLab administrator and have access to the server, you can also prevent
-session timeouts by configuring SSH `keep alive` either on the client or on the server.
+If you're a GitLab administrator with server access, you can also prevent
+session timeouts by configuring SSH `keep-alive` on the client or the server.
 
 NOTE:
 Configuring both the client and the server is unnecessary.
 
 **To configure SSH on the client side**:
 
-- On UNIX, edit `~/.ssh/config` (create the file if it doesn’t exist) and
+- On UNIX, edit `~/.ssh/config` (create the file if it doesn't exist) and
   add or edit:
 
   ```plaintext
@@ -153,7 +153,7 @@ and provide GitLab with more information on how to improve the service.
 
 ## `git clone` over HTTP fails with `transfer closed with outstanding read data remaining` error
 
-If the buffer size is lower than what is allowed in the request, the action fails with an error similar to the one below:
+Sometimes, when cloning old or large repositories, the following error is thrown:
 
 ```plaintext
 error: RPC failed; curl 18 transfer closed with outstanding read data remaining
@@ -162,11 +162,59 @@ fatal: early EOF
 fatal: index-pack failed
 ```
 
-This can be fixed by increasing the existing `http.postBuffer` value to one greater than the repository size. For example, if `git clone` fails when cloning a 500M repository, you should set `http.postBuffer` to `524288000`. That setting ensures the request only starts buffering after the first 524288000 bytes.
+This is a common problem with Git itself, due to its inability to handle large files or large quantities of files.
+[Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/) was created to work around this problem; however, even it has limitations. It's usually due to one of these reasons:
 
-NOTE:
-The default value of `http.postBuffer`, 1 MiB, is applied if the setting is not configured.
+- The number of files in the repository.
+- The number of revisions in the history.
+- The existence of large files in the repository.
 
-```shell
-git config http.postBuffer 524288000
-```
+The root causes vary, so multiple potential solutions exist, and you may need to
+apply more than one:
+
+- If this error occurs when cloning a large repository, you can
+  [decrease the cloning depth](../../ci/large_repositories/index.md#shallow-cloning)
+  to a value of `1`. For example:
+
+  ```shell
+  variables:
+    GIT_DEPTH: 1
+  ```
+
+- You can increase the
+  [http.postBuffer](https://git-scm.com/docs/git-config#Documentation/git-config.txt-httppostBuffer)
+  value in your local Git configuration from the default 1 MB value to a value greater
+  than the repository size. For example, if `git clone` fails when cloning a 500 MB
+  repository, you should set `http.postBuffer` to `524288000`:
+
+  ```shell
+  # Set the http.postBuffer size, in bytes
+  git config http.postBuffer 524288000
+  ```
+
+- You can increase the `http.postBuffer` on the server side:
+
+  1. Modify the GitLab instance's
+     [`gitlab.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/13.5.1+ee.0/files/gitlab-config-template/gitlab.rb.template#L1435-1455) file:
+
+     ```shell
+     omnibus_gitconfig['system'] = {
+       # Set the http.postBuffer size, in bytes
+       "http" => ["postBuffer" => 524288000]
+     }
+     ```
+
+  1. After applying this change, apply the configuration change:
+
+     ```shell
+     sudo gitlab-ctl reconfigure
+     ```
+
+For example, if a repository has a very long history and no large files, changing
+the depth should fix the problem. However, if a repository has very large files,
+even a depth of 1 may be too large, thus requiring the `postBuffer` change.
+If you increase your local `postBuffer` but the NGINX value on the backend is still
+too small, the error persists.
+
+Modifying the server is not always an option, and introduces more potential risk.
+Attempt local changes first.

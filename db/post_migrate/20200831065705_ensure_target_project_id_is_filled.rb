@@ -32,7 +32,7 @@ class EnsureTargetProjectIdIsFilled < ActiveRecord::Migration[6.0]
       )
 
       MergeRequestMetrics.connection.execute <<-SQL
-        WITH target_project_id_and_metrics_id as (
+        WITH target_project_id_and_metrics_id as #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
           #{query_for_cte.to_sql}
         )
         UPDATE #{MergeRequestMetrics.connection.quote_table_name(MergeRequestMetrics.table_name)}

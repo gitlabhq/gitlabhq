@@ -142,7 +142,7 @@
 ############################
 
 #######################################################
-# EE/FOSS: default refs (MRs, master, schedules) jobs #
+# EE/FOSS: default refs (MRs, default branch, schedules) jobs #
 setup-test-env:
   extends:
     - .rails-job-base
@@ -183,6 +183,7 @@ setup-test-env:
       - tmp/tests/gitlab-workhorse/gitlab-workhorse
       - tmp/tests/gitlab-workhorse/gitlab-resize-image
       - tmp/tests/gitlab-workhorse/config.toml
+      - tmp/tests/gitlab-workhorse/WORKHORSE_TREE
       - tmp/tests/repositories/
       - tmp/tests/second_storage/
     when: always
@@ -255,17 +256,6 @@ static-analysis:
   script:
     - run_timed_command "retry yarn install --frozen-lockfile"
     - scripts/static-analysis
-
-downtime_check:
-  extends:
-    - .rails-job-base
-    - .rails:rules:downtime_check
-  needs: []
-  stage: test
-  variables:
-    SETUP_DB: "false"
-  script:
-    - bundle exec rake downtime_check
 
 rspec migration pg11:
   extends:
@@ -346,7 +336,7 @@ db:migrate:reset:
 db:check-schema:
   extends:
     - .db-job-base
-    - .rails:rules:ee-mr-and-master-only
+    - .rails:rules:ee-mr-and-default-branch-only
   script:
     - source scripts/schema_changed.sh
 
@@ -358,32 +348,31 @@ db:check-migrations:
     - scripts/validate_migration_schema
   allow_failure: true
 
-db:migrate-from-v12.10.0:
+db:migrate-from-previous-major-version:
   extends: .db-job-base
   variables:
+    USE_BUNDLE_INSTALL: "false"
     SETUP_DB: "false"
+    PROJECT_TO_CHECKOUT: "gitlab-foss"
+    TAG_TO_CHECKOUT: "v12.10.14"
   script:
-    - export PROJECT_TO_CHECKOUT="gitlab"
-    - export TAG_TO_CHECKOUT="v12.10.0-ee"
-    - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab-foss"'
-    - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="v12.10.0"'
+    - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'
+    - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="${TAG_TO_CHECKOUT}-ee"'
     - retry 'git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT'
     - git checkout -f FETCH_HEAD
+    # Patch Gemfile of the previous major version for compatibility.
     - sed -i -e "s/gem 'grpc', '~> 1.24.0'/gem 'grpc', '~> 1.30.2'/" Gemfile  # Update gRPC for Ruby 2.7
-    - sed -i -e "s/gem 'google-protobuf', '~> 3.8.0'/gem 'google-protobuf', '~> 3.12.0'/" Gemfile
-    - gem install bundler:1.17.3
-    - bundle update google-protobuf grpc bootsnap
-    - bundle install $BUNDLE_INSTALL_FLAGS
-    - date
+    - sed -i -e "s/gem 'google-protobuf', '~> 3.8.0'/gem 'google-protobuf', '~> 3.12'/" Gemfile
+    - sed -i -e "s/gem 'nokogiri', '~> 1.10.5'/gem 'nokogiri', '~> 1.11.0'/" Gemfile
+    - sed -i -e "s/gem 'mimemagic', '~> 0.3.2'/gem 'ruby-magic', '~> 0.3.2'/" Gemfile
+    - run_timed_command "gem install bundler:1.17.3"
+    - run_timed_command "bundle update google-protobuf nokogiri grpc mimemagic bootsnap"
+    - run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS}"
     - cp config/gitlab.yml.example config/gitlab.yml
-    - bundle exec rake db:drop db:create db:structure:load db:seed_fu
-    - date
+    - run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
     - git checkout -f $CI_COMMIT_SHA
-    - bundle install $BUNDLE_INSTALL_FLAGS
-    - date
-    - . scripts/prepare_build.sh
-    - date
-    - bundle exec rake db:migrate
+    - run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS}"
+    - run_timed_command "bundle exec rake db:migrate"
 
 db:rollback:
   extends: .db-job-base
@@ -535,11 +524,11 @@ rspec:feature-flags:
         run_timed_command "bundle exec scripts/used-feature-flags";
       fi
 
-# EE/FOSS: default refs (MRs, master, schedules) jobs #
+# EE/FOSS: default refs (MRs, default branch, schedules) jobs #
 #######################################################
 
 ##################################################
-# EE: default refs (MRs, master, schedules) jobs #
+# EE: default refs (MRs, default branch, schedules) jobs #
 rspec migration pg11-as-if-foss:
   extends:
     - .rspec-base-pg11-as-if-foss
@@ -682,81 +671,81 @@ db:rollback geo:
   script:
     - bundle exec rake geo:db:migrate VERSION=20170627195211
     - bundle exec rake geo:db:migrate
-# EE: default refs (MRs, master, schedules) jobs #
+# EE: default refs (MRs, default branch, schedules) jobs #
 ##################################################
 
 ##########################################
-# EE/FOSS: master nightly scheduled jobs #
+# EE/FOSS: default branch nightly scheduled jobs #
 rspec migration pg12:
   extends:
     - .rspec-base-pg12
     - .rspec-base-migration
-    - .rails:rules:master-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-migration-parallel
 
 rspec unit pg12:
   extends:
     - .rspec-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-unit-parallel
 
 rspec integration pg12:
   extends:
     - .rspec-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-integration-parallel
 
 rspec system pg12:
   extends:
     - .rspec-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-system-parallel
-# EE/FOSS: master nightly scheduled jobs #
+# EE/FOSS: default branch nightly scheduled jobs #
 ##########################################
 
 #####################################
-# EE: master nightly scheduled jobs #
+# EE: default branch nightly scheduled jobs #
 rspec-ee migration pg12:
   extends:
     - .rspec-ee-base-pg12
     - .rspec-base-migration
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-migration-parallel
 
 rspec-ee unit pg12:
   extends:
     - .rspec-ee-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-unit-parallel
 
 rspec-ee integration pg12:
   extends:
     - .rspec-ee-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-integration-parallel
 
 rspec-ee system pg12:
   extends:
     - .rspec-ee-base-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
 
 rspec-ee unit pg12 geo:
   extends:
     - .rspec-ee-base-geo-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-unit-geo-parallel
 
 rspec-ee integration pg12 geo:
   extends:
     - .rspec-ee-base-geo-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
 rspec-ee system pg12 geo:
   extends:
     - .rspec-ee-base-geo-pg12
-    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
-# EE: master nightly scheduled jobs #
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+# EE: default branch nightly scheduled jobs #
 #####################################
 
 ##################################################
@@ -799,7 +788,7 @@ fail-pipeline-early:
     GIT_DEPTH: 1
   before_script:
     - source scripts/utils.sh
-    - install_api_client_dependencies_with_apt
+    - install_gitlab_gem
   script:
     - fail_pipeline_early
 # EE: Canonical MR pipelines

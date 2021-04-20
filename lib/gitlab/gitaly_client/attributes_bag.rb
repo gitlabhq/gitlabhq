@@ -3,7 +3,7 @@
 module Gitlab
   module GitalyClient
     # This module expects an `ATTRS` const to be defined on the subclass
-    # See GitalyClient::WikiFile for an example
+    # See GitalyClient::WikiPage for an example
     module AttributesBag
       extend ActiveSupport::Concern
 

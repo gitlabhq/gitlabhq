@@ -62,10 +62,10 @@ RSpec.describe 'User reverts a commit', :js do
     context 'when the project is archived' do
       let(:project) { create(:project, :repository, :archived, namespace: user.namespace) }
 
-      it 'does not show the revert link' do
+      it 'does not show the revert button' do
         open_dropdown
 
-        expect(page).not_to have_link('Revert')
+        expect(page).not_to have_button('Revert')
       end
     end
   end
@@ -75,17 +75,24 @@ RSpec.describe 'User reverts a commit', :js do
 
     page.within(modal_selector) do
       uncheck('create_merge_request') unless create_merge_request
-      click_button('Revert')
+      click_button 'Revert'
     end
   end
 
   def open_dropdown
-    find('.header-action-buttons .dropdown').click
+    find(dropdown_selector).click
   end
 
   def open_modal
     open_dropdown
-    find('[data-testid="revert-commit-link"]').click
+
+    page.within(dropdown_selector) do
+      click_button 'Revert'
+    end
+  end
+
+  def dropdown_selector
+    '[data-testid="commit-options-dropdown"]'
   end
 
   def modal_selector

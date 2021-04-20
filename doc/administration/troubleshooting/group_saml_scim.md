@@ -7,7 +7,7 @@ type: reference
 
 # Troubleshooting Group SAML and SCIM **(PREMIUM SAAS)**
 
-These are notes and screenshots regarding Group SAML and SCIM that the GitLab Support Team sometimes uses while troubleshooting, but which do not fit into the official documentation. GitLab is making this public, so that anyone can make use of the Support team’s collected knowledge.
+These are notes and screenshots regarding Group SAML and SCIM that the GitLab Support Team sometimes uses while troubleshooting, but which do not fit into the official documentation. GitLab is making this public, so that anyone can make use of the Support team's collected knowledge.
 
 Please refer to the GitLab [Group SAML](../../user/group/saml_sso/index.md) docs for information on the feature and how to set it up.
 
@@ -20,6 +20,7 @@ They may then set up a test configuration of the desired identity provider. We i
 This section includes relevant screenshots of the following example configurations of [Group SAML](../../user/group/saml_sso/index.md) and [Group SCIM](../../user/group/saml_sso/scim_setup.md):
 
 - [Azure Active Directory](#azure-active-directory)
+- [Okta](#okta)
 - [OneLogin](#onelogin)
 
 WARNING:
@@ -59,6 +60,14 @@ IdP Links and Certificate:
 
 ![Okta Links and Certificate](img/Okta-linkscert.png)
 
+Sign on settings:
+
+![Okta SAML settings](img/okta_saml_settings.png)
+
+Self-managed instance example:
+
+![Okta admin panel view](img/okta_admin_panel_v13_9.png)
+
 ## OneLogin
 
 Application details:
@@ -76,23 +85,3 @@ Adding a user:
 SSO settings:
 
 ![OneLogin SSO settings](img/OneLogin-SSOsettings.png)
-
-## ADFS
-
-Setup SAML SSO URL:
-
-![ADFS Setup SAML SSO URL](img/ADFS-saml-setup-sso-url.png)
-
-Configure Assertions:
-
-![ADFS Configure Assertions](img/ADFS-configure-assertions.png)
-
-Configure NameID:
-
-![ADFS ADFS-configure-NameID](img/ADFS-configure-NameID.png)
-
-Determine Certificate Fingerprint:
-
-| Via UI | Via Shell |
-|--------|-----------|
-| ![ADFS Determine Token Signing Certificate Fingerprint](img/ADFS-determine-token-signing-certificate-fingerprint.png) | ![ADFS Determine Token Signing Fingerprint From Shell](img/ADFS-determine-token-signing-fingerprint-from-shell.png) |

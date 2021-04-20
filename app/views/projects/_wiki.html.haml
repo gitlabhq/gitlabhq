@@ -14,4 +14,4 @@
       - if can_create_wiki
         %p
           = _("Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message.")
-        = link_to _("Create your first page"), wiki_path(@project.wiki) + '?view=create', class: "btn gl-button btn-primary"
+        = link_to _("Create your first page"), wiki_path(@project.wiki) + '?view=create', class: "btn gl-button btn-confirm"

@@ -11,22 +11,30 @@ module Spam
     # Takes a hash of parameters from an incoming request to modify a model (via a controller,
     # service, or GraphQL mutation). The parameters will either be camelCase (if they are
     # received directly via controller params) or underscore_case (if they have come from
-    # a GraphQL mutation which has converted them to underscore)
+    # a GraphQL mutation which has converted them to underscore), or in the
+    # headers when using the header based flow.
     #
     # Deletes the parameters which are related to spam and captcha processing, and returns
     # them in a SpamParams parameters object. See:
     # https://refactoring.com/catalog/introduceParameterObject.html
-    def self.filter_spam_params!(params)
+    def self.filter_spam_params!(params, request)
       # NOTE: The 'captcha_response' field can be expanded to multiple fields when we move to future
       # alternative captcha implementations such as FriendlyCaptcha. See
       # https://gitlab.com/gitlab-org/gitlab/-/issues/273480
-      captcha_response = params.delete(:captcha_response) || params.delete(:captchaResponse)
+      headers = request&.headers || {}
+      api = params.delete(:api)
+      captcha_response = read_parameter(:captcha_response, params, headers)
+      spam_log_id      = read_parameter(:spam_log_id, params, headers)&.to_i
 
-      SpamParams.new(
-        api: params.delete(:api),
-        captcha_response: captcha_response,
-        spam_log_id: params.delete(:spam_log_id) || params.delete(:spamLogId)
-      )
+      SpamParams.new(api: api, captcha_response: captcha_response, spam_log_id: spam_log_id)
+    end
+
+    def self.read_parameter(name, params, headers)
+      [
+        params.delete(name),
+        params.delete(name.to_s.camelize(:lower).to_sym),
+        headers["X-GitLab-#{name.to_s.titlecase(keep_id_suffix: true).tr(' ', '-')}"]
+      ].compact.first
     end
 
     attr_accessor :target, :request, :options
@@ -40,6 +48,7 @@ module Spam
       @options = {}
     end
 
+    # rubocop:disable Metrics/AbcSize
     def execute(spam_params:)
       if request
         options[:ip_address] = request.env['action_dispatch.remote_ip'].to_s
@@ -58,19 +67,20 @@ module Spam
       )
 
       if recaptcha_verified
-        # If it's a request which is already verified through captcha,
+        # If it's a request which is already verified through CAPTCHA,
         # update the spam log accordingly.
         SpamLog.verify_recaptcha!(user_id: user.id, id: spam_params.spam_log_id)
-        ServiceResponse.success(message: "Captcha was successfully verified")
+        ServiceResponse.success(message: "CAPTCHA successfully verified")
       else
         return ServiceResponse.success(message: 'Skipped spam check because user was allowlisted') if allowlisted?(user)
         return ServiceResponse.success(message: 'Skipped spam check because request was not present') unless request
         return ServiceResponse.success(message: 'Skipped spam check because it was not required') unless check_for_spam?
 
         perform_spam_service_check(spam_params.api)
-        ServiceResponse.success(message: "Spam check performed, check #{target.class.name} spammable model for any errors or captcha requirement")
+        ServiceResponse.success(message: "Spam check performed. Check #{target.class.name} spammable model for any errors or CAPTCHA requirement")
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     delegate :check_for_spam?, to: :target
 

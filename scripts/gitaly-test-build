@@ -13,6 +13,8 @@ class GitalyTestBuild
   include GitalyTest
 
   def run
+    set_bundler_config
+
     abort 'gitaly build failed' unless build_gitaly
 
     ensure_gitlab_shell_secret!

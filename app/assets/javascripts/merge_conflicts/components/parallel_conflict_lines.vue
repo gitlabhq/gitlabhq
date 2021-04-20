@@ -1,32 +1,41 @@
 <script>
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import actionsMixin from '../mixins/line_conflict_actions';
+import { mapActions } from 'vuex';
+import syntaxHighlight from '~/syntax_highlight';
+import { SYNTAX_HIGHLIGHT_CLASS } from '../constants';
 import utilsMixin from '../mixins/line_conflict_utils';
 
 export default {
   directives: {
     SafeHtml,
   },
-  mixins: [utilsMixin, actionsMixin],
+  mixins: [utilsMixin],
+  SYNTAX_HIGHLIGHT_CLASS,
   props: {
     file: {
       type: Object,
       required: true,
     },
   },
+  mounted() {
+    syntaxHighlight(document.querySelectorAll(`.${SYNTAX_HIGHLIGHT_CLASS}`));
+  },
+  methods: {
+    ...mapActions(['handleSelected']),
+  },
 };
 </script>
 <template>
   <!-- Unfortunately there isn't a good key for these sections -->
   <!-- eslint-disable vue/require-v-for-key -->
-  <table class="diff-wrap-lines code js-syntax-highlight">
+  <table :class="['diff-wrap-lines code', $options.SYNTAX_HIGHLIGHT_CLASS]">
     <tr v-for="section in file.parallelLines" class="line_holder parallel">
       <template v-for="line in section">
         <template v-if="line.isHeader">
           <td class="diff-line-num header" :class="lineCssClass(line)"></td>
           <td class="line_content header" :class="lineCssClass(line)">
             <strong>{{ line.richText }}</strong>
-            <button class="btn" @click="handleSelected(file, line.id, line.section)">
+            <button class="btn" @click="handleSelected({ file, line })">
               {{ line.buttonTitle }}
             </button>
           </td>

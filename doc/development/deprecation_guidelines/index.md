@@ -26,4 +26,8 @@ A feature can be deprecated at any time, provided there is a viable alternative.
 
 ## When can a feature be removed/changed?
 
-See our [Release and Maintenance policy](../../policy/maintenance.md).
+For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../../api/README.md#compatibility-guidelines) guidelines.
+
+For configuration removals, see the [Omnibus deprecation policy](https://docs.gitlab.com/omnibus/package-information/deprecation_policy.html).
+
+For versioning and upgrade details, see our [Release and Maintenance policy](../../policy/maintenance.md).

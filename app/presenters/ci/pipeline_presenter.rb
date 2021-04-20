@@ -14,7 +14,9 @@ module Ci
         activity_limit_exceeded: 'Pipeline activity limit exceeded!',
         size_limit_exceeded: 'Pipeline size limit exceeded!',
         job_activity_limit_exceeded: 'Pipeline job activity limit exceeded!',
-        deployments_limit_exceeded: 'Pipeline deployments limit exceeded!' }
+        deployments_limit_exceeded: 'Pipeline deployments limit exceeded!',
+        project_deleted: 'The associated project was deleted',
+        user_blocked: 'The user who created this pipeline is blocked' }
     end
 
     presents :pipeline

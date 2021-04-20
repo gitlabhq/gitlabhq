@@ -42,7 +42,7 @@ RSpec.describe 'Contributions Calendar', :js do
         "#{contributions} #{'contribution'.pluralize(contributions)}"
       end
 
-    "#{get_cell_color_selector(contributions)}[title='#{contribution_text}<br />#{date}']"
+    "#{get_cell_color_selector(contributions)}[title='#{contribution_text}<br /><span class=\"gl-text-gray-300\">#{date}</span>']"
   end
 
   def push_code_contribution
@@ -64,7 +64,7 @@ RSpec.describe 'Contributions Calendar', :js do
       author_id: user.id
     }
 
-    Event.create(note_comment_params)
+    Event.create!(note_comment_params)
   end
 
   def selected_day_activities(visible: true)

@@ -172,6 +172,9 @@ create a merge request from your fork to contribute back to the main project:
 1. In the left menu, go to **Merge Requests**, and click **New Merge Request**.
 1. In the **Source branch** drop-down list box, select your branch in your forked repository as the source branch.
 1. In the **Target branch** drop-down list box, select the branch from the upstream repository as the target branch.
+   You can set a [default target project](#set-the-default-target-project) to
+   change the default target branch (which can be useful when working with a
+   forked project).
 1. After entering the credentials, click **Compare branches and continue** to compare your local changes to the upstream repository.
 1. Assign a user to review your changes, and click **Submit merge request**.
 
@@ -182,6 +185,24 @@ fork from its upstream project in the **Settings > Advanced Settings** section b
 [removing the forking relationship](../settings/index.md#removing-a-fork-relationship).
 
 For further details, [see the forking workflow documentation](../repository/forking_workflow.md).
+
+## Set the default target project
+
+Merge requests have a source and a target project which are the same, unless
+forking is involved. Creating a fork of the project can cause either of these
+scenarios when you create a new merge request:
+
+- You target an upstream project (the project you forked, and the default
+  option).
+- You target your own fork.
+
+If you want to have merge requests from a fork by default target your own fork
+(instead of the upstream project), you can change the default by:
+
+1. In your project, go to **Settings > General > Merge requests**.
+1. In the **Target project** section, select the option you want to use for
+   your default target project.
+1. Select **Save changes**.
 
 ## New merge request by email **(FREE SELF)**
 

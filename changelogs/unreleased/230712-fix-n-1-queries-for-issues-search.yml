@@ -1,0 +1,5 @@
+---
+title: Fix N+1 queries for issues search
+merge_request: 58915
+author:
+type: performance

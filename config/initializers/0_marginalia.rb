@@ -13,7 +13,7 @@ require 'marginalia'
 # matching against the raw SQL, and prepending the comment prevents color
 # coding from working in the development log.
 Marginalia::Comment.prepend_comment = true if Rails.env.production?
-Marginalia::Comment.components = [:application, :controller, :action, :correlation_id, :jid, :job_class, :endpoint_id]
+Marginalia::Comment.components = [:application, :correlation_id, :jid, :endpoint_id]
 
 # As mentioned in https://github.com/basecamp/marginalia/pull/93/files,
 # adding :line has some overhead because a regexp on the backtrace has

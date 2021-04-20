@@ -27,7 +27,7 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     # track the event, and mix in the experiment signature data
     Gitlab::Tracking.event(name, action.to_s, **event_args.merge(
       context: (event_args[:context] || []) << SnowplowTracker::SelfDescribingJson.new(
-        'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0', signature
+        'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0', signature
       )
     ))
   end

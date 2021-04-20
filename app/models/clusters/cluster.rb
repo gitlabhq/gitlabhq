@@ -51,6 +51,8 @@ module Clusters
 
     has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', inverse_of: :cluster, autosave: true
 
+    has_one :integration_prometheus, class_name: 'Clusters::Integrations::Prometheus', inverse_of: :cluster
+
     def self.has_one_cluster_application(name) # rubocop:disable Naming/PredicateName
       application = APPLICATIONS[name.to_s]
       has_one application.association_name, class_name: application.to_s, inverse_of: :cluster # rubocop:disable Rails/ReflectionClassName
@@ -100,7 +102,6 @@ module Clusters
     delegate :rbac?, to: :platform_kubernetes, prefix: true, allow_nil: true
     delegate :available?, to: :application_helm, prefix: true, allow_nil: true
     delegate :available?, to: :application_ingress, prefix: true, allow_nil: true
-    delegate :available?, to: :application_prometheus, prefix: true, allow_nil: true
     delegate :available?, to: :application_knative, prefix: true, allow_nil: true
     delegate :available?, to: :application_elastic_stack, prefix: true, allow_nil: true
     delegate :external_ip, to: :application_ingress, prefix: true, allow_nil: true
@@ -148,6 +149,9 @@ module Clusters
     scope :with_management_project, -> { where.not(management_project: nil) }
 
     scope :for_project_namespace, -> (namespace_id) { joins(:projects).where(projects: { namespace_id: namespace_id }) }
+
+    # with_application_prometheus scope is deprecated, and scheduled for removal
+    # in %14.0. See https://gitlab.com/groups/gitlab-org/-/epics/4280
     scope :with_application_prometheus, -> { includes(:application_prometheus).joins(:application_prometheus) }
     scope :with_project_http_integrations, -> (project_ids) do
       conditions = { projects: :alert_management_http_integrations }
@@ -276,6 +280,10 @@ module Clusters
       public_send(association_name) || public_send("build_#{association_name}") # rubocop:disable GitlabSecurity/PublicSend
     end
 
+    def find_or_build_integration_prometheus
+      integration_prometheus || build_integration_prometheus
+    end
+
     def provider
       if gcp?
         provider_gcp
@@ -361,8 +369,12 @@ module Clusters
       end
     end
 
+    def application_prometheus_available?
+      integration_prometheus&.available? || application_prometheus&.available?
+    end
+
     def prometheus_adapter
-      application_prometheus
+      integration_prometheus || application_prometheus
     end
 
     private

@@ -6,22 +6,18 @@ module QA
   module Specs
     module Helpers
       module Quarantine
-        include RSpec::Core::Pending
+        include ::RSpec::Core::Pending
 
         extend self
 
         def configure_rspec
-          RSpec.configure do |config|
+          ::RSpec.configure do |config|
             config.before(:context, :quarantine) do
               Quarantine.skip_or_run_quarantined_contexts(config.inclusion_filter.rules, self.class)
             end
 
             config.before do |example|
               Quarantine.skip_or_run_quarantined_tests_or_contexts(config.inclusion_filter.rules, example)
-
-              if example.metadata.key?(:only)
-                skip('Test is not compatible with this environment or pipeline') unless Runtime::Env.context_matches?(example.metadata[:only])
-              end
             end
           end
         end
@@ -52,10 +48,10 @@ module QA
             if example.metadata.key?(:quarantine)
               quarantine_tag = example.metadata[:quarantine]
 
-              if quarantine_tag&.is_a?(Hash) && quarantine_tag&.key?(:only)
+              if quarantine_tag.is_a?(Hash) && quarantine_tag&.key?(:only)
                 # If the :quarantine hash contains :only, we respect that.
                 # For instance `quarantine: { only: { subdomain: :staging } }` will only quarantine the test when it runs against staging.
-                return unless Runtime::Env.context_matches?(quarantine_tag[:only])
+                return unless ContextSelector.context_matches?(quarantine_tag[:only])
               end
 
               skip(quarantine_message(quarantine_tag))

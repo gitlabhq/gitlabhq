@@ -165,6 +165,7 @@ export default {
             data-testid="delete-strategy-button"
             variant="danger"
             icon="remove"
+            :aria-label="__('Delete')"
             @click="$emit('delete')"
           />
         </div>

@@ -33,17 +33,18 @@ OAuth 2 can be used:
 The 'GitLab Importer' feature also uses OAuth 2 to give access
 to repositories without sharing user credentials to your GitLab.com account.
 
-GitLab supports two ways of adding a new OAuth 2 application to an instance:
+GitLab supports several ways of adding a new OAuth 2 application to an instance:
 
-- As a regular user, for applications owned by an individual.
-- Through the Admin Area menu for instance-wide apps.
+- [User owned applications](#user-owned-applications)
+- [Group owned applications](#group-owned-applications)
+- [Instance-wide applications](#instance-wide-applications)
 
-The only difference between these two methods is the [permission](../user/permissions.md)
+The only difference between these methods is the [permission](../user/permissions.md)
 levels. The default callback URL is `http://your-gitlab.example.com/users/auth/gitlab/callback`.
 
-## Add an application through the profile
+## User owned applications
 
-To add a new application via your profile:
+To add a new application for your user:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
@@ -55,7 +56,22 @@ To add a new application via your profile:
    - Application ID: OAuth 2 Client ID.
    - Secret: OAuth 2 Client Secret.
 
-## OAuth applications in the Admin Area
+## Group owned applications
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16227) in GitLab 13.11.
+
+To add a new application for a group:
+
+1. Navigate to the desired group.
+1. In the left sidebar, select **Settings > Applications**.
+1. Enter a **Name**, **Redirect URI** and OAuth 2 scopes as defined in [Authorized Applications](#authorized-applications).
+   The **Redirect URI** is the URL where users are sent after they authorize with GitLab.
+1. Select **Save application**. GitLab displays:
+
+   - Application ID: OAuth 2 Client ID.
+   - Secret: OAuth 2 Client Secret.
+
+## Instance-wide applications
 
 To create an application for your GitLab instance, select
 **Admin Area > Applications > New application**.

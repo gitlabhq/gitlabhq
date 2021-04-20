@@ -4,7 +4,7 @@ module Ci
   module BuildTraceChunks
     class Redis
       CHUNK_REDIS_TTL = 1.week
-      LUA_APPEND_CHUNK = <<~EOS.freeze
+      LUA_APPEND_CHUNK = <<~EOS
         local key, new_data, offset = KEYS[1], ARGV[1], ARGV[2]
         local length = new_data:len()
         local expire = #{CHUNK_REDIS_TTL.seconds}

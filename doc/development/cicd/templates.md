@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Verify
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index, concepts, howto
 ---
@@ -9,27 +9,214 @@ type: index, concepts, howto
 
 This document explains how to develop [GitLab CI/CD templates](../../ci/examples/README.md).
 
-## Place the template file in a relevant directory
+## Requirements for CI/CD templates
 
-All template files reside in the `lib/gitlab/ci/templates` directory, and are categorized by the following sub-directories:
+Before submitting a merge request with a new or updated CI/CD template, you must:
 
-| Sub-directory  | Content                                            | [Selectable in UI](#make-sure-the-new-template-can-be-selected-in-ui) |
-|----------------|----------------------------------------------------|-----------------------------------------------------------------------|
-| `/AWS/*`       | Cloud Deployment (AWS) related jobs                | No      |
-| `/Jobs/*`      | Auto DevOps related jobs                           | No      |
-| `/Pages/*`     | Static site generators for GitLab Pages (for example Jekyll) | Yes     |
-| `/Security/*`  | Security related jobs                              | Yes     |
-| `/Terraform/*` | Infrastructure as Code related templates           | No      |
-| `/Verify/*`    | Verify/testing related jobs                        | Yes     |
-| `/Workflows/*` | Common uses of the `workflow:` keyword             | No      |
-| `/*` (root)    | General templates                                  | Yes     |
+- Place the template in the correct [directory](#template-directories).
+- Follow the [CI/CD template authoring guidelines](#template-authoring-guidelines).
+- Name the template following the `*.gitlab-ci.yml` format.
+- Use valid [`.gitlab-ci.yml` syntax](../../ci/yaml/README.md). Verify it's valid
+  with the [CI/CD lint tool](../../ci/lint.md).
+- Include [a changelog](../changelog.md) if the merge request introduces a user-facing change.
+- Follow the [template review process](#contribute-cicd-template-merge-requests).
+- (Optional but highly recommended) Test the template in an example GitLab project
+  that reviewers can access. Reviewers might not be able to create the data or configuration
+  that the template requires, so an example project helps the reviewers ensure the
+  template is correct. The example project pipeline should succeed before submitting
+  the merge request for review.
 
-## Criteria
+## Template directories
 
-The file must follow the [`.gitlab-ci.yml` syntax](../../ci/yaml/README.md).
-Verify it's valid by pasting it into the CI lint tool at `https://gitlab.com/gitlab-org/gitlab/-/ci/lint`.
+All template files are saved in `lib/gitlab/ci/templates`. Save general templates
+in this directory, but certain template types have a specific directory reserved for
+them. The ability to [select a template in new file UI](#make-sure-the-new-template-can-be-selected-in-ui)
+is determined by the directory it is in:
 
-Also, all templates must be named with the `*.gitlab-ci.yml` suffix.
+| Sub-directory  | Selectable in UI | Template type |
+|----------------|------------------|---------------|
+| `/*` (root)    | Yes              | General templates. |
+| `/AWS/*`       | No               | Templates related to Cloud Deployment (AWS). |
+| `/Jobs/*`      | No               | Templates related to Auto DevOps. |
+| `/Pages/*`     | Yes              | Sample templates for using Static site generators with GitLab Pages. |
+| `/Security/*`  | Yes              | Templates related to Security scanners. |
+| `/Terraform/*` | No               | Templates related to infrastructure as Code (Terraform). |
+| `/Verify/*`    | Yes              | Templates related to Testing features. |
+| `/Workflows/*` | No               | Sample templates for using the `workflow:` keyword. |
+
+## Template authoring guidelines
+
+Use the following guidelines to ensure your template submission follows standards:
+
+### Template types
+
+Templates have two different types that impact the way the template should be written
+and used. The style in a template should match one of these two types:
+
+A **pipeline template** provides an end-to-end CI/CD workflow that matches a project's
+structure, language, and so on. It usually should be used by itself in projects that
+don't have any other `.gitlab-ci.yml` files.
+
+When authoring pipeline templates:
+
+- Place any [global keywords](../../ci/yaml/README.md#global-keywords) like `image`
+  or `before_script` in a [`default`](../../ci/yaml/README.md#custom-default-keyword-values)
+  section at the top of the template.
+- Note clearly in the [code comments](#explain-the-template-with-comments) if the
+  template is designed to be used with the `includes` keyword in an existing
+  `.gitlab-ci.yml` file or not.
+
+A **job template** provides specific jobs that can be added to an existing CI/CD
+workflow to accomplish specific tasks. It usually should be used by adding it to
+an existing `.gitlab-ci.yml` file by using the [`includes`](../../ci/yaml/README.md#global-keywords)
+keyword. You can also copy and paste the contents into an existing `.gitlab-ci.yml` file.
+
+Configure job templates so that users can add them to their current pipeline with very
+few or no modifications. It must be configured to reduce the risk of conflicting with
+other pipeline configuration.
+
+When authoring job templates:
+
+- Do not use [global](../../ci/yaml/README.md#global-keywords) or [`default`](../../ci/yaml/README.md#custom-default-keyword-values)
+  keywords. When a root `.gitlab-ci.yml` includes a template, global or default keywords
+  might be overridden and cause unexpected behavior. If a job template requires a
+  specific stage, explain in the code comments that users must manually add the stage
+  to the main `.gitlab-ci.yml` configuration.
+- Note clearly in [code comments](#explain-the-template-with-comments) that the template
+  is designed to be used with the `includes` keyword or copied into an existing configuration.
+- Consider [versioning](#versioning) the template with latest and stable versions
+  to avoid [backward compatibility](#backward-compatibility) problems.
+  Maintenance of this type of template is more complex, because changes to templates
+  imported with `includes` can break pipelines for all projects using the template.
+
+Additional points to keep in mind when authoring templates:
+
+| Template design points                               | Pipeline templates | Job templates |
+|------------------------------------------------------|--------------------|---------------|
+| Can use global keywords, including `stages`.         | Yes                | No            |
+| Can define jobs.                                     | Yes                | Yes           |
+| Can be selected in the new file UI                   | Yes                | Yes           |
+| Can include other job templates with `include`       | Yes                | No            |
+| Can include other pipeline templates with `include`. | No                 | No            |
+
+### Syntax guidelines
+
+To make templates easier to follow, templates should all use clear syntax styles,
+with a consistent format.
+
+#### Do not hardcode the default branch
+
+Use [`$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH`](../../ci/variables/predefined_variables.md)
+instead of a hardcoded `main` branch, and never use `master`:
+
+```yaml
+job1:
+  rules:
+    if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    echo "example job 1"
+
+job2:
+  only:
+    variables:
+      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    echo "example job 2"
+
+```
+
+#### Use `rules` instead of `only` or `except`
+
+Avoid using [`only` or `except`](../../ci/yaml/README.md#onlyexcept-basic) if possible.
+Only and except is not being developed any more, and [`rules`](../../ci/yaml/README.md#rules)
+is now the preferred syntax:
+
+```yaml
+job2:
+  script:
+    - echo
+  rules:
+    - if: $CI_COMMIT_BRANCH
+```
+
+#### Break up long commands
+
+If a command is very long, or has many command line flags, like `-o` or `--option`:
+
+- Split these up into a multi-line command to make it easier to see every part of the command.
+- Use the long name for the flags, when available.
+
+For example, with a long command with short CLI flags like
+`docker run --e SOURCE_CODE="$PWD" -v "$PWD":/code -v /var/run/docker.sock:/var/run/docker.sock "$CODE_QUALITY_IMAGE" /code`:
+
+```yaml
+job1:
+  script:
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "$CODE_QUALITY_IMAGE" /code
+```
+
+You can also use the `|` and `>` YAML operators to [split up multi-line commands](../../ci/yaml/script.md#split-long-commands).
+
+### Explain the template with comments
+
+You can access template contents from the new file menu, and this might be the only
+place users see information about the template. It's important to clearly document
+the behavior of the template directly in the template itself.
+
+The following guidelines cover the basic comments expected in all template submissions.
+Add additional comments as needed if you think the comments can help users or
+[template reviewers](#contribute-cicd-template-merge-requests).
+
+#### Explain requirements and expectations
+
+Give the details on how to use the template in `#` comments at the top of the file.
+This includes:
+
+- Repository/project requirements.
+- Expected behavior.
+- Any places that need to be edited by users before using the template.
+- If the template should be used by copy pasting it into a configuration file, or
+  by using it with the `include` keyword in an existing pipeline.
+- If any variables need to be saved in the project's CI/CD settings.
+
+```yaml
+# Use this template to publish an application that uses the ABC server.
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# Requirements:
+# - An ABC project with content saved in /content and tests in /test
+# - A CI/CD variable named ABC-PASSWORD saved in the project CI/CD settings. The value
+#   should be the password used to deploy to your ABC server.
+# - An ABC server configured to listen on port 12345.
+#
+# You must change the URL on line 123 to point to your ABC server and port.
+#
+# For more information, see https://gitlab.com/example/abcserver/README.md
+
+job1:
+  ...
+```
+
+#### Explain how variables affect template behavior
+
+If the template uses variables, explain them in `#` comments where they are first
+defined. You can skip the comment when the variable is trivially clear:
+
+```yaml
+variables:                        # Good to have a comment here, for example:
+  TEST_CODE_PATH: <path/to/code>  # Update this variable with the relative path to your Ruby specs
+
+job1:
+  variables:
+    ERROR_MESSAGE: "The $TEST_CODE_PATH path is invalid"  # (No need for a comment here, it's already clear)
+  script:
+    - echo ${ERROR_MESSAGE}
+```
 
 ### Backward compatibility
 
@@ -64,18 +251,6 @@ are no such jobs named `performance` in the included template anymore. Therefore
 users have to fix their `.gitlab-ci.yml` that could annoy their workflow.
 
 Please read [versioning](#versioning) section for introducing breaking change safely.
-
-### Best practices
-
-- Avoid using [global keywords](../../ci/yaml/README.md#global-keywords),
-  such as `image`, `stages` and `variables` at top-level.
-  When a root `.gitlab-ci.yml` [includes](../../ci/yaml/README.md#include)
-  multiple templates, these global keywords could be overridden by the
-  others and cause an unexpected behavior.
-- Include [a changelog](../changelog.md) if your merge request introduces a user-facing change.
-- Use [`$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH`](../../ci/variables/predefined_variables.md)
-  instead of a hardcoded `main` branch, and never use `master`.
-- Use [`rules`](../../ci/yaml/README.md#rules) instead of [`only` or `except`](../../ci/yaml/README.md#onlyexcept-basic), if possible.
 
 ## Versioning
 
@@ -135,7 +310,7 @@ include:
 ### Further reading
 
 There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/17716) about
-introducing versioning concepts in GitLab CI Templates. You can check that issue to
+introducing versioning concepts in GitLab CI/CD templates. You can check that issue to
 follow the progress.
 
 ## Testing
@@ -157,7 +332,7 @@ This is useful information for reviewers to make sure the template is safe to be
 
 ### Make sure the new template can be selected in UI
 
-Templates located under some directories are also [selectable in the **New file** UI](#place-the-template-file-in-a-relevant-directory).
+Templates located under some directories are also [selectable in the **New file** UI](#template-directories).
 When you add a template into one of those directories, make sure that it correctly appears in the dropdown:
 
 ![CI/CD template selection](img/ci_template_selection_v13_1.png)
@@ -187,6 +362,10 @@ A template could contain malicious code. For example, a template that contains t
 might accidentally expose secret project CI/CD variables in a job log.
 If you're unsure if it's secure or not, you need to ask security experts for cross-validation.
 
-## Contribute CI/CD Template Merge Requests
+## Contribute CI/CD template merge requests
 
-After your CI/CD Template MR is created and labeled with `ci::templates`, DangerBot suggests one reviewer and one maintainer that can review your code. When your merge request is ready for review, please `@mention` the reviewer and ask them to review your CI/CD Template changes. See details in the merge request that added [a DangerBot task for CI/CD Template MRs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44688).
+After your CI/CD template MR is created and labeled with `ci::templates`, DangerBot
+suggests one reviewer and one maintainer that can review your code. When your merge
+request is ready for review, please `@mention` the reviewer and ask them to review
+your CI/CD template changes. See details in the merge request that added
+[a DangerBot task for CI/CD template MRs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44688).

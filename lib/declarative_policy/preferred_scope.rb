@@ -5,7 +5,8 @@ module DeclarativePolicy
     PREFERRED_SCOPE_KEY = :"DeclarativePolicy.preferred_scope"
 
     def with_preferred_scope(scope)
-      Thread.current[PREFERRED_SCOPE_KEY], old_scope = scope, Thread.current[PREFERRED_SCOPE_KEY]
+      old_scope = Thread.current[PREFERRED_SCOPE_KEY]
+      Thread.current[PREFERRED_SCOPE_KEY] = scope
       yield
     ensure
       Thread.current[PREFERRED_SCOPE_KEY] = old_scope

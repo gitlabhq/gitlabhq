@@ -16,6 +16,11 @@
 .row
   .col-sm-4
     = render_if_exists 'shared/groups/invite_members'
+
+- if captcha_required?
+  .row.recaptcha
+    .col-sm-4
+      = recaptcha_tags
 .row
   .form-actions.col-sm-12
     = f.submit _('Create group'), class: "btn gl-button btn-confirm"

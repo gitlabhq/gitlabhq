@@ -21,7 +21,7 @@
       #js-issuable-header-warnings
       = issuable_meta(@merge_request, @project)
 
-    %a.btn.btn-default.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
+    %a.gl-button.btn.btn-default.btn-icon.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
       = sprite_icon('chevron-double-lg-left')
 
   .detail-page-header-actions.js-issuable-actions
@@ -50,4 +50,4 @@
       - if can_update_merge_request && !are_close_and_open_buttons_hidden
         = render 'projects/merge_requests/close_reopen_draft_report_toggle'
       - elsif !@merge_request.merged?
-        = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-md-display-block gl-button btn btn-warning-secondary float-right gl-ml-3', title: _('Report abuse')
+        = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-md-display-block gl-button btn btn-default float-right gl-ml-3', title: _('Report abuse')

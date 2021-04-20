@@ -16,7 +16,7 @@ class SlackService < ChatNotificationService
   end
 
   def description
-    'Receive event notifications in Slack'
+    'Send notifications about project events to Slack.'
   end
 
   def self.to_param
@@ -24,7 +24,7 @@ class SlackService < ChatNotificationService
   end
 
   def default_channel_placeholder
-    _('Slack channels (e.g. general, development)')
+    _('general, development')
   end
 
   def webhook_placeholder

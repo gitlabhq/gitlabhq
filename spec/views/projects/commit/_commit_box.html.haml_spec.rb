@@ -34,14 +34,6 @@ RSpec.describe 'projects/commit/_commit_box.html.haml' do
 
         expect(rendered).to have_selector('.js-commit-pipeline-mini-graph')
       end
-
-      it 'shows pipeline stages in haml when feature flag is disabled' do
-        stub_feature_flags(ci_commit_pipeline_mini_graph_vue: false)
-
-        render
-
-        expect(rendered).to have_selector('.js-commit-pipeline-graph')
-      end
     end
 
     context 'when there are multiple pipelines for a commit' do
@@ -71,32 +63,6 @@ RSpec.describe 'projects/commit/_commit_box.html.haml' do
 
         expect(rendered).to have_text "Pipeline ##{pipeline.id} " \
                                       'waiting for manual action'
-      end
-    end
-  end
-
-  context 'viewing a commit' do
-    context 'as a developer' do
-      before do
-        allow(view).to receive(:can_collaborate_with_project?).and_return(true)
-      end
-
-      it 'has a link to create a new tag' do
-        render
-
-        expect(rendered).to have_link('Tag')
-      end
-    end
-
-    context 'as a non-developer' do
-      before do
-        project.add_guest(user)
-      end
-
-      it 'does not have a link to create a new tag' do
-        render
-
-        expect(rendered).not_to have_link('Tag')
       end
     end
   end

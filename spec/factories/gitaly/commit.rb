@@ -14,7 +14,7 @@ FactoryBot.define do
     subject { "My commit" }
 
     body { subject + "\nMy body" }
-    author { build(:gitaly_commit_author) }
-    committer { build(:gitaly_commit_author) }
+    author { association(:gitaly_commit_author) }
+    committer { association(:gitaly_commit_author) }
   end
 end

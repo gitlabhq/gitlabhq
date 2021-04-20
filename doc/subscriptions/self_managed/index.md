@@ -28,11 +28,11 @@ The cost of a GitLab self-managed subscription is determined by the following:
 - GitLab tier
 - Subscription seats
 
-## GitLab tier
+## Choose a GitLab tier
 
-Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose
-the features which fit your budget. For information on what features are available
-at each tier, see the
+Pricing is [tier-based](https://about.gitlab.com/pricing/), so you can choose
+the features that fit your budget. For information on the features available
+for each tier, see the
 [GitLab self-managed feature comparison](https://about.gitlab.com/pricing/self-managed/feature-comparison/).
 
 ## Subscription seats
@@ -150,9 +150,9 @@ You purchase a license for 10 users.
 
 | Event                                              | Billable members | Maximum users |
 |:---------------------------------------------------|:-----------------|:--------------|
-| Ten people (users) occupy all 10 seats.            | 10               | 10            |
-| Two new people join.                               | 12               | 12            |
-| Three people leave and their accounts are removed. | 9                | 12            |
+| Ten users occupy all 10 seats.                     | 10               | 10            |
+| Two new users join.                                | 12               | 12            |
+| Three users leave and their accounts are removed.  | 9                | 12            |
 
 Users over license = 12 - 10 (Maximum users - users in license)
 
@@ -190,7 +190,7 @@ We recommend following these steps during renewal:
    NOTE:
    If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team via `renewals@gitlab.com` for assistance as this can't be done in the Customers Portal.
 
-1. In the first box, enter the total number of user licenses you’ll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
+1. In the first box, enter the total number of user licenses you'll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
 1. Review your renewal details and complete the payment process.
 1. A license for the renewal term is available for download on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy license to clipboard** or **Download license** to get a copy.
@@ -200,7 +200,7 @@ An invoice is generated for the renewal and available for viewing or download on
 
 ### Seat Link
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208832) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208832) in GitLab 12.9.
 
 Seat Link allows GitLab Inc. to provide our GitLab self-managed customers with prorated charges for user growth throughout the year using a quarterly reconciliation process.
 
@@ -269,7 +269,7 @@ You can view the exact JSON payload in the administration panel. To view the pay
 
 #### Disable Seat Link
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212375) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212375) in GitLab 12.10.
 
 Seat Link is enabled by default.
 
@@ -318,18 +318,15 @@ The new tier takes effect when the new license is uploaded.
 
 ## Subscription expiry
 
-When your subscription or trial expires, GitLab does not delete your data, but it
-may become inaccessible, depending on the tier at expiry. Some features may not
-behave as expected if you're not prepared for the expiry. For example,
-[environment specific variables not being passed](https://gitlab.com/gitlab-org/gitlab/-/issues/24759).
-If you renew or upgrade, your data is again accessible.
+When your license expires, GitLab locks down features, like Git pushes
+and issue creation. Then, your instance becomes read-only and
+an expiration message is displayed to all administrators.
 
-For GitLab self-managed customers, there is a 14-day grace period when your features
-continue to work as-is, after which the entire instance becomes read
-only.
+For GitLab self-managed instances, you have a 14-day grace period
+before this occurs.
 
-However, if you remove the license, you immediately revert to Free
-features, and the instance become read / write again.
+- To resume functionality, upload a new license.
+- To fall back to Free features, delete the expired license.
 
 ## Contact Support
 

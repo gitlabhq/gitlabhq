@@ -32,6 +32,7 @@ RSpec.describe SlackService do
 
       context 'event is not supported for usage log' do
         let_it_be(:pipeline) { create(:ci_pipeline) }
+
         let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
 
         it 'does not increase the usage data counter' do
@@ -43,6 +44,7 @@ RSpec.describe SlackService do
 
       context 'issue notification' do
         let_it_be(:issue) { create(:issue) }
+
         let(:data) { issue.to_hook_data(user) }
 
         it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_issue_notification'
@@ -56,6 +58,7 @@ RSpec.describe SlackService do
 
       context 'deployment notification' do
         let_it_be(:deployment) { create(:deployment, user: user) }
+
         let(:data) { Gitlab::DataBuilder::Deployment.build(deployment) }
 
         it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_deployment_notification'
@@ -63,6 +66,7 @@ RSpec.describe SlackService do
 
       context 'wiki_page notification' do
         let_it_be(:wiki_page) { create(:wiki_page, wiki: project.wiki, message: 'user created page: Awesome wiki_page') }
+
         let(:data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
 
         it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_wiki_page_notification'
@@ -70,6 +74,7 @@ RSpec.describe SlackService do
 
       context 'merge_request notification' do
         let_it_be(:merge_request) { create(:merge_request) }
+
         let(:data) { merge_request.to_hook_data(user) }
 
         it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_merge_request_notification'
@@ -77,6 +82,7 @@ RSpec.describe SlackService do
 
       context 'note notification' do
         let_it_be(:issue_note) { create(:note_on_issue, note: 'issue note') }
+
         let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user) }
 
         it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_note_notification'
@@ -93,6 +99,7 @@ RSpec.describe SlackService do
 
       context 'confidential note notification' do
         let_it_be(:confidential_issue_note) { create(:note_on_issue, note: 'issue note', confidential: true) }
+
         let(:data) { Gitlab::DataBuilder::Note.build(confidential_issue_note, user) }
 
         it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_confidential_note_notification'
@@ -100,6 +107,7 @@ RSpec.describe SlackService do
 
       context 'confidential issue notification' do
         let_it_be(:issue) { create(:issue, confidential: true) }
+
         let(:data) { issue.to_hook_data(user) }
 
         it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_confidential_issue_notification'

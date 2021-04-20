@@ -1,4 +1,6 @@
 %p.text-center
   %span.light
-    Already have login and password?
-    = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes')
+    = _('Already have login and password?')
+    - path_params = { redirect_to_referer: 'yes' }
+    - path_params[:invite_email] = @invite_email if @invite_email.present?
+    = link_to _('Sign in'), new_session_path(:user, path_params)

@@ -101,6 +101,7 @@ export default {
     :data-clipboard-target="target"
     :data-clipboard-text="text"
     :title="title"
+    :aria-label="title"
     :category="category"
     icon="copy-to-clipboard"
   />

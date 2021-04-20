@@ -3,7 +3,7 @@
 
   %fieldset
     .form-group
-      = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'label-bold'
+      = f.label :max_pages_size, _('Maximum size of pages (MB)'), class: 'label-bold'
       = f.number_field :max_pages_size, class: 'form-control gl-form-input'
       .form-text.text-muted
         = _("0 for unlimited")

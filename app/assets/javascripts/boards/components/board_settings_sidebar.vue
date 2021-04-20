@@ -22,13 +22,7 @@ export default {
       import('ee_component/boards/components/board_settings_list_types.vue'),
   },
   mixins: [glFeatureFlagMixin()],
-  props: {
-    canAdminList: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
+  inject: ['canAdminList'],
   data() {
     return {
       ListType,

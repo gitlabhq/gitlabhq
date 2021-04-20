@@ -24,6 +24,6 @@ RSpec.describe 'Group labels' do
   end
 
   it 'shows an edit label button', :js do
-    expect(page).to have_selector('.label-action.edit')
+    expect(page).to have_selector('.edit')
   end
 end

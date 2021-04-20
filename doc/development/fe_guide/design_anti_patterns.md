@@ -30,7 +30,7 @@ const createStore = () => new Vuex.Store({
 // Notice that we are forcing all references to this module to use the same single instance of the store.
 // We are also creating the store at import-time and there is nothing which can automatically dispose of it.
 //
-// As an alternative, we should simply export the `createStore` and let the client manage the
+// As an alternative, we should export the `createStore` and let the client manage the
 // lifecycle and instance of the store.
 export default createStore();
 ```
@@ -129,7 +129,7 @@ Here are some ills that Singletons often produce:
 
 This is because of the limitations of languages like Java where everything has to be wrapped
 in a class. In JavaScript we have things like object and function literals where we can solve
-many problems with a module that simply exports utility functions.
+many problems with a module that exports utility functions.
 
 ### When could the Singleton pattern be actually appropriate?**
 

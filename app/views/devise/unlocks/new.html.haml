@@ -1,4 +1,4 @@
-= render 'devise/shared/tab_single', tab_title: 'Resend unlock instructions'
+= render 'devise/shared/tab_single', tab_title: _('Resend unlock instructions')
 .login-box
   .login-body
     = form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post, class: 'gl-show-field-errors' }) do |f|
@@ -6,9 +6,9 @@
         = render "devise/shared/error_messages", resource: resource
       .form-group.gl-mb-6
         = f.label :email
-        = f.email_field :email, class: 'form-control', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', title: 'Please provide a valid email address.'
+        = f.email_field :email, class: 'form-control', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', title: _('Please provide a valid email address.')
       .clearfix
-        = f.submit 'Resend unlock instructions', class: 'gl-button btn btn-confirm'
+        = f.submit _('Resend unlock instructions'), class: 'gl-button btn btn-confirm'
 
 .clearfix.prepend-top-20
   = render 'devise/shared/sign_in_link'

@@ -66,7 +66,7 @@ RSpec.describe 'Admin Appearance' do
 
     context 'when system header and footer messages are not empty' do
       before do
-        appearance.update(header_message: 'Foo', footer_message: 'Bar')
+        appearance.update!(header_message: 'Foo', footer_message: 'Bar')
       end
 
       it 'shows custom system header and footer fields' do

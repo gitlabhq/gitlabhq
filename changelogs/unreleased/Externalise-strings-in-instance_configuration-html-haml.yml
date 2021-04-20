@@ -1,0 +1,5 @@
+---
+title: Externalize strings in instance_configuration.html.haml
+merge_request: 58443
+author: nuwe1
+type: other

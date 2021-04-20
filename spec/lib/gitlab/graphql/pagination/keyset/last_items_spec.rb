@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Graphql::Pagination::Keyset::LastItems do
   let_it_be(:merge_request) { create(:merge_request) }
+
   let(:scope) { MergeRequest.order_merged_at_asc }
 
   subject { described_class.take_items(*args) }

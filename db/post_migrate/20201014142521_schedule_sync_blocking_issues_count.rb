@@ -7,7 +7,7 @@ class ScheduleSyncBlockingIssuesCount < ActiveRecord::Migration[6.0]
 
   BATCH_SIZE = 50
   DELAY_INTERVAL = 120.seconds.to_i
-  MIGRATION = 'SyncBlockingIssuesCount'.freeze
+  MIGRATION = 'SyncBlockingIssuesCount'
 
   disable_ddl_transaction!
 

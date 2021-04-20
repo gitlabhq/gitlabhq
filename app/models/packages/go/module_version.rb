@@ -4,6 +4,7 @@ module Packages
   module Go
     class ModuleVersion
       include Gitlab::Utils::StrongMemoize
+      include Gitlab::Golang
 
       VALID_TYPES = %i[ref commit pseudo].freeze
 
@@ -81,6 +82,9 @@ module Packages
       end
 
       def valid?
+        # assume the module version is valid if a corresponding Package exists
+        return true if ::Packages::Go::PackageFinder.new(mod.project, mod.name, name).exists?
+
         @mod.path_valid?(major) && @mod.gomod_valid?(gomod)
       end
 

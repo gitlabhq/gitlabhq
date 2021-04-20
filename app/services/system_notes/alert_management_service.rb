@@ -73,7 +73,7 @@ module SystemNotes
     #
     # Returns the created Note object
     def log_resolving_alert(monitoring_tool)
-      body = "logged a resolving alert from **#{monitoring_tool}**"
+      body = "logged a recovery alert from **#{monitoring_tool}**"
 
       create_note(NoteSummary.new(noteable, project, User.alert_bot, body, action: 'new_alert_added'))
     end

@@ -1,4 +1,3 @@
-import { GlTable } from '@gitlab/ui';
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import CiVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
@@ -14,7 +13,6 @@ describe('Ci variable table', () => {
 
   const createComponent = () => {
     store = createStore();
-    store.state.isGroup = true;
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = mount(CiVariableTable, {
       attachTo: document.body,
@@ -26,7 +24,6 @@ describe('Ci variable table', () => {
   const findRevealButton = () => wrapper.find({ ref: 'secret-value-reveal-button' });
   const findEditButton = () => wrapper.find({ ref: 'edit-ci-variable' });
   const findEmptyVariablesPlaceholder = () => wrapper.find({ ref: 'empty-variables' });
-  const findTable = () => wrapper.find(GlTable);
 
   beforeEach(() => {
     createComponent();
@@ -38,17 +35,6 @@ describe('Ci variable table', () => {
 
   it('dispatches fetchVariables when mounted', () => {
     expect(store.dispatch).toHaveBeenCalledWith('fetchVariables');
-  });
-
-  it('fields prop does not contain environment_scope if group', () => {
-    expect(findTable().props('fields')).not.toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          key: 'environment_scope',
-          label: 'Environment Scope',
-        }),
-      ]),
-    );
   });
 
   describe('Renders correct data', () => {

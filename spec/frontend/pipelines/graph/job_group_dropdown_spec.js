@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import JobGroupDropdown from '~/pipelines/components/graph/job_group_dropdown.vue';
 
 describe('job group dropdown component', () => {
@@ -65,12 +65,16 @@ describe('job group dropdown component', () => {
   let wrapper;
   const findButton = () => wrapper.find('button');
 
+  const createComponent = ({ mountFn = shallowMount }) => {
+    wrapper = mountFn(JobGroupDropdown, { propsData: { group } });
+  };
+
   afterEach(() => {
     wrapper.destroy();
   });
 
   beforeEach(() => {
-    wrapper = shallowMount(JobGroupDropdown, { propsData: { group } });
+    createComponent({ mountFn: mount });
   });
 
   it('renders button with group name and size', () => {

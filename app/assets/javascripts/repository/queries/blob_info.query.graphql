@@ -1,0 +1,30 @@
+query getBlobInfo($projectPath: ID!, $filePath: String!) {
+  project(fullPath: $projectPath) {
+    id
+    repository {
+      blobs(path: $filePath) {
+        name
+        size
+        rawBlob
+        type
+        fileType
+        tooLarge
+        path
+        editBlobPath
+        ideEditPath
+        storedExternally
+        rawPath
+        externalStorageUrl
+        replacePath
+        deletePath
+        canLock
+        isLocked
+        lockLink
+        canModifyBlob
+        forkPath
+        simpleViewer
+        richViewer
+      }
+    }
+  }
+}

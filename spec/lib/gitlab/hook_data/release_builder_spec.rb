@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::HookData::ReleaseBuilder do
   let_it_be(:project) { create(:project, :public, :repository) }
+
   let(:release) { create(:release, project: project) }
   let(:builder) { described_class.new(release) }
 

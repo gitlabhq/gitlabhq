@@ -9,6 +9,8 @@
     - else
       = edit_blob_button(@project, @ref, @path, blob: blob)
       = ide_edit_button(@project, @ref, @path, blob: blob)
+    - if can_view_pipeline_editor?(@project) && @path == @project.ci_config_path_or_default
+      = link_to "Pipeline Editor", project_ci_pipeline_editor_path(@project), class: "btn gl-button btn-confirm-secondary gl-ml-3"
     .btn-group{ role: "group", class: ("gl-ml-3" if current_user) }>
       = render_if_exists 'projects/blob/header_file_locks_link'
       - if current_user

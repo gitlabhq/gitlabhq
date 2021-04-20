@@ -123,6 +123,10 @@ describe('feature flag form', () => {
           });
         });
 
+        it('has label', () => {
+          expect(findGlToggle().props('label')).toBe(Form.i18n.statusLabel);
+        });
+
         it('should be disabled if the feature flag is not active', (done) => {
           wrapper.setProps({ active: false });
           wrapper.vm.$nextTick(() => {

@@ -19,7 +19,7 @@ module RuboCop
       class AmbiguousPageObjectName < RuboCop::Cop::Cop
         include QAHelpers
 
-        MESSAGE = "Don't use 'page' as a name for a Page Object. Use `%s` instead.".freeze
+        MESSAGE = "Don't use 'page' as a name for a Page Object. Use `%s` instead."
 
         def_node_matcher :ambiguous_page?, <<~PATTERN
           (block

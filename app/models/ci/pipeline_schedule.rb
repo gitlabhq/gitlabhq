@@ -7,6 +7,7 @@ module Ci
     include StripAttribute
     include Schedulable
     include Limitable
+    include EachBatch
 
     self.limit_name = 'ci_pipeline_schedules'
     self.limit_scope = :project
@@ -28,6 +29,7 @@ module Ci
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }
     scope :preloaded, -> { preload(:owner, project: [:route]) }
+    scope :owned_by, ->(user) { where(owner: user) }
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 

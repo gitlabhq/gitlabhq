@@ -289,60 +289,137 @@ RSpec.describe Members::DestroyService do
     let(:group_project) { create(:project, :public, group: group) }
     let(:control_project) { create(:project, group: subsubgroup) }
 
-    before do
-      create(:group_member, :developer, group: subsubgroup, user: member_user)
-      create(:project_member, :invited, project: group_project, created_by: member_user)
-      create(:group_member, :invited, group: group, created_by: member_user)
-      create(:project_member, :invited, project: subsubproject, created_by: member_user)
-      create(:group_member, :invited, group: subgroup, created_by: member_user)
+    context 'with memberships' do
+      before do
+        subgroup.add_developer(member_user)
+        subsubgroup.add_developer(member_user)
+        subsubproject.add_developer(member_user)
+        group_project.add_developer(member_user)
+        control_project.add_maintainer(user)
+        group.add_owner(user)
 
-      subsubproject.add_developer(member_user)
-      control_project.add_maintainer(user)
-      group.add_owner(user)
+        @group_member = create(:group_member, :developer, group: group, user: member_user)
+      end
 
-      group_member = create(:group_member, :developer, group: group, user: member_user)
+      context 'with skipping of subresources' do
+        before do
+          described_class.new(user).execute(@group_member, skip_subresources: true)
+        end
 
-      described_class.new(user).execute(group_member)
+        it 'removes the group membership' do
+          expect(group.members.map(&:user)).not_to include(member_user)
+        end
+
+        it 'does not remove the project membership' do
+          expect(group_project.members.map(&:user)).to include(member_user)
+        end
+
+        it 'does not remove the subgroup membership' do
+          expect(subgroup.members.map(&:user)).to include(member_user)
+        end
+
+        it 'does not remove the subsubgroup membership' do
+          expect(subsubgroup.members.map(&:user)).to include(member_user)
+        end
+
+        it 'does not remove the subsubproject membership' do
+          expect(subsubproject.members.map(&:user)).to include(member_user)
+        end
+
+        it 'does not remove the user from the control project' do
+          expect(control_project.members.map(&:user)).to include(user)
+        end
+      end
+
+      context 'without skipping of subresources' do
+        before do
+          described_class.new(user).execute(@group_member, skip_subresources: false)
+        end
+
+        it 'removes the project membership' do
+          expect(group_project.members.map(&:user)).not_to include(member_user)
+        end
+
+        it 'removes the group membership' do
+          expect(group.members.map(&:user)).not_to include(member_user)
+        end
+
+        it 'removes the subgroup membership' do
+          expect(subgroup.members.map(&:user)).not_to include(member_user)
+        end
+
+        it 'removes the subsubgroup membership' do
+          expect(subsubgroup.members.map(&:user)).not_to include(member_user)
+        end
+
+        it 'removes the subsubproject membership' do
+          expect(subsubproject.members.map(&:user)).not_to include(member_user)
+        end
+
+        it 'does not remove the user from the control project' do
+          expect(control_project.members.map(&:user)).to include(user)
+        end
+      end
     end
 
-    it 'removes the project membership' do
-      expect(group_project.members.map(&:user)).not_to include(member_user)
-    end
+    context 'with invites' do
+      before do
+        create(:group_member, :developer, group: subsubgroup, user: member_user)
+        create(:project_member, :invited, project: group_project, created_by: member_user)
+        create(:group_member, :invited, group: group, created_by: member_user)
+        create(:project_member, :invited, project: subsubproject, created_by: member_user)
+        create(:group_member, :invited, group: subgroup, created_by: member_user)
 
-    it 'removes the group membership' do
-      expect(group.members.map(&:user)).not_to include(member_user)
-    end
+        subsubproject.add_developer(member_user)
+        control_project.add_maintainer(user)
+        group.add_owner(user)
 
-    it 'removes the subgroup membership' do
-      expect(subgroup.members.map(&:user)).not_to include(member_user)
-    end
+        @group_member = create(:group_member, :developer, group: group, user: member_user)
+      end
 
-    it 'removes the subsubgroup membership' do
-      expect(subsubgroup.members.map(&:user)).not_to include(member_user)
-    end
+      context 'with skipping of subresources' do
+        before do
+          described_class.new(user).execute(@group_member, skip_subresources: true)
+        end
 
-    it 'removes the subsubproject membership' do
-      expect(subsubproject.members.map(&:user)).not_to include(member_user)
-    end
+        it 'does not remove group members invited by deleted user' do
+          expect(group.members.not_accepted_invitations_by_user(member_user)).not_to be_empty
+        end
 
-    it 'does not remove the user from the control project' do
-      expect(control_project.members.map(&:user)).to include(user)
-    end
+        it 'does not remove project members invited by deleted user' do
+          expect(group_project.members.not_accepted_invitations_by_user(member_user)).not_to be_empty
+        end
 
-    it 'removes group members invited by deleted user' do
-      expect(group.members.not_accepted_invitations_by_user(member_user)).to be_empty
-    end
+        it 'does not remove subgroup members invited by deleted user' do
+          expect(subgroup.members.not_accepted_invitations_by_user(member_user)).not_to be_empty
+        end
 
-    it 'removes project members invited by deleted user' do
-      expect(group_project.members.not_accepted_invitations_by_user(member_user)).to be_empty
-    end
+        it 'does not remove subproject members invited by deleted user' do
+          expect(subsubproject.members.not_accepted_invitations_by_user(member_user)).not_to be_empty
+        end
+      end
 
-    it 'removes subgroup members invited by deleted user' do
-      expect(subgroup.members.not_accepted_invitations_by_user(member_user)).to be_empty
-    end
+      context 'without skipping of subresources' do
+        before do
+          described_class.new(user).execute(@group_member, skip_subresources: false)
+        end
 
-    it 'removes subproject members invited by deleted user' do
-      expect(subsubproject.members.not_accepted_invitations_by_user(member_user)).to be_empty
+        it 'removes group members invited by deleted user' do
+          expect(group.members.not_accepted_invitations_by_user(member_user)).to be_empty
+        end
+
+        it 'removes project members invited by deleted user' do
+          expect(group_project.members.not_accepted_invitations_by_user(member_user)).to be_empty
+        end
+
+        it 'removes subgroup members invited by deleted user' do
+          expect(subgroup.members.not_accepted_invitations_by_user(member_user)).to be_empty
+        end
+
+        it 'removes subproject members invited by deleted user' do
+          expect(subsubproject.members.not_accepted_invitations_by_user(member_user)).to be_empty
+        end
+      end
     end
   end
 

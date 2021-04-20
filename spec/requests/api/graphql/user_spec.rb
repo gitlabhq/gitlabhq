@@ -42,7 +42,13 @@ RSpec.describe 'User' do
   end
 
   context 'when username and id parameter are used' do
-    let_it_be(:query) { graphql_query_for(:user, { id: current_user.to_global_id.to_s, username: current_user.username }, 'id') }
+    let_it_be(:query) do
+      graphql_query_for(
+        :user,
+        { id: current_user.to_global_id.to_s, username: current_user.username },
+        'id'
+      )
+    end
 
     it 'displays an error' do
       post_graphql(query)

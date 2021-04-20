@@ -122,7 +122,7 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(wrapper.find('.js-job-component-tooltip').attributes('title')).toBe('test');
+      expect(findJobWithoutLink().attributes('title')).toBe('test');
     });
 
     it('should not render status label when it is  provided', () => {
@@ -138,7 +138,7 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(wrapper.find('.js-job-component-tooltip').attributes('title')).toBe('test - success');
+      expect(findJobWithoutLink().attributes('title')).toBe('test - success');
     });
   });
 

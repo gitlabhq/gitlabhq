@@ -104,9 +104,7 @@ module Gitlab
           def format_query(metric)
             expression = remove_new_lines(metric[:expr])
             expression = replace_variables(expression)
-            expression = replace_global_variables(expression, metric)
-
-            expression
+            replace_global_variables(expression, metric)
           end
 
           # Accomodates instance-defined Grafana variables.
@@ -135,9 +133,7 @@ module Gitlab
           def replace_global_variables(expression, metric)
             expression = expression.gsub('$__interval', metric[:interval]) if metric[:interval]
             expression = expression.gsub('$__from', query_params[:from])
-            expression = expression.gsub('$__to', query_params[:to])
-
-            expression
+            expression.gsub('$__to', query_params[:to])
           end
 
           # Removes new lines from expression.

@@ -313,9 +313,9 @@ Project.from("(#{union.to_sql}) projects")
 
 ## Ordering by Creation Date
 
-When ordering records based on the time they were created you can simply order
+When ordering records based on the time they were created, you can order
 by the `id` column instead of ordering by `created_at`. Because IDs are always
-unique and incremented in the order that rows are created this will produce the
+unique and incremented in the order that rows are created, doing so will produce the
 exact same results. This also means there's no need to add an index on
 `created_at` to ensure consistent performance as `id` is already indexed by
 default.
@@ -367,3 +367,12 @@ retries if it were to fail because of an
 
 To be able to use this method, make sure the model you want to use
 this on inherits from `ApplicationRecord`.
+
+## Monitor SQL queries in production
+
+GitLab team members can monitor slow or canceled queries on GitLab.com
+using the PostgreSQL logs, which are indexed in Elasticsearch and
+searchable using Kibana.
+
+See [the runbook](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/patroni/pg_collect_query_data.md#searching-postgresql-logs-with-kibanaelasticsearch)
+for more details.

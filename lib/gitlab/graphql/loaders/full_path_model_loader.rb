@@ -9,7 +9,8 @@ module Gitlab
         attr_reader :model_class, :full_path
 
         def initialize(model_class, full_path)
-          @model_class, @full_path = model_class, full_path
+          @model_class = model_class
+          @full_path = full_path
         end
 
         def find

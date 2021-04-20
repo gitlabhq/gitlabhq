@@ -1,0 +1,8 @@
+---
+name: diff_line_syntax_highlighting
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56108
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/324159
+milestone: '13.10'
+type: development
+group: group::source code
+default_enabled: false

@@ -17,7 +17,8 @@ as the hardware requirements that are needed to install and use GitLab.
 - Ubuntu (16.04/18.04/20.04)
 - Debian (9/10)
 - CentOS (7/8)
-- openSUSE (Leap 15.1/Enterprise Server 12.2)
+- openSUSE Leap (15.1/15.2)
+- SUSE Linux Enterprise Server (12 SP2/12 SP5)
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)
 - Scientific Linux (please use the CentOS packages and instructions)
 - Oracle Linux (please use the CentOS packages and instructions)
@@ -66,6 +67,11 @@ The minimum required Go version is 1.13.
 
 ### Git versions
 
+From GitLab 13.11:
+
+- Git 2.31.x and later is required. We recommend you use the
+  [Git version provided by Gitaly](installation.md#git).
+
 From GitLab 13.6:
 
 - Git 2.29.x and later is required.
@@ -94,8 +100,8 @@ from source at the [Node.js website](https://nodejs.org/en/download/).
 
 GitLab 13.0 and later requires Redis version 4.0 or higher.
 
-Redis version 5.0 or higher is recommended, as this is what ships with
-[Omnibus GitLab](https://docs.gitlab.com/omnibus/) packages starting with GitLab 12.7.
+Redis version 6.0 or higher is recommended, as this is what ships with
+[Omnibus GitLab](https://docs.gitlab.com/omnibus/) packages starting with GitLab 13.9.
 
 ## Hardware requirements
 

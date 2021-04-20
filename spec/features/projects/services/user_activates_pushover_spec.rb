@@ -11,7 +11,7 @@ RSpec.describe 'User activates Pushover' do
 
   it 'activates service', :js do
     visit_project_integration('Pushover')
-    fill_in('Api key', with: 'verySecret')
+    fill_in('API key', with: 'verySecret')
     fill_in('User key', with: 'verySecret')
     fill_in('Device', with: 'myDevice')
     select('High Priority', from: 'Priority')

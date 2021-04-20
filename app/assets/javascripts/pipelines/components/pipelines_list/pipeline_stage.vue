@@ -17,7 +17,7 @@ import { deprecatedCreateFlash as Flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import eventHub from '../../event_hub';
-import JobItem from '../graph/job_item.vue';
+import JobItem from './job_item.vue';
 
 export default {
   components: {
@@ -103,7 +103,7 @@ export default {
 <template>
   <gl-dropdown
     ref="dropdown"
-    v-gl-tooltip.hover
+    v-gl-tooltip.hover.ds0
     data-testid="mini-pipeline-graph-dropdown"
     :title="stage.title"
     variant="link"

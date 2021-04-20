@@ -12,7 +12,7 @@
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
       %span= s_("Project URL")
-    .input-group.flex-nowrap
+    .input-group.gl-flex-nowrap
       - if current_user.can_select_namespace?
         .input-group-prepend.flex-shrink-0.has-tooltip{ title: root_url }
           .input-group-text
@@ -62,5 +62,5 @@
           .option-description
             = s_('ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.')
 
-= f.submit _('Create project'), class: "btn gl-button btn-success", data: { track_label: "#{track_label}", track_event: "click_button", track_property: "create_project", track_value: "" }
+= f.submit _('Create project'), class: "btn gl-button btn-confirm", data: { track_label: "#{track_label}", track_event: "click_button", track_property: "create_project", track_value: "" }
 = link_to _('Cancel'), dashboard_projects_path, class: 'btn gl-button btn-default btn-cancel', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "cancel", track_value: "" }

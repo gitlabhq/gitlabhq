@@ -11,7 +11,7 @@ module Gitlab
           MergeRequest
             .where(merge_request_assignees_not_exists_clause)
             .where(id: from_id..to_id)
-            .where('assignee_id IS NOT NULL')
+            .where.not(assignee_id: nil)
             .select(:id, :assignee_id)
             .to_sql
 

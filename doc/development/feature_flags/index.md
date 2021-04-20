@@ -16,7 +16,7 @@ in the GitLab codebase to conditionally enable features
 and test them.
 
 Features that are developed and merged behind a feature flag
-should not include a changelog entry. The entry should be added either in the merge
+should not include a changelog entry. A changelog entry with `type: added` should be included in the merge
 request removing the feature flag or the merge request where the default value of
 the feature flag is set to enabled. If the feature contains any database migrations, it
 *should* include a changelog entry for the database changes.
@@ -292,8 +292,7 @@ end
 
 ### Frontend
 
-Use the `push_frontend_feature_flag` method for frontend code, which is
-available to all controllers that inherit from `ApplicationController`. You can use
+Use the `push_frontend_feature_flag` method which is available to all controllers that inherit from `ApplicationController`. You can use
 this method to expose the state of a feature flag, for example:
 
 ```ruby
@@ -424,7 +423,7 @@ Feature.enabled?(:licensed_feature_feature_flag, project) &&
 ### Feature groups
 
 Feature groups must be defined statically in `lib/feature.rb` (in the
-`.register_feature_groups` method), but their implementation can obviously be
+`.register_feature_groups` method), but their implementation can be
 dynamic (querying the DB, for example).
 
 Once defined in `lib/feature.rb`, you can to activate a

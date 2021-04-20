@@ -109,7 +109,7 @@ RSpec.describe ChaosController do
 
   describe '#kill' do
     it 'calls synchronously' do
-      expect(Gitlab::Chaos).to receive(:kill).with(no_args)
+      expect(Gitlab::Chaos).to receive(:kill).with('KILL')
 
       get :kill
 
@@ -117,9 +117,27 @@ RSpec.describe ChaosController do
     end
 
     it 'calls asynchronously' do
-      expect(Chaos::KillWorker).to receive(:perform_async).with(no_args)
+      expect(Chaos::KillWorker).to receive(:perform_async).with('KILL')
 
       get :kill, params: { async: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
+  describe '#quit' do
+    it 'calls synchronously' do
+      expect(Gitlab::Chaos).to receive(:kill).with('QUIT')
+
+      get :quit
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'calls asynchronously' do
+      expect(Chaos::KillWorker).to receive(:perform_async).with('QUIT')
+
+      get :quit, params: { async: 1 }
 
       expect(response).to have_gitlab_http_status(:ok)
     end

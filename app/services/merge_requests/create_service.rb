@@ -14,15 +14,11 @@ module MergeRequests
     end
 
     def after_create(issuable)
+      issuable.mark_as_preparing
+
       # Add new items to MergeRequests::AfterCreateService if they can
       # be performed in Sidekiq
       NewMergeRequestWorker.perform_async(issuable.id, current_user.id)
-
-      todo_service.new_merge_request(issuable, current_user)
-      issuable.cache_merge_request_closes_issues!(current_user)
-
-      Gitlab::UsageDataCounters::MergeRequestCounter.count(:create)
-      link_lfs_objects(issuable)
 
       super
     end
@@ -53,10 +49,6 @@ module MergeRequests
 
         raise Gitlab::Access::AccessDeniedError
       end
-    end
-
-    def link_lfs_objects(issuable)
-      LinkLfsObjectsService.new(issuable.target_project).execute(issuable)
     end
   end
 end

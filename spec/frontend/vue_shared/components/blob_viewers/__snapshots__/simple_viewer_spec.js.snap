@@ -1,87 +1,88 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
-<div
-  class="file-content code js-syntax-highlight"
-  data-qa-selector="file_content"
->
+<div>
   <div
-    class="line-numbers"
+    class="file-content code js-syntax-highlight"
   >
-    <a
-      class="diff-line-num js-line-number"
-      data-line-number="1"
-      href="#LC1"
-      id="L1"
+    <div
+      class="line-numbers"
     >
-      <gl-icon-stub
-        name="link"
-        size="12"
-      />
-      
-      1
-    
-    </a>
-    <a
-      class="diff-line-num js-line-number"
-      data-line-number="2"
-      href="#LC2"
-      id="L2"
-    >
-      <gl-icon-stub
-        name="link"
-        size="12"
-      />
-      
-      2
-    
-    </a>
-    <a
-      class="diff-line-num js-line-number"
-      data-line-number="3"
-      href="#LC3"
-      id="L3"
-    >
-      <gl-icon-stub
-        name="link"
-        size="12"
-      />
-      
-      3
-    
-    </a>
-  </div>
-   
-  <div
-    class="blob-content"
-  >
-    <pre
-      class="code highlight"
-    >
-      <code
-        data-blob-hash="foo-bar"
+      <a
+        class="diff-line-num js-line-number"
+        data-line-number="1"
+        href="#LC1"
+        id="L1"
       >
-        <span
-          id="LC1"
-        >
-          First
-        </span>
+        <gl-icon-stub
+          name="link"
+          size="12"
+        />
         
-
-        <span
-          id="LC2"
-        >
-          Second
-        </span>
+        1
+      
+      </a>
+      <a
+        class="diff-line-num js-line-number"
+        data-line-number="2"
+        href="#LC2"
+        id="L2"
+      >
+        <gl-icon-stub
+          name="link"
+          size="12"
+        />
         
-
-        <span
-          id="LC3"
+        2
+      
+      </a>
+      <a
+        class="diff-line-num js-line-number"
+        data-line-number="3"
+        href="#LC3"
+        id="L3"
+      >
+        <gl-icon-stub
+          name="link"
+          size="12"
+        />
+        
+        3
+      
+      </a>
+    </div>
+     
+    <div
+      class="blob-content"
+    >
+      <pre
+        class="code highlight"
+      >
+        <code
+          data-blob-hash="foo-bar"
         >
-          Third
-        </span>
-      </code>
-    </pre>
+          <span
+            id="LC1"
+          >
+            First
+          </span>
+          
+
+          <span
+            id="LC2"
+          >
+            Second
+          </span>
+          
+
+          <span
+            id="LC3"
+          >
+            Third
+          </span>
+        </code>
+      </pre>
+    </div>
   </div>
 </div>
 `;

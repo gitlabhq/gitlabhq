@@ -1,0 +1,9 @@
+.gl-badge.feature-highlight-badge {
+  background-color: $purple-light;
+  color: $purple;
+
+  &,
+  &.sm {
+    padding: 0.25rem;
+  }
+}

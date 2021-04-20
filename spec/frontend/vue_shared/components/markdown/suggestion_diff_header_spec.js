@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ApplySuggestion from '~/vue_shared/components/markdown/apply_suggestion.vue';
 import SuggestionDiffHeader from '~/vue_shared/components/markdown/suggestion_diff_header.vue';
 
@@ -16,17 +17,14 @@ const DEFAULT_PROPS = {
 describe('Suggestion Diff component', () => {
   let wrapper;
 
-  const createComponent = (props, glFeatures = {}) => {
+  const createComponent = (props) => {
     wrapper = shallowMount(SuggestionDiffHeader, {
       propsData: {
         ...DEFAULT_PROPS,
         ...props,
       },
-      provide: {
-        glFeatures: {
-          batchSuggestions: true,
-          ...glFeatures,
-        },
+      directives: {
+        GlTooltip: createMockDirective(),
       },
     });
   };
@@ -211,18 +209,6 @@ describe('Suggestion Diff component', () => {
     });
   });
 
-  describe('batchSuggestions feature flag is set to false', () => {
-    beforeEach(() => {
-      createComponent({}, { batchSuggestions: false });
-    });
-
-    it('disables add to batch buttons but keeps apply suggestion enabled', () => {
-      expect(findApplyButton().exists()).toBe(true);
-      expect(findAddToBatchButton().exists()).toBe(false);
-      expect(findApplyButton().attributes('disabled')).not.toBe('true');
-    });
-  });
-
   describe('canApply is set to false', () => {
     beforeEach(() => {
       createComponent({ canApply: false });
@@ -236,15 +222,23 @@ describe('Suggestion Diff component', () => {
   });
 
   describe('tooltip message for apply button', () => {
+    const findTooltip = () => getBinding(findApplyButton().element, 'gl-tooltip');
+
     it('renders correct tooltip message when button is applicable', () => {
       createComponent();
-      expect(wrapper.vm.tooltipMessage).toBe('This also resolves this thread');
+      const tooltip = findTooltip();
+
+      expect(tooltip.modifiers.viewport).toBe(true);
+      expect(tooltip.value).toBe('This also resolves this thread');
     });
 
     it('renders the inapplicable reason in the tooltip when button is not applicable', () => {
       const inapplicableReason = 'lorem';
       createComponent({ canApply: false, inapplicableReason });
-      expect(wrapper.vm.tooltipMessage).toBe(inapplicableReason);
+      const tooltip = findTooltip();
+
+      expect(tooltip.modifiers.viewport).toBe(true);
+      expect(tooltip.value).toBe(inapplicableReason);
     });
   });
 });

@@ -11,6 +11,10 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
     allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?).and_return(true)
   end
 
+  around do |example|
+    freeze_time { example.run }
+  end
+
   let(:event_1) do
     {
       method: 'POST', code: "200", duration: 0.03,
@@ -44,9 +48,9 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
   end
 
   it 'returns aggregated results' do
-    subscriber.request(double(:event, payload: event_1))
-    subscriber.request(double(:event, payload: event_2))
-    subscriber.request(double(:event, payload: event_3))
+    subscriber.request(double(:event, payload: event_1, time: Time.current))
+    subscriber.request(double(:event, payload: event_2, time: Time.current))
+    subscriber.request(double(:event, payload: event_3, time: Time.current))
 
     results = subject.results
     expect(results[:calls]).to eq(3)
@@ -55,6 +59,7 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
 
     expected = [
       {
+        start: be_like_time(Time.current),
         duration: 30.0,
         label: "POST https://gitlab.com:80/api/v4/projects?current=true",
         code: "Response status: 200",
@@ -63,6 +68,7 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
         warnings: []
       },
       {
+        start: be_like_time(Time.current),
         duration: 1300,
         label: "POST http://gitlab.com:80/api/v4/projects/2/issues?current=true",
         code: nil,
@@ -71,6 +77,7 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
         warnings: ["1300.0 over 100"]
       },
       {
+        start: be_like_time(Time.current),
         duration: 5.0,
         label: "GET http://gitlab.com:80/api/v4/projects/2?current=true",
         code: "Response status: 301",
@@ -81,7 +88,7 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
     ]
 
     expect(
-      results[:details].map { |data| data.slice(:duration, :label, :code, :proxy, :error, :warnings) }
+      results[:details].map { |data| data.slice(:start, :duration, :label, :code, :proxy, :error, :warnings) }
     ).to match_array(expected)
   end
 
@@ -91,10 +98,11 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
     end
 
     it 'displays IPv4 in the label' do
-      subscriber.request(double(:event, payload: event_1))
+      subscriber.request(double(:event, payload: event_1, time: Time.current))
 
       expect(subject.results[:details]).to contain_exactly(
         a_hash_including(
+          start: be_like_time(Time.current),
           duration: 30.0,
           label: "POST https://1.2.3.4:80/api/v4/projects?current=true",
           code: "Response status: 200",
@@ -112,10 +120,11 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
     end
 
     it 'displays IPv6 in the label' do
-      subscriber.request(double(:event, payload: event_1))
+      subscriber.request(double(:event, payload: event_1, time: Time.current))
 
       expect(subject.results[:details]).to contain_exactly(
         a_hash_including(
+          start: be_like_time(Time.current),
           duration: 30.0,
           label: "POST https://[2606:4700:90:0:f22e:fbec:5bed:a9b9]:80/api/v4/projects?current=true",
           code: "Response status: 200",
@@ -133,10 +142,11 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
     end
 
     it 'converts query hash into a query string' do
-      subscriber.request(double(:event, payload: event_1))
+      subscriber.request(double(:event, payload: event_1, time: Time.current))
 
       expect(subject.results[:details]).to contain_exactly(
         a_hash_including(
+          start: be_like_time(Time.current),
           duration: 30.0,
           label: "POST https://gitlab.com:80/api/v4/projects?current=true&item1=string&item2%5B%5D=1&item2%5B%5D=2",
           code: "Response status: 200",
@@ -154,10 +164,11 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
     end
 
     it 'displays unknown in the label' do
-      subscriber.request(double(:event, payload: event_1))
+      subscriber.request(double(:event, payload: event_1, time: Time.current))
 
       expect(subject.results[:details]).to contain_exactly(
         a_hash_including(
+          start: be_like_time(Time.current),
           duration: 30.0,
           label: "POST unknown",
           code: "Response status: 200",
@@ -176,10 +187,11 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
     end
 
     it 'displays unknown in the label' do
-      subscriber.request(double(:event, payload: event_1))
+      subscriber.request(double(:event, payload: event_1, time: Time.current))
 
       expect(subject.results[:details]).to contain_exactly(
         a_hash_including(
+          start: be_like_time(Time.current),
           duration: 30.0,
           label: "POST unknown",
           code: "Response status: 200",
@@ -198,10 +210,11 @@ RSpec.describe Peek::Views::ExternalHttp, :request_store do
     end
 
     it 'displays unknown in the label' do
-      subscriber.request(double(:event, payload: event_1))
+      subscriber.request(double(:event, payload: event_1, time: Time.current))
 
       expect(subject.results[:details]).to contain_exactly(
         a_hash_including(
+          start: be_like_time(Time.current),
           duration: 30.0,
           label: "POST unknown",
           code: "Response status: 200",

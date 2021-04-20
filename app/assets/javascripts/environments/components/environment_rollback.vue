@@ -71,6 +71,7 @@ export default {
     class="gl-display-none gl-md-display-block text-secondary"
     :loading="isLoading"
     :title="title"
+    :aria-label="title"
     :icon="isLastDeployment ? 'repeat' : 'redo'"
     @click="onClick"
   />

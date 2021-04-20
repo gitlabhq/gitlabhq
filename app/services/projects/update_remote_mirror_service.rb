@@ -9,8 +9,10 @@ module Projects
     def execute(remote_mirror, tries)
       return success unless remote_mirror.enabled?
 
+      # Blocked URLs are a hard failure, no need to attempt to retry
       if Gitlab::UrlBlocker.blocked_url?(normalized_url(remote_mirror.url))
-        return error("The remote mirror URL is invalid.")
+        hard_retry_or_fail(remote_mirror, _('The remote mirror URL is invalid.'), tries)
+        return error(remote_mirror.last_error)
       end
 
       update_mirror(remote_mirror)
@@ -19,11 +21,11 @@ module Projects
     rescue Gitlab::Git::CommandError => e
       # This happens if one of the gitaly calls above fail, for example when
       # branches have diverged, or the pre-receive hook fails.
-      retry_or_fail(remote_mirror, e.message, tries)
+      hard_retry_or_fail(remote_mirror, e.message, tries)
 
       error(e.message)
     rescue => e
-      remote_mirror.mark_as_failed!(e.message)
+      remote_mirror.hard_fail!(e.message)
       raise e
     end
 
@@ -70,15 +72,15 @@ module Projects
       ).execute
     end
 
-    def retry_or_fail(mirror, message, tries)
+    def hard_retry_or_fail(mirror, message, tries)
       if tries < MAX_TRIES
-        mirror.mark_for_retry!(message)
+        mirror.hard_retry!(message)
       else
         # It's not likely we'll be able to recover from this ourselves, so we'll
         # notify the users of the problem, and don't trigger any sidekiq retries
         # Instead, we'll wait for the next change to try the push again, or until
         # a user manually retries.
-        mirror.mark_as_failed!(message)
+        mirror.hard_fail!(message)
       end
     end
   end

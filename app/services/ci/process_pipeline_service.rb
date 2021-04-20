@@ -19,7 +19,7 @@ module Ci
     end
 
     def metrics
-      @metrics ||= ::Gitlab::Ci::Pipeline::Metrics.new
+      @metrics ||= ::Gitlab::Ci::Pipeline::Metrics
     end
 
     private

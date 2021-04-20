@@ -161,9 +161,9 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes Deployments::LinkMergeRequestWorker asynchronously' do
+      it 'does not execute Deployments::LinkMergeRequestWorker' do
         expect(Deployments::LinkMergeRequestWorker)
-          .to receive(:perform_async).with(deployment.id)
+          .not_to receive(:perform_async).with(deployment.id)
 
         deployment.drop!
       end
@@ -188,9 +188,9 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes Deployments::LinkMergeRequestWorker asynchronously' do
+      it 'does not execute Deployments::LinkMergeRequestWorker' do
         expect(Deployments::LinkMergeRequestWorker)
-          .to receive(:perform_async).with(deployment.id)
+          .not_to receive(:perform_async).with(deployment.id)
 
         deployment.cancel!
       end
@@ -497,7 +497,7 @@ RSpec.describe Deployment do
 
     context 'when the SHA for the deployment does not exist in the repo' do
       it 'returns false' do
-        deployment.update(sha: Gitlab::Git::BLANK_SHA)
+        deployment.update!(sha: Gitlab::Git::BLANK_SHA)
         commit = project.commit
 
         expect(deployment.includes_commit?(commit)).to be false
@@ -573,15 +573,39 @@ RSpec.describe Deployment do
   end
 
   describe '#previous_deployment' do
-    it 'returns the previous deployment' do
-      deploy1 = create(:deployment)
-      deploy2 = create(
-        :deployment,
-        project: deploy1.project,
-        environment: deploy1.environment
-      )
+    using RSpec::Parameterized::TableSyntax
 
-      expect(deploy2.previous_deployment).to eq(deploy1)
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:production) { create(:environment, :production, project: project) }
+    let_it_be(:staging) { create(:environment, :staging, project: project) }
+    let_it_be(:production_deployment_1) { create(:deployment, :success, project: project, environment: production) }
+    let_it_be(:production_deployment_2) { create(:deployment, :success, project: project, environment: production) }
+    let_it_be(:production_deployment_3) { create(:deployment, :failed, project: project, environment: production) }
+    let_it_be(:production_deployment_4) { create(:deployment, :canceled, project: project, environment: production) }
+    let_it_be(:staging_deployment_1)    { create(:deployment, :failed, project: project, environment: staging) }
+    let_it_be(:staging_deployment_2)    { create(:deployment, :success, project: project, environment: staging) }
+    let_it_be(:production_deployment_5) { create(:deployment, :success, project: project, environment: production) }
+    let_it_be(:staging_deployment_3)    { create(:deployment, :success, project: project, environment: staging) }
+
+    where(:pointer, :expected_previous_deployment) do
+      'production_deployment_1'   | nil
+      'production_deployment_2'   | 'production_deployment_1'
+      'production_deployment_3'   | 'production_deployment_2'
+      'production_deployment_4'   | 'production_deployment_2'
+      'staging_deployment_1'      | nil
+      'staging_deployment_2'      | nil
+      'production_deployment_5'   | 'production_deployment_2'
+      'staging_deployment_3'      | 'staging_deployment_2'
+    end
+
+    with_them do
+      it 'returns the previous deployment' do
+        if expected_previous_deployment.nil?
+          expect(send(pointer).previous_deployment).to eq(expected_previous_deployment)
+        else
+          expect(send(pointer).previous_deployment).to eq(send(expected_previous_deployment))
+        end
+      end
     end
   end
 
@@ -628,45 +652,6 @@ RSpec.describe Deployment do
       deploy.link_merge_requests(deploy.project.merge_requests)
 
       expect(deploy.merge_requests).to include(mr1, mr2)
-    end
-  end
-
-  describe '#previous_environment_deployment' do
-    it 'returns the previous deployment of the same environment' do
-      deploy1 = create(:deployment, :success)
-      deploy2 = create(
-        :deployment,
-        :success,
-        project: deploy1.project,
-        environment: deploy1.environment
-      )
-
-      expect(deploy2.previous_environment_deployment).to eq(deploy1)
-    end
-
-    it 'ignores deployments that were not successful' do
-      deploy1 = create(:deployment, :failed)
-      deploy2 = create(
-        :deployment,
-        :success,
-        project: deploy1.project,
-        environment: deploy1.environment
-      )
-
-      expect(deploy2.previous_environment_deployment).to be_nil
-    end
-
-    it 'ignores deployments for different environments' do
-      deploy1 = create(:deployment, :success)
-      preprod = create(:environment, project: deploy1.project, name: 'preprod')
-      deploy2 = create(
-        :deployment,
-        :success,
-        project: deploy1.project,
-        environment: preprod
-      )
-
-      expect(deploy2.previous_environment_deployment).to be_nil
     end
   end
 
@@ -793,6 +778,32 @@ RSpec.describe Deployment do
 
       other_deployments.each do |deployment|
         expect(project.commit(deployment.ref_path)).not_to be_nil
+      end
+    end
+  end
+
+  describe '#update_merge_request_metrics!' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:environment) { build(:environment, environment_tier, project: project) }
+    let!(:deployment) { create(:deployment, :success, project: project, environment: environment) }
+    let!(:merge_request) { create(:merge_request, :simple, :merged_last_month, project: project) }
+
+    context 'with production environment' do
+      let(:environment_tier) { :production }
+
+      it 'updates merge request metrics for production-grade environment' do
+        expect { deployment.update_merge_request_metrics! }
+          .to change { merge_request.reload.metrics.first_deployed_to_production_at }
+          .from(nil).to(deployment.reload.finished_at)
+      end
+    end
+
+    context 'with staging environment' do
+      let(:environment_tier) { :staging }
+
+      it 'updates merge request metrics for production-grade environment' do
+        expect { deployment.update_merge_request_metrics! }
+          .not_to change { merge_request.reload.metrics.first_deployed_to_production_at }
       end
     end
   end

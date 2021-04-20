@@ -4,7 +4,7 @@ class Packages::Tag < ApplicationRecord
 
   validates :package, :name, presence: true
 
-  FOR_PACKAGES_TAGS_LIMIT = 200.freeze
+  FOR_PACKAGES_TAGS_LIMIT = 200
   NUGET_TAGS_SEPARATOR = ' ' # https://docs.microsoft.com/en-us/nuget/reference/nuspec#tags
 
   scope :preload_package, -> { preload(:package) }

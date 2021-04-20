@@ -76,20 +76,4 @@ describe('Alert Details Sidebar', () => {
       expect(wrapper.find(SidebarStatus).exists()).toBe(true);
     });
   });
-
-  describe('the sidebar renders for threat monitoring', () => {
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-      mountComponent();
-    });
-
-    it('should not render side bar status dropdown', () => {
-      mountComponent({
-        mountMethod: mount,
-        alert: mockAlert,
-        provide: { isThreatMonitoringPage: true },
-      });
-      expect(wrapper.find(SidebarStatus).exists()).toBe(false);
-    });
-  });
 });

@@ -183,6 +183,12 @@ module Types
          description: 'Packages of the project.',
          resolver: Resolvers::ProjectPackagesResolver
 
+    field :jobs,
+         Types::Ci::JobType.connection_type,
+         null: true,
+         description: 'Jobs of a project. This field can only be resolved for one project in any single request.',
+         resolver: Resolvers::ProjectJobsResolver
+
     field :pipelines,
           null: true,
           description: 'Build pipelines of the project.',

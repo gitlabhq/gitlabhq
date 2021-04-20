@@ -566,7 +566,7 @@ RSpec.describe 'Pipeline', :js do
       end
 
       before do
-        pipeline.update(user: user)
+        pipeline.update!(user: user)
       end
 
       it 'shows the pipeline information' do
@@ -628,7 +628,7 @@ RSpec.describe 'Pipeline', :js do
 
   context 'when user does not have access to read jobs' do
     before do
-      project.update(public_builds: false)
+      project.update!(public_builds: false)
     end
 
     describe 'GET /:project/-/pipelines/:id' do
@@ -709,9 +709,9 @@ RSpec.describe 'Pipeline', :js do
           end
         end
 
-        it 'displays the PipelineSchedule in an active state' do
+        it 'displays the PipelineSchedule in an inactive state' do
           visit project_pipeline_schedules_path(project)
-          page.click_link('Active')
+          page.click_link('Inactive')
 
           expect(page).to have_selector('table.ci-table > tbody > tr > td', text: 'blocked user schedule')
         end
@@ -1185,7 +1185,7 @@ RSpec.describe 'Pipeline', :js do
       let(:role) { :guest }
 
       before do
-        project.update(public_builds: false)
+        project.update!(public_builds: false)
       end
 
       context 'when accessing failed jobs page' do

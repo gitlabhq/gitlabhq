@@ -126,26 +126,6 @@ RSpec.describe 'project routing' do
     it 'to #archive with "/" in route' do
       expect(get('/gitlab/gitlabhq/-/archive/improve/awesome/gitlabhq-improve-awesome.tar.gz')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.gz', id: 'improve/awesome/gitlabhq-improve-awesome')
     end
-
-    it 'to #archive_alternative' do
-      expect(get('/gitlab/gitlabhq/-/repository/archive')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', append_sha: true)
-    end
-
-    it 'to #archive_deprecated' do
-      expect(get('/gitlab/gitlabhq/-/repository/master/archive')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', append_sha: true)
-    end
-
-    it 'to #archive_deprecated format:zip' do
-      expect(get('/gitlab/gitlabhq/-/repository/master/archive.zip')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'zip', id: 'master', append_sha: true)
-    end
-
-    it 'to #archive_deprecated format:tar.bz2' do
-      expect(get('/gitlab/gitlabhq/-/repository/master/archive.tar.bz2')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.bz2', id: 'master', append_sha: true)
-    end
-
-    it 'to #archive_deprecated with "/" in route' do
-      expect(get('/gitlab/gitlabhq/-/repository/improve/awesome/archive')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'improve/awesome', append_sha: true)
-    end
   end
 
   describe Projects::BranchesController, 'routing' do
@@ -335,33 +315,37 @@ RSpec.describe 'project routing' do
     end
   end
 
-  # test_project_hook POST    /:project_id/hooks/:id/test(.:format) hooks#test
-  #     project_hooks GET    /:project_id/hooks(.:format)          hooks#index
-  #                   POST   /:project_id/hooks(.:format)          hooks#create
-  # edit_project_hook GET    /:project_id/hooks/:id/edit(.:format) hooks#edit
-  #      project_hook PUT    /:project_id/hooks/:id(.:format)      hooks#update
-  #                   DELETE /:project_id/hooks/:id(.:format)      hooks#destroy
+  # test_project_hook POST   /:project_id/-/hooks/:id/test(.:format) hooks#test
+  #     project_hooks GET    /:project_id/-/hooks(.:format)          hooks#index
+  #                   POST   /:project_id/-/hooks(.:format)          hooks#create
+  # edit_project_hook GET    /:project_id/-/hooks/:id/edit(.:format) hooks#edit
+  #      project_hook PUT    /:project_id/-/hooks/:id(.:format)      hooks#update
+  #                   DELETE /:project_id/-/hooks/:id(.:format)      hooks#destroy
   describe Projects::HooksController, 'routing' do
     it 'to #test' do
-      expect(post('/gitlab/gitlabhq/hooks/1/test')).to route_to('projects/hooks#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
+      expect(post('/gitlab/gitlabhq/-/hooks/1/test')).to route_to('projects/hooks#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
     it_behaves_like 'resource routing' do
       let(:actions) { %i[index create destroy edit update] }
-      let(:base_path) { '/gitlab/gitlabhq/hooks' }
+      let(:base_path) { '/gitlab/gitlabhq/-/hooks' }
     end
+
+    it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/hooks', '/gitlab/gitlabhq/-/hooks'
   end
 
-  # retry_namespace_project_hook_hook_log POST /:project_id/hooks/:hook_id/hook_logs/:id/retry(.:format) projects/hook_logs#retry
-  # namespace_project_hook_hook_log       GET /:project_id/hooks/:hook_id/hook_logs/:id(.:format)       projects/hook_logs#show
+  # retry_namespace_project_hook_hook_log POST /:project_id/-/hooks/:hook_id/hook_logs/:id/retry(.:format) projects/hook_logs#retry
+  # namespace_project_hook_hook_log       GET  /:project_id/-/hooks/:hook_id/hook_logs/:id(.:format)       projects/hook_logs#show
   describe Projects::HookLogsController, 'routing' do
     it 'to #retry' do
-      expect(post('/gitlab/gitlabhq/hooks/1/hook_logs/1/retry')).to route_to('projects/hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
+      expect(post('/gitlab/gitlabhq/-/hooks/1/hook_logs/1/retry')).to route_to('projects/hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
     end
 
     it 'to #show' do
-      expect(get('/gitlab/gitlabhq/hooks/1/hook_logs/1')).to route_to('projects/hook_logs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
+      expect(get('/gitlab/gitlabhq/-/hooks/1/hook_logs/1')).to route_to('projects/hook_logs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
     end
+
+    it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/hooks/hook_logs/1', '/gitlab/gitlabhq/-/hooks/hook_logs/1'
   end
 
   # project_commit GET    /:project_id/commit/:id(.:format) commit#show {id: /\h{7,40}/, project_id: /[^\/]+/}
@@ -698,6 +682,26 @@ RSpec.describe 'project routing' do
                            id: '-rc1')
       end
     end
+  end
+
+  describe Projects::PipelinesController, 'routing' do
+    it 'to #index' do
+      expect(get('/gitlab/gitlabhq/-/pipelines')).to route_to('projects/pipelines#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+
+    it 'to #show' do
+      expect(get('/gitlab/gitlabhq/-/pipelines/12')).to route_to('projects/pipelines#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '12')
+    end
+
+    it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/pipelines', '/gitlab/gitlabhq/-/pipelines'
+  end
+
+  describe Projects::PipelineSchedulesController, 'routing' do
+    it 'to #index' do
+      expect(get('/gitlab/gitlabhq/-/pipeline_schedules')).to route_to('projects/pipeline_schedules#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+
+    it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/pipeline_schedules', '/gitlab/gitlabhq/-/pipeline_schedules'
   end
 
   describe Projects::Settings::OperationsController, 'routing' do

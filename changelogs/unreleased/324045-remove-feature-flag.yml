@@ -1,0 +1,5 @@
+---
+title: Bulk-abort user pipelines on block
+merge_request: 57801
+author:
+type: performance

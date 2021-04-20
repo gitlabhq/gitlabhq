@@ -1,3 +1,4 @@
+import BlobPage from '~/repository/pages/blob.vue';
 import IndexPage from '~/repository/pages/index.vue';
 import TreePage from '~/repository/pages/tree.vue';
 import createRouter from '~/repository/router';
@@ -11,6 +12,7 @@ describe('Repository router spec', () => {
     ${'/-/tree/master'}            | ${'master'}     | ${TreePage}  | ${'TreePage'}
     ${'/-/tree/master/app/assets'} | ${'master'}     | ${TreePage}  | ${'TreePage'}
     ${'/-/tree/123/app/assets'}    | ${'master'}     | ${null}      | ${'null'}
+    ${'/-/blob/master/file.md'}    | ${'master'}     | ${BlobPage}  | ${'BlobPage'}
   `('sets component as $componentName for path "$path"', ({ path, component, branch }) => {
     const router = createRouter('', branch);
 

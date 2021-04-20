@@ -1,4 +1,5 @@
 <script>
+import { IssuableType } from '~/issue_show/constants';
 import { __, sprintf } from '~/locale';
 import AssigneeAvatarLink from './assignee_avatar_link.vue';
 import UserNameWithStatus from './user_name_with_status.vue';
@@ -58,7 +59,10 @@ export default {
       this.showLess = !this.showLess;
     },
     userAvailability(u) {
-      return u?.availability || '';
+      if (this.issuableType === IssuableType.MergeRequest) {
+        return u?.availability || '';
+      }
+      return u?.status?.availability || '';
     },
   },
 };

@@ -1,0 +1,5 @@
+---
+title: Reduce number of SQL queries in Profiles::SlacksController#edit
+merge_request: 57674
+author:
+type: performance

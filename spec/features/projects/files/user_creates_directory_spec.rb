@@ -77,7 +77,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js do
     it 'creates the directory in the new branch and redirect to the merge request' do
       expect(page).to have_content('new-feature')
       expect(page).to have_content('The directory has been successfully created')
-      expect(page).to have_content('New Merge Request')
+      expect(page).to have_content('New merge request')
       expect(page).to have_content('From new-feature into master')
       expect(page).to have_content('Add new directory')
 

@@ -5,7 +5,9 @@ module Metrics
   module UsersStarredDashboards
     class DeleteService < ::BaseService
       def initialize(user, project, dashboard_path = nil)
-        @user, @project, @dashboard_path = user, project, dashboard_path
+        @user = user
+        @project = project
+        @dashboard_path = dashboard_path
       end
 
       def execute

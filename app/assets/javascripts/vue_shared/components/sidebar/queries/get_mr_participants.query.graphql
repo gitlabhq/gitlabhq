@@ -1,4 +1,5 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
 query getMrParticipants($fullPath: ID!, $iid: String!) {
   workspace: project(fullPath: $fullPath) {
@@ -7,11 +8,13 @@ query getMrParticipants($fullPath: ID!, $iid: String!) {
       participants {
         nodes {
           ...User
+          ...UserAvailability
         }
       }
       assignees {
         nodes {
           ...User
+          ...UserAvailability
         }
       }
     }

@@ -14,11 +14,20 @@ module Ci
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :stage_id
     has_many :latest_statuses, -> { ordered.latest }, class_name: 'CommitStatus', foreign_key: :stage_id
+    has_many :retried_statuses, -> { ordered.retried }, class_name: 'CommitStatus', foreign_key: :stage_id
     has_many :processables, class_name: 'Ci::Processable', foreign_key: :stage_id
     has_many :builds, foreign_key: :stage_id
     has_many :bridges, foreign_key: :stage_id
 
     scope :ordered, -> { order(position: :asc) }
+    scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
+    scope :by_name, ->(names) { where(name: names) }
+    scope :with_latest_and_retried_statuses, -> do
+      includes(
+        latest_statuses: [:pipeline, project: :namespace],
+        retried_statuses: [:pipeline, project: :namespace]
+      )
+    end
 
     with_options unless: :importing? do
       validates :project, presence: true
@@ -35,7 +44,7 @@ module Ci
       next if position.present?
 
       self.position = statuses.select(:stage_idx)
-        .where('stage_idx IS NOT NULL')
+        .where.not(stage_idx: nil)
         .group(:stage_idx)
         .order('COUNT(*) DESC')
         .first&.stage_idx.to_i

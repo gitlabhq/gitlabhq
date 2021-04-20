@@ -9,7 +9,9 @@
         = s_('GitLabPages|New Domain')
 
   %p.light
-    = s_('GitLabPages|With GitLab Pages you can host your static websites on GitLab.  Combined with the power of GitLab CI and the help of GitLab Runner you can deploy static pages for your individual projects, your user or your group.')
+    - docs_link_start = "<a href='#{help_page_path('user/project/pages/index')}' target='_blank' rel='noopener noreferrer'>".html_safe
+    - link_end = '</a>'.html_safe
+    = s_('GitLabPages|With GitLab Pages you can host your static website directly from your GitLab repository. %{docs_link_start}Learn more.%{link_end}').html_safe % { docs_link_start: docs_link_start, link_end: link_end }
 
   = render 'pages_settings'
 

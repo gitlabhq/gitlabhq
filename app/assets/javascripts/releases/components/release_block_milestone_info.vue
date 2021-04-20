@@ -179,7 +179,7 @@ export default {
     />
     <issuable-stats
       v-if="showMergeRequestStats"
-      :label="__('Merge Requests')"
+      :label="__('Merge requests')"
       :total="mergeRequestCounts.total"
       :merged="mergeRequestCounts.merged"
       :closed="mergeRequestCounts.closed"

@@ -175,22 +175,44 @@ RSpec.describe GraphqlController do
   end
 
   describe '#append_info_to_payload' do
-    let(:graphql_query) { graphql_query_for('project', { 'fullPath' => 'foo' }, %w(id name)) }
-    let(:mock_store) { { graphql_logs: { foo: :bar } } }
+    let(:query_1) { { query: graphql_query_for('project', { 'fullPath' => 'foo' }, %w(id name), 'getProject_1') } }
+    let(:query_2) { { query: graphql_query_for('project', { 'fullPath' => 'bar' }, %w(id), 'getProject_2') } }
+    let(:graphql_queries) { [query_1, query_2] }
     let(:log_payload) { {} }
+    let(:expected_logs) do
+      [
+        {
+          operation_name: 'getProject_1',
+          complexity: 3,
+          depth: 2,
+          used_deprecated_fields: [],
+          used_fields: ['Project.id', 'Project.name', 'Query.project'],
+          variables: '{}'
+        },
+        {
+          operation_name: 'getProject_2',
+          complexity: 2,
+          depth: 2,
+          used_deprecated_fields: [],
+          used_fields: ['Project.id', 'Query.project'],
+          variables: '{}'
+        }
+      ]
+    end
 
     before do
-      allow(RequestStore).to receive(:store).and_return(mock_store)
+      RequestStore.clear!
+
       allow(controller).to receive(:append_info_to_payload).and_wrap_original do |method, *|
         method.call(log_payload)
       end
     end
 
     it 'appends metadata for logging' do
-      post :execute, params: { query: graphql_query, operationName: 'Foo' }
+      post :execute, params: { _json: graphql_queries }
 
       expect(controller).to have_received(:append_info_to_payload)
-      expect(log_payload.dig(:metadata, :graphql)).to eq({ operation_name: 'Foo', foo: :bar })
+      expect(log_payload.dig(:metadata, :graphql)).to match_array(expected_logs)
     end
   end
 end

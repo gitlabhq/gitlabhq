@@ -5,7 +5,7 @@ module QA
     module Dashboard
       module Snippet
         class Index < Page::Base
-          view 'app/views/layouts/header/_new_dropdown.haml' do
+          view 'app/views/layouts/header/_new_dropdown.html.haml' do
             element :new_menu_toggle
             element :global_new_snippet_link
           end

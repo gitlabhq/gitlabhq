@@ -283,6 +283,7 @@ RSpec.describe Ci::BuildPolicy do
   describe 'manage a web ide terminal' do
     let(:build_permissions) { %i[read_web_ide_terminal create_build_terminal update_web_ide_terminal create_build_service_proxy] }
     let_it_be(:maintainer) { create(:user) }
+
     let(:owner) { create(:owner) }
     let(:admin) { create(:admin) }
     let(:maintainer) { create(:user) }

@@ -144,7 +144,7 @@ Follow these examples to form your new issue URL with prefilled fields.
 - For a new issue in the GitLab Community Edition project with a pre-filled title,
   a pre-filled description, and the confidential flag set, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true`
 
-## Moving Issues
+## Moving issues
 
 Moving an issue copies it to the target project, and closes it in the originating project.
 The original issue is not deleted. A system note, which indicates
@@ -154,7 +154,7 @@ The "Move issue" button is at the bottom of the right-sidebar when viewing the i
 
 ![move issue - button](img/sidebar_move_issue.png)
 
-### Moving Issues in Bulk
+### Moving issues in bulk **(FREE SELF)**
 
 If you have advanced technical skills you can also bulk move all the issues from
 one project to another in the rails console. The below script moves all issues
@@ -199,7 +199,7 @@ can be closed automatically when the commit reaches the project's default branch
 
 If a commit message or merge request description contains text matching a [defined pattern](#default-closing-pattern),
 all issues referenced in the matched text are closed. This happens when the commit
-is pushed to a project's [**default** branch](../repository/branches/index.md#default-branch),
+is pushed to a project's [**default** branch](../repository/branches/default.md),
 or when a commit or merge request is merged into it.
 
 For example, if `Closes #4, #6, Related to #5` is included in a Merge Request
@@ -315,3 +315,44 @@ To add an issue to an [iteration](../../group/iterations/index.md):
 You can also use the `/iteration`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics)
 in a comment or description field.
+
+## Real-time sidebar **(FREE SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3.
+
+Assignees in the sidebar are updated in real time. This feature is **disabled by default**.
+To enable it, you need to enable [ActionCable in-app mode](https://docs.gitlab.com/omnibus/settings/actioncable.html).
+
+## Similar issues
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22866) in GitLab 11.6.
+
+To prevent duplication of issues for the same topic, GitLab searches for similar issues
+when new issues are being created.
+
+As you type in the title field of the **New Issue** page, GitLab searches titles and descriptions
+across all issues to in the current project. Only issues you have access to are returned.
+Up to five similar issues, sorted by most recently updated, are displayed below the title box.
+[GraphQL](../../../api/graphql/index.md) must be enabled to use this feature.
+
+![Similar issues](img/similar_issues.png)
+
+## Health status **(ULTIMATE)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab Ultimate 12.10.
+> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab Ultimate 13.4 and later.
+> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in GitLab Ultimate 13.6.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
+
+To help you track issue statuses, you can assign a status to each issue.
+This marks issues as progressing as planned or needs attention to keep on schedule:
+
+- On track (green)
+- Needs attention (amber)
+- At risk (red)
+
+After an issue is closed, its health status can't be edited and the **Edit** button becomes disabled
+until the issue is reopened.
+
+You can then see issue statuses in the issues list and the
+[epic tree](../../group/epics/index.md#issue-health-status-in-epic-tree).

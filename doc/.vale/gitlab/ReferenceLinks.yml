@@ -10,4 +10,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: error
 scope: raw
 raw:
-  - '\n\[.*\]: .*'
+  - '\n\[[^\]]*\]: .*'

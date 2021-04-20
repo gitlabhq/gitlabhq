@@ -5,6 +5,7 @@
 = render partial: 'flash_messages', locals: { project: @project }
 
 = render "home_panel"
+= render "archived_notice", project: @project
 
 = render "invite_members" if experiment_enabled?(:invite_members_empty_project_version_a) && can_import_members?
 

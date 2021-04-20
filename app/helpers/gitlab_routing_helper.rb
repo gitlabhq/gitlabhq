@@ -4,6 +4,8 @@
 module GitlabRoutingHelper
   extend ActiveSupport::Concern
 
+  include ::ProjectsHelper
+  include ::ApplicationSettingsHelper
   include API::Helpers::RelatedResourcesHelpers
   included do
     Gitlab::Routing.includes_helpers(self)

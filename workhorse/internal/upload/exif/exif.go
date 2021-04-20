@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 	"regexp"
 
@@ -109,6 +110,10 @@ func (c *cleaner) startProcessing(stdin io.Reader) error {
 }
 
 func FileTypeFromSuffix(filename string) FileType {
+	if os.Getenv("SKIP_EXIFTOOL") == "1" {
+		return TypeUnknown
+	}
+
 	jpegMatch := regexp.MustCompile(`(?i)^[^\n]*\.(jpg|jpeg)$`)
 	if jpegMatch.MatchString(filename) {
 		return TypeJPEG

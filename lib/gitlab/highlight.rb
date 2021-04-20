@@ -20,7 +20,9 @@ module Gitlab
       @blob_content = blob_content
     end
 
-    def highlight(text, continue: true, plain: false)
+    def highlight(text, continue: false, plain: false, context: {})
+      @context = context
+
       plain ||= text.length > MAXIMUM_TEXT_HIGHLIGHT_SIZE
 
       highlighted_text = highlight_text(text, continue: continue, plain: plain)
@@ -31,12 +33,14 @@ module Gitlab
     def lexer
       @lexer ||= custom_language || begin
         Rouge::Lexer.guess(filename: @blob_name, source: @blob_content).new
-                                    rescue Rouge::Guesser::Ambiguous => e
-                                      e.alternatives.min_by(&:tag)
+      rescue Rouge::Guesser::Ambiguous => e
+        e.alternatives.min_by(&:tag)
       end
     end
 
     private
+
+    attr_reader :context
 
     def custom_language
       return unless @language
@@ -53,13 +57,13 @@ module Gitlab
     end
 
     def highlight_plain(text)
-      @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
+      @formatter.format(Rouge::Lexers::PlainText.lex(text), context).html_safe
     end
 
     def highlight_rich(text, continue: true)
       tag = lexer.tag
       tokens = lexer.lex(text, continue: continue)
-      Timeout.timeout(timeout_time) { @formatter.format(tokens, tag: tag).html_safe }
+      Timeout.timeout(timeout_time) { @formatter.format(tokens, context.merge(tag: tag)).html_safe }
     rescue Timeout::Error => e
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
       highlight_plain(text)

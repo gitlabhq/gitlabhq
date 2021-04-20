@@ -23,6 +23,8 @@ when no license is active. So EE features always should be guarded by
 `project.feature_available?` or `group.feature_available?` (or
 `License.feature_available?` if it is a system-wide feature).
 
+Frontend features should be guarded by pushing a flag from the backend by [using `push_licensed_feature`](licensed_feature_availability.md#restricting-frontend-features), and checked using `this.glFeatures.someFeature` in the frontend.
+
 CE specs should remain untouched as much as possible and extra specs
 should be added for EE. Licensed features can be stubbed using the
 spec helper `stub_licensed_features` in `EE::LicenseHelpers`.

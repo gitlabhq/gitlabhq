@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Spam::SpamActionService do
   include_context 'includes Spam constants'
 
+  let(:request) { double(:request, env: env, headers: {}) }
+  let(:issue) { create(:issue, project: project, author: user) }
   let(:fake_ip) { '1.2.3.4' }
   let(:fake_user_agent) { 'fake-user-agent' }
   let(:fake_referrer) { 'fake-http-referrer' }
@@ -14,11 +16,8 @@ RSpec.describe Spam::SpamActionService do
       'HTTP_REFERRER' => fake_referrer }
   end
 
-  let(:request) { double(:request, env: env) }
-
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
-  let(:issue) { create(:issue, project: project, author: user) }
 
   before do
     issue.spam = false
@@ -48,7 +47,7 @@ RSpec.describe Spam::SpamActionService do
 
   shared_examples 'creates a spam log' do
     it do
-      expect { subject }.to change { SpamLog.count }.by(1)
+      expect { subject }.to change(SpamLog, :count).by(1)
 
       new_spam_log = SpamLog.last
       expect(new_spam_log.user_id).to eq(user.id)
@@ -62,7 +61,7 @@ RSpec.describe Spam::SpamActionService do
   end
 
   describe '#execute' do
-    let(:request) { double(:request, env: env) }
+    let(:request) { double(:request, env: env, headers: nil) }
     let(:fake_captcha_verification_service) { double(:captcha_verification_service) }
     let(:fake_verdict_service) { double(:spam_verdict_service) }
     let(:allowlisted) { false }
@@ -70,7 +69,7 @@ RSpec.describe Spam::SpamActionService do
     let(:captcha_response) { 'abc123' }
     let(:spam_log_id) { existing_spam_log.id }
     let(:spam_params) do
-      Spam::SpamActionService.filter_spam_params!(
+      ::Spam::SpamParams.new(
         api: api,
         captcha_response: captcha_response,
         spam_log_id: spam_log_id
@@ -111,10 +110,30 @@ RSpec.describe Spam::SpamActionService do
       allow(Spam::SpamVerdictService).to receive(:new).with(verdict_service_args).and_return(fake_verdict_service)
     end
 
+    context 'when the captcha params are passed in the headers' do
+      let(:request) { double(:request, env: env, headers: headers) }
+      let(:spam_params) { Spam::SpamActionService.filter_spam_params!({ api: api }, request) }
+      let(:headers) do
+        {
+          'X-GitLab-Captcha-Response' => captcha_response,
+          'X-GitLab-Spam-Log-Id' => spam_log_id
+        }
+      end
+
+      it 'extracts the headers correctly' do
+        expect(fake_captcha_verification_service)
+          .to receive(:execute).with(captcha_response: captcha_response, request: request).and_return(true)
+        expect(SpamLog)
+          .to receive(:verify_recaptcha!).with(user_id: user.id, id: spam_log_id)
+
+        subject
+      end
+    end
+
     context 'when captcha response verification returns true' do
       before do
-        expect(fake_captcha_verification_service)
-          .to receive(:execute).with(captcha_response: captcha_response, request: request) { true }
+        allow(fake_captcha_verification_service)
+          .to receive(:execute).with(captcha_response: captcha_response, request: request).and_return(true)
       end
 
       it "doesn't check with the SpamVerdictService" do
@@ -136,8 +155,8 @@ RSpec.describe Spam::SpamActionService do
 
     context 'when captcha response verification returns false' do
       before do
-        expect(fake_captcha_verification_service)
-          .to receive(:execute).with(captcha_response: captcha_response, request: request) { false }
+        allow(fake_captcha_verification_service)
+          .to receive(:execute).with(captcha_response: captcha_response, request: request).and_return(false)
       end
 
       context 'when spammable attributes have not changed' do
@@ -146,21 +165,20 @@ RSpec.describe Spam::SpamActionService do
         end
 
         it 'does not create a spam log' do
-          expect { subject }
-            .not_to change { SpamLog.count }
+          expect { subject }.not_to change(SpamLog, :count)
         end
       end
 
       context 'when spammable attributes have changed' do
         let(:expected_service_check_response_message) do
-          /check Issue spammable model for any errors or captcha requirement/
+          /Check Issue spammable model for any errors or CAPTCHA requirement/
         end
 
         before do
-          issue.description = 'SPAM!'
+          issue.description = 'Lovely Spam! Wonderful Spam!'
         end
 
-        context 'if allowlisted' do
+        context 'when allowlisted' do
           let(:allowlisted) { true }
 
           it 'does not perform spam check' do
@@ -229,7 +247,7 @@ RSpec.describe Spam::SpamActionService do
               response = subject
 
               expect(response.message).to match(expected_service_check_response_message)
-              expect(issue.needs_recaptcha?).to be_truthy
+              expect(issue).to be_needs_recaptcha
             end
           end
 
@@ -253,8 +271,7 @@ RSpec.describe Spam::SpamActionService do
           end
 
           it 'does not create a spam log' do
-            expect { subject }
-              .not_to change { SpamLog.count }
+            expect { subject }.not_to change(SpamLog, :count)
           end
 
           it 'clears spam flags' do
@@ -264,9 +281,9 @@ RSpec.describe Spam::SpamActionService do
           end
         end
 
-        context 'spam verdict service options' do
+        context 'with spam verdict service options' do
           before do
-            allow(fake_verdict_service).to receive(:execute) { ALLOW }
+            allow(fake_verdict_service).to receive(:execute).and_return(ALLOW)
           end
 
           context 'when the request is nil' do

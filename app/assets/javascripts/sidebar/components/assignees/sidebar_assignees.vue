@@ -123,6 +123,7 @@ export default {
       v-if="shouldEnableRealtime"
       :issuable-iid="issuableIid"
       :project-path="projectPath"
+      :issuable-type="issuableType"
       :mediator="mediator"
     />
     <assignee-title

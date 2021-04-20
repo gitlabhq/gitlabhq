@@ -1,0 +1,5 @@
+---
+title: Make VALIDATION_REQUEST_TIMEOUT configurable
+merge_request: 57521
+author:
+type: changed

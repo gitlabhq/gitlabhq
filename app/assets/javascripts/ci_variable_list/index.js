@@ -3,8 +3,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import CiVariableSettings from './components/ci_variable_settings.vue';
 import createStore from './store';
 
-export default (containerId = 'js-ci-project-variables') => {
-  const containerEl = document.getElementById(containerId);
+const mountCiVariableListApp = (containerEl) => {
   const {
     endpoint,
     projectId,
@@ -42,4 +41,10 @@ export default (containerId = 'js-ci-project-variables') => {
       return createElement(CiVariableSettings);
     },
   });
+};
+
+export default (containerId = 'js-ci-project-variables') => {
+  const el = document.getElementById(containerId);
+
+  return !el ? {} : mountCiVariableListApp(el);
 };

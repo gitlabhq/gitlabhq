@@ -332,12 +332,13 @@ can see it.
 
 ## Run the spec
 
-Before running the spec, confirm:
+Before running the spec, make sure that:
 
-- The GDK is installed.
-- The GDK is running on port 3000 locally.
+- GDK is installed.
+- GDK is running locally on port 3000.
 - No additional [RSpec metadata tags](rspec_metadata_tests.md) have been applied.
 - Your working directory is `qa/` within your GDK GitLab installation.
+- Your GitLab instance-level settings are default. If you changed the default settings, some tests might have unexpected results.
 
 To run the spec, run the following command:
 

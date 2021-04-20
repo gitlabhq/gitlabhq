@@ -31,6 +31,12 @@ module InjectEnterpriseEditionModule
     include(ee_module) if Gitlab.ee?
   end
 
+  def prepend_if_jh(constant, with_descendants: false)
+    return unless Gitlab.jh?
+
+    prepend_module(constant.constantize, with_descendants)
+  end
+
   private
 
   def prepend_module(mod, with_descendants)

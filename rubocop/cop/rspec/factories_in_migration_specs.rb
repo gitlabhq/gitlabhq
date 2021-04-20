@@ -14,7 +14,7 @@ module RuboCop
       #   let(:users) { table(:users) }
       #   let(:user) { users.create!(name: 'User 1', username: 'user1') }
       class FactoriesInMigrationSpecs < RuboCop::Cop::Cop
-        MESSAGE = "Don't use FactoryBot.%s in migration specs, use `table` instead.".freeze
+        MESSAGE = "Don't use FactoryBot.%s in migration specs, use `table` instead."
         FORBIDDEN_METHODS = %i[build build_list create create_list attributes_for].freeze
 
         def_node_search :forbidden_factory_usage?, <<~PATTERN

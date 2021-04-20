@@ -18,8 +18,15 @@ export default {
     GlSprintf,
     GlButton,
   },
-  inject: ['fullPath', 'iid'],
   props: {
+    iid: {
+      type: String,
+      required: true,
+    },
+    fullPath: {
+      type: String,
+      required: true,
+    },
     confidential: {
       required: true,
       type: Boolean,
@@ -121,7 +128,7 @@ export default {
           </gl-button>
           <gl-button
             category="secondary"
-            variant="warning"
+            variant="confirm"
             :disabled="loading"
             :loading="loading"
             data-testid="confidential-toggle"

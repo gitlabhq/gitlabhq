@@ -21,7 +21,13 @@ class Experiment < ApplicationRecord
   # Create or update the recorded experiment_user row for the user in this experiment.
   def record_user_and_group(user, group_type, context = {})
     experiment_user = experiment_users.find_or_initialize_by(user: user)
-    experiment_user.update!(group_type: group_type, context: merged_context(experiment_user, context))
+    experiment_user.assign_attributes(group_type: group_type, context: merged_context(experiment_user, context))
+    # We only call save when necessary because this causes the request to stick to the primary DB
+    # even when the save is a no-op
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/324649
+    experiment_user.save! if experiment_user.changed?
+
+    experiment_user
   end
 
   def record_conversion_event_for_user(user, context = {})
@@ -32,7 +38,14 @@ class Experiment < ApplicationRecord
   end
 
   def record_group_and_variant!(group, variant)
-    experiment_subjects.find_or_initialize_by(group: group).update!(variant: variant)
+    experiment_subject = experiment_subjects.find_or_initialize_by(group: group)
+    experiment_subject.assign_attributes(variant: variant)
+    # We only call save when necessary because this causes the request to stick to the primary DB
+    # even when the save is a no-op
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/324649
+    experiment_subject.save! if experiment_subject.changed?
+
+    experiment_subject
   end
 
   private

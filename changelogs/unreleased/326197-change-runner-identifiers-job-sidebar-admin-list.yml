@@ -1,0 +1,6 @@
+---
+title: Display runner token and description consistently in the job sidebar and admin
+  list
+merge_request: 58904
+author:
+type: changed

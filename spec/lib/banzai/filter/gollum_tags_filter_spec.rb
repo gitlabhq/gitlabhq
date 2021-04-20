@@ -16,18 +16,14 @@ RSpec.describe Banzai::Filter::GollumTagsFilter do
 
   context 'linking internal images' do
     it 'creates img tag if image exists' do
-      gollum_file_double = double('Gollum::File',
-                                  mime_type: 'image/jpeg',
-                                  name: 'images/image.jpg',
-                                  path: 'images/image.jpg',
-                                  raw_data: '')
-      wiki_file = Gitlab::Git::WikiFile.new(gollum_file_double)
+      blob = double(mime_type: 'image/jpeg', name: 'images/image.jpg', path: 'images/image.jpg', data: '')
+      wiki_file = Gitlab::Git::WikiFile.new(blob)
       expect(wiki).to receive(:find_file).with('images/image.jpg', load_content: false).and_return(wiki_file)
 
       tag = '[[images/image.jpg]]'
       doc = filter("See #{tag}", wiki: wiki)
 
-      expect(doc.at_css('img')['data-src']).to eq "#{wiki.wiki_base_path}/images/image.jpg"
+      expect(doc.at_css('img')['src']).to eq 'images/image.jpg'
     end
 
     it 'does not creates img tag if image does not exist' do
@@ -45,7 +41,7 @@ RSpec.describe Banzai::Filter::GollumTagsFilter do
       tag = '[[http://example.com/image.jpg]]'
       doc = filter("See #{tag}", wiki: wiki)
 
-      expect(doc.at_css('img')['data-src']).to eq "http://example.com/image.jpg"
+      expect(doc.at_css('img')['src']).to eq "http://example.com/image.jpg"
     end
 
     it 'does not creates img tag for invalid URL' do

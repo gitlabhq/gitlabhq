@@ -6,8 +6,10 @@ module Ci
 
     def execute
       if trigger_from_token
+        set_application_context_from_trigger(trigger_from_token)
         create_pipeline_from_trigger(trigger_from_token)
       elsif job_from_token
+        set_application_context_from_job(job_from_token)
         create_pipeline_from_job(job_from_token)
       end
 
@@ -73,11 +75,7 @@ module Ci
     end
 
     def variables
-      if ::Feature.enabled?(:ci_trigger_payload_into_pipeline, project, default_enabled: :yaml)
-        param_variables + [payload_variable]
-      else
-        param_variables
-      end
+      param_variables + [payload_variable]
     end
 
     def param_variables
@@ -90,6 +88,21 @@ module Ci
       { key: PAYLOAD_VARIABLE_KEY,
         value: params.except(*PAYLOAD_VARIABLE_HIDDEN_PARAMS).to_json,
         variable_type: :file }
+    end
+
+    def set_application_context_from_trigger(trigger)
+      Gitlab::ApplicationContext.push(
+        user: trigger.owner,
+        project: trigger.project
+      )
+    end
+
+    def set_application_context_from_job(job)
+      Gitlab::ApplicationContext.push(
+        user: job.user,
+        project: job.project,
+        runner: job.runner
+      )
     end
   end
 end

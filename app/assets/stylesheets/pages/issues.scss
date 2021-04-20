@@ -173,11 +173,10 @@ ul.related-merge-requests > li {
     margin-top: 4px;
 
     // override dropdown item styles
-    .btn.btn-success {
+    .btn.btn-confirm {
       @include btn-default;
-      @include btn-green;
+      @include btn-blue;
 
-      border-style: solid;
       border-width: 1px;
       line-height: $line-height-base;
       width: auto;

@@ -1,0 +1,5 @@
+---
+title: Extract creation of prometheus service from Projects::CreateService
+merge_request:
+author:
+type: added

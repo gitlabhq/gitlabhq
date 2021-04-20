@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::ServicesController do
   include JiraServiceHelper
+  include AfterNextHelpers
 
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
@@ -13,7 +14,6 @@ RSpec.describe Projects::ServicesController do
   before do
     sign_in(user)
     project.add_maintainer(user)
-    allow(Gitlab::UrlBlocker).to receive(:validate!).and_return([URI.parse('http://example.com'), nil])
   end
 
   describe '#test' do
@@ -114,7 +114,7 @@ RSpec.describe Projects::ServicesController do
     end
 
     context 'failure' do
-      it 'returns success status code and the error message' do
+      it 'returns an error response when the integration test fails' do
         stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
           .to_return(status: 404)
 
@@ -127,6 +127,36 @@ RSpec.describe Projects::ServicesController do
           'service_response' => '',
           'test_failed' => true
         )
+      end
+
+      context 'with the Slack integration' do
+        let_it_be(:service) { build(:slack_service) }
+
+        it 'returns an error response when the URL is blocked' do
+          put :test, params: project_params(service: { webhook: 'http://127.0.0.1' })
+
+          expect(response).to be_successful
+          expect(json_response).to eq(
+            'error' => true,
+            'message' => 'Connection failed. Please check your settings.',
+            'service_response' => "URL 'http://127.0.0.1' is blocked: Requests to localhost are not allowed",
+            'test_failed' => true
+          )
+        end
+
+        it 'returns an error response when a network exception is raised' do
+          expect_next(SlackService).to receive(:test).and_raise(Errno::ECONNREFUSED)
+
+          put :test, params: project_params
+
+          expect(response).to be_successful
+          expect(json_response).to eq(
+            'error' => true,
+            'message' => 'Connection failed. Please check your settings.',
+            'service_response' => 'Connection refused',
+            'test_failed' => true
+          )
+        end
       end
     end
   end

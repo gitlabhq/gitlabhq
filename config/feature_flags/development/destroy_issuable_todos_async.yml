@@ -1,0 +1,8 @@
+---
+name: destroy_issuable_todos_async
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57830
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325689
+milestone: '13.11'
+type: development
+group: group::code review
+default_enabled: false

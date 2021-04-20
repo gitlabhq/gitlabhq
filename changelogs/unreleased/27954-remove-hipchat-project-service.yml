@@ -1,0 +1,5 @@
+---
+title: Remove HipChat integration from frontend and docs
+merge_request: 57556
+author:
+type: removed

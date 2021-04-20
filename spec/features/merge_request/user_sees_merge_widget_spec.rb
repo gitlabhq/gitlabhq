@@ -32,7 +32,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     end
 
     it 'shows widget status after creating new merge request' do
-      click_button 'Submit merge request'
+      click_button 'Create merge request'
 
       wait_for_requests
 

@@ -11,10 +11,15 @@ const dropdownPath = 'path.json';
 describe('Pipelines stage component', () => {
   let wrapper;
   let mock;
+  let glTooltipDirectiveMock;
 
   const createComponent = (props = {}) => {
+    glTooltipDirectiveMock = jest.fn();
     wrapper = mount(PipelineStage, {
       attachTo: document.body,
+      directives: {
+        GlTooltip: glTooltipDirectiveMock,
+      },
       propsData: {
         stage: {
           status: {
@@ -60,6 +65,10 @@ describe('Pipelines stage component', () => {
   describe('default appearance', () => {
     beforeEach(() => {
       createComponent();
+    });
+
+    it('sets up the tooltip to not have a show delay animation', () => {
+      expect(glTooltipDirectiveMock.mock.calls[0][1].modifiers.ds0).toBe(true);
     });
 
     it('should render a dropdown with the status icon', () => {

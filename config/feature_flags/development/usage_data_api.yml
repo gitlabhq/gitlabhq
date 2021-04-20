@@ -1,8 +1,0 @@
----
-name: usage_data_api
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41301
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/267114
-milestone: '13.4'
-type: development
-group: group::product analytics
-default_enabled: true

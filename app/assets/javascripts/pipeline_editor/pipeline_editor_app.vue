@@ -1,14 +1,29 @@
 <script>
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import httpStatusCodes from '~/lib/utils/http_status';
+import { getParameterValues, removeParams } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
+import CodeSnippetAlert from './components/code_snippet_alert/code_snippet_alert.vue';
+import {
+  CODE_SNIPPET_SOURCE_URL_PARAM,
+  CODE_SNIPPET_SOURCES,
+} from './components/code_snippet_alert/constants';
 import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes_dialog.vue';
 import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_state.vue';
-import { COMMIT_FAILURE, COMMIT_SUCCESS, DEFAULT_FAILURE, LOAD_FAILURE_UNKNOWN } from './constants';
+import {
+  COMMIT_FAILURE,
+  COMMIT_SUCCESS,
+  DEFAULT_FAILURE,
+  EDITOR_APP_STATUS_EMPTY,
+  EDITOR_APP_STATUS_ERROR,
+  EDITOR_APP_STATUS_LOADING,
+  LOAD_FAILURE_UNKNOWN,
+} from './constants';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
+import getAppStatus from './graphql/queries/client/app_status.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
 import getIsNewCiConfigFile from './graphql/queries/client/is_new_ci_config_file.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';
@@ -20,6 +35,7 @@ export default {
     GlLoadingIcon,
     PipelineEditorEmptyState,
     PipelineEditorHome,
+    CodeSnippetAlert,
   },
   inject: {
     ciConfigPath: {
@@ -32,7 +48,6 @@ export default {
   data() {
     return {
       ciConfigData: {},
-      // Success and failure state
       failureType: null,
       failureReasons: [],
       showStartScreen: false,
@@ -43,8 +58,10 @@ export default {
       showFailureAlert: false,
       showSuccessAlert: false,
       successType: null,
+      codeSnippetCopiedFrom: '',
     };
   },
+
   apollo: {
     initialCiFileContent: {
       query: getBlobContent,
@@ -77,8 +94,7 @@ export default {
     },
     ciConfigData: {
       query: getCiConfigData,
-      // If content is not loaded, we can't lint the data
-      skip: ({ currentCiFileContent }) => {
+      skip({ currentCiFileContent }) {
         return !currentCiFileContent;
       },
       variables() {
@@ -94,9 +110,20 @@ export default {
 
         return { ...ciConfig, stages };
       },
+      result({ data }) {
+        this.setAppStatus(data?.ciConfig?.status || EDITOR_APP_STATUS_ERROR);
+      },
       error() {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);
       },
+      watchLoading(isLoading) {
+        if (isLoading) {
+          this.setAppStatus(EDITOR_APP_STATUS_LOADING);
+        }
+      },
+    },
+    appStatus: {
+      query: getAppStatus,
     },
     currentBranch: {
       query: getCurrentBranch,
@@ -114,6 +141,9 @@ export default {
     },
     isCiConfigDataLoading() {
       return this.$apollo.queries.ciConfigData.loading;
+    },
+    isEmpty() {
+      return this.currentCiFileContent === '';
     },
     failure() {
       switch (this.failureType) {
@@ -159,6 +189,16 @@ export default {
   successTexts: {
     [COMMIT_SUCCESS]: __('Your changes have been successfully committed.'),
   },
+  watch: {
+    isEmpty(flag) {
+      if (flag) {
+        this.setAppStatus(EDITOR_APP_STATUS_EMPTY);
+      }
+    },
+  },
+  created() {
+    this.parseCodeSnippetSourceParam();
+  },
   methods: {
     handleBlobContentError(error = {}) {
       const { networkError } = error;
@@ -170,6 +210,7 @@ export default {
         response?.status === httpStatusCodes.NOT_FOUND ||
         response?.status === httpStatusCodes.BAD_REQUEST
       ) {
+        this.setAppStatus(EDITOR_APP_STATUS_EMPTY);
         this.showStartScreen = true;
       } else {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);
@@ -183,6 +224,8 @@ export default {
       this.showSuccessAlert = false;
     },
     reportFailure(type, reasons = []) {
+      this.setAppStatus(EDITOR_APP_STATUS_ERROR);
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
       this.showFailureAlert = true;
       this.failureType = type;
@@ -195,6 +238,9 @@ export default {
     },
     resetContent() {
       this.currentCiFileContent = this.lastCommittedContent;
+    },
+    setAppStatus(appStatus) {
+      this.$apollo.getClient().writeQuery({ query: getAppStatus, data: { appStatus } });
     },
     setNewEmptyCiConfigFile() {
       this.$apollo
@@ -220,6 +266,20 @@ export default {
       // if the user has made changes to the file that are unsaved.
       this.lastCommittedContent = this.currentCiFileContent;
     },
+    parseCodeSnippetSourceParam() {
+      const [codeSnippetCopiedFrom] = getParameterValues(CODE_SNIPPET_SOURCE_URL_PARAM);
+      if (codeSnippetCopiedFrom && CODE_SNIPPET_SOURCES.includes(codeSnippetCopiedFrom)) {
+        this.codeSnippetCopiedFrom = codeSnippetCopiedFrom;
+        window.history.replaceState(
+          {},
+          document.title,
+          removeParams([CODE_SNIPPET_SOURCE_URL_PARAM]),
+        );
+      }
+    },
+    dismissCodeSnippetAlert() {
+      this.codeSnippetCopiedFrom = '';
+    },
   },
 };
 </script>
@@ -232,19 +292,35 @@ export default {
       @createEmptyConfigFile="setNewEmptyCiConfigFile"
     />
     <div v-else>
-      <gl-alert v-if="showSuccessAlert" :variant="success.variant" @dismiss="dismissSuccess">
+      <code-snippet-alert
+        v-if="codeSnippetCopiedFrom"
+        :source="codeSnippetCopiedFrom"
+        class="gl-mb-5"
+        @dismiss="dismissCodeSnippetAlert"
+      />
+      <gl-alert
+        v-if="showSuccessAlert"
+        :variant="success.variant"
+        class="gl-mb-5"
+        @dismiss="dismissSuccess"
+      >
         {{ success.text }}
       </gl-alert>
-      <gl-alert v-if="showFailureAlert" :variant="failure.variant" @dismiss="dismissFailure">
+      <gl-alert
+        v-if="showFailureAlert"
+        :variant="failure.variant"
+        class="gl-mb-5"
+        @dismiss="dismissFailure"
+      >
         {{ failure.text }}
         <ul v-if="failureReasons.length" class="gl-mb-0">
           <li v-for="reason in failureReasons" :key="reason">{{ reason }}</li>
         </ul>
       </gl-alert>
       <pipeline-editor-home
-        :is-ci-config-data-loading="isCiConfigDataLoading"
         :ci-config-data="ciConfigData"
         :ci-file-content="currentCiFileContent"
+        :is-new-ci-config-file="isNewCiConfigFile"
         @commit="updateOnCommit"
         @resetContent="resetContent"
         @showError="showErrorAlert"

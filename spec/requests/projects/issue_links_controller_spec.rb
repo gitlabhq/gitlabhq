@@ -71,7 +71,7 @@ RSpec.describe Projects::IssueLinksController do
           list_service_response = IssueLinks::ListService.new(issue, user).execute
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response).to eq('message' => 'No Issue found for given params', 'issuables' => list_service_response.as_json)
+          expect(json_response).to eq('message' => 'No matching issue found. Make sure that you are adding a valid issue URL.', 'issuables' => list_service_response.as_json)
         end
       end
     end

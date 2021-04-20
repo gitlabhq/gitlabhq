@@ -1,0 +1,5 @@
+---
+title: Move pipelines calculation from widget.json to cached_widget.json
+merge_request: 57822
+author:
+type: performance

@@ -21,7 +21,8 @@ RSpec.describe 'Reposition and move issue within board lists' do
   let(:mutation_name) { mutation_class.graphql_name }
   let(:mutation_result_identifier) { mutation_name.camelize(:lower) }
   let(:current_user) { user }
-  let(:params) { { board_id: board.to_global_id.to_s, project_path: project.full_path, iid: issue1.iid.to_s } }
+  let(:board_id) { global_id_of(board) }
+  let(:params) { { board_id: board_id, project_path: project.full_path, iid: issue1.iid.to_s } }
   let(:issue_move_params) do
     {
       from_list_id: list1.id,
@@ -34,14 +35,42 @@ RSpec.describe 'Reposition and move issue within board lists' do
   end
 
   shared_examples 'returns an error' do
-    it 'fails with error' do
-      message = "The resource that you are attempting to access does not exist or you don't have "\
-                "permission to perform this action"
+    let(:message) do
+      "The resource that you are attempting to access does not exist or you don't have " \
+        "permission to perform this action"
+    end
 
+    it 'fails with error' do
       post_graphql_mutation(mutation(params), current_user: current_user)
 
       expect(graphql_errors).to include(a_hash_including('message' => message))
     end
+  end
+
+  context 'when the board_id is not a board' do
+    let(:board_id) { global_id_of(project) }
+    let(:issue_move_params) do
+      { move_after_id: existing_issue1.id, move_before_id: existing_issue2.id }
+    end
+
+    it_behaves_like 'returns an error' do
+      let(:message) { include('does not represent an instance of') }
+    end
+  end
+
+  # This test aims to distinguish between the failures to authorize
+  # :read_issue_board and :update_issue
+  context 'when the user cannot read the issue board' do
+    let(:issue_move_params) do
+      { move_after_id: existing_issue1.id, move_before_id: existing_issue2.id }
+    end
+
+    before do
+      allow(Ability).to receive(:allowed?).with(any_args).and_return(true)
+      allow(Ability).to receive(:allowed?).with(current_user, :read_issue_board, board).and_return(false)
+    end
+
+    it_behaves_like 'returns an error'
   end
 
   context 'when user has access to resources' do

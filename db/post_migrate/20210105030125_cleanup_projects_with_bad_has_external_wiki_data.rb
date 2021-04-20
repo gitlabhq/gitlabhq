@@ -4,7 +4,7 @@ class CleanupProjectsWithBadHasExternalWikiData < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  TMP_INDEX_NAME = 'tmp_index_projects_on_id_where_has_external_wiki_is_true'.freeze
+  TMP_INDEX_NAME = 'tmp_index_projects_on_id_where_has_external_wiki_is_true'
   BATCH_SIZE = 100
 
   disable_ddl_transaction!
@@ -45,7 +45,7 @@ class CleanupProjectsWithBadHasExternalWikiData < ActiveRecord::Migration[6.0]
         .merge(Project.where(has_external_wiki: false).where(pending_delete: false).where(archived: false))
 
       execute(<<~SQL)
-      WITH project_ids_to_update (id) AS (
+      WITH project_ids_to_update (id) AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
         #{scope_with_projects.to_sql}
       )
       UPDATE projects SET has_external_wiki = true WHERE id IN (SELECT id FROM project_ids_to_update)
@@ -75,7 +75,7 @@ class CleanupProjectsWithBadHasExternalWikiData < ActiveRecord::Migration[6.0]
     Project.where(index_where).each_batch(of: BATCH_SIZE) do |relation|
       relation_with_exists_query = relation.where('NOT EXISTS (?)', services_sub_query)
       execute(<<~SQL)
-      WITH project_ids_to_update (id) AS (
+      WITH project_ids_to_update (id) AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
         #{relation_with_exists_query.select(:id).to_sql}
       )
       UPDATE projects SET has_external_wiki = false WHERE id IN (SELECT id FROM project_ids_to_update)

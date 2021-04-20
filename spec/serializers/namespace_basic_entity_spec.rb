@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe NamespaceBasicEntity do
   let_it_be(:group) { create(:group) }
+
   let(:entity) do
     described_class.represent(group)
   end

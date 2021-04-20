@@ -1,11 +1,14 @@
 import { GlLabel } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { range } from 'lodash';
+import Vuex from 'vuex';
+import BoardBlockedIcon from '~/boards/components/board_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
+import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { mockLabelList } from './mock_data';
+import { mockLabelList, mockIssue } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/boards/eventhub');
@@ -29,8 +32,28 @@ describe('Board card component', () => {
   let wrapper;
   let issue;
   let list;
+  let store;
 
-  const createWrapper = (props = {}, store = defaultStore) => {
+  const findBoardBlockedIcon = () => wrapper.find(BoardBlockedIcon);
+
+  const createStore = () => {
+    store = new Vuex.Store({
+      ...defaultStore,
+      state: {
+        ...defaultStore.state,
+        issuableType: issuableTypes.issue,
+      },
+      getters: {
+        isGroupBoard: () => true,
+        isEpicBoard: () => false,
+        isProjectBoard: () => false,
+      },
+    });
+  };
+
+  const createWrapper = (props = {}) => {
+    createStore();
+
     wrapper = mount(BoardCardInner, {
       store,
       propsData: {
@@ -40,6 +63,13 @@ describe('Board card component', () => {
       },
       stubs: {
         GlLabel: true,
+      },
+      mocks: {
+        $apollo: {
+          queries: {
+            blockingIssuables: { loading: false },
+          },
+        },
       },
       provide: {
         rootPath: '/',
@@ -51,14 +81,9 @@ describe('Board card component', () => {
   beforeEach(() => {
     list = mockLabelList;
     issue = {
-      title: 'Testing',
-      id: 1,
-      iid: 1,
-      confidential: false,
+      ...mockIssue,
       labels: [list.label],
       assignees: [],
-      referencePath: '#1',
-      webUrl: '/test/1',
       weight: 1,
     };
 
@@ -68,6 +93,7 @@ describe('Board card component', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+    store = null;
     jest.clearAllMocks();
   });
 
@@ -87,16 +113,36 @@ describe('Board card component', () => {
     expect(wrapper.find('.confidential-icon').exists()).toBe(false);
   });
 
-  it('does not render blocked icon', () => {
-    expect(wrapper.find('.issue-blocked-icon').exists()).toBe(false);
-  });
-
   it('renders issue ID with #', () => {
-    expect(wrapper.find('.board-card-number').text()).toContain(`#${issue.id}`);
+    expect(wrapper.find('.board-card-number').text()).toContain(`#${issue.iid}`);
   });
 
   it('does not render assignee', () => {
     expect(wrapper.find('.board-card-assignee .avatar').exists()).toBe(false);
+  });
+
+  describe('blocked', () => {
+    it('renders blocked icon if issue is blocked', async () => {
+      createWrapper({
+        item: {
+          ...issue,
+          blocked: true,
+        },
+      });
+
+      expect(findBoardBlockedIcon().exists()).toBe(true);
+    });
+
+    it('does not show blocked icon if issue is not blocked', () => {
+      createWrapper({
+        item: {
+          ...issue,
+          blocked: false,
+        },
+      });
+
+      expect(findBoardBlockedIcon().exists()).toBe(false);
+    });
   });
 
   describe('confidential issue', () => {
@@ -300,21 +346,6 @@ describe('Board card component', () => {
 
       expect(wrapper.findAll(GlLabel).length).toBe(1);
       expect(wrapper.text()).not.toContain('closed');
-    });
-  });
-
-  describe('blocked', () => {
-    beforeEach(() => {
-      wrapper.setProps({
-        item: {
-          ...wrapper.props('item'),
-          blocked: true,
-        },
-      });
-    });
-
-    it('renders blocked icon if issue is blocked', () => {
-      expect(wrapper.find('.issue-blocked-icon').exists()).toBe(true);
     });
   });
 

@@ -1,4 +1,4 @@
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlSprintf, GlIcon } from '@gitlab/ui';
+import { GlSkeletonLoader, GlSprintf, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
@@ -52,7 +52,7 @@ describe('User Popover Component', () => {
   };
 
   describe('when user is loading', () => {
-    it('displays skeleton loaders', () => {
+    it('displays skeleton loader', () => {
       createWrapper({
         user: {
           name: null,
@@ -65,7 +65,7 @@ describe('User Popover Component', () => {
         },
       });
 
-      expect(wrapper.findAll(GlSkeletonLoading)).toHaveLength(4);
+      expect(wrapper.find(GlSkeletonLoader).exists()).toBe(true);
     });
   });
 

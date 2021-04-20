@@ -3,6 +3,7 @@ import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import { mapInline } from '~/diffs/components/diff_row_utils';
 import InlineDiffTableRow from '~/diffs/components/inline_diff_table_row.vue';
 import { createStore } from '~/mr_notes/stores';
+import { findInteropAttributes } from '../find_interop_attributes';
 import discussionsMockData from '../mock_data/diff_discussions';
 import diffFileMockData from '../mock_data/diff_file';
 
@@ -308,6 +309,18 @@ describe('InlineDiffTableRow', () => {
           });
         });
       });
+    });
+  });
+
+  describe('interoperability', () => {
+    it.each`
+      desc               | line                                                      | expectation
+      ${'with type old'} | ${{ ...thisLine, type: 'old', old_line: 3, new_line: 5 }} | ${{ type: 'old', line: '3', oldLine: '3', newLine: '5' }}
+      ${'with type new'} | ${{ ...thisLine, type: 'new', old_line: 3, new_line: 5 }} | ${{ type: 'new', line: '5', oldLine: '3', newLine: '5' }}
+    `('$desc, sets interop data attributes', ({ line, expectation }) => {
+      createComponent({ line });
+
+      expect(findInteropAttributes(wrapper)).toEqual(expectation);
     });
   });
 });

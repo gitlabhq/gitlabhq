@@ -44,13 +44,14 @@ export default {
 </script>
 <template>
   <div class="dropdown">
-    <div class="js-pipeline-info">
+    <div class="js-pipeline-info" data-testid="pipeline-info">
       <ci-icon :status="pipeline.details.status" class="vertical-align-middle" />
 
       <span class="font-weight-bold">{{ s__('Job|Pipeline') }}</span>
       <gl-link
         :href="pipeline.path"
         class="js-pipeline-path link-commit"
+        data-testid="pipeline-path"
         data-qa-selector="pipeline_path"
         >#{{ pipeline.id }}</gl-link
       >
@@ -58,13 +59,17 @@ export default {
         {{ s__('Job|for') }}
 
         <template v-if="isTriggeredByMergeRequest">
-          <gl-link :href="pipeline.merge_request.path" class="link-commit ref-name js-mr-link"
+          <gl-link
+            :href="pipeline.merge_request.path"
+            class="link-commit ref-name"
+            data-testid="mr-link"
             >!{{ pipeline.merge_request.iid }}</gl-link
           >
           {{ s__('Job|with') }}
           <gl-link
             :href="pipeline.merge_request.source_branch_path"
-            class="link-commit ref-name js-source-branch-link"
+            class="link-commit ref-name"
+            data-testid="source-branch-link"
             >{{ pipeline.merge_request.source_branch }}</gl-link
           >
 
@@ -72,7 +77,8 @@ export default {
             {{ s__('Job|into') }}
             <gl-link
               :href="pipeline.merge_request.target_branch_path"
-              class="link-commit ref-name js-target-branch-link"
+              class="link-commit ref-name"
+              data-testid="target-branch-link"
               >{{ pipeline.merge_request.target_branch }}</gl-link
             >
           </template>

@@ -1,0 +1,5 @@
+---
+title: Reduce number of queries in mergeRequestSetAssignees GraphQL mutation
+merge_request: 57523
+author:
+type: performance

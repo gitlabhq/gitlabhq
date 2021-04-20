@@ -33,15 +33,21 @@ class GitRefsFinder
   end
 
   def filter_refs_with_prefix(refs, prefix)
-    refs.select { |ref| ref.name.upcase.starts_with?(prefix.upcase) }
+    prefix = prefix.downcase
+
+    refs.select { |ref| ref.name.downcase.starts_with?(prefix) }
   end
 
   def filter_refs_with_suffix(refs, suffix)
-    refs.select { |ref| ref.name.upcase.ends_with?(suffix.upcase) }
+    suffix = suffix.downcase
+
+    refs.select { |ref| ref.name.downcase.ends_with?(suffix) }
   end
 
   def filter_refs_by_name(refs, term)
-    refs.select { |ref| ref.name.upcase.include?(term.upcase) }
+    term = term.downcase
+
+    refs.select { |ref| ref.name.downcase.include?(term) }
   end
 
   def set_exact_match_as_first_result(matches, term)

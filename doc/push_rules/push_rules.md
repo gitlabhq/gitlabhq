@@ -103,6 +103,28 @@ The following options are available:
 NOTE:
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules, and you can test them at the [regex101 regex tester](https://regex101.com/).
 
+### Caveat to "Reject unsigned commits" push rule **(PREMIUM)**
+
+This push rule ignores commits that are authenticated and created by GitLab
+(either through the UI or API). When the **Reject unsigned commits** push rule is
+enabled, unsigned commits may still show up in the commit history if a commit was
+created **within** GitLab itself. As expected, commits created outside GitLab and
+pushed to the repository are rejected. For more information about how GitLab
+plans to fix this issue, read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
+
+#### "Reject unsigned commits" push rule disables Web IDE
+
+In 13.10, if a project has the "Reject unsigned commits" push rule, the user will not be allowed to
+commit through GitLab Web IDE.
+
+To allow committing through the Web IDE on a project with this push rule, a GitLab administrator will
+need to disable the feature flag `reject_unsigned_commits_by_gitlab`. This can be done through a
+[rails console](../administration/operations/rails_console.md) and running:
+
+```ruby
+Feature.disable(:reject_unsigned_commits_by_gitlab)
+```
+
 ## Prevent pushing secrets to the repository
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385) in GitLab 8.12.

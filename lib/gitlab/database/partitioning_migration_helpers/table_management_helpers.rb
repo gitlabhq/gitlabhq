@@ -223,6 +223,28 @@ module Gitlab
           replace_table(table_name, archived_table_name, partitioned_table_name, primary_key_name)
         end
 
+        def drop_nonpartitioned_archive_table(table_name)
+          assert_table_is_allowed(table_name)
+
+          archived_table_name = make_archived_table_name(table_name)
+
+          with_lock_retries do
+            drop_sync_trigger(table_name)
+          end
+
+          drop_table(archived_table_name)
+        end
+
+        def create_trigger_to_sync_tables(source_table_name, partitioned_table_name, unique_key)
+          function_name = make_sync_function_name(source_table_name)
+          trigger_name = make_sync_trigger_name(source_table_name)
+
+          create_sync_function(function_name, partitioned_table_name, unique_key)
+          create_comment('FUNCTION', function_name, "Partitioning migration: table sync for #{source_table_name} table")
+
+          create_sync_trigger(source_table_name, trigger_name, function_name)
+        end
+
         private
 
         def assert_table_is_allowed(table_name)
@@ -314,16 +336,6 @@ module Gitlab
           end
 
           create_range_partition(partition_name, table_name, lower_bound, upper_bound)
-        end
-
-        def create_trigger_to_sync_tables(source_table_name, partitioned_table_name, unique_key)
-          function_name = make_sync_function_name(source_table_name)
-          trigger_name = make_sync_trigger_name(source_table_name)
-
-          create_sync_function(function_name, partitioned_table_name, unique_key)
-          create_comment('FUNCTION', function_name, "Partitioning migration: table sync for #{source_table_name} table")
-
-          create_sync_trigger(source_table_name, trigger_name, function_name)
         end
 
         def drop_sync_trigger(source_table_name)

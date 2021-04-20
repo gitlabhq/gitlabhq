@@ -8,6 +8,7 @@ import membersStore from './store';
 export const initMembersApp = (
   el,
   {
+    namespace,
     tableFields = [],
     tableAttrs = {},
     tableSortableFields = [],
@@ -22,22 +23,31 @@ export const initMembersApp = (
   Vue.use(Vuex);
   Vue.use(GlToast);
 
-  const store = new Vuex.Store(
-    membersStore({
-      ...parseDataAttributes(el),
-      currentUserId: gon.current_user_id || null,
-      tableFields,
-      tableAttrs,
-      tableSortableFields,
-      requestFormatter,
-      filteredSearchBar,
-    }),
-  );
+  const { sourceId, canManageMembers, ...vuexStoreAttributes } = parseDataAttributes(el);
+
+  const store = new Vuex.Store({
+    modules: {
+      [namespace]: membersStore({
+        ...vuexStoreAttributes,
+        tableFields,
+        tableAttrs,
+        tableSortableFields,
+        requestFormatter,
+        filteredSearchBar,
+      }),
+    },
+  });
 
   return new Vue({
     el,
     components: { App },
     store,
+    provide: {
+      namespace,
+      currentUserId: gon.current_user_id || null,
+      sourceId,
+      canManageMembers,
+    },
     render: (createElement) => createElement('app'),
   });
 };

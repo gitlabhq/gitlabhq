@@ -110,15 +110,17 @@ link in the issue sidebar.
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to the [Premium](https://about.gitlab.com/pricing/) tier in GitLab 12.8.
+> - Searching by the user's reaction emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325630) in GitLab 13.11.
 
 You can search for an epic from the list of epics using filtered search bar (similar to
-that of Issues and Merge Requests) based on following parameters:
+that of issues and merge requests) based on following parameters:
 
 - Title or description
 - Author name / username
 - Labels
+- Reaction emoji
 
-![epics search](img/epics_search.png)
+![epics search](img/epics_search_v13_11.png)
 
 To search, go to the list of epics and select the field **Search or filter results**.
 It displays a dropdown menu, from which you can add an author. You can also enter plain
@@ -321,3 +323,36 @@ To remove a child epic from a parent epic:
 
 1. Select the <kbd>x</kbd> button in the parent epic's list of epics.
 1. Select **Remove** in the **Remove epic** warning message.
+
+## Cached epic count
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299540) in GitLab 13.11.
+> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-cached-epic-count).
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+In a group, the sidebar displays the total count of open epics and this value is cached if higher
+than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
+
+### Enable or disable cached epic count **(PREMIUM SELF)**
+
+Cached epic count in the left sidebar is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can disable it.
+
+To disable it:
+
+```ruby
+Feature.disable(:cached_sidebar_open_epics_count)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:cached_sidebar_open_epics_count)
+```

@@ -74,7 +74,7 @@ different columns set) in the same table.
 
 ## The Solution
 
-Fortunately there is a very simple solution to these problems: simply use a
+Fortunately there is a very simple solution to these problems: use a
 separate table for every type you would otherwise store in the same table. Using
 a separate table allows you to use everything a database may provide to ensure
 consistency and query data efficiently, without any additional application logic

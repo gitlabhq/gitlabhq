@@ -286,9 +286,11 @@ module Ci
       end
 
       after_transition any => [:failed] do |pipeline|
-        next unless pipeline.auto_devops_source?
+        pipeline.run_after_commit do
+          ::Gitlab::Ci::Pipeline::Metrics.pipeline_failure_reason_counter.increment(reason: pipeline.failure_reason)
 
-        pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
+          AutoDevops::DisableWorker.perform_async(pipeline.id) if pipeline.auto_devops_source?
+        end
       end
     end
 
@@ -309,6 +311,7 @@ module Ci
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
     scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
+    scope :eager_load_project, -> { eager_load(project: [:route, { namespace: :route }]) }
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)
@@ -393,26 +396,13 @@ module Ci
     #       given we simply get the latest pipelines for the commits, regardless
     #       of what refs the pipelines belong to.
     def self.latest_pipeline_per_commit(commits, ref = nil)
-      p1 = arel_table
-      p2 = arel_table.alias
+      sql = select('DISTINCT ON (sha) *')
+              .where(sha: commits)
+              .order(:sha, id: :desc)
 
-      # This LEFT JOIN will filter out all but the newest row for every
-      # combination of (project_id, sha) or (project_id, sha, ref) if a ref is
-      # given.
-      cond = p1[:sha].eq(p2[:sha])
-        .and(p1[:project_id].eq(p2[:project_id]))
-        .and(p1[:id].lt(p2[:id]))
+      sql = sql.where(ref: ref) if ref
 
-      cond = cond.and(p1[:ref].eq(p2[:ref])) if ref
-      join = p1.join(p2, Arel::Nodes::OuterJoin).on(cond)
-
-      relation = where(sha: commits)
-        .where(p2[:id].eq(nil))
-        .joins(join.join_sources)
-
-      relation = relation.where(ref: ref) if ref
-
-      relation.each_with_object({}) do |pipeline, hash|
+      sql.each_with_object({}) do |pipeline, hash|
         hash[pipeline.sha] = pipeline
       end
     end
@@ -443,6 +433,10 @@ module Ci
 
     def self.auto_devops_pipelines_completed_total
       @auto_devops_pipelines_completed_total ||= Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines')
+    end
+
+    def uses_needs?
+      builds.where(scheduling_type: :dag).any?
     end
 
     def stages_count
@@ -510,6 +504,12 @@ module Ci
       end
     end
 
+    def git_author_full_text
+      strong_memoize(:git_author_full_text) do
+        commit.try(:author_full_text)
+      end
+    end
+
     def git_commit_message
       strong_memoize(:git_commit_message) do
         commit.try(:message)
@@ -573,10 +573,18 @@ module Ci
     end
 
     def cancel_running(retries: nil)
-      retry_optimistic_lock(cancelable_statuses, retries, name: 'ci_pipeline_cancel_running') do |cancelable|
-        cancelable.find_each do |job|
-          yield(job) if block_given?
-          job.cancel
+      commit_status_relations = [:project, :pipeline]
+      ci_build_relations = [:deployment, :taggings]
+
+      retry_optimistic_lock(cancelable_statuses, retries, name: 'ci_pipeline_cancel_running') do |cancelables|
+        cancelables.find_in_batches do |batch|
+          ActiveRecord::Associations::Preloader.new.preload(batch, commit_status_relations)
+          ActiveRecord::Associations::Preloader.new.preload(batch.select { |job| job.is_a?(Ci::Build) }, ci_build_relations)
+
+          batch.each do |job|
+            yield(job) if block_given?
+            job.cancel
+          end
         end
       end
     end
@@ -664,7 +672,9 @@ module Ci
     end
 
     def has_kubernetes_active?
-      project.deployment_platform&.active?
+      strong_memoize(:has_kubernetes_active) do
+        project.deployment_platform&.active?
+      end
     end
 
     def freeze_period?
@@ -822,6 +832,7 @@ module Ci
         variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
         variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
         variables.append(key: 'CI_COMMIT_TIMESTAMP', value: git_commit_timestamp.to_s)
+        variables.append(key: 'CI_COMMIT_AUTHOR', value: git_author_full_text.to_s)
 
         # legacy variables
         variables.append(key: 'CI_BUILD_REF', value: sha)

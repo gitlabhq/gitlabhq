@@ -34,10 +34,6 @@
 module Gitlab
   module Experimentation
     EXPERIMENTS = {
-      upgrade_link_in_user_menu_a: {
-        tracking_category: 'Growth::Expansion::Experiment::UpgradeLinkInUserMenuA',
-        use_backwards_compatible_subject_index: true
-      },
       invite_members_version_b: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersVersionB',
         use_backwards_compatible_subject_index: true

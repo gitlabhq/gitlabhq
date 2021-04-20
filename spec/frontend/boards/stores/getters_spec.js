@@ -88,7 +88,7 @@ describe('Boards - Getters', () => {
     });
   });
 
-  describe('activeIssue', () => {
+  describe('activeBoardItem', () => {
     it.each`
       id     | expected
       ${'1'} | ${'issue'}
@@ -96,7 +96,7 @@ describe('Boards - Getters', () => {
     `('returns $expected when $id is passed to state', ({ id, expected }) => {
       const state = { boardItems: { 1: 'issue' }, activeId: id };
 
-      expect(getters.activeIssue(state)).toEqual(expected);
+      expect(getters.activeBoardItem(state)).toEqual(expected);
     });
   });
 
@@ -105,14 +105,14 @@ describe('Boards - Getters', () => {
       const mockActiveIssue = {
         referencePath: 'gitlab-org/gitlab-test#1',
       };
-      expect(getters.groupPathForActiveIssue({}, { activeIssue: mockActiveIssue })).toEqual(
+      expect(getters.groupPathForActiveIssue({}, { activeBoardItem: mockActiveIssue })).toEqual(
         'gitlab-org',
       );
     });
 
     it('returns empty string as group path when active issue is an empty object', () => {
       const mockActiveIssue = {};
-      expect(getters.groupPathForActiveIssue({}, { activeIssue: mockActiveIssue })).toEqual('');
+      expect(getters.groupPathForActiveIssue({}, { activeBoardItem: mockActiveIssue })).toEqual('');
     });
   });
 
@@ -121,14 +121,16 @@ describe('Boards - Getters', () => {
       const mockActiveIssue = {
         referencePath: 'gitlab-org/gitlab-test#1',
       };
-      expect(getters.projectPathForActiveIssue({}, { activeIssue: mockActiveIssue })).toEqual(
+      expect(getters.projectPathForActiveIssue({}, { activeBoardItem: mockActiveIssue })).toEqual(
         'gitlab-org/gitlab-test',
       );
     });
 
     it('returns empty string as project path when active issue is an empty object', () => {
       const mockActiveIssue = {};
-      expect(getters.projectPathForActiveIssue({}, { activeIssue: mockActiveIssue })).toEqual('');
+      expect(getters.projectPathForActiveIssue({}, { activeBoardItem: mockActiveIssue })).toEqual(
+        '',
+      );
     });
   });
 
@@ -175,6 +177,33 @@ describe('Boards - Getters', () => {
 
     it('returns only returns non-archived group projects', () => {
       expect(getters.activeGroupProjects(state)).toEqual([mockGroupProject1]);
+    });
+  });
+
+  describe('isIssueBoard', () => {
+    it.each`
+      issuableType | expected
+      ${'issue'}   | ${true}
+      ${'epic'}    | ${false}
+    `(
+      'returns $expected when issuableType on state is $issuableType',
+      ({ issuableType, expected }) => {
+        const state = {
+          issuableType,
+        };
+
+        expect(getters.isIssueBoard(state)).toBe(expected);
+      },
+    );
+  });
+
+  describe('isEpicBoard', () => {
+    afterEach(() => {
+      window.gon = { features: {} };
+    });
+
+    it('returns false', () => {
+      expect(getters.isEpicBoard()).toBe(false);
     });
   });
 });

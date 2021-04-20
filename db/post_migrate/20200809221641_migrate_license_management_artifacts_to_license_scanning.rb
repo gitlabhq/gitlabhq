@@ -26,7 +26,7 @@ class MigrateLicenseManagementArtifactsToLicenseScanning < ActiveRecord::Migrati
       min, max = relation.pluck('MIN(job_id)', 'MAX(job_id)').flatten
 
       ActiveRecord::Base.connection.execute <<~SQL
-        WITH ci_job_artifacts_with_row_number as (
+        WITH ci_job_artifacts_with_row_number as #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
           SELECT job_id, id, ROW_NUMBER() OVER (PARTITION BY job_id ORDER BY id ASC) as row_number
           FROM ci_job_artifacts
           WHERE (file_type = #{LICENSE_SCANNING_FILE_TYPE} OR file_type = #{LICENSE_MANAGEMENT_FILE_TYPE})

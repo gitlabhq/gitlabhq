@@ -52,6 +52,8 @@
 
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
+  -# Rendering this above Gon, to use in JS later
+  = render 'layouts/header/new_repo_experiment'
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
 
   = javascript_include_tag locale_path unless I18n.locale == :en

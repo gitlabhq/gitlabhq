@@ -41,6 +41,15 @@ RSpec.describe API::NpmProjectPackages do
       project.add_developer(user)
     end
 
+    shared_examples 'successfully downloads the file' do
+      it 'returns the file' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('application/octet-stream')
+      end
+    end
+
     shared_examples 'a package file that requires auth' do
       it 'denies download with no token' do
         subject
@@ -51,35 +60,28 @@ RSpec.describe API::NpmProjectPackages do
       context 'with access token' do
         let(:headers) { build_token_auth_header(token.token) }
 
-        it 'returns the file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
+        it_behaves_like 'successfully downloads the file'
       end
 
       context 'with job token' do
         let(:headers) { build_token_auth_header(job.token) }
 
-        it 'returns the file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
+        it_behaves_like 'successfully downloads the file'
       end
     end
 
     context 'a public project' do
-      it 'returns the file with no token needed' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
-      end
-
+      it_behaves_like 'successfully downloads the file'
       it_behaves_like 'a package tracking event', 'API::NpmPackages', 'pull_package'
+
+      context 'with a job token for a different user' do
+        let_it_be(:other_user) { create(:user) }
+        let_it_be_with_reload(:other_job) { create(:ci_build, :running, user: other_user) }
+
+        let(:headers) { build_token_auth_header(other_job.token) }
+
+        it_behaves_like 'successfully downloads the file'
+      end
     end
 
     context 'private project' do

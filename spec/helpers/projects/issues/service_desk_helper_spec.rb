@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Issues::ServiceDeskHelper do
   let_it_be(:project) { create(:project, :public, service_desk_enabled: true) }
+
   let(:user) { build_stubbed(:user) }
   let(:current_user) { user }
 

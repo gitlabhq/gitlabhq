@@ -25,18 +25,22 @@ describe('access tokens', () => {
   });
 
   describe.each`
-    initFunction          | mountSelector                    | expectedComponent
-    ${initExpiresAtField} | ${'js-access-tokens-expires-at'} | ${ExpiresAtField}
-    ${initProjectsField}  | ${'js-access-tokens-projects'}   | ${ProjectsField}
-  `('$initFunction', ({ initFunction, mountSelector, expectedComponent }) => {
+    initFunction          | mountSelector                    | fieldName      | expectedComponent
+    ${initExpiresAtField} | ${'js-access-tokens-expires-at'} | ${'expiresAt'} | ${ExpiresAtField}
+    ${initProjectsField}  | ${'js-access-tokens-projects'}   | ${'projects'}  | ${ProjectsField}
+  `('$initFunction', ({ initFunction, mountSelector, fieldName, expectedComponent }) => {
     describe('when mount element exists', () => {
+      const nameAttribute = `access_tokens[${fieldName}]`;
+      const idAttribute = `access_tokens_${fieldName}`;
+
       beforeEach(() => {
         const mountEl = document.createElement('div');
         mountEl.classList.add(mountSelector);
 
         const input = document.createElement('input');
-        input.setAttribute('name', 'foo-bar');
-        input.setAttribute('id', 'foo-bar');
+        input.setAttribute('name', nameAttribute);
+        input.setAttribute('data-js-name', fieldName);
+        input.setAttribute('id', idAttribute);
         input.setAttribute('placeholder', 'Foo bar');
         input.setAttribute('value', '1,2');
 
@@ -57,8 +61,8 @@ describe('access tokens', () => {
 
         expect(component.exists()).toBe(true);
         expect(component.props('inputAttrs')).toEqual({
-          name: 'foo-bar',
-          id: 'foo-bar',
+          name: nameAttribute,
+          id: idAttribute,
           value: '1,2',
           placeholder: 'Foo bar',
         });

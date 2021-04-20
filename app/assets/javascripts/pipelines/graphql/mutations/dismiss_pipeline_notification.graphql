@@ -1,0 +1,5 @@
+mutation DismissPipelineNotification($featureName: String!) {
+  userCalloutCreate(input: { featureName: $featureName }) {
+    errors
+  }
+}

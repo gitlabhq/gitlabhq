@@ -860,8 +860,8 @@ Parameters for all comments:
 | `position[line_range]`                   | hash           | no       | Line range for a multi-line diff note |
 | `position[width]`                        | integer        | no       | Width of the image (for `image` diff notes) |
 | `position[height]`                       | integer        | no       | Height of the image (for `image` diff notes) |
-| `position[x]`                            | integer        | no       | X coordinate (for `image` diff notes) |
-| `position[y]`                            | integer        | no       | Y coordinate (for `image` diff notes) |
+| `position[x]`                            | float          | no       | X coordinate (for `image` diff notes) |
+| `position[y]`                            | float          | no       | Y coordinate (for `image` diff notes) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions?body=comment"

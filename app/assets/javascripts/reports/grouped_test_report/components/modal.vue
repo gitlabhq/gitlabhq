@@ -25,6 +25,14 @@ export default {
       required: true,
     },
   },
+  computed: {
+    filteredModalData() {
+      // Filter out the properties that don't have a value
+      return Object.fromEntries(
+        Object.entries(this.modalData).filter((data) => Boolean(data[1].value)),
+      );
+    },
+  },
   fieldTypes,
 };
 </script>
@@ -36,23 +44,18 @@ export default {
     :hide-footer="true"
     @hide="$emit('hide')"
   >
-    <div
-      v-for="(field, key, index) in modalData"
-      v-if="field.value"
-      :key="index"
-      class="row gl-mt-3 gl-mb-3"
-    >
+    <div v-for="(field, key, index) in filteredModalData" :key="index" class="row gl-mt-3 gl-mb-3">
       <strong class="col-sm-3 text-right"> {{ field.text }}: </strong>
 
       <div class="col-sm-9 text-secondary">
-        <code-block v-if="field.type === $options.fieldTypes.codeBock" :code="field.value" />
+        <code-block v-if="field.type === $options.fieldTypes.codeBlock" :code="field.value" />
 
         <gl-link
           v-else-if="field.type === $options.fieldTypes.link"
-          :href="field.value"
+          :href="field.value.path"
           target="_blank"
         >
-          {{ field.value }}
+          {{ field.value.text }}
         </gl-link>
 
         <gl-sprintf

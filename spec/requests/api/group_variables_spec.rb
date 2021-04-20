@@ -55,6 +55,7 @@ RSpec.describe API::GroupVariables do
         expect(json_response['value']).to eq(variable.value)
         expect(json_response['protected']).to eq(variable.protected?)
         expect(json_response['variable_type']).to eq(variable.variable_type)
+        expect(json_response['environment_scope']).to eq(variable.environment_scope)
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do
@@ -98,6 +99,7 @@ RSpec.describe API::GroupVariables do
         expect(json_response['protected']).to be_truthy
         expect(json_response['masked']).to be_truthy
         expect(json_response['variable_type']).to eq('env_var')
+        expect(json_response['environment_scope']).to eq('*')
       end
 
       it 'creates variable with optional attributes' do
@@ -111,6 +113,7 @@ RSpec.describe API::GroupVariables do
         expect(json_response['protected']).to be_falsey
         expect(json_response['masked']).to be_falsey
         expect(json_response['variable_type']).to eq('file')
+        expect(json_response['environment_scope']).to eq('*')
       end
 
       it 'does not allow to duplicate variable key' do

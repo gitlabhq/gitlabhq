@@ -60,14 +60,14 @@ module MergeRequests
       ids.first.to_s.downcase == label || usernames.map(&:downcase).include?(label)
     end
 
-    # Merge Requests without any approval
+    # Merge requests without any approval
     #
     # @param [ActiveRecord::Relation] items
     def without_approvals(items)
       items.without_approvals
     end
 
-    # Merge Requests with any number of approvals
+    # Merge requests with any number of approvals
     #
     # @param [ActiveRecord::Relation] items the activerecord relation
     def with_any_approvals(items)
@@ -76,14 +76,14 @@ module MergeRequests
       ])
     end
 
-    # Merge Requests approved by given usernames
+    # Merge requests approved by given usernames
     #
     # @param [ActiveRecord::Relation] items the activerecord relation
     def find_approved_by_names(items)
       items.approved_by_users_with_usernames(*usernames)
     end
 
-    # Merge Requests approved by given user IDs
+    # Merge requests approved by given user IDs
     #
     # @param [ActiveRecord::Relation] items the activerecord relation
     def find_approved_by_ids(items)

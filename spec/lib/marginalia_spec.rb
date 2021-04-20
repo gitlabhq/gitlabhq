@@ -3,10 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe 'Marginalia spec' do
-  class MarginaliaTestController < ActionController::Base
+  class MarginaliaTestController < ApplicationController
+    skip_before_action :authenticate_user!, :check_two_factor_requirement
+
     def first_user
       User.first
       render body: nil
+    end
+
+    private
+
+    [:auth_user, :current_user, :set_experimentation_subject_id_cookie, :signed_in?].each do |method|
+      define_method(method) { }
     end
   end
 
@@ -14,7 +22,9 @@ RSpec.describe 'Marginalia spec' do
     include Sidekiq::Worker
 
     def perform
-      User.first
+      Gitlab::ApplicationContext.with_context(caller_id: self.class.name) do
+        User.first
+      end
     end
   end
 
@@ -30,10 +40,9 @@ RSpec.describe 'Marginalia spec' do
 
     let(:component_map) do
       {
-        "application"       => "test",
-        "controller"        => "marginalia_test",
-        "action"            => "first_user",
-        "correlation_id"    => correlation_id
+        "application"    => "test",
+        "endpoint_id"    => "MarginaliaTestController#first_user",
+        "correlation_id" => correlation_id
       }
     end
 
@@ -47,6 +56,7 @@ RSpec.describe 'Marginalia spec' do
   describe 'for Sidekiq worker jobs' do
     around do |example|
       with_sidekiq_server_middleware do |chain|
+        chain.add Labkit::Middleware::Sidekiq::Context::Server
         chain.add Marginalia::SidekiqInstrumentation::Middleware
         Marginalia.application_name = "sidekiq"
         example.run
@@ -66,10 +76,10 @@ RSpec.describe 'Marginalia spec' do
 
     let(:component_map) do
       {
-        "application"       => "sidekiq",
-        "job_class"         => "MarginaliaTestJob",
-        "correlation_id"    => sidekiq_job['correlation_id'],
-        "jid"               => sidekiq_job['jid']
+        "application"    => "sidekiq",
+        "endpoint_id"    => "MarginaliaTestJob",
+        "correlation_id" => sidekiq_job['correlation_id'],
+        "jid"            => sidekiq_job['jid']
       }
     end
 
@@ -80,19 +90,33 @@ RSpec.describe 'Marginalia spec' do
     end
 
     describe 'for ActionMailer delivery jobs' do
+      # We need to ensure that this runs through Sidekiq to take
+      # advantage of the middleware. There is a Rails bug that means we
+      # have to do some extra steps to make this happen:
+      # https://github.com/rails/rails/issues/37270#issuecomment-553927324
+      around do |example|
+        descendants = ActiveJob::Base.descendants + [ActiveJob::Base]
+        descendants.each(&:disable_test_adapter)
+        ActiveJob::Base.queue_adapter = :sidekiq
+
+        example.run
+
+        descendants.each { |a| a.queue_adapter = :test }
+      end
+
       let(:delivery_job) { MarginaliaTestMailer.first_user.deliver_later }
 
       let(:recorded) do
         ActiveRecord::QueryRecorder.new do
-          delivery_job.perform_now
+          Sidekiq::Worker.drain_all
         end
       end
 
       let(:component_map) do
         {
-          "application"  => "sidekiq",
-          "jid"          => delivery_job.job_id,
-          "job_class"    => delivery_job.arguments.first
+          "application" => "sidekiq",
+          "endpoint_id" => "ActionMailer::MailDeliveryJob",
+          "jid"         => delivery_job.job_id
         }
       end
 

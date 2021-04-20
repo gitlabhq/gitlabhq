@@ -390,7 +390,7 @@ module Gitlab
         @committer_name = commit.committer.name.dup
         @committer_email = commit.committer.email.dup
         @parent_ids = Array(commit.parent_ids)
-        @trailers = Hash[commit.trailers.map { |t| [t.key, t.value] }]
+        @trailers = commit.trailers.to_h { |t| [t.key, t.value] }
       end
 
       # Gitaly provides a UNIX timestamp in author.date.seconds, and a timezone

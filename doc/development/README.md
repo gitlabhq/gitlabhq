@@ -176,6 +176,7 @@ In these cases, use the following workflow:
 - [Working with the GitHub importer](github_importer.md)
 - [Import/Export development documentation](import_export.md)
 - [Test Import Project](import_project.md)
+- [Group migration](bulk_import.md)
 - [Elasticsearch integration docs](elasticsearch.md)
 - [Working with Merge Request diffs](diffs.md)
 - [Kubernetes integration guidelines](kubernetes.md)
@@ -262,7 +263,7 @@ See [database guidelines](database/index.md).
 
 - [Product Intelligence guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
 - [Usage Ping guide](usage_ping/index.md)
-- [Snowplow guide](snowplow.md)
+- [Snowplow guide](snowplow/index.md)
 
 ## Experiment guide
 

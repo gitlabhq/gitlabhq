@@ -37,4 +37,18 @@ module ProfilesHelper
   def user_status_set_to_busy?(status)
     status&.availability == availability_values[:busy]
   end
+
+  # Overridden in EE::ProfilesHelper#ssh_key_expiration_tooltip
+  def ssh_key_expiration_tooltip(key)
+    return key.errors.full_messages.join(', ') if key.errors.full_messages.any?
+
+    s_('Profiles|Key usable beyond expiration date.') if key.expired?
+  end
+
+  # Overridden in EE::ProfilesHelper#ssh_key_expires_field_description
+  def ssh_key_expires_field_description
+    s_('Profiles|Key can still be used after expiration.')
+  end
 end
+
+ProfilesHelper.prepend_ee_mod

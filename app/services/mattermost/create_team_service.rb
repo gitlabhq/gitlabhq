@@ -3,7 +3,8 @@
 module Mattermost
   class CreateTeamService < ::BaseService
     def initialize(group, current_user)
-      @group, @current_user = group, current_user
+      @group = group
+      @current_user = current_user
     end
 
     def execute

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in GitLab Premium 12.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
-Publish NuGet packages in your project’s Package Registry. Then, install the
+Publish NuGet packages in your project's Package Registry. Then, install the
 packages whenever you need to use them as a dependency.
 
 The Package Registry works with:
@@ -17,6 +17,9 @@ The Package Registry works with:
 - [NuGet CLI](https://docs.microsoft.com/en-us/nuget/reference/nuget-exe-cli-reference)
 - [.NET Core CLI](https://docs.microsoft.com/en-us/dotnet/core/tools/)
 - [Visual Studio](https://visualstudio.microsoft.com/vs/)
+
+For documentation of the specific API endpoints that these
+clients use, see the [NuGet API documentation](../../../api/packages/nuget.md).
 
 ## Install NuGet
 
@@ -314,7 +317,7 @@ dotnet nuget push MyPackage.1.0.0.nupkg --source gitlab
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36424) in GitLab 13.3.
 
-If you’re using NuGet with GitLab CI/CD, a CI job token can be used instead of a
+If you're using NuGet with GitLab CI/CD, a CI job token can be used instead of a
 personal access token or deploy token. The token inherits the permissions of the
 user that generates the pipeline.
 
@@ -390,3 +393,13 @@ dotnet add package <package_id> \
 
 - `<package_id>` is the package ID.
 - `<package_version>` is the package version. Optional.
+
+## Supported CLI commands
+
+The GitLab NuGet repository supports the following commands for the NuGet CLI (`nuget`) and the .NET
+CLI (`dotnet`):
+
+- `nuget push`: Upload a package to the registry.
+- `dotnet nuget push`: Upload a package to the registry.
+- `nuget install`: Install a package from the registry.
+- `dotnet add`: Install a package from the registry.

@@ -9,6 +9,7 @@ RSpec.describe 'User browses jobs' do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(jobs_table_vue: false)
     project.add_maintainer(user)
     project.enable_ci
     project.update_attribute(:build_coverage_regex, /Coverage (\d+)%/)
@@ -21,14 +22,6 @@ RSpec.describe 'User browses jobs' do
   it 'shows the coverage' do
     page.within('td.coverage') do
       expect(page).to have_content('99.9%')
-    end
-  end
-
-  it 'shows the "CI Lint" button' do
-    page.within('.nav-controls') do
-      ci_lint_tool_link = page.find_link('CI Lint')
-
-      expect(ci_lint_tool_link[:href]).to end_with(project_ci_lint_path(project))
     end
   end
 

@@ -93,10 +93,26 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
     destroy_project(project, user, {})
   end
 
-  it 'performs cancel for project ci pipelines' do
-    expect(::Ci::AbortProjectPipelinesService).to receive_message_chain(:new, :execute).with(project)
+  context 'with abort_deleted_project_pipelines feature disabled' do
+    it 'does not cancel project ci pipelines' do
+      stub_feature_flags(abort_deleted_project_pipelines: false)
 
-    destroy_project(project, user, {})
+      expect(::Ci::AbortPipelinesService).not_to receive(:new)
+
+      destroy_project(project, user, {})
+    end
+  end
+
+  context 'with abort_deleted_project_pipelines feature enabled' do
+    it 'performs cancel for project ci pipelines' do
+      stub_feature_flags(abort_deleted_project_pipelines: true)
+      pipelines = build_list(:ci_pipeline, 3, :running)
+      allow(project).to receive(:all_pipelines).and_return(pipelines)
+
+      expect(::Ci::AbortPipelinesService).to receive_message_chain(:new, :execute).with(pipelines, :project_deleted)
+
+      destroy_project(project, user, {})
+    end
   end
 
   context 'when project has remote mirrors' do

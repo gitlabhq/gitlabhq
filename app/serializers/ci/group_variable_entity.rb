@@ -2,5 +2,6 @@
 
 module Ci
   class GroupVariableEntity < Ci::BasicVariableEntity
+    expose :environment_scope
   end
 end

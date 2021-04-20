@@ -119,20 +119,18 @@ class IssuableFinder
     # https://www.postgresql.org/docs/current/static/queries-with.html
     items = by_search(items)
 
-    items = sort(items)
-
-    items
+    sort(items)
   end
 
   def filter_items(items)
+    # Selection by group is already covered by `by_project` and `projects` for project-based issuables
+    # Group-based issuables have their own group filter methods
     items = by_project(items)
-    items = by_group(items)
     items = by_scope(items)
     items = by_created_at(items)
     items = by_updated_at(items)
     items = by_closed_at(items)
     items = by_state(items)
-    items = by_group(items)
     items = by_assignee(items)
     items = by_author(items)
     items = by_non_archived(items)
@@ -244,7 +242,7 @@ class IssuableFinder
 
         # These are "helper" params that modify the results, like :in and :search. They usually come in at the top-level
         # params, but if they do come in inside the `:not` params, the inner ones should take precedence.
-        not_helpers = params.slice(*NEGATABLE_PARAMS_HELPER_KEYS).merge(params[:not].slice(*NEGATABLE_PARAMS_HELPER_KEYS))
+        not_helpers = params.slice(*NEGATABLE_PARAMS_HELPER_KEYS).merge(params[:not].to_h.slice(*NEGATABLE_PARAMS_HELPER_KEYS))
         not_helpers.each do |key, value|
           not_params[key] = value unless not_params[key].present?
         end
@@ -318,11 +316,6 @@ class IssuableFinder
     else
       items
     end
-  end
-
-  def by_group(items)
-    # Selection by group is already covered by `by_project` and `projects`
-    items
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -400,8 +393,6 @@ class IssuableFinder
     # We want CE users to be able to say "Issues not assigned to either PersonA nor PersonB"
     if not_params.assignees.present?
       items.not_assigned_to(not_params.assignees)
-    elsif not_params.assignee_id? || not_params.assignee_username? # assignee not found
-      items.none
     else
       items
     end

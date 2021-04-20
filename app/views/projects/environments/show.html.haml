@@ -67,7 +67,7 @@
           %p.blank-state-text
             = html_escape(_("Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
           .text-center
-            = link_to _("Read more"), help_page_path("ci/environments/index.md"), class: "gl-button btn btn-success"
+            = link_to _("Read more"), help_page_path("ci/environments/index.md"), class: "gl-button btn btn-confirm"
     - else
       .table-holder.gl-overflow-visible
         .ci-table.environments{ role: 'grid' }

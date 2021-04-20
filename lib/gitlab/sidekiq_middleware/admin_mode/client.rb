@@ -8,7 +8,8 @@ module Gitlab
       # If enabled then it injects a job field that persists through the job execution
       class Client
         def call(_worker_class, job, _queue, _redis_pool)
-          return yield unless ::Feature.enabled?(:user_mode_in_session)
+          # Not calling Gitlab::CurrentSettings.admin_mode on purpose on sidekiq middleware
+          # Only when admin mode application setting is enabled might the admin_mode_user_id be non-nil here
 
           # Admin mode enabled in the original request or in a nested sidekiq job
           admin_mode_user_id = find_admin_user_id

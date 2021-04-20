@@ -14,7 +14,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
   before_action :apply_diff_view_cookie!, only: [:show]
-  before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
+  before_action :disable_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
   before_action :authorize_read_actual_head_pipeline!, only: [
     :test_reports,
@@ -30,21 +30,32 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
   before_action only: [:show] do
     push_frontend_feature_flag(:file_identifier_hash)
-    push_frontend_feature_flag(:batch_suggestions, @project, default_enabled: true)
     push_frontend_feature_flag(:approvals_commented_by, @project, default_enabled: true)
     push_frontend_feature_flag(:merge_request_widget_graphql, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:drag_comment_selection, @project, default_enabled: true)
     push_frontend_feature_flag(:unified_diff_components, @project, default_enabled: true)
     push_frontend_feature_flag(:default_merge_ref_for_diffs, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:core_security_mr_widget_counts, @project)
-    push_frontend_feature_flag(:remove_resolve_note, @project, default_enabled: true)
     push_frontend_feature_flag(:diffs_gradual_load, @project, default_enabled: true)
-    push_frontend_feature_flag(:codequality_backend_comparison, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:local_file_reviews, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_notes, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:new_pipelines_table, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:usage_data_i_testing_summary_widget_total, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
+
+    # Usage data feature flags
+    push_frontend_feature_flag(:users_expanding_widgets_usage_data, @project, default_enabled: :yaml)
 
     record_experiment_user(:invite_members_version_b)
+
+    experiment(:invite_members_in_comment, namespace: @project.root_ancestor) do |experiment_instance|
+      experiment_instance.exclude! unless helpers.can_import_members?
+
+      experiment_instance.use {}
+      experiment_instance.try(:invite_member_link) {}
+
+      experiment_instance.track(:view, property: @project.root_ancestor.id.to_s)
+    end
   end
 
   before_action do
@@ -57,16 +68,19 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   feature_category :code_review, [
                      :assign_related_issues, :bulk_update, :cancel_auto_merge,
-                     :ci_environments_status, :commit_change_content, :commits,
-                     :context_commits, :destroy, :diff_for_path, :discussions,
-                     :edit, :exposed_artifacts, :index, :merge,
-                     :pipeline_status, :pipelines, :rebase, :remove_wip, :show,
-                     :toggle_award_emoji, :toggle_subscription, :update
+                     :commit_change_content, :commits, :context_commits, :destroy,
+                     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
+                     :show, :toggle_award_emoji, :toggle_subscription, :update
                    ]
 
-  feature_category :code_testing, [:test_reports, :coverage_reports, :codequality_mr_diff_reports]
+  feature_category :code_testing, [
+                     :test_reports, :coverage_reports, :codequality_reports,
+                     :codequality_mr_diff_reports
+                   ]
+
   feature_category :accessibility_testing, [:accessibility_reports]
   feature_category :infrastructure_as_code, [:terraform_reports]
+  feature_category :continuous_integration, [:pipeline_status, :pipelines, :exposed_artifacts]
 
   def index
     @merge_requests = @issuables
@@ -83,7 +97,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def show
     close_merge_request_if_no_source_project
-    @merge_request.check_mergeability(async: true)
+
+    if Feature.disabled?(:check_mergeability_async_in_widget, @project, default_enabled: :yaml)
+      @merge_request.check_mergeability(async: true)
+    end
 
     respond_to do |format|
       format.html do
@@ -102,6 +119,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
         @file_by_file_default = current_user&.view_diffs_file_by_file
         @coverage_path = coverage_reports_project_merge_request_path(@project, @merge_request, format: :json) if @merge_request.has_coverage_reports?
+        @update_current_user_path = expose_path(api_v4_user_preferences_path)
         @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
 
         set_pipeline_variables
@@ -459,9 +477,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     access_denied! unless @merge_request.can_be_merged_by?(current_user)
   end
 
-  def whitelist_query_limiting
-    # Also see https://gitlab.com/gitlab-org/gitlab-foss/issues/42441
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42438')
+  def disable_query_limiting
+    # Also see https://gitlab.com/gitlab-org/gitlab/-/issues/20827
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20824')
   end
 
   def reports_response(report_comparison, pipeline = nil)

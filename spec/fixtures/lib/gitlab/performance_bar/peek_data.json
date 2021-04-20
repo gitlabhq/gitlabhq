@@ -13,6 +13,8 @@
           "duration": 1.096,
           "sql": "SELECT COUNT(*) FROM ((SELECT \"badges\".* FROM \"badges\" WHERE \"badges\".\"type\" = 'ProjectBadge' AND \"badges\".\"project_id\" = 8)\nUNION\n(SELECT \"badges\".* FROM \"badges\" WHERE \"badges\".\"type\" = 'GroupBadge' AND \"badges\".\"group_id\" IN (SELECT \"namespaces\".\"id\" FROM \"namespaces\" WHERE \"namespaces\".\"type\" = 'Group' AND \"namespaces\".\"id\" = 28))) badges",
           "backtrace": [
+            "ee/lib/ee/peek/views/active_record.rb:11:in `generate_detail'",
+            "lib/peek/views/active_record.rb:42:in `block in setup_subscribers'",
             "lib/gitlab/pagination/offset_pagination.rb:53:in `add_pagination_headers'",
             "lib/gitlab/pagination/offset_pagination.rb:15:in `block in paginate'",
             "lib/gitlab/pagination/offset_pagination.rb:14:in `tap'",

@@ -97,7 +97,7 @@ RSpec.describe 'User Cluster', :js do
     context 'when user disables the cluster' do
       before do
         page.find(:css, '.js-cluster-enable-toggle-area .js-project-feature-toggle').click
-        page.within('.js-cluster-integration-form') { click_button 'Save changes' }
+        page.within('.js-cluster-details-form') { click_button 'Save changes' }
       end
 
       it 'user sees the successful message' do

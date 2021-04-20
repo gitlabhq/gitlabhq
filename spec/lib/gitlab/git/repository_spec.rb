@@ -564,6 +564,41 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#search_files_by_regexp' do
+    let(:ref) { 'master' }
+
+    subject(:result) { mutable_repository.search_files_by_regexp(filter, ref) }
+
+    context 'when sending a valid regexp' do
+      let(:filter) { 'files\/.*\/.*\.rb' }
+
+      it 'returns matched files' do
+        expect(result).to contain_exactly('files/links/regex.rb',
+                                          'files/ruby/popen.rb',
+                                          'files/ruby/regex.rb',
+                                          'files/ruby/version_info.rb')
+      end
+    end
+
+    context 'when sending an ivalid regexp' do
+      let(:filter) { '*.rb' }
+
+      it 'raises error' do
+        expect { result }.to raise_error(GRPC::InvalidArgument,
+                                         /missing argument to repetition operator: `*`/)
+      end
+    end
+
+    context "when the ref doesn't exist" do
+      let(:filter) { 'files\/.*\/.*\.rb' }
+      let(:ref) { 'non-existing-branch' }
+
+      it 'returns an empty array' do
+        expect(result).to eq([])
+      end
+    end
+  end
+
   describe '#find_remote_root_ref' do
     it 'gets the remote root ref from GitalyClient' do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
@@ -1711,14 +1746,15 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     let(:right_branch) { 'test-master' }
     let(:first_parent_ref) { 'refs/heads/test-master' }
     let(:target_ref) { 'refs/merge-requests/999/merge' }
-    let(:allow_conflicts) { false }
 
     before do
       repository.create_branch(right_branch, branch_head) unless repository.ref_exists?(first_parent_ref)
     end
 
     def merge_to_ref
-      repository.merge_to_ref(user, left_sha, right_branch, target_ref, 'Merge message', first_parent_ref, allow_conflicts)
+      repository.merge_to_ref(user,
+          source_sha: left_sha, branch: right_branch, target_ref: target_ref,
+          message: 'Merge message', first_parent_ref: first_parent_ref)
     end
 
     it 'generates a commit in the target_ref' do

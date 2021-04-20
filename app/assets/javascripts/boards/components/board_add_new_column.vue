@@ -1,23 +1,16 @@
 <script>
-import {
-  GlFormRadio,
-  GlFormRadioGroup,
-  GlLabel,
-  GlTooltipDirective as GlTooltip,
-} from '@gitlab/ui';
+import { GlFormRadio, GlFormRadioGroup, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form.vue';
 import { ListType } from '~/boards/constants';
 import boardsStore from '~/boards/stores/boards_store';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
   components: {
     BoardAddNewColumnForm,
     GlFormRadio,
     GlFormRadioGroup,
-    GlLabel,
   },
   directives: {
     GlTooltip,
@@ -26,17 +19,12 @@ export default {
   data() {
     return {
       selectedId: null,
+      selectedLabel: null,
     };
   },
   computed: {
     ...mapState(['labels', 'labelsLoading']),
     ...mapGetters(['getListByLabelId', 'shouldUseGraphQL']),
-    selectedLabel() {
-      if (!this.selectedId) {
-        return null;
-      }
-      return this.labels.find(({ id }) => id === this.selectedId);
-    },
     columnForSelected() {
       return this.getListByLabelId(this.selectedId);
     },
@@ -89,8 +77,13 @@ export default {
       this.fetchLabels(searchTerm);
     },
 
-    showScopedLabels(label) {
-      return this.scopedLabelsAvailable && isScopedLabel(label);
+    setSelectedItem(selectedId) {
+      const label = this.labels.find(({ id }) => id === selectedId);
+      if (!selectedId || !label) {
+        this.selectedLabel = null;
+      } else {
+        this.selectedLabel = { ...label };
+      }
     },
   },
 };
@@ -99,38 +92,39 @@ export default {
 <template>
   <board-add-new-column-form
     :loading="labelsLoading"
-    :form-description="__('A label list displays issues with the selected label.')"
-    :search-label="__('Select label')"
+    :none-selected="__('Select a label')"
     :search-placeholder="__('Search labels')"
     :selected-id="selectedId"
     @filter-items="filterItems"
     @add-list="addList"
   >
-    <template slot="selected">
-      <gl-label
-        v-if="selectedLabel"
-        v-gl-tooltip
-        :title="selectedLabel.title"
-        :description="selectedLabel.description"
-        :background-color="selectedLabel.color"
-        :scoped="showScopedLabels(selectedLabel)"
-      />
+    <template #selected>
+      <template v-if="selectedLabel">
+        <span
+          class="dropdown-label-box gl-top-0 gl-flex-shrink-0"
+          :style="{
+            backgroundColor: selectedLabel.color,
+          }"
+        ></span>
+        <div class="gl-text-truncate">{{ selectedLabel.title }}</div>
+      </template>
     </template>
 
-    <template slot="items">
+    <template #items>
       <gl-form-radio-group
         v-if="labels.length > 0"
         v-model="selectedId"
         class="gl-overflow-y-auto gl-px-5 gl-pt-3"
+        @change="setSelectedItem"
       >
         <label
           v-for="label in labels"
           :key="label.id"
-          class="gl-display-flex gl-flex-align-items-center gl-mb-5 gl-font-weight-normal"
+          class="gl-display-flex gl-mb-5 gl-font-weight-normal gl-overflow-break-word"
         >
-          <gl-form-radio :value="label.id" class="gl-mb-0" />
+          <gl-form-radio :value="label.id" />
           <span
-            class="dropdown-label-box gl-top-0"
+            class="dropdown-label-box gl-top-0 gl-flex-shrink-0"
             :style="{
               backgroundColor: label.color,
             }"

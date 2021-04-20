@@ -47,16 +47,8 @@ class InternalId < ApplicationRecord
   def update_and_save(&block)
     lock!
     yield
-    update_and_save_counter.increment(usage: usage, changed: last_value_changed?)
     save!
     last_value
-  end
-
-  # Instrumentation to track for-update locks
-  def update_and_save_counter
-    strong_memoize(:update_and_save_counter) do
-      Gitlab::Metrics.counter(:gitlab_internal_id_for_update_lock, 'Number of ROW SHARE (FOR UPDATE) locks on individual records from internal_ids')
-    end
   end
 
   class << self
@@ -88,6 +80,8 @@ class InternalId < ApplicationRecord
   end
 
   class InternalIdGenerator
+    extend Gitlab::Utils::StrongMemoize
+
     # Generate next internal id for a given scope and usage.
     #
     # For currently supported usages, see #usage enum.
@@ -123,6 +117,8 @@ class InternalId < ApplicationRecord
     # init: Block that gets called to initialize InternalId record if not present
     #       Make sure to not throw exceptions in the absence of records (if this is expected).
     def generate
+      self.class.internal_id_transactions_increment(operation: :generate, usage: usage)
+
       subject.transaction do
         # Create a record in internal_ids if one does not yet exist
         # and increment its last value
@@ -138,6 +134,8 @@ class InternalId < ApplicationRecord
     def reset(value)
       return false unless value
 
+      self.class.internal_id_transactions_increment(operation: :reset, usage: usage)
+
       updated =
         InternalId
           .where(**scope, usage: usage_value)
@@ -152,6 +150,8 @@ class InternalId < ApplicationRecord
     #
     # Note this will acquire a ROW SHARE lock on the InternalId record
     def track_greatest(new_value)
+      self.class.internal_id_transactions_increment(operation: :track_greatest, usage: usage)
+
       subject.transaction do
         record.track_greatest_and_save!(new_value)
       end
@@ -162,6 +162,8 @@ class InternalId < ApplicationRecord
     end
 
     def with_lock(&block)
+      self.class.internal_id_transactions_increment(operation: :with_lock, usage: usage)
+
       record.with_lock(&block)
     end
 
@@ -196,6 +198,23 @@ class InternalId < ApplicationRecord
       end
     rescue ActiveRecord::RecordNotUnique
       lookup
+    end
+
+    def self.internal_id_transactions_increment(operation:, usage:)
+      self.internal_id_transactions_total.increment(
+        operation: operation,
+        usage: usage.to_s,
+        in_transaction: ActiveRecord::Base.connection.transaction_open?.to_s
+      )
+    end
+
+    def self.internal_id_transactions_total
+      strong_memoize(:internal_id_transactions_total) do
+        name = :gitlab_internal_id_transactions_total
+        comment = 'Counts all the internal ids happening within transaction'
+
+        Gitlab::Metrics.counter(name, comment)
+      end
     end
   end
 end

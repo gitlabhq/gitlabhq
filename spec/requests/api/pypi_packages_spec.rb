@@ -118,7 +118,7 @@ RSpec.describe API::PypiPackages do
 
     it_behaves_like 'deploy token for package uploads'
 
-    it_behaves_like 'job token for package uploads'
+    it_behaves_like 'job token for package uploads', authorize_endpoint: true
 
     it_behaves_like 'rejects PyPI access with unknown project id'
   end

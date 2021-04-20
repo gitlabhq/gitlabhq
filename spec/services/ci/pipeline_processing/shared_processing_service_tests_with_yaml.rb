@@ -49,7 +49,13 @@ RSpec.shared_context 'Pipeline Processing Service Tests With Yaml' do
       statuses = pipeline.latest_statuses.by_name(job_names).to_a
       expect(statuses.count).to eq(job_names.count) # ensure that we have the same counts
 
-      statuses.each { |status| status.public_send("#{event}!") }
+      statuses.each do |status|
+        if event == 'play'
+          status.play(user)
+        else
+          status.public_send("#{event}!")
+        end
+      end
     end
   end
 end

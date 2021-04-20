@@ -337,6 +337,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
   describe '#nodes' do
     let_it_be(:all_nodes) { create_list(:project, 5) }
+
     let(:paged_nodes) { subject.nodes }
 
     it_behaves_like 'connection with paged nodes' do

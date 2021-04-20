@@ -1,32 +1,65 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { escape } from 'lodash';
+import Vue from 'vue';
+import Vuex from 'vuex';
+
 import waitForPromises from 'helpers/wait_for_promises';
+
+import DiffsModule from '~/diffs/store/modules';
+
 import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import issueNote from '~/notes/components/noteable_note.vue';
-import createStore from '~/notes/stores';
+import NotesModule from '~/notes/stores/modules';
+
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
+
+Vue.use(Vuex);
+
+const singleLineNotePosition = {
+  line_range: {
+    start: {
+      line_code: 'abc_1_1',
+      type: null,
+      old_line: '1',
+      new_line: '1',
+    },
+    end: {
+      line_code: 'abc_1_1',
+      type: null,
+      old_line: '1',
+      new_line: '1',
+    },
+  },
+};
 
 describe('issue_note', () => {
   let store;
   let wrapper;
   const findMultilineComment = () => wrapper.find('[data-testid="multiline-comment"]');
 
-  const createWrapper = (props = {}) => {
-    store = createStore();
+  const createWrapper = (props = {}, storeUpdater = (s) => s) => {
+    store = new Vuex.Store(
+      storeUpdater({
+        modules: {
+          notes: NotesModule(),
+          diffs: DiffsModule(),
+        },
+      }),
+    );
+
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
-    const localVue = createLocalVue();
-    wrapper = mount(localVue.extend(issueNote), {
+    wrapper = mount(issueNote, {
       store,
       propsData: {
         note,
         ...props,
       },
-      localVue,
       stubs: [
         'note-header',
         'user-avatar-link',
@@ -216,9 +249,13 @@ describe('issue_note', () => {
       const noteBodyComponent = wrapper.findComponent(NoteBody);
 
       store.hotUpdate({
-        actions: {
-          updateNote() {},
-          setSelectedCommentPositionHover() {},
+        modules: {
+          notes: {
+            actions: {
+              updateNote() {},
+              setSelectedCommentPositionHover() {},
+            },
+          },
         },
       });
 
@@ -238,8 +275,12 @@ describe('issue_note', () => {
     it('restores content of updated note', async () => {
       const updatedText = 'updated note text';
       store.hotUpdate({
-        actions: {
-          updateNote() {},
+        modules: {
+          notes: {
+            actions: {
+              updateNote() {},
+            },
+          },
         },
       });
       const noteBody = wrapper.findComponent(NoteBody);
@@ -267,9 +308,13 @@ describe('issue_note', () => {
 
     const updateActions = () => {
       store.hotUpdate({
-        actions: {
-          updateNote,
-          setSelectedCommentPositionHover() {},
+        modules: {
+          notes: {
+            actions: {
+              updateNote,
+              setSelectedCommentPositionHover() {},
+            },
+          },
         },
       });
     };
@@ -297,6 +342,64 @@ describe('issue_note', () => {
       updateActions();
       wrapper.findComponent(NoteBody).vm.$emit('handleFormUpdate', ...params);
       expect(updateNote.mock.calls[0][1].note.note.position).toBe(expectation);
+    });
+  });
+
+  describe('diffFile', () => {
+    it.each`
+      scenario                         | files        | noteDef
+      ${'the note has no position'}    | ${undefined} | ${note}
+      ${'the Diffs store has no data'} | ${[]}        | ${{ ...note, position: singleLineNotePosition }}
+    `(
+      'returns `null` when $scenario and no diff file is provided as a prop',
+      ({ noteDef, diffs }) => {
+        const storeUpdater = (rawStore) => {
+          const updatedStore = { ...rawStore };
+
+          if (diffs) {
+            updatedStore.modules.diffs.state.diffFiles = diffs;
+          }
+
+          return updatedStore;
+        };
+
+        createWrapper({ note: noteDef, discussionFile: null }, storeUpdater);
+
+        expect(wrapper.vm.diffFile).toBe(null);
+      },
+    );
+
+    it("returns the correct diff file from the Diffs store if it's available", () => {
+      createWrapper(
+        {
+          note: { ...note, position: singleLineNotePosition },
+        },
+        (rawStore) => {
+          const updatedStore = { ...rawStore };
+          updatedStore.modules.diffs.state.diffFiles = [
+            { file_hash: 'abc', testId: 'diffFileTest' },
+          ];
+          return updatedStore;
+        },
+      );
+
+      expect(wrapper.vm.diffFile.testId).toBe('diffFileTest');
+    });
+
+    it('returns the provided diff file if the more robust getters fail', () => {
+      createWrapper(
+        {
+          note: { ...note, position: singleLineNotePosition },
+          discussionFile: { testId: 'diffFileTest' },
+        },
+        (rawStore) => {
+          const updatedStore = { ...rawStore };
+          updatedStore.modules.diffs.state.diffFiles = [];
+          return updatedStore;
+        },
+      );
+
+      expect(wrapper.vm.diffFile.testId).toBe('diffFileTest');
     });
   });
 });

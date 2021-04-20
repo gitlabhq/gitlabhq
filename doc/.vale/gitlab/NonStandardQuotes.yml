@@ -1,0 +1,14 @@
+---
+# Warning: gitlab.NonStandardQuotes
+#
+# Use only standard single and double quotes, not left or right quotes.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: existence
+message: 'Use standard single quotes or double quotes only. Do not use left or right quotes.'
+level: warning
+ignorecase: true
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
+scope: raw
+raw:
+  - '[‘’“”]'

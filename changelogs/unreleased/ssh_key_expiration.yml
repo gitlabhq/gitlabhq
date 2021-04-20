@@ -1,0 +1,5 @@
+---
+title: Send email notification on SSH key expiration
+merge_request: 56888
+author:
+type: added

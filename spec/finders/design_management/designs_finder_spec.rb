@@ -11,6 +11,7 @@ RSpec.describe DesignManagement::DesignsFinder do
   let_it_be(:design1) { create(:design, :with_file, issue: issue, versions_count: 1, relative_position: 3) }
   let_it_be(:design2) { create(:design, :with_file, issue: issue, versions_count: 1, relative_position: 2) }
   let_it_be(:design3) { create(:design, :with_file, issue: issue, versions_count: 1, relative_position: 1) }
+
   let(:params) { {} }
 
   subject(:designs) { described_class.new(issue, user, params).execute }

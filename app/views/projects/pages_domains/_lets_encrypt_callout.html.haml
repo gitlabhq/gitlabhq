@@ -9,7 +9,7 @@
                 = sprite_icon('warning-solid', css_class: ' mr-2 gl-text-orange-600')
                 = _("Something went wrong while obtaining the Let's Encrypt certificate.")
               .row.mx-0.mt-3
-                = link_to s_('GitLabPagesDomains|Retry'), retry_auto_ssl_project_pages_domain_path(@project, domain_presenter), class: "btn btn-sm btn-grouped btn-warning", method: :post
+                = link_to s_('GitLabPagesDomains|Retry'), retry_auto_ssl_project_pages_domain_path(@project, domain_presenter), class: "gl-button btn btn-default btn-sm btn-grouped", method: :post
     - elsif !domain_presenter.certificate_gitlab_provided?
       .form-group.border-section.js-shown-if-auto-ssl{ class: ("d-none" unless auto_ssl_available_and_enabled) }
         .row

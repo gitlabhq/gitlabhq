@@ -33,7 +33,11 @@ module Ci
     end
 
     def runner_variables
-      variables.to_runner_variables
+      if Feature.enabled?(:variable_inside_variable, project)
+        variables.sort_and_expand_all(project, keep_undefined: true).to_runner_variables
+      else
+        variables.to_runner_variables
+      end
     end
 
     def refspecs
@@ -50,6 +54,18 @@ module Ci
 
       specs
     end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def all_dependencies
+      dependencies = super
+
+      if Feature.enabled?(:preload_associations_jobs_request_api_endpoint, project, default_enabled: :yaml)
+        ActiveRecord::Associations::Preloader.new.preload(dependencies, :job_artifacts_archive)
+      end
+
+      dependencies
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

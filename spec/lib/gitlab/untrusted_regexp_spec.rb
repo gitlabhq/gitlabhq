@@ -136,4 +136,22 @@ RSpec.describe Gitlab::UntrustedRegexp do
       end
     end
   end
+
+  describe '#match' do
+    context 'when there are matches' do
+      it 'returns a match object' do
+        result = described_class.new('(?P<number>\d+)').match('hello 10')
+
+        expect(result[:number]).to eq('10')
+      end
+    end
+
+    context 'when there are no matches' do
+      it 'returns nil' do
+        result = described_class.new('(?P<number>\d+)').match('hello')
+
+        expect(result).to be_nil
+      end
+    end
+  end
 end

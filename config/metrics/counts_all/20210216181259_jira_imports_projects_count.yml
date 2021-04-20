@@ -2,8 +2,8 @@
 key_path: counts.jira_imports_projects_count
 description: Count of Projects that imported Issues from Jira
 product_section: dev
-product_stage: plan
-product_group: group::project management
+product_stage: create
+product_group: group::ecosystem
 product_category: jira_importer
 value_type: number
 status: data_available
@@ -16,4 +16,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

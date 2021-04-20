@@ -180,16 +180,12 @@ export default {
         <div v-if="isGroupPendingRemoval">
           <gl-badge variant="warning">{{ __('pending removal') }}</gl-badge>
         </div>
-        <div
-          class="metadata align-items-md-center d-flex flex-grow-1 flex-shrink-0 flex-wrap justify-content-md-between"
-        >
-          <item-actions
-            v-if="isGroup"
-            :group="group"
-            :parent-group="parentGroup"
-            :action="action"
+        <div class="metadata d-flex flex-grow-1 flex-shrink-0 flex-wrap justify-content-md-between">
+          <item-actions v-if="isGroup" :group="group" :parent-group="parentGroup" />
+          <item-stats
+            :item="group"
+            class="group-stats gl-mt-2 d-none d-md-flex gl-align-items-center"
           />
-          <item-stats :item="group" class="group-stats gl-mt-2 d-none d-md-flex" />
         </div>
       </div>
     </div>

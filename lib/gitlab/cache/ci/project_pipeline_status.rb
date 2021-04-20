@@ -69,7 +69,9 @@ module Gitlab
         def load_from_project
           return unless commit
 
-          self.sha, self.status, self.ref = commit.sha, commit.status, project.default_branch
+          self.sha = commit.sha
+          self.status = commit.status
+          self.ref = project.default_branch
         end
 
         # We only cache the status for the HEAD commit of a project

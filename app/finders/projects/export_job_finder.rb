@@ -12,9 +12,7 @@ module Projects
 
     def execute
       export_jobs = project.export_jobs
-      export_jobs = by_status(export_jobs)
-
-      export_jobs
+      by_status(export_jobs)
     end
 
     private

@@ -101,7 +101,7 @@ RSpec.describe BackgroundMigrationWorker, :clean_gitlab_redis_shared_state do
 
     it 'sets the class that will be executed as the caller_id' do
       expect(Gitlab::BackgroundMigration).to receive(:perform) do
-        expect(Labkit::Context.current.to_h).to include('meta.caller_id' => 'Foo')
+        expect(Gitlab::ApplicationContext.current).to include('meta.caller_id' => 'Foo')
       end
 
       worker.perform('Foo', [10, 20])

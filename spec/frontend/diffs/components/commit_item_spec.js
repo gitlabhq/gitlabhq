@@ -13,8 +13,6 @@ const TEST_AUTHOR_EMAIL = 'test+test@gitlab.com';
 const TEST_AUTHOR_GRAVATAR = `${TEST_HOST}/avatar/test?s=40`;
 const TEST_SIGNATURE_HTML = '<a>Legit commit</a>';
 const TEST_PIPELINE_STATUS_PATH = `${TEST_HOST}/pipeline/status`;
-const NEXT_COMMIT_URL = `${TEST_HOST}/?commit_id=next`;
-const PREV_COMMIT_URL = `${TEST_HOST}/?commit_id=prev`;
 
 describe('diffs/components/commit_item', () => {
   let wrapper;
@@ -30,12 +28,6 @@ describe('diffs/components/commit_item', () => {
   const getCommitterElement = () => wrapper.find('.committer');
   const getCommitActionsElement = () => wrapper.find('.commit-actions');
   const getCommitPipelineStatus = () => wrapper.find(CommitPipelineStatus);
-
-  const getCommitNavButtonsElement = () => wrapper.find('.commit-nav-buttons');
-  const getNextCommitNavElement = () =>
-    getCommitNavButtonsElement().find('.btn-group > *:last-child');
-  const getPrevCommitNavElement = () =>
-    getCommitNavButtonsElement().find('.btn-group > *:first-child');
 
   const mountComponent = (propsData) => {
     wrapper = mount(Component, {
@@ -178,128 +170,6 @@ describe('diffs/components/commit_item', () => {
 
     it('renders pipeline status', () => {
       expect(getCommitPipelineStatus().exists()).toBe(true);
-    });
-  });
-
-  describe('without neighbor commits', () => {
-    beforeEach(() => {
-      mountComponent({ commit: { ...commit, prev_commit_id: null, next_commit_id: null } });
-    });
-
-    it('does not render any navigation buttons', () => {
-      expect(getCommitNavButtonsElement().exists()).toEqual(false);
-    });
-  });
-
-  describe('with neighbor commits', () => {
-    let mrCommit;
-
-    beforeEach(() => {
-      mrCommit = {
-        ...commit,
-        next_commit_id: 'next',
-        prev_commit_id: 'prev',
-      };
-
-      mountComponent({ commit: mrCommit });
-    });
-
-    it('renders the commit navigation buttons', () => {
-      expect(getCommitNavButtonsElement().exists()).toEqual(true);
-
-      mountComponent({
-        commit: { ...mrCommit, next_commit_id: null },
-      });
-      expect(getCommitNavButtonsElement().exists()).toEqual(true);
-
-      mountComponent({
-        commit: { ...mrCommit, prev_commit_id: null },
-      });
-      expect(getCommitNavButtonsElement().exists()).toEqual(true);
-    });
-
-    describe('prev commit', () => {
-      const { location } = window;
-
-      beforeAll(() => {
-        delete window.location;
-        window.location = { href: `${TEST_HOST}?commit_id=${mrCommit.id}` };
-      });
-
-      beforeEach(() => {
-        jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
-      });
-
-      afterAll(() => {
-        window.location = location;
-      });
-
-      it('uses the correct href', () => {
-        const link = getPrevCommitNavElement();
-
-        expect(link.element.getAttribute('href')).toEqual(PREV_COMMIT_URL);
-      });
-
-      it('triggers the correct Vuex action on click', () => {
-        const link = getPrevCommitNavElement();
-
-        link.trigger('click');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({
-            direction: 'previous',
-          });
-        });
-      });
-
-      it('renders a disabled button when there is no prev commit', () => {
-        mountComponent({ commit: { ...mrCommit, prev_commit_id: null } });
-
-        const button = getPrevCommitNavElement();
-
-        expect(button.element.tagName).toEqual('BUTTON');
-        expect(button.element.hasAttribute('disabled')).toEqual(true);
-      });
-    });
-
-    describe('next commit', () => {
-      const { location } = window;
-
-      beforeAll(() => {
-        delete window.location;
-        window.location = { href: `${TEST_HOST}?commit_id=${mrCommit.id}` };
-      });
-
-      beforeEach(() => {
-        jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
-      });
-
-      afterAll(() => {
-        window.location = location;
-      });
-
-      it('uses the correct href', () => {
-        const link = getNextCommitNavElement();
-
-        expect(link.element.getAttribute('href')).toEqual(NEXT_COMMIT_URL);
-      });
-
-      it('triggers the correct Vuex action on click', () => {
-        const link = getNextCommitNavElement();
-
-        link.trigger('click');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({ direction: 'next' });
-        });
-      });
-
-      it('renders a disabled button when there is no next commit', () => {
-        mountComponent({ commit: { ...mrCommit, next_commit_id: null } });
-
-        const button = getNextCommitNavElement();
-
-        expect(button.element.tagName).toEqual('BUTTON');
-        expect(button.element.hasAttribute('disabled')).toEqual(true);
-      });
     });
   });
 });

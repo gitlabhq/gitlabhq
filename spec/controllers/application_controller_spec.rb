@@ -56,8 +56,6 @@ RSpec.describe ApplicationController do
     end
   end
 
-  it_behaves_like 'a Trackable Controller'
-
   describe '#add_gon_variables' do
     before do
       Gon.clear
@@ -900,7 +898,7 @@ RSpec.describe ApplicationController do
       feature_category :issue_tracking
 
       def index
-        Labkit::Context.with_context do |context|
+        Gitlab::ApplicationContext.with_raw_context do |context|
           render json: context.to_h
         end
       end

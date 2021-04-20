@@ -12,10 +12,10 @@
       = _('Add a GPG key')
     %p.profile-settings-content
       - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/repository/gpg_signed_commits/index.md') }
-      = _('Before you can add a GPG key you need to %{help_link_start}Generate it.%{help_link_end}'.html_safe) % {help_link_start: help_link_start, help_link_end:'</a>'.html_safe }
+      = _('Before you can add a GPG key you need to %{help_link_start}Generate it.%{help_link_end}'.html_safe) % {help_link_start: help_link_start, help_link_end: '</a>'.html_safe }
     = render 'form'
     %hr
     %h5
-      = _('Your GPG keys (%{count})') % { count:@gpg_keys.count}
+      = _('Your GPG keys (%{count})') % { count: @gpg_keys.count }
     .gl-mb-3
       = render 'key_table'

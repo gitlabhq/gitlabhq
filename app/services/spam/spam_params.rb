@@ -23,10 +23,10 @@ module Spam
     end
 
     def ==(other)
-      other.class == self.class &&
-        other.api == self.api &&
-        other.captcha_response == self.captcha_response &&
-        other.spam_log_id == self.spam_log_id
+      other.class <= self.class &&
+        other.api == api &&
+        other.captcha_response == captcha_response &&
+        other.spam_log_id == spam_log_id
     end
   end
 end

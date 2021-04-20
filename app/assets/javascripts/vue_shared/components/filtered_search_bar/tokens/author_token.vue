@@ -45,6 +45,9 @@ export default {
     activeAuthor() {
       return this.authors.find((author) => author.username.toLowerCase() === this.currentValue);
     },
+    activeAuthorAvatar() {
+      return this.avatarUrl(this.activeAuthor);
+    },
   },
   watch: {
     active: {
@@ -74,6 +77,9 @@ export default {
           this.loading = false;
         });
     },
+    avatarUrl(author) {
+      return author.avatarUrl || author.avatar_url;
+    },
     searchAuthors: debounce(function debouncedSearch({ data }) {
       this.fetchAuthorBySearchTerm(data);
     }, DEBOUNCE_DELAY),
@@ -92,7 +98,7 @@ export default {
       <gl-avatar
         v-if="activeAuthor"
         :size="16"
-        :src="activeAuthor.avatar_url"
+        :src="activeAuthorAvatar"
         shape="circle"
         class="gl-mr-2"
       />
@@ -115,7 +121,7 @@ export default {
           :value="author.username"
         >
           <div class="d-flex">
-            <gl-avatar :size="32" :src="author.avatar_url" />
+            <gl-avatar :size="32" :src="avatarUrl(author)" />
             <div>
               <div>{{ author.name }}</div>
               <div>@{{ author.username }}</div>

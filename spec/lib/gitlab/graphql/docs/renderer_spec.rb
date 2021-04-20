@@ -1,32 +1,35 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Graphql::Docs::Renderer do
   describe '#contents' do
-    # Returns a Schema that uses the given `type`
-    def mock_schema(type, field_description)
-      query_type = Class.new(Types::BaseObject) do
-        graphql_name 'Query'
+    let(:template) { Rails.root.join('lib/gitlab/graphql/docs/templates/default.md.haml') }
 
-        field :foo, type, null: true do
-          description field_description
+    let(:query_type) do
+      Class.new(Types::BaseObject) { graphql_name 'Query' }.tap do |t|
+        # this keeps type and field_description in scope.
+        t.field :foo, type, null: true, description: field_description do
           argument :id, GraphQL::ID_TYPE, required: false, description: 'ID of the object.'
         end
       end
-
-      GraphQL::Schema.define(
-        query: query_type,
-        resolve_type: ->(obj, ctx) { raise 'Not a real schema' }
-      )
     end
 
-    let_it_be(:template) { Rails.root.join('lib/gitlab/graphql/docs/templates/default.md.haml') }
+    let(:mock_schema) do
+      Class.new(GraphQL::Schema) do
+        def resolve_type(obj, ctx)
+          raise 'Not a real schema'
+        end
+      end
+    end
+
     let(:field_description) { 'List of objects.' }
 
     subject(:contents) do
+      mock_schema.query(query_type)
+
       described_class.new(
-        mock_schema(type, field_description).graphql_definition,
+        mock_schema,
         output_dir: nil,
         template: template
       ).contents
@@ -136,6 +139,22 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
                 null: false,
                 deprecated: { reason: 'This is deprecated', milestone: '1.10' },
                 description: 'A description.'
+          field :foo_with_args,
+                type: GraphQL::STRING_TYPE,
+                null: false,
+                deprecated: { reason: 'Do not use', milestone: '1.10' },
+                description: 'A description.' do
+                  argument :fooity, ::GraphQL::INT_TYPE, required: false, description: 'X'
+                end
+          field :bar,
+                type: GraphQL::STRING_TYPE,
+                null: false,
+                description: 'A description.',
+                deprecated: {
+                  reason: :renamed,
+                  milestone: '1.10',
+                  replacement: 'Query.boom'
+                }
         end
       end
 
@@ -145,7 +164,40 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
           | Field | Type | Description |
           | ----- | ---- | ----------- |
-          | `foo` **{warning-solid}** | [`String!`](#string) | **Deprecated:** This is deprecated. Deprecated in 1.10. |
+          | `bar` **{warning-solid}** | [`String!`](#string) | **Deprecated** in 1.10. This was renamed. Use: `Query.boom`. |
+          | `foo` **{warning-solid}** | [`String!`](#string) | **Deprecated** in 1.10. This is deprecated. |
+          | `fooWithArgs` **{warning-solid}** | [`String!`](#string) | **Deprecated** in 1.10. Do not use. |
+        DOC
+
+        is_expected.to include(expectation)
+      end
+    end
+
+    context 'when a Query.field is deprecated' do
+      let(:type) { ::GraphQL::INT_TYPE }
+
+      before do
+        query_type.field(
+          name: :bar,
+          type: type,
+          null: true,
+          description: 'A bar',
+          deprecated: { reason: :renamed, milestone: '10.11', replacement: 'Query.foo' }
+        )
+      end
+
+      it 'includes the deprecation' do
+        expectation = <<~DOC
+          ### `bar`
+
+          A bar.
+
+          WARNING:
+          **Deprecated** in 10.11.
+          This was renamed.
+          Use: `Query.foo`.
+
+          Returns [`Int`](#int).
         DOC
 
         is_expected.to include(expectation)

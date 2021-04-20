@@ -3,6 +3,7 @@ import { GlIcon } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import Mousetrap from 'mousetrap';
 import VirtualList from 'vue-virtual-scroll-list';
+import { keysFor, MR_GO_TO_FILE } from '~/behaviors/shortcuts/keybindings';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import Item from './item.vue';
 
@@ -128,7 +129,7 @@ export default {
       this.focusedIndex = 0;
     }
 
-    Mousetrap.bind(['t', 'mod+p'], (e) => {
+    Mousetrap.bind(keysFor(MR_GO_TO_FILE), (e) => {
       if (e.preventDefault) {
         e.preventDefault();
       }

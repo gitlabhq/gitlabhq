@@ -2,30 +2,28 @@
 
 require 'spec_helper'
 
-RSpec.describe Milestone, 'Milestoneish' do
-  let(:author) { create(:user) }
-  let(:assignee) { create(:user) }
-  let(:non_member) { create(:user) }
-  let(:member) { create(:user) }
-  let(:guest) { create(:user) }
-  let(:admin) { create(:admin) }
-  let(:project) { create(:project, :public) }
-  let(:milestone) { create(:milestone, project: project) }
-  let(:label1) { create(:label, project: project) }
-  let(:label2) { create(:label, project: project) }
-  let!(:issue) { create(:issue, project: project, milestone: milestone, assignees: [member], labels: [label1]) }
-  let!(:security_issue_1) { create(:issue, :confidential, project: project, author: author, milestone: milestone, labels: [label2]) }
-  let!(:security_issue_2) { create(:issue, :confidential, project: project, assignees: [assignee], milestone: milestone) }
-  let!(:closed_issue_1) { create(:issue, :closed, project: project, milestone: milestone) }
-  let!(:closed_issue_2) { create(:issue, :closed, project: project, milestone: milestone) }
-  let!(:closed_security_issue_1) { create(:issue, :confidential, :closed, project: project, author: author, milestone: milestone) }
-  let!(:closed_security_issue_2) { create(:issue, :confidential, :closed, project: project, assignees: [assignee], milestone: milestone) }
-  let!(:closed_security_issue_3) { create(:issue, :confidential, :closed, project: project, author: author, milestone: milestone) }
-  let!(:closed_security_issue_4) { create(:issue, :confidential, :closed, project: project, assignees: [assignee], milestone: milestone) }
-  let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
-  let(:label_1) { create(:label, title: 'label_1', project: project, priority: 1) }
-  let(:label_2) { create(:label, title: 'label_2', project: project, priority: 2) }
-  let(:label_3) { create(:label, title: 'label_3', project: project) }
+RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
+  let_it_be(:author) { create(:user) }
+  let_it_be(:assignee) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
+  let_it_be(:member) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:project, reload: true) { create_default(:project, :public, :empty_repo).freeze }
+  let_it_be(:milestone, refind: true) { create_default(:milestone, project: project) }
+  let_it_be(:label1) { create(:label) }
+  let_it_be(:label2) { create(:label) }
+  let_it_be(:issue, reload: true) { create(:issue, milestone: milestone, assignees: [member], labels: [label1]) }
+  let_it_be(:security_issue_1, reload: true) { create(:issue, :confidential, author: author, milestone: milestone, labels: [label2]) }
+  let_it_be(:security_issue_2, reload: true) { create(:issue, :confidential, assignees: [assignee], milestone: milestone) }
+  let_it_be(:closed_issue_1, reload: true) { create(:issue, :closed, milestone: milestone) }
+  let_it_be(:closed_issue_2, reload: true) { create(:issue, :closed, milestone: milestone) }
+  let_it_be(:closed_security_issue_1, reload: true) { create(:issue, :confidential, :closed, author: author, milestone: milestone) }
+  let_it_be(:closed_security_issue_2, reload: true) { create(:issue, :confidential, :closed, assignees: [assignee], milestone: milestone) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
+  let_it_be(:label_1) { create(:label, title: 'label_1', priority: 1) }
+  let_it_be(:label_2) { create(:label, title: 'label_2', priority: 2) }
+  let_it_be(:label_3) { create(:label, title: 'label_3') }
 
   before do
     project.add_developer(member)
@@ -63,7 +61,7 @@ RSpec.describe Milestone, 'Milestoneish' do
     end
   end
 
-  context 'attributes visibility' do
+  context 'with attributes visibility' do
     using RSpec::Parameterized::TableSyntax
 
     let(:users) do
@@ -167,8 +165,6 @@ RSpec.describe Milestone, 'Milestoneish' do
   end
 
   describe '#merge_requests_visible_to_user' do
-    let(:merge_request) { create(:merge_request, source_project: project, milestone: milestone) }
-
     context 'when project is private' do
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
@@ -211,10 +207,11 @@ RSpec.describe Milestone, 'Milestoneish' do
     end
 
     context 'when milestone is at parent level group' do
-      let(:parent_group) { create(:group) }
-      let(:group) { create(:group, parent: parent_group) }
-      let(:project) { create(:project, namespace: group) }
-      let(:milestone) { create(:milestone, group: parent_group) }
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: parent_group) }
+      let_it_be(:project) { create(:project, :empty_repo, namespace: group) }
+      let_it_be(:milestone) { create(:milestone, group: parent_group) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project, milestone: milestone) }
 
       it 'does not return any merge request for a non member' do
         merge_requests = milestone.merge_requests_visible_to_user(non_member)
@@ -243,7 +240,7 @@ RSpec.describe Milestone, 'Milestoneish' do
   end
 
   describe '#percent_complete', :use_clean_rails_memory_store_caching do
-    context 'division by zero' do
+    context 'with division by zero' do
       let(:new_milestone) { build_stubbed(:milestone) }
 
       it { expect(new_milestone.percent_complete).to eq(0) }
@@ -252,13 +249,19 @@ RSpec.describe Milestone, 'Milestoneish' do
 
   describe '#closed_issues_count' do
     it 'counts all closed issues including confidential' do
-      expect(milestone.closed_issues_count).to eq 6
+      expect(milestone.closed_issues_count).to eq 4
     end
   end
 
   describe '#total_issues_count' do
     it 'counts all issues including confidential' do
-      expect(milestone.total_issues_count).to eq 9
+      expect(milestone.total_issues_count).to eq 7
+    end
+  end
+
+  describe '#total_merge_requests_count' do
+    it 'counts merge requests' do
+      expect(milestone.total_merge_requests_count).to eq 1
     end
   end
 

@@ -7,7 +7,7 @@
 
 module Gitlab
   class ConanToken
-    HMAC_KEY = 'gitlab-conan-packages'.freeze
+    HMAC_KEY = 'gitlab-conan-packages'
 
     attr_reader :access_token_id, :user_id
 

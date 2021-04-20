@@ -8,8 +8,8 @@ module Gitlab
         # Entry that represents a cache configuration
         #
         class Cache < ::Gitlab::Config::Entry::Simplifiable
-          strategy :Caches, if: -> (config) { Feature.enabled?(:multiple_cache_per_job) }
-          strategy :Cache, if: -> (config) { Feature.disabled?(:multiple_cache_per_job) }
+          strategy :Caches, if: -> (config) { Feature.enabled?(:multiple_cache_per_job, default_enabled: :yaml) }
+          strategy :Cache, if: -> (config) { Feature.disabled?(:multiple_cache_per_job, default_enabled: :yaml) }
 
           class Caches < ::Gitlab::Config::Entry::ComposableArray
             include ::Gitlab::Config::Entry::Validatable
@@ -17,8 +17,6 @@ module Gitlab
             MULTIPLE_CACHE_LIMIT = 4
 
             validations do
-              validates :config, presence: true
-
               validate do
                 unless config.is_a?(Hash) || config.is_a?(Array)
                   errors.add(:config, 'can only be a Hash or an Array')

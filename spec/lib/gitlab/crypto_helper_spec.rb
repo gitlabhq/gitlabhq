@@ -20,22 +20,24 @@ RSpec.describe Gitlab::CryptoHelper do
       expect(encrypted).not_to include "\n"
     end
 
-    it 'does not save hashed token with iv value in database' do
-      expect { described_class.aes256_gcm_encrypt('some-value') }.not_to change { TokenWithIv.count }
-    end
-
     it 'encrypts using static iv' do
       expect(Encryptor).to receive(:encrypt).with(described_class::AES256_GCM_OPTIONS.merge(value: 'some-value', iv: described_class::AES256_GCM_IV_STATIC)).and_return('hashed_value')
 
       described_class.aes256_gcm_encrypt('some-value')
     end
+
+    context 'with provided iv' do
+      let(:iv) { create_nonce }
+
+      it 'encrypts using provided iv' do
+        expect(Encryptor).to receive(:encrypt).with(described_class::AES256_GCM_OPTIONS.merge(value: 'some-value', iv: iv)).and_return('hashed_value')
+
+        described_class.aes256_gcm_encrypt('some-value', nonce: iv)
+      end
+    end
   end
 
   describe '.aes256_gcm_decrypt' do
-    before do
-      stub_feature_flags(dynamic_nonce_creation: false)
-    end
-
     context 'when token was encrypted using static nonce' do
       let(:encrypted) { described_class.aes256_gcm_encrypt('some-value', nonce: described_class::AES256_GCM_IV_STATIC) }
 
@@ -50,54 +52,22 @@ RSpec.describe Gitlab::CryptoHelper do
 
         expect(decrypted).to eq 'some-value'
       end
-
-      it 'does not save hashed token with iv value in database' do
-        expect { described_class.aes256_gcm_decrypt(encrypted) }.not_to change { TokenWithIv.count }
-      end
-
-      context 'with feature flag switched on' do
-        before do
-          stub_feature_flags(dynamic_nonce_creation: true)
-        end
-
-        it 'correctly decrypts encrypted string' do
-          decrypted = described_class.aes256_gcm_decrypt(encrypted)
-
-          expect(decrypted).to eq 'some-value'
-        end
-      end
     end
 
     context 'when token was encrypted using random nonce' do
       let(:value) { 'random-value' }
-
-      # for compatibility with tokens encrypted using dynamic nonce
-      let!(:encrypted) do
-        iv = create_nonce
-        encrypted_token = described_class.create_encrypted_token(value, iv)
-        TokenWithIv.create!(hashed_token: Digest::SHA256.digest(encrypted_token), hashed_plaintext_token: Digest::SHA256.digest(encrypted_token), iv: iv)
-        encrypted_token
-      end
-
-      before do
-        stub_feature_flags(dynamic_nonce_creation: true)
-      end
+      let(:iv) { create_nonce }
+      let(:encrypted) { described_class.aes256_gcm_encrypt(value, nonce: iv) }
 
       it 'correctly decrypts encrypted string' do
-        decrypted = described_class.aes256_gcm_decrypt(encrypted)
+        decrypted = described_class.aes256_gcm_decrypt(encrypted, nonce: iv)
 
         expect(decrypted).to eq value
-      end
-
-      it 'does not save hashed token with iv value in database' do
-        expect { described_class.aes256_gcm_decrypt(encrypted) }.not_to change { TokenWithIv.count }
       end
     end
   end
 
   def create_nonce
-    cipher = OpenSSL::Cipher.new('aes-256-gcm')
-    cipher.encrypt # Required before '#random_iv' can be called
-    cipher.random_iv # Ensures that the IV is the correct length respective to the algorithm used.
+    ::Digest::SHA256.hexdigest('my-value').bytes.take(TokenAuthenticatableStrategies::EncryptionHelper::NONCE_SIZE).pack('c*')
   end
 end

@@ -11,7 +11,7 @@ module Gitlab
       DirectPathAccessError = Class.new(StandardError)
       InvalidConfigurationError = Class.new(StandardError)
 
-      INVALID_STORAGE_MESSAGE = <<~MSG.freeze
+      INVALID_STORAGE_MESSAGE = <<~MSG
         Storage is invalid because it has no `path` key.
 
         For source installations, update your config/gitlab.yml Refer to gitlab.yml.example for an updated example.

@@ -13,6 +13,11 @@ export const SEVERITY_LEVELS = {
 export const PAGE_CONFIG = {
   OPERATIONS: {
     TITLE: 'OPERATIONS',
+    STATUSES: {
+      TRIGGERED: s__('AlertManagement|Triggered'),
+      ACKNOWLEDGED: s__('AlertManagement|Acknowledged'),
+      RESOLVED: s__('AlertManagement|Resolved'),
+    },
     // Tracks snowplow event when user views alert details
     TRACK_ALERTS_DETAILS_VIEWS_OPTIONS: {
       category: 'Alert Management',
@@ -27,5 +32,11 @@ export const PAGE_CONFIG = {
   },
   THREAT_MONITORING: {
     TITLE: 'THREAT_MONITORING',
+    STATUSES: {
+      TRIGGERED: s__('ThreatMonitoring|Unreviewed'),
+      ACKNOWLEDGED: s__('ThreatMonitoring|In review'),
+      RESOLVED: s__('ThreatMonitoring|Resolved'),
+      IGNORED: s__('ThreatMonitoring|Dismissed'),
+    },
   },
 };

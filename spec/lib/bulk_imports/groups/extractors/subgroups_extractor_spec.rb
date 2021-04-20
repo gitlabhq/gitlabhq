@@ -8,8 +8,9 @@ RSpec.describe BulkImports::Groups::Extractors::SubgroupsExtractor do
       bulk_import = create(:bulk_import)
       create(:bulk_import_configuration, bulk_import: bulk_import)
       entity = create(:bulk_import_entity, bulk_import: bulk_import)
+      tracker = create(:bulk_import_tracker, entity: entity)
       response = [{ 'test' => 'group' }]
-      context = BulkImports::Pipeline::Context.new(entity)
+      context = BulkImports::Pipeline::Context.new(tracker)
 
       allow_next_instance_of(BulkImports::Clients::Http) do |client|
         allow(client).to receive(:each_page).and_return(response)

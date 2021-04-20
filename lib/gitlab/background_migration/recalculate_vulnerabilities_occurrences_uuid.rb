@@ -32,7 +32,7 @@ class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid
     }.freeze
 
     NAMESPACE_REGEX = /(\h{8})-(\h{4})-(\h{4})-(\h{4})-(\h{4})(\h{8})/.freeze
-    PACK_PATTERN = "NnnnnN".freeze
+    PACK_PATTERN = "NnnnnN"
 
     def self.call(value)
       Digest::UUID.uuid_v5(namespace_id, value)

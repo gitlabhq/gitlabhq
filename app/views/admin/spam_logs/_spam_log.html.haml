@@ -6,9 +6,9 @@
     - if user
       = link_to user.name, [:admin, user]
       .light.small
-        Joined #{time_ago_with_tooltip(user.created_at)}
+        = _('Joined %{user_created_time}').html_safe % { user_created_time: time_ago_with_tooltip(user.created_at) }
     - else
-      (removed)
+      = _('(removed)')
   %td
     = spam_log.source_ip
   %td
@@ -23,17 +23,17 @@
     = truncate(spam_log.description, length: 100)
   %td
     - if user
-      = link_to 'Remove user', admin_spam_log_path(spam_log, remove_user: true),
-        data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "gl-button btn btn-sm btn-danger"
+      = link_to _('Remove user'), admin_spam_log_path(spam_log, remove_user: true),
+        data: { confirm: _("USER %{user_name} WILL BE REMOVED! Are you sure?") % { user_name: user.name } }, method: :delete, class: "gl-button btn btn-sm btn-danger"
   %td
     - if spam_log.submitted_as_ham?
-      .btn.btn-sm.disabled
-        Submitted as ham
+      .gl-button.btn.btn-default.btn-sm.disabled.gl-mb-3
+        = _("Submitted as ham")
     - else
-      = link_to 'Submit as ham', mark_as_ham_admin_spam_log_path(spam_log), method: :post, class: 'gl-button btn btn-sm btn-warning'
+      = link_to _('Submit as ham'), mark_as_ham_admin_spam_log_path(spam_log), method: :post, class: 'gl-button btn btn-default btn-sm gl-mb-3'
     - if user && !user.blocked?
-      = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "gl-button btn btn-sm"
+      = link_to _('Block user'), block_admin_user_path(user), data: {confirm: _('USER WILL BE BLOCKED! Are you sure?')}, method: :put, class: "gl-button btn btn-default btn-sm gl-mb-3"
     - else
-      .btn.btn-sm.disabled
+      .gl-button.btn.btn-default.btn-sm.disabled.gl-mb-3
         Already blocked
-    = link_to 'Remove log', [:admin, spam_log], remote: true, method: :delete, class: "gl-button btn btn-sm btn-close js-remove-tr"
+    = link_to _('Remove log'), [:admin, spam_log], remote: true, method: :delete, class: "gl-button btn btn-default btn-sm btn-close js-remove-tr"

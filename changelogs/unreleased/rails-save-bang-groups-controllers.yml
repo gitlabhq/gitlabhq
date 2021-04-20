@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang rubocop offenses in spec/controllers/groups*
+merge_request: 57879
+author: Abdul Wadood @abdulwd
+type: fixed

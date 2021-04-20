@@ -1,0 +1,8 @@
+---
+name: redis_hll_tracking
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56970
+rollout_issue_url:
+milestone: '13.11'
+type: ops
+group: group::product intelligence
+default_enabled: true

@@ -15,7 +15,7 @@ This page is a development guide for application secrets.
 |`secret_key_base`                 | The base key to be used for generating a various secrets          |
 | `otp_key_base`                   | The base key for One Time Passwords, described in [User management](../raketasks/user_management.md#rotate-two-factor-authentication-encryption-key)              |
 |`db_key_base`                     | The base key to encrypt the data for `attr_encrypted` columns     |
-|`openid_connect_signing_key`      | The singing key for OpenID Connect                                |
+|`openid_connect_signing_key`      | The signing key for OpenID Connect                                |
 | `encrypted_settings_key_base`    | The base key to encrypt settings files with                       |
 
 ## Where the secrets are stored

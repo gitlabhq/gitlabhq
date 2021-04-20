@@ -36,9 +36,7 @@ class PrometheusMetricsFinder
     metrics = by_common(metrics)
     metrics = by_ordered(metrics)
     metrics = by_identifier(metrics)
-    metrics = by_id(metrics)
-
-    metrics
+    by_id(metrics)
   end
 
   private

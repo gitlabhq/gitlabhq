@@ -1,0 +1,8 @@
+---
+name: jobs_table_vue
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57155
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327500
+milestone: '13.11'
+type: development
+group: group::continuous integration
+default_enabled: false

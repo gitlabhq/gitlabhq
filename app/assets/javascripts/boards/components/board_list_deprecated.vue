@@ -134,9 +134,10 @@ export default {
               e.target.closest('.js-board-list') || e.target.querySelector('.js-board-list');
             const toBoardType = containerEl.dataset.boardType;
             const cloneActions = {
-              label: ['milestone', 'assignee'],
-              assignee: ['milestone', 'label'],
-              milestone: ['label', 'assignee'],
+              label: ['milestone', 'assignee', 'iteration'],
+              assignee: ['milestone', 'label', 'iteration'],
+              milestone: ['label', 'assignee', 'iteration'],
+              iteration: ['label', 'assignee', 'milestone'],
             };
 
             if (toBoardType) {

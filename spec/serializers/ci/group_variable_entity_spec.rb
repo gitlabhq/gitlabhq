@@ -10,7 +10,7 @@ RSpec.describe Ci::GroupVariableEntity do
     subject { entity.as_json }
 
     it 'contains required fields' do
-      expect(subject).to include(:id, :key, :value, :protected, :variable_type)
+      expect(subject).to include(:id, :key, :value, :protected, :variable_type, :environment_scope)
     end
   end
 end

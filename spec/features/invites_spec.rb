@@ -50,21 +50,23 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     end
 
     it 'renders sign in page with sign in notice' do
-      expect(current_path).to eq(new_user_session_path)
-      expect(page).to have_content('To accept this invitation, sign in')
+      expect(current_path).to eq(new_user_registration_path)
+      expect(page).to have_content('To accept this invitation, create an account or sign in')
     end
 
     it 'pre-fills the "Username or email" field on the sign in box with the invite_email from the invite' do
+      click_link 'Sign in'
+
       expect(find_field('Username or email').value).to eq(group_invite.invite_email)
     end
 
     it 'pre-fills the Email field on the sign up box  with the invite_email from the invite' do
-      click_link 'Register now'
-
       expect(find_field('Email').value).to eq(group_invite.invite_email)
     end
 
     it 'sign in, grants access and redirects to group page' do
+      click_link 'Sign in'
+
       fill_in_sign_in_form(user)
 
       expect(current_path).to eq(group_path(group))
@@ -85,20 +87,19 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     end
   end
 
-  context 'when inviting a user' do
+  context 'when inviting an unregistered user' do
     let(:new_user) { build_stubbed(:user) }
     let(:invite_email) { new_user.email }
     let(:group_invite) { create(:group_member, :invited, group: group, invite_email: invite_email, created_by: owner) }
     let!(:project_invite) { create(:project_member, :invited, project: project, invite_email: invite_email) }
 
-    context 'when user has not signed in yet' do
+    context 'when registering using invitation email' do
       before do
         stub_application_setting(send_user_confirmation_email: send_email_confirmation)
         visit invite_path(group_invite.raw_invite_token)
-        click_link 'Register now'
       end
 
-      context 'with admin appoval required enabled' do
+      context 'with admin approval required enabled' do
         before do
           stub_application_setting(require_admin_approval_after_user_signup: true)
         end

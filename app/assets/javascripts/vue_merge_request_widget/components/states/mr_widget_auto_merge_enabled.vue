@@ -71,11 +71,11 @@ export default {
       return (this.glFeatures.mergeRequestWidgetGraphql ? this.state : this.mr).targetBranch;
     },
     shouldRemoveSourceBranch() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.shouldRemoveSourceBranch || this.state.forceRemoveSourceBranch;
-      }
+      if (!this.glFeatures.mergeRequestWidgetGraphql) return this.mr.shouldRemoveSourceBranch;
 
-      return this.mr.shouldRemoveSourceBranch;
+      if (!this.state.shouldRemoveSourceBranch) return false;
+
+      return this.state.shouldRemoveSourceBranch || this.state.forceRemoveSourceBranch;
     },
     autoMergeStrategy() {
       return (this.glFeatures.mergeRequestWidgetGraphql ? this.state : this.mr).autoMergeStrategy;

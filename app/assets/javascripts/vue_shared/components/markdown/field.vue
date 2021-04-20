@@ -62,6 +62,11 @@ export default {
       required: false,
       default: true,
     },
+    uploadsPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     enableAutocomplete: {
       type: Boolean,
       required: false,
@@ -71,6 +76,11 @@ export default {
       type: Object,
       required: false,
       default: null,
+    },
+    lines: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     note: {
       type: Object,
@@ -110,6 +120,20 @@ export default {
       return this.referencedUsers.length >= referencedUsersThreshold;
     },
     lineContent() {
+      if (this.lines.length) {
+        return this.lines
+          .map((line) => {
+            const { rich_text: richText, text } = line;
+
+            if (text) {
+              return text;
+            }
+
+            return unescape(stripHtml(richText).replace(/\n/g, ''));
+          })
+          .join('\\n');
+      }
+
       if (this.line) {
         const { rich_text: richText, text } = this.line;
 
@@ -143,6 +167,9 @@ export default {
         },
         false,
       );
+    },
+    suggestionsStartIndex() {
+      return Math.max(this.lines.length - 1, 0);
     },
   },
   watch: {
@@ -229,12 +256,14 @@ export default {
     ref="gl-form"
     :class="{ 'gl-mt-3 gl-mb-3': addSpacingClasses }"
     class="js-vue-markdown-field md-area position-relative gfm-form"
+    :data-uploads-path="uploadsPath"
   >
     <markdown-header
       :preview-markdown="previewMarkdown"
       :line-content="lineContent"
       :can-suggest="canSuggest"
       :show-suggest-popover="showSuggestPopover"
+      :suggestion-start-index="suggestionsStartIndex"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"

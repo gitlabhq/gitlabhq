@@ -4,7 +4,11 @@ import * as types from './mutation_types';
 const formatTimezoneName = (freezePeriod, timezoneList) =>
   convertObjectPropsToCamelCase({
     ...freezePeriod,
-    cron_timezone: timezoneList.find((tz) => tz.identifier === freezePeriod.cron_timezone)?.name,
+    cron_timezone: {
+      formattedTimezone: timezoneList.find((tz) => tz.identifier === freezePeriod.cron_timezone)
+        ?.name,
+      identifier: freezePeriod.cronTimezone,
+    },
   });
 
 export default {
@@ -45,10 +49,15 @@ export default {
     state.freezeEndCron = freezeEndCron;
   },
 
+  [types.SET_SELECTED_ID](state, id) {
+    state.selectedId = id;
+  },
+
   [types.RESET_MODAL](state) {
     state.freezeStartCron = '';
     state.freezeEndCron = '';
     state.selectedTimezone = '';
     state.selectedTimezoneIdentifier = '';
+    state.selectedId = '';
   },
 };

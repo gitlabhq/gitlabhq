@@ -1,0 +1,5 @@
+fragment UserAvailability on User {
+  status {
+    availability
+  }
+}

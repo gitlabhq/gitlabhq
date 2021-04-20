@@ -12,28 +12,11 @@
     }
   }
 
-  .header-action-buttons {
-    i {
-      color: $gl-text-color-secondary;
-      font-size: 13px;
-      margin-right: 3px;
-    }
-
-    @include media-breakpoint-down(xs) {
-      .btn {
-        width: 100%;
-        margin-top: 10px;
-      }
-
-      .dropdown {
-        width: 100%;
-      }
-    }
-  }
-
   .avatar {
-    @extend .avatar-inline;
-    margin-left: 0;
+    float: none;
+    display: inline-block;
+    margin-left: 2px;
+    flex-shrink: 0;
 
     @include media-breakpoint-up(sm) {
       margin-left: 4px;

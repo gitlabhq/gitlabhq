@@ -3,7 +3,7 @@
 module Constraints
   class AdminConstrainer
     def matches?(request)
-      if Feature.enabled?(:user_mode_in_session)
+      if Gitlab::CurrentSettings.admin_mode
         admin_mode_enabled?(request)
       else
         user_is_admin?(request)

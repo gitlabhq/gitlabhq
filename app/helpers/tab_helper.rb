@@ -65,6 +65,13 @@ module TabHelper
   #   # When `TreeController#index` is requested
   #   # => '<li>Hello</li>'
   #
+  #   # Paths, controller and actions can be used at the same time
+  #   nav_link(path: 'tree#show', controller: 'admin/appearances') { "Hello" }
+  #
+  #   nav_link(path: 'foo#bar', controller: 'tree') { "Hello" }
+  #   nav_link(path: 'foo#bar', controller: 'tree', action: 'show') { "Hello" }
+  #   nav_link(path: 'foo#bar', action: 'show') { "Hello" }
+  #
   # Returns a list item element String
   def nav_link(options = {}, &block)
     klass = active_nav_link?(options) ? 'active' : ''
@@ -85,34 +92,12 @@ module TabHelper
   def active_nav_link?(options)
     return false if options[:unless]&.call
 
-    if path = options.delete(:path)
-      unless path.respond_to?(:each)
-        path = [path]
-      end
+    controller = options.delete(:controller)
+    action = options.delete(:action)
 
-      path.any? do |single_path|
-        current_path?(single_path)
-      end
-    elsif page = options.delete(:page)
-      unless page.respond_to?(:each)
-        page = [page]
-      end
-
-      page.any? do |single_page|
-        current_page?(single_page)
-      end
-    else
-      c = options.delete(:controller)
-      a = options.delete(:action)
-
-      if c && a
-        # When given both options, make sure BOTH are true
-        current_controller?(*c) && current_action?(*a)
-      else
-        # Otherwise check EITHER option
-        current_controller?(*c) || current_action?(*a)
-      end
-    end
+    route_matches_paths?(options.delete(:path)) ||
+      route_matches_pages?(options.delete(:page)) ||
+      route_matches_controllers_and_or_actions?(controller, action)
   end
 
   def current_path?(path)
@@ -125,6 +110,28 @@ module TabHelper
         current_controller?(:branches) ||
         current_page?(project_repository_path(@project))
       'active'
+    end
+  end
+
+  private
+
+  def route_matches_paths?(paths)
+    Array(paths).compact.any? do |single_path|
+      current_path?(single_path)
+    end
+  end
+
+  def route_matches_pages?(pages)
+    Array(pages).compact.any? do |single_page|
+      current_page?(single_page)
+    end
+  end
+
+  def route_matches_controllers_and_or_actions?(controller, action)
+    if controller && action
+      current_controller?(*controller) && current_action?(*action)
+    else
+      current_controller?(*controller) || current_action?(*action)
     end
   end
 end

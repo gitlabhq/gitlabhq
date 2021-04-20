@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Predefined variables reference
+# Predefined variables reference **(FREE)**
 
 Predefined [CI/CD variables](README.md) are available in every GitLab CI/CD pipeline.
 
@@ -23,6 +23,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI`                                     | all    | 0.4    | Available for all jobs executed in CI/CD. `true` when available. |
 | `CI_API_V4_URL`                          | 11.7   | all    | The GitLab API v4 root URL. |
 | `CI_BUILDS_DIR`                          | all    | 11.10  | The top-level directory where builds are executed. |
+| `CI_COMMIT_AUTHOR`                       | 13.11  | all    | The author of the commit in `Name <email>` format. |
 | `CI_COMMIT_BEFORE_SHA`                   | 11.2   | all    | The previous latest commit present on a branch. Is always `0000000000000000000000000000000000000000` in pipelines for merge requests. |
 | `CI_COMMIT_BRANCH`                       | 12.6   | 0.5    | The commit branch name. Available in branch pipelines, including pipelines for the default branch. Not available in merge request pipelines or tag pipelines. |
 | `CI_COMMIT_DESCRIPTION`                  | 10.8   | all    | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
@@ -59,7 +60,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_JOB_NAME`                            | 9.0    | 0.5    | The name of the job. |
 | `CI_JOB_STAGE`                           | 9.0    | 0.5    | The name of the job's stage. |
 | `CI_JOB_STATUS`                          | all    | 13.5   | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/README.md#after_script). Can be `success`, `failed`, or `canceled`. |
-| `CI_JOB_TOKEN`                           | 9.0    | 1.2    | A token to authenticate with [certain API endpoints](../../api/README.md#gitlab-ci-job-token) or download [dependent repositories](../../user/project/new_ci_build_permissions_model.md#dependent-repositories). The token is valid as long as the job is running. |
+| `CI_JOB_TOKEN`                           | 9.0    | 1.2    | A token to authenticate with [certain API endpoints](../../api/README.md#gitlab-cicd-job-token). The token is valid as long as the job is running. |
 | `CI_JOB_URL`                             | 11.1   | 0.5    | The job details URL. |
 | `CI_JOB_STARTED_AT`                      | 13.10  | all    | The UTC datetime when a job started, in [ISO 8601](https://tools.ietf.org/html/rfc3339#appendix-A) format. |
 | `CI_KUBERNETES_ACTIVE`                   | 13.0   | all    | Only available if the pipeline has a Kubernetes cluster available for deployments. `true` when available. |

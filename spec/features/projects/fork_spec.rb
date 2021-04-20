@@ -76,7 +76,7 @@ RSpec.describe 'Project fork' do
       let(:forking_access_level) { ProjectFeature::PRIVATE }
 
       before do
-        project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
       end
 
       context 'user is not a team member' do
@@ -117,6 +117,50 @@ RSpec.describe 'Project fork' do
 
   it_behaves_like 'fork button on project page'
   it_behaves_like 'create fork page', 'Fork project'
+
+  context 'fork form', :js do
+    let(:group) { create(:group) }
+    let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+
+    def submit_form
+      select(group.name)
+      click_button 'Fork project'
+    end
+
+    it 'forks the project', :sidekiq_might_not_need_inline do
+      visit new_project_fork_path(project)
+      submit_form
+
+      expect(page).to have_content 'Forked from'
+    end
+
+    it 'shows the new forked project on the forks page' do
+      visit new_project_fork_path(project)
+      submit_form
+      wait_for_requests
+
+      visit project_forks_path(project)
+
+      page.within('.js-projects-list-holder') do
+        expect(page).to have_content("#{group.name} / #{project.name}")
+      end
+    end
+
+    it 'shows the filled in info forked project on the forks page' do
+      fork_name = 'some-name'
+      visit new_project_fork_path(project)
+      fill_in('fork-name', with: fork_name, fill_options: { clear: :backspace })
+      fill_in('fork-slug', with: fork_name, fill_options: { clear: :backspace })
+      submit_form
+      wait_for_requests
+
+      visit project_forks_path(project)
+
+      page.within('.js-projects-list-holder') do
+        expect(page).to have_content("#{group.name} / #{fork_name}")
+      end
+    end
+  end
 
   context 'with fork_project_form feature flag disabled' do
     before do
@@ -164,7 +208,7 @@ RSpec.describe 'Project fork' do
       expect(page).to have_content(/new merge request/i)
 
       page.within '.nav-sidebar' do
-        first(:link, 'Merge Requests').click
+        first(:link, 'Merge requests').click
       end
 
       expect(page).to have_content(/new merge request/i)

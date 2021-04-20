@@ -3,12 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Issues::CreateService do
+  include AfterNextHelpers
+
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
   describe '#execute' do
     let_it_be(:assignee) { create(:user) }
     let_it_be(:milestone) { create(:milestone, project: project) }
+
     let(:issue) { described_class.new(project, user, opts).execute }
 
     context 'when params are valid' do
@@ -64,7 +67,6 @@ RSpec.describe Issues::CreateService do
 
         it_behaves_like 'incident issue'
         it_behaves_like 'has incident label'
-        it_behaves_like 'an incident management tracked event', :incident_management_incident_created
 
         it 'does create an incident label' do
           expect { subject }
@@ -110,20 +112,6 @@ RSpec.describe Issues::CreateService do
 
           expect(issue.confidential).to be_truthy
         end
-      end
-
-      it 'creates a pending todo for new assignee' do
-        attributes = {
-          project: project,
-          author: user,
-          user: assignee,
-          target_id: issue.id,
-          target_type: issue.class.name,
-          action: Todo::ASSIGNED,
-          state: :pending
-        }
-
-        expect(Todo.where(attributes).count).to eq 1
       end
 
       it 'moves the issue to the end, in an asynchronous worker' do
@@ -277,14 +265,6 @@ RSpec.describe Issues::CreateService do
             expect(issue.user_mentions.count).to eq 0
           end
         end
-      end
-
-      it 'deletes milestone issues count cache' do
-        expect_next_instance_of(Milestones::IssuesCountService, milestone) do |service|
-          expect(service).to receive(:delete_cache).and_call_original
-        end
-
-        issue
       end
 
       it 'schedules a namespace onboarding create action worker' do
@@ -458,7 +438,7 @@ RSpec.describe Issues::CreateService do
     end
 
     context 'checking spam' do
-      let(:request) { double(:request) }
+      let(:request) { double(:request, headers: nil) }
       let(:api) { true }
       let(:captcha_response) { 'abc123' }
       let(:spam_log_id) { 1 }

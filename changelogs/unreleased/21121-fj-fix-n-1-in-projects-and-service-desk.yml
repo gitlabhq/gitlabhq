@@ -1,0 +1,5 @@
+---
+title: Fix N+1 in REST projects and service desk
+merge_request: 58747
+author:
+type: performance

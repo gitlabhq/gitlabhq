@@ -1,8 +1,0 @@
----
-name: pages_migration_mark_as_not_deployed
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49473
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/295187
-milestone: '13.8'
-type: development
-group: group::release
-default_enabled: false

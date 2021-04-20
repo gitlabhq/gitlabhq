@@ -1,0 +1,5 @@
+---
+title: Enables multiple_cache_per_job feature flag by default
+merge_request: 59016
+author:
+type: added

@@ -1,0 +1,64 @@
+# Aggregated metrics that include EE only event names within `events:` attribute have to be defined at ee/config/metrics/aggregates/common.yml
+# instead of this file.
+#- name: unique name of aggregated metric
+#  operator: aggregation operator. Valid values are:
+#             - "OR": counts unique elements that were observed triggering any of following events
+#             - "AND": counts unique elements that were observed triggering all of following events
+#  events: list of events names to aggregate into metric. All events in this list must have the same 'redis_slot' and 'aggregation' attributes
+#           see from lib/gitlab/usage_data_counters/known_events/ for the list of valid events.
+#  source: defines which datasource will be used to locate events that should be included in aggregated metric. Valid values are:
+#          - database
+#          - redis
+#  time_frame: defines time frames for aggregated metrics:
+#          - 7d - last 7 days
+#          - 28d - last 28 days
+#          - all - all historical available data, this time frame is not available for redis source
+#  feature_flag: name of development feature flag that will be checked before metrics aggregation is performed.
+#                Corresponding feature flag should have `default_enabled` attribute set to `false`.
+#                This attribute is OPTIONAL and can be omitted, when `feature_flag` is missing no feature flag will be checked.
+---
+- name: compliance_features_track_unique_visits_union
+  operator: OR
+  source: redis
+  time_frame: [7d, 28d]
+  events:
+    - 'g_compliance_audit_events'
+    - 'g_compliance_dashboard'
+    - 'i_compliance_audit_events'
+    - 'a_compliance_audit_events_api'
+    - 'i_compliance_credential_inventory'
+- name: incident_management_alerts_total_unique_counts
+  operator: OR
+  source: redis
+  time_frame: [7d, 28d]
+  events:
+    - 'incident_management_alert_status_changed'
+    - 'incident_management_alert_assigned'
+    - 'incident_management_alert_todo'
+    - 'incident_management_alert_create_incident'
+- name: incident_management_incidents_total_unique_counts
+  operator: OR
+  source: redis
+  time_frame: [7d, 28d]
+  events:
+    - 'incident_management_incident_created'
+    - 'incident_management_incident_reopened'
+    - 'incident_management_incident_closed'
+    - 'incident_management_incident_assigned'
+    - 'incident_management_incident_todo'
+    - 'incident_management_incident_comment'
+    - 'incident_management_incident_zoom_meeting'
+    - 'incident_management_incident_published'
+    - 'incident_management_incident_relate'
+    - 'incident_management_incident_unrelate'
+    - 'incident_management_incident_change_confidential'
+- name: i_testing_paid_monthly_active_user_total
+  operator: OR
+  source: redis
+  time_frame: [7d, 28d]
+  events:
+    - 'i_testing_web_performance_widget_total'
+    - 'i_testing_full_code_quality_report_total'
+    - 'i_testing_group_code_coverage_visit_total'
+    - 'i_testing_load_performance_widget_total'
+    - 'i_testing_metrics_report_widget_total'

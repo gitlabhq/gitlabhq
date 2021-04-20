@@ -5,7 +5,7 @@ module RuboCop
     class ProjectPathHelper < RuboCop::Cop::Cop
       MSG = 'Use short project path helpers without explicitly passing the namespace: ' \
         '`foo_project_bar_path(project, bar)` instead of ' \
-        '`foo_namespace_project_bar_path(project.namespace, project, bar)`.'.freeze
+        '`foo_namespace_project_bar_path(project.namespace, project, bar)`.'
 
       METHOD_NAME_PATTERN = /\A([a-z_]+_)?namespace_project(?:_[a-z_]+)?_(?:url|path)\z/.freeze
 

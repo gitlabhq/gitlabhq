@@ -121,7 +121,7 @@ export default {
             variant="success"
             category="primary"
             type="submit"
-            >{{ __('Submit issue') }}</gl-button
+            >{{ __('Create issue') }}</gl-button
           >
           <gl-button
             ref="cancelButton"

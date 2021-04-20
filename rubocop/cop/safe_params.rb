@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     class SafeParams < RuboCop::Cop::Cop
-      MSG = 'Use `safe_params` instead of `params` in url_for.'.freeze
+      MSG = 'Use `safe_params` instead of `params` in url_for.'
 
       METHOD_NAME_PATTERN = :url_for
       UNSAFE_PARAM = :params

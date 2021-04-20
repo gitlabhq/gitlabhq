@@ -44,9 +44,11 @@
           %td{ style: "#{default_style}text-align:center;" }
             - password_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: 'https://docs.gitlab.com/ee/user/profile/#changing-your-password' }
             = _('If you recently signed in and recognize the IP address, you may disregard this email.')
-            %p
-              = _('If you did not recently sign in, you should immediately %{password_link_start}change your password%{password_link_end}.').html_safe % { password_link_start: password_link_start, password_link_end: '</a>'.html_safe }
-              = _('Passwords should be unique and not used for any other sites or services.')
+
+            - if password_authentication_enabled_for_web?
+              %p
+                = _('If you did not recently sign in, you should immediately %{password_link_start}change your password%{password_link_end}.').html_safe % { password_link_start: password_link_start, password_link_end: '</a>'.html_safe }
+                = _('Passwords should be unique and not used for any other sites or services.')
 
             - unless @user.two_factor_enabled?
               %p

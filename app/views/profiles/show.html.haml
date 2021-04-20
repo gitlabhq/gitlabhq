@@ -33,7 +33,7 @@
       %h5.gl-mt-0= s_("Profiles|Upload new avatar")
       .gl-mt-2.gl-mb-3
         %button.gl-button.btn.js-choose-user-avatar-button{ type: 'button' }= s_("Profiles|Choose file...")
-        %span.avatar-file-name.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen")
+        %span.avatar-file-name.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen.")
         = f.file_field_without_bootstrap :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
       .form-text.text-muted= s_("Profiles|The maximum file size allowed is 200KB.")
       - if @user.avatar?
@@ -84,7 +84,7 @@
     .col-lg-8
       -# TODO: might need an entry in user/profile.md to describe some of these settings
       -# https://gitlab.com/gitlab-org/gitlab-foss/issues/60070
-      %h5= ("Time zone")
+      %h5= _("Time zone")
       = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'gl-button btn js-timezone-dropdown input-lg', title: _("Select a timezone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
       %input.hidden{ :type => 'hidden', :id => 'user_timezone', :name => 'user[timezone]', value: @user.timezone }
     .col-lg-12
@@ -127,7 +127,7 @@
         = s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information")
   .row.gl-mt-3.gl-mb-3.gl-justify-content-end
     .col-lg-8
-      = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-success'
+      = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm'
       = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-cancel'
 
 .modal.modal-profile-crop{ data: { cropper_css_path: ActionController::Base.helpers.stylesheet_path('lazy_bundles/cropper.css') } }

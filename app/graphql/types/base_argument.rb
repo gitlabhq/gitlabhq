@@ -4,8 +4,10 @@ module Types
   class BaseArgument < GraphQL::Schema::Argument
     include GitlabStyleDeprecations
 
+    attr_reader :deprecation
+
     def initialize(*args, **kwargs, &block)
-      kwargs = gitlab_deprecation(kwargs)
+      @deprecation = gitlab_deprecation(kwargs)
 
       super(*args, **kwargs, &block)
     end

@@ -6,35 +6,35 @@ pre-push:
     eslint:
       tags: frontend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: "*.{js,vue}"
+      glob: '*.{js,vue}'
       run: yarn run lint:eslint {files}
     haml-lint:
       tags: view haml style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: "*.html.haml"
+      glob: '*.html.haml'
       run: bundle exec haml-lint --config .haml-lint.yml {files}
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: "doc/*.md"
+      glob: 'doc/*.md'
       run: yarn markdownlint {files}
     stylelint:
       tags: stylesheet css style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: "*.scss{,.css}"
-      run: yarn stylelint -q {files}
+      glob: '*.scss{,.css}'
+      run: yarn stylelint {files}
     prettier:
       tags: frontend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: "*.{js,vue,graphql}"
+      glob: '*.{js,vue,graphql}'
       run: yarn run prettier --check {files}
     rubocop:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: "*.rb"
-      run: bundle exec rubocop --parallel --force-exclusion {files}
+      glob: '*.rb'
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
     vale:  # Requires Vale: https://docs.gitlab.com/ee/development/documentation/#install-linters
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: "doc/*.md"
+      glob: 'doc/*.md'
       run: if command -v vale 2> /dev/null; then vale --config .vale.ini --minAlertLevel error {files}; else echo "Vale not found. Install Vale"; fi

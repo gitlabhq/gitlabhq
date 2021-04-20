@@ -9,7 +9,7 @@ module Integrations
     end
 
     def note_events_data
-      note = NotesFinder.new(current_user, project: project, target: project).execute.reorder(nil).last # rubocop: disable CodeReuse/ActiveRecord
+      note = NotesFinder.new(current_user, project: project, target: project, sort: 'id_desc').execute.first
 
       return { error: s_('TestHooks|Ensure the project has notes.') } unless note.present?
 

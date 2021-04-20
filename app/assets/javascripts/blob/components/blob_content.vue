@@ -21,6 +21,11 @@ export default {
       default: '',
       required: false,
     },
+    isRawContent: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
     loading: {
       type: Boolean,
       default: true,
@@ -65,6 +70,8 @@ export default {
         v-else
         ref="contentViewer"
         :content="content"
+        :is-raw-content="isRawContent"
+        :file-name="blob.name"
         :type="activeViewer.fileType"
         data-qa-selector="file_content"
       />

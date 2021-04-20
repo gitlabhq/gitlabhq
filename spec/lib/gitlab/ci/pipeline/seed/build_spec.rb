@@ -6,10 +6,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
   let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha) }
+  let(:root_variables) { [] }
+  let(:seed_context) { double(pipeline: pipeline, root_variables: root_variables) }
   let(:attributes) { { name: 'rspec', ref: 'master', scheduling_type: :stage } }
   let(:previous_stages) { [] }
 
-  let(:seed_build) { described_class.new(pipeline, attributes, previous_stages) }
+  let(:seed_build) { described_class.new(seed_context, attributes, previous_stages) }
 
   describe '#attributes' do
     subject { seed_build.attributes }
@@ -75,8 +77,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       let(:attributes) do
         { name: 'rspec',
           ref: 'master',
-          yaml_variables: [{ key: 'VAR1', value: 'var 1', public: true },
-                           { key: 'VAR2', value: 'var 2', public: true }],
+          job_variables: [{ key: 'VAR1', value: 'var 1', public: true },
+                          { key: 'VAR2', value: 'var 2', public: true }],
           rules: [{ if: '$VAR == null', variables: { VAR1: 'new var 1', VAR3: 'var 3' } }] }
       end
 
@@ -301,6 +303,133 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         it { is_expected.to match a_hash_including(options: { allow_failure_criteria: nil }) }
       end
     end
+
+    context 'with workflow:rules:[variables:]' do
+      let(:attributes) do
+        { name: 'rspec',
+          ref: 'master',
+          yaml_variables: [{ key: 'VAR2', value: 'var 2', public: true },
+                           { key: 'VAR3', value: 'var 3', public: true }],
+          job_variables: [{ key: 'VAR2', value: 'var 2', public: true },
+                          { key: 'VAR3', value: 'var 3', public: true }],
+          root_variables_inheritance: root_variables_inheritance }
+      end
+
+      context 'when the pipeline has variables' do
+        let(:root_variables) do
+          [{ key: 'VAR1', value: 'var overridden pipeline 1', public: true },
+           { key: 'VAR2', value: 'var pipeline 2', public: true },
+           { key: 'VAR3', value: 'var pipeline 3', public: true },
+           { key: 'VAR4', value: 'new var pipeline 4', public: true }]
+        end
+
+        context 'when root_variables_inheritance is true' do
+          let(:root_variables_inheritance) { true }
+
+          it 'returns calculated yaml variables' do
+            expect(subject[:yaml_variables]).to match_array(
+              [{ key: 'VAR1', value: 'var overridden pipeline 1', public: true },
+               { key: 'VAR2', value: 'var 2', public: true },
+               { key: 'VAR3', value: 'var 3', public: true },
+               { key: 'VAR4', value: 'new var pipeline 4', public: true }]
+            )
+          end
+
+          context 'when FF ci_workflow_rules_variables is disabled' do
+            before do
+              stub_feature_flags(ci_workflow_rules_variables: false)
+            end
+
+            it 'returns existing yaml variables' do
+              expect(subject[:yaml_variables]).to match_array(
+                [{ key: 'VAR2', value: 'var 2', public: true },
+                 { key: 'VAR3', value: 'var 3', public: true }]
+              )
+            end
+          end
+        end
+
+        context 'when root_variables_inheritance is false' do
+          let(:root_variables_inheritance) { false }
+
+          it 'returns job variables' do
+            expect(subject[:yaml_variables]).to match_array(
+              [{ key: 'VAR2', value: 'var 2', public: true },
+               { key: 'VAR3', value: 'var 3', public: true }]
+            )
+          end
+        end
+
+        context 'when root_variables_inheritance is an array' do
+          let(:root_variables_inheritance) { %w(VAR1 VAR2 VAR3) }
+
+          it 'returns calculated yaml variables' do
+            expect(subject[:yaml_variables]).to match_array(
+              [{ key: 'VAR1', value: 'var overridden pipeline 1', public: true },
+               { key: 'VAR2', value: 'var 2', public: true },
+               { key: 'VAR3', value: 'var 3', public: true }]
+            )
+          end
+        end
+      end
+
+      context 'when the pipeline has not a variable' do
+        let(:root_variables_inheritance) { true }
+
+        it 'returns seed yaml variables' do
+          expect(subject[:yaml_variables]).to match_array(
+            [{ key: 'VAR2', value: 'var 2', public: true },
+             { key: 'VAR3', value: 'var 3', public: true }])
+        end
+      end
+    end
+
+    context 'when the job rule depends on variables' do
+      let(:attributes) do
+        { name: 'rspec',
+          ref: 'master',
+          yaml_variables: [{ key: 'VAR1', value: 'var 1', public: true }],
+          job_variables: [{ key: 'VAR1', value: 'var 1', public: true }],
+          root_variables_inheritance: root_variables_inheritance,
+          rules: rules }
+      end
+
+      let(:root_variables_inheritance) { true }
+
+      context 'when the rules use job variables' do
+        let(:rules) do
+          [{ if: '$VAR1 == "var 1"', variables: { VAR1: 'overridden var 1', VAR2: 'new var 2' } }]
+        end
+
+        it 'recalculates the variables' do
+          expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'overridden var 1', public: true },
+                                                              { key: 'VAR2', value: 'new var 2', public: true })
+        end
+      end
+
+      context 'when the rules use root variables' do
+        let(:root_variables) do
+          [{ key: 'VAR2', value: 'var pipeline 2', public: true }]
+        end
+
+        let(:rules) do
+          [{ if: '$VAR2 == "var pipeline 2"', variables: { VAR1: 'overridden var 1', VAR2: 'overridden var 2' } }]
+        end
+
+        it 'recalculates the variables' do
+          expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'overridden var 1', public: true },
+                                                              { key: 'VAR2', value: 'overridden var 2', public: true })
+        end
+
+        context 'when the root_variables_inheritance is false' do
+          let(:root_variables_inheritance) { false }
+
+          it 'does not recalculate the variables' do
+            expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'var 1', public: true })
+          end
+        end
+      end
+    end
   end
 
   describe '#bridge?' do
@@ -377,7 +506,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         it 'does not have environment' do
           expect(subject).not_to be_has_environment
           expect(subject.environment).to be_nil
-          expect(subject.metadata).to be_nil
+          expect(subject.metadata&.expanded_environment_name).to be_nil
           expect(Environment.exists?(name: expected_environment_name)).to eq(false)
         end
       end
@@ -1080,7 +1209,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       end
 
       let(:stage_seed) do
-        Gitlab::Ci::Pipeline::Seed::Stage.new(pipeline, stage_attributes, [])
+        Gitlab::Ci::Pipeline::Seed::Stage.new(seed_context, stage_attributes, [])
       end
 
       let(:previous_stages) { [stage_seed] }

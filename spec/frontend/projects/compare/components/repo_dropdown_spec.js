@@ -1,4 +1,4 @@
-import { GlDropdown } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RepoDropdown from '~/projects/compare/components/repo_dropdown.vue';
 
@@ -69,12 +69,12 @@ describe('RepoDropdown component', () => {
       createComponent({ paramsName: 'from' });
     });
 
-    it('set hidden input of the first project', () => {
-      expect(findHiddenInput().attributes('value')).toBe(projectFromId);
+    it('set hidden input of the selected project', () => {
+      expect(findHiddenInput().attributes('value')).toBe(projectToId);
     });
 
-    it('displays the first project name initially in the dropdown', () => {
-      expect(findGlDropdown().props('text')).toBe(projectFromName);
+    it('displays matching project name of the source revision initially in the dropdown', () => {
+      expect(findGlDropdown().props('text')).toBe(projectToName);
     });
 
     it('updates the hiddin input value when onClick method is triggered', async () => {
@@ -84,15 +84,13 @@ describe('RepoDropdown component', () => {
       expect(findHiddenInput().attributes('value')).toBe(repoId);
     });
 
-    it('emits initial `changeTargetProject` event with target project', () => {
-      expect(wrapper.emitted('changeTargetProject')).toEqual([[projectFromName]]);
-    });
-
     it('emits `changeTargetProject` event when another target project is selected', async () => {
-      const newTargetProject = 'new-from-name';
-      wrapper.vm.$emit('changeTargetProject', newTargetProject);
+      const index = 1;
+      const { projectsFrom } = defaultProvide;
+      findGlDropdown().findAll(GlDropdownItem).at(index).vm.$emit('click');
       await wrapper.vm.$nextTick();
-      expect(wrapper.emitted('changeTargetProject')[1]).toEqual([newTargetProject]);
+
+      expect(wrapper.emitted('changeTargetProject')[0][0]).toEqual(projectsFrom[index].name);
     });
   });
 });

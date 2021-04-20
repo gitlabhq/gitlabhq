@@ -5,7 +5,9 @@ module Gitlab
     attr_accessor :email, :name, :commits, :additions, :deletions
 
     def initialize
-      @commits, @additions, @deletions = 0, 0, 0
+      @commits = 0
+      @additions = 0
+      @deletions = 0
     end
   end
 end

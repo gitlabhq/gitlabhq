@@ -8,11 +8,10 @@ module API
       expose :default_branch, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       # Avoids an N+1 query: https://github.com/mbleigh/acts-as-taggable-on/issues/91#issuecomment-168273770
       expose :tag_list do |project|
-        # project.tags.order(:name).pluck(:name) is the most suitable option
-        # to avoid loading all the ActiveRecord objects but, if we use it here
-        # it override the preloaded associations and makes a query
-        # (fixed in https://github.com/rails/rails/pull/25976).
-        project.tags.map(&:name).sort
+        # Tags is a preloaded association. If we perform then sorting
+        # through the database, it will trigger a new query, ending up
+        # in an N+1 if we have several projects
+        project.tags.pluck(:name).sort # rubocop:disable CodeReuse/ActiveRecord
       end
 
       expose :ssh_url_to_repo, :http_url_to_repo, :web_url, :readme_url

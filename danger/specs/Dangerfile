@@ -7,12 +7,12 @@ NO_SPECS_LABELS = [
   'documentation',
   'QA'
 ].freeze
-NO_NEW_SPEC_MESSAGE = <<~MSG.freeze
+NO_NEW_SPEC_MESSAGE = <<~MSG
 You've made some app changes, but didn't add any tests.
 That's OK as long as you're refactoring existing code,
 but please consider adding any of the %<labels>s labels.
 MSG
-EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE = <<~MSG.freeze
+EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE = <<~MSG
 You've made some EE-specific changes, but only made changes to FOSS tests.
 This could be a sign that you're testing an EE-specific behavior in a FOSS test.
 
@@ -24,7 +24,7 @@ Please make sure the spec files pass in AS-IF-FOSS mode either:
 
 MSG
 
-CONTROLLER_SPEC_DEPRECATION_MESSAGE = <<~MSG.freeze
+CONTROLLER_SPEC_DEPRECATION_MESSAGE = <<~MSG
 Do not add new controller specs. We are moving from controller specs to
 request specs (and/or feature specs). Please add request specs under
 `/spec/requests` and/or `/ee/spec/requests` instead.

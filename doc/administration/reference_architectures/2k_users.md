@@ -93,11 +93,12 @@ To set up GitLab and its components to accommodate up to 2,000 users:
 
 ## Configure the external load balancer
 
-In an active/active GitLab configuration, you'll need a load balancer to route
+In a multi-node GitLab configuration, you'll need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use
-or its exact configuration is beyond the scope of GitLab documentation. We hope
+or its exact configuration is beyond the scope of GitLab documentation. We assume
 that if you're managing multi-node systems like GitLab, you already have a load
-balancer of choice. Some load balancer examples include HAProxy (open-source),
+balancer of choice and that the routing methods used are distributing calls evenly
+between all nodes. Some load balancer examples include HAProxy (open-source),
 F5 Big-IP LTM, and Citrix Net Scaler. This documentation outline the ports and
 protocols needed for use with GitLab.
 
@@ -284,7 +285,7 @@ further configuration steps.
    # Replace APPLICATION_SERVER_IP_BLOCK with the CIDR address of the application node
    postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.1/32 APPLICATION_SERVER_IP_BLOCK)
 
-   # Disable automatic database migrations
+   # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
    ```
 
@@ -385,13 +386,6 @@ are supported and can be added if needed.
 
 ## Configure Gitaly
 
-NOTE:
-[Gitaly Cluster](../gitaly/praefect.md) support
-for the Reference Architectures is being
-worked on as a [collaborative effort](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/1) between the Quality Engineering and Gitaly teams. When this component has been verified
-some Architecture specs will likely change as a result to support the new
-and improved designed.
-
 [Gitaly](../gitaly/index.md) server node requirements are dependent on data,
 specifically the number of projects and those projects' sizes. It's recommended
 that a Gitaly server node stores no more than 5TB of data. Although this
@@ -466,8 +460,7 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    alertmanager['enable'] = false
    prometheus['enable'] = false
 
-   # Prevent database connections during 'gitlab-ctl reconfigure'
-   gitlab_rails['rake_cache_clear'] = false
+   # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
    # Configure the gitlab-shell API callback URL. Without this, `git push` will
@@ -779,7 +772,6 @@ running [Prometheus](../monitoring/prometheus/index.md) and
    grafana['admin_password'] = 'toomanysecrets'
 
    # Disable all other services
-   gitlab_rails['auto_migrate'] = false
    alertmanager['enable'] = false
    gitaly['enable'] = false
    gitlab_exporter['enable'] = false
@@ -794,6 +786,9 @@ running [Prometheus](../monitoring/prometheus/index.md) and
    unicorn['enable'] = false
    node_exporter['enable'] = false
    gitlab_exporter['enable'] = false
+
+   # Prevent database migrations from running on upgrade automatically
+   gitlab_rails['auto_migrate'] = false
    ```
 
 1. Prometheus also needs some scrape configurations to pull all the data from the various
@@ -956,10 +951,10 @@ possible. However, if you intend to use GitLab Pages,
 See how to [configure NFS](../nfs.md).
 
 WARNING:
-From GitLab 13.0, using NFS for Git repositories is deprecated.
-From GitLab 14.0, technical support for NFS for Git repositories
-will no longer be provided. Upgrade to [Gitaly Cluster](../gitaly/praefect.md)
-as soon as possible.
+From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
+considered and customer technical support will be considered out of scope.
+[Read more about Gitaly and NFS](../gitaly/index.md#nfs-deprecation-notice) and
+[the correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

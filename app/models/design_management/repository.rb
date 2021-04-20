@@ -8,7 +8,7 @@ module DesignManagement
     # repository is entirely GitLab-managed rather than user-facing.
     #
     # Enable all uploaded files to be stored in LFS.
-    MANAGED_GIT_ATTRIBUTES = <<~GA.freeze
+    MANAGED_GIT_ATTRIBUTES = <<~GA
       /#{DesignManagement.designs_directory}/* filter=lfs diff=lfs merge=lfs -text
     GA
 

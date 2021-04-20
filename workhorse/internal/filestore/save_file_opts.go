@@ -63,6 +63,8 @@ type SaveFileOpts struct {
 	PresignedCompleteMultipart string
 	// PresignedAbortMultipart is a presigned URL for AbortMultipartUpload
 	PresignedAbortMultipart string
+	// FeatureFlagExtractBase uses the base of the filename and strips directories
+	FeatureFlagExtractBase bool
 }
 
 // UseWorkhorseClientEnabled checks if the options require direct access to object storage
@@ -88,16 +90,17 @@ func GetOpts(apiResponse *api.Response) (*SaveFileOpts, error) {
 	}
 
 	opts := SaveFileOpts{
-		LocalTempPath:      apiResponse.TempPath,
-		RemoteID:           apiResponse.RemoteObject.ID,
-		RemoteURL:          apiResponse.RemoteObject.GetURL,
-		PresignedPut:       apiResponse.RemoteObject.StoreURL,
-		PresignedDelete:    apiResponse.RemoteObject.DeleteURL,
-		PutHeaders:         apiResponse.RemoteObject.PutHeaders,
-		UseWorkhorseClient: apiResponse.RemoteObject.UseWorkhorseClient,
-		RemoteTempObjectID: apiResponse.RemoteObject.RemoteTempObjectID,
-		Deadline:           time.Now().Add(timeout),
-		MaximumSize:        apiResponse.MaximumSize,
+		FeatureFlagExtractBase: apiResponse.FeatureFlagExtractBase,
+		LocalTempPath:          apiResponse.TempPath,
+		RemoteID:               apiResponse.RemoteObject.ID,
+		RemoteURL:              apiResponse.RemoteObject.GetURL,
+		PresignedPut:           apiResponse.RemoteObject.StoreURL,
+		PresignedDelete:        apiResponse.RemoteObject.DeleteURL,
+		PutHeaders:             apiResponse.RemoteObject.PutHeaders,
+		UseWorkhorseClient:     apiResponse.RemoteObject.UseWorkhorseClient,
+		RemoteTempObjectID:     apiResponse.RemoteObject.RemoteTempObjectID,
+		Deadline:               time.Now().Add(timeout),
+		MaximumSize:            apiResponse.MaximumSize,
 	}
 
 	if opts.LocalTempPath != "" && opts.RemoteID != "" {

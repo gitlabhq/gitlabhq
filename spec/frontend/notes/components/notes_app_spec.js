@@ -3,6 +3,8 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import Vue from 'vue';
 import { setTestTimeout } from 'helpers/timeout';
+import DraftNote from '~/batch_comments/components/draft_note.vue';
+import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
 import CommentForm from '~/notes/components/comment_form.vue';
@@ -398,6 +400,34 @@ describe('note_app', () => {
 
     it('finds CommentForm after notes list', () => {
       expect(getComponentOrder()).toStrictEqual([TYPE_NOTES_LIST, TYPE_COMMENT_FORM]);
+    });
+  });
+
+  describe('when multiple draft types are present', () => {
+    beforeEach(() => {
+      store = createStore();
+      store.registerModule('batchComments', batchComments());
+      store.state.batchComments.drafts = [
+        mockData.draftDiffDiscussion,
+        mockData.draftReply,
+        ...mockData.draftComments,
+      ];
+      store.state.isLoading = false;
+      wrapper = shallowMount(NotesApp, {
+        propsData,
+        store,
+        stubs: {
+          OrderedLayout,
+        },
+      });
+    });
+
+    it('correctly finds only draft comments', () => {
+      const drafts = wrapper.findAll(DraftNote).wrappers;
+
+      expect(drafts.map((x) => x.props('draft'))).toEqual(
+        mockData.draftComments.map(({ note }) => expect.objectContaining({ note })),
+      );
     });
   });
 });

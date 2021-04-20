@@ -52,8 +52,6 @@ For example, consider a migration that creates a table with two text columns,
 class CreateDbGuides < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME = false
-
   def up
     create_table_with_constraints :db_guides do |t|
       t.bigint :stars, default: 0, null: false
@@ -89,7 +87,6 @@ For example, consider a migration that adds a new text column `extended_title` t
 
 ```ruby
 class AddExtendedTitleToSprints < ActiveRecord::Migration[6.0]
-  DOWNTIME = false
 
   # rubocop:disable Migration/AddLimitToTextColumns
   # limit is added in 20200501000002_add_text_limit_to_sprints_extended_title
@@ -106,8 +103,6 @@ A second migration should follow the first one with a limit added to `extended_t
 ```ruby
 class AddTextLimitToSprintsExtendedTitle < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
-  DOWNTIME = false
-
   disable_ddl_transaction!
 
   def up
@@ -184,8 +179,6 @@ in a post-deployment migration,
 ```ruby
 class AddTextLimitMigration < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
-
-  DOWNTIME = false
 
   disable_ddl_transaction!
 
@@ -266,7 +259,6 @@ helper in a final post-deployment migration,
 ```ruby
 class ValidateTextLimitMigration < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
-  DOWNTIME = false
 
   disable_ddl_transaction!
 

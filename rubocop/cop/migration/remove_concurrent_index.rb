@@ -11,7 +11,7 @@ module RuboCop
         include MigrationHelpers
 
         MSG = '`remove_concurrent_index` is not reversible so you must manually define ' \
-          'the `up` and `down` methods in your migration class, using `add_concurrent_index` in `down`'.freeze
+          'the `up` and `down` methods in your migration class, using `add_concurrent_index` in `down`'
 
         def on_send(node)
           return unless in_migration?(node)

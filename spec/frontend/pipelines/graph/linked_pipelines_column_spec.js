@@ -2,10 +2,17 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
-import { DOWNSTREAM, GRAPHQL, UPSTREAM } from '~/pipelines/components/graph/constants';
+import {
+  DOWNSTREAM,
+  GRAPHQL,
+  UPSTREAM,
+  LAYER_VIEW,
+  STAGE_VIEW,
+} from '~/pipelines/components/graph/constants';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import LinkedPipeline from '~/pipelines/components/graph/linked_pipeline.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
+import * as parsingUtils from '~/pipelines/components/parsing_utils';
 import { LOAD_FAILURE } from '~/pipelines/constants';
 import {
   mockPipelineResponse,
@@ -20,6 +27,7 @@ describe('Linked Pipelines Column', () => {
     columnTitle: 'Downstream',
     linkedPipelines: processedPipeline.downstream,
     type: DOWNSTREAM,
+    viewType: STAGE_VIEW,
     configPaths: {
       metricsPath: '',
       graphqlResourceEtag: 'this/is/a/path',
@@ -67,7 +75,7 @@ describe('Linked Pipelines Column', () => {
 
   describe('it renders correctly', () => {
     beforeEach(() => {
-      createComponent();
+      createComponentWithApollo();
     });
 
     it('renders the pipeline title', () => {
@@ -90,6 +98,27 @@ describe('Linked Pipelines Column', () => {
       jest.runOnlyPendingTimers();
       await wrapper.vm.$nextTick();
     };
+
+    describe('layer type rendering', () => {
+      let layersFn;
+
+      beforeEach(() => {
+        layersFn = jest.spyOn(parsingUtils, 'listByLayers');
+        createComponentWithApollo({ mountFn: mount });
+      });
+
+      it('calls listByLayers only once no matter how many times view is switched', async () => {
+        expect(layersFn).not.toHaveBeenCalled();
+        await clickExpandButtonAndAwaitTimers();
+        await wrapper.setProps({ viewType: LAYER_VIEW });
+        await wrapper.vm.$nextTick();
+        expect(layersFn).toHaveBeenCalledTimes(1);
+        await wrapper.setProps({ viewType: STAGE_VIEW });
+        await wrapper.setProps({ viewType: LAYER_VIEW });
+        await wrapper.setProps({ viewType: STAGE_VIEW });
+        expect(layersFn).toHaveBeenCalledTimes(1);
+      });
+    });
 
     describe('downstream', () => {
       describe('when successful', () => {

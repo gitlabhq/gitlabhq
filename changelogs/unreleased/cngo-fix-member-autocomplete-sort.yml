@@ -1,0 +1,5 @@
+---
+title: Fix member autocomplete sort order
+merge_request: 58652
+author:
+type: fixed

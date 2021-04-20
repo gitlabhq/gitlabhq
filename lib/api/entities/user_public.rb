@@ -14,6 +14,7 @@ module API
       expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
       expose :private_profile
+      expose :commit_email
     end
   end
 end

@@ -11,6 +11,6 @@
           = hook.enable_ssl_verification ? _('enabled') : _('disabled')
 
     .col-md-4.col-lg-5.text-right-md.gl-mt-2
-      %span>= render 'shared/web_hooks/test_button', hook: hook, button_class: 'btn-sm gl-mr-3'
-      %span>= link_to _('Edit'), edit_hook_path(hook), class: 'gl-button btn btn-sm gl-mr-3'
-      = link_to _('Delete'), destroy_hook_path(hook), data: { confirm: _('Are you sure?') }, method: :delete, class: 'gl-button btn btn-sm'
+      %span>= render 'shared/web_hooks/test_button', hook: hook, button_class: 'btn-sm btn-default gl-mr-3'
+      %span>= link_to _('Edit'), edit_hook_path(hook), class: 'btn gl-button btn-default btn-sm gl-mr-3'
+      = link_to _('Delete'), destroy_hook_path(hook), data: { confirm: _('Are you sure?') }, method: :delete, class: 'btn gl-button btn-default btn-sm'

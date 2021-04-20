@@ -392,6 +392,28 @@ field :blob, type: Types::Snippets::BlobType,
 
 This will increment the [`complexity` score](#field-complexity) of the field by `1`.
 
+If a resolver calls Gitaly, it can be annotated with
+`BaseResolver.calls_gitaly!`. This passes `calls_gitaly: true` to any
+field that uses this resolver.
+
+For example:
+
+```ruby
+class BranchResolver < BaseResolver
+  type ::Types::BranchType, null: true
+  calls_gitaly!
+
+  argument name: ::GraphQL::STRING_TYPE, required: true
+
+  def resolve(name:)
+    object.branch(name)
+  end
+end
+```
+
+Then when we use it, any field that uses `BranchResolver` has the correct
+value for `calls_gitaly:`.
+
 ### Exposing permissions for a type
 
 To expose permissions the current user has on a resource, you can call
@@ -750,113 +772,7 @@ argument :title, GraphQL::STRING_TYPE,
 
 ## Authorization
 
-Authorizations can be applied to both types and fields using the same
-abilities as in the Rails app.
-
-If the:
-
-- Currently authenticated user fails the authorization, the authorized
-  resource is returned as `null`.
-- Resource is part of a collection, the collection is filtered to
-  exclude the objects that the user's authorization checks failed against.
-
-Also see [authorizing resources in a mutation](#authorizing-resources).
-
-NOTE:
-Try to load only what the currently authenticated user is allowed to
-view with our existing finders first, without relying on authorization
-to filter the records. This minimizes database queries and unnecessary
-authorization checks of the loaded records.
-
-### Type authorization
-
-Authorize a type by passing an ability to the `authorize` method. All
-fields with the same type is authorized by checking that the
-currently authenticated user has the required ability.
-
-For example, the following authorization ensures that the currently
-authenticated user can only see projects that they have the
-`read_project` ability for (so long as the project is returned in a
-field that uses `Types::ProjectType`):
-
-```ruby
-module Types
-  class ProjectType < BaseObject
-    authorize :read_project
-  end
-end
-```
-
-You can also authorize against multiple abilities, in which case all of
-the ability checks must pass.
-
-For example, the following authorization ensures that the currently
-authenticated user must have `read_project` and `another_ability`
-abilities to see a project:
-
-```ruby
-module Types
-  class ProjectType < BaseObject
-    authorize [:read_project, :another_ability]
-  end
-end
-```
-
-### Field authorization
-
-Fields can be authorized with the `authorize` option.
-
-For example, the following authorization ensures that the currently
-authenticated user must have the `owner_access` ability to see the
-project:
-
-```ruby
-module Types
-  class MyType < BaseObject
-    field :project, Types::ProjectType, null: true, resolver: Resolvers::ProjectResolver, authorize: :owner_access
-  end
-end
-```
-
-Fields can also be authorized against multiple abilities, in which case
-all of ability checks must pass. This requires explicitly
-passing a block to `field`:
-
-```ruby
-module Types
-  class MyType < BaseObject
-    field :project, Types::ProjectType, null: true, resolver: Resolvers::ProjectResolver do
-      authorize [:owner_access, :another_ability]
-    end
-  end
-end
-```
-
-If the field's type already [has a particular
-authorization](#type-authorization) then there is no need to add that
-same authorization to the field.
-
-### Type and Field authorizations together
-
-Authorizations are cumulative, so where authorizations are defined on
-a field, and also on the field's type, then the currently authenticated
-user would need to pass all ability checks.
-
-In the following simplified example the currently authenticated user
-would need both `first_permission` and `second_permission` abilities in
-order to see the author of the issue.
-
-```ruby
-class UserType
-  authorize :first_permission
-end
-```
-
-```ruby
-class IssueType
-  field :author, UserType, authorize: :second_permission
-end
-```
+See: [GraphQL Authorization](graphql_guide/authorization.md)
 
 ## Resolvers
 
@@ -1098,6 +1014,26 @@ class MyThingResolver < BaseResolver
 end
 ```
 
+By default, fields defined in `#preloads` will be preloaded if that field
+is selected in the query. Occasionally, finer control may be
+needed to avoid preloading too much or incorrect content.
+
+Extending the above example, we might want to preload a different
+association if certain fields are requested together. This can
+be done by overriding `#filtered_preloads`:
+
+```ruby
+class MyThingResolver < BaseResolver
+  # ...
+
+  def filtered_preloads
+    return [:alternate_attribute] if lookahead.selects?(:field_one) && lookahead.selects?(:field_two)
+
+    super
+  end
+end
+```
+
 The final thing that is needed is that every field that uses this resolver needs
 to advertise the need for lookahead:
 
@@ -1137,9 +1073,10 @@ When using resolvers, they can and should serve as the SSoT for field metadata.
 All field options (apart from the field name) can be declared on the resolver.
 These include:
 
-- `type` (this is particularly important, and is planned to be mandatory)
+- `type` (required - all resolvers must include a type annotation)
 - `extras`
 - `description`
+- Gitaly annotations (with `calls_gitaly!`)
 
 Example:
 
@@ -1149,6 +1086,7 @@ module Resolvers
     type Types::MyType, null: true
     extras [:lookahead]
     description 'Retrieve a single MyType'
+    calls_gitaly!
   end
 end
 ```

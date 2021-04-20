@@ -42,15 +42,17 @@ describe('VueAlerts', () => {
 
   const findJsHooks = () => document.querySelectorAll('.js-vue-alert');
   const findAlerts = () => document.querySelectorAll('.gl-alert');
-  const findAlertDismiss = (alert) => alert.querySelector('.gl-alert-dismiss');
+  const findAlertDismiss = (alert) => alert.querySelector('.gl-dismiss-btn');
 
   const serializeAlert = (alert) => ({
     title: alert.querySelector('.gl-alert-title').textContent.trim(),
     html: alert.querySelector('.gl-alert-body div').innerHTML,
-    dismissible: Boolean(alert.querySelector('.gl-alert-dismiss')),
+    dismissible: Boolean(alert.querySelector('.gl-dismiss-btn')),
     primaryButtonText: alert.querySelector('.gl-alert-action').textContent.trim(),
     primaryButtonLink: alert.querySelector('.gl-alert-action').href,
-    variant: [...alert.classList].find((x) => x.match('gl-alert-')).replace('gl-alert-', ''),
+    variant: [...alert.classList]
+      .find((x) => x.match(/gl-alert-(?!not-dismissible)/))
+      .replace('gl-alert-', ''),
   });
 
   it('starts with only JsHooks', () => {

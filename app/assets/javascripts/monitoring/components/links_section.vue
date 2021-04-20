@@ -15,7 +15,7 @@ export default {
 <template>
   <div
     ref="linksSection"
-    class="gl-sm-display-flex gl-flex-sm-wrap gl-mt-5 gl-p-3 gl-bg-gray-10 border gl-rounded-base links-section"
+    class="gl-sm-display-flex gl-sm-flex-wrap gl-mt-5 gl-p-3 gl-bg-gray-10 border gl-rounded-base links-section"
   >
     <div
       v-for="(link, key) in links"

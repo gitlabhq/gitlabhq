@@ -6,24 +6,6 @@ module Gitlab
 
     DURATION_PRECISION = 6 # microseconds
 
-    def keys
-      @keys ||= [
-        :cpu_s,
-        :gitaly_calls,
-        :gitaly_duration_s,
-        :rugged_calls,
-        :rugged_duration_s,
-        :elasticsearch_calls,
-        :elasticsearch_duration_s,
-        :elasticsearch_timed_out_count,
-        *::Gitlab::Memory::Instrumentation::KEY_MAPPING.values,
-        *::Gitlab::Instrumentation::Redis.known_payload_keys,
-        *::Gitlab::Metrics::Subscribers::ActiveRecord::DB_COUNTERS,
-        *::Gitlab::Metrics::Subscribers::ExternalHttp::KNOWN_PAYLOAD_KEYS,
-        *::Gitlab::Metrics::Subscribers::RackAttack::PAYLOAD_KEYS
-      ]
-    end
-
     def init_instrumentation_data(request_ip: nil)
       # Set `request_start_time` only if this is request
       # This is done, as `request_start_time` imply `request_deadline`

@@ -33,6 +33,10 @@ module Gitlab
           object[:description]
         end
 
+        def render_object_schema(object)
+          "[Object JSON schema](#{object.json_schema_path})"
+        end
+
         def render_yaml_link(yaml_path)
           "[YAML definition](#{yaml_path})"
         end

@@ -31,7 +31,7 @@ module Resolvers
         end
       else
         BatchLoader::GraphQL.for(sha).batch(key: project) do |shas, loader, args|
-          finder = ::Ci::PipelinesFinder.new(project, current_user, shas: shas)
+          finder = ::Ci::PipelinesFinder.new(project, current_user, sha: shas)
 
           finder.execute.each { |pipeline| loader.call(pipeline.sha.to_s, pipeline) }
         end

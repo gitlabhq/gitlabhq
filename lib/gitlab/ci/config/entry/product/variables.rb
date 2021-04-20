@@ -25,8 +25,7 @@ module Gitlab
 
             def value
               @config
-                .map { |key, value| [key.to_s, Array(value).map(&:to_s)] }
-                .to_h
+                .to_h { |key, value| [key.to_s, Array(value).map(&:to_s)] }
             end
           end
         end

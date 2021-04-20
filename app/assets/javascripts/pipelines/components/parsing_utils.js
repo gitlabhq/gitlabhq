@@ -1,4 +1,5 @@
 import { uniqWith, isEqual } from 'lodash';
+import { createSankey } from './dag/drawing_utils';
 
 /*
     The following functions are the main engine in transforming the data as
@@ -143,4 +144,29 @@ export const getMaxNodes = (nodes) => {
 
 export const removeOrphanNodes = (sankeyfiedNodes) => {
   return sankeyfiedNodes.filter((node) => node.sourceLinks.length || node.targetLinks.length);
+};
+
+/*
+  This utility accepts unwrapped pipeline data in the format returned from
+  our standard pipeline GraphQL query and returns a list of names by layer
+  for the layer view. It can be combined with the stageLookup on the pipeline
+  to generate columns by layer.
+*/
+
+export const listByLayers = ({ stages }) => {
+  const arrayOfJobs = stages.flatMap(({ groups }) => groups);
+  const parsedData = parseData(arrayOfJobs);
+  const dataWithLayers = createSankey()(parsedData);
+
+  return dataWithLayers.nodes.reduce((acc, { layer, name }) => {
+    /* sort groups by layer */
+
+    if (!acc[layer]) {
+      acc[layer] = [];
+    }
+
+    acc[layer].push(name);
+
+    return acc;
+  }, []);
 };

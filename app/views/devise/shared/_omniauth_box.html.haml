@@ -2,7 +2,7 @@
 
 .omniauth-container.gl-mt-5
   %label.label-bold.d-block
-    Sign in with
+    = _('Sign in with')
   - providers = enabled_button_based_providers
   .d-flex.justify-content-between.flex-wrap
     - providers.each do |provider|
@@ -17,4 +17,4 @@
       %label
         = check_box_tag :remember_me, nil, false, class: 'remember-me-checkbox'
         %span
-          Remember me
+          = _('Remember me')

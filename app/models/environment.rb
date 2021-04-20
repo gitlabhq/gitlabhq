@@ -11,8 +11,6 @@ class Environment < ApplicationRecord
   self.reactive_cache_hard_limit = 10.megabytes
   self.reactive_cache_work_type = :external_dependency
 
-  PRODUCTION_ENVIRONMENT_IDENTIFIERS = %w[prod production].freeze
-
   belongs_to :project, required: true
 
   use_fast_destroy :all_deployments
@@ -26,13 +24,13 @@ class Environment < ApplicationRecord
   has_many :self_managed_prometheus_alert_events, inverse_of: :environment
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
-  has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment'
+  has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment', inverse_of: :environment
   has_one :last_deployable, through: :last_deployment, source: 'deployable', source_type: 'CommitStatus'
   has_one :last_pipeline, through: :last_deployable, source: 'pipeline'
   has_one :last_visible_deployment, -> { visible.distinct_on_environment }, inverse_of: :environment, class_name: 'Deployment'
   has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus'
   has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline'
-  has_one :upcoming_deployment, -> { running.order('deployments.id DESC') }, class_name: 'Deployment'
+  has_one :upcoming_deployment, -> { running.order('deployments.id DESC') }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   before_validation :nullify_external_url
@@ -88,7 +86,7 @@ class Environment < ApplicationRecord
   end
 
   scope :for_project, -> (project) { where(project_id: project) }
-  scope :for_tier, -> (tier) { where(tier: tier).where('tier IS NOT NULL') }
+  scope :for_tier, -> (tier) { where(tier: tier).where.not(tier: nil) }
   scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)) }
   scope :unfoldered, -> { where(environment_type: nil) }
   scope :with_rank, -> do
@@ -249,10 +247,6 @@ class Environment < ApplicationRecord
 
   def last_deployed_at
     last_deployment.try(:created_at)
-  end
-
-  def update_merge_request_metrics?
-    PRODUCTION_ENVIRONMENT_IDENTIFIERS.include?(folder_name.downcase)
   end
 
   def ref_path

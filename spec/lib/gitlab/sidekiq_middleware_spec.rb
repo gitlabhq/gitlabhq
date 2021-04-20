@@ -69,11 +69,13 @@ RSpec.describe Gitlab::SidekiqMiddleware do
     shared_examples "a server middleware chain" do
       it "passes through the right server middlewares" do
         enabled_sidekiq_middlewares.each do |middleware|
-          expect_any_instance_of(middleware).to receive(:call).with(*middleware_expected_args).once.and_call_original
+          expect_next_instance_of(middleware) do |middleware_instance|
+            expect(middleware_instance).to receive(:call).with(*middleware_expected_args).once.and_call_original
+          end
         end
 
         disabled_sidekiq_middlewares.each do |middleware|
-          expect_any_instance_of(middleware).not_to receive(:call)
+          expect(middleware).not_to receive(:new)
         end
 
         worker_class.perform_async(*job_args)

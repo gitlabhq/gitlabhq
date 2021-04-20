@@ -97,13 +97,13 @@ module Gitlab
 
         ActiveRecord::Base.connection.execute <<~SQL
           WITH
-          starting_iids(project_id, iid) as (
+          starting_iids(project_id, iid) as #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}(
             SELECT project_id, MAX(COALESCE(iid, 0))
             FROM #{table}
             WHERE project_id BETWEEN #{start_id} AND #{end_id}
             GROUP BY project_id
           ),
-          with_calculated_iid(id, iid) as (
+          with_calculated_iid(id, iid) as #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}(
             SELECT design.id,
                    init.iid + ROW_NUMBER() OVER (PARTITION BY design.project_id ORDER BY design.id ASC)
               FROM #{table} as design, starting_iids as init

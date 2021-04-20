@@ -1,3 +1,3 @@
-= form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster, html: { class: 'js-cluster-integration-form' } do |field|
+= form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster, html: { class: 'js-cluster-details-form' } do |field|
   = form_errors(@cluster)
-  #js-cluster-integration-form{ data: js_cluster_form_data(@cluster, can?(current_user, :update_cluster, @cluster)) }
+  #js-cluster-details-form{ data: js_cluster_form_data(@cluster, can?(current_user, :update_cluster, @cluster)) }

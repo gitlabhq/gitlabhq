@@ -34,6 +34,9 @@ describe('IssuableTabs', () => {
     wrapper.destroy();
   });
 
+  const findAllGlBadges = () => wrapper.findAllComponents(GlBadge);
+  const findAllGlTabs = () => wrapper.findAllComponents(GlTab);
+
   describe('methods', () => {
     describe('isTabActive', () => {
       it.each`
@@ -57,17 +60,19 @@ describe('IssuableTabs', () => {
 
   describe('template', () => {
     it('renders gl-tab for each tab within `tabs` array', () => {
-      const tabsEl = wrapper.findAll(GlTab);
+      const tabsEl = findAllGlTabs();
 
       expect(tabsEl.exists()).toBe(true);
       expect(tabsEl).toHaveLength(mockIssuableListProps.tabs.length);
     });
 
     it('renders gl-badge component within a tab', () => {
-      const badgeEl = wrapper.findAll(GlBadge).at(0);
+      const badges = findAllGlBadges();
 
-      expect(badgeEl.exists()).toBe(true);
-      expect(badgeEl.text()).toBe(`${mockIssuableListProps.tabCounts.opened}`);
+      // Does not render `All` badge since it has an undefined count
+      expect(badges).toHaveLength(2);
+      expect(badges.at(0).text()).toBe(`${mockIssuableListProps.tabCounts.opened}`);
+      expect(badges.at(1).text()).toBe(`${mockIssuableListProps.tabCounts.closed}`);
     });
 
     it('renders contents for slot "nav-actions"', () => {
@@ -80,7 +85,7 @@ describe('IssuableTabs', () => {
 
   describe('events', () => {
     it('gl-tab component emits `click` event on `click` event', () => {
-      const tabEl = wrapper.findAll(GlTab).at(0);
+      const tabEl = findAllGlTabs().at(0);
 
       tabEl.vm.$emit('click', 'opened');
 

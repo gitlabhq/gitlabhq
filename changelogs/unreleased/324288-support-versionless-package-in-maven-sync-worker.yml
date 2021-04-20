@@ -1,0 +1,5 @@
+---
+title: Fix the Maven sync worker to not fail if the versionless package is not found
+merge_request: 56514
+author:
+type: fixed

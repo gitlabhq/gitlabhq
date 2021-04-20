@@ -1,15 +1,5 @@
-query runnerSetupInstructions(
-  $platform: String!
-  $architecture: String!
-  $projectId: ID!
-  $groupId: ID!
-) {
-  runnerSetup(
-    platform: $platform
-    architecture: $architecture
-    projectId: $projectId
-    groupId: $groupId
-  ) {
+query runnerSetupInstructions($platform: String!, $architecture: String!) {
+  runnerSetup(platform: $platform, architecture: $architecture) {
     installInstructions
     registerInstructions
   }

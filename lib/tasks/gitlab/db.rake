@@ -80,22 +80,6 @@ namespace :gitlab do
       end
     end
 
-    desc 'GitLab | DB | Checks if migrations require downtime or not'
-    task :downtime_check, [:ref] => :environment do |_, args|
-      abort 'You must specify a Git reference to compare with' unless args[:ref]
-
-      require 'shellwords'
-
-      ref = Shellwords.escape(args[:ref])
-
-      migrations = `git diff #{ref}.. --diff-filter=A --name-only -- db/migrate`.lines
-        .map { |file| Rails.root.join(file.strip).to_s }
-        .select { |file| File.file?(file) }
-        .select { |file| /\A[0-9]+.*\.rb\z/ =~ File.basename(file) }
-
-      Gitlab::DowntimeCheck.new.check_and_print(migrations)
-    end
-
     desc 'GitLab | DB | Sets up EE specific database functionality'
 
     if Gitlab.ee?
@@ -237,7 +221,8 @@ namespace :gitlab do
       result_file = args[:result_file] || raise("Please specify result_file argument")
       raise "File exists already, won't overwrite: #{result_file}" if File.exist?(result_file)
 
-      verbose_was, ActiveRecord::Migration.verbose = ActiveRecord::Migration.verbose, true
+      verbose_was = ActiveRecord::Migration.verbose
+      ActiveRecord::Migration.verbose = true
 
       ctx = ActiveRecord::Base.connection.migration_context
       existing_versions = ctx.get_all_versions.to_set

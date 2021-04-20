@@ -140,7 +140,7 @@ RSpec.describe 'Commits' do
 
       context 'when accessing internal project with disallowed access', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/299575' do
         before do
-          project.update(
+          project.update!(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,
             public_builds: false)
           create(:ci_job_artifact, :archive, file: artifacts_file, job: build)

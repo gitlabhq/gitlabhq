@@ -29,7 +29,7 @@ module NavbarStructureHelper
     )
   end
 
-  def insert_container_nav(within)
+  def insert_container_nav
     insert_after_sub_nav_item(
       _('Package Registry'),
       within: _('Packages & Registries'),
@@ -37,11 +37,19 @@ module NavbarStructureHelper
     )
   end
 
-  def insert_dependency_proxy_nav(within)
+  def insert_dependency_proxy_nav
     insert_after_sub_nav_item(
       _('Package Registry'),
       within: _('Packages & Registries'),
       new_sub_nav_item_name: _('Dependency Proxy')
+    )
+  end
+
+  def insert_infrastructure_registry_nav
+    insert_after_sub_nav_item(
+      _('Package Registry'),
+      within: _('Packages & Registries'),
+      new_sub_nav_item_name: _('Infrastructure Registry')
     )
   end
 end

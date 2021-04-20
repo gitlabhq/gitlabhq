@@ -1,16 +1,4 @@
-- webhooks_link_url = 'https://slack.com/apps/A0F7XDUAZ-incoming-webhooks'
-- webhooks_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: webhooks_link_url }
-
 .info-well
   .well-segment
-    %p= s_('SlackIntegration|This service sends notifications about project events to Slack channels. To set up this service:')
-    %ol
-      %li
-        = html_escape(s_('SlackIntegration|%{webhooks_link_start}Add an incoming webhook%{webhooks_link_end} in your Slack team. The default channel can be overridden for each event.')) % { webhooks_link_start: webhooks_link_start.html_safe, webhooks_link_end: '</a>'.html_safe }
-      %li
-        = html_escape(s_('SlackIntegration|Paste the %{strong_open}Webhook URL%{strong_close} into the field below.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
-      %li
-        = html_escape(s_('SlackIntegration|Select events below to enable notifications. The %{strong_open}Slack channel names%{strong_close} and %{strong_open}Slack username%{strong_close} fields are optional.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
-    %p.mt-3.mb-0
-      = html_escape(s_('SlackIntegration|%{strong_open}Note:%{strong_close} Usernames and private channels are not supported.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
-      = link_to _('Learn more'), help_page_path('user/project/integrations/slack')
+    %p= s_('SlackIntegration|Sends notifications about project events to Slack channels.')
+    = link_to _('How do I set up this service?'), help_page_path('user/project/integrations/slack')

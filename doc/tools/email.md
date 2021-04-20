@@ -11,6 +11,9 @@ GitLab provides a simple tool to administrators for emailing all users, or users
 a chosen group or project, right from the Admin Area. Users receive the email
 at their primary email address.
 
+For information about email notifications originating from GitLab, read
+[GitLab notification emails](../user/profile/notifications.md).
+
 ## Use-cases
 
 - Notify your users about a new project, a new feature, or a new product launch.

@@ -12,7 +12,7 @@ module Gitlab
     class Async
       METHODS.each do |meth|
         define_method meth do |*args|
-          next unless Feature.enabled?(:pages_update_legacy_storage, default_enabled: true)
+          next unless Settings.pages.local_store.enabled
 
           PagesTransferWorker.perform_async(meth, args)
         end
@@ -21,7 +21,7 @@ module Gitlab
 
     METHODS.each do |meth|
       define_method meth do |*args|
-        next unless Feature.enabled?(:pages_update_legacy_storage, default_enabled: true)
+        next unless Settings.pages.local_store.enabled
 
         super(*args)
       end

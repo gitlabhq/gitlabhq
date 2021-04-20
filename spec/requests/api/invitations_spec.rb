@@ -102,7 +102,8 @@ RSpec.describe API::Invitations do
                params: { email: stranger.email, access_level: Member::REPORTER }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['message'][stranger.email]).to eq("Access level should be greater than or equal to Developer inherited membership from group #{parent.name}")
+          expect(json_response['message'][stranger.email])
+            .to eq("Access level should be greater than or equal to Developer inherited membership from group #{parent.name}")
         end
 
         it 'creates the member if group level is lower' do
@@ -153,10 +154,10 @@ RSpec.describe API::Invitations do
 
       it "returns a message if member already exists" do
         post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
-             params: { email: maintainer.email, access_level: Member::MAINTAINER }
+             params: { email: developer.email, access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['message'][maintainer.email]).to eq("Already a member of #{source.name}")
+        expect(json_response['message'][developer.email]).to eq("User already exists in source")
       end
 
       it 'returns 404 when the email is not valid' do
@@ -164,7 +165,7 @@ RSpec.describe API::Invitations do
              params: { email: '', access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['message']).to eq('Email cannot be blank')
+        expect(json_response['message']).to eq('Emails cannot be blank')
       end
 
       it 'returns 404 when the email list is not a valid format' do

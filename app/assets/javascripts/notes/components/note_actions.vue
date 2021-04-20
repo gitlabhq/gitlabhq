@@ -13,6 +13,12 @@ import { splitCamelCase } from '../../lib/utils/text_utility';
 import ReplyButton from './note_actions/reply_button.vue';
 
 export default {
+  i18n: {
+    addReactionLabel: __('Add reaction'),
+    editCommentLabel: __('Edit comment'),
+    deleteCommentLabel: __('Delete comment'),
+    moreActionsLabel: __('More actions'),
+  },
   name: 'NoteActions',
   components: {
     GlIcon,
@@ -119,9 +125,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    // This can be undefined when `canAwardEmoji` is false
     awardPath: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -301,9 +309,9 @@ export default {
         category="tertiary"
         variant="default"
         size="small"
-        title="Add reaction"
+        :title="$options.i18n.addReactionLabel"
+        :aria-label="$options.i18n.addReactionLabel"
         data-position="right"
-        :aria-label="__('Add reaction')"
       >
         <span class="reaction-control-icon reaction-control-icon-neutral">
           <gl-icon name="slight-smile" />
@@ -325,32 +333,35 @@ export default {
     <gl-button
       v-if="canEdit"
       v-gl-tooltip
-      title="Edit comment"
+      :title="$options.i18n.editCommentLabel"
+      :aria-label="$options.i18n.editCommentLabel"
       icon="pencil"
       size="small"
       category="tertiary"
-      class="note-action-button js-note-edit btn btn-transparent"
+      class="note-action-button js-note-edit"
       data-qa-selector="note_edit_button"
       @click="onEdit"
     />
     <gl-button
       v-if="showDeleteAction"
       v-gl-tooltip
-      title="Delete comment"
+      :title="$options.i18n.deleteCommentLabel"
+      :aria-label="$options.i18n.deleteCommentLabel"
       size="small"
       icon="remove"
       category="tertiary"
-      class="note-action-button js-note-delete btn btn-transparent"
+      class="note-action-button js-note-delete"
       @click="onDelete"
     />
     <div v-else-if="shouldShowActionsDropdown" class="dropdown more-actions">
       <gl-button
         v-gl-tooltip
-        title="More actions"
+        :title="$options.i18n.moreActionsLabel"
+        :aria-label="$options.i18n.moreActionsLabel"
         icon="ellipsis_v"
         size="small"
         category="tertiary"
-        class="note-action-button more-actions-toggle btn btn-transparent"
+        class="note-action-button more-actions-toggle"
         data-toggle="dropdown"
         @click="closeTooltip"
       />

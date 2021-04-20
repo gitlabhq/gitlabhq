@@ -1,0 +1,6 @@
+---
+title: Allow filtering GraphQL alertManagementIntegrations and alertManagementHttpIntegrations
+  by ID
+merge_request: 57590
+author:
+type: added

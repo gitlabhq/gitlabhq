@@ -1,7 +1,7 @@
 import ActionCable from '@rails/actioncable';
 import { shallowMount } from '@vue/test-utils';
-import query from '~/issuable_sidebar/queries/issue_sidebar.query.graphql';
 import AssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
+import { assigneesQueries } from '~/sidebar/constants';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import Mock from './mock_data';
 
@@ -18,18 +18,19 @@ describe('Assignees Realtime', () => {
   let wrapper;
   let mediator;
 
-  const createComponent = () => {
+  const createComponent = (issuableType = 'issue') => {
     wrapper = shallowMount(AssigneesRealtime, {
       propsData: {
         issuableIid: '1',
         mediator,
         projectPath: 'path/to/project',
+        issuableType,
       },
       mocks: {
         $apollo: {
-          query,
+          query: assigneesQueries[issuableType].query,
           queries: {
-            project: {
+            workspace: {
               refetch: jest.fn(),
             },
           },
@@ -51,8 +52,8 @@ describe('Assignees Realtime', () => {
   describe('when handleFetchResult is called from smart query', () => {
     it('sets assignees to the store', () => {
       const data = {
-        project: {
-          issue: {
+        workspace: {
+          issuable: {
             assignees: {
               nodes: [{ id: 'gid://gitlab/Environments/123', avatarUrl: 'url' }],
             },
@@ -95,7 +96,7 @@ describe('Assignees Realtime', () => {
       wrapper.vm.received({ event: 'updated' });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.$apollo.queries.project.refetch).toHaveBeenCalledTimes(1);
+        expect(wrapper.vm.$apollo.queries.workspace.refetch).toHaveBeenCalledTimes(1);
       });
     });
   });

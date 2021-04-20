@@ -1,22 +1,40 @@
 # frozen_string_literal: true
-# rubocop:disable Graphql/ResolverType (inherited from MilestonesResolver)
 
 module Resolvers
   class GroupMilestonesResolver < MilestonesResolver
     argument :include_descendants, GraphQL::BOOLEAN_TYPE,
              required: false,
-             description: 'Also return milestones in all subgroups and subprojects.'
+             description: 'Include milestones from all subgroups and subprojects.'
+    argument :include_ancestors, GraphQL::BOOLEAN_TYPE,
+             required: false,
+             description: 'Include milestones from all parent groups.'
 
     type Types::MilestoneType.connection_type, null: true
 
     private
 
     def parent_id_parameters(args)
-      return { group_ids: parent.id } unless args[:include_descendants].present?
+      include_ancestors = args[:include_ancestors].present?
+      include_descendants = args[:include_descendants].present?
+      return { group_ids: parent.id } unless include_ancestors || include_descendants
+
+      group_ids = if include_ancestors && include_descendants
+                    parent.self_and_hierarchy
+                  elsif include_ancestors
+                    parent.self_and_ancestors
+                  else
+                    parent.self_and_descendants
+                  end
+
+      project_ids = if include_descendants
+                      group_projects.with_issues_or_mrs_available_for_user(current_user)
+                    else
+                      nil
+                    end
 
       {
-        group_ids: parent.self_and_descendants.public_or_visible_to_user(current_user).select(:id),
-        project_ids: group_projects.with_issues_or_mrs_available_for_user(current_user)
+        group_ids: group_ids.public_or_visible_to_user(current_user).select(:id),
+        project_ids: project_ids
       }
     end
 

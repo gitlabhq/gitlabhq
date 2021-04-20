@@ -2,7 +2,7 @@
 
 module Gitlab::UsageDataCounters
   class CiTemplateUniqueCounter
-    REDIS_SLOT = 'ci_templates'.freeze
+    REDIS_SLOT = 'ci_templates'
 
     # NOTE: Events originating from implicit Auto DevOps pipelines get prefixed with `implicit_`
     TEMPLATE_TO_EVENT = {
@@ -20,8 +20,6 @@ module Gitlab::UsageDataCounters
 
     class << self
       def track_unique_project_event(project_id:, template:, config_source:)
-        return if Feature.disabled?(:usage_data_track_ci_templates_unique_projects, default_enabled: :yaml)
-
         if event = unique_project_event(template, config_source)
           Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event, values: project_id)
         end

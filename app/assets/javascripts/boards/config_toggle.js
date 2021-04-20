@@ -2,14 +2,15 @@ import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import ConfigToggle from './components/config_toggle.vue';
 
-export default (boardsStore) => {
+export default (boardsStore = undefined) => {
   const el = document.querySelector('.js-board-config');
 
   if (!el) {
     return;
   }
 
-  gl.boardConfigToggle = new Vue({
+  // eslint-disable-next-line no-new
+  new Vue({
     el,
     render(h) {
       return h(ConfigToggle, {

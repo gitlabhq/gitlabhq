@@ -11,25 +11,25 @@ export default {
     MetadataItem,
   },
   props: {
-    packagesCount: {
+    count: {
       type: Number,
       required: false,
       default: null,
     },
-    packageHelpUrl: {
+    helpUrl: {
       type: String,
       required: true,
     },
   },
   computed: {
     showPackageCount() {
-      return Number.isInteger(this.packagesCount);
+      return Number.isInteger(this.count);
     },
     packageAmountText() {
-      return n__(`%d Package`, `%d Packages`, this.packagesCount);
+      return n__(`%d Package`, `%d Packages`, this.count);
     },
     infoMessages() {
-      return [{ text: LIST_INTRO_TEXT, link: this.packageHelpUrl }];
+      return [{ text: LIST_INTRO_TEXT, link: this.helpUrl }];
     },
   },
   i18n: {

@@ -1,0 +1,23 @@
+- return unless @project.mr_can_target_upstream? && can?(current_user, :read_project, @project.forked_from_project)
+
+- form = local_assigns.fetch(:form)
+
+= form.fields_for :project_setting do |settings|
+  .form-group
+    %b= s_('ProjectSettings|Target project')
+    %p.text-secondary
+      = s_('ProjectSettings|The default target project for merge requests created in this fork project.')
+
+    .form-check.gl-mb-2
+      = settings.radio_button :mr_default_target_self, false, class: "form-check-input"
+      = label_tag :project_project_setting_attributes_mr_default_target_self_false, class: 'form-check-label' do
+        .gl-font-weight-bold
+          = s_('ProjectSettings|Upstream project')
+        = @project.forked_from_project.full_name
+
+    .form-check.gl-mb-2
+      = settings.radio_button :mr_default_target_self, true, class: "form-check-input"
+      = label_tag :project_project_setting_attributes_mr_default_target_self_true, class: 'form-check-label' do
+        .gl-font-weight-bold
+          = s_('ProjectSettings|This project')
+        = @project.full_name

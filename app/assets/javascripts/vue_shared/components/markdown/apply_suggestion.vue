@@ -34,6 +34,7 @@ export default {
     boundary="window"
     right
     menu-class="gl-w-full!"
+    data-qa-selector="apply_suggestion_button"
     @shown="$refs.commitMessage.$el.focus()"
   >
     <gl-dropdown-form class="gl-px-4! gl-m-0!">
@@ -44,12 +45,14 @@ export default {
         v-model="message"
         :placeholder="defaultCommitMessage"
         submit-on-enter
+        data-qa-selector="commit_message_textbox"
         @submit="onApply"
       />
       <gl-button
         class="gl-w-auto! gl-mt-3 gl-text-center! gl-hover-text-white! gl-transition-medium! float-right"
         category="primary"
         variant="success"
+        data-qa-selector="commit_with_custom_message_button"
         @click="onApply"
       >
         {{ __('Apply') }}

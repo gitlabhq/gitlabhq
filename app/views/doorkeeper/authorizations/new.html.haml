@@ -1,6 +1,6 @@
 %main{ :role => "main" }
-  .modal-no-backdrop.modal-doorkeepr-auth
-    .modal-content
+  .modal-dialog.modal-doorkeepr-auth
+    .modal-content.gl-shadow-none
       .modal-header
         %h3.page-title
           - link_to_client = link_to(@pre_auth.client.name, @pre_auth.redirect_uri, target: '_blank', rel: 'noopener noreferrer')

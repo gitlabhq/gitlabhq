@@ -26,6 +26,10 @@ RSpec.describe 'merge requests discussions' do
 
     # https://docs.gitlab.com/ee/development/query_recorder.html#use-request-specs-instead-of-controller-specs
     it 'avoids N+1 DB queries', :request_store do
+      send_request # warm up
+
+      create(:diff_note_on_merge_request, noteable: merge_request,
+             project: merge_request.project)
       control = ActiveRecord::QueryRecorder.new { send_request }
 
       create(:diff_note_on_merge_request, noteable: merge_request,

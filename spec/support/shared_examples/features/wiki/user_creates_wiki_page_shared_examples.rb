@@ -240,7 +240,7 @@ RSpec.shared_examples 'User creates wiki page' do
       end
     end
 
-    it "shows the emoji autocompletion dropdown" do
+    it "shows the emoji autocompletion dropdown", :js do
       click_link("New page")
 
       page.within(".wiki-form") do

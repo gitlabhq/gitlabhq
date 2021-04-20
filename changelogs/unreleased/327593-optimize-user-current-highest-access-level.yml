@@ -1,0 +1,5 @@
+---
+title: Add partial index on members to optimize highest access level query
+merge_request: 59455
+author:
+type: performance

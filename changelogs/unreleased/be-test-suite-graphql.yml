@@ -1,0 +1,5 @@
+---
+title: Add GraphQL endpoint for a specific test suite in pipelines
+merge_request: 58924
+author:
+type: added

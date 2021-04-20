@@ -151,6 +151,8 @@ Parameters:
 | `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format](#date-formatting) |
 | `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format](#date-formatting)  |
 | `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc` |
+| `page` | integer | no | The page of results to return. Defaults to 1. |
+| `per_page` | integer | no | The number of results per page. Defaults to 20. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/:id/events"

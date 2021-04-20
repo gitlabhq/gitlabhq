@@ -348,6 +348,66 @@ RSpec.describe Gitlab::Json do
         subject
       end
     end
+
+    context "precompiled JSON" do
+      let(:obj) { Gitlab::Json::PrecompiledJson.new(result) }
+
+      it "renders the string directly" do
+        expect(subject).to eq(result)
+      end
+
+      it "calls #to_s on the object" do
+        expect(obj).to receive(:to_s).once
+
+        subject
+      end
+
+      it "doesn't run the JSON formatter" do
+        expect(Gitlab::Json).not_to receive(:dump)
+
+        subject
+      end
+    end
+  end
+
+  describe Gitlab::Json::PrecompiledJson do
+    subject(:precompiled) { described_class.new(obj) }
+
+    describe "#to_s" do
+      subject { precompiled.to_s }
+
+      context "obj is a string" do
+        let(:obj) { "{}" }
+
+        it "returns a string" do
+          expect(subject).to eq("{}")
+        end
+      end
+
+      context "obj is an array" do
+        let(:obj) { ["{\"foo\": \"bar\"}", "{}"] }
+
+        it "returns a string" do
+          expect(subject).to eq("[{\"foo\": \"bar\"},{}]")
+        end
+      end
+
+      context "obj is an array of un-stringables" do
+        let(:obj) { [BasicObject.new] }
+
+        it "raises an error" do
+          expect { subject }.to raise_error(NoMethodError)
+        end
+      end
+
+      context "obj is something else" do
+        let(:obj) { {} }
+
+        it "raises an error" do
+          expect { subject }.to raise_error(described_class::UnsupportedFormatError)
+        end
+      end
+    end
   end
 
   describe Gitlab::Json::LimitedEncoder do

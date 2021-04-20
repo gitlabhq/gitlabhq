@@ -4,15 +4,15 @@ module Packages
   module Debian
     class DistributionsFinder
       def initialize(container, params = {})
-        @container, @params = container, params
+        @container = container
+        @params = params
       end
 
       def execute
         collection = relation.with_container(container)
         collection = by_codename(collection)
         collection = by_suite(collection)
-        collection = by_codename_or_suite(collection)
-        collection
+        by_codename_or_suite(collection)
       end
 
       private

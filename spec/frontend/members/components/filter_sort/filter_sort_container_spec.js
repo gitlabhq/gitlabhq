@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import FilterSortContainer from '~/members/components/filter_sort/filter_sort_container.vue';
 import MembersFilteredSearchBar from '~/members/components/filter_sort/members_filtered_search_bar.vue';
 import SortDropdown from '~/members/components/filter_sort/sort_dropdown.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -12,22 +13,30 @@ describe('FilterSortContainer', () => {
 
   const createComponent = (state) => {
     const store = new Vuex.Store({
-      state: {
-        filteredSearchBar: {
-          show: true,
-          tokens: ['two_factor'],
-          searchParam: 'search',
-          placeholder: 'Filter members',
-          recentSearchesStorageKey: 'group_members',
+      modules: {
+        [MEMBER_TYPES.user]: {
+          namespaced: true,
+          state: {
+            filteredSearchBar: {
+              show: true,
+              tokens: ['two_factor'],
+              searchParam: 'search',
+              placeholder: 'Filter members',
+              recentSearchesStorageKey: 'group_members',
+            },
+            tableSortableFields: ['account'],
+            ...state,
+          },
         },
-        tableSortableFields: ['account'],
-        ...state,
       },
     });
 
     wrapper = shallowMount(FilterSortContainer, {
       localVue,
       store,
+      provide: {
+        namespace: MEMBER_TYPES.user,
+      },
     });
   };
 

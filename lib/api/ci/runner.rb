@@ -245,7 +245,7 @@ module API
 
           job = authenticate_job!
 
-          result = ::Ci::CreateJobArtifactsService.new(job).authorize(artifact_type: params[:artifact_type], filesize: params[:filesize])
+          result = ::Ci::JobArtifacts::CreateService.new(job).authorize(artifact_type: params[:artifact_type], filesize: params[:filesize])
 
           if result[:status] == :success
             content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
@@ -284,7 +284,7 @@ module API
           artifacts = params[:file]
           metadata = params[:metadata]
 
-          result = ::Ci::CreateJobArtifactsService.new(job).execute(artifacts, params, metadata_file: metadata)
+          result = ::Ci::JobArtifacts::CreateService.new(job).execute(artifacts, params, metadata_file: metadata)
 
           if result[:status] == :success
             status :created

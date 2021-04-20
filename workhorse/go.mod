@@ -1,6 +1,6 @@
 module gitlab.com/gitlab-org/gitlab-workhorse
 
-go 1.13
+go 1.15
 
 require (
 	github.com/Azure/azure-storage-blob-go v0.11.1-0.20201209121048-6df5d9af221d
@@ -34,13 +34,12 @@ require (
 	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
-	golang.org/x/sys v0.0.0-20210110051926-789bb1bd4061 // indirect
 	golang.org/x/text v0.3.5 // indirect
-	golang.org/x/tools v0.0.0-20201203202102-a1a1cbeaa516
+	golang.org/x/tools v0.1.0
 	google.golang.org/genproto v0.0.0-20210111234610-22ae2b108f89 // indirect
 	google.golang.org/grpc v1.34.1
 	google.golang.org/grpc/examples v0.0.0-20201226181154-53788aa5dcb4 // indirect
-	honnef.co/go/tools v0.0.1-2020.1.5
+	honnef.co/go/tools v0.1.3
 )
 
 // go get tries to enforce semantic version compatibility via module paths.

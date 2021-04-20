@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang Rubocop offenses for admin controllers
+merge_request: 57644
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

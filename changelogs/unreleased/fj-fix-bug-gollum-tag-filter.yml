@@ -1,0 +1,5 @@
+---
+title: Fix bug in Gollum Tags filter
+merge_request: 56638
+author:
+type: fixed

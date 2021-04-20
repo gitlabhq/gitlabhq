@@ -50,7 +50,7 @@ describe('Release edit/new component', () => {
       merge(
         {
           modules: {
-            detail: {
+            editNew: {
               namespaced: true,
               actions,
               state,
@@ -112,7 +112,7 @@ describe('Release edit/new component', () => {
 
     it('renders the description text at the top of the page', () => {
       expect(wrapper.find('.js-subtitle-text').text()).toBe(
-        'Releases are based on Git tags. We recommend tags that use semantic versioning, for example v1.0, v2.0-pre.',
+        'Releases are based on Git tags. We recommend tags that use semantic versioning, for example v1.0.0, v2.1.0-pre.',
       );
     });
 
@@ -168,7 +168,7 @@ describe('Release edit/new component', () => {
       await factory({
         store: {
           modules: {
-            detail: {
+            editNew: {
               getters: {
                 isExistingRelease: () => false,
               },
@@ -207,7 +207,7 @@ describe('Release edit/new component', () => {
         await factory({
           store: {
             modules: {
-              detail: {
+              editNew: {
                 getters: {
                   isValid: () => true,
                 },
@@ -227,7 +227,7 @@ describe('Release edit/new component', () => {
         await factory({
           store: {
             modules: {
-              detail: {
+              editNew: {
                 getters: {
                   isValid: () => false,
                 },

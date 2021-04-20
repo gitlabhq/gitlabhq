@@ -23,6 +23,6 @@ export default {
     modalId: '_modal_id_',
     openModal: '_open_modal_',
   },
-  mockBranches: ['_branch_1', '_abc_', '_master_'],
+  mockBranches: ['_branch_1', '_abc_', '_main_'],
   mockProjects: ['_project_1', '_abc_', '_project_'],
 };

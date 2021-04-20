@@ -5,7 +5,8 @@ module Gitlab
     module Loaders
       class BatchLfsOidLoader
         def initialize(repository, blob_id)
-          @repository, @blob_id = repository, blob_id
+          @repository = repository
+          @blob_id = blob_id
         end
 
         def find

@@ -36,7 +36,7 @@ application starts, Rails queries the database schema, caching the tables and
 column types for the data requested. Because of this schema cache, dropping a
 column or table while the application is running can produce 500 errors to the
 user. This is why we have a [process for dropping columns and other
-no-downtime changes](what_requires_downtime.md).
+no-downtime changes](avoiding_downtime_in_migrations.md).
 
 #### Multi-tenancy
 

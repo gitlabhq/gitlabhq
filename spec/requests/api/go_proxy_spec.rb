@@ -363,7 +363,7 @@ RSpec.describe API::GoProxy do
     let(:module_name) { base }
 
     before do
-      project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
     end
 
     describe 'GET /projects/:id/packages/go/*module_name/@v/list' do
@@ -412,7 +412,7 @@ RSpec.describe API::GoProxy do
     let(:module_name) { base }
 
     before do
-      project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
     end
 
     describe 'GET /projects/:id/packages/go/*module_name/@v/list' do

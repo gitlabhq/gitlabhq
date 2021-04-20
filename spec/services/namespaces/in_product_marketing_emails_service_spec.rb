@@ -3,14 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
-  subject(:execute_service) do
-    travel_to(frozen_time) { described_class.new(track, interval).execute }
-  end
+  subject(:execute_service) { described_class.new(track, interval).execute }
 
   let(:track) { :create }
   let(:interval) { 1 }
 
-  let(:frozen_time) { Time.current }
+  let(:frozen_time) { Time.zone.parse('23 Mar 2021 10:14:40 UTC') }
   let(:previous_action_completed_at) { frozen_time - 2.days }
   let(:current_action_completed_at) { nil }
   let(:experiment_enabled) { true }
@@ -21,6 +19,7 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
   let_it_be(:user) { create(:user, email_opted_in: true) }
 
   before do
+    travel_to(frozen_time)
     create(:onboarding_progress, namespace: group, **actions_completed)
     group.add_developer(user)
     stub_experiment_for_subject(in_product_marketing_emails: experiment_enabled)
@@ -86,26 +85,46 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
   end
 
   describe 'experimentation' do
-    context 'when the experiment is enabled' do
-      it 'adds the group as an experiment subject in the experimental group' do
-        expect(Experiment).to receive(:add_group)
-          .with(:in_product_marketing_emails, variant: :experimental, group: group)
-
-        execute_service
-      end
-    end
-
-    context 'when the experiment is disabled' do
-      let(:experiment_enabled) { false }
-
-      it 'adds the group as an experiment subject in the control group' do
-        expect(Experiment).to receive(:add_group)
-          .with(:in_product_marketing_emails, variant: :control, group: group)
-
-        execute_service
+    context 'when on dotcom' do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(true)
       end
 
-      it { is_expected.not_to send_in_product_marketing_email }
+      context 'when the experiment is enabled' do
+        it 'adds the group as an experiment subject in the experimental group' do
+          expect(Experiment).to receive(:add_group)
+            .with(:in_product_marketing_emails, variant: :experimental, group: group)
+
+          execute_service
+        end
+      end
+
+      context 'when the experiment is disabled' do
+        let(:experiment_enabled) { false }
+
+        it 'adds the group as an experiment subject in the control group' do
+          expect(Experiment).to receive(:add_group)
+            .with(:in_product_marketing_emails, variant: :control, group: group)
+
+          execute_service
+        end
+
+        it { is_expected.not_to send_in_product_marketing_email }
+      end
+
+      context 'when not on dotcom' do
+        before do
+          allow(::Gitlab).to receive(:com?).and_return(false)
+        end
+
+        it 'does not add the group as an experiment subject' do
+          expect(Experiment).not_to receive(:add_group)
+
+          execute_service
+        end
+
+        it { is_expected.to send_in_product_marketing_email(user.id, group.id, :create, 0) }
+      end
     end
   end
 
@@ -139,25 +158,87 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     it { is_expected.not_to send_in_product_marketing_email }
   end
 
-  context 'when the user has already received a marketing email as part of another group' do
-    before do
-      other_group = create(:group)
-      other_group.add_developer(user)
-      create(:onboarding_progress, namespace: other_group, created_at: previous_action_completed_at, git_write_at: current_action_completed_at)
+  describe 'do not send emails twice' do
+    subject { described_class.send_for_all_tracks_and_intervals }
+
+    let(:user) { create(:user, email_opted_in: true) }
+
+    context 'when user already got a specific email' do
+      before do
+        create(:in_product_marketing_email, user: user, track: track, series: 0)
+      end
+
+      it { is_expected.not_to send_in_product_marketing_email(user.id, anything, track, 0) }
     end
 
-    # For any group Notify is called exactly once
-    it { is_expected.to send_in_product_marketing_email(user.id, anything, :create, 0) }
+    context 'when user already got sent the whole track' do
+      before do
+        0.upto(2) do |series|
+          create(:in_product_marketing_email, user: user, track: track, series: series)
+        end
+      end
+
+      it 'does not send any of the emails anymore', :aggregate_failures do
+        0.upto(2) do |series|
+          expect(subject).not_to send_in_product_marketing_email(user.id, anything, track, series)
+        end
+      end
+    end
+
+    context 'when user is in two groups' do
+      let(:other_group) { create(:group) }
+
+      before do
+        other_group.add_developer(user)
+      end
+
+      context 'when both groups would get the same email' do
+        before do
+          create(:onboarding_progress, namespace: other_group, **actions_completed)
+        end
+
+        it 'does not send the same email twice' do
+          subject
+
+          expect(Notify).to have_received(:in_product_marketing_email).with(user.id, anything, :create, 0).once
+        end
+      end
+
+      context 'when other group gets a different email' do
+        before do
+          create(:onboarding_progress, namespace: other_group, created_at: previous_action_completed_at, git_write_at: frozen_time - 2.days)
+        end
+
+        it 'sends both emails' do
+          subject
+
+          expect(Notify).to have_received(:in_product_marketing_email).with(user.id, group.id, :create, 0)
+          expect(Notify).to have_received(:in_product_marketing_email).with(user.id, other_group.id, :verify, 0)
+        end
+      end
+    end
+  end
+
+  it 'records sent emails' do
+    expect { subject }.to change { Users::InProductMarketingEmail.count }.by(1)
+
+    expect(
+      Users::InProductMarketingEmail.where(
+        user: user,
+        track: Users::InProductMarketingEmail.tracks[:create],
+        series: 0
+      )
+    ).to exist
   end
 
   context 'when invoked with a non existing track' do
     let(:track) { :foo }
 
     before do
-      stub_const("#{described_class}::TRACKS", { foo: :git_write })
+      stub_const("#{described_class}::TRACKS", { bar: :git_write })
     end
 
-    it { expect { subject }.to raise_error(NotImplementedError, 'No ability defined for track foo') }
+    it { expect { subject }.to raise_error(ArgumentError, 'Track foo not defined') }
   end
 
   context 'when group is a sub-group' do

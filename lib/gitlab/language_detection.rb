@@ -20,7 +20,7 @@ module Gitlab
     # Newly detected languages, returned in a structure accepted by
     # Gitlab::Database.bulk_insert
     def insertions(programming_languages)
-      lang_to_id = programming_languages.map { |p| [p.name, p.id] }.to_h
+      lang_to_id = programming_languages.to_h { |p| [p.name, p.id] }
 
       (languages - previous_language_names).map do |new_lang|
         {
@@ -63,8 +63,7 @@ module Gitlab
         @repository
         .languages
         .first(MAX_LANGUAGES)
-        .map { |l| [l[:label], l] }
-        .to_h
+        .to_h { |l| [l[:label], l] }
     end
   end
 end

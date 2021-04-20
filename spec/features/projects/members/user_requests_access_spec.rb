@@ -13,7 +13,7 @@ RSpec.describe 'Projects > Members > User requests access', :js do
   end
 
   it 'request access feature is disabled' do
-    project.update(request_access_enabled: false)
+    project.update!(request_access_enabled: false)
     visit project_path(project)
 
     expect(page).not_to have_content 'Request Access'

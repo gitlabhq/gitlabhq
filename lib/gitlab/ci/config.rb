@@ -17,11 +17,13 @@ module Gitlab
         Config::Yaml::Tags::TagError
       ].freeze
 
-      attr_reader :root
+      attr_reader :root, :context, :ref
 
-      def initialize(config, project: nil, sha: nil, user: nil, parent_pipeline: nil)
+      def initialize(config, project: nil, sha: nil, user: nil, parent_pipeline: nil, ref: nil)
         @context = build_context(project: project, sha: sha, user: user, parent_pipeline: parent_pipeline)
         @context.set_deadline(TIMEOUT_SECONDS)
+
+        @ref = ref
 
         @config = expand_config(config)
 
@@ -94,9 +96,7 @@ module Gitlab
         initial_config = Config::External::Processor.new(initial_config, @context).perform
         initial_config = Config::Extendable.new(initial_config).to_hash
         initial_config = Config::Yaml::Tags::Resolver.new(initial_config).to_hash
-        initial_config = Config::EdgeStagesInjector.new(initial_config).to_hash
-
-        initial_config
+        Config::EdgeStagesInjector.new(initial_config).to_hash
       end
 
       def find_sha(project)

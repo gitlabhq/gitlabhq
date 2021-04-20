@@ -20,7 +20,7 @@ export default {
     ReleasesSort,
   },
   computed: {
-    ...mapState('list', [
+    ...mapState('index', [
       'documentationPath',
       'illustrationPath',
       'newReleasePath',
@@ -46,7 +46,7 @@ export default {
     window.addEventListener('popstate', this.fetchReleases);
   },
   methods: {
-    ...mapActions('list', {
+    ...mapActions('index', {
       fetchReleasesStoreAction: 'fetchReleases',
     }),
     fetchReleases() {

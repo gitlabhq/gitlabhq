@@ -19,4 +19,4 @@
 
   - if can? current_user, :admin_project, @project
     %td
-      = link_to 'Unprotect', [@project, protected_tag, { update_section: 'js-protected-tags-settings' }], data: { confirm: 'Tag will be writable for developers. Are you sure?' }, method: :delete, class: 'btn btn-warning'
+      = link_to 'Unprotect', [@project, protected_tag, { update_section: 'js-protected-tags-settings' }], data: { confirm: 'Tag will be writable for developers. Are you sure?' }, method: :delete, class: 'gl-button btn btn-danger-secondary'

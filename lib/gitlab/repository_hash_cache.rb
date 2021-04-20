@@ -148,7 +148,7 @@ module Gitlab
     # @param hash [Hash]
     # @return [Hash] the stringified hash
     def standardize_hash(hash)
-      hash.map { |k, v| [k.to_s, v.to_s] }.to_h
+      hash.to_h { |k, v| [k.to_s, v.to_s] }
     end
 
     # Record metrics in Prometheus.

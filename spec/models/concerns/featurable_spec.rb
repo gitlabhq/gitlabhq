@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Featurable do
   let_it_be(:user) { create(:user) }
+
   let(:project) { create(:project) }
   let(:feature_class) { subject.class }
   let(:features) { feature_class::FEATURES }
@@ -163,7 +164,7 @@ RSpec.describe Featurable do
   end
 
   def update_all_project_features(project, features, value)
-    project_feature_attributes = features.map { |f| ["#{f}_access_level", value] }.to_h
+    project_feature_attributes = features.to_h { |f| ["#{f}_access_level", value] }
     project.project_feature.update!(project_feature_attributes)
   end
 end

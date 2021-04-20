@@ -40,8 +40,8 @@ RSpec.describe ::Ci::TestFailureHistoryWorker do
 
       subject
 
-      expect(Ci::TestCase.count).to eq(2)
-      expect(Ci::TestCaseFailure.count).to eq(2)
+      expect(Ci::UnitTest.count).to eq(2)
+      expect(Ci::UnitTestFailure.count).to eq(2)
     end
   end
 end

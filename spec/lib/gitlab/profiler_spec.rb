@@ -78,13 +78,8 @@ RSpec.describe Gitlab::Profiler do
       end
 
       it 'strips out the private token' do
-        expect(custom_logger).to receive(:add) do |severity, _progname, message|
-          next if message.include?('spec/')
-
-          expect(severity).to eq(Logger::DEBUG)
-          expect(message).to include('public').and include(described_class::FILTERED_STRING)
-          expect(message).not_to include(private_token)
-        end.at_least(1) # This spec could be wrapped in more blocks in the future
+        allow(custom_logger).to receive(:add).and_call_original
+        expect(custom_logger).to receive(:add).with(Logger::DEBUG, anything, 'public [FILTERED]').at_least(1)
 
         custom_logger.debug("public #{private_token}")
       end

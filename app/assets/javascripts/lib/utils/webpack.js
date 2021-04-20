@@ -11,10 +11,4 @@ export function resetServiceWorkersPublicPath() {
   const relativeRootPath = (gon && gon.relative_url_root) || '';
   const webpackAssetPath = joinPaths(relativeRootPath, '/assets/webpack/');
   __webpack_public_path__ = webpackAssetPath; // eslint-disable-line babel/camelcase
-
-  // monaco-editor-webpack-plugin currently (incorrectly) references the
-  // public path as a property of `window`.  Once this is fixed upstream we
-  // can remove this line
-  // see: https://github.com/Microsoft/monaco-editor-webpack-plugin/pull/63
-  window.__webpack_public_path__ = webpackAssetPath; // eslint-disable-line
 }

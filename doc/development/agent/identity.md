@@ -92,3 +92,15 @@ GitLab provides the following information in its response for a given Agent acce
 
 - Agent configuration Git repository. (The agent doesn't support per-folder authorization.)
 - Agent name.
+
+## Create an agent
+
+You can create an agent by following the [user documentation](../../user/clusters/agent/index.md#create-an-agent-record-in-gitlab), or via Rails console:
+
+```ruby
+project = ::Project.find_by_full_path("path-to/your-configuration-project")
+# agent-name should be the same as specified above in the config.yaml
+agent = ::Clusters::Agent.create(name: "<agent-name>", project: project)
+token = ::Clusters::AgentToken.create(agent: agent)
+token.token # this will print out the token you need to use on the next step
+```

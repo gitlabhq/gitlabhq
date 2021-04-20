@@ -265,6 +265,7 @@ excluded_attributes:
     - :issue_id
   push_event_payload:
     - :event_id
+    - :event_id_convert_to_bigint
   project_badges:
     - :group_id
   resource_label_events:
@@ -287,6 +288,7 @@ excluded_attributes:
     - :label_id
   events:
     - :target_id
+    - :id_convert_to_bigint
   timelogs:
     - :issue_id
     - :merge_request_id

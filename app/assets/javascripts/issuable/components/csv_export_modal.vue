@@ -12,19 +12,23 @@ export default {
   },
   inject: {
     issuableType: {
-      default: '',
-    },
-    issuableCount: {
-      default: 0,
+      default: ISSUABLE_TYPE.issues,
     },
     email: {
       default: '',
     },
-    exportCsvPath: {
-      default: '',
-    },
   },
   props: {
+    exportCsvPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    issuableCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     modalId: {
       type: String,
       required: true,

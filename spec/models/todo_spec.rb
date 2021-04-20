@@ -376,6 +376,22 @@ RSpec.describe Todo do
     end
   end
 
+  describe '.group_by_user_id_and_state' do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    before do
+      create(:todo, user: user1, state: :pending)
+      create(:todo, user: user1, state: :pending)
+      create(:todo, user: user1, state: :done)
+      create(:todo, user: user2, state: :pending)
+    end
+
+    specify do
+      expect(Todo.count_grouped_by_user_id_and_state).to eq({ [user1.id, "done"] => 1, [user1.id, "pending"] => 2, [user2.id, "pending"] => 1 })
+    end
+  end
+
   describe '.any_for_target?' do
     it 'returns true if there are todos for a given target' do
       todo = create(:todo)
@@ -434,5 +450,13 @@ RSpec.describe Todo do
         expect(Todo.where(id: ids).map(&:updated_at)).to all(be_like_time(expected_update_date))
       end
     end
+  end
+
+  describe '.pluck_user_id' do
+    subject { described_class.pluck_user_id }
+
+    let_it_be(:todo) { create(:todo) }
+
+    it { is_expected.to eq([todo.user_id]) }
   end
 end

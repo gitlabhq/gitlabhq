@@ -511,7 +511,7 @@ RSpec.describe ProjectPolicy do
         project.add_maintainer(project_bot)
       end
 
-      it { is_expected.not_to be_allowed(:admin_resource_access_tokens)}
+      it { is_expected.not_to be_allowed(:create_resource_access_tokens)}
     end
   end
 
@@ -1351,6 +1351,56 @@ RSpec.describe ProjectPolicy do
 
         it { is_expected.to be_disallowed(:access_security_and_compliance) }
       end
+    end
+  end
+
+  context 'timelogs' do
+    context 'with admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_group_timelogs) }
+      end
+
+      context 'when admin mode disabled' do
+        it { is_expected.to be_disallowed(:read_group_timelogs) }
+      end
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:read_group_timelogs) }
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_allowed(:read_group_timelogs) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_allowed(:read_group_timelogs) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:read_group_timelogs) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { non_member }
+
+      it { is_expected.to be_disallowed(:read_group_timelogs) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { anonymous }
+
+      it { is_expected.to be_disallowed(:read_group_timelogs) }
     end
   end
 end

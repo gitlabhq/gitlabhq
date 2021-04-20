@@ -23,7 +23,7 @@ RSpec.shared_context 'container repository delete tags service shared context' d
   end
 
   def stub_delete_reference_requests(tags)
-    tags = Hash[Array.wrap(tags).map { |tag| [tag, 200] }] unless tags.is_a?(Hash)
+    tags = Array.wrap(tags).to_h { |tag| [tag, 200] } unless tags.is_a?(Hash)
 
     tags.each do |tag, status|
       stub_request(:delete, "http://registry.gitlab/v2/#{repository.path}/tags/reference/#{tag}")

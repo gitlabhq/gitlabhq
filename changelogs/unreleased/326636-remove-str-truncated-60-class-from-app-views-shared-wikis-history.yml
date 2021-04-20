@@ -1,0 +1,5 @@
+---
+title: Fix overflow UI bug with longer commit title on Wiki Page History
+merge_request: 58212
+author: Takuya Noguchi
+type: fixed

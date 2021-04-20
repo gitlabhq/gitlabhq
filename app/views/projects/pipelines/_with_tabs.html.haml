@@ -28,7 +28,7 @@
     #js-pipeline-graph-vue
 
   #js-tab-builds.tab-pane
-    - if pipeline.legacy_stages.present?
+    - if stages.present?
       .table-holder.pipeline-holder
         %table.table.ci-table.pipeline
           %thead
@@ -39,7 +39,7 @@
               %th
               %th= _('Coverage')
               %th
-          = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
+          = render partial: "projects/stage/stage", collection: stages, as: :stage
 
   - if @pipeline.failed_builds.present?
     #js-tab-failures.build-failures.tab-pane.build-page

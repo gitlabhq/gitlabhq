@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::PhabricatorImport::Issues::TaskImporter do
   let_it_be(:project) { create(:project) }
+
   let(:task) do
     Gitlab::PhabricatorImport::Representation::Task.new(
       {

@@ -24,6 +24,12 @@ For sorting by issue priority, see [Label Priority](../labels.md#label-priority)
 In group and project issue lists, it is also possible to order issues manually,
 similar to [issue boards](../issue_board.md#how-gitlab-orders-issues-in-a-list).
 
+## Sorting by popularity
+
+When you select sorting by **Popularity**, the issue order changes to sort descending by the
+number of upvotes ([awarded](../../award_emojis.md) "thumbs up" emoji)
+on each issue. You can use this to identify issues that are in high demand.
+
 ## Manual sorting
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62178) in GitLab 12.2.

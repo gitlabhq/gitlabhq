@@ -21,7 +21,7 @@
         .gl-mb-3
           %h5.gl-mt-0
             = _("Upload object map")
-          %button.btn.btn-default.js-choose-file{ type: "button" }
+          %button.gl-button.btn.btn-default.js-choose-file{ type: "button" }
             = _("Choose a file")
           %span.gl-ml-3.js-filename
             = _("No file selected")
@@ -29,4 +29,4 @@
         .form-text.text-muted
           = _("The maximum file size is %{size}.") % { size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes) }
 
-      = f.submit _('Start cleanup'), class: 'gl-button btn btn-success'
+      = f.submit _('Start cleanup'), class: 'gl-button btn btn-confirm'

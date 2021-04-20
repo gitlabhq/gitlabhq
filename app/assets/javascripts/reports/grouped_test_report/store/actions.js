@@ -4,7 +4,7 @@ import httpStatusCodes from '../../../lib/utils/http_status';
 import Poll from '../../../lib/utils/poll';
 import * as types from './mutation_types';
 
-export const setEndpoint = ({ commit }, endpoint) => commit(types.SET_ENDPOINT, endpoint);
+export const setPaths = ({ commit }, paths) => commit(types.SET_PATHS, paths);
 
 export const requestReports = ({ commit }) => commit(types.REQUEST_REPORTS);
 

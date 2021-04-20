@@ -43,7 +43,7 @@ export default class EditBlob {
       blobPath: fileNameEl.value,
       blobContent: editorEl.innerText,
     });
-    this.editor.use(new FileTemplateExtension());
+    this.editor.use(new FileTemplateExtension({ instance: this.editor }));
 
     fileNameEl.addEventListener('change', () => {
       this.editor.updateModelLanguage(fileNameEl.value);
@@ -82,7 +82,7 @@ export default class EditBlob {
 
     this.$editModePanes.hide();
 
-    currentPane.fadeIn(200);
+    currentPane.show();
 
     if (paneId === '#preview') {
       this.$toggleButton.hide();

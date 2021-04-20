@@ -1,0 +1,5 @@
+---
+title: Add a foreign key from the partitioned web_hook_logs to web_hooks
+merge_request: 59282
+author:
+type: other

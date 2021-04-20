@@ -1,20 +1,31 @@
 - pretty_name = @project&.full_name ? html_escape(@project&.full_name) : '<' + _('project name') + '>'
 - run_actions_text = html_escape(s_("ProjectService|Perform common operations on GitLab project: %{project_name}")) % { project_name: pretty_name }
 
-%p= s_("ProjectService|To set up this service:")
+%p= s_("ProjectService|To configure this integration, you should:")
 %ul.list-unstyled.indent-list
   %li
     1.
-    = link_to 'https://docs.mattermost.com/developer/slash-commands.html#enabling-custom-commands', target: '_blank', rel: 'noopener noreferrer nofollow' do
+    = link_to 'https://docs.gitlab.com/ee/user/project/integrations/mattermost_slash_commands.html#enable-custom-slash-commands', target: '_blank', rel: 'noopener noreferrer nofollow' do
       Enable custom slash commands
       = sprite_icon('external-link')
-    on your Mattermost installation
+    on your Mattermost installation.
   %li
     2.
-    = link_to 'https://docs.mattermost.com/developer/slash-commands.html#set-up-a-custom-command', target: '_blank', rel: 'noopener noreferrer nofollow' do
+    = link_to 'https://docs.gitlab.com/ee/user/project/integrations/mattermost_slash_commands.html#create-a-slash-command', target: '_blank', rel: 'noopener noreferrer nofollow' do
       Add a slash command
       = sprite_icon('external-link')
-    in your Mattermost team with these options:
+    in your Mattermost team with the options listed below.
+  %li
+    3. Paste the token into the
+    %strong Token
+    field.
+  %li
+    4. Select the
+    %strong Active
+    check box, then select
+    %strong Save changes
+    to start using GitLab inside Mattermost!
+
 %hr
 
 .help-form
@@ -85,17 +96,3 @@
       = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#autocomplete_description', class: 'input-group-text')
-
-%hr
-
-%ul.list-unstyled.indent-list
-  %li
-    3. Paste the
-    %strong Token
-    into the field below
-  %li
-    4. Select the
-    %strong Active
-    checkbox, press
-    %strong Save changes
-    and start using GitLab inside Mattermost!

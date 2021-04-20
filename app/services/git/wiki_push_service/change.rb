@@ -9,7 +9,9 @@ module Git
       # @param [Hash] change - must have keys `:oldrev` and `:newrev`
       # @param [Gitlab::Git::RawDiffChange] raw_change
       def initialize(wiki, change, raw_change)
-        @wiki, @raw_change, @change = wiki, raw_change, change
+        @wiki = wiki
+        @raw_change = raw_change
+        @change = change
       end
 
       def page

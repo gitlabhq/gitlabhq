@@ -5,12 +5,14 @@ require 'spec_helper'
 RSpec.describe Groups::TransferService do
   let_it_be(:user) { create(:user) }
   let_it_be(:new_parent_group) { create(:group, :public) }
+
   let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
   let(:transfer_service) { described_class.new(group, user) }
 
   context 'handling packages' do
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:new_group) { create(:group, :public) }
+
     let(:project) { create(:project, :public, namespace: group) }
 
     before do
@@ -272,6 +274,7 @@ RSpec.describe Groups::TransferService do
 
         context 'with a group integration' do
           let_it_be(:instance_integration) { create(:slack_service, :instance, webhook: 'http://project.slack.com') }
+
           let(:new_created_integration) { Service.find_by(group: group) }
 
           context 'with an inherited integration' do

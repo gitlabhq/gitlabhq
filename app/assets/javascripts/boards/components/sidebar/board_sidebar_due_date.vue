@@ -18,16 +18,16 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['activeIssue', 'projectPathForActiveIssue']),
+    ...mapGetters(['activeBoardItem', 'projectPathForActiveIssue']),
     hasDueDate() {
-      return this.activeIssue.dueDate != null;
+      return this.activeBoardItem.dueDate != null;
     },
     parsedDueDate() {
       if (!this.hasDueDate) {
         return null;
       }
 
-      return parsePikadayDate(this.activeIssue.dueDate);
+      return parsePikadayDate(this.activeBoardItem.dueDate);
     },
     formattedDueDate() {
       if (!this.hasDueDate) {
@@ -69,6 +69,7 @@ export default {
   <board-editable-item
     ref="sidebarItem"
     class="board-sidebar-due-date"
+    data-testid="sidebar-due-date"
     :title="$options.i18n.dueDate"
     :loading="loading"
     @open="openDatePicker"

@@ -11,14 +11,14 @@ class Service < ApplicationRecord
   include EachBatch
 
   SERVICE_NAMES = %w[
-    asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord
-    drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat hipchat irker jira
+    asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
+    drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack
   ].freeze
 
   PROJECT_SPECIFIC_SERVICE_NAMES = %w[
-    jenkins
+    datadog jenkins
   ].freeze
 
   # Fake services to help with local development.
@@ -413,6 +413,10 @@ class Service < ApplicationRecord
     !instance? && !group_id
   end
 
+  def project_level?
+    project_id.present?
+  end
+
   def parent
     project || group
   end
@@ -456,7 +460,7 @@ class Service < ApplicationRecord
     errors.add(:project_id, 'The service cannot belong to both a project and a group') if project_id && group_id
   end
 
-  def valid_recipients?
+  def validate_recipients?
     activated? && !importing?
   end
 end

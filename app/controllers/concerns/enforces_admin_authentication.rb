@@ -15,7 +15,7 @@ module EnforcesAdminAuthentication
 
   def authenticate_admin!
     return render_404 unless current_user.admin?
-    return unless Feature.enabled?(:user_mode_in_session)
+    return unless Gitlab::CurrentSettings.admin_mode
 
     unless current_user_mode.admin_mode?
       current_user_mode.request_admin_mode!

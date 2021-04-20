@@ -205,30 +205,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
         end
 
-        context 'assignees' do
-          context 'when assignees changed' do
-            it 'tracks assignees changed event' do
-              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-                .to receive(:track_assignees_changed_action).once.with(user: user)
-
-              opts[:assignees] = [user2]
-
-              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
-            end
-          end
-
-          context 'when assignees did not change' do
-            it 'does not track assignees changed event' do
-              expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-                .not_to receive(:track_assignees_changed_action)
-
-              opts[:assignees] = merge_request.assignees
-
-              MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
-            end
-          end
-        end
-
         context 'reviewers' do
           context 'when reviewers changed' do
             it 'tracks reviewers changed event' do
@@ -272,6 +248,41 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           it_behaves_like 'updates milestone'
         end
+
+        context 'milestone counters cache reset' do
+          let(:milestone_old) { create(:milestone, project: project) }
+          let(:opts) { { milestone: milestone_old } }
+
+          it 'deletes milestone counters' do
+            expect_next_instance_of(Milestones::MergeRequestsCountService, milestone_old) do |service|
+              expect(service).to receive(:delete_cache).and_call_original
+            end
+
+            expect_next_instance_of(Milestones::MergeRequestsCountService, milestone) do |service|
+              expect(service).to receive(:delete_cache).and_call_original
+            end
+
+            update_merge_request(milestone: milestone)
+          end
+
+          it 'deletes milestone counters when the milestone is removed' do
+            expect_next_instance_of(Milestones::MergeRequestsCountService, milestone_old) do |service|
+              expect(service).to receive(:delete_cache).and_call_original
+            end
+
+            update_merge_request(milestone: nil)
+          end
+
+          it 'deletes milestone counters when the milestone was not set' do
+            update_merge_request(milestone: nil)
+
+            expect_next_instance_of(Milestones::MergeRequestsCountService, milestone) do |service|
+              expect(service).to receive(:delete_cache).and_call_original
+            end
+
+            update_merge_request(milestone: milestone)
+          end
+        end
       end
 
       it 'executes hooks with update action' do
@@ -289,21 +300,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
               description: "FYI #{user2.to_reference}"
             }
           )
-      end
-
-      it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment', :sidekiq_might_not_need_inline do
-        deliveries = ActionMailer::Base.deliveries
-        email = deliveries.last
-        recipients = deliveries.last(2).flat_map(&:to)
-        expect(recipients).to include(user2.email, user3.email)
-        expect(email.subject).to include(merge_request.title)
-      end
-
-      it 'creates system note about merge_request reassign' do
-        note = find_note('assigned to')
-
-        expect(note).not_to be_nil
-        expect(note.note).to include "assigned to #{user.to_reference} and unassigned #{user3.to_reference}"
       end
 
       context 'with reviewers' do
@@ -594,62 +590,54 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       let!(:pending_todo) { create(:todo, :assigned, user: user, project: project, target: merge_request, author: user2) }
 
       context 'when the title change' do
-        before do
+        it 'calls MergeRequest::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
+
           update_merge_request({ title: 'New title' })
         end
 
-        it 'marks pending todos as done' do
-          expect(pending_todo.reload).to be_done
-        end
-
         it 'does not create any new todos' do
+          update_merge_request({ title: 'New title' })
+
           expect(Todo.count).to eq(1)
         end
       end
 
       context 'when the description change' do
-        before do
+        it 'calls MergeRequest::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
+
           update_merge_request({ description: "Also please fix #{user2.to_reference} #{user3.to_reference}" })
         end
 
-        it 'marks pending todos as done' do
-          expect(pending_todo.reload).to be_done
-        end
-
         it 'creates only 1 new todo' do
+          update_merge_request({ description: "Also please fix #{user2.to_reference} #{user3.to_reference}" })
+
           expect(Todo.count).to eq(2)
         end
       end
 
       context 'when is reassigned' do
-        before do
+        it 'calls MergeRequest::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
+
           update_merge_request({ assignee_ids: [user2.id] })
-        end
-
-        it 'marks previous assignee pending todos as done' do
-          expect(pending_todo.reload).to be_done
-        end
-
-        it 'creates a pending todo for new assignee' do
-          attributes = {
-            project: project,
-            author: user,
-            user: user2,
-            target_id: merge_request.id,
-            target_type: merge_request.class.name,
-            action: Todo::ASSIGNED,
-            state: :pending
-          }
-
-          expect(Todo.where(attributes).count).to eq 1
         end
       end
 
       context 'when reviewers gets changed' do
-        it 'marks pending todo as done' do
-          update_merge_request({ reviewer_ids: [user2.id] })
+        it 'calls MergeRequest::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
 
-          expect(pending_todo.reload).to be_done
+          update_merge_request({ reviewer_ids: [user2.id] })
         end
 
         it 'creates a pending todo for new review request' do
@@ -727,10 +715,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           end
         end
 
-        it 'marks pending todos as done' do
-          update_merge_request({ milestone: create(:milestone, project: project) })
+        it 'calls MergeRequests::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
 
-          expect(pending_todo.reload).to be_done
+          update_merge_request({ milestone: create(:milestone, project: project) })
         end
 
         it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
@@ -744,17 +734,19 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
 
       context 'when the labels change' do
-        before do
-          travel_to(1.minute.from_now) do
-            update_merge_request({ label_ids: [label.id] })
+        it 'calls MergeRequests::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
           end
-        end
 
-        it 'marks pending todos as done' do
-          expect(pending_todo.reload).to be_done
+          update_merge_request({ label_ids: [label.id] })
         end
 
         it 'updates updated_at' do
+          travel_to(1.minute.from_now) do
+            update_merge_request({ label_ids: [label.id] })
+          end
+
           expect(merge_request.reload.updated_at).to be > Time.current
         end
       end
@@ -769,24 +761,26 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
 
       context 'when the target branch change' do
-        before do
-          update_merge_request({ target_branch: 'target' })
-        end
+        it 'calls MergeRequests::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
 
-        it 'marks pending todos as done' do
-          expect(pending_todo.reload).to be_done
+          update_merge_request({ target_branch: 'target' })
         end
       end
 
       context 'when auto merge is enabled and target branch changed' do
         before do
           AutoMergeService.new(project, user, { sha: merge_request.diff_head_sha }).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
-
-          update_merge_request({ target_branch: 'target' })
         end
 
-        it 'marks pending todos as done' do
-          expect(pending_todo.reload).to be_done
+        it 'calls MergeRequests::ResolveTodosService#async_execute' do
+          expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
+            expect(service).to receive(:async_execute)
+          end
+
+          update_merge_request({ target_branch: 'target' })
         end
       end
     end
@@ -948,18 +942,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
 
       it 'removes `MergeRequestsClosingIssues` records when issues are not closed anymore' do
-        opts = {
-          title: 'Awesome merge_request',
-          description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}",
-          source_branch: 'feature',
-          target_branch: 'master',
-          force_remove_source_branch: '1'
-        }
-
-        merge_request = MergeRequests::CreateService.new(project, user, opts).execute
-
-        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+        create(:merge_requests_closing_issues, issue: first_issue, merge_request: merge_request)
+        create(:merge_requests_closing_issues, issue: second_issue, merge_request: merge_request)
 
         service = described_class.new(project, user, description: "not closing any issues")
         allow(service).to receive(:execute_hooks)
@@ -971,8 +955,44 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
     end
 
     context 'updating asssignee_ids' do
+      context ':use_specialized_service' do
+        context 'when true' do
+          it 'passes the update action to ::MergeRequests::UpdateAssigneesService' do
+            expect(::MergeRequests::UpdateAssigneesService)
+              .to receive(:new).and_call_original
+
+            update_merge_request({
+              assignee_ids: [user2.id],
+              use_specialized_service: true
+            })
+          end
+        end
+
+        context 'when false or nil' do
+          before do
+            expect(::MergeRequests::UpdateAssigneesService).not_to receive(:new)
+          end
+
+          it 'does not pass the update action to ::MergeRequests::UpdateAssigneesService when false' do
+            update_merge_request({
+              assignee_ids: [user2.id],
+              use_specialized_service: false
+            })
+          end
+
+          it 'does not pass the update action to ::MergeRequests::UpdateAssigneesService when nil' do
+            update_merge_request({
+              assignee_ids: [user2.id],
+              use_specialized_service: nil
+            })
+          end
+        end
+      end
+
       it 'does not update assignee when assignee_id is invalid' do
         merge_request.update!(assignee_ids: [user.id])
+
+        expect(MergeRequests::HandleAssigneesChangeService).not_to receive(:new)
 
         update_merge_request(assignee_ids: [-1])
 
@@ -982,28 +1002,34 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       it 'unassigns assignee when user id is 0' do
         merge_request.update!(assignee_ids: [user.id])
 
+        expect_next_instance_of(MergeRequests::HandleAssigneesChangeService, project, user) do |service|
+          expect(service)
+            .to receive(:async_execute)
+            .with(merge_request, [user])
+        end
+
         update_merge_request(assignee_ids: [0])
 
         expect(merge_request.assignee_ids).to be_empty
       end
 
       it 'saves assignee when user id is valid' do
+        expect_next_instance_of(MergeRequests::HandleAssigneesChangeService, project, user) do |service|
+          expect(service)
+            .to receive(:async_execute)
+            .with(merge_request, [user3])
+        end
+
         update_merge_request(assignee_ids: [user.id])
 
         expect(merge_request.assignee_ids).to eq([user.id])
       end
 
-      it 'updates the tracking when user ids are valid' do
-        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-          .to receive(:track_users_assigned_to_mr)
-          .with(users: [user])
-
-        update_merge_request(assignee_ids: [user.id])
-      end
-
       it 'does not update assignee_id when user cannot read issue' do
         non_member = create(:user)
         original_assignees = merge_request.assignees
+
+        expect(MergeRequests::HandleAssigneesChangeService).not_to receive(:new)
 
         update_merge_request(assignee_ids: [non_member.id])
 

@@ -61,7 +61,7 @@ class FeatureFlagOptionParser
           options.force = value
         end
 
-        opts.on('-m', '--introduced-by-url [string]', String, 'URL of Merge Request introducing the Feature Flag') do |value|
+        opts.on('-m', '--introduced-by-url [string]', String, 'URL of merge request introducing the Feature Flag') do |value|
           options.introduced_by_url = value
         end
 

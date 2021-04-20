@@ -19,7 +19,7 @@ Wikis use Git repositories as storage backend, and can be accessed through:
 
 - The [Web UI](../user/project/wiki/index.md)
 - The [REST API](../api/wikis.md)
-- [Git itself](../user/project/wiki/#adding-and-editing-wiki-pages-locally)
+- [Git itself](../user/project/wiki/index.md#create-or-edit-wiki-pages-locally)
 
 [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2214) in GitLab 13.5, wikis are also available
 for groups, in addition to projects.
@@ -92,3 +92,7 @@ Only some data is persisted in the database:
 The web UI uploads attachments through the REST API, which stores the files as commits in the wiki repository.
 
 Prior to GitLab 11.3 attachments were stored outside of the repository, [see this issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475).
+
+## Related topics
+
+- [Gollum installation instructions](https://github.com/gollum/gollum/wiki/Installation)

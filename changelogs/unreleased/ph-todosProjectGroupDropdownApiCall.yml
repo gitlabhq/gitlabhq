@@ -1,0 +1,5 @@
+---
+title: Move fetching projects and groups on todos page to API call
+merge_request: 56507
+author:
+type: performance

@@ -15,7 +15,10 @@ describe('Grouped Test Reports Modal', () => {
   // populate data
   modalDataStructure.execution_time.value = 0.009411;
   modalDataStructure.system_output.value = 'Failure/Error: is_expected.to eq(3)\n\n';
-  modalDataStructure.class.value = 'link';
+  modalDataStructure.filename.value = {
+    text: 'link',
+    path: '/file/path',
+  };
 
   let wrapper;
 
@@ -43,9 +46,9 @@ describe('Grouped Test Reports Modal', () => {
   it('renders link', () => {
     const link = wrapper.findComponent(GlLink);
 
-    expect(link.attributes().href).toEqual(modalDataStructure.class.value);
+    expect(link.attributes().href).toEqual(modalDataStructure.filename.value.path);
 
-    expect(link.text()).toEqual(modalDataStructure.class.value);
+    expect(link.text()).toEqual(modalDataStructure.filename.value.text);
   });
 
   it('renders seconds', () => {

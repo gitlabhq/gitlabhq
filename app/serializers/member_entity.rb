@@ -36,6 +36,8 @@ class MemberEntity < Grape::Entity
     GroupEntity.represent(member.source, only: [:id, :full_name, :web_url])
   end
 
+  expose :type
+
   expose :valid_level_roles, as: :valid_roles
 
   expose :user, if: -> (member) { member.user.present? }, using: MemberUserEntity

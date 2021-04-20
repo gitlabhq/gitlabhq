@@ -25,11 +25,11 @@ module API
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
         end
         post ":id/invitations" do
-          source = find_source(source_type, params[:id])
+          params[:source] = find_source(source_type, params[:id])
 
-          authorize_admin_source!(source_type, source)
+          authorize_admin_source!(source_type, params[:source])
 
-          ::Members::InviteService.new(current_user, params).execute(source)
+          ::Members::InviteService.new(current_user, params).execute
         end
 
         desc 'Get a list of group or project invitations viewable by the authenticated user' do

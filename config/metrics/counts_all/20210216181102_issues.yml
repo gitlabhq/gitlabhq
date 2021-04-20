@@ -2,7 +2,7 @@
 key_path: counts.issues
 description: Count of Issues created
 product_section: dev
-product_stage:
+product_stage: plan
 product_group: group::plan
 product_category: issue_tracking
 value_type: number
@@ -16,4 +16,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

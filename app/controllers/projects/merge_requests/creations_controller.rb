@@ -6,7 +6,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include RendersCommits
 
   skip_before_action :merge_request
-  before_action :whitelist_query_limiting, only: [:create]
   before_action :authorize_create_merge_request_from!
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
@@ -122,20 +121,18 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   # rubocop: disable CodeReuse/ActiveRecord
   def selected_target_project
-    if @project.id.to_s == params[:target_project_id] || !@project.forked?
-      @project
-    elsif params[:target_project_id].present?
+    return @project unless @project.forked?
+
+    if params[:target_project_id].present?
+      return @project if @project.id.to_s == params[:target_project_id]
+
       MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: @project)
         .find_by(id: params[:target_project_id])
     else
-      @project.forked_from_project
+      @project.default_merge_request_target
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42384')
-  end
 
   def incr_count_webide_merge_request
     return if params[:nav_source] != 'webide'
@@ -143,3 +140,5 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     Gitlab::UsageDataCounters::WebIdeCounter.increment_merge_requests_count
   end
 end
+
+Projects::MergeRequests::CreationsController.prepend_ee_mod

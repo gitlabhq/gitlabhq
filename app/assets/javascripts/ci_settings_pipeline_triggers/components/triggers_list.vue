@@ -7,6 +7,10 @@ import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 export default {
+  i18n: {
+    editButton: s__('Pipelines|Edit'),
+    revokeButton: s__('Pipelines|Revoke'),
+  },
   components: {
     GlTable,
     GlButton,
@@ -108,13 +112,15 @@ export default {
       </template>
       <template #cell(actions)="{ item }">
         <gl-button
-          :title="s__('Pipelines|Edit')"
+          :title="$options.i18n.editButton"
+          :aria-label="$options.i18n.editButton"
           icon="pencil"
           data-testid="edit-btn"
           :href="item.editProjectTriggerPath"
         />
         <gl-button
-          :title="s__('Pipelines|Revoke')"
+          :title="$options.i18n.revokeButton"
+          :aria-label="$options.i18n.revokeButton"
           icon="remove"
           variant="warning"
           :data-confirm="

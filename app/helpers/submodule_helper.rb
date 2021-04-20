@@ -18,7 +18,8 @@ module SubmoduleHelper
     end
 
     if url =~ %r{([^/:]+)/([^/]+(?:\.git)?)\Z}
-      namespace, project = Regexp.last_match(1), Regexp.last_match(2)
+      namespace = Regexp.last_match(1)
+      project = Regexp.last_match(2)
       gitlab_hosts = [Gitlab.config.gitlab.url,
                       Gitlab.config.gitlab_shell.ssh_path_prefix]
 

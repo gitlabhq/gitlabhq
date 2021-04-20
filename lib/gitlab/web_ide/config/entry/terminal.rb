@@ -10,6 +10,7 @@ module Gitlab
         class Terminal < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
+          include Gitlab::Utils::StrongMemoize
 
           # By default the build will finish in a few seconds, not giving the webide
           # enough time to connect to the terminal. This default script provides
@@ -51,21 +52,26 @@ module Gitlab
           private
 
           def to_hash
-            { tag_list: tags || [],
-              yaml_variables: yaml_variables,
+            {
+              tag_list: tags || [],
+              yaml_variables: yaml_variables, # https://gitlab.com/gitlab-org/gitlab/-/issues/300581
+              job_variables: yaml_variables,
               options: {
                 image: image_value,
                 services: services_value,
                 before_script: before_script_value,
                 script: script_value || DEFAULT_SCRIPT
-              }.compact }
+              }.compact
+            }.compact
           end
 
           def yaml_variables
-            return unless variables_value
+            strong_memoize(:yaml_variables) do
+              next unless variables_value
 
-            variables_value.map do |key, value|
-              { key: key.to_s, value: value, public: true }
+              variables_value.map do |key, value|
+                { key: key.to_s, value: value, public: true }
+              end
             end
           end
         end

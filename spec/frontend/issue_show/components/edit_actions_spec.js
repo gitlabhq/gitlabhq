@@ -48,7 +48,7 @@ describe('Edit Actions components', () => {
     vm.formState.title = '';
 
     Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.btn-success').getAttribute('disabled')).toBe('disabled');
+      expect(vm.$el.querySelector('.btn-confirm').getAttribute('disabled')).toBe('disabled');
 
       done();
     });
@@ -65,16 +65,16 @@ describe('Edit Actions components', () => {
 
   describe('updateIssuable', () => {
     it('sends update.issauble event when clicking save button', () => {
-      vm.$el.querySelector('.btn-success').click();
+      vm.$el.querySelector('.btn-confirm').click();
 
       expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
     });
 
     it('disabled button after clicking save button', (done) => {
-      vm.$el.querySelector('.btn-success').click();
+      vm.$el.querySelector('.btn-confirm').click();
 
       Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.btn-success').getAttribute('disabled')).toBe('disabled');
+        expect(vm.$el.querySelector('.btn-confirm').getAttribute('disabled')).toBe('disabled');
 
         done();
       });

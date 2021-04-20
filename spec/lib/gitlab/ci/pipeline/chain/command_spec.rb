@@ -321,4 +321,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
       it { is_expected.to be_falsey }
     end
   end
+
+  describe '#increment_pipeline_failure_reason_counter' do
+    let(:command) { described_class.new }
+    let(:reason) { :size_limit_exceeded }
+
+    subject { command.increment_pipeline_failure_reason_counter(reason) }
+
+    it 'increments the error metric' do
+      counter = Gitlab::Metrics.counter(:gitlab_ci_pipeline_failure_reasons, 'desc')
+      expect { subject }.to change { counter.get(reason: reason.to_s) }.by(1)
+    end
+
+    context 'when the reason is nil' do
+      let(:reason) { nil }
+
+      it 'increments the error metric with unknown_failure' do
+        counter = Gitlab::Metrics.counter(:gitlab_ci_pipeline_failure_reasons, 'desc')
+        expect { subject }.to change { counter.get(reason: 'unknown_failure') }.by(1)
+      end
+    end
+  end
 end

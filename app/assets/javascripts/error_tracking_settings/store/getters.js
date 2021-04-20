@@ -34,8 +34,8 @@ export const invalidProjectLabel = (state) => {
 export const projectSelectionLabel = (state) => {
   if (state.token) {
     return s__(
-      "ErrorTracking|Click 'Connect' to re-establish the connection to Sentry and activate the dropdown.",
+      'ErrorTracking|Click Connect to reestablish the connection to Sentry and activate the dropdown.',
     );
   }
-  return s__('ErrorTracking|To enable project selection, enter a valid Auth Token');
+  return s__('ErrorTracking|To enable project selection, enter a valid Auth Token.');
 };

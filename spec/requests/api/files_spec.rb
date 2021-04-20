@@ -517,6 +517,21 @@ RSpec.describe API::Files do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      context 'when ref is not provided' do
+        before do
+          stub_application_setting(default_branch_name: 'main')
+        end
+
+        it 'returns response :ok', :aggregate_failures do
+          url = route(file_path) + "/raw"
+          expect(Gitlab::Workhorse).to receive(:send_git_blob)
+
+          get api(url, current_user), params: {}
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       it 'returns raw file info for files with dots' do
         url = route('.gitignore') + "/raw"
         expect(Gitlab::Workhorse).to receive(:send_git_blob)

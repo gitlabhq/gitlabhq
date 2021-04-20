@@ -11,7 +11,18 @@ module Resolvers
               required: false,
               description: 'Filter jobs by the type of security report they produce.'
 
-      def resolve(security_report_types: [])
+      argument :statuses, [::Types::Ci::JobStatusEnum],
+              required: false,
+              description: 'Filter jobs by status.'
+
+      def resolve(statuses: nil, security_report_types: [])
+        jobs = init_collection(security_report_types)
+        jobs = jobs.with_status(statuses) if statuses.present?
+
+        jobs
+      end
+
+      def init_collection(security_report_types)
         if security_report_types.present?
           ::Security::SecurityJobsFinder.new(
             pipeline: pipeline,

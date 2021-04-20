@@ -17,33 +17,28 @@ RSpec.describe 'Merge request > User awards emoji', :js do
     end
 
     it 'adds award to merge request' do
-      first('.js-emoji-btn').click
-      expect(page).to have_selector('.js-emoji-btn.active')
-      expect(first('.js-emoji-btn')).to have_content '1'
+      first('[data-testid="award-button"]').click
+      expect(page).to have_selector('[data-testid="award-button"].is-active')
+      expect(first('[data-testid="award-button"]')).to have_content '1'
 
       visit project_merge_request_path(project, merge_request)
-      expect(first('.js-emoji-btn')).to have_content '1'
+      expect(first('[data-testid="award-button"]')).to have_content '1'
     end
 
     it 'removes award from merge request' do
-      first('.js-emoji-btn').click
-      find('.js-emoji-btn.active').click
-      expect(first('.js-emoji-btn')).to have_content '0'
+      first('[data-testid="award-button"]').click
+      find('[data-testid="award-button"].is-active').click
+      expect(first('[data-testid="award-button"]')).to have_content '0'
 
       visit project_merge_request_path(project, merge_request)
-      expect(first('.js-emoji-btn')).to have_content '0'
-    end
-
-    it 'has only one menu on the page' do
-      first('.js-add-award').click
-      expect(page).to have_selector('.emoji-menu')
-
-      expect(page).to have_selector('.emoji-menu', count: 1)
+      expect(first('[data-testid="award-button"]')).to have_content '0'
     end
 
     it 'adds awards to note' do
-      first('.js-note-emoji').click
-      first('.emoji-menu .js-emoji-btn').click
+      page.within('.note-actions') do
+        first('.note-emoji-button').click
+        find('gl-emoji[data-name="8ball"]').click
+      end
 
       wait_for_requests
 

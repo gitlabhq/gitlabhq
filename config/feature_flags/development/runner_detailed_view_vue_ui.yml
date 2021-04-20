@@ -1,0 +1,8 @@
+---
+name: runner_detailed_view_vue_ui
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57256
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325737
+milestone: '13.11'
+type: development
+group: group::runner
+default_enabled: false

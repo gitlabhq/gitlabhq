@@ -3,6 +3,31 @@
 require 'spec_helper'
 
 RSpec.describe Sortable do
+  describe 'scopes' do
+    describe 'secondary ordering by id' do
+      let(:sorted_relation) { Group.all.order_created_asc }
+
+      def arel_orders(relation)
+        relation.arel.orders
+      end
+
+      it 'allows secondary ordering by id ascending' do
+        orders = arel_orders(sorted_relation.with_order_id_asc)
+
+        expect(orders.map { |arel| arel.expr.name }).to eq(%w(created_at id))
+        expect(orders).to all(be_kind_of(Arel::Nodes::Ascending))
+      end
+
+      it 'allows secondary ordering by id descending' do
+        orders = arel_orders(sorted_relation.with_order_id_desc)
+
+        expect(orders.map { |arel| arel.expr.name }).to eq(%w(created_at id))
+        expect(orders.first).to be_kind_of(Arel::Nodes::Ascending)
+        expect(orders.last).to be_kind_of(Arel::Nodes::Descending)
+      end
+    end
+  end
+
   describe '.order_by' do
     let(:arel_table) { Group.arel_table }
     let(:relation) { Group.all }

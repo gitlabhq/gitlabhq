@@ -25,7 +25,7 @@ RSpec.describe 'User activates Slack notifications', :js do
 
     before do
       service.fields
-      service.update(
+      service.update!(
         push_channel: 1,
         issue_channel: 2,
         merge_request_channel: 3,

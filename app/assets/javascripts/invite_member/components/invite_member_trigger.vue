@@ -7,14 +7,20 @@ export default {
   components: {
     GlLink,
   },
-  inject: {
+  props: {
     displayText: {
+      type: String,
+      required: false,
       default: '',
     },
     event: {
+      type: String,
+      required: false,
       default: '',
     },
     label: {
+      type: String,
+      required: false,
       default: '',
     },
   },

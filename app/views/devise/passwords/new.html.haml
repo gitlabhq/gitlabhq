@@ -5,9 +5,9 @@
         = render "devise/shared/error_messages", resource: resource
       .form-group
         = f.label :email
-        = f.email_field :email, class: "form-control gl-form-input", required: true, value: params[:user_email], autofocus: true, title: 'Please provide a valid email address.'
+        = f.email_field :email, class: "form-control gl-form-input", required: true, value: params[:user_email], autofocus: true, title: _('Please provide a valid email address.')
       .clearfix
-        = f.submit "Reset password", class: "gl-button btn-confirm btn"
+        = f.submit _("Reset password"), class: "gl-button btn-confirm btn"
 
 .clearfix.prepend-top-20
   = render 'devise/shared/sign_in_link'

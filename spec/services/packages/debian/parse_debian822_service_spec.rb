@@ -27,17 +27,17 @@ RSpec.describe Packages::Debian::ParseDebian822Service do
     it 'return as expected, preserving order' do
       expected = {
         'Package: libsample0' => {
-          'Package': 'libsample0',
-          'Source': 'sample',
-          'Version': '1.2.3~alpha2',
-          'Architecture': 'amd64',
-          'Maintainer': 'John Doe <john.doe@example.com>',
-          'Installed-Size': '9',
-          'Section': 'libs',
-          'Priority': 'optional',
-          'Multi-Arch': 'same',
-          'Homepage': 'https://gitlab.com/',
-          'Description': "Some mostly empty lib\nUsed in GitLab tests.\n\nTesting another paragraph."
+          'Package' => 'libsample0',
+          'Source' => 'sample',
+          'Version' => '1.2.3~alpha2',
+          'Architecture' => 'amd64',
+          'Maintainer' => 'John Doe <john.doe@example.com>',
+          'Installed-Size' => '9',
+          'Section' => 'libs',
+          'Priority' => 'optional',
+          'Multi-Arch' => 'same',
+          'Homepage' => 'https://gitlab.com/',
+          'Description' => "Some mostly empty lib\nUsed in GitLab tests.\n\nTesting another paragraph."
         }
       }
 
@@ -51,38 +51,38 @@ RSpec.describe Packages::Debian::ParseDebian822Service do
     it 'return as expected, preserving order' do
       expected = {
         'Source: sample' => {
-          'Source': 'sample',
-          'Priority': 'optional',
-          'Maintainer': 'John Doe <john.doe@example.com>',
-          'Build-Depends': 'debhelper-compat (= 13)',
-          'Standards-Version': '4.5.0',
-          'Section': 'libs',
-          'Homepage': 'https://gitlab.com/',
-          # 'Vcs-Browser': 'https://salsa.debian.org/debian/sample-1.2.3',
-          # '#Vcs-Git': 'https://salsa.debian.org/debian/sample-1.2.3.git',
-          'Rules-Requires-Root': 'no'
+          'Source' => 'sample',
+          'Priority' => 'optional',
+          'Maintainer' => 'John Doe <john.doe@example.com>',
+          'Build-Depends' => 'debhelper-compat (= 13)',
+          'Standards-Version' => '4.5.0',
+          'Section' => 'libs',
+          'Homepage' => 'https://gitlab.com/',
+          # 'Vcs-Browser' => 'https://salsa.debian.org/debian/sample-1.2.3',
+          # '#Vcs-Git' => 'https://salsa.debian.org/debian/sample-1.2.3.git',
+          'Rules-Requires-Root' => 'no'
         },
         'Package: sample-dev' => {
-          'Package': 'sample-dev',
-          'Section': 'libdevel',
-          'Architecture': 'any',
-          'Multi-Arch': 'same',
-          'Depends': 'libsample0 (= ${binary:Version}), ${misc:Depends}',
-          'Description': "Some mostly empty developpement files\nUsed in GitLab tests.\n\nTesting another paragraph."
+          'Package' => 'sample-dev',
+          'Section' => 'libdevel',
+          'Architecture' => 'any',
+          'Multi-Arch' => 'same',
+          'Depends' => 'libsample0 (= ${binary:Version}), ${misc:Depends}',
+          'Description' => "Some mostly empty developpement files\nUsed in GitLab tests.\n\nTesting another paragraph."
         },
         'Package: libsample0' => {
-          'Package': 'libsample0',
-          'Architecture': 'any',
-          'Multi-Arch': 'same',
-          'Depends': '${shlibs:Depends}, ${misc:Depends}',
-          'Description': "Some mostly empty lib\nUsed in GitLab tests.\n\nTesting another paragraph."
+          'Package' => 'libsample0',
+          'Architecture' => 'any',
+          'Multi-Arch' => 'same',
+          'Depends' => '${shlibs:Depends}, ${misc:Depends}',
+          'Description' => "Some mostly empty lib\nUsed in GitLab tests.\n\nTesting another paragraph."
          },
          'Package: sample-udeb' => {
-           'Package': 'sample-udeb',
-           'Package-Type': 'udeb',
-           'Architecture': 'any',
-           'Depends': 'installed-base',
-           'Description': 'Some mostly empty udeb'
+           'Package' => 'sample-udeb',
+           'Package-Type' => 'udeb',
+           'Architecture' => 'any',
+           'Depends' => 'installed-base',
+           'Description' => 'Some mostly empty udeb'
          }
       }
 

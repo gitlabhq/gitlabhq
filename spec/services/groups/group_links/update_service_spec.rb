@@ -8,6 +8,7 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute' do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:shared_group) { create(:group, :private) }
   let_it_be(:project) { create(:project, group: shared_group) }
+
   let(:group_member_user) { create(:user) }
   let!(:link) { create(:group_group_link, shared_group: shared_group, shared_with_group: group) }
 

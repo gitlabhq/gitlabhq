@@ -4,8 +4,6 @@ import { isString, mapValues, isNumber, reduce } from 'lodash';
 import * as timeago from 'timeago.js';
 import { languageCode, s__, __, n__ } from '../../locale';
 
-const MILLISECONDS_IN_HOUR = 60 * 60 * 1000;
-const MILLISECONDS_IN_DAY = 24 * MILLISECONDS_IN_HOUR;
 const DAYS_IN_WEEK = 7;
 
 window.timeago = timeago;
@@ -254,6 +252,37 @@ export const timeIntervalInWords = (intervalInSeconds) => {
   return minutes >= 1
     ? [n__('%d minute', '%d minutes', minutes), secondsText].join(' ')
     : secondsText;
+};
+
+/**
+ * Similar to `timeIntervalInWords`, but rounds the return value
+ * to 1/10th of the largest time unit. For example:
+ *
+ * 30 => 30 seconds
+ * 90 => 1.5 minutes
+ * 7200 => 2 hours
+ * 86400 => 1 day
+ * ... etc.
+ *
+ * The largest supported unit is "days".
+ *
+ * @param {Number} intervalInSeconds The time interval in seconds
+ * @returns {String} A humanized description of the time interval
+ */
+export const humanizeTimeInterval = (intervalInSeconds) => {
+  if (intervalInSeconds < 60 /* = 1 minute */) {
+    const seconds = Math.round(intervalInSeconds * 10) / 10;
+    return n__('%d second', '%d seconds', seconds);
+  } else if (intervalInSeconds < 3600 /* = 1 hour */) {
+    const minutes = Math.round(intervalInSeconds / 6) / 10;
+    return n__('%d minute', '%d minutes', minutes);
+  } else if (intervalInSeconds < 86400 /* = 1 day */) {
+    const hours = Math.round(intervalInSeconds / 360) / 10;
+    return n__('%d hour', '%d hours', hours);
+  }
+
+  const days = Math.round(intervalInSeconds / 8640) / 10;
+  return n__('%d day', '%d days', days);
 };
 
 export const dateInWords = (date, abbreviated = false, hideYear = false) => {
@@ -944,49 +973,6 @@ export const format24HourTimeStringFromInt = (time) => {
 
   const formatted24HourString = time > 9 ? `${time}:00` : `0${time}:00`;
   return formatted24HourString;
-};
-
-/**
- * A utility function which checks if two date ranges overlap.
- *
- * @param {Object} givenPeriodLeft - the first period to compare.
- * @param {Object} givenPeriodRight - the second period to compare.
- * @returns {Object} { daysOverlap: number of days the overlap is present, hoursOverlap: number of hours the overlap is present, overlapStartDate: the start date of the overlap in time format, overlapEndDate: the end date of the overlap in time format }
- * @throws {Error} Uncaught Error: Invalid period
- *
- * @example
- * getOverlapDateInPeriods(
- *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 13) },
- *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 14) }
- * ) => { daysOverlap: 2, hoursOverlap: 48, overlapStartDate: 1610323200000, overlapEndDate: 1610496000000 }
- *
- */
-export const getOverlapDateInPeriods = (givenPeriodLeft = {}, givenPeriodRight = {}) => {
-  const leftStartTime = new Date(givenPeriodLeft.start).getTime();
-  const leftEndTime = new Date(givenPeriodLeft.end).getTime();
-  const rightStartTime = new Date(givenPeriodRight.start).getTime();
-  const rightEndTime = new Date(givenPeriodRight.end).getTime();
-
-  if (!(leftStartTime <= leftEndTime && rightStartTime <= rightEndTime)) {
-    throw new Error(__('Invalid period'));
-  }
-
-  const isOverlapping = leftStartTime < rightEndTime && rightStartTime < leftEndTime;
-
-  if (!isOverlapping) {
-    return { daysOverlap: 0 };
-  }
-
-  const overlapStartDate = Math.max(leftStartTime, rightStartTime);
-  const overlapEndDate = rightEndTime > leftEndTime ? leftEndTime : rightEndTime;
-  const differenceInMs = overlapEndDate - overlapStartDate;
-
-  return {
-    hoursOverlap: Math.ceil(differenceInMs / MILLISECONDS_IN_HOUR),
-    daysOverlap: Math.ceil(differenceInMs / MILLISECONDS_IN_DAY),
-    overlapStartDate,
-    overlapEndDate,
-  };
 };
 
 /**

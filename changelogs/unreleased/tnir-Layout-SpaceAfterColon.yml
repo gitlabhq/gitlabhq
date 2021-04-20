@@ -1,0 +1,5 @@
+---
+title: Enable Layout/SpaceAfterColon cop for HAML
+merge_request: 58564
+author: Takuya Noguchi
+type: other

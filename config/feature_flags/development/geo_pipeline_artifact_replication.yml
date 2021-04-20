@@ -1,0 +1,8 @@
+---
+name: geo_pipeline_artifact_replication
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57741
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326228
+milestone: '13.11'
+type: development
+group: group::geo
+default_enabled: true

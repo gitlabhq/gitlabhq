@@ -397,7 +397,7 @@ export default {
           <tbody>
             <tr>
               <th></th>
-              <th>{{ __('Epics, Issues, and Merge Requests') }}</th>
+              <th>{{ __('Epics, issues, and merge requests') }}</th>
             </tr>
             <tr>
               <td class="shortcut">
@@ -421,7 +421,7 @@ export default {
           <tbody>
             <tr>
               <th></th>
-              <th>{{ __('Issues and Merge Requests') }}</th>
+              <th>{{ __('Issues and merge requests') }}</th>
             </tr>
             <tr>
               <td class="shortcut">
@@ -439,7 +439,7 @@ export default {
           <tbody>
             <tr>
               <th></th>
-              <th>{{ __('Merge Requests') }}</th>
+              <th>{{ __('Merge requests') }}</th>
             </tr>
             <tr>
               <td class="shortcut">
@@ -485,7 +485,7 @@ export default {
           <tbody>
             <tr>
               <th></th>
-              <th>{{ __('Merge Request Commits') }}</th>
+              <th>{{ __('Merge request commits') }}</th>
             </tr>
             <tr>
               <td class="shortcut">

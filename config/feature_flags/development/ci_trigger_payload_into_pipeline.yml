@@ -1,8 +1,0 @@
----
-name: ci_trigger_payload_into_pipeline
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53837
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/321027
-milestone: '13.9'
-type: development
-group: group::pipeline authoring
-default_enabled: true

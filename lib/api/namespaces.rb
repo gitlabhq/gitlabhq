@@ -56,6 +56,23 @@ module API
 
         present user_namespace, with: Entities::Namespace, current_user: current_user
       end
+
+      desc 'Get existence of a namespace including alternative suggestions' do
+        success Entities::NamespaceExistence
+      end
+      params do
+        requires :namespace, type: String, desc: "Namespace's path"
+        optional :parent_id, type: Integer, desc: "The ID of the parent namespace. If no ID is specified, only top-level namespaces are considered."
+      end
+      get ':namespace/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        namespace_path = params[:namespace]
+
+        exists = Namespace.by_parent(params[:parent_id]).filter_by_path(namespace_path).exists?
+        suggestions = exists ? [Namespace.clean_path(namespace_path)] : []
+
+        present :exists, exists
+        present :suggests, suggestions
+      end
     end
   end
 end

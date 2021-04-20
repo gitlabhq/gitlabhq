@@ -7,7 +7,7 @@ class DropTemporaryIndexOnCiBuilds < ActiveRecord::Migration[6.0]
 
   disable_ddl_transaction!
 
-  INDEX = 'tmp_build_stage_position_index'.freeze
+  INDEX = 'tmp_build_stage_position_index'
 
   def up
     remove_concurrent_index_by_name :ci_builds, INDEX

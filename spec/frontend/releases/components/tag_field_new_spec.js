@@ -3,7 +3,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import createStore from '~/releases/stores';
-import createDetailModule from '~/releases/stores/modules/detail';
+import createEditNewModule from '~/releases/stores/modules/edit_new';
 
 const TEST_TAG_NAME = 'test-tag-name';
 const TEST_PROJECT_ID = '1234';
@@ -44,15 +44,15 @@ describe('releases/components/tag_field_new', () => {
   beforeEach(() => {
     store = createStore({
       modules: {
-        detail: createDetailModule({
+        editNew: createEditNewModule({
           projectId: TEST_PROJECT_ID,
         }),
       },
     });
 
-    store.state.detail.createFrom = TEST_CREATE_FROM;
+    store.state.editNew.createFrom = TEST_CREATE_FROM;
 
-    store.state.detail.release = {
+    store.state.editNew.release = {
       tagName: TEST_TAG_NAME,
       assets: {
         links: [],
@@ -89,7 +89,7 @@ describe('releases/components/tag_field_new', () => {
         });
 
         it("updates the store's release.tagName property", () => {
-          expect(store.state.detail.release.tagName).toBe(NONEXISTENT_TAG_NAME);
+          expect(store.state.editNew.release.tagName).toBe(NONEXISTENT_TAG_NAME);
         });
 
         it('hides the "Create from" field', () => {
@@ -107,7 +107,7 @@ describe('releases/components/tag_field_new', () => {
         });
 
         it("updates the store's release.tagName property", () => {
-          expect(store.state.detail.release.tagName).toBe(updatedTagName);
+          expect(store.state.editNew.release.tagName).toBe(updatedTagName);
         });
 
         it('shows the "Create from" field', () => {
@@ -178,7 +178,7 @@ describe('releases/components/tag_field_new', () => {
 
         await wrapper.vm.$nextTick();
 
-        expect(store.state.detail.createFrom).toBe(updatedCreateFrom);
+        expect(store.state.editNew.createFrom).toBe(updatedCreateFrom);
       });
     });
   });

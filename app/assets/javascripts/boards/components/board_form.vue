@@ -107,7 +107,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isEpicBoard', 'isGroupBoard', 'isProjectBoard']),
+    ...mapGetters(['isIssueBoard', 'isGroupBoard', 'isProjectBoard']),
     isNewForm() {
       return this.currentPage === formType.new;
     },
@@ -127,7 +127,7 @@ export default {
       if (this.isDeleteForm) {
         return 'danger';
       }
-      return 'info';
+      return 'confirm';
     },
     title() {
       if (this.readonly) {
@@ -163,6 +163,9 @@ export default {
     currentMutation() {
       return this.board.id ? updateBoardMutation : createBoardMutation;
     },
+    deleteMutation() {
+      return destroyBoardMutation;
+    },
     baseMutationVariables() {
       const { board } = this;
       const variables = {
@@ -182,7 +185,7 @@ export default {
             groupPath: this.isGroupBoard ? this.fullPath : undefined,
           };
     },
-    boardScopeMutationVariables() {
+    issueBoardScopeMutationVariables() {
       /* eslint-disable @gitlab/require-i18n-strings */
       return {
         weight: this.board.weight,
@@ -193,12 +196,17 @@ export default {
           this.board.milestone?.id || this.board.milestone?.id === 0
             ? convertToGraphQLId('Milestone', this.board.milestone.id)
             : null,
-        labelIds: this.board.labels.map(fullLabelId),
         iterationId: this.board.iteration_id
           ? convertToGraphQLId('Iteration', this.board.iteration_id)
           : null,
       };
       /* eslint-enable @gitlab/require-i18n-strings */
+    },
+    boardScopeMutationVariables() {
+      return {
+        labelIds: this.board.labels.map(fullLabelId),
+        ...(this.isIssueBoard && this.issueBoardScopeMutationVariables),
+      };
     },
     mutationVariables() {
       return {
@@ -239,17 +247,20 @@ export default {
 
       return this.boardUpdateResponse(response.data);
     },
+    async deleteBoard() {
+      await this.$apollo.mutate({
+        mutation: this.deleteMutation,
+        variables: {
+          id: fullBoardId(this.board.id),
+        },
+      });
+    },
     async submit() {
       if (this.board.name.length === 0) return;
       this.isLoading = true;
       if (this.isDeleteForm) {
         try {
-          await this.$apollo.mutate({
-            mutation: destroyBoardMutation,
-            variables: {
-              id: fullBoardId(this.board.id),
-            },
-          });
+          await this.deleteBoard();
           visitUrl(this.rootPath);
         } catch {
           Flash(this.$options.i18n.deleteErrorMessage);
@@ -324,7 +335,7 @@ export default {
       />
 
       <board-scope
-        v-if="scopedIssueBoardFeatureEnabled && !isEpicBoard"
+        v-if="scopedIssueBoardFeatureEnabled"
         :collapse-scope="isNewForm"
         :board="board"
         :can-admin-board="canAdminBoard"

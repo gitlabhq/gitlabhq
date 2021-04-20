@@ -110,7 +110,7 @@ namespace :gitlab do
 
     desc 'GitLab | GraphQL | Generate GraphQL docs'
     task compile_docs: [:environment, :enable_feature_flags] do
-      renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema.graphql_definition, render_options)
+      renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema, render_options)
 
       renderer.write
 
@@ -119,7 +119,7 @@ namespace :gitlab do
 
     desc 'GitLab | GraphQL | Check if GraphQL docs are up to date'
     task check_docs: [:environment, :enable_feature_flags] do
-      renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema.graphql_definition, render_options)
+      renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema, render_options)
 
       doc = File.read(Rails.root.join(OUTPUT_DIR, 'index.md'))
 

@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Health
+group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -16,6 +16,10 @@ your team when environment performance falls outside of the boundaries you set.
 ## Managed Prometheus instances
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and GitLab 11.3 for [library metrics](../../user/project/integrations/prometheus_library/index.md).
+
+WARNING:
+Managed Prometheus on Kubernetes is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327796)
+and scheduled for [removal in GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
 
 For managed Prometheus instances using auto configuration, you can
 [configure alerts for metrics](index.md#adding-custom-metrics) directly in the

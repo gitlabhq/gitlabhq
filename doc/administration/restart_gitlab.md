@@ -4,17 +4,10 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# How to restart GitLab
+# How to restart GitLab **(FREE SELF)**
 
 Depending on how you installed GitLab, there are different methods to restart
 its service(s).
-
-If you want the TL;DR versions, jump to:
-
-- [Omnibus GitLab restart](#omnibus-gitlab-restart)
-- [Omnibus GitLab reconfigure](#omnibus-gitlab-reconfigure)
-- [Source installation restart](#installations-from-source)
-- [Helm chart installation restart](#helm-chart-installations)
 
 ## Omnibus installations
 

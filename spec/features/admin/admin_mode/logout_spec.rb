@@ -9,6 +9,8 @@ RSpec.describe 'Admin Mode Logout', :js do
   let(:user) { create(:admin) }
 
   before do
+    stub_feature_flags(combined_menu: false)
+
     gitlab_sign_in(user)
     gitlab_enable_admin_mode_sign_in(user)
     visit admin_root_path

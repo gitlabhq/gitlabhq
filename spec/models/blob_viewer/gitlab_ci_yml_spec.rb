@@ -8,6 +8,7 @@ RSpec.describe BlobViewer::GitlabCiYml do
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
   let(:blob) { fake_blob(path: '.gitlab-ci.yml', data: data) }
   let(:sha) { sample_commit.id }

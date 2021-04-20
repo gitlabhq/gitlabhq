@@ -127,15 +127,16 @@ module API
         # as `:tags` are defined as: `has_many :tags, through: :taggings`
         # N+1 is solved then by using `subject.tags.map(&:name)`
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20555
-        super(projects_relation).preload(:group)
+        super(projects_relation).preload(group: :namespace_settings)
                                 .preload(:ci_cd_settings)
                                 .preload(:project_setting)
                                 .preload(:container_expiration_policy)
                                 .preload(:auto_devops)
+                                .preload(:service_desk_setting)
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,
                                          fork_network_member: :forked_from_project,
-                                         forked_from_project: [:route, :forks, :tags, namespace: :route])
+                                         forked_from_project: [:route, :forks, :tags, :group, :project_feature, namespace: [:route, :owner]])
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang rubocop offenses in spec/features/dashboard
+merge_request: 57898
+author: Abdul Wadood @abdulwd
+type: fixed

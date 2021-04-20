@@ -5,10 +5,8 @@ import Group from '~/group';
 import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
 import GroupPathValidator from './group_path_validator';
 
-const parentId = $('#group_parent_id');
-if (!parentId.val()) {
-  new GroupPathValidator(); // eslint-disable-line no-new
-}
+new GroupPathValidator(); // eslint-disable-line no-new
+
 BindInOut.initAll();
 initFilePickers();
 

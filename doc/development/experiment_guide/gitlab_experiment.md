@@ -17,8 +17,8 @@ You're strongly encouraged to read and understand the
 [Feature flags in development of GitLab](../feature_flags/index.md) portion of the
 documentation before considering running experiments. Experiments add additional
 concepts which may seem confusing or advanced without understanding the underpinnings
-of how GitLab uses feature flags in development. One concept: GLEX supports multivariate
-experiments, which are sometimes referred to as A/B/n tests.
+of how GitLab uses feature flags in development. One concept: GLEX supports
+experiments with multiple variants, which are sometimes referred to as A/B/n tests.
 
 The [`gitlab-experiment` project](https://gitlab.com/gitlab-org/gitlab-experiment)
 exists in a separate repository, so it can be shared across any GitLab property that uses
@@ -49,7 +49,7 @@ graph TD
     Running? -->|No| Excluded[Control / No Tracking]
     Cached? -->|No| Excluded?
     Cached? -->|Yes| Cached[Cached Value]
-    Excluded? -->|Yes / Cached| Excluded
+    Excluded? -->|Yes| Excluded
     Excluded? -->|No| Segmented?
     Segmented? -->|Yes / Cached| VariantA
     Segmented? -->|No| Included?[Experiment Group?]
@@ -92,7 +92,7 @@ end
 ```
 
 When this code executes, the experiment is run, a variant is assigned, and (if within a
-controller or view) a `window.gon.experiment.pillColor` object will be available in the
+controller or view) a `window.gon.experiment.pill_color` object will be available in the
 client layer, with details like:
 
 - The assigned variant.
@@ -367,7 +367,7 @@ about contexts now.
 We can assume we run the experiment in one or a few places, but
 track events potentially in many places. The tracking call remains the same, with
 the arguments you would normally use when
-[tracking events using snowplow](../snowplow.md). The easiest example
+[tracking events using snowplow](../snowplow/index.md). The easiest example
 of tracking an event in Ruby would be:
 
 ```ruby
@@ -501,6 +501,69 @@ Any experiment that's been run in the request lifecycle surfaces in `window.gon.
 and matches [this schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-0)
 so you can use it when resolving some concepts around experimentation in the client layer.
 
+### Use experiments in Vue
+
+With the `experiment` component, you can define slots that match the name of the
+variants pushed to `window.gon.experiment`. For example, if we alter the `pill_color`
+experiment to just use the default variants of `control` and `candidate` like so:
+
+```ruby
+def show
+  experiment(:pill_color) do |e|
+    e.use { } # control
+    e.try { } # candidate
+  end.run
+end
+```
+
+We can make use of the named slots `control` and `candidate` in the Vue component:
+
+```vue
+<script>
+import Experiment from '~/experimentation/components/experiment.vue';
+
+export default {
+  components: { Experiment }
+}
+</script>
+
+<template>
+  <experiment name="pill_color">
+    <template #control>
+      <button class="bg-default">Click default button</button>
+    </template>
+
+    <template #candidate>
+      <button class="bg-red">Click red button</button>
+    </template>
+  </experiment>
+</template>
+```
+
+When you're coding for an experiment with multiple variants, you can use the variant names.
+For example, the Vue component for the previously-defined `pill_color` experiment with `red` and `blue` variants would look like this:
+
+```vue
+<template>
+  <experiment name="pill_color">
+    <template #control>
+      <button class="bg-default">Click default button</button>
+    </template>
+
+    <template #red>
+      <button class="bg-red">Click red button</button>
+    </template>
+
+    <template #blue>
+      <button class="bg-blue">Click blue button</button>
+    </template>
+  </experiment>
+</template>
+```
+
+NOTE:
+When there is no experiment data in the `window.gon.experiment` object for the given experiment name, the `control` slot will be used, if it exists.
+
 ## Notes on feature flags
 
 NOTE:
@@ -525,7 +588,7 @@ Conditional means that it returns `true` in some situations, but not all situati
 
 When a feature flag is disabled (meaning the state is `off`), the experiment is
 considered _inactive_. You can visualize this in the [decision tree diagram](#how-it-works)
-as reaching the first [Running?] node, and traversing the negative path.
+as reaching the first `Running?` node, and traversing the negative path.
 
 When a feature flag is rolled out to a `percentage_of_actors` or similar (meaning the
 state is `conditional`) the experiment is considered to be _running_

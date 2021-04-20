@@ -11,9 +11,7 @@ class ContextCommitsFinder
 
   def execute
     commits = init_collection
-    commits = filter_existing_commits(commits)
-
-    commits
+    filter_existing_commits(commits)
   end
 
   private
@@ -21,19 +19,15 @@ class ContextCommitsFinder
   attr_reader :project, :merge_request, :search, :limit, :offset
 
   def init_collection
-    commits =
-      if search.present?
-        search_commits
-      else
-        project.repository.commits(merge_request.target_branch, { limit: limit, offset: offset })
-      end
-
-    commits
+    if search.present?
+      search_commits
+    else
+      project.repository.commits(merge_request.target_branch, { limit: limit, offset: offset })
+    end
   end
 
   def filter_existing_commits(commits)
     commits.select! { |commit| already_included_ids.exclude?(commit.id) }
-
     commits
   end
 

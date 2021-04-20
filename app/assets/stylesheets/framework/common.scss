@@ -121,10 +121,6 @@ hr {
     @include str-truncated(30%);
   }
 
-  &-60 {
-    @include str-truncated(60%);
-  }
-
   &-100 {
     @include str-truncated(100%);
   }
@@ -292,11 +288,6 @@ img.emoji {
   }
 }
 
-.search_box {
-  @extend .card.card-body;
-  text-align: center;
-}
-
 .dropzone .dz-preview .dz-progress {
   border-color: $border-color !important;
 
@@ -426,7 +417,6 @@ img.emoji {
 .mw-460 { max-width: 460px; }
 .mw-6em { max-width: 6em; }
 .mw-70p { max-width: 70%; }
-.mw-90p { max-width: 90%; }
 
 // By default flex items don't shrink below their minimum content size.
 // To change this, these clases set a min-width or min-height

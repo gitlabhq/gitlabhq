@@ -231,7 +231,7 @@ module API
         optional :password, type: String, desc: 'The password of the new user'
         optional :reset_password, type: Boolean, desc: 'Flag indicating the user will be sent a password reset token'
         optional :skip_confirmation, type: Boolean, desc: 'Flag indicating the account is confirmed'
-        at_least_one_of :password, :reset_password
+        at_least_one_of :password, :reset_password, :force_random_password
         requires :name, type: String, desc: 'The name of the user'
         requires :username, type: String, desc: 'The username of the user'
         optional :force_random_password, type: Boolean, desc: 'Flag indicating a random password will be set'
@@ -571,8 +571,6 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       delete ":id", feature_category: :users do
-        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/issues/20757')
-
         authenticated_as_admin!
 
         user = User.find_by(id: params[:id])
@@ -996,6 +994,29 @@ module API
       end
       get "emails", feature_category: :users do
         present paginate(current_user.emails), with: Entities::Email
+      end
+
+      desc "Update the current user's preferences" do
+        success Entities::UserPreferences
+        detail 'This feature was introduced in GitLab 13.10.'
+      end
+      params do
+        requires :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
+      end
+      put "preferences", feature_category: :users do
+        authenticate!
+
+        preferences = current_user.user_preference
+
+        attrs = declared_params(include_missing: false)
+
+        service = ::UserPreferences::UpdateService.new(current_user, attrs).execute
+
+        if service.success?
+          present preferences, with: Entities::UserPreferences
+        else
+          render_api_error!('400 Bad Request', 400)
+        end
       end
 
       desc 'Get a single email address owned by the currently authenticated user' do

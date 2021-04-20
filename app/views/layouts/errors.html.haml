@@ -20,4 +20,10 @@
               history.back();
             });
           }
+
+          // We do not have rails_ujs here, so we're manually making a link trigger a form submit.
+          document.getElementById('sign_out_link').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('sign_out_form').submit();
+          });
         }());

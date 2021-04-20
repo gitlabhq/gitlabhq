@@ -71,7 +71,7 @@ module QA
 
             Flow::Login.sign_in(as: user, skip_page_validation: true)
 
-            expect(page).to have_text("Invalid Login or password")
+            expect(page).to have_text("Invalid login or password")
 
             @recreated_user = Resource::User.fabricate_via_browser_ui! do |resource|
               resource.name = user.name

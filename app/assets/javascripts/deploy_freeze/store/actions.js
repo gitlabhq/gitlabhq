@@ -3,36 +3,52 @@ import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
 
-export const requestAddFreezePeriod = ({ commit }) => {
+export const requestFreezePeriod = ({ commit }) => {
   commit(types.REQUEST_ADD_FREEZE_PERIOD);
 };
 
-export const receiveAddFreezePeriodSuccess = ({ commit }) => {
+export const receiveFreezePeriodSuccess = ({ commit }) => {
   commit(types.RECEIVE_ADD_FREEZE_PERIOD_SUCCESS);
 };
 
-export const receiveAddFreezePeriodError = ({ commit }, error) => {
+export const receiveFreezePeriodError = ({ commit }, error) => {
   commit(types.RECEIVE_ADD_FREEZE_PERIOD_ERROR, error);
 };
 
-export const addFreezePeriod = ({ state, dispatch, commit }) => {
-  dispatch('requestAddFreezePeriod');
+const receiveFreezePeriod = (store, request) => {
+  const { dispatch, commit } = store;
+  dispatch('requestFreezePeriod');
 
-  return Api.createFreezePeriod(state.projectId, {
-    freeze_start: state.freezeStartCron,
-    freeze_end: state.freezeEndCron,
-    cron_timezone: state.selectedTimezoneIdentifier,
-  })
+  request(store)
     .then(() => {
-      dispatch('receiveAddFreezePeriodSuccess');
+      dispatch('receiveFreezePeriodSuccess');
       commit(types.RESET_MODAL);
       dispatch('fetchFreezePeriods');
     })
     .catch((error) => {
       createFlash(__('Error: Unable to create deploy freeze'));
-      dispatch('receiveAddFreezePeriodError', error);
+      dispatch('receiveFreezePeriodError', error);
     });
 };
+
+export const addFreezePeriod = (store) =>
+  receiveFreezePeriod(store, ({ state }) =>
+    Api.createFreezePeriod(state.projectId, {
+      freeze_start: state.freezeStartCron,
+      freeze_end: state.freezeEndCron,
+      cron_timezone: state.selectedTimezoneIdentifier,
+    }),
+  );
+
+export const updateFreezePeriod = (store) =>
+  receiveFreezePeriod(store, ({ state }) =>
+    Api.updateFreezePeriod(state.projectId, {
+      id: state.selectedId,
+      freeze_start: state.freezeStartCron,
+      freeze_end: state.freezeEndCron,
+      cron_timezone: state.selectedTimezoneIdentifier,
+    }),
+  );
 
 export const fetchFreezePeriods = ({ commit, state }) => {
   commit(types.REQUEST_FREEZE_PERIODS);
@@ -44,6 +60,13 @@ export const fetchFreezePeriods = ({ commit, state }) => {
     .catch(() => {
       createFlash(__('There was an error fetching the deploy freezes.'));
     });
+};
+
+export const setFreezePeriod = ({ commit }, freezePeriod) => {
+  commit(types.SET_SELECTED_ID, freezePeriod.id);
+  commit(types.SET_SELECTED_TIMEZONE, freezePeriod.cronTimezone);
+  commit(types.SET_FREEZE_START_CRON, freezePeriod.freezeStart);
+  commit(types.SET_FREEZE_END_CRON, freezePeriod.freezeEnd);
 };
 
 export const setSelectedTimezone = ({ commit }, timezone) => {

@@ -381,22 +381,13 @@ function prepareDiffFileLines(file) {
 
   inlineLines.forEach((line) => prepareLine(line, file)); // WARNING: In-Place Mutations!
 
-  Object.assign(file, {
-    inlineLinesCount: inlineLines.length,
-  });
-
   return file;
 }
 
-function getVisibleDiffLines(file) {
-  return file.inlineLinesCount;
-}
-
-function finalizeDiffFile(file) {
-  const lines = getVisibleDiffLines(file);
-
+function finalizeDiffFile(file, index) {
   Object.assign(file, {
-    renderIt: lines < LINES_TO_BE_RENDERED_DIRECTLY,
+    renderIt:
+      index < 3 ? file[INLINE_DIFF_LINES_KEY].length < LINES_TO_BE_RENDERED_DIRECTLY : false,
     isShowingFullFile: false,
     isLoadingFullFile: false,
     discussions: [],
@@ -424,7 +415,7 @@ export function prepareDiffData({ diff, priorFiles = [], meta = false }) {
     .map((file, index, allFiles) => prepareRawDiffFile({ file, allFiles, meta }))
     .map(ensureBasicDiffFileLines)
     .map(prepareDiffFileLines)
-    .map(finalizeDiffFile);
+    .map((file, index) => finalizeDiffFile(file, priorFiles.length + index));
 
   return deduplicateFilesList([...priorFiles, ...cleanedFiles]);
 }

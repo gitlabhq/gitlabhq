@@ -8,7 +8,8 @@ RSpec.describe BulkImports::Common::Transformers::UserReferenceTransformer do
     let_it_be(:group) { create(:group) }
     let_it_be(:bulk_import) { create(:bulk_import) }
     let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import, group: group) }
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(entity) }
+    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
     let(:hash) do
       {
@@ -51,19 +52,26 @@ RSpec.describe BulkImports::Common::Transformers::UserReferenceTransformer do
     end
 
     context 'when custom reference is provided' do
-      it 'updates provided reference' do
-        hash = {
-          'author' => {
-            'public_email' => user.email
+      shared_examples 'updates provided reference' do |reference|
+        let(:hash) do
+          {
+            'author' => {
+              'public_email' => user.email
+            }
           }
-        }
+        end
 
-        transformer = described_class.new(reference: 'author')
-        result = transformer.transform(context, hash)
+        it 'updates provided reference' do
+          transformer = described_class.new(reference: reference)
+          result = transformer.transform(context, hash)
 
-        expect(result['author']).to be_nil
-        expect(result['author_id']).to eq(user.id)
+          expect(result['author']).to be_nil
+          expect(result['author_id']).to eq(user.id)
+        end
       end
+
+      include_examples 'updates provided reference', 'author'
+      include_examples 'updates provided reference', :author
     end
   end
 end

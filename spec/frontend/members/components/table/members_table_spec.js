@@ -14,6 +14,7 @@ import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import MemberSource from '~/members/components/table/member_source.vue';
 import MembersTable from '~/members/components/table/members_table.vue';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 import * as initUserPopovers from '~/user_popovers';
 import { member as memberMock, directMember, invite, accessRequest } from '../../mock_data';
 
@@ -25,24 +26,33 @@ describe('MembersTable', () => {
 
   const createStore = (state = {}) => {
     return new Vuex.Store({
-      state: {
-        members: [],
-        tableFields: [],
-        tableAttrs: {
-          table: { 'data-qa-selector': 'members_list' },
-          tr: { 'data-qa-selector': 'member_row' },
+      modules: {
+        [MEMBER_TYPES.user]: {
+          namespaced: true,
+          state: {
+            members: [],
+            tableFields: [],
+            tableAttrs: {
+              table: { 'data-qa-selector': 'members_list' },
+              tr: { 'data-qa-selector': 'member_row' },
+            },
+            ...state,
+          },
         },
-        sourceId: 1,
-        currentUserId: 1,
-        ...state,
       },
     });
   };
 
-  const createComponent = (state) => {
+  const createComponent = (state, provide = {}) => {
     wrapper = mount(MembersTable, {
       localVue,
       store: createStore(state),
+      provide: {
+        sourceId: 1,
+        currentUserId: 1,
+        namespace: MEMBER_TYPES.user,
+        ...provide,
+      },
       stubs: [
         'member-avatar',
         'member-source',
@@ -119,7 +129,7 @@ describe('MembersTable', () => {
 
       describe('when user is not logged in', () => {
         it('does not render the "Actions" field', () => {
-          createComponent({ currentUserId: null, tableFields: ['actions'] });
+          createComponent({ tableFields: ['actions'] }, { currentUserId: null });
 
           expect(within(wrapper.element).queryByTestId('col-actions')).toBe(null);
         });

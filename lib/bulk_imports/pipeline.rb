@@ -15,6 +15,10 @@ module BulkImports
       @context = context
     end
 
+    def tracker
+      @tracker ||= context.tracker
+    end
+
     included do
       private
 

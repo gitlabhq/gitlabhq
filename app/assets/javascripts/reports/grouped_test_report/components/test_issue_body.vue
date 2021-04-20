@@ -24,7 +24,7 @@ export default {
         n__(
           'Reports|Failed %{count} time in %{base_branch} in the last 14 days',
           'Reports|Failed %{count} times in %{base_branch} in the last 14 days',
-          this.issue.recent_failures.count,
+          this.issue.recent_failures?.count,
         ),
         this.issue.recent_failures,
       );
@@ -44,20 +44,20 @@ export default {
 <template>
   <div class="gl-display-flex gl-mt-2 gl-mb-2">
     <issue-status-icon :status="status" :status-icon-size="24" class="gl-mr-3" />
-    <gl-badge
-      v-if="showRecentFailures"
-      variant="warning"
-      class="gl-mr-2"
-      data-testid="test-issue-body-recent-failures"
-    >
-      {{ recentFailureMessage }}
-    </gl-badge>
     <gl-button
       button-text-classes="gl-white-space-normal! gl-word-break-all gl-text-left"
       variant="link"
       data-testid="test-issue-body-description"
       @click="openModal({ issue })"
     >
+      <gl-badge
+        v-if="showRecentFailures"
+        variant="warning"
+        class="gl-mr-2"
+        data-testid="test-issue-body-recent-failures"
+      >
+        {{ recentFailureMessage }}
+      </gl-badge>
       {{ issue.name }}
     </gl-button>
   </div>

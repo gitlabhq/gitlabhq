@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::MergeService do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
+
   let(:merge_request) { create(:merge_request, :simple, author: user2, assignees: [user2]) }
   let(:project) { merge_request.project }
 
@@ -164,20 +165,6 @@ RSpec.describe MergeRequests::MergeService do
           expect_any_instance_of(JiraService).to receive(:close_issue).with(merge_request, jira_issue, user).once
 
           service.execute(merge_request)
-        end
-
-        context 'when jira_issue_transition_id is not present' do
-          before do
-            allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(nil)
-          end
-
-          it 'does not close issue' do
-            jira_tracker.update!(jira_issue_transition_id: nil)
-
-            expect_any_instance_of(JiraService).not_to receive(:transition_issue)
-
-            service.execute(merge_request)
-          end
         end
 
         context 'wrong issue markdown' do

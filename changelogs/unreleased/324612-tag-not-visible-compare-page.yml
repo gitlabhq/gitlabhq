@@ -1,0 +1,5 @@
+---
+title: Use search param in refs call to filter revisions
+merge_request: 57442
+author:
+type: fixed

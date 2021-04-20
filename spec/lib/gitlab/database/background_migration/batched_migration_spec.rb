@@ -29,6 +29,16 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '.active_migration' do
+    let!(:migration1) { create(:batched_background_migration, :finished) }
+    let!(:migration2) { create(:batched_background_migration, :active) }
+    let!(:migration3) { create(:batched_background_migration, :active) }
+
+    it 'returns the first active migration according to queue order' do
+      expect(described_class.active_migration).to eq(migration2)
+    end
+  end
+
   describe '#interval_elapsed?' do
     context 'when the migration has no last_job' do
       let(:batched_migration) { build(:batched_background_migration) }
@@ -74,6 +84,34 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
               created_at: Time.current - 3.minutes)
 
             expect(batched_migration.interval_elapsed?).to eq(true)
+          end
+        end
+      end
+
+      context 'when an interval variance is given' do
+        let(:variance) { 2.seconds }
+
+        context 'when the last job is less than an interval with variance old' do
+          it 'returns false' do
+            freeze_time do
+              create(:batched_background_migration_job,
+                batched_migration: batched_migration,
+                created_at: Time.current - 1.minute - 57.seconds)
+
+              expect(batched_migration.interval_elapsed?(variance: variance)).to eq(false)
+            end
+          end
+        end
+
+        context 'when the last job is more than an interval with variance old' do
+          it 'returns true' do
+            freeze_time do
+              create(:batched_background_migration_job,
+                batched_migration: batched_migration,
+                created_at: Time.current - 1.minute - 58.seconds)
+
+              expect(batched_migration.interval_elapsed?(variance: variance)).to eq(true)
+            end
           end
         end
       end
@@ -156,5 +194,18 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
   describe '#batch_class_name=' do
     it_behaves_like 'an attr_writer that demodulizes assigned class names', :batch_class_name
+  end
+
+  describe '#prometheus_labels' do
+    let(:batched_migration) { create(:batched_background_migration, job_class_name: 'TestMigration', table_name: 'foo', column_name: 'bar') }
+
+    it 'returns a hash with labels for the migration' do
+      labels = {
+        migration_id: batched_migration.id,
+        migration_identifier: 'TestMigration/foo.bar'
+      }
+
+      expect(batched_migration.prometheus_labels).to eq(labels)
+    end
   end
 end

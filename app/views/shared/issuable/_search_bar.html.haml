@@ -3,15 +3,15 @@
 - show_sorting_dropdown = local_assigns.fetch(:show_sorting_dropdown, true)
 - disable_target_branch = local_assigns.fetch(:disable_target_branch, false)
 - placeholder = local_assigns[:placeholder] || _('Search or filter results...')
-- is_not_boards_modal_or_productivity_analytics = type != :boards_modal && type != :productivity_analytics
-- block_css_class = is_not_boards_modal_or_productivity_analytics ? 'row-content-block second-block' : ''
-- if board && board.to_type == "EpicBoard"
+- block_css_class = type != :productivity_analytics ? 'row-content-block second-block' : ''
+- is_epic_board = board&.to_type == "EpicBoard"
+- if is_epic_board
   - user_can_admin_list = can?(current_user, :admin_epic_board_list, board.resource_parent)
 - elsif board
   - user_can_admin_list = can?(current_user, :admin_issue_board_list, board.resource_parent)
 
-.issues-filters{ class: ("w-100" if type == :boards_modal) }
-  .issues-details-filters.filtered-search-block.d-flex.flex-column.flex-lg-row{ class: block_css_class, "v-pre" => type == :boards_modal }
+.issues-filters
+  .issues-details-filters.filtered-search-block.d-flex.flex-column.flex-lg-row{ class: block_css_class }
     .d-flex.flex-column.flex-md-row.flex-grow-1.mb-lg-0.mb-md-2.mb-sm-0.w-100
       - if type == :boards
         = render "shared/boards/switcher", board: board
@@ -21,16 +21,16 @@
         - if @can_bulk_update
           .check-all-holder.d-none.d-sm-block.hidden
             = check_box_tag "check-all-issues", nil, false, class: "check-all-issues left"
-        - if Feature.enabled?(:boards_filtered_search, @group)
+        - if Feature.enabled?(:boards_filtered_search, @group) && is_epic_board
           #js-board-filtered-search
         - else
           .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row
             .filtered-search-box
-              - if type != :boards_modal && type != :boards
+              - if type != :boards
                 - text = tag.span(sprite_icon('history'), class: "d-md-none") + tag.span(_('Recent searches'), class: "d-none d-md-inline")
                 = dropdown_tag(text,
                   options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
-                  toggle_class: "btn filtered-search-history-dropdown-toggle-button",
+                  toggle_class: "gl-button btn btn-default filtered-search-history-dropdown-toggle-button",
                   dropdown_class: "filtered-search-history-dropdown",
                   content_class: "filtered-search-history-dropdown-content" }) do
                   .js-filtered-search-history-dropdown{ data: { full_path: search_history_storage_prefix } }
@@ -42,7 +42,7 @@
                 #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
                   %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                     %li.filter-dropdown-item{ data: {hint: "#{'{{hint}}'}", tag: "#{'{{tag}}'}", action: "#{'{{hint === \'search\' ? \'submit\' : \'\' }}'}" } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         -# Encapsulate static class name `{{icon}}` inside #{} to bypass
                         -# haml lint's ClassAttributeWithStaticValue
                         %svg
@@ -52,7 +52,7 @@
                 #js-dropdown-operator.filtered-search-input-dropdown-menu.dropdown-menu
                   %ul.filter-dropdown{ data: { dropdown: true, dynamic: true } }
                     %li.filter-dropdown-item{ data: { value: "{{ title }}" } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         {{ title }}
                         %span.btn-helptext
                           {{ help }}
@@ -68,10 +68,10 @@
                 #js-dropdown-assignee.filtered-search-input-dropdown-menu.dropdown-menu
                   %ul{ data: { dropdown: true } }
                     %li.filter-dropdown-item{ data: { value: 'None' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('None')
                     %li.filter-dropdown-item{ data: { value: 'Any' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('Any')
                     %li.divider.droplab-item-ignore
                     - if current_user
@@ -84,10 +84,10 @@
                 #js-dropdown-reviewer.filtered-search-input-dropdown-menu.dropdown-menu
                   %ul{ data: { dropdown: true } }
                     %li.filter-dropdown-item{ data: { value: 'None' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('None')
                     %li.filter-dropdown-item{ data: { value: 'Any' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('Any')
                     %li.divider.droplab-item-ignore
                     - if current_user
@@ -102,92 +102,92 @@
                 #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
                   %ul{ data: { dropdown: true } }
                     %li.filter-dropdown-item{ data: { value: 'None' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('None')
                     %li.filter-dropdown-item{ data: { value: 'Any' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('Any')
                     %li.filter-dropdown-item{ data: { value: 'Upcoming' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('Upcoming')
                     %li.filter-dropdown-item{ data: { value: 'Started' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('Started')
                     %li.divider.droplab-item-ignore
                   %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                     %li.filter-dropdown-item
-                      %button.btn.btn-link.js-data-value{ type: 'button' }
+                      %button.gl-button.btn.btn-link.js-data-value{ type: 'button' }
                         {{title}}
                 = render_if_exists 'shared/issuable/filter_iteration', type: type
                 #js-dropdown-release.filtered-search-input-dropdown-menu.dropdown-menu
                   %ul{ data: { dropdown: true } }
                     %li.filter-dropdown-item{ data: { value: 'None' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('None')
                     %li.filter-dropdown-item{ data: { value: 'Any' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('Any')
                     %li.divider.droplab-item-ignore
                   %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                     %li.filter-dropdown-item
-                      %button.btn.btn-link.js-data-value{ type: 'button' }
+                      %button.gl-button.btn.btn-link.js-data-value{ type: 'button' }
                         {{title}}
                 #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu
                   %ul{ data: { dropdown: true } }
                     %li.filter-dropdown-item{ data: { value: 'None' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('None')
                     %li.filter-dropdown-item{ data: { value: 'Any' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('Any')
                     %li.divider.droplab-item-ignore
                   %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                     %li.filter-dropdown-item
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         %span.dropdown-label-box{ style: 'background: {{color}}' }
                         %span.label-title.js-data-value
                           {{title}}
                 #js-dropdown-my-reaction.filtered-search-input-dropdown-menu.dropdown-menu
                   %ul{ data: { dropdown: true } }
                     %li.filter-dropdown-item{ data: { value: 'None' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('None')
                     %li.filter-dropdown-item{ data: { value: 'Any' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('Any')
                     %li.divider.droplab-item-ignore
                   %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                     %li.filter-dropdown-item
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         %gl-emoji
                         %span.js-data-value.gl-ml-3
                           {{name}}
                 #js-dropdown-wip.filtered-search-input-dropdown-menu.dropdown-menu
                   %ul.filter-dropdown{ data: { dropdown: true } }
                     %li.filter-dropdown-item{ data: { value: 'yes', capitalize: true } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('Yes')
                     %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('No')
                 #js-dropdown-confidential.filtered-search-input-dropdown-menu.dropdown-menu
                   %ul.filter-dropdown{ data: { dropdown: true } }
                     %li.filter-dropdown-item{ data: { value: 'yes', capitalize: true } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('Yes')
                     %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
-                      %button.btn.btn-link{ type: 'button' }
+                      %button.gl-button.btn.btn-link{ type: 'button' }
                         = _('No')
                 - unless disable_target_branch
                   #js-dropdown-target-branch.filtered-search-input-dropdown-menu.dropdown-menu
                     %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                       %li.filter-dropdown-item
-                        %button.btn.btn-link.js-data-value.monospace
+                        %button.gl-button.btn.btn-link.js-data-value.monospace
                           {{title}}
                 #js-dropdown-environment.filtered-search-input-dropdown-menu.dropdown-menu
                   %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                     %li.filter-dropdown-item
-                      %button.btn.btn-link.js-data-value{ type: 'button' }
+                      %button.gl-button.btn.btn-link.js-data-value{ type: 'button' }
                         {{title}}
 
                 = render_if_exists 'shared/issuable/filter_weight', type: type
@@ -207,8 +207,6 @@
             .js-create-column-trigger{ data: board_list_data }
           - else
             = render 'shared/issuable/board_create_list_dropdown', board: board
-          - if @project
-            #js-add-issues-btn{ data: { can_admin_list: can?(current_user, :admin_issue_board_list, @project) } }
         #js-toggle-focus-btn
-      - elsif is_not_boards_modal_or_productivity_analytics && show_sorting_dropdown
+      - elsif type != :productivity_analytics && show_sorting_dropdown
         = render 'shared/issuable/sort_dropdown'

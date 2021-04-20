@@ -1,0 +1,8 @@
+---
+name: other_storage_tab
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57121
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325967
+milestone: '13.11'
+type: development
+group: group::fulfillment
+default_enabled: false

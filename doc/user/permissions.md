@@ -39,12 +39,13 @@ usernames. A GitLab administrator can configure the GitLab instance to
 NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
-While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner,
-or an instance administrator, who receives all permissions. For more information, see [projects members documentation](project/members/index.md).
+The Owner permission is only available at the group or personal namespace level (and for instance administrators) and is inherited by its projects.
+While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner, or an instance administrator, who receives all permissions.
+For more information, see [projects members documentation](project/members/index.md).
 
 The following table depicts the various user permission levels in a project.
 
-| Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner (*10*) |
+| Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner  |
 |---------------------------------------------------|---------|------------|-------------|----------|--------|
 | Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                                    | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -65,7 +66,7 @@ The following table depicts the various user permission levels in a project.
 | Download and browse job artifacts                 | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | Create confidential issue                         | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |
-| See related issues                                | ✓       | ✓          | ✓           | ✓        | ✓      |
+| See linked issues                                 | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View [Releases](project/releases/index.md)        | ✓ (*6*) | ✓          | ✓           | ✓        | ✓      |
 | View requirements **(ULTIMATE)**                  | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View Insights **(ULTIMATE)**                      | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -81,18 +82,18 @@ The following table depicts the various user permission levels in a project.
 | [Set issue estimate and record time spent](project/time_tracking.md) | | ✓ | ✓         | ✓        | ✓      |
 | Lock issue threads                                |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                              |         | ✓          | ✓           | ✓        | ✓      |
-| Manage related issues                             |         | ✓          | ✓           | ✓        | ✓      |
+| Manage linked issues                              |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                                     |         | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                              |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |
 | See a container registry                          |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                                  |         | ✓          | ✓           | ✓        | ✓      |
+| See [DORA metrics](analytics/ci_cd_analytics.md)  |         | ✓          | ✓           | ✓        | ✓      |
 | See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
 | View CI/CD analytics                              |         | ✓          | ✓           | ✓        | ✓      |
 | View Code Review analytics **(STARTER)**          |         | ✓          | ✓           | ✓        | ✓      |
 | View Repository analytics                         |         | ✓          | ✓           | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
-| Create new merge request                          |         | ✓          | ✓           | ✓        | ✓      |
 | View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
 | Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
 | Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
@@ -107,6 +108,8 @@ The following table depicts the various user permission levels in a project.
 | Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
 | Create/edit [releases](project/releases/index.md)|   |            | ✓           | ✓        | ✓      |
 | Delete [releases](project/releases/index.md)|   |            |            | ✓        | ✓      |
+| Manage merge approval rules (project settings)    |         |            |             | ✓        | ✓      |
+| Create new merge request                          |         |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
 | Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
 | Force push to non-protected branches              |         |            | ✓           | ✓        | ✓      |
@@ -169,12 +172,12 @@ The following table depicts the various user permission levels in a project.
 | Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)                |         |            |             | ✓        | ✓      |
-| Reposition comments on images (posted by any user)|✓ (*11*) | ✓ (*11*)   |  ✓ (*11*)   | ✓        | ✓      |
+| Reposition comments on images (posted by any user)|✓ (*10*) | ✓ (*10*)   |  ✓ (*10*)   | ✓        | ✓      |
 | Manage Error Tracking                             |         |            |             | ✓        | ✓      |
 | Delete wiki pages                                 |         |            |             | ✓        | ✓      |
-| View project Audit Events                         |         |            |  ✓ (*12*)   | ✓        | ✓      |
+| View project Audit Events                         |         |            |  ✓ (*11*)   | ✓        | ✓      |
 | Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
-| Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** |         |            |             | ✓        | ✓      |
+| Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** **(PREMIUM SAAS)** (*12*) |         |            |             | ✓        | ✓      |
 | View 2FA status of members                        |         |            |             | ✓        | ✓      |
 | Switch visibility level                           |         |            |             |          | ✓      |
 | Transfer project to another namespace             |         |            |             |          | ✓      |
@@ -200,15 +203,16 @@ The following table depicts the various user permission levels in a project.
 1. When [Share Group Lock](group/index.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
 1. For information on eligible approvers for merge requests, see
    [Eligible approvers](project/merge_requests/merge_request_approvals.md#eligible-approvers).
-1. Owner permission is only available at the group or personal namespace level (and for instance admins) and is inherited by its projects.
 1. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
 1. Users can only view events based on their individual actions.
+1. Project access tokens are supported for self-managed instances on Free and above. They are also
+   supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial)).
 
 ## Project features permissions
 
 ### Wiki and issues
 
-Project features like wiki and issues can be hidden from users depending on
+Project features like [wikis](project/wiki/index.md) and issues can be hidden from users depending on
 which visibility level you select on project settings.
 
 - Disabled: disabled for everyone
@@ -290,12 +294,14 @@ group.
 | View group Audit Events                                |       |          | ✓ (7)     | ✓ (7)      | ✓     |
 | Disable notification emails                            |       |          |           |            | ✓     |
 | View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Group DevOps Adoption **(ULTIMATE)**              |       | ✓        | ✓         | ✓          | ✓     |
 | View Insights **(ULTIMATE)**                           | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Issue analytics **(PREMIUM)**                     | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
 | View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Billing **(FREE SAAS)**                           |       |          |           |            | ✓ (4) |
 | View Usage Quotas **(FREE SAAS)**                      |       |          |           |            | ✓ (4) |
+| Manage [group push rules](group/index.md#group-push-rules) **(PREMIUM)** |         |            |             | ✓        | ✓      |
 | View 2FA status of members                             |       |          |           |            | ✓     |
 | Filter members by 2FA status                           |       |          |           |            | ✓     |
 | Administer project compliance frameworks               |       |          |           |            | ✓     |
@@ -329,7 +335,7 @@ project and should only have access to that project.
 
 External users:
 
-- Cannot create projects (including forks), groups, or personal snippets.
+- Can only create projects (including forks), subgroups, and snippets within the top-level group to which they belong.
 - Can only access public projects and projects to which they are explicitly granted access,
   thus hiding all other internal or private ones from them (like being
   logged out).
@@ -482,10 +488,6 @@ instance and project. In addition, all admins can use the admin interface under
 NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
-NOTE:
-GitLab 8.12 has a completely redesigned job permissions system.
-Read all about the [new model and its implications](project/new_ci_build_permissions_model.md).
-
 This table shows granted privileges for jobs triggered by specific types of
 users:
 
@@ -506,11 +508,6 @@ users:
 
 1. Only if the user is not an external one
 1. Only if the user is a member of the project
-
-### New CI job permissions model
-
-GitLab 8.12 has a completely redesigned job permissions system. To learn more,
-read through the documentation on the [new CI/CD permissions model](project/new_ci_build_permissions_model.md#new-ci-job-permissions-model).
 
 ## Running pipelines on protected branches
 

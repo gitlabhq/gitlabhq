@@ -131,7 +131,6 @@ module Avatarable
 
   def clear_avatar_caches
     return unless respond_to?(:verified_emails) && verified_emails.any? && avatar_changed?
-    return unless Feature.enabled?(:avatar_cache_for_email, self, type: :development)
 
     Gitlab::AvatarCache.delete_by_email(*verified_emails)
   end

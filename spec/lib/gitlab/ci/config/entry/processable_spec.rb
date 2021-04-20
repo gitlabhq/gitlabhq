@@ -382,7 +382,9 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
         context 'with only job variables' do
           it 'does return defined variables' do
             expect(entry.value).to include(
-              variables: { 'A' => 'job', 'B' => 'job' }
+              variables: { 'A' => 'job', 'B' => 'job' },
+              job_variables: { 'A' => 'job', 'B' => 'job' },
+              root_variables_inheritance: true
             )
           end
         end
@@ -394,9 +396,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
             ).value
           end
 
-          it 'does return all variables and overwrite them' do
+          it 'does return job and root variables' do
             expect(entry.value).to include(
-              variables: { 'A' => 'job', 'B' => 'job', 'C' => 'root', 'D' => 'root' }
+              variables: { 'A' => 'job', 'B' => 'job', 'C' => 'root', 'D' => 'root' },
+              job_variables: { 'A' => 'job', 'B' => 'job' },
+              root_variables_inheritance: true
             )
           end
 
@@ -408,9 +412,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
               }
             end
 
-            it 'does return only job variables' do
+            it 'does return job and root variables' do
               expect(entry.value).to include(
-                variables: { 'A' => 'job', 'B' => 'job' }
+                variables: { 'A' => 'job', 'B' => 'job' },
+                job_variables: { 'A' => 'job', 'B' => 'job' },
+                root_variables_inheritance: false
               )
             end
           end
@@ -423,9 +429,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
               }
             end
 
-            it 'does return only job variables' do
+            it 'does return job and root variables' do
               expect(entry.value).to include(
-                variables: { 'A' => 'job', 'B' => 'job', 'D' => 'root' }
+                variables: { 'A' => 'job', 'B' => 'job', 'D' => 'root' },
+                job_variables: { 'A' => 'job', 'B' => 'job' },
+                root_variables_inheritance: ['D']
               )
             end
           end
@@ -493,7 +501,9 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
             name: :rspec,
             stage: 'test',
             only: { refs: %w[branches tags] },
-            variables: {}
+            variables: {},
+            job_variables: {},
+            root_variables_inheritance: true
           )
         end
       end

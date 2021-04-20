@@ -69,6 +69,7 @@ RSpec.describe Projects::IncidentsController do
     end
 
     let_it_be(:resource) { create(:incident, project: project) }
+
     let(:user) { developer }
 
     it 'renders incident page' do

@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang rubocop offenses in auth controllers
+merge_request: 57886
+author: Abdul Wadood @abdulwd
+type: fixed

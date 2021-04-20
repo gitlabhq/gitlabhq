@@ -21,7 +21,7 @@ init:
       deploy: skipped
 
 transitions:
-  - event: enqueue
+  - event: play
     jobs: [test]
     expect:
       pipeline: pending
@@ -30,7 +30,7 @@ transitions:
         deploy: skipped
       jobs:
         test: pending
-        deploy: skipped
+        deploy: created
 
   - event: drop
     jobs: [test]

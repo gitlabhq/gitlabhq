@@ -100,4 +100,50 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
       it { is_expected.to eq(result) }
     end
   end
+
+  describe '.inherit_yaml_variables' do
+    let(:from) do
+      [{ key: 'key1', value: 'value1' },
+       { key: 'key2', value: 'value2' }]
+    end
+
+    let(:to) do
+      [{ key: 'key2', value: 'value22' },
+       { key: 'key3', value: 'value3' }]
+    end
+
+    let(:inheritance) { true }
+
+    let(:result) do
+      [{ key: 'key1', value: 'value1', public: true },
+       { key: 'key2', value: 'value22', public: true },
+       { key: 'key3', value: 'value3', public: true }]
+    end
+
+    subject { described_class.inherit_yaml_variables(from: from, to: to, inheritance: inheritance) }
+
+    it { is_expected.to eq(result) }
+
+    context 'when inheritance is false' do
+      let(:inheritance) { false }
+
+      let(:result) do
+        [{ key: 'key2', value: 'value22', public: true },
+         { key: 'key3', value: 'value3', public: true }]
+      end
+
+      it { is_expected.to eq(result) }
+    end
+
+    context 'when inheritance is array' do
+      let(:inheritance) { ['key2'] }
+
+      let(:result) do
+        [{ key: 'key2', value: 'value22', public: true },
+         { key: 'key3', value: 'value3', public: true }]
+      end
+
+      it { is_expected.to eq(result) }
+    end
+  end
 end

@@ -12,7 +12,7 @@ description: 'Container Registry metadata database'
 
 With the [Container Registry](https://gitlab.com/gitlab-org/container-registry) integrated into GitLab, every GitLab project can have its own space to store its Docker images. You can use the registry to build, push and share images using the Docker client, CI/CD or the GitLab API.
 
-Each day on GitLab.com, between [150k and 200k images are pushed to the registry](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=9620193&udv=0), generating about [700k API events](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=7601761&udv=0). It’s also worth noting that although some customers use other registry vendors, [more than 96% of instances](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=9832282&udv=0) are using the GitLab Container Registry.
+Each day on GitLab.com, between [150k and 200k images are pushed to the registry](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=9620193&udv=0), generating about [700k API events](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=7601761&udv=0). It's also worth noting that although some customers use other registry vendors, [more than 96% of instances](https://app.periscopedata.com/app/gitlab/527857/Package-GitLab.com-Stage-Activity-Dashboard?widget=9832282&udv=0) are using the GitLab Container Registry.
 
 For GitLab.com and for GitLab customers, the Container Registry is a critical component to building and deploying software.
 
@@ -187,7 +187,7 @@ During the discussion of the [initial database schema](https://gitlab.com/gitlab
 PostgreSQL introduced significant improvements for partitioning in [version 12](https://www.postgresql.org/docs/12/release-12.html#id-1.11.6.9.5), among which we highlight:
 
 - It's now possible for foreign keys to reference partitioned tables. This is a hard requirement for this project not only to guarantee consistency and integrity but also to enable cascading deletes at the database level;
-- Major performance improvements for inserts, selects, and updates with less locking and consistent performance for a large number of partitions ([benchmarks](https://www.2ndquadrant.com/en/blog/postgresql-12-partitioning));
+- Major performance improvements for inserts, selects, and updates with less locking and consistent performance for a large number of partitions ([benchmarks](https://www.2ndquadrant.com/en/blog/postgresql-12-partitioning/));
 - Major improvements to the planning algorithm for tables with a large number of partitions, with some tests finding speedups of up to 10,000 times ([source](https://aws.amazon.com/blogs/database/postgresql-12-a-deep-dive-into-some-new-functionality/));
 - Attaching new partitions to an existing table no longer requires locking the entire table;
 - Bulk load (`COPY`) now uses bulk inserts instead of inserting one row at a time;
@@ -342,6 +342,8 @@ A more detailed list of all tasks, as well as periodic progress updates can be f
 ## Who
 
 Proposal:
+
+<!-- vale gitlab.Spelling = NO -->
 
 | Role                         | Who
 |------------------------------|-------------------------|

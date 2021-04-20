@@ -10,7 +10,7 @@ class ExpireJobCacheWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(job_id)
-    job = CommitStatus.joins(:pipeline, :project).find_by(id: job_id)
+    job = CommitStatus.eager_load_pipeline.find_by(id: job_id)
     return unless job
 
     pipeline = job.pipeline

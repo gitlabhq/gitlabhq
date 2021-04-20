@@ -12,8 +12,10 @@ RSpec.describe Pages::ZipDirectoryService do
 
   let(:ignore_invalid_entries) { false }
 
+  let(:service_directory) { @work_dir }
+
   let(:service) do
-    described_class.new(@work_dir, ignore_invalid_entries: ignore_invalid_entries)
+    described_class.new(service_directory, ignore_invalid_entries: ignore_invalid_entries)
   end
 
   let(:result) do
@@ -25,32 +27,32 @@ RSpec.describe Pages::ZipDirectoryService do
   let(:archive) { result[:archive_path] }
   let(:entries_count) { result[:entries_count] }
 
-  it 'returns error if project pages dir does not exist' do
-    expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
-
-    expect(
-      described_class.new("/tmp/not/existing/dir").execute
-    ).to eq(status: :error, message: "Can not find valid public dir in /tmp/not/existing/dir")
+  shared_examples 'handles invalid public directory' do
+    it 'returns success' do
+      expect(status).to eq(:success)
+      expect(archive).to be_nil
+      expect(entries_count).to be_nil
+    end
   end
 
-  it 'returns nils if there is no public directory and does not leave archive' do
-    expect(status).to eq(:error)
-    expect(message).to eq("Can not find valid public dir in #{@work_dir}")
-    expect(archive).to eq(nil)
-    expect(entries_count).to eq(nil)
+  context "when work direcotry doesn't exist" do
+    let(:service_directory) { "/tmp/not/existing/dir" }
 
-    expect(File.exist?(File.join(@work_dir, '@migrated.zip'))).to eq(false)
+    include_examples 'handles invalid public directory'
   end
 
-  it 'returns nils if public directory is a symlink' do
-    create_dir('target')
-    create_file('./target/index.html', 'hello')
-    create_link("public", "./target")
+  context 'when public directory is absent' do
+    include_examples 'handles invalid public directory'
+  end
 
-    expect(status).to eq(:error)
-    expect(message).to eq("Can not find valid public dir in #{@work_dir}")
-    expect(archive).to eq(nil)
-    expect(entries_count).to eq(nil)
+  context 'when public directory is a symlink' do
+    before do
+      create_dir('target')
+      create_file('./target/index.html', 'hello')
+      create_link("public", "./target")
+    end
+
+    include_examples 'handles invalid public directory'
   end
 
   context 'when there is a public directory' do

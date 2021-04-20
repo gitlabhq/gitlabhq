@@ -1,11 +1,11 @@
-import { GlAvatar, GlButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import * as JiraConnectApi from '~/jira_connect/api';
+import GroupItemName from '~/jira_connect/components/group_item_name.vue';
 import GroupsListItem from '~/jira_connect/components/groups_list_item.vue';
-import { persistAlert } from '~/jira_connect/utils';
+import { persistAlert, reloadPage } from '~/jira_connect/utils';
 import { mockGroup1 } from '../mock_data';
 
 jest.mock('~/jira_connect/utils');
@@ -14,36 +14,23 @@ describe('GroupsListItem', () => {
   let wrapper;
   const mockSubscriptionPath = 'subscriptionPath';
 
-  const reloadSpy = jest.fn();
-
-  global.AP = {
-    navigator: {
-      reload: reloadSpy,
-    },
-  };
-
   const createComponent = ({ mountFn = shallowMount } = {}) => {
-    wrapper = extendedWrapper(
-      mountFn(GroupsListItem, {
-        propsData: {
-          group: mockGroup1,
-        },
-        provide: {
-          subscriptionsPath: mockSubscriptionPath,
-        },
-      }),
-    );
+    wrapper = mountFn(GroupsListItem, {
+      propsData: {
+        group: mockGroup1,
+      },
+      provide: {
+        subscriptionsPath: mockSubscriptionPath,
+      },
+    });
   };
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  const findGlAvatar = () => wrapper.find(GlAvatar);
-  const findGroupName = () => wrapper.findByTestId('group-list-item-name');
-  const findGroupDescription = () => wrapper.findByTestId('group-list-item-description');
-  const findLinkButton = () => wrapper.find(GlButton);
+  const findGroupItemName = () => wrapper.findComponent(GroupItemName);
+  const findLinkButton = () => wrapper.findComponent(GlButton);
   const clickLinkButton = () => findLinkButton().trigger('click');
 
   describe('template', () => {
@@ -51,17 +38,9 @@ describe('GroupsListItem', () => {
       createComponent();
     });
 
-    it('renders group avatar', () => {
-      expect(findGlAvatar().exists()).toBe(true);
-      expect(findGlAvatar().props('src')).toBe(mockGroup1.avatar_url);
-    });
-
-    it('renders group name', () => {
-      expect(findGroupName().text()).toBe(mockGroup1.full_name);
-    });
-
-    it('renders group description', () => {
-      expect(findGroupDescription().text()).toBe(mockGroup1.description);
+    it('renders GroupItemName', () => {
+      expect(findGroupItemName().exists()).toBe(true);
+      expect(findGroupItemName().props('group')).toBe(mockGroup1);
     });
 
     it('renders Link button', () => {
@@ -106,7 +85,7 @@ describe('GroupsListItem', () => {
 
         await waitForPromises();
 
-        expect(reloadSpy).toHaveBeenCalled();
+        expect(reloadPage).toHaveBeenCalled();
       });
     });
 
@@ -125,7 +104,7 @@ describe('GroupsListItem', () => {
 
         await waitForPromises();
 
-        expect(reloadSpy).not.toHaveBeenCalled();
+        expect(reloadPage).not.toHaveBeenCalled();
         expect(wrapper.emitted('error')[0][0]).toBe(mockErrorMessage);
       });
     });

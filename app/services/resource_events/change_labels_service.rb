@@ -5,7 +5,8 @@ module ResourceEvents
     attr_reader :resource, :user
 
     def initialize(resource, user)
-      @resource, @user = resource, user
+      @resource = resource
+      @user = user
     end
 
     def execute(added_labels: [], removed_labels: [])

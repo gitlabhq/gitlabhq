@@ -10,12 +10,9 @@ module QA
             element :coordinator_address, '%code#coordinator_address' # rubocop:disable QA/ElementWithPattern
           end
 
-          ##
-          # TODO, phase-out CSS classes added in Ruby helpers.
-          #
           view 'app/helpers/ci/runners_helper.rb' do
             # rubocop:disable Lint/InterpolationCheck
-            element :runner_status, 'runner-status-#{status}' # rubocop:disable QA/ElementWithPattern
+            element :runner_status_icon, 'qa_selector: "runner_status_#{status}_content"' # rubocop:disable QA/ElementWithPattern
             # rubocop:enable Lint/InterpolationCheck
           end
 
@@ -28,7 +25,7 @@ module QA
           end
 
           def has_online_runner?
-            page.has_css?('.runner-status-online')
+            has_element?(:runner_status_online_content)
           end
         end
       end

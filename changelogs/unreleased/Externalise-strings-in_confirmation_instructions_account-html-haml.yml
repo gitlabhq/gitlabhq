@@ -1,0 +1,5 @@
+---
+title: Externalize strings in _confirmation_instructions_account.html.haml
+merge_request: 58214
+author: nuwe1
+type: other

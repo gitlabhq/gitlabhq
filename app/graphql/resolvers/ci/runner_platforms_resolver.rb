@@ -3,7 +3,8 @@
 module Resolvers
   module Ci
     class RunnerPlatformsResolver < BaseResolver
-      type Types::Ci::RunnerPlatformType, null: false
+      type Types::Ci::RunnerPlatformType.connection_type, null: true
+      description 'Supported runner platforms.'
 
       def resolve(**args)
         runner_instructions.map do |platform, data|

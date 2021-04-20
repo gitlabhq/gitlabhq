@@ -1,3 +1,4 @@
+import { GlFormRadioGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
@@ -11,6 +12,10 @@ Vue.use(Vuex);
 
 describe('Board card layout', () => {
   let wrapper;
+
+  const selectLabel = (id) => {
+    wrapper.findComponent(GlFormRadioGroup).vm.$emit('change', id);
+  };
 
   const createStore = ({ actions = {}, getters = {}, state = {} } = {}) => {
     return new Vuex.Store({
@@ -57,6 +62,11 @@ describe('Board card layout', () => {
         },
       }),
     );
+
+    // trigger change event
+    if (selectedId) {
+      selectLabel(selectedId);
+    }
   };
 
   afterEach(() => {

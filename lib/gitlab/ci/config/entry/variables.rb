@@ -18,7 +18,7 @@ module Gitlab
           end
 
           def value
-            Hash[@config.map { |key, value| [key.to_s, expand_value(value)[:value]] }]
+            @config.to_h { |key, value| [key.to_s, expand_value(value)[:value]] }
           end
 
           def self.default(**)
@@ -26,7 +26,7 @@ module Gitlab
           end
 
           def value_with_data
-            Hash[@config.map { |key, value| [key.to_s, expand_value(value)] }]
+            @config.to_h { |key, value| [key.to_s, expand_value(value)] }
           end
 
           def use_value_data?

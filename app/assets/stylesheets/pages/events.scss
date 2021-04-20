@@ -50,7 +50,7 @@
   .event-user-info {
     margin-bottom: $gl-padding-4;
 
-    .author_name {
+    .author-name {
       a {
         color: $gl-text-color;
         font-weight: $gl-font-weight-bold;
@@ -118,26 +118,11 @@
     }
   }
 
-  .event_icon {
-    position: relative;
-    float: right;
-    border: 1px solid $gray-darker;
-    padding: 5px;
-    border-radius: 5px;
-    background: $gray-light;
-    margin-left: 10px;
-    top: -6px;
-
-    img {
-      width: 20px;
-    }
-  }
-
   &:last-child {
     border: 0;
   }
 
-  .event_commits {
+  .event-commits {
     li {
       &.commit {
         background: transparent;

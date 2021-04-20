@@ -19,11 +19,14 @@ RSpec.describe 'Issues > Real-time sidebar', :js do
       expect(page.find('.assignee')).to have_content 'None'
     end
 
-    gitlab_sign_in(user)
+    sign_in(user)
+
     visit project_issue_path(project, issue)
     expect(page.find('.assignee')).to have_content 'None'
 
     click_button 'assign yourself'
+    wait_for_requests
+    expect(page.find('.assignee')).to have_content user.name
 
     using_session :other_session do
       expect(page.find('.assignee')).to have_content user.name

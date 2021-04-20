@@ -170,6 +170,22 @@ RSpec.describe Repository do
     end
   end
 
+  describe '#search_branch_names' do
+    subject(:search_branch_names) { repository.search_branch_names('conflict-*') }
+
+    it 'returns matching branch names' do
+      expect(search_branch_names).to contain_exactly(
+        'conflict-binary-file',
+        'conflict-resolvable',
+        'conflict-contains-conflict-markers',
+        'conflict-missing-side',
+        'conflict-start',
+        'conflict-non-utf8',
+        'conflict-too-large'
+      )
+    end
+  end
+
   describe '#list_last_commits_for_tree' do
     let(:path_to_commit) do
       {
@@ -977,6 +993,57 @@ RSpec.describe Repository do
     end
   end
 
+  describe '#search_files_by_wildcard_path' do
+    let(:ref) { 'master' }
+
+    subject(:result) { repository.search_files_by_wildcard_path(path, ref) }
+
+    context 'when specifying a normal path' do
+      let(:path) { 'files/images/logo-black.png' }
+
+      it 'returns the path' do
+        expect(result).to eq(['files/images/logo-black.png'])
+      end
+    end
+
+    context 'when specifying a path with wildcard' do
+      let(:path) { 'files/*/*.png' }
+
+      it 'returns all files matching the path' do
+        expect(result).to contain_exactly('files/images/logo-black.png',
+                                          'files/images/logo-white.png')
+      end
+    end
+
+    context 'when specifying an extension with wildcard' do
+      let(:path) { '*.rb' }
+
+      it 'returns all files matching the extension' do
+        expect(result).to contain_exactly('encoding/russian.rb',
+                                          'files/ruby/popen.rb',
+                                          'files/ruby/regex.rb',
+                                          'files/ruby/version_info.rb')
+      end
+    end
+
+    context 'when sending regexp' do
+      let(:path) { '.*\.rb' }
+
+      it 'ignores the regexp and returns an empty array' do
+        expect(result).to eq([])
+      end
+    end
+
+    context 'when sending another ref' do
+      let(:path) { 'files' }
+      let(:ref) { 'other-branch' }
+
+      it 'returns an empty array' do
+        expect(result).to eq([])
+      end
+    end
+  end
+
   describe '#async_remove_remote' do
     before do
       masterrev = repository.find_branch('master').dereferenced_target
@@ -1036,7 +1103,8 @@ RSpec.describe Repository do
 
   describe '#create_ref' do
     it 'redirects the call to write_ref' do
-      ref, ref_path = '1', '2'
+      ref = '1'
+      ref_path = '2'
 
       expect(repository.raw_repository).to receive(:write_ref).with(ref_path, ref)
 
@@ -1647,12 +1715,13 @@ RSpec.describe Repository do
     end
 
     it 'writes merge of source SHA and first parent ref to MR merge_ref_path' do
-      merge_commit_id = repository.merge_to_ref(user,
-                                                merge_request.diff_head_sha,
-                                                merge_request,
-                                                merge_request.merge_ref_path,
-                                                'Custom message',
-                                                merge_request.target_branch_ref)
+      merge_commit_id =
+        repository.merge_to_ref(user,
+          source_sha: merge_request.diff_head_sha,
+          branch: merge_request.target_branch,
+          target_ref: merge_request.merge_ref_path,
+          message: 'Custom message',
+          first_parent_ref: merge_request.target_branch_ref)
 
       merge_commit = repository.commit(merge_commit_id)
 

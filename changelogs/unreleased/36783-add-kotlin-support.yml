@@ -1,0 +1,5 @@
+---
+title: Add kotlin support to spotbugs-sast job
+merge_request: 59431
+author:
+type: added

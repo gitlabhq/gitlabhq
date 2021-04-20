@@ -27,7 +27,6 @@ describe('HelpPopover', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('renders a link button with an icon question', () => {
@@ -35,15 +34,10 @@ describe('HelpPopover', () => {
       icon: 'question',
       variant: 'link',
     });
-    expect(findQuestionButton().attributes().tabindex).toBe('0');
   });
 
   it('renders popover that uses the question button as target', () => {
     expect(findPopover().props().target()).toBe(findQuestionButton().vm.$el);
-  });
-
-  it('triggers popover on hover and focus', () => {
-    expect(findPopover().props().triggers).toBe('hover focus');
   });
 
   it('allows rendering title with HTML tags', () => {
@@ -52,6 +46,14 @@ describe('HelpPopover', () => {
 
   it('allows rendering content with HTML tags', () => {
     expect(findPopover().find('b').exists()).toBe(true);
+  });
+
+  describe('without title', () => {
+    it('does not render title', () => {
+      buildWrapper({ title: null });
+
+      expect(findPopover().find('span').exists()).toBe(false);
+    });
   });
 
   it('binds other popover options to the popover instance', () => {

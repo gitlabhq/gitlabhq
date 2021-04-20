@@ -41,7 +41,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         initial_patch_the_trace
       end
 
-      it_behaves_like 'API::CI::Runner application context metadata', '/api/:version/jobs/:id/trace' do
+      it_behaves_like 'API::CI::Runner application context metadata', 'PATCH /api/:version/jobs/:id/trace' do
         let(:send_request) { patch_the_trace }
       end
 
@@ -210,12 +210,20 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         end
 
         context 'when build trace is not being watched' do
-          it 'returns X-GitLab-Trace-Update-Interval as 30' do
+          it 'returns the interval in X-GitLab-Trace-Update-Interval' do
             patch_the_trace
 
             expect(response).to have_gitlab_http_status(:accepted)
-            expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('30')
+            expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('60')
           end
+        end
+      end
+
+      context 'when job does not exist anymore' do
+        it 'returns 403 Forbidden' do
+          patch_the_trace(job_id: non_existing_record_id)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
@@ -264,7 +272,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         it { expect(response).to have_gitlab_http_status(:forbidden) }
       end
 
-      def patch_the_trace(content = ' appended', request_headers = nil)
+      def patch_the_trace(content = ' appended', request_headers = nil, job_id: job.id)
         unless request_headers
           job.trace.read do |stream|
             offset = stream.size
@@ -274,7 +282,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         end
 
         Timecop.travel(job.updated_at + update_interval) do
-          patch api("/jobs/#{job.id}/trace"), params: content, headers: request_headers
+          patch api("/jobs/#{job_id}/trace"), params: content, headers: request_headers
           job.reload
         end
       end

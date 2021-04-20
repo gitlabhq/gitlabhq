@@ -2,10 +2,12 @@
 
 module Gitlab
   module Golang
+    PseudoVersion = Struct.new(:semver, :timestamp, :commit_id)
+
     extend self
 
     def local_module_prefix
-      @gitlab_prefix ||= "#{Settings.build_gitlab_go_url}/".freeze
+      @gitlab_prefix ||= "#{Settings.build_gitlab_go_url}/"
     end
 
     def semver_tag?(tag)
@@ -37,11 +39,11 @@ module Gitlab
       end
 
       # This pattern is intentionally more forgiving than the patterns
-      # above. Correctness is verified by #pseudo_version_commit.
+      # above. Correctness is verified by #validate_pseudo_version.
       /\A\d{14}-\h+\z/.freeze.match? pre
     end
 
-    def pseudo_version_commit(project, semver)
+    def parse_pseudo_version(semver)
       # Per Go's implementation of pseudo-versions, a tag should be
       # considered a pseudo-version if it matches one of the patterns
       # listed in #pseudo_version?, regardless of the content of the
@@ -55,9 +57,14 @@ module Gitlab
       # - [Pseudo-version request processing](https://github.com/golang/go/blob/master/src/cmd/go/internal/modfetch/coderepo.go)
 
       # Go ignores anything before '.' or after the second '-', so we will do the same
-      timestamp, sha = semver.prerelease.split('-').last 2
+      timestamp, commit_id = semver.prerelease.split('-').last 2
       timestamp = timestamp.split('.').last
-      commit = project.repository.commit_by(oid: sha)
+
+      PseudoVersion.new(semver, timestamp, commit_id)
+    end
+
+    def validate_pseudo_version(project, version, commit = nil)
+      commit ||= project.repository.commit_by(oid: version.commit_id)
 
       # Error messages are based on the responses of proxy.golang.org
 
@@ -65,16 +72,24 @@ module Gitlab
       raise ArgumentError.new 'invalid pseudo-version: unknown commit' unless commit
 
       # Require the SHA fragment to be 12 characters long
-      raise ArgumentError.new 'invalid pseudo-version: revision is shorter than canonical' unless sha.length == 12
+      raise ArgumentError.new 'invalid pseudo-version: revision is shorter than canonical' unless version.commit_id.length == 12
 
       # Require the timestamp to match that of the commit
-      raise ArgumentError.new 'invalid pseudo-version: does not match version-control timestamp' unless commit.committed_date.strftime('%Y%m%d%H%M%S') == timestamp
+      raise ArgumentError.new 'invalid pseudo-version: does not match version-control timestamp' unless commit.committed_date.strftime('%Y%m%d%H%M%S') == version.timestamp
 
       commit
     end
 
     def parse_semver(str)
       Packages::SemVer.parse(str, prefixed: true)
+    end
+
+    def go_path(project, path = nil)
+      if path.blank?
+        "#{local_module_prefix}/#{project.full_path}"
+      else
+        "#{local_module_prefix}/#{project.full_path}/#{path}"
+      end
     end
 
     def pkg_go_dev_url(name, version = nil)

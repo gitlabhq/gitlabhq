@@ -15,7 +15,7 @@ describe('BranchesDropdown', () => {
   const createComponent = (term, state = { isFetching: false }) => {
     store = new Vuex.Store({
       getters: {
-        joinedBranches: () => ['_master_', '_branch_1_', '_branch_2_'],
+        joinedBranches: () => ['_main_', '_branch_1_', '_branch_2_'],
       },
       actions: {
         fetchBranches: spyFetchBranches,
@@ -94,13 +94,13 @@ describe('BranchesDropdown', () => {
 
     it('renders all branches when search term is empty', () => {
       expect(findAllDropdownItems()).toHaveLength(3);
-      expect(findDropdownItemByIndex(0).text()).toBe('_master_');
+      expect(findDropdownItemByIndex(0).text()).toBe('_main_');
       expect(findDropdownItemByIndex(1).text()).toBe('_branch_1_');
       expect(findDropdownItemByIndex(2).text()).toBe('_branch_2_');
     });
 
     it('should not be selected on the inactive branch', () => {
-      expect(wrapper.vm.isSelected('_master_')).toBe(false);
+      expect(wrapper.vm.isSelected('_main_')).toBe(false);
     });
   });
 

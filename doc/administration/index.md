@@ -7,7 +7,12 @@ description: 'Learn how to install, configure, update, and maintain your GitLab 
 
 # Administrator documentation **(FREE SELF)**
 
-Learn how to administer your self-managed GitLab instance.
+If you use GitLab.com, only GitLab team members have access to administration tools and settings.
+If you use a self-managed GitLab instance, learn how to administer it.
+
+Only administrator users can access GitLab administration tools and settings.
+
+## Available distributions
 
 GitLab has two product distributions available through [different subscriptions](https://about.gitlab.com/pricing/):
 
@@ -15,16 +20,9 @@ GitLab has two product distributions available through [different subscriptions]
 - The open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab).
 
 You can [install either GitLab CE or GitLab EE](https://about.gitlab.com/install/ce-or-ee/).
-However, the features you have access to depend on your chosen [subscription](https://about.gitlab.com/pricing/).
+However, the features you have access to depend on your chosen subscription.
 
 GitLab Community Edition installations have access only to Free features.
-
-Non-administrator users can't access GitLab administration tools and settings.
-
-GitLab.com is administered by GitLab, Inc., and only GitLab team members have
-access to its administration tools and settings. Users of GitLab.com should
-instead refer to the [User documentation](../user/index.md) for GitLab
-configuration and usage documentation.
 
 ## Installing and maintaining GitLab
 
@@ -70,8 +68,8 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Broadcast Messages](../user/admin_area/broadcast_messages.md): Send messages
   to GitLab users through the UI.
 - [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to
-  empower Advanced Search. Useful when you deal with a huge amount of data.
-- [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md).
+  empower Advanced Search. Use when you deal with a huge amount of data.
+- [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md)
 - [Upload a license](../user/admin_area/license.md): Upload a license to unlock
   features that are in paid tiers of GitLab.
 - [Admin Area](../user/admin_area/index.md): for self-managed instance-wide
@@ -109,15 +107,15 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ### Upgrading or downgrading GitLab
 
-- [Upgrade from GitLab CE to GitLab EE](../update/index.md#upgrading-between-editions): learn how to upgrade GitLab Community Edition to GitLab Enterprise Editions.
+- [Upgrade from GitLab CE to GitLab EE](../update/index.md#upgrading-between-editions): Learn how to upgrade GitLab Community Edition to GitLab Enterprise Editions.
 - [Downgrade from GitLab EE to GitLab CE](../downgrade_ee_to_ce/index.md): Learn how to downgrade GitLab Enterprise Editions to Community Edition.
 
 ### GitLab platform integrations
 
 - [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/): Integrate with [Mattermost](https://mattermost.com), an open source, private cloud workplace for web messaging.
-- [PlantUML](integration/plantuml.md): Create simple diagrams in AsciiDoc and Markdown documents
+- [PlantUML](integration/plantuml.md): Create diagrams in AsciiDoc and Markdown documents
   created in snippets, wikis, and repositories.
-- [Web terminals](integration/terminal.md): Provide terminal access to your applications deployed to Kubernetes from within GitLab CI/CD [environments](../ci/environments/index.md#web-terminals).
+- [Web terminals](integration/terminal.md): Provide terminal access to your applications deployed to Kubernetes from GitLab CI/CD [environments](../ci/environments/index.md#web-terminals).
 
 ## User settings and permissions
 
@@ -126,12 +124,12 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication and Authorization](auth/README.md): Configure external authentication with LDAP, SAML, CAS, and additional providers.
-  - [Sync LDAP](auth/ldap/index.md).
-  - [Kerberos authentication](../integration/kerberos.md).
+  - [Sync LDAP](auth/ldap/index.md)
+  - [Kerberos authentication](../integration/kerberos.md)
   - See also other [authentication](../topics/authentication/index.md#gitlab-administrators) topics (for example, enforcing 2FA).
-- [Email users](../tools/email.md): Email GitLab users from within GitLab.
+- [Email users](../tools/email.md): Email GitLab users from GitLab.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
-- [Audit events](audit_events.md): View the changes made within the GitLab server for:
+- [Audit events](audit_events.md): View the changes made on the GitLab server for:
   - Groups and projects.
   - Instances.
 - [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
@@ -160,7 +158,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ### Repository settings
 
-- [Repository checks](repository_checks.md): Periodic Git repository checks.
+- [Repository checks](repository_checks.md): Check your repository for data corruption.
 - [Repository storage paths](repository_storage_paths.md): Manage the paths used to store repositories.
 - [Repository storage types](repository_storage_types.md): Information about the different repository storage types.
 - [Repository storage Rake tasks](raketasks/storage.md): A collection of Rake tasks to list and migrate existing projects and attachments associated with it from Legacy storage to Hashed storage.
@@ -171,7 +169,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#site-wide-admin-setting): Enable or disable GitLab CI/CD for your instance.
 - [GitLab CI/CD administration settings](../user/admin_area/settings/continuous_integration.md): Enable or disable Auto DevOps site-wide and define the artifacts' max size and expiration time.
-- [External Pipeline Validation](external_pipeline_validation.md): Enable, disable and configure external pipeline validation.
+- [External Pipeline Validation](external_pipeline_validation.md): Enable, disable, and configure external pipeline validation.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
 - [Job logs](job_logs.md): Information about the job logs.
 - [Register runners](../ci/runners/README.md#types-of-runners): Learn how to register and configure runners.
@@ -216,7 +214,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Troubleshooting
 
-- [Debugging tips](troubleshooting/debug.md): Tips to debug problems when things go wrong
+- [Debugging tips](troubleshooting/debug.md): Tips to debug problems when things go wrong.
 - [Log system](logs.md): Where to look for logs.
 - [Sidekiq Troubleshooting](troubleshooting/sidekiq.md): Debug when Sidekiq appears hung and is not processing jobs.
 - [Troubleshooting Elasticsearch](troubleshooting/elasticsearch.md)
@@ -225,27 +223,27 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ### Support Team Docs
 
-The GitLab Support Team has collected a lot of information about troubleshooting GitLab
-instances. These documents are normally used by the Support Team itself, or by customers
+The GitLab Support Team has collected a lot of information about troubleshooting GitLab.
+The following documents are used by the Support Team or by customers
 with direct guidance from a Support Team member. GitLab administrators may find the
-information useful for troubleshooting, but if you are experiencing trouble with your
+information useful for troubleshooting. However, if you are experiencing trouble with your
 GitLab instance, you should check your [support options](https://about.gitlab.com/support/)
 before referring to these documents.
 
 WARNING:
-Using the commands listed in the documentation below could result in data loss or
-other damage to a GitLab instance, and should only be used by experienced administrators
+The commands in the following documentation might result in data loss or
+other damage to a GitLab instance. They should be used only by experienced administrators
 who are aware of the risks.
 
-- [Useful diagnostics tools](troubleshooting/diagnostics_tools.md)
-- [Useful Linux commands](troubleshooting/linux_cheat_sheet.md)
+- [Diagnostics tools](troubleshooting/diagnostics_tools.md)
+- [Linux commands](troubleshooting/linux_cheat_sheet.md)
 - [Troubleshooting Kubernetes](troubleshooting/kubernetes_cheat_sheet.md)
 - [Troubleshooting PostgreSQL](troubleshooting/postgresql.md)
 - [Guide to test environments](troubleshooting/test_environments.md) (for Support Engineers)
 - [GitLab Rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)
 - [Troubleshooting SSL](troubleshooting/ssl.md)
-- Useful links:
-  - [GitLab Developer Docs](../development/README.md)
+- Related links:
+  - [GitLab Developer Documentation](../development/README.md)
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html)
   - [`strace` zine](https://wizardzines.com/zines/strace/)

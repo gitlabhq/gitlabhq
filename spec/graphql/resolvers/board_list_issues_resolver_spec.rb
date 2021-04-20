@@ -39,6 +39,24 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
 
         expect(result).to match_array([issue1])
       end
+
+      it 'raises an exception if both assignee_username and assignee_wildcard_id are present' do
+        expect do
+          resolve_board_list_issues(args: { filters: { assignee_username: ['username'], assignee_wildcard_id: 'NONE' } })
+        end.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      end
+
+      it 'accepts assignee wildcard id NONE' do
+        result = resolve_board_list_issues(args: { filters: { assignee_wildcard_id: 'NONE' } })
+
+        expect(result).to match_array([issue1, issue2, issue3])
+      end
+
+      it 'accepts assignee wildcard id ANY' do
+        result = resolve_board_list_issues(args: { filters: { assignee_wildcard_id: 'ANY' } })
+
+        expect(result).to match_array([])
+      end
     end
   end
 

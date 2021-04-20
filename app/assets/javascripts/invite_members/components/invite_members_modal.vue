@@ -11,10 +11,12 @@ import {
 } from '@gitlab/ui';
 import { partition, isString } from 'lodash';
 import Api from '~/api';
+import ExperimentTracking from '~/experimentation/experiment_tracking';
 import GroupSelect from '~/invite_members/components/group_select.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
+import { INVITE_MEMBERS_IN_COMMENT } from '../constants';
 import eventHub from '../event_hub';
 
 export default {
@@ -122,8 +124,9 @@ export default {
         usersToAddById.map((user) => user.id).join(','),
       ];
     },
-    openModal({ inviteeType }) {
+    openModal({ inviteeType, source }) {
       this.inviteeType = inviteeType;
+      this.source = source;
 
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
@@ -137,6 +140,12 @@ export default {
         this.submitInviteMembers();
       }
       this.closeModal();
+    },
+    trackInvite() {
+      if (this.source === INVITE_MEMBERS_IN_COMMENT) {
+        const tracking = new ExperimentTracking(INVITE_MEMBERS_IN_COMMENT);
+        tracking.event('comment_invite_success');
+      }
     },
     cancelInvite() {
       this.selectedAccessLevel = this.defaultAccessLevel;
@@ -177,6 +186,8 @@ export default {
         promises.push(apiAddByUserId(this.id, this.addByUserIdPostData(usersToAddById)));
       }
 
+      this.trackInvite();
+
       Promise.all(promises).then(this.showToastMessageSuccess).catch(this.showToastMessageError);
     },
     inviteByEmailPostData(usersToInviteByEmail) {
@@ -211,9 +222,9 @@ export default {
   },
   labels: {
     members: {
-      modalTitle: s__('InviteMembersModal|Invite team members'),
-      searchField: s__('InviteMembersModal|GitLab member or Email address'),
-      placeHolder: s__('InviteMembersModal|Search for members to invite'),
+      modalTitle: s__('InviteMembersModal|Invite members'),
+      searchField: s__('InviteMembersModal|GitLab member or email address'),
+      placeHolder: s__('InviteMembersModal|Select members or type email addresses'),
       toGroup: {
         introText: s__(
           "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} group.",

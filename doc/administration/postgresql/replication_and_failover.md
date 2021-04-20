@@ -6,8 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM SELF)**
 
-This document focuses on configuration supported with [GitLab Premium](https://about.gitlab.com/pricing/), using the Omnibus GitLab package.
-If you're a Community Edition or Starter user, consider using a cloud hosted solution.
+If you're a Free user of GitLab self-managed, consider using a cloud-hosted solution.
 This document doesn't cover installations from source.
 
 If a setup with replication and failover isn't what you were looking for, see

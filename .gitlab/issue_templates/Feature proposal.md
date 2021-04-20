@@ -113,3 +113,5 @@ Use the following resources to find the appropriate labels:
 /label ~devops:: ~group: ~Category:
 /label  ~"GitLab Core"/~"GitLab Premium"/~"GitLab Ultimate"
 /label ~feature
+/label ~documentation
+/label ~direction

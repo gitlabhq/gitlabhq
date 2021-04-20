@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe NewIssueWorker do
+  include AfterNextHelpers
+
   describe '#perform' do
     let(:worker) { described_class.new }
 
@@ -49,7 +51,7 @@ RSpec.describe NewIssueWorker do
           expect(Notify).not_to receive(:new_issue_email)
             .with(mentioned.id, issue.id, NotificationReason::MENTIONED)
 
-          expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: user.id, klass: issue.class, object_id: issue.id)
+          expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: user.id, klass: issue.class.to_s, object_id: issue.id)
 
           worker.perform(issue.id, user.id)
         end
@@ -77,6 +79,13 @@ RSpec.describe NewIssueWorker do
         it 'creates a notification for the mentioned user' do
           expect(Notify).to receive(:new_issue_email).with(mentioned.id, issue.id, NotificationReason::MENTIONED)
             .and_return(double(deliver_later: true))
+
+          worker.perform(issue.id, user.id)
+        end
+
+        it 'calls Issues::AfterCreateService' do
+          expect_next(::Issues::AfterCreateService)
+              .to receive(:execute)
 
           worker.perform(issue.id, user.id)
         end

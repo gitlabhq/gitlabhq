@@ -1,9 +1,9 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 
 export default {
   components: {
-    GlLink,
+    GlButton,
   },
   props: {
     currentPath: {
@@ -32,15 +32,15 @@ export default {
     <h5 class="m-0 dropdown-bold-header">{{ __('Download this directory') }}</h5>
     <div class="dropdown-menu-content">
       <div class="btn-group ml-0 w-100">
-        <gl-link
+        <gl-button
           v-for="(link, index) in normalizedLinks"
           :key="index"
           :href="link.path"
-          :class="{ 'btn-primary': index === 0 }"
-          class="btn btn-xs"
+          :variant="index === 0 ? 'confirm' : 'default'"
+          size="small"
         >
           {{ link.text }}
-        </gl-link>
+        </gl-button>
       </div>
     </div>
   </section>

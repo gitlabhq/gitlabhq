@@ -6,7 +6,7 @@ require_relative '../../../../rubocop/cop/graphql/descriptions'
 RSpec.describe RuboCop::Cop::Graphql::Descriptions do
   subject(:cop) { described_class.new }
 
-  context 'fields' do
+  context 'with fields' do
     it 'adds an offense when there is no description' do
       expect_offense(<<~TYPE)
         module Types
@@ -46,9 +46,19 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         end
       TYPE
     end
+
+    it 'does not add an offense when there is a resolver' do
+      expect_no_offenses(<<~TYPE.strip)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing, resolver: ThingResolver
+          end
+        end
+      TYPE
+    end
   end
 
-  context 'arguments' do
+  context 'with arguments' do
     it 'adds an offense when there is no description' do
       expect_offense(<<~TYPE)
         module Types
@@ -90,7 +100,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
     end
   end
 
-  context 'enum values' do
+  context 'with enum values' do
     it 'adds an offense when there is no description' do
       expect_offense(<<~TYPE)
         module Types

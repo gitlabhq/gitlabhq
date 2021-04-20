@@ -119,8 +119,8 @@ export default {
       <gl-button @click="onCancel">{{ s__('Cancel') }}</gl-button>
       <gl-button
         :disabled="!canSubmit"
-        category="primary"
-        variant="warning"
+        category="secondary"
+        variant="danger"
         @click="onSecondaryAction"
       >
         {{ secondaryAction }}

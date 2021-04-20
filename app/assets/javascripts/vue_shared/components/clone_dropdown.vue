@@ -56,6 +56,7 @@ export default {
               <gl-button
                 v-gl-tooltip.hover
                 :title="$options.copyURLTooltip"
+                :aria-label="$options.copyURLTooltip"
                 :data-clipboard-text="sshLink"
                 data-qa-selector="copy_ssh_url_button"
                 icon="copy-to-clipboard"
@@ -75,6 +76,7 @@ export default {
               <gl-button
                 v-gl-tooltip.hover
                 :title="$options.copyURLTooltip"
+                :aria-label="$options.copyURLTooltip"
                 :data-clipboard-text="httpLink"
                 data-qa-selector="copy_http_url_button"
                 icon="copy-to-clipboard"

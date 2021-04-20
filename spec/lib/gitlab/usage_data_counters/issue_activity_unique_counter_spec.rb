@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_gitlab_redis_shared_state do
-  let(:user1) { build(:user, id: 1) }
-  let(:user2) { build(:user, id: 2) }
-  let(:user3) { build(:user, id: 3) }
+  let_it_be(:user1) { build(:user, id: 1) }
+  let_it_be(:user2) { build(:user, id: 2) }
+  let_it_be(:user3) { build(:user, id: 3) }
+
   let(:time) { Time.zone.now }
 
   context 'for Issue title edit actions' do
@@ -272,10 +273,13 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     described_class.track_issue_title_changed_action(author: user1)
     described_class.track_issue_description_changed_action(author: user1)
     described_class.track_issue_assignee_changed_action(author: user1)
-    described_class.track_issue_title_changed_action(author: user2, time: time - 2.days)
-    described_class.track_issue_title_changed_action(author: user3, time: time - 3.days)
-    described_class.track_issue_description_changed_action(author: user3, time: time - 3.days)
-    described_class.track_issue_assignee_changed_action(author: user3, time: time - 3.days)
+
+    travel_to(2.days.ago) do
+      described_class.track_issue_title_changed_action(author: user2)
+      described_class.track_issue_title_changed_action(author: user3)
+      described_class.track_issue_description_changed_action(author: user3)
+      described_class.track_issue_assignee_changed_action(author: user3)
+    end
 
     events = Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(described_class::ISSUE_CATEGORY)
     today_count = Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: events, start_date: time, end_date: time)

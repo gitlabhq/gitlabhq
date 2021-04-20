@@ -8,7 +8,7 @@ RSpec.shared_examples 'API::CI::Runner application context metadata' do |api_rou
 
     send_request
 
-    Labkit::Context.with_context do |context|
+    Gitlab::ApplicationContext.with_raw_context do |context|
       expected_context = {
         'meta.caller_id' => api_route,
         'meta.user' => job.user.username,

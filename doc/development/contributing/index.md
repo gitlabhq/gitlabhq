@@ -149,7 +149,7 @@ Keep the following in mind when submitting merge requests:
   - [Documentation](../documentation/styleguide/index.md) style guide.
   - [Code style guides](style_guides.md).
 - Sometimes style guides will be followed but the code will lack structural integrity, or the
-  reviewer will have reservations about the code’s overall quality. When there is a reservation,
+  reviewer will have reservations about the code's overall quality. When there is a reservation,
   the reviewer will inform the author and provide some guidance.
 - Though GitLab generally allows anyone to indicate
   [approval](../../user/project/merge_requests/merge_request_approvals.md) of merge requests, the

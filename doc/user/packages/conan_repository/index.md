@@ -18,6 +18,9 @@ remote and authenticate with it.
 Then you can run `conan` commands and publish your package to the
 Package Registry.
 
+For documentation of the specific API endpoints that the Conan package manager
+client uses, see the [Conan API documentation](../../../api/packages/conan.md).
+
 ## Build a Conan package
 
 This section explains how to install Conan and build a package for your C/C++
@@ -125,7 +128,7 @@ To add the remote:
    For example:
 
    ```shell
-   conan search Hello* --all --remote=gitlab
+   conan search Hello* --remote=gitlab
    ```
 
 ### Add a remote for your instance
@@ -402,16 +405,3 @@ The GitLab Conan repository supports the following Conan CLI commands:
   packages you have permission to view.
 - `conan info`: View the information on a given package from the Package Registry.
 - `conan remove`: Delete the package from the Package Registry.
-
-## Troubleshooting Conan packages
-
-### `ERROR: <package> was not found in remote <remote>`
-
-When you attempt to install a Conan package, you might receive a `404` error
-like `ERROR: <package> was not found in remote <remote>`.
-
-This issue occurs when you request a download from the project-level Conan API.
-The resulting URL is missing is project's `/<id>` and Conan commands, like
-`conan install`, fail.
-
-For more information, see [issue 270129](https://gitlab.com/gitlab-org/gitlab/-/issues/270129).

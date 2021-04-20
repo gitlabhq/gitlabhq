@@ -8,7 +8,7 @@
 
 .content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed
   .files-changed-inner
-    .inline-parallel-buttons.d-none.d-md-block
+    .inline-parallel-buttons.gl-display-none.gl-md-display-flex
       - if !diffs_expanded? && diff_files.any? { |diff_file| diff_file.collapsed? }
         = link_to _('Expand all'), url_for(safe_params.merge(expanded: 1, format: nil)), class: 'gl-button btn btn-default'
       - if show_whitespace_toggle
@@ -20,7 +20,7 @@
           = diff_compare_whitespace_link(diffs.project, params[:from], params[:to], class: 'd-none d-sm-inline-block')
         - elsif current_controller?(:wikis)
           = toggle_whitespace_link(url_for(params_with_whitespace), class: 'd-none d-sm-inline-block')
-      .btn-group
+      .btn-group.gl-ml-3
         = inline_diff_btn
         = parallel_diff_btn
     = render 'projects/diffs/stats', diff_files: diff_files

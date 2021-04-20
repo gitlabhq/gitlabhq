@@ -32,5 +32,9 @@ RSpec.describe Explore::SnippetsController do
       expect(assigns(:snippets)).to all(be_a(PersonalSnippet))
       expect(response).to have_gitlab_http_status(:ok)
     end
+
+    it_behaves_like 'snippets views' do
+      let_it_be(:user) { create(:user) }
+    end
   end
 end

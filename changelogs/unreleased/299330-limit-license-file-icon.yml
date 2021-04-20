@@ -1,0 +1,5 @@
+---
+title: Partially fix incorrect icons for non-standard license files
+merge_request: 53207
+author:
+type: fixed

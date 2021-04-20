@@ -32,6 +32,17 @@ RSpec.describe Deployments::LinkMergeRequestsService do
       end
     end
 
+    context 'when the deployment failed' do
+      it 'does nothing' do
+        environment = create(:environment, name: 'foo')
+        deploy = create(:deployment, :failed, environment: environment)
+
+        expect(deploy).not_to receive(:link_merge_requests)
+
+        described_class.new(deploy).execute
+      end
+    end
+
     context 'when there is a previous deployment' do
       it 'links all merge requests merged since the previous deployment' do
         deploy1 = create(

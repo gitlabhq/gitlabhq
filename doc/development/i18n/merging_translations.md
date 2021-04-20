@@ -42,10 +42,11 @@ page](https://translate.gitlab.com/project/gitlab-ee/settings#integration).
 
 ## Merging translations
 
-When all translations are found good and pipelines pass the
-translations can be merged into the master branch. When merging the translations,
-make sure to check the **Remove source branch** checkbox, so CrowdIn recreates the
-`master-i18n` from master after the new translation was merged.
+After all translations are determined to be appropriate and the pipelines pass,
+you can merge the translations into the default branch. When merging translations,
+be sure to select the **Remove source branch** check box, which causes CrowdIn
+to recreate the `master-i18n` from the default branch after merging the new
+translation.
 
 We are discussing [automating this entire process](https://gitlab.com/gitlab-org/gitlab/-/issues/19896).
 
@@ -59,7 +60,7 @@ and delete the
 [`master-18n`](https://gitlab.com/gitlab-org/gitlab/-/branches/all?utf8=✓&search=master-i18n).
 
 This might be needed when the merge request contains failures that
-have been fixed on master.
+have been fixed on the default branch.
 
 ## Recreate the GitLab integration in CrowdIn
 

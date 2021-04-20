@@ -17,13 +17,23 @@ module Mutations
         required: false,
         description: 'Indicates if the latest artifact should be kept for this project.'
 
+      field :ci_cd_settings,
+        Types::Ci::CiCdSettingType,
+        null: false,
+        description: 'The CI/CD settings after mutation.'
+
       def resolve(full_path:, **args)
         project = authorized_find!(full_path)
         settings = project.ci_cd_settings
         settings.update(args)
 
-        { errors: errors_on_object(settings) }
+        {
+          ci_cd_settings: settings,
+          errors: errors_on_object(settings)
+        }
       end
     end
   end
 end
+
+Mutations::Ci::CiCdSettingsUpdate.prepend_if_ee('::EE::Mutations::Ci::CiCdSettingsUpdate')

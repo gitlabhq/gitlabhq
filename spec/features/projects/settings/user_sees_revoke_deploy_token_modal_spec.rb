@@ -13,16 +13,10 @@ RSpec.describe 'Repository Settings > User sees revoke deploy token modal', :js 
     sign_in(user)
     stub_feature_flags(ajax_new_deploy_token: project)
     visit(project_settings_repository_path(project))
-    click_link('Revoke')
+    click_button('Revoke')
   end
 
   it 'shows the revoke deploy token modal' do
     expect(page).to have_content('You are about to revoke')
-  end
-
-  it 'closes the revoke deploy token modal with escape keypress' do
-    find('.modal.show').send_keys(:escape)
-
-    expect(page).not_to have_content('You are about to revoke')
   end
 end

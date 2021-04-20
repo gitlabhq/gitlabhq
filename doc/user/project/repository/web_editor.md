@@ -56,6 +56,24 @@ NOTE:
 The **Set up CI/CD** button does not appear on an empty repository. For the button
 to display, add a file to your repository.
 
+## Highlight lines
+
+Web Editor enables you to highlight a single line by adding specially formatted
+hash information to the URL's file path segment. For example, the file path segment
+`MY_FILE.js#L3` instructs the Web Editor to highlight line 3.
+
+The Web Editor also enables you to highlight multiple lines using a similar pattern. In
+this case, the file path segment `MY_FILE.js#L3-10` instructs the Web Editor to
+highlight lines 3 to 10 of the file.
+
+You don't need to construct these lines manually. Instead, you can:
+
+1. Hover over the number of a line you want to be highlighted when sharing.
+1. Right-click the number with your mouse.
+1. Click **Copy Link Address** in the context menu.
+
+   ![Link to a line](img/web_editor_line_link_v13_10.png)
+
 ## Upload a file
 
 The ability to create a file is great when the content is text. However, this

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::Stage, :models do
   let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+
   let(:stage) { create(:ci_stage_entity, pipeline: pipeline, project: pipeline.project) }
 
   it_behaves_like 'having unique enum values'
@@ -24,6 +25,18 @@ RSpec.describe Ci::Stage, :models do
       it 'returns only builds' do
         expect(stage.builds).to be_one
       end
+    end
+  end
+
+  describe '.by_name' do
+    it 'finds stages by name' do
+      a = create(:ci_stage_entity, name: 'a')
+      b = create(:ci_stage_entity, name: 'b')
+      c = create(:ci_stage_entity, name: 'c')
+
+      expect(described_class.by_name('a')).to contain_exactly(a)
+      expect(described_class.by_name('b')).to contain_exactly(b)
+      expect(described_class.by_name(%w[a c])).to contain_exactly(a, c)
     end
   end
 

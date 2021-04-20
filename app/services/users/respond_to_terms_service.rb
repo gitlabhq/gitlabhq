@@ -3,7 +3,8 @@
 module Users
   class RespondToTermsService
     def initialize(user, term)
-      @user, @term = user, term
+      @user = user
+      @term = term
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

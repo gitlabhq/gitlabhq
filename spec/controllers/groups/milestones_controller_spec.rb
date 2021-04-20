@@ -322,7 +322,7 @@ RSpec.describe Groups::MilestonesController do
       end
 
       context 'when requesting a redirected path' do
-        let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+        let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
 
         it 'redirects to the canonical path' do
           get :merge_requests, params: { group_id: redirect_route.path, id: title }
@@ -350,7 +350,7 @@ RSpec.describe Groups::MilestonesController do
         end
 
         context 'when the old group path is a substring of the scheme or host' do
-          let(:redirect_route) { group.redirect_routes.create(path: 'http') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'http') }
 
           it 'does not modify the requested host' do
             get :merge_requests, params: { group_id: redirect_route.path, id: title }
@@ -362,7 +362,7 @@ RSpec.describe Groups::MilestonesController do
 
         context 'when the old group path is substring of groups' do
           # I.e. /groups/oups should not become /grfoo/oups
-          let(:redirect_route) { group.redirect_routes.create(path: 'oups') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'oups') }
 
           it 'does not modify the /groups part of the path' do
             get :merge_requests, params: { group_id: redirect_route.path, id: title }
@@ -374,7 +374,7 @@ RSpec.describe Groups::MilestonesController do
 
         context 'when the old group path is substring of groups plus the new path' do
           # I.e. /groups/oups/oup should not become /grfoos
-          let(:redirect_route) { group.redirect_routes.create(path: 'oups/oup') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'oups/oup') }
 
           it 'does not modify the /groups part of the path' do
             get :merge_requests, params: { group_id: redirect_route.path, id: title }
@@ -411,7 +411,7 @@ RSpec.describe Groups::MilestonesController do
     end
 
     context 'when requesting a redirected path' do
-      let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+      let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
 
       it 'returns not found' do
         post :create,

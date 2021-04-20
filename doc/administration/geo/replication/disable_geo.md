@@ -12,26 +12,26 @@ situation and you want to disable Geo momentarily, you can use these instruction
 Geo setup.
 
 There should be no functional difference between disabling Geo and having an active Geo setup with
-no secondary Geo nodes if you remove them correctly.
+no secondary Geo sites if you remove them correctly.
 
 To disable Geo, follow these steps:
 
-1. [Remove all secondary Geo nodes](#remove-all-secondary-geo-nodes).
-1. [Remove the primary node from the UI](#remove-the-primary-node-from-the-ui).
+1. [Remove all secondary Geo sites](#remove-all-secondary-geo-sites).
+1. [Remove the primary site from the UI](#remove-the-primary-site-from-the-ui).
 1. [Remove secondary replication slots](#remove-secondary-replication-slots).
 1. [Remove Geo-related configuration](#remove-geo-related-configuration).
 1. [(Optional) Revert PostgreSQL settings to use a password and listen on an IP](#optional-revert-postgresql-settings-to-use-a-password-and-listen-on-an-ip).
 
-## Remove all secondary Geo nodes
+## Remove all secondary Geo sites
 
-To disable Geo, you need to first remove all your secondary Geo nodes, which means replication will not happen
-anymore on these nodes. You can follow our docs to [remove your secondary Geo nodes](remove_geo_node.md).
+To disable Geo, you need to first remove all your secondary Geo sites, which means replication will not happen
+anymore on these sites. You can follow our docs to [remove your secondary Geo sites](remove_geo_site.md).
 
-If the current node that you want to keep using is a secondary node, you need to first promote it to primary.
-You can use our steps on [how to promote a secondary node](../disaster_recovery/#step-3-promoting-a-secondary-node)
+If the current site that you want to keep using is a secondary site, you need to first promote it to primary.
+You can use our steps on [how to promote a secondary site](../disaster_recovery/#step-3-promoting-a-secondary-node)
 to do that.
 
-## Remove the primary node from the UI
+## Remove the primary site from the UI
 
 1. Go to **Admin Area > Geo** (`/admin/geo/nodes`).
 1. Click the **Remove** button for the **primary** node.
@@ -59,7 +59,7 @@ Geo node in a PostgreSQL console (`sudo gitlab-psql`):
 
 ## Remove Geo-related configuration
 
-1. SSH into your primary Geo node and log in as root:
+1. For each node on your primary Geo site, SSH into the node and log in as root:
 
    ```shell
    sudo -i

@@ -6,7 +6,8 @@ module Packages
       InvalidJson = Class.new(StandardError)
 
       def initialize(project, target)
-        @project, @target = project, target
+        @project = project
+        @target = target
       end
 
       def execute

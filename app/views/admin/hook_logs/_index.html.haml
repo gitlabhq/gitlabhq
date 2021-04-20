@@ -1,18 +1,18 @@
 .row.gl-mt-3.gl-mb-3
   .col-lg-3
     %h4.gl-mt-0
-      Recent Deliveries
-    %p When an event in GitLab triggers a webhook, you can use the request details to figure out if something went wrong.
+      = _('Recent Deliveries')
+    %p= _('When an event in GitLab triggers a webhook, you can use the request details to figure out if something went wrong.')
   .col-lg-9
     - if hook_logs.any?
       %table.table
         %thead
           %tr
-            %th Status
-            %th Trigger
-            %th URL
-            %th Elapsed time
-            %th Request time
+            %th= _('Status')
+            %th= _('Trigger')
+            %th= _('URL')
+            %th= _('Elapsed time')
+            %th= _('Request time')
             %th
         - hook_logs.each do |hook_log|
           %tr
@@ -28,10 +28,10 @@
             %td.light
               = time_ago_with_tooltip(hook_log.created_at)
             %td
-              = link_to 'View details', admin_hook_hook_log_path(hook, hook_log)
+              = link_to _('View details'), admin_hook_hook_log_path(hook, hook_log)
 
       = paginate hook_logs, theme: 'gitlab'
 
     - else
       .settings-message.text-center
-        You don't have any webhooks deliveries
+        = _("You don't have any webhooks deliveries")

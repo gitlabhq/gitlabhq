@@ -8,7 +8,7 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 const projectCompareIndexPath = 'some/path';
 const refsProjectPath = 'some/refs/path';
 const paramsFrom = 'master';
-const paramsTo = 'master';
+const paramsTo = 'some-other-branch';
 
 describe('CompareApp component', () => {
   let wrapper;
@@ -36,6 +36,9 @@ describe('CompareApp component', () => {
     createComponent();
   });
 
+  const findSourceDropdown = () => wrapper.find('[data-testid="sourceRevisionDropdown"]');
+  const findTargetDropdown = () => wrapper.find('[data-testid="targetRevisionDropdown"]');
+
   it('renders component with prop', () => {
     expect(wrapper.props()).toEqual(
       expect.objectContaining({
@@ -62,12 +65,31 @@ describe('CompareApp component', () => {
     expect(wrapper.find('[data-testid="ellipsis"]').exists()).toBe(true);
   });
 
-  it('render Source and Target BranchDropdown components', () => {
-    const branchDropdowns = wrapper.findAll(RevisionDropdown);
+  describe('Source and Target BranchDropdown components', () => {
+    const findAllBranchDropdowns = () => wrapper.findAll(RevisionDropdown);
 
-    expect(branchDropdowns.length).toBe(2);
-    expect(branchDropdowns.at(0).props('revisionText')).toBe('Source');
-    expect(branchDropdowns.at(1).props('revisionText')).toBe('Target');
+    it('renders the components with the correct props', () => {
+      expect(findAllBranchDropdowns().length).toBe(2);
+      expect(findSourceDropdown().props('revisionText')).toBe('Source');
+      expect(findTargetDropdown().props('revisionText')).toBe('Target');
+    });
+
+    it('sets the revision when the "selectRevision" event is emitted', async () => {
+      findSourceDropdown().vm.$emit('selectRevision', {
+        direction: 'to',
+        revision: 'some-source-revision',
+      });
+
+      findTargetDropdown().vm.$emit('selectRevision', {
+        direction: 'from',
+        revision: 'some-target-revision',
+      });
+
+      await wrapper.vm.$nextTick();
+
+      expect(findTargetDropdown().props('paramsBranch')).toBe('some-target-revision');
+      expect(findSourceDropdown().props('paramsBranch')).toBe('some-source-revision');
+    });
   });
 
   describe('compare button', () => {
@@ -84,6 +106,27 @@ describe('CompareApp component', () => {
 
     it('has compare text', () => {
       expect(findCompareButton().text()).toBe('Compare');
+    });
+  });
+
+  describe('swap revisions button', () => {
+    const findSwapRevisionsButton = () => wrapper.find('[data-testid="swapRevisionsButton"]');
+
+    it('renders the swap revisions button', () => {
+      expect(findSwapRevisionsButton().exists()).toBe(true);
+    });
+
+    it('has the correct text', () => {
+      expect(findSwapRevisionsButton().text()).toBe('Swap revisions');
+    });
+
+    it('swaps revisions when clicked', async () => {
+      findSwapRevisionsButton().vm.$emit('click');
+
+      await wrapper.vm.$nextTick();
+
+      expect(findTargetDropdown().props('paramsBranch')).toBe(paramsTo);
+      expect(findSourceDropdown().props('paramsBranch')).toBe(paramsFrom);
     });
   });
 

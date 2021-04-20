@@ -24,13 +24,13 @@ module Gitlab::UsageDataCounters
       end
 
       def totals
-        COUNTABLE_TYPES.map do |countable_type|
+        COUNTABLE_TYPES.to_h do |countable_type|
           [counter_key(countable_type), read(:create, countable_type)]
-        end.to_h
+        end
       end
 
       def fallback_totals
-        COUNTABLE_TYPES.map { |counter_key| [counter_key(counter_key), -1] }.to_h
+        COUNTABLE_TYPES.to_h { |counter_key| [counter_key(counter_key), -1] }
       end
 
       private

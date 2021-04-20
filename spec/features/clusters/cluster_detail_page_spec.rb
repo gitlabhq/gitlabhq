@@ -23,7 +23,7 @@ RSpec.describe 'Clusterable > Show page' do
     it 'allow the user to set domain', :js do
       visit cluster_path
 
-      within '.js-cluster-integration-form' do
+      within '.js-cluster-details-form' do
         fill_in('cluster_base_domain', with: 'test.com')
         click_on 'Save changes'
       end
@@ -39,7 +39,7 @@ RSpec.describe 'Clusterable > Show page' do
       end
 
       it 'shows help text with the domain as an alternative to custom domain', :js do
-        within '.js-cluster-integration-form' do
+        within '.js-cluster-details-form' do
           expect(find(cluster_ingress_help_text_selector).text).to include('192.168.1.100')
         end
       end
@@ -49,7 +49,7 @@ RSpec.describe 'Clusterable > Show page' do
       it 'alternative to custom domain is not shown' do
         visit cluster_path
 
-        within '.js-cluster-integration-form' do
+        within '.js-cluster-details-form' do
           expect(page).not_to have_selector(cluster_ingress_help_text_selector)
         end
       end

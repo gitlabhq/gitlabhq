@@ -33,6 +33,8 @@ module QA
         def resource_equals?(resource, move)
           if resource.class.name.include?('Snippet')
             move[:snippet][:id] == resource.id
+          elsif resource.class.name.include?('Group')
+            move[:group][:id] == resource.id
           else
             move[:project][:path_with_namespace] == resource.path_with_namespace
           end

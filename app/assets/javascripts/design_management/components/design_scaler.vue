@@ -51,8 +51,18 @@ export default {
 
 <template>
   <gl-button-group class="gl-z-index-1">
-    <gl-button icon="dash" :disabled="disableDecrease" @click="decrementScale" />
-    <gl-button icon="redo" :disabled="disableReset" @click="resetScale" />
-    <gl-button icon="plus" :disabled="disableIncrease" @click="incrementScale" />
+    <gl-button
+      icon="dash"
+      :disabled="disableDecrease"
+      :aria-label="__('Decrease')"
+      @click="decrementScale"
+    />
+    <gl-button icon="redo" :disabled="disableReset" :aria-label="__('Reset')" @click="resetScale" />
+    <gl-button
+      icon="plus"
+      :disabled="disableIncrease"
+      :aria-label="__('Increase')"
+      @click="incrementScale"
+    />
   </gl-button-group>
 </template>

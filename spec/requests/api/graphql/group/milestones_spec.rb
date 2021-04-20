@@ -9,12 +9,14 @@ RSpec.describe 'Milestones through GroupQuery' do
   let_it_be(:now) { Time.now }
 
   describe 'Get list of milestones from a group' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:parent_group) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent_group) }
     let_it_be(:milestone_1) { create(:milestone, group: group) }
     let_it_be(:milestone_2) { create(:milestone, group: group, state: :closed, start_date: now, due_date: now + 1.day) }
     let_it_be(:milestone_3) { create(:milestone, group: group, start_date: now, due_date: now + 2.days) }
     let_it_be(:milestone_4) { create(:milestone, group: group, state: :closed, start_date: now - 2.days, due_date: now - 1.day) }
     let_it_be(:milestone_from_other_group) { create(:milestone, group: create(:group)) }
+    let_it_be(:parent_milestone) { create(:milestone, group: parent_group) }
 
     let(:milestone_data) { graphql_data['group']['milestones']['edges'] }
 
@@ -64,14 +66,32 @@ RSpec.describe 'Milestones through GroupQuery' do
         accessible_group.add_developer(user)
       end
 
-      it 'returns milestones also from subgroups and subprojects visible to user' do
-        fetch_milestones(user, args)
+      context 'when including decendants' do
+        let(:args) { { include_descendants: true } }
 
-        expect_array_response(
-          milestone_1.to_global_id.to_s, milestone_2.to_global_id.to_s,
-          milestone_3.to_global_id.to_s, milestone_4.to_global_id.to_s,
-          submilestone_1.to_global_id.to_s, submilestone_2.to_global_id.to_s
-        )
+        it 'returns milestones also from subgroups and subprojects visible to user' do
+          fetch_milestones(user, args)
+
+          expect_array_response(
+            milestone_1.to_global_id.to_s, milestone_2.to_global_id.to_s,
+            milestone_3.to_global_id.to_s, milestone_4.to_global_id.to_s,
+            submilestone_1.to_global_id.to_s, submilestone_2.to_global_id.to_s
+          )
+        end
+      end
+
+      context 'when including ancestors' do
+        let(:args) { { include_ancestors: true } }
+
+        it 'returns milestones from ancestor groups' do
+          fetch_milestones(user, args)
+
+          expect_array_response(
+            milestone_1.to_global_id.to_s, milestone_2.to_global_id.to_s,
+            milestone_3.to_global_id.to_s, milestone_4.to_global_id.to_s,
+            parent_milestone.to_global_id.to_s
+          )
+        end
       end
     end
 

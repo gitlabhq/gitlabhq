@@ -10,6 +10,7 @@ RSpec.describe Types::Ci::StageType do
       name
       groups
       detailedStatus
+      jobs
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

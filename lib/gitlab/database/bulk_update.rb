@@ -130,7 +130,7 @@ module Gitlab
 
         def sql
           <<~SQL
-            WITH cte(#{list_of(cte_columns)}) AS (VALUES #{list_of(values)})
+            WITH cte(#{list_of(cte_columns)}) AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (VALUES #{list_of(values)})
             UPDATE #{table_name} SET #{list_of(updates)} FROM cte WHERE cte_id = id
           SQL
         end

@@ -8,7 +8,7 @@ module Issues
       handle_move_between_ids(issue)
 
       @request = params.delete(:request)
-      @spam_params = Spam::SpamActionService.filter_spam_params!(params)
+      @spam_params = Spam::SpamActionService.filter_spam_params!(params, @request)
 
       change_issue_duplicate(issue)
       move_issue_to_new_project(issue) || clone_issue(issue) || update_task_event(issue) || update(issue)
@@ -96,17 +96,13 @@ module Issues
     end
 
     def handle_move_between_ids(issue)
-      return unless params[:move_between_ids]
+      super
 
-      after_id, before_id = params.delete(:move_between_ids)
-      board_group_id = params.delete(:board_group_id)
-
-      issue_before = get_issue_if_allowed(before_id, board_group_id)
-      issue_after = get_issue_if_allowed(after_id, board_group_id)
-      raise ActiveRecord::RecordNotFound unless issue_before || issue_after
-
-      issue.move_between(issue_before, issue_after)
       rebalance_if_needed(issue)
+    end
+
+    def positioning_scope_key
+      :board_group_id
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -185,7 +181,7 @@ module Issues
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def get_issue_if_allowed(id, board_group_id = nil)
+    def issuable_for_positioning(id, board_group_id = nil)
       return unless id
 
       issue =

@@ -138,7 +138,7 @@ RSpec.describe 'Login' do
 
       gitlab_sign_in(User.ghost)
 
-      expect(page).to have_content('Invalid Login or password.')
+      expect(page).to have_content('Invalid login or password.')
     end
 
     it 'does not update Devise trackable attributes', :clean_gitlab_redis_shared_state do
@@ -239,7 +239,7 @@ RSpec.describe 'Login' do
           expect(codes.size).to eq 10
 
           # Ensure the generated codes get saved
-          user.save(touch: false)
+          user.save!(touch: false)
         end
 
         context 'with valid code' do
@@ -406,7 +406,7 @@ RSpec.describe 'Login' do
 
         gitlab_sign_in(user)
 
-        expect(page).to have_content('Invalid Login or password.')
+        expect(page).to have_content('Invalid login or password.')
       end
     end
   end

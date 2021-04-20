@@ -4,12 +4,16 @@ module QA
   RSpec.describe 'Package', :orchestrated, :packages do
     describe 'PyPI Repository' do
       include Runtime::Fixtures
-
-      let(:package_name) { 'mypypipackage' }
-
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'pypi-package-project'
+        end
+      end
+
+      let(:package) do
+        Resource::Package.new.tap do |package|
+          package.name = 'mypypipackage'
+          package.project = project
         end
       end
 
@@ -87,6 +91,7 @@ module QA
 
       after do
         runner.remove_via_api!
+        package.remove_via_api!
         project&.remove_via_api!
       end
 
@@ -94,8 +99,8 @@ module QA
         Page::Project::Menu.perform(&:click_packages_link)
 
         Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_package(package_name)
-          index.click_package(package_name)
+          expect(index).to have_package(package.name)
+          index.click_package(package.name)
         end
 
         Page::Project::Packages::Show.perform(&:click_delete)
@@ -103,13 +108,13 @@ module QA
         Page::Project::Packages::Index.perform do |index|
           aggregate_failures do
             expect(index).to have_content("Package deleted successfully")
-            expect(index).not_to have_package(package_name)
+            expect(index).not_to have_package(package.name)
           end
         end
       end
 
       context 'Geo', :orchestrated, :geo do
-        it 'replicates a published pypi package to the Geo secondary site', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1120' do
+        it 'replicates a published pypi package to the Geo secondary site', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1120', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/325556', type: :investigating } do
           QA::Runtime::Logger.debug('Visiting the secondary Geo site')
 
           QA::Flow::Login.while_signed_in(address: :geo_secondary) do
@@ -127,8 +132,8 @@ module QA
             Page::Project::Menu.perform(&:click_packages_link)
 
             Page::Project::Packages::Index.perform do |index|
-              index.wait_for_package_replication(package_name)
-              expect(index).to have_package(package_name)
+              index.wait_for_package_replication(package.name)
+              expect(index).to have_package(package.name)
             end
           end
         end

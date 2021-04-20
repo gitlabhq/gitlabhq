@@ -32,6 +32,7 @@ export const mockIssuableShowProps = {
   editFormVisible: false,
   enableAutocomplete: true,
   enableAutosave: true,
+  enableZenMode: true,
   enableTaskList: true,
   enableEdit: true,
   showFieldTitle: false,

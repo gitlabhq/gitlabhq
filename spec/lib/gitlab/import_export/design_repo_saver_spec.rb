@@ -6,6 +6,7 @@ RSpec.describe Gitlab::ImportExport::DesignRepoSaver do
   describe 'bundle a design Git repo' do
     let_it_be(:user) { create(:user) }
     let_it_be(:design) { create(:design, :with_file, versions_count: 1) }
+
     let!(:project) { create(:project, :design_repo) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:shared) { project.import_export_shared }

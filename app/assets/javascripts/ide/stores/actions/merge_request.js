@@ -73,7 +73,7 @@ export const getMergeRequestData = (
             actionText: __('Please try again'),
             actionPayload: { projectId, mergeRequestId, force },
           });
-          reject(new Error(`Merge Request not loaded ${projectId}`));
+          reject(new Error(`Merge request not loaded ${projectId}`));
         });
     } else {
       resolve(state.projects[projectId].mergeRequests[mergeRequestId]);
@@ -106,7 +106,7 @@ export const getMergeRequestChanges = (
             actionText: __('Please try again'),
             actionPayload: { projectId, mergeRequestId, force },
           });
-          reject(new Error(`Merge Request Changes not loaded ${projectId}`));
+          reject(new Error(`Merge request changes not loaded ${projectId}`));
         });
     } else {
       resolve(state.projects[projectId].mergeRequests[mergeRequestId].changes);
@@ -140,7 +140,7 @@ export const getMergeRequestVersions = (
             actionText: __('Please try again'),
             actionPayload: { projectId, mergeRequestId, force },
           });
-          reject(new Error(`Merge Request Versions not loaded ${projectId}`));
+          reject(new Error(`Merge request versions not loaded ${projectId}`));
         });
     } else {
       resolve(state.projects[projectId].mergeRequests[mergeRequestId].versions);

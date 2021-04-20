@@ -1,9 +1,10 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import Tracking from '~/tracking';
+import { NEW_REPO_EXPERIMENT } from '../constants';
 import NewProjectPushTipPopover from './new_project_push_tip_popover.vue';
 
-const trackingMixin = Tracking.mixin(gon.tracking_data);
+const trackingMixin = Tracking.mixin({ ...gon.tracking_data, experiment: NEW_REPO_EXPERIMENT });
 
 export default {
   components: {

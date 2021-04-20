@@ -3,7 +3,7 @@
     = f.label :create_chat_team do
       %span.gl-display-flex
         = custom_icon('icon_mattermost')
-        %span.gl-ml-2 Mattermost
+        %span.gl-ml-2= _('Mattermost')
   .col-sm-12
     .form-check.js-toggle-container
       .js-toggle-button.form-check-input= f.check_box(:create_chat_team, { checked: false }, true, false)
@@ -11,7 +11,7 @@
         = _('Create a Mattermost team for this group')
       %br
       %small.light.js-toggle-content
-        Mattermost URL:
+        = _('Mattermost URL:')
         = Settings.mattermost.host
         %span> /
         %span{ "data-bind-out" => "create_chat_team" }

@@ -104,22 +104,18 @@ linters:
 
       # These cops should eventually get enabled
       - Cop/LineBreakAfterGuardClauses
-      - Cop/LineBreakAroundConditionalBlock
       - Cop/ProjectPathHelper
+      - Gitlab/FeatureAvailableUsage
       - GitlabSecurity/PublicSend
       - Layout/EmptyLineAfterGuardClause
       - Layout/LeadingCommentSpace
-      - Layout/SpaceAfterColon
-      - Layout/SpaceAfterComma
       - Layout/SpaceAroundOperators
       - Layout/SpaceBeforeBlockBraces
       - Layout/SpaceBeforeComma
       - Layout/SpaceBeforeFirstArg
-      - Layout/SpaceInsideArrayLiteralBrackets
       - Layout/SpaceInsideHashLiteralBraces
       - Layout/SpaceInsideStringInterpolation
       - Layout/TrailingEmptyLines
-      - Lint/BooleanSymbol
       - Lint/LiteralInInterpolation
       - Lint/ParenthesesAsGroupedExpression
       - Lint/RedundantWithIndex
@@ -131,24 +127,23 @@ linters:
       - Rails/LinkToBlank
       - Rails/Presence
       - Rails/RequestReferer
-      - Style/AndOr
       - Style/ColonMethodCall
       - Style/ConditionalAssignment
       - Style/HashSyntax
       - Style/IdenticalConditionalBranches
       - Style/NegatedIf
       - Style/NestedTernaryOperator
-      - Style/Not
       - Style/ParenthesesAroundCondition
-      - Style/RedundantParentheses
       - Style/SelfAssignment
-      - Style/Semicolon
       - Style/TernaryParentheses
       - Style/TrailingCommaInHashLiteral
       - Style/UnlessElse
       - Style/UnneededCondition
       - Style/WordArray
       - Style/ZeroLengthPredicate
+
+      # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/207950
+      - Cop/UserAdmin
 
   RubyComments:
     enabled: true

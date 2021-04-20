@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Otp::Strategies::FortiAuthenticator do
   let_it_be(:user) { create(:user) }
+
   let(:otp_code) { 42 }
 
   let(:host) { 'forti_authenticator.example.com' }

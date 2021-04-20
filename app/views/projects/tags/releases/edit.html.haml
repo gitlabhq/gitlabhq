@@ -15,5 +15,5 @@
     = render 'shared/notes/hints'
   .error-alert
   .gl-mt-3
-    = f.submit 'Save changes', class: 'btn gl-button btn-success'
+    = f.submit 'Save changes', class: 'btn gl-button btn-confirm'
     = link_to "Cancel", project_tag_path(@project, @tag.name), class: "btn gl-button btn-default btn-cancel"

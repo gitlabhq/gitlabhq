@@ -1,4 +1,4 @@
-import { GlDropdown } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import createFlash from '~/flash';
@@ -29,6 +29,7 @@ describe('RevisionDropdown component', () => {
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
+    createComponent();
   });
 
   afterEach(() => {
@@ -39,7 +40,6 @@ describe('RevisionDropdown component', () => {
   const findGlDropdown = () => wrapper.find(GlDropdown);
 
   it('sets hidden input', () => {
-    createComponent();
     expect(wrapper.find('input[type="hidden"]').attributes('value')).toBe(
       defaultProps.paramsBranch,
     );
@@ -68,8 +68,6 @@ describe('RevisionDropdown component', () => {
       Tags: undefined,
     });
 
-    createComponent();
-
     await axios.waitForAll();
 
     expect(wrapper.vm.branches).toEqual([]);
@@ -79,15 +77,12 @@ describe('RevisionDropdown component', () => {
   it('shows flash message on error', async () => {
     axiosMock.onGet('some/invalid/path').replyOnce(404);
 
-    createComponent();
-
     await wrapper.vm.fetchBranchesAndTags();
     expect(createFlash).toHaveBeenCalled();
   });
 
   describe('GlDropdown component', () => {
     it('renders props', () => {
-      createComponent();
       expect(wrapper.props()).toEqual(expect.objectContaining(defaultProps));
     });
 
@@ -99,8 +94,22 @@ describe('RevisionDropdown component', () => {
     });
 
     it('display params branch text', () => {
-      createComponent();
       expect(findGlDropdown().props('text')).toBe(defaultProps.paramsBranch);
+    });
+
+    it('emits a "selectRevision" event when a revision is selected', async () => {
+      const findGlDropdownItems = () => wrapper.findAll(GlDropdownItem);
+      const findFirstGlDropdownItem = () => findGlDropdownItems().at(0);
+
+      wrapper.setData({ branches: ['some-branch'] });
+
+      await wrapper.vm.$nextTick();
+
+      findFirstGlDropdownItem().vm.$emit('click');
+
+      expect(wrapper.emitted()).toEqual({
+        selectRevision: [[{ direction: 'from', revision: 'some-branch' }]],
+      });
     });
   });
 });

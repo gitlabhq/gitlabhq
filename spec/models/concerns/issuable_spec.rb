@@ -16,7 +16,7 @@ RSpec.describe Issuable do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:author) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
-    it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:labels) }
     it { is_expected.to have_many(:note_authors).through(:notes) }
 
@@ -65,6 +65,23 @@ RSpec.describe Issuable do
     it { expect(issuable_class).to respond_to(:opened) }
     it { expect(issuable_class).to respond_to(:closed) }
     it { expect(issuable_class).to respond_to(:assigned) }
+
+    describe '.includes_for_bulk_update' do
+      before do
+        stub_const('Example', Class.new(ActiveRecord::Base))
+
+        Example.class_eval do
+          include Issuable # adds :labels and :metrics, among others
+
+          belongs_to :author
+          has_many :assignees
+        end
+      end
+
+      it 'includes available associations' do
+        expect(Example.includes_for_bulk_update.includes_values).to eq([:author, :assignees, :labels, :metrics])
+      end
+    end
   end
 
   describe 'author_name' do
@@ -380,7 +397,7 @@ RSpec.describe Issuable do
 
     context 'user is a participant in the issue' do
       before do
-        allow(issue).to receive(:participants).with(user).and_return([user])
+        allow(issue).to receive(:participant?).with(user).and_return(true)
       end
 
       it 'returns false when no subcription exists' do

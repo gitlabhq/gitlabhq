@@ -11,18 +11,7 @@ module MergeRequests
     end
 
     def execute(merge_request)
-      # We don't allow change of source/target projects and source branch
-      # after merge request was created
-      params.delete(:source_project_id)
-      params.delete(:target_project_id)
-      params.delete(:source_branch)
-
-      if merge_request.closed_or_merged_without_fork?
-        params.delete(:target_branch)
-        params.delete(:force_remove_source_branch)
-      end
-
-      update_task_event(merge_request) || update(merge_request)
+      update_merge_request_with_specialized_service(merge_request) || general_fallback(merge_request)
     end
 
     def handle_changes(merge_request, options)
@@ -86,6 +75,21 @@ module MergeRequests
 
     attr_reader :target_branch_was_deleted
 
+    def general_fallback(merge_request)
+      # We don't allow change of source/target projects and source branch
+      # after merge request was created
+      params.delete(:source_project_id)
+      params.delete(:target_project_id)
+      params.delete(:source_branch)
+
+      if merge_request.closed_or_merged_without_fork?
+        params.delete(:target_branch)
+        params.delete(:force_remove_source_branch)
+      end
+
+      update_task_event(merge_request) || update(merge_request)
+    end
+
     def track_title_and_desc_edits(changed_fields)
       tracked_fields = %w(title description)
 
@@ -147,7 +151,11 @@ module MergeRequests
     def resolve_todos(merge_request, old_labels, old_assignees, old_reviewers)
       return unless has_changes?(merge_request, old_labels: old_labels, old_assignees: old_assignees, old_reviewers: old_reviewers)
 
-      todo_service.resolve_todos_for_target(merge_request, current_user)
+      service_user = current_user
+
+      merge_request.run_after_commit_or_now do
+        ::MergeRequests::ResolveTodosService.new(merge_request, service_user).async_execute
+      end
     end
 
     def handle_target_branch_change(merge_request)
@@ -200,21 +208,22 @@ module MergeRequests
 
       merge_request_activity_counter.track_milestone_changed_action(user: current_user)
 
+      previous_milestone = Milestone.find_by_id(merge_request.previous_changes['milestone_id'].first)
+      delete_milestone_total_merge_requests_counter_cache(previous_milestone)
+
       if merge_request.milestone.nil?
         notification_service.async.removed_milestone_merge_request(merge_request, current_user)
       else
         notification_service.async.changed_milestone_merge_request(merge_request, merge_request.milestone, current_user)
+
+        delete_milestone_total_merge_requests_counter_cache(merge_request.milestone)
       end
     end
 
     def handle_assignees_change(merge_request, old_assignees)
-      create_assignee_note(merge_request, old_assignees)
-      notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignees)
-      todo_service.reassigned_assignable(merge_request, current_user, old_assignees)
-
-      new_assignees = merge_request.assignees - old_assignees
-      merge_request_activity_counter.track_users_assigned_to_mr(users: new_assignees)
-      merge_request_activity_counter.track_assignees_changed_action(user: current_user)
+      MergeRequests::HandleAssigneesChangeService
+        .new(project, current_user)
+        .async_execute(merge_request, old_assignees)
     end
 
     def handle_reviewers_change(merge_request, old_reviewers)
@@ -266,6 +275,34 @@ module MergeRequests
     override :quick_action_options
     def quick_action_options
       { merge_request_diff_head_sha: params.delete(:merge_request_diff_head_sha) }
+    end
+
+    def update_merge_request_with_specialized_service(merge_request)
+      return unless params.delete(:use_specialized_service)
+
+      # If we're attempting to modify only a single attribute, look up whether
+      #   we have a specialized, targeted service we should use instead. We may
+      #   in the future extend this to include specialized services that operate
+      #   on multiple attributes, but for now limit to only single attribute
+      #   updates.
+      #
+      return unless params.one?
+
+      attempt_specialized_update_services(merge_request, params.each_key.first.to_sym)
+    end
+
+    def attempt_specialized_update_services(merge_request, attribute)
+      case attribute
+      when :assignee_ids
+        assignees_service.execute(merge_request)
+      else
+        nil
+      end
+    end
+
+    def assignees_service
+      @assignees_service ||= ::MergeRequests::UpdateAssigneesService
+        .new(project, current_user, params)
     end
   end
 end

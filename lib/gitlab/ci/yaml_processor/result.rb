@@ -38,11 +38,12 @@ module Gitlab
             .map { |job| build_attributes(job[:name]) }
         end
 
-        def workflow_attributes
-          {
-            rules: hash_config.dig(:workflow, :rules),
-            yaml_variables: transform_to_yaml_variables(variables)
-          }
+        def workflow_rules
+          @workflow_rules ||= hash_config.dig(:workflow, :rules)
+        end
+
+        def root_variables
+          @root_variables ||= transform_to_yaml_variables(variables)
         end
 
         def jobs
@@ -68,7 +69,9 @@ module Gitlab
             when: job[:when] || 'on_success',
             environment: job[:environment_name],
             coverage_regex: job[:coverage],
-            yaml_variables: transform_to_yaml_variables(job[:variables]),
+            yaml_variables: transform_to_yaml_variables(job[:variables]), # https://gitlab.com/gitlab-org/gitlab/-/issues/300581
+            job_variables: transform_to_yaml_variables(job[:job_variables]),
+            root_variables_inheritance: job[:root_variables_inheritance],
             needs_attributes: job.dig(:needs, :job),
             interruptible: job[:interruptible],
             only: job[:only],
@@ -101,7 +104,7 @@ module Gitlab
         end
 
         def merged_yaml
-          @ci_config&.to_hash&.to_yaml
+          @ci_config&.to_hash&.deep_stringify_keys&.to_yaml
         end
 
         def variables_with_data

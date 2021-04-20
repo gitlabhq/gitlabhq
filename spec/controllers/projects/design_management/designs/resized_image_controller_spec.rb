@@ -9,6 +9,7 @@ RSpec.describe Projects::DesignManagement::Designs::ResizedImageController do
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:viewer) { issue.author }
   let_it_be(:size) { :v432x230 }
+
   let(:design) { create(:design, :with_smaller_image_versions, issue: issue, versions_count: 2) }
   let(:design_id) { design.id }
   let(:sha) { design.versions.first.sha }

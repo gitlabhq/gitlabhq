@@ -78,7 +78,7 @@ RSpec.describe "Issues > User edits issue", :js do
         end
 
         it 'warns about version conflict' do
-          issue.update(title: "New title")
+          issue.update!(title: "New title")
 
           fill_in 'issue_title', with: 'bug 345'
           fill_in 'issue_description', with: 'bug description'
@@ -142,10 +142,8 @@ RSpec.describe "Issues > User edits issue", :js do
 
         it 'can remove label without removing label added via quick action', :aggregate_failures do
           # Add `syzygy` label with a quick action
-          note = find('#note-body')
-          page.within '.timeline-content-form' do
-            note.native.send_keys('/label ~syzygy')
-          end
+          fill_in 'Comment', with: '/label ~syzygy'
+
           click_button 'Comment'
 
           wait_for_requests
@@ -169,80 +167,165 @@ RSpec.describe "Issues > User edits issue", :js do
       end
 
       describe 'update assignee' do
-        context 'by authorized user' do
-          def close_dropdown_menu_if_visible
-            find('.dropdown-menu-toggle', visible: :all).tap do |toggle|
-              toggle.click if toggle.visible?
-            end
+        context 'when GraphQL assignees widget feature flag is disabled' do
+          before do
+            stub_feature_flags(issue_assignees_widget: false)
           end
 
-          it 'allows user to select unassigned' do
-            visit project_issue_path(project, issue)
-
-            page.within('.assignee') do
-              expect(page).to have_content "#{user.name}"
-
-              click_link 'Edit'
-              click_link 'Unassigned'
-              first('.title').click
-              expect(page).to have_content 'None - assign yourself'
-            end
-          end
-
-          it 'allows user to select an assignee' do
-            issue2 = create(:issue, project: project, author: user)
-            visit project_issue_path(project, issue2)
-
-            page.within('.assignee') do
-              expect(page).to have_content "None"
+          context 'by authorized user' do
+            def close_dropdown_menu_if_visible
+              find('.dropdown-menu-toggle', visible: :all).tap do |toggle|
+                toggle.click if toggle.visible?
+              end
             end
 
-            page.within '.assignee' do
-              click_link 'Edit'
+            it 'allows user to select unassigned' do
+              visit project_issue_path(project, issue)
+
+              page.within('.assignee') do
+                expect(page).to have_content "#{user.name}"
+
+                click_link 'Edit'
+                click_link 'Unassigned'
+                first('.title').click
+
+                expect(page).to have_content 'None - assign yourself'
+              end
             end
 
-            page.within '.dropdown-menu-user' do
-              click_link user.name
-            end
+            it 'allows user to select an assignee' do
+              issue2 = create(:issue, project: project, author: user)
+              visit project_issue_path(project, issue2)
 
-            page.within('.assignee') do
-              expect(page).to have_content user.name
-            end
-          end
-
-          it 'allows user to unselect themselves' do
-            issue2 = create(:issue, project: project, author: user, assignees: [user])
-
-            visit project_issue_path(project, issue2)
-
-            page.within '.assignee' do
-              expect(page).to have_content user.name
-
-              click_link 'Edit'
-              click_link user.name
-
-              close_dropdown_menu_if_visible
-
-              page.within '.value .assign-yourself' do
+              page.within('.assignee') do
                 expect(page).to have_content "None"
               end
+
+              page.within '.assignee' do
+                click_link 'Edit'
+              end
+
+              page.within '.dropdown-menu-user' do
+                click_link user.name
+              end
+
+              page.within('.assignee') do
+                expect(page).to have_content user.name
+              end
+            end
+
+            it 'allows user to unselect themselves' do
+              issue2 = create(:issue, project: project, author: user, assignees: [user])
+
+              visit project_issue_path(project, issue2)
+
+              page.within '.assignee' do
+                expect(page).to have_content user.name
+
+                click_link 'Edit'
+                click_link user.name
+
+                close_dropdown_menu_if_visible
+
+                page.within '.value .assign-yourself' do
+                  expect(page).to have_content "None"
+                end
+              end
+            end
+          end
+
+          context 'by unauthorized user' do
+            let(:guest) { create(:user) }
+
+            before do
+              project.add_guest(guest)
+            end
+
+            it 'shows assignee text' do
+              sign_out(:user)
+              sign_in(guest)
+
+              visit project_issue_path(project, issue)
+              expect(page).to have_content issue.assignees.first.name
             end
           end
         end
 
-        context 'by unauthorized user' do
-          let(:guest) { create(:user) }
+        context 'when GraphQL assignees widget feature flag is enabled' do
+          context 'by authorized user' do
+            it 'allows user to select unassigned' do
+              visit project_issue_path(project, issue)
 
-          before do
-            project.add_guest(guest)
+              page.within('.assignee') do
+                expect(page).to have_content "#{user.name}"
+
+                click_button('Edit')
+                wait_for_requests
+
+                find('[data-testid="unassign"]').click
+                find('[data-testid="title"]').click
+                wait_for_requests
+
+                expect(page).to have_content 'None - assign yourself'
+              end
+            end
+
+            it 'allows user to select an assignee' do
+              issue2 = create(:issue, project: project, author: user)
+              visit project_issue_path(project, issue2)
+
+              page.within('.assignee') do
+                expect(page).to have_content "None"
+                click_button('Edit')
+                wait_for_requests
+              end
+
+              page.within '.dropdown-menu-user' do
+                click_link user.name
+              end
+
+              page.within('.assignee') do
+                find('[data-testid="title"]').click
+                wait_for_requests
+
+                expect(page).to have_content user.name
+              end
+            end
+
+            it 'allows user to unselect themselves' do
+              issue2 = create(:issue, project: project, author: user, assignees: [user])
+
+              visit project_issue_path(project, issue2)
+
+              page.within '.assignee' do
+                expect(page).to have_content user.name
+
+                click_button('Edit')
+                wait_for_requests
+                click_link user.name
+
+                find('[data-testid="title"]').click
+                wait_for_requests
+
+                expect(page).to have_content "None"
+              end
+            end
           end
 
-          it 'shows assignee text' do
-            sign_out(:user)
-            sign_in(guest)
+          context 'by unauthorized user' do
+            let(:guest) { create(:user) }
 
-            visit project_issue_path(project, issue)
-            expect(page).to have_content issue.assignees.first.name
+            before do
+              project.add_guest(guest)
+            end
+
+            it 'shows assignee text' do
+              sign_out(:user)
+              sign_in(guest)
+
+              visit project_issue_path(project, issue)
+              expect(page).to have_content issue.assignees.first.name
+            end
           end
         end
       end
@@ -309,7 +392,7 @@ RSpec.describe "Issues > User edits issue", :js do
           before do
             project.add_guest(guest)
             issue.milestone = milestone
-            issue.save
+            issue.save!
           end
 
           it 'shows milestone text' do
@@ -326,24 +409,23 @@ RSpec.describe "Issues > User edits issue", :js do
         it 'adds due date to issue' do
           date = Date.today.at_beginning_of_month + 2.days
 
-          page.within '.due_date' do
-            click_link 'Edit'
-
+          page.within '[data-testid="due-date"]' do
+            click_button 'Edit'
             page.within '.pika-single' do
               click_button date.day
             end
 
             wait_for_requests
 
-            expect(find('.value').text).to have_content date.strftime('%b %-d, %Y')
+            expect(find('[data-testid="sidebar-duedate-value"]').text).to have_content date.strftime('%b %-d, %Y')
           end
         end
 
         it 'removes due date from issue' do
           date = Date.today.at_beginning_of_month + 2.days
 
-          page.within '.due_date' do
-            click_link 'Edit'
+          page.within '[data-testid="due-date"]' do
+            click_button 'Edit'
 
             page.within '.pika-single' do
               click_button date.day
@@ -353,7 +435,7 @@ RSpec.describe "Issues > User edits issue", :js do
 
             expect(page).to have_no_content 'None'
 
-            click_link 'remove due date'
+            click_button 'remove due date'
             expect(page).to have_content 'None'
           end
         end

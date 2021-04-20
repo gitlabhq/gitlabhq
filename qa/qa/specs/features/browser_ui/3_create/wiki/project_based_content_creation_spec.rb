@@ -27,7 +27,7 @@ module QA
             edit.set_message commit_message
           end
 
-          Page::Project::Wiki::Edit.perform(&:click_create_page)
+          Page::Project::Wiki::Edit.perform(&:click_submit)
 
           Page::Project::Wiki::Show.perform do |wiki|
             expect(wiki).to have_title new_wiki_title
@@ -46,7 +46,7 @@ module QA
             edit.set_message commit_message
           end
 
-          Page::Project::Wiki::Edit.perform(&:click_create_page)
+          Page::Project::Wiki::Edit.perform(&:click_submit)
 
           Page::Project::Wiki::Show.perform do |wiki|
             expect(wiki).to have_title new_wiki_title

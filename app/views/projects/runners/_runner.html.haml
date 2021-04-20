@@ -1,44 +1,40 @@
-%li.runner{ id: dom_id(runner) }
-  %h4
-    = runner_status_icon(runner)
-
-    - if @project_runners.include?(runner)
-      = link_to _("%{token}...") % { token: runner.short_sha }, project_runner_path(@project, runner), class: 'commit-sha has-tooltip', title: _("Partial token for reference only")
-
+%li{ id: dom_id(runner) }
+  .gl-display-flex.gl-justify-content-space-between
+    %div
+      = runner_status_icon(runner, size: 16)
+      - if @project_runners.include?(runner)
+        = link_to "##{runner.id} (#{runner.short_sha})", project_runner_path(@project, runner)
+      - else
+        %span
+          = "##{runner.id} (#{runner.short_sha})"
       - if runner.locked?
         %span.has-tooltip{ title: _('Locked to current projects') }
           = sprite_icon('lock')
-
-      %small.edit-runner
-        = link_to edit_project_runner_path(@project, runner), class: 'btn gl-button btn-edit' do
-          = sprite_icon('pencil', css_class: 'gl-my-2')
-    - else
-      %span.commit-sha
-        = runner.short_sha
-
-    .float-right
-      - if @project_runners.include?(runner)
-        - if runner.active?
-          = link_to _('Pause'), pause_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-sm btn-danger', data: { confirm: _("Are you sure?") }
-        - else
-          = link_to _('Resume'), resume_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-success btn-sm'
-        - if runner.belongs_to_one_project?
-          = link_to _('Remove runner'), project_runner_path(@project, runner), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn gl-button btn-danger btn-sm'
-        - else
-          - runner_project = @project.runner_projects.find_by(runner_id: runner) # rubocop: disable CodeReuse/ActiveRecord
-          = link_to _('Disable for this project'), project_runner_project_path(@project, runner_project), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn gl-button btn-danger btn-sm'
-      - elsif runner.project_type?
-        = form_for [@project, @project.runner_projects.new] do |f|
-          = f.hidden_field :runner_id, value: runner.id
-          = f.submit _('Enable for this project'), class: 'btn gl-button btn-sm'
-  .float-right
-    %small.light
-      \##{runner.id}
+    .gl-ml-2
+      .btn-group.btn-group-sm
+        - if @project_runners.include?(runner)
+          = link_to edit_project_runner_path(@project, runner), class: 'btn gl-button btn-icon', title: _('Edit'), aria: { label: _('Edit') }, data: { testid: 'edit-runner-link', toggle: 'tooltip', placement: 'top', container: 'body' } do
+            = sprite_icon('pencil')
+          - if runner.active?
+            = link_to pause_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-icon', title: _('Pause'), aria: { label: _('Pause') }, data: { toggle: 'tooltip', placement: 'top', container: 'body', confirm: _("Are you sure?") } do
+              = sprite_icon('pause')
+          - else
+            = link_to resume_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-icon', title: _('Resume'), aria: { label: _('Resume') }, data: { toggle: 'tooltip', placement: 'top', container: 'body' } do
+              = sprite_icon('play')
+          - if runner.belongs_to_one_project?
+            = link_to _('Remove runner'), project_runner_path(@project, runner), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn gl-button btn-danger'
+          - else
+            - runner_project = @project.runner_projects.find_by(runner_id: runner) # rubocop: disable CodeReuse/ActiveRecord
+            = link_to _('Disable for this project'), project_runner_project_path(@project, runner_project), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn gl-button btn-danger'
+        - elsif runner.project_type?
+          = form_for [@project, @project.runner_projects.new] do |f|
+            = f.hidden_field :runner_id, value: runner.id
+            = f.submit _('Enable for this project'), class: 'btn gl-button'
   - if runner.description.present?
-    %p.runner-description
+    %p.gl-my-2
       = runner.description
   - if runner.tags.present?
-    %p
+    .gl-my-2
       - runner.tags.map(&:name).sort.each do |tag|
         %span.badge.gl-badge.sm.badge-pill.badge-primary
           = tag

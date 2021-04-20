@@ -1,16 +1,18 @@
 ---
 key_path: usage_activity_by_stage_monthly.plan.projects
-description:
+description: Count of MAU creating projects
 product_section: dev
-product_stage:
-product_group: group::plan
-product_category:
+product_stage: plan 
+product_group: group::project management
+product_category: projects
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: database
 distribution:
 - ce
+- ee 
 tier:
 - free
-skip_validation: true
+- premium 
+- ultimate 

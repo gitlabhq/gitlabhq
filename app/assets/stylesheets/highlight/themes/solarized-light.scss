@@ -101,6 +101,10 @@ $solarized-light-il: #2aa198;
 
 .code.solarized-light {
   // Line numbers
+  .file-line-num {
+    @include line-number-link($solarized-light-line-color);
+  }
+
   .line-numbers,
   .diff-line-num {
     background-color: $solarized-light-line-bg;

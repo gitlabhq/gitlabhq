@@ -12,7 +12,7 @@ This page details the recommended Reference Architectures that were built and
 verified by the GitLab Quality and Support teams.
 
 Below is a chart representing each architecture tier and the number of users
-they can handle. As your number of users grow with time, it’s recommended that
+they can handle. As your number of users grow with time, it's recommended that
 you scale GitLab accordingly.
 
 ![Reference Architectures](img/reference-architectures.png)

@@ -16,7 +16,6 @@ class ApplicationController < ActionController::Base
   include SessionlessAuthentication
   include SessionsHelper
   include ConfirmEmailWarning
-  include Gitlab::Tracking::ControllerConcern
   include Gitlab::Experimentation::ControllerConcern
   include InitializesCurrentUserMode
   include Impersonation
@@ -463,7 +462,7 @@ class ApplicationController < ActionController::Base
       feature_category: feature_category) do
       yield
     ensure
-      @current_context = Labkit::Context.current.to_h
+      @current_context = Gitlab::ApplicationContext.current
     end
   end
 
@@ -483,7 +482,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_current_admin(&block)
-    return yield unless Feature.enabled?(:user_mode_in_session)
+    return yield unless Gitlab::CurrentSettings.admin_mode
     return yield unless current_user
 
     Gitlab::Auth::CurrentUserMode.with_current_admin(current_user, &block)

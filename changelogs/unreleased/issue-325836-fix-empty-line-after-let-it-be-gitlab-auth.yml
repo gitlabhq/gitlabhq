@@ -1,0 +1,5 @@
+---
+title: Fix EmptyLineAfterFinalLetItBe offenses in spec/lib/gitlab/auth
+merge_request: 58246
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

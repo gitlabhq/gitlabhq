@@ -41,5 +41,5 @@ The following table shows what attributes will be present in the CSV.
 
 ## Limitations
 
-- Export merge requests to CSV is not available at the Group’s merge request list.
+- Export merge requests to CSV is not available at the Group's merge request list.
 - As the merge request CSV file is sent as an email attachment, the size is limited to 15MB to ensure successful delivery across a range of email providers. If you need to minimize the size of the file, you can narrow the search before export. For example, you can set up exports of open and closed merge requests in separate files.

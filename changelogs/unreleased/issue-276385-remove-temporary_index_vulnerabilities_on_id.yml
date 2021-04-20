@@ -1,0 +1,5 @@
+---
+title: Remove temporary index from vulnerabilities table
+merge_request: 57656
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: removed

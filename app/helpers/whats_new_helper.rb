@@ -5,15 +5,11 @@ module WhatsNewHelper
     ReleaseHighlight.most_recent_item_count
   end
 
-  def whats_new_storage_key
-    most_recent_version = ReleaseHighlight.versions&.first
-
-    return unless most_recent_version
-
-    ['display-whats-new-notification', most_recent_version].join('-')
+  def whats_new_version_digest
+    ReleaseHighlight.most_recent_version_digest
   end
 
-  def whats_new_versions
-    ReleaseHighlight.versions
+  def display_whats_new?
+    Gitlab.dev_env_org_or_com? || user_signed_in?
   end
 end

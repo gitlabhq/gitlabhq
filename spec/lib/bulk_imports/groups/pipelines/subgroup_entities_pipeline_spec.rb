@@ -6,31 +6,23 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, path: 'group') }
   let_it_be(:parent) { create(:group, name: 'imported-group', path: 'imported-group') }
-  let(:context) { BulkImports::Pipeline::Context.new(parent_entity) }
+  let_it_be(:parent_entity) { create(:bulk_import_entity, destination_namespace: parent.full_path, group: parent) }
+  let_it_be(:tracker) { create(:bulk_import_tracker, entity: parent_entity) }
+  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
   subject { described_class.new(context) }
 
+  let(:extracted_data) do
+    BulkImports::Pipeline::ExtractedData.new(data: {
+      'name' => 'subgroup',
+      'full_path' => 'parent/subgroup'
+    })
+  end
+
   describe '#run' do
-    let!(:parent_entity) do
-      create(
-        :bulk_import_entity,
-        destination_namespace: parent.full_path,
-        group: parent
-      )
-    end
-
-    let(:subgroup_data) do
-      [
-        {
-          "name" => "subgroup",
-          "full_path" => "parent/subgroup"
-        }
-      ]
-    end
-
     before do
       allow_next_instance_of(BulkImports::Groups::Extractors::SubgroupsExtractor) do |extractor|
-        allow(extractor).to receive(:extract).and_return(subgroup_data)
+        allow(extractor).to receive(:extract).and_return(extracted_data)
       end
 
       parent.add_owner(user)

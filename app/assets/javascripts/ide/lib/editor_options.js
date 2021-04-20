@@ -7,6 +7,7 @@ export const defaultEditorOptions = {
     enabled: false,
   },
   wordWrap: 'on',
+  glyphMargin: true,
 };
 
 export const defaultDiffOptions = {
@@ -21,6 +22,7 @@ export const defaultDiffEditorOptions = {
   readOnly: false,
   renderLineHighlight: 'none',
   hideCursorInOverviewRuler: true,
+  glyphMargin: true,
 };
 
 export const defaultModelOptions = {

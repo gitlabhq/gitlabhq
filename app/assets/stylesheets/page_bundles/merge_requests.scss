@@ -9,6 +9,18 @@
   min-width: 0;
 }
 
+.with-system-header {
+  --system-header-height: #{$system-header-height};
+}
+
+.with-performance-bar {
+  --performance-bar-height: #{$performance-bar-height};
+}
+
+.review-bar-visible {
+  --review-bar-height: #{$mr-review-bar-height};
+}
+
 .diff-tree-list {
   // This 11px value should match the additional value found in
   //      /assets/stylesheets/framework/diffs.scss
@@ -23,23 +35,12 @@
 
   position: -webkit-sticky;
   position: sticky;
-  top: $top-pos;
-  max-height: calc(100vh - #{$top-pos});
+  // Unitless zero values are not allowed in calculations https://stackoverflow.com/a/55391061
+  // stylelint-disable-next-line length-zero-no-unit
+  top: calc(#{$top-pos} + var(--system-header-height, 0px) + var(--performance-bar-height, 0px));
+  // stylelint-disable-next-line length-zero-no-unit
+  max-height: calc(100vh - #{$top-pos} - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
   z-index: 202;
-
-  .with-system-header & {
-    top: $top-pos + $system-header-height;
-  }
-
-  .with-system-header.with-performance-bar & {
-    top: $top-pos + $system-header-height + $performance-bar-height;
-  }
-
-  .with-performance-bar & {
-    $performance-bar-top-pos: $performance-bar-height + $top-pos;
-    top: $performance-bar-top-pos;
-    max-height: calc(100vh - #{$performance-bar-top-pos});
-  }
 
   .drag-handle {
     bottom: 16px;

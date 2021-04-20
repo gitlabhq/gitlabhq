@@ -17,6 +17,6 @@ class ApplicationsFinder
   def by_id(applications)
     return applications unless params[:id]
 
-    Doorkeeper::Application.find_by(id: params[:id]) # rubocop: disable CodeReuse/ActiveRecord
+    applications.find_by(id: params[:id]) # rubocop: disable CodeReuse/ActiveRecord
   end
 end

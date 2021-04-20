@@ -4,6 +4,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import { inactiveId, LIST } from '~/boards/constants';
 import { createStore } from '~/boards/stores';
@@ -22,11 +23,18 @@ describe('BoardSettingsSidebar', () => {
   const labelColor = '#FFFF';
   const listId = 1;
 
-  const createComponent = () => {
-    wrapper = shallowMount(BoardSettingsSidebar, {
-      store,
-      localVue,
-    });
+  const findRemoveButton = () => wrapper.findByTestId('remove-list');
+
+  const createComponent = ({ canAdminList = false } = {}) => {
+    wrapper = extendedWrapper(
+      shallowMount(BoardSettingsSidebar, {
+        store,
+        localVue,
+        provide: {
+          canAdminList,
+        },
+      }),
+    );
   };
   const findLabel = () => wrapper.find(GlLabel);
   const findDrawer = () => wrapper.find(GlDrawer);
@@ -162,6 +170,31 @@ describe('BoardSettingsSidebar', () => {
 
     it('does not render GlDrawer', () => {
       expect(findDrawer().exists()).toBe(false);
+    });
+  });
+
+  it('does not render "Remove list" when user cannot admin the boards list', () => {
+    createComponent();
+
+    expect(findRemoveButton().exists()).toBe(false);
+  });
+
+  describe('when user can admin the boards list', () => {
+    beforeEach(() => {
+      store.state.activeId = listId;
+      store.state.sidebarType = LIST;
+
+      boardsStore.addList({
+        id: listId,
+        label: { title: labelTitle, color: labelColor },
+        list_type: 'label',
+      });
+
+      createComponent({ canAdminList: true });
+    });
+
+    it('renders "Remove list" button', () => {
+      expect(findRemoveButton().exists()).toBe(true);
     });
   });
 });

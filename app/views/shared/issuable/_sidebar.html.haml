@@ -34,7 +34,7 @@
 
       - if issuable_sidebar[:supports_milestone]
         - milestone = issuable_sidebar[:milestone] || {}
-        .block.milestone{ class: 'gl-border-b-0!', data: { qa_selector: 'milestone_block' } }
+        .block.milestone{ :class => ("gl-border-b-0!" if issuable_sidebar[:supports_iterations]), data: { qa_selector: 'milestone_block' } }
           .sidebar-collapsed-icon.has-tooltip{ title: sidebar_milestone_tooltip_label(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
             = sprite_icon('clock')
             %span.milestone-title.collapse-truncated-title
@@ -70,41 +70,7 @@
             = _('Time tracking')
             = loading_icon(css_class: 'gl-vertical-align-text-bottom')
       - if issuable_sidebar.has_key?(:due_date)
-        .block.due_date
-          .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 'true', boundary: 'viewport' }, title: sidebar_due_date_tooltip_label(issuable_sidebar[:due_date]) }
-            = sprite_icon('calendar')
-            %span.js-due-date-sidebar-value
-              = issuable_sidebar[:due_date].try(:to_s, :medium) || _('None')
-          .title.hide-collapsed
-            = _('Due date')
-            = loading_icon(css_class: 'gl-vertical-align-text-bottom hidden block-loading')
-            - if can_edit_issuable
-              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right', data: { track_label: "right_sidebar", track_property: "due_date", track_event: "click_edit_button", track_value: "" }
-          .value.hide-collapsed
-            %span.value-content
-              - if issuable_sidebar[:due_date]
-                %span.bold= issuable_sidebar[:due_date].to_s(:medium)
-              - else
-                %span.no-value
-                  = _('None')
-            - if can_edit_issuable
-              %span.no-value.js-remove-due-date-holder{ class: ("hidden" if issuable_sidebar[:due_date].nil?) }
-                \-
-                %a.js-remove-due-date{ href: "#", role: "button" }
-                  = _('remove due date')
-          - if can_edit_issuable
-            .selectbox.hide-collapsed
-              = f.hidden_field :due_date, value: issuable_sidebar[:due_date].try(:strftime, 'yy-mm-dd')
-              .dropdown
-                %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable_type}[due_date]", ability_name: issuable_type, issue_update: issuable_sidebar[:issuable_json_path], display: 'static' } }
-                  %span.dropdown-toggle-text
-                    = _('Due date')
-                  = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
-                .dropdown-menu.dropdown-menu-due-date
-                  = dropdown_title(_('Due date'))
-                  = dropdown_content do
-                    .js-due-date-calendar
-
+        #js-due-date-entry-point
 
       .js-sidebar-labels{ data: sidebar_labels_data(issuable_sidebar, @project) }
 
@@ -133,12 +99,12 @@
       .block.with-sub-blocks
         #js-reference-entry-point
         - if issuable_type == 'merge_request'
-          .sidebar-source-branch.sub-block
+          .sub-block.js-sidebar-source-branch
             .sidebar-collapsed-icon.dont-change-state
               = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport')
-            .sidebar-mr-source-branch.hide-collapsed
-              %span
-                = _('Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}').html_safe % { source_branch_open: "<cite class='ref-name' title='#{html_escape(source_branch)}'>".html_safe, source_branch_close: "</cite>".html_safe, source_branch: html_escape(source_branch) }
+            .gl-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-mb-2.hide-collapsed
+              %span.gl-overflow-hidden.gl-text-overflow-ellipsis.gl-white-space-nowrap
+                = _('Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}').html_safe % { source_branch_open: "<span class='gl-font-monospace' data-testid='ref-name' title='#{html_escape(source_branch)}'>".html_safe, source_branch_close: "</span>".html_safe, source_branch: html_escape(source_branch) }
               = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport')
 
       - if show_forwarding_email

@@ -1,0 +1,5 @@
+---
+title: Initialize conversion of events.id to bigint, and add execute_batched_migrations_on_schedule feature flag to control scheduled background migrations
+merge_request: 51332
+author:
+type: other

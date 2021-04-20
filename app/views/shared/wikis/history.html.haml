@@ -28,7 +28,7 @@
             %td
               = commit.author_name
             %td
-              %span.str-truncated-60
+              .commit-content
                 = link_to wiki_page_path(@wiki, @page, action: :diff, version_id: commit.id), { title: commit.message } do
                   = commit.message
             %td

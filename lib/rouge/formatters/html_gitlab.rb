@@ -7,10 +7,11 @@ module Rouge
 
       # Creates a new <tt>Rouge::Formatter::HTMLGitlab</tt> instance.
       #
-      # [+tag+]     The tag (language) of the lexer used to generate the formatted tokens
+      # [+tag+]          The tag (language) of the lexer used to generate the formatted tokens
+      # [+line_number+]  The line number used to populate line IDs
       def initialize(options = {})
-        @line_number = 1
         @tag = options[:tag]
+        @line_number = options[:line_number] || 1
       end
 
       def stream(tokens)

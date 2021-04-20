@@ -24,6 +24,52 @@ RSpec.describe Ci::ArchiveTraceService, '#execute' do
       it 'does not create an archived trace' do
         expect { subject }.not_to change { Ci::JobArtifact.trace.count }
       end
+
+      context 'when live trace chunks still exist' do
+        before do
+          create(:ci_build_trace_chunk, build: job)
+        end
+
+        context 'when the feature flag `erase_traces_from_already_archived_jobs_when_archiving_again` is enabled' do
+          before do
+            stub_feature_flags(erase_traces_from_already_archived_jobs_when_archiving_again: true)
+          end
+
+          it 'removes the trace chunks' do
+            expect { subject }.to change { job.trace_chunks.count }.to(0)
+          end
+
+          context 'when associated data does not exist' do
+            before do
+              job.job_artifacts_trace.file.remove!
+            end
+
+            it 'removes the trace artifact' do
+              expect { subject }.to change { job.reload.job_artifacts_trace }.to(nil)
+            end
+          end
+        end
+
+        context 'when the feature flag `erase_traces_from_already_archived_jobs_when_archiving_again` is disabled' do
+          before do
+            stub_feature_flags(erase_traces_from_already_archived_jobs_when_archiving_again: false)
+          end
+
+          it 'does not remove the trace chunks' do
+            expect { subject }.not_to change { job.trace_chunks.count }
+          end
+
+          context 'when associated data does not exist' do
+            before do
+              job.job_artifacts_trace.file.remove!
+            end
+
+            it 'does not remove the trace artifact' do
+              expect { subject }.not_to change { job.reload.job_artifacts_trace }
+            end
+          end
+        end
+      end
     end
 
     context 'when job does not have trace' do

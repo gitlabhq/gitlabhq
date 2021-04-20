@@ -1,5 +1,5 @@
 mutation issueSetTitle($input: UpdateIssueInput!) {
-  updateIssue(input: $input) {
+  updateIssuableTitle: updateIssue(input: $input) {
     issue {
       title
     }

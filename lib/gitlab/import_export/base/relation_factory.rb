@@ -6,7 +6,7 @@ module Gitlab
       class RelationFactory
         include Gitlab::Utils::StrongMemoize
 
-        IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
+        IMPORTED_OBJECT_MAX_RETRIES = 5
 
         OVERRIDES = {}.freeze
         EXISTING_OBJECT_RELATIONS = %i[].freeze

@@ -72,6 +72,7 @@ export default {
           size="small"
           class="gl-mr-3 js-back-button"
           icon="angle-left"
+          :aria-label="__('Go back')"
           @click="onBackClick"
         />
 

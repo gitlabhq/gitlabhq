@@ -110,12 +110,12 @@ export default {
     mutationVariables() {
       return {
         projectPath: this.projectPath,
-        enabled: this.value.enabled,
-        cadence: this.value.cadence,
-        olderThan: this.value.olderThan,
-        keepN: this.value.keepN,
-        nameRegex: this.value.nameRegex,
-        nameRegexKeep: this.value.nameRegexKeep,
+        enabled: this.prefilledForm.enabled,
+        cadence: this.prefilledForm.cadence,
+        olderThan: this.prefilledForm.olderThan,
+        keepN: this.prefilledForm.keepN,
+        nameRegex: this.prefilledForm.nameRegex,
+        nameRegexKeep: this.prefilledForm.nameRegexKeep,
       };
     },
   },
@@ -291,8 +291,8 @@ export default {
         type="submit"
         :disabled="isSubmitButtonDisabled"
         :loading="showLoadingIcon"
-        variant="success"
         category="primary"
+        variant="confirm"
         class="js-no-auto-disable gl-mr-4"
       >
         {{ $options.i18n.SET_CLEANUP_POLICY_BUTTON }}

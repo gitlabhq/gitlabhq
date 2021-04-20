@@ -141,9 +141,9 @@ module Atlassian
       def user_notes_count(merge_requests)
         return unless merge_requests
 
-        Note.count_for_collection(merge_requests.map(&:id), 'MergeRequest').map do |count_group|
+        Note.count_for_collection(merge_requests.map(&:id), 'MergeRequest').to_h do |count_group|
           [count_group.noteable_id, count_group.count]
-        end.to_h
+        end
       end
 
       def jwt_token(http_method, uri)

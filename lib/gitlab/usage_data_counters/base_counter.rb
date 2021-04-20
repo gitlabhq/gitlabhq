@@ -22,11 +22,11 @@ module Gitlab::UsageDataCounters
       end
 
       def totals
-        known_events.map { |event| [counter_key(event), read(event)] }.to_h
+        known_events.to_h { |event| [counter_key(event), read(event)] }
       end
 
       def fallback_totals
-        known_events.map { |event| [counter_key(event), -1] }.to_h
+        known_events.to_h { |event| [counter_key(event), -1] }
       end
 
       def fetch_supported_event(event_name)

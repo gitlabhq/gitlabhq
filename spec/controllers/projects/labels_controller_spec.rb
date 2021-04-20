@@ -65,7 +65,7 @@ RSpec.describe Projects::LabelsController do
       end
 
       it 'does not include group labels when project does not belong to a group' do
-        project.update(namespace: create(:namespace))
+        project.update!(namespace: create(:namespace))
 
         list_labels
 
@@ -90,6 +90,26 @@ RSpec.describe Projects::LabelsController do
 
         expect(assigns(:labels)).to match_array([subgroup_label_1] + group_labels + project_labels)
         expect(assigns(:prioritized_labels)).to match_array([subgroup_label_2] + group_priority_labels + project_priority_labels)
+      end
+    end
+
+    context 'with views rendered' do
+      render_views
+
+      before do
+        list_labels
+      end
+
+      it 'avoids N+1 queries' do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_labels }
+
+        create_list(:label, 3, project: project)
+        create_list(:group_label, 3, group: group)
+
+        # some n+1 queries still exist
+        # calls to get max project authorization access level
+        expect { list_labels }.not_to exceed_all_query_limit(control.count).with_threshold(25)
+        expect(assigns(:labels).count).to eq(10)
       end
     end
 
@@ -221,7 +241,7 @@ RSpec.describe Projects::LabelsController do
       end
 
       context 'when requesting a redirected path' do
-        let_it_be(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
+        let_it_be(:redirect_route) { project.redirect_routes.create!(path: project.full_path + 'old') }
 
         it 'redirects to the canonical path' do
           get :index, params: { namespace_id: project.namespace, project_id: project.to_param + 'old' }
@@ -267,7 +287,7 @@ RSpec.describe Projects::LabelsController do
     end
 
     context 'when requesting a redirected path' do
-      let_it_be(:redirect_route) { project.redirect_routes.create(path: project.full_path + 'old') }
+      let_it_be(:redirect_route) { project.redirect_routes.create!(path: project.full_path + 'old') }
 
       it 'returns not found' do
         post :generate, params: { namespace_id: project.namespace, project_id: project.to_param + 'old' }

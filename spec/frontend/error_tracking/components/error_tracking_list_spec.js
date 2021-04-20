@@ -52,7 +52,6 @@ describe('ErrorTrackingList', () => {
 
   beforeEach(() => {
     actions = {
-      getErrorList: () => {},
       startPolling: jest.fn(),
       restartPolling: jest.fn().mockName('restartPolling'),
       addRecentSearch: jest.fn(),

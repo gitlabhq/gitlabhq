@@ -91,7 +91,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
   To enable HTTPS endpoints for your application, you must install cert-manager,
   a native Kubernetes certificate management controller that helps with issuing
   certificates. Installing cert-manager on your cluster issues a
-  [Let’s Encrypt](https://letsencrypt.org/) certificate and ensures the
+  [Let's Encrypt](https://letsencrypt.org/) certificate and ensures the
   certificates are valid and up-to-date. If you've configured the GitLab integration
   with Kubernetes, you can deploy it to your cluster by installing the
   [GitLab-managed app for cert-manager](../../user/clusters/applications.md#cert-manager).

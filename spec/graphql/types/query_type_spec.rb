@@ -98,6 +98,6 @@ RSpec.describe GitlabSchema.types['Query'] do
   describe 'package field' do
     subject { described_class.fields['package'] }
 
-    it { is_expected.to have_graphql_type(Types::Packages::PackageType) }
+    it { is_expected.to have_graphql_type(Types::Packages::PackageDetailsType) }
   end
 end

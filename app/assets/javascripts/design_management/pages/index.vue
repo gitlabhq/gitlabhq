@@ -379,8 +379,7 @@ export default {
             <delete-button
               v-if="isLatestVersion"
               :is-deleting="loading"
-              button-variant="warning"
-              button-category="secondary"
+              button-variant="default"
               button-class="gl-mr-3"
               button-size="small"
               data-qa-selector="archive_button"
@@ -485,9 +484,7 @@ export default {
               <template #upload-text="{ openFileUpload }">
                 <gl-sprintf :message="$options.i18n.dropzoneDescriptionText">
                   <template #link="{ content }">
-                    <gl-link @click.stop="openFileUpload">
-                      {{ content }}
-                    </gl-link>
+                    <gl-link @click.stop="openFileUpload">{{ content }}</gl-link>
                   </template>
                 </gl-sprintf>
               </template>

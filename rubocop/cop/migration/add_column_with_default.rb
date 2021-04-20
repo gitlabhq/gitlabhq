@@ -8,7 +8,7 @@ module RuboCop
       class AddColumnWithDefault < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        MSG = '`add_column_with_default` is deprecated, use `add_column` instead'.freeze
+        MSG = '`add_column_with_default` is deprecated, use `add_column` instead'
 
         def on_send(node)
           return unless in_migration?(node)

@@ -8,16 +8,13 @@ description: "Documentation on Git file history."
 
 # Git file history **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/blob/9ba1224867665844b117fa037e1465bb706b3685/app/controllers/commits_controller.rb) in GitLab 0.8.0
-
 Git file History provides information about the commit history associated
-with a file.
+with a file. To use it:
 
-You can find the **History** button with each file in a project.
+1. Go to your project's **Repository > Files**.
+1. In the upper right corner, select **History**.
 
-![File history button](img/file_history_button_v12_6.png "History button")
-
-When you select the **History** button, this information displays:
+When you select **History**, this information is displayed:
 
 ![Git log output](img/file_history_output_v12_6.png "History button output")
 

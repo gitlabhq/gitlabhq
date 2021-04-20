@@ -41,7 +41,7 @@ func testArtifactsUpload(t *testing.T, uploadArtifacts uploadArtifactsFunction) 
 	reqBody, contentType, err := multipartBodyWithFile()
 	require.NoError(t, err)
 
-	ts := signedUploadTestServer(t, nil)
+	ts := signedUploadTestServer(t, nil, nil)
 	defer ts.Close()
 
 	ws := startWorkhorseServer(ts.URL)
@@ -66,7 +66,7 @@ func expectSignedRequest(t *testing.T, r *http.Request) {
 	require.NoError(t, err)
 }
 
-func uploadTestServer(t *testing.T, extraTests func(r *http.Request)) *httptest.Server {
+func uploadTestServer(t *testing.T, authorizeTests func(r *http.Request), extraTests func(r *http.Request)) *httptest.Server {
 	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasSuffix(r.URL.Path, "/authorize") {
 			expectSignedRequest(t, r)
@@ -74,6 +74,10 @@ func uploadTestServer(t *testing.T, extraTests func(r *http.Request)) *httptest.
 			w.Header().Set("Content-Type", api.ResponseContentType)
 			_, err := fmt.Fprintf(w, `{"TempPath":"%s"}`, scratchDir)
 			require.NoError(t, err)
+
+			if authorizeTests != nil {
+				authorizeTests(r)
+			}
 			return
 		}
 
@@ -91,10 +95,10 @@ func uploadTestServer(t *testing.T, extraTests func(r *http.Request)) *httptest.
 	})
 }
 
-func signedUploadTestServer(t *testing.T, extraTests func(r *http.Request)) *httptest.Server {
+func signedUploadTestServer(t *testing.T, authorizeTests func(r *http.Request), extraTests func(r *http.Request)) *httptest.Server {
 	t.Helper()
 
-	return uploadTestServer(t, func(r *http.Request) {
+	return uploadTestServer(t, authorizeTests, func(r *http.Request) {
 		expectSignedRequest(t, r)
 
 		if extraTests != nil {
@@ -112,21 +116,42 @@ func TestAcceleratedUpload(t *testing.T) {
 		{"POST", `/example`, false},
 		{"POST", `/uploads/personal_snippet`, true},
 		{"POST", `/uploads/user`, true},
+		{"POST", `/api/v4/projects/1/uploads`, true},
+		{"POST", `/api/v4/projects/group%2Fproject/uploads`, true},
+		{"POST", `/api/v4/projects/group%2Fsubgroup%2Fproject/uploads`, true},
 		{"POST", `/api/v4/projects/1/wikis/attachments`, false},
+		{"POST", `/api/v4/projects/group%2Fproject/wikis/attachments`, false},
+		{"POST", `/api/v4/projects/group%2Fsubgroup%2Fproject/wikis/attachments`, false},
 		{"POST", `/api/graphql`, false},
 		{"PUT", "/api/v4/projects/9001/packages/nuget/v1/files", true},
+		{"PUT", "/api/v4/projects/group%2Fproject/packages/nuget/v1/files", true},
+		{"PUT", "/api/v4/projects/group%2Fsubgroup%2Fproject/packages/nuget/v1/files", true},
 		{"POST", `/api/v4/groups/import`, true},
+		{"POST", `/api/v4/groups/import/`, true},
 		{"POST", `/api/v4/projects/import`, true},
+		{"POST", `/api/v4/projects/import/`, true},
 		{"POST", `/import/gitlab_project`, true},
+		{"POST", `/import/gitlab_project/`, true},
 		{"POST", `/import/gitlab_group`, true},
+		{"POST", `/import/gitlab_group/`, true},
 		{"POST", `/api/v4/projects/9001/packages/pypi`, true},
+		{"POST", `/api/v4/projects/group%2Fproject/packages/pypi`, true},
+		{"POST", `/api/v4/projects/group%2Fsubgroup%2Fproject/packages/pypi`, true},
 		{"POST", `/api/v4/projects/9001/issues/30/metric_images`, true},
+		{"POST", `/api/v4/projects/group%2Fproject/issues/30/metric_images`, true},
+		{"POST", `/api/v4/projects/group%2Fsubgroup%2Fproject/issues/30/metric_images`, true},
 		{"POST", `/my/project/-/requirements_management/requirements/import_csv`, true},
+		{"POST", `/my/project/-/requirements_management/requirements/import_csv/`, true},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.resource, func(t *testing.T) {
 			ts := uploadTestServer(t,
+				func(r *http.Request) {
+					resource := strings.TrimRight(tt.resource, "/")
+					// Validate %2F characters haven't been unescaped
+					require.Equal(t, resource+"/authorize", r.URL.String())
+				},
 				func(r *http.Request) {
 					if tt.signedFinalization {
 						expectSignedRequest(t, r)
@@ -184,6 +209,55 @@ func multipartBodyWithFile() (io.Reader, string, error) {
 	}
 	fmt.Fprint(file, "SHOULD BE ON DISK, NOT IN MULTIPART")
 	return result, writer.FormDataContentType(), writer.Close()
+}
+
+func unacceleratedUploadTestServer(t *testing.T) *httptest.Server {
+	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+		require.False(t, strings.HasSuffix(r.URL.Path, "/authorize"))
+		require.Empty(t, r.Header.Get(upload.RewrittenFieldsHeader))
+
+		w.WriteHeader(200)
+	})
+}
+
+func TestUnacceleratedUploads(t *testing.T) {
+	tests := []struct {
+		method   string
+		resource string
+	}{
+		{"POST", `/api/v4/projects/group/subgroup/project/wikis/attachments`},
+		{"POST", `/api/v4/projects/group/project/wikis/attachments`},
+		{"PUT", "/api/v4/projects/group/subgroup/project/packages/nuget/v1/files"},
+		{"PUT", "/api/v4/projects/group/project/packages/nuget/v1/files"},
+		{"POST", `/api/v4/projects/group/subgroup/project/packages/pypi`},
+		{"POST", `/api/v4/projects/group/project/packages/pypi`},
+		{"POST", `/api/v4/projects/group/subgroup/project/packages/pypi`},
+		{"POST", `/api/v4/projects/group/project/issues/30/metric_images`},
+		{"POST", `/api/v4/projects/group/subgroup/project/issues/30/metric_images`},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.resource, func(t *testing.T) {
+			ts := unacceleratedUploadTestServer(t)
+
+			defer ts.Close()
+			ws := startWorkhorseServer(ts.URL)
+			defer ws.Close()
+
+			reqBody, contentType, err := multipartBodyWithFile()
+			require.NoError(t, err)
+
+			req, err := http.NewRequest(tt.method, ws.URL+tt.resource, reqBody)
+			require.NoError(t, err)
+
+			req.Header.Set("Content-Type", contentType)
+			resp, err := http.DefaultClient.Do(req)
+			require.NoError(t, err)
+			require.Equal(t, 200, resp.StatusCode)
+
+			resp.Body.Close()
+		})
+	}
 }
 
 func TestBlockingRewrittenFieldsHeader(t *testing.T) {
@@ -433,6 +507,11 @@ func TestPackageFilesUpload(t *testing.T) {
 		{"PUT", "/api/v4/projects/2412/packages/generic/mypackage/0.0.1/myfile.tar.gz"},
 		{"PUT", "/api/v4/projects/2412/packages/debian/libsample0_1.2.3~alpha2-1_amd64.deb"},
 		{"POST", "/api/v4/projects/2412/packages/rubygems/api/v1/gems/sample.gem"},
+		{"PUT", "/api/v4/projects/group%2Fproject/packages/conan/v1/files"},
+		{"PUT", "/api/v4/projects/group%2Fproject/packages/maven/v1/files"},
+		{"PUT", "/api/v4/projects/group%2Fproject/packages/generic/mypackage/0.0.1/myfile.tar.gz"},
+		{"PUT", "/api/v4/projects/group%2Fproject/packages/debian/libsample0_1.2.3~alpha2-1_amd64.deb"},
+		{"POST", "/api/v4/projects/group%2Fproject/packages/rubygems/api/v1/gems/sample.gem"},
 	}
 
 	for _, r := range routes {

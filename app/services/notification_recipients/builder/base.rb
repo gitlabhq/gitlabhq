@@ -100,6 +100,8 @@ module NotificationRecipients
       # Get project/group users with CUSTOM notification level
       # rubocop: disable CodeReuse/ActiveRecord
       def add_custom_notifications
+        return new_add_custom_notifications if Feature.enabled?(:notification_setting_recipient_refactor, project)
+
         user_ids = []
 
         # Users with a notification setting on group or project
@@ -114,6 +116,48 @@ module NotificationRecipients
         user_ids += user_ids_with_global_level_custom(global_users_ids, custom_action)
 
         add_recipients(user_scope.where(id: user_ids), :custom, nil)
+      end
+
+      def new_add_custom_notifications
+        notification_by_sources = related_notification_settings_sources(:custom)
+
+        return if notification_by_sources.blank?
+
+        user_ids = NotificationSetting.from_union(notification_by_sources).select(:user_id)
+
+        add_recipients(user_scope.where(id: user_ids), :custom, nil)
+      end
+
+      def related_notification_settings_sources(level)
+        sources = [project, group].compact
+
+        sources.map do |source|
+          source
+            .notification_settings
+            .where(source_or_global_setting_by_level_query(level)).select(:user_id)
+        end
+      end
+
+      def global_setting_by_level_query(level)
+        table = NotificationSetting.arel_table
+        aliased_table = table.alias
+
+        table
+          .project('true')
+          .from(aliased_table)
+          .where(
+            aliased_table[:user_id].eq(table[:user_id])
+              .and(aliased_table[:source_id].eq(nil))
+              .and(aliased_table[:source_type].eq(nil))
+              .and(aliased_table[:level].eq(level))
+          ).exists
+      end
+
+      def source_or_global_setting_by_level_query(level)
+        table = NotificationSetting.arel_table
+        table.grouping(
+          table[:level].eq(:global).and(global_setting_by_level_query(level))
+        ).or(table[:level].eq(level))
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

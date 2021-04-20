@@ -232,7 +232,7 @@ export function insertMarkdownText({
         .join('\n');
     }
   } else if (tag.indexOf(textPlaceholder) > -1) {
-    textToInsert = tag.replace(textPlaceholder, selected);
+    textToInsert = tag.replace(textPlaceholder, selected.replace(/\\n/g, '\n'));
   } else {
     textToInsert = String(startChar) + tag + selected + (wrap ? tag : '');
   }
@@ -322,7 +322,7 @@ export function updateTextForToolbarBtn($toolbarBtn) {
     blockTag: $toolbarBtn.data('mdBlock'),
     wrap: !$toolbarBtn.data('mdPrepend'),
     select: $toolbarBtn.data('mdSelect'),
-    tagContent: $toolbarBtn.data('mdTagContent'),
+    tagContent: $toolbarBtn.attr('data-md-tag-content'),
   });
 }
 

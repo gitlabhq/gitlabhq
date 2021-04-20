@@ -1,0 +1,5 @@
+---
+title: Ensures that the "Suggest GitLab CI" popover is shown after selecting a template type
+merge_request: 58120
+author:
+type: fixed

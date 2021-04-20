@@ -9,7 +9,7 @@ export default {
     TagFieldNew,
   },
   computed: {
-    ...mapGetters('detail', ['isExistingRelease']),
+    ...mapGetters('editNew', ['isExistingRelease']),
   },
 };
 </script>

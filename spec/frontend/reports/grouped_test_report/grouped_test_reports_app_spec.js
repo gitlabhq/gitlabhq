@@ -1,6 +1,6 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { mockTracking } from 'helpers/tracking_helper';
+import Api from '~/api';
 import GroupedTestReportsApp from '~/reports/grouped_test_report/grouped_test_reports_app.vue';
 import { getStoreConfig } from '~/reports/grouped_test_report/store';
 
@@ -12,23 +12,30 @@ import successTestReports from '../mock_data/no_failures_report.json';
 import recentFailuresTestReports from '../mock_data/recent_failures_report.json';
 import resolvedFailures from '../mock_data/resolved_failures.json';
 
+jest.mock('~/api.js');
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Grouped test reports app', () => {
   const endpoint = 'endpoint.json';
+  const headBlobPath = '/blob/path';
   const pipelinePath = '/path/to/pipeline';
   let wrapper;
   let mockStore;
 
-  const mountComponent = ({ props = { pipelinePath } } = {}) => {
+  const mountComponent = ({ props = { pipelinePath }, glFeatures = {} } = {}) => {
     wrapper = mount(GroupedTestReportsApp, {
       store: mockStore,
       localVue,
       propsData: {
         endpoint,
+        headBlobPath,
         pipelinePath,
         ...props,
+      },
+      provide: {
+        glFeatures,
       },
     });
   };
@@ -56,7 +63,7 @@ describe('Grouped test reports app', () => {
       ...getStoreConfig(),
       actions: {
         fetchReports: () => {},
-        setEndpoint: () => {},
+        setPaths: () => {},
       },
     });
     mountComponent();
@@ -103,31 +110,33 @@ describe('Grouped test reports app', () => {
   });
 
   describe('`Expand` button', () => {
-    let trackingSpy;
-
     beforeEach(() => {
       setReports(newFailedTestReports);
-      mountComponent();
-      document.body.dataset.page = 'projects:merge_requests:show';
-      trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
     });
 
-    it('tracks an event on click', () => {
+    it('tracks usage ping metric when enabled', () => {
+      mountComponent({ glFeatures: { usageDataITestingSummaryWidgetTotal: true } });
       findExpandButton().trigger('click');
 
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'expand_test_report_widget', {});
+      expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
+      expect(Api.trackRedisHllUserEvent).toHaveBeenCalledWith(wrapper.vm.$options.expandEvent);
     });
 
     it('only tracks the first expansion', () => {
-      expect(trackingSpy).not.toHaveBeenCalled();
+      mountComponent({ glFeatures: { usageDataITestingSummaryWidgetTotal: true } });
+      const expandButton = findExpandButton();
+      expandButton.trigger('click');
+      expandButton.trigger('click');
+      expandButton.trigger('click');
 
-      const button = findExpandButton();
+      expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
+    });
 
-      button.trigger('click');
-      button.trigger('click');
-      button.trigger('click');
+    it('does not track usage ping metric when disabled', () => {
+      mountComponent({ glFeatures: { usageDataITestingSummaryWidgetTotal: false } });
+      findExpandButton().trigger('click');
 
-      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(Api.trackRedisHllUserEvent).not.toHaveBeenCalled();
     });
   });
 

@@ -70,7 +70,7 @@ module API
           optional :variables, Array, desc: 'Array of variables available in the pipeline'
         end
         post ':id/pipeline' do
-          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42124')
+          Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20711')
 
           authorize! :create_pipeline, user_project
 

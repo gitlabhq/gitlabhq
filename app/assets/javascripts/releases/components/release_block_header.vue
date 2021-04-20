@@ -1,9 +1,13 @@
 <script>
 import { GlTooltipDirective, GlLink, GlBadge, GlButton, GlIcon } from '@gitlab/ui';
 import { setUrlParams } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import { BACK_URL_PARAM } from '~/releases/constants';
 
 export default {
+  i18n: {
+    editButton: __('Edit this release'),
+  },
   name: 'ReleaseBlockHeader',
   components: {
     GlLink,
@@ -69,7 +73,8 @@ export default {
       variant="default"
       icon="pencil"
       class="gl-mr-3 js-edit-button ml-2 pb-2"
-      :title="__('Edit this release')"
+      :title="$options.i18n.editButton"
+      :aria-label="$options.i18n.editButton"
       :href="editLink"
     />
   </div>

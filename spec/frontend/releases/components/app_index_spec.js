@@ -8,7 +8,7 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleasesApp from '~/releases/components/app_index.vue';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
 import createStore from '~/releases/stores';
-import createListModule from '~/releases/stores/modules/list';
+import createIndexModule from '~/releases/stores/modules/index';
 import { pageInfoHeadersWithoutPagination, pageInfoHeadersWithPagination } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils', () => ({
@@ -41,15 +41,15 @@ describe('Releases App ', () => {
   };
 
   const createComponent = (stateUpdates = {}) => {
-    const listModule = createListModule({
+    const indexModule = createIndexModule({
       ...defaultInitialState,
       ...stateUpdates,
     });
 
-    fetchReleaseSpy = jest.spyOn(listModule.actions, 'fetchReleases');
+    fetchReleaseSpy = jest.spyOn(indexModule.actions, 'fetchReleases');
 
     const store = createStore({
-      modules: { list: listModule },
+      modules: { index: indexModule },
       featureFlags: {
         graphqlReleaseData: true,
         graphqlReleasesPage: false,

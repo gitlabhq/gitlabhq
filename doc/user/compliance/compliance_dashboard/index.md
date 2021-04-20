@@ -17,7 +17,7 @@ for merging into production.
 
 To access the Compliance Dashboard for a group, navigate to **{shield}** **Security & Compliance > Compliance** on the group's menu.
 
-![Compliance Dashboard](img/compliance_dashboard_v13_6.png)
+![Compliance Dashboard](img/compliance_dashboard_v13_11.png)
 
 NOTE:
 The Compliance Dashboard shows only the latest MR on each project.

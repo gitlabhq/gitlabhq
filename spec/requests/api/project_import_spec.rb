@@ -235,12 +235,14 @@ RSpec.describe API::ProjectImport do
         stub_uploads_object_storage(ImportExportUploader, direct_upload: true)
       end
 
+      # rubocop:disable Rails/SaveBang
       let(:tmp_object) do
         fog_connection.directories.new(key: 'uploads').files.create(
           key: "tmp/uploads/#{file_name}",
           body: fixture_file_upload(file)
         )
       end
+      # rubocop:enable Rails/SaveBang
 
       let(:file_upload) { fog_to_uploaded_file(tmp_object) }
 
@@ -285,7 +287,7 @@ RSpec.describe API::ProjectImport do
     it 'returns the import status and the error if failed' do
       project = create(:project, :import_failed)
       project.add_maintainer(user)
-      project.import_state.update(last_error: 'error')
+      project.import_state.update!(last_error: 'error')
 
       get api("/projects/#{project.id}/import", user)
 

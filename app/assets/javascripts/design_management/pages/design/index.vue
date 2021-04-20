@@ -2,6 +2,7 @@
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import Mousetrap from 'mousetrap';
 import { ApolloMutation } from 'vue-apollo';
+import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -171,7 +172,7 @@ export default {
     },
   },
   mounted() {
-    Mousetrap.bind('esc', this.closeDesign);
+    Mousetrap.bind(keysFor(ISSUE_CLOSE_DESIGN), this.closeDesign);
     this.trackPageViewEvent();
 
     // Set active discussion immediately.
@@ -180,7 +181,7 @@ export default {
     this.updateActiveDiscussionFromUrl();
   },
   beforeDestroy() {
-    Mousetrap.unbind('esc', this.closeDesign);
+    Mousetrap.unbind(keysFor(ISSUE_CLOSE_DESIGN));
   },
   methods: {
     addImageDiffNoteToStore(store, { data: { createImageDiffNote } }) {

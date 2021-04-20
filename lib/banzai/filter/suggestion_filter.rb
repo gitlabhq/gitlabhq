@@ -10,7 +10,7 @@ module Banzai
       def call
         return doc unless suggestions_filter_enabled?
 
-        doc.search('pre.suggestion > code').each do |node|
+        doc.search('pre.language-suggestion > code').each do |node|
           node.add_class(TAG_CLASS)
         end
 

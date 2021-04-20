@@ -11,13 +11,13 @@ RSpec.describe 'ActiveRecord locking' do
     end
 
     it 'can be updated' do
-      issue.update(title: "New title")
+      issue.update!(title: "New title")
 
       expect(issue.reload.lock_version).to eq(new_lock_version)
     end
 
     it 'can be deleted' do
-      expect { issue.destroy }.to change { Issue.count }.by(-1)
+      expect { issue.destroy! }.to change { Issue.count }.by(-1)
     end
   end
 

@@ -110,5 +110,5 @@ export const SIDE_RIGHT = 'right';
 export const LIVE_PREVIEW_DEBOUNCE = 2000;
 
 // This is the maximum number of files to auto open when opening the Web IDE
-// from a Merge Request
+// from a merge request
 export const MAX_MR_FILES_AUTO_OPEN = 10;

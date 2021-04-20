@@ -1,0 +1,8 @@
+mutation updateEpic($input: UpdateEpicInput!) {
+  updateIssuableTitle: updateEpic(input: $input) {
+    epic {
+      title
+    }
+    errors
+  }
+}

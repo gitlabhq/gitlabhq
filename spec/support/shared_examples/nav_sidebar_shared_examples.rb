@@ -24,3 +24,13 @@ RSpec.shared_examples 'page has active sub tab' do |title|
       .to have_content(title)
   end
 end
+
+RSpec.shared_examples 'sidebar includes snowplow attributes' do |track_action, track_label, track_property|
+  specify do
+    allow(view).to receive(:tracking_enabled?).and_return(true)
+
+    render
+
+    expect(rendered).to have_css(".nav-sidebar[data-track-action=\"#{track_action}\"][data-track-label=\"#{track_label}\"][data-track-property=\"#{track_property}\"]")
+  end
+end

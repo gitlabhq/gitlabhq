@@ -19,13 +19,14 @@
       %table.table.responsive-table
         %thead.d-none.d-md-table-header-group
           %tr
-            %th User
-            %th Reported by
-            %th.wide Message
-            %th Action
+            %th= _('User')
+            %th= _('Reported by')
+            %th.wide= _('Message')
+            %th= _('Action')
         = render @abuse_reports
     = paginate @abuse_reports, theme: 'gitlab'
   - else
     .empty-state
       .text-center
-        %h4 There are no abuse reports! #{emoji_icon('tada')}
+        %h4= _("There are no abuse reports!")
+        %h3= emoji_icon('tada')

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Otp::Strategies::FortiTokenCloud do
   let_it_be(:user) { create(:user) }
+
   let(:otp_code) { 42 }
 
   let(:url) { 'https://ftc.example.com:9696/api/v1' }

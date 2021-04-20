@@ -8,6 +8,7 @@ RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:username) { personal_access_token.user.username }
   let_it_be(:helper) { Class.new.include(described_class).new }
+
   let(:password) { personal_access_token.token }
 
   let(:env) do
@@ -50,6 +51,7 @@ RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
 
   describe '#find_job_from_http_basic_auth' do
     let_it_be(:user) { personal_access_token.user }
+
     let(:job) { create(:ci_build, user: user, status: :running) }
     let(:password) { job.token }
 
@@ -74,6 +76,7 @@ RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
 
   describe '#find_deploy_token_from_http_basic_auth' do
     let_it_be(:deploy_token) { create(:deploy_token) }
+
     let(:token) { deploy_token.token }
     let(:username) { deploy_token.username }
     let(:password) { token }

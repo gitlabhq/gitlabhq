@@ -58,7 +58,7 @@ export default {
       type: String,
       required: false,
       default: '',
-      validator: (value) => value === '' || /(_desc)|(_asc)/g.test(value),
+      validator: (value) => value === '' || /(_desc)|(_asc)/gi.test(value),
     },
     showCheckbox: {
       type: Boolean,
@@ -363,6 +363,7 @@ export default {
       <gl-button
         v-gl-tooltip
         :title="sortDirectionTooltip"
+        :aria-label="sortDirectionTooltip"
         :icon="sortDirectionIcon"
         class="flex-shrink-1"
         @click="handleSortDirectionClick"

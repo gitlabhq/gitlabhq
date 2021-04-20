@@ -4,7 +4,8 @@ class GraphqlController < ApplicationController
   # Unauthenticated users have access to the API for public data
   skip_before_action :authenticate_user!
 
-  WHITELIST_HEADER = 'HTTP_X_GITLAB_QUERY_WHITELIST_ISSUE'
+  # Header can be passed by tests to disable SQL query limits.
+  DISABLE_SQL_QUERY_LIMIT_HEADER = 'HTTP_X_GITLAB_DISABLE_SQL_QUERY_LIMIT'
 
   # If a user is using their session to access GraphQL, we need to have session
   # storage, since the admin-mode check is session wide.
@@ -23,7 +24,7 @@ class GraphqlController < ApplicationController
   before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
-  before_action :whitelist_query!
+  before_action :disable_query_limiting
 
   # Since we deactivate authentication from the main ApplicationController and
   # defer it to :authorize_access_api!, we need to override the bypass session
@@ -34,7 +35,6 @@ class GraphqlController < ApplicationController
 
   def execute
     result = multiplex? ? execute_multiplex : execute_query
-
     render json: result
   end
 
@@ -62,12 +62,14 @@ class GraphqlController < ApplicationController
 
   private
 
-  # Tests may mark some queries as exempt from query limits
-  def whitelist_query!
-    whitelist_issue = request.headers[WHITELIST_HEADER]
-    return unless whitelist_issue
+  # Tests may mark some GraphQL queries as exempt from SQL query limits
+  def disable_query_limiting
+    return unless Gitlab::QueryLimiting.enabled_for_env?
 
-    Gitlab::QueryLimiting.whitelist(whitelist_issue)
+    disable_issue = request.headers[DISABLE_SQL_QUERY_LIMIT_HEADER]
+    return unless disable_issue
+
+    Gitlab::QueryLimiting.disable!(disable_issue)
   end
 
   def set_user_last_activity
@@ -144,8 +146,7 @@ class GraphqlController < ApplicationController
   end
 
   def logs
-    RequestStore.store[:graphql_logs].to_h
-                .except(:duration_s, :query_string)
-                .merge(operation_name: params[:operationName])
+    RequestStore.store[:graphql_logs].to_a
+                .map { |log| log.except(:duration_s, :query_string) }
   end
 end

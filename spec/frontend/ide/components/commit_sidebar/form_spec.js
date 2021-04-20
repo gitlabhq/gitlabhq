@@ -14,7 +14,7 @@ import {
   createBranchChangedCommitError,
   branchAlreadyExistsCommitError,
 } from '~/ide/lib/errors';
-import { MSG_CANNOT_PUSH_CODE_SHORT } from '~/ide/messages';
+import { MSG_CANNOT_PUSH_CODE } from '~/ide/messages';
 import { createStore } from '~/ide/stores';
 import { COMMIT_TO_NEW_BRANCH } from '~/ide/stores/modules/commit/constants';
 
@@ -85,8 +85,8 @@ describe('IDE commit form', () => {
     ${'when there are no changes'} | ${[]}       | ${{ pushCode: true }}  | ${goToEditView}   | ${findBeginCommitButtonData} | ${true}  | ${''}
     ${'when there are changes'}    | ${['test']} | ${{ pushCode: true }}  | ${goToEditView}   | ${findBeginCommitButtonData} | ${false} | ${''}
     ${'when there are changes'}    | ${['test']} | ${{ pushCode: true }}  | ${goToCommitView} | ${findCommitButtonData}      | ${false} | ${''}
-    ${'when user cannot push'}     | ${['test']} | ${{ pushCode: false }} | ${goToEditView}   | ${findBeginCommitButtonData} | ${true}  | ${MSG_CANNOT_PUSH_CODE_SHORT}
-    ${'when user cannot push'}     | ${['test']} | ${{ pushCode: false }} | ${goToCommitView} | ${findCommitButtonData}      | ${true}  | ${MSG_CANNOT_PUSH_CODE_SHORT}
+    ${'when user cannot push'}     | ${['test']} | ${{ pushCode: false }} | ${goToEditView}   | ${findBeginCommitButtonData} | ${true}  | ${MSG_CANNOT_PUSH_CODE}
+    ${'when user cannot push'}     | ${['test']} | ${{ pushCode: false }} | ${goToCommitView} | ${findCommitButtonData}      | ${true}  | ${MSG_CANNOT_PUSH_CODE}
   `('$desc', ({ stagedFiles, userPermissions, viewFn, buttonFn, disabled, tooltip }) => {
     beforeEach(async () => {
       store.state.stagedFiles = stagedFiles;

@@ -16,6 +16,7 @@ RSpec.describe DesignManagement::DesignPolicy do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:project) { create(:project, :public, namespace: owner.namespace) }
   let_it_be(:issue) { create(:issue, project: project) }
+
   let(:design) { create(:design, issue: issue) }
 
   subject(:design_policy) { described_class.new(current_user, design) }
@@ -131,6 +132,7 @@ RSpec.describe DesignManagement::DesignPolicy do
 
     context "for guests in private projects" do
       let_it_be(:project) { create(:project, :private) }
+
       let(:current_user) { guest }
 
       it_behaves_like "read-only design abilities"
@@ -163,6 +165,7 @@ RSpec.describe DesignManagement::DesignPolicy do
     context "when the project is archived" do
       let_it_be(:project) { create(:project, :public, :archived) }
       let_it_be(:issue) { create(:issue, project: project) }
+
       let(:current_user) { owner }
 
       it_behaves_like "read-only design abilities"

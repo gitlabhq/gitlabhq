@@ -16,7 +16,15 @@ RSpec.describe 'getting custom emoji within namespace' do
 
   describe "Query CustomEmoji on Group" do
     def custom_emoji_query(group)
-      graphql_query_for('group', 'fullPath' => group.full_path)
+      fields = all_graphql_fields_for('Group')
+      # TODO: Set required timelogs args elsewhere https://gitlab.com/gitlab-org/gitlab/-/issues/325499
+      fields.selection['timelogs(startDate: "2021-03-01" endDate: "2021-03-30")'] = fields.selection.delete('timelogs')
+
+      graphql_query_for(
+        'group',
+        { fullPath: group.full_path },
+        fields
+      )
     end
 
     it 'returns emojis when authorised' do

@@ -1,0 +1,10 @@
+- page_title _("Infrastructure Registry")
+- @content_class = "limit-container-width" unless fluid_layout
+
+.row
+  .col-12
+    #js-vue-packages-list{ data: { resource_id: @project.id,
+      page_type: 'project',
+      empty_list_help_url: help_page_path('user/infrastructure/index'),
+      empty_list_illustration: image_path('illustrations/empty-state/empty-terraform-register-lg.svg'),
+      package_help_url: help_page_path('user/infrastructure/index') } }

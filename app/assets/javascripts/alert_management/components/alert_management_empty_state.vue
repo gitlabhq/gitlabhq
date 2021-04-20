@@ -43,7 +43,7 @@ export default {
           </gl-link>
         </div>
         <div v-if="userCanEnableAlertManagement" class="gl-display-block center gl-pt-4">
-          <gl-button category="primary" variant="success" :href="enableAlertManagementPath">
+          <gl-button category="primary" variant="confirm" :href="enableAlertManagementPath">
             {{ $options.i18n.emptyState.buttonText }}
           </gl-button>
         </div>

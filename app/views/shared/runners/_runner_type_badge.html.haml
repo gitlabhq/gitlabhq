@@ -1,0 +1,10 @@
+
+- if runner.instance_type?
+  %span.badge.badge-pill.gl-badge.badge-success
+    = s_('Runners|shared')
+- elsif runner.group_type?
+  %span.badge.badge-pill.gl-badge.badge-success
+    = s_('Runners|group')
+- else
+  %span.badge.badge-pill.gl-badge.badge-info
+    = s_('Runners|specific')

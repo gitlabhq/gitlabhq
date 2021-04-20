@@ -20,13 +20,13 @@ module IssuablesHelper
   end
 
   def assignees_label(issuable, include_value: true)
-    label = 'Assignee'.pluralize(issuable.assignees.count)
+    assignees = issuable.assignees
 
     if include_value
       sanitized_list = sanitize_name(issuable.assignee_list)
-      "#{label}: #{sanitized_list}"
+      ns_('NotificationEmail|Assignee: %{users}', 'NotificationEmail|Assignees: %{users}', assignees.count) % { users: sanitized_list }
     else
-      label
+      ns_('NotificationEmail|Assignee', 'NotificationEmail|Assignees', assignees.count)
     end
   end
 
@@ -389,7 +389,8 @@ module IssuablesHelper
       severity: issuable[:severity],
       timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours,
       createNoteEmail: issuable[:create_note_email],
-      issuableType: issuable[:type]
+      issuableType: issuable[:type],
+      projectMembersPath: project_project_members_path(@project, sort: :access_level_desc)
     }
   end
 

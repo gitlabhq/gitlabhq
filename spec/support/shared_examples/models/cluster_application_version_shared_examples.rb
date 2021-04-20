@@ -47,4 +47,15 @@ RSpec.shared_examples 'cluster application version specs' do |application_name|
       end
     end
   end
+
+  describe '#make_externally_installed' do
+    subject { build(application_name) }
+
+    it 'sets to a special version' do
+      subject.make_externally_installed!
+
+      expect(subject).to be_persisted
+      expect(subject.version).to eq('EXTERNALLY_INSTALLED')
+    end
+  end
 end

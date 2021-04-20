@@ -14,7 +14,7 @@ RSpec.describe "User creates milestone", :js do
   end
 
   it "creates milestone" do
-    title = "v2.3".freeze
+    title = "v2.3"
 
     fill_in("Title", with: title)
     fill_in("Description", with: "# Description header")

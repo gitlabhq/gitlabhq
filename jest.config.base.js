@@ -1,7 +1,12 @@
 const IS_EE = require('./config/helpers/is_ee_env');
 const isESLint = require('./config/helpers/is_eslint');
 
-module.exports = (path) => {
+module.exports = (path, options = {}) => {
+  const {
+    moduleNameMapper: extModuleNameMapper = {},
+    moduleNameMapperEE: extModuleNameMapperEE = {},
+  } = options;
+
   const reporters = ['default'];
 
   // To have consistent date time parsing both in local and CI environments we set
@@ -45,7 +50,8 @@ module.exports = (path) => {
     'emojis(/.*).json': '<rootDir>/fixtures/emojis$1.json',
     '^spec/test_constants$': '<rootDir>/spec/frontend/__helpers__/test_constants',
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',
-    'test_helpers(/.*)$': '<rootDir>/spec/frontend_integration/test_helpers$1',
+    '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
+    ...extModuleNameMapper,
   };
 
   const collectCoverageFrom = ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'];
@@ -58,6 +64,7 @@ module.exports = (path) => {
       '^ee_else_ce(/.*)$': rootDirEE,
       '^ee_jest/(.*)$': '<rootDir>/ee/spec/frontend/$1',
       [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures-ee$1',
+      ...extModuleNameMapperEE,
     });
 
     collectCoverageFrom.push(rootDirEE.replace('$1', '/**/*.{js,vue}'));
@@ -79,6 +86,8 @@ module.exports = (path) => {
     collectCoverageFrom,
     coverageDirectory: coverageDirectory(),
     coverageReporters: ['json', 'lcov', 'text-summary', 'clover'],
+    // We need ignore _worker code coverage since we are manually transforming it
+    coveragePathIgnorePatterns: ['<rootDir>/node_modules/', '_worker\\.js$'],
     cacheDirectory: '<rootDir>/tmp/cache/jest',
     modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
     reporters,
@@ -86,6 +95,7 @@ module.exports = (path) => {
     restoreMocks: true,
     transform: {
       '^.+\\.(gql|graphql)$': 'jest-transform-graphql',
+      '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',
       '^.+\\.js$': 'babel-jest',
       '^.+\\.vue$': 'vue-jest',
       '^.+\\.(md|zip|png)$': 'jest-raw-loader',

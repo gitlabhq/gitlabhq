@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Upgrading GitLab
+# Upgrading GitLab **(FREE SELF)**
 
 Upgrading GitLab is a relatively straightforward process, but the complexity
 can increase based on the installation method you have used, how old your
@@ -177,14 +177,14 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` - > [latest `13.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11`  -> [latest `13.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
 
 | Target version | Your version | Supported upgrade path | Note |
 | --------------------- | ------------ | ------------------------ | ---- |
-| `13.4.3`                | `12.9.2`      | `12.9.2` -> `12.10.14` -> `13.0.14` -> `13.4.3` | Two intermediate versions are required: the final `12.10` release, plus `13.0`. |
+| `13.5.4`                | `12.9.2`      | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.5.4` | Three intermediate versions are required: the final `12.10` release, plus `13.0` and `13.1`. |
 | `13.2.10`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.2.10` | Five intermediate versions are required: the final `11.11`, `12.0`, `12.1` and `12.10` releases, plus `13.0`. |
 | `12.10.14`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`             |  Three intermediate versions are required: the final `11.11` and `12.0` releases, plus `12.1` |
 | `12.9.5`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`   | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5` |
@@ -352,11 +352,20 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 13.11.0
+
+Git 2.31.x and later is required. We recommend you use the
+[Git version provided by Gitaly](../install/installation.md#git).
+
 ### 13.6.0
 
 Ruby 2.7.2 is required. GitLab will not start with Ruby 2.6.6 or older versions.
 
 The required Git version is Git v2.29 or higher.
+
+### 13.4.0
+
+GitLab 13.4.0 includes a background migration to [move all remaining repositories in legacy storage to hashed storage](../administration/raketasks/storage.md#migrate-to-hashed-storage). There are [known issues with this migration](https://gitlab.com/gitlab-org/gitlab/-/issues/259605) which are fixed in GitLab 13.5.4 and later. If possible, skip 13.4.0 and upgrade to 13.5.4 or higher instead. Note that the migration can take quite a while to run, depending on how many repositories must be moved. Be sure to check that all background migrations have completed before upgrading further.
 
 ### 13.3.0
 
@@ -401,7 +410,7 @@ fail for [multi-node GitLab installations](https://docs.gitlab.com/omnibus/updat
 So, if you are using multiple Rails servers and specifically upgrading from 13.0,
 all servers must first be upgraded to 13.1.Z before upgrading to 13.2.0 or later:
 
-1. Ensure all GitLab web nodes are on GitLab 13.1.Z.
+1. Ensure all GitLab web nodes are running GitLab 13.1.Z.
 1. Optionally, enable the `global_csrf_token` feature flag to enable new
    method of CSRF token generation:
 

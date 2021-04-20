@@ -1,0 +1,8 @@
+---
+name: async_handle_merge_request_assignees_change
+introduced_by_url:
+rollout_issue_url:
+milestone: '13.11'
+type: development
+group: group::code review
+default_enabled: false

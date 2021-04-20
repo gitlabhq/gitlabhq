@@ -13,19 +13,15 @@ module Mutations
       argument :operation_mode,
                Types::MutationOperationModeEnum,
                required: false,
+               default_value: Types::MutationOperationModeEnum.default_mode,
                description: 'The operation to perform. Defaults to REPLACE.'
     end
 
-    def resolve(project_path:, iid:, assignee_usernames:, operation_mode: Types::MutationOperationModeEnum.enum[:replace])
+    def resolve(project_path:, iid:, assignee_usernames:, operation_mode:)
       resource = authorized_find!(project_path: project_path, iid: iid)
+      users = new_assignees(resource, assignee_usernames)
 
-      Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/issues/36098') if resource.is_a?(MergeRequest)
-
-      update_service_class.new(
-        resource.project,
-        current_user,
-        assignee_ids: assignee_ids(resource, assignee_usernames, operation_mode)
-      ).execute(resource)
+      assign!(resource, users, operation_mode)
 
       {
         resource.class.name.underscore.to_sym => resource,
@@ -35,18 +31,32 @@ module Mutations
 
     private
 
-    def assignee_ids(resource, usernames, operation_mode)
-      assignee_ids = []
-      assignee_ids += resource.assignees.map(&:id) if Types::MutationOperationModeEnum.enum.values_at(:remove, :append).include?(operation_mode)
-      user_ids = UsersFinder.new(current_user, username: usernames).execute.map(&:id)
+    def assign!(resource, users, operation_mode)
+      update_service_class.new(
+        resource.project,
+        current_user,
+        assignee_ids: assignee_ids(resource, users, operation_mode)
+      ).execute(resource)
+    end
 
-      if operation_mode == Types::MutationOperationModeEnum.enum[:remove]
-        assignee_ids -= user_ids
-      else
-        assignee_ids |= user_ids
+    def new_assignees(resource, usernames)
+      UsersFinder.new(current_user, username: usernames).execute.to_a
+    end
+
+    def assignee_ids(resource, users, mode)
+      transform_list(mode, resource, users.map(&:id))
+    end
+
+    def current_assignee_ids(resource)
+      resource.assignees.map(&:id)
+    end
+
+    def transform_list(mode, resource, new_values)
+      case mode
+      when 'REPLACE' then new_values
+      when 'APPEND' then current_assignee_ids(resource) | new_values
+      when 'REMOVE' then current_assignee_ids(resource) - new_values
       end
-
-      assignee_ids
     end
   end
 end

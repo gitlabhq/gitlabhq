@@ -16,7 +16,7 @@ module Clusters
 
       model
         .unscoped
-        .where('clusters.id IS NOT NULL')
+        .where.not('clusters.id' => nil)
         .with
         .recursive(cte.to_arel)
         .from(cte_alias)

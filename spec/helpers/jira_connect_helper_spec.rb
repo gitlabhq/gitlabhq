@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe JiraConnectHelper do
   describe '#jira_connect_app_data' do
     let_it_be(:subscription) { create(:jira_connect_subscription) }
+
     let(:user) { create(:user) }
 
     subject { helper.jira_connect_app_data([subscription]) }

@@ -5,10 +5,29 @@ import GpgBadges from '~/gpg_badges';
 import initBlob from '~/pages/projects/init_blob';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import '~/sourcegraph/load';
 
-new BlobViewer(); // eslint-disable-line no-new
-initBlob();
+const viewBlobEl = document.querySelector('#js-view-blob-app');
+
+if (viewBlobEl) {
+  const { blobPath } = viewBlobEl.dataset;
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: viewBlobEl,
+    render(createElement) {
+      return createElement(BlobContentViewer, {
+        props: {
+          path: blobPath,
+        },
+      });
+    },
+  });
+} else {
+  new BlobViewer(); // eslint-disable-line no-new
+  initBlob();
+}
 
 const CommitPipelineStatusEl = document.querySelector('.js-commit-pipeline-status');
 const statusLink = document.querySelector('.commit-actions .ci-status-link');

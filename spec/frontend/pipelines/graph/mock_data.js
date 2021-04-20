@@ -8,6 +8,7 @@ export const mockPipelineResponse = {
         __typename: 'Pipeline',
         id: 163,
         iid: '22',
+        usesNeeds: true,
         downstream: null,
         upstream: null,
         stages: {
@@ -434,21 +435,7 @@ export const mockPipelineResponse = {
                           },
                           needs: {
                             __typename: 'CiBuildNeedConnection',
-                            nodes: [
-                              {
-                                __typename: 'CiBuildNeed',
-                                name: 'build_c',
-                              },
-                              {
-                                __typename: 'CiBuildNeed',
-                                name: 'build_b',
-                              },
-                              {
-                                __typename: 'CiBuildNeed',
-                                name:
-                                  'build_a_nlfjkdnlvskfnksvjknlfdjvlvnjdkjdf_nvjkenjkrlngjeknjkl',
-                              },
-                            ],
+                            nodes: [],
                           },
                         },
                       ],
@@ -583,6 +570,7 @@ export const wrappedPipelineReturn = {
         __typename: 'Pipeline',
         id: 'gid://gitlab/Ci::Pipeline/175',
         iid: '38',
+        usesNeeds: true,
         downstream: {
           __typename: 'PipelineConnection',
           nodes: [],

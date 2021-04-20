@@ -65,9 +65,9 @@ export default {
         <label class="gl-display-block">{{ __('Project') }}</label>
         <project-filter :initial-data="projectInitialData" />
       </div>
-      <gl-button class="btn-search gl-lg-ml-2" variant="success" type="submit">{{
-        __('Search')
-      }}</gl-button>
+      <gl-button class="btn-search gl-lg-ml-2" category="primary" variant="confirm" type="submit"
+        >{{ __('Search') }}
+      </gl-button>
     </section>
   </gl-form>
 </template>

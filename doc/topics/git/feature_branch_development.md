@@ -23,10 +23,29 @@ In such cases, it may be more efficient to submit an MR on the release post feat
 
 In this case, the feature branch would be `release-X-Y`. Assuming the `release-X-Y` branch already exists, you can set up an MR against that branch, with the following steps:
 
-1. Create a new branch (`test-branch`) against the feature branch (`release-X-Y`):
+1. Navigate to the main (master) branch:
 
    ```shell
-   git checkout -b test-branch release-X-Y
+   git checkout master
+   ```
+
+1. Make sure you have the latest version of your repository:
+
+   ```shell
+   git fetch
+   git pull
+   ```
+
+1. Check out the feature branch:
+
+   ```shell
+   git checkout release-x-y
+   ```
+
+1. Create a new branch (`test-branch`) against the feature branch (`release-x-y`):
+
+   ```shell
+   git checkout -b test-branch release-x-y
    ```
 
    You should now be on a branch named `test-branch`.

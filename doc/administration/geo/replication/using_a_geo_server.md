@@ -1,27 +1,8 @@
 ---
-stage: Enablement
-group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
+redirect_to: '../../geo/replication/usage.md'
 ---
 
-<!-- Please update EE::GitLab::GeoGitAccess::GEO_SERVER_DOCS_URL if this file is moved) -->
+This document was moved to [another location](../../geo/replication/usage.md).
 
-# Using a Geo Server **(PREMIUM SELF)**
-
-After you set up the [database replication and configure the Geo nodes](../index.md#setup-instructions), use your closest GitLab node as you would a normal standalone GitLab instance.
-
-Pushing directly to a **secondary** node (for both HTTP, SSH including Git LFS) was [introduced](https://about.gitlab.com/releases/2018/09/22/gitlab-11-3-released/) in [GitLab Premium](https://about.gitlab.com/pricing/#self-managed) 11.3.
-
-Example of the output you will see when pushing to a **secondary** node:
-
-```shell
-$ git push
-remote:
-remote: You're pushing to a Geo secondary. We'll help you by proxying this
-remote: request to the primary:
-remote:
-remote:   ssh://git@primary.geo/user/repo.git
-remote:
-Everything up-to-date
-```
+<!-- This redirect file can be deleted after 2022-04-01 -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->

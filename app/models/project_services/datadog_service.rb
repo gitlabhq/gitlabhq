@@ -78,7 +78,9 @@ class DatadogService < Service
       {
         type: 'password',
         name: 'api_key',
-        title: 'API key',
+        title: _('API key'),
+        non_empty_password_title: s_('ProjectService|Enter new API key'),
+        non_empty_password_help: s_('ProjectService|Leave blank to use your current API key'),
         help: "<a href=\"#{api_keys_url}\" target=\"_blank\">API key</a> used for authentication with Datadog",
         required: true
       },

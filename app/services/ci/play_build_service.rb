@@ -12,7 +12,13 @@ module Ci
       # Try to enqueue the build, otherwise create a duplicate.
       #
       if build.enqueue
-        build.tap { |action| action.update(user: current_user, job_variables_attributes: job_variables_attributes || []) }
+        build.tap do |build|
+          build.update(user: current_user, job_variables_attributes: job_variables_attributes || [])
+
+          next unless ::Feature.enabled?(:ci_fix_pipeline_status_for_dag_needs_manual, project, default_enabled: :yaml)
+
+          AfterRequeueJobService.new(project, current_user).execute(build)
+        end
       else
         Ci::Build.retry(build, current_user)
       end

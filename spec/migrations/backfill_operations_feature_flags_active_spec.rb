@@ -10,9 +10,7 @@ RSpec.describe BackfillOperationsFeatureFlagsActive do
 
   def setup
     namespace = namespaces.create!(name: 'foo', path: 'foo')
-    project = projects.create!(namespace_id: namespace.id)
-
-    project
+    projects.create!(namespace_id: namespace.id)
   end
 
   it 'executes successfully when there are no flags in the table' do

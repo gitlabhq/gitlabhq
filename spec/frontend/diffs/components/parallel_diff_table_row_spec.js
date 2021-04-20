@@ -5,6 +5,7 @@ import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import { mapParallel } from '~/diffs/components/diff_row_utils';
 import ParallelDiffTableRow from '~/diffs/components/parallel_diff_table_row.vue';
 import { createStore } from '~/mr_notes/stores';
+import { findInteropAttributes } from '../find_interop_attributes';
 import discussionsMockData from '../mock_data/diff_discussions';
 import diffFileMockData from '../mock_data/diff_file';
 
@@ -415,6 +416,28 @@ describe('ParallelDiffTableRow', () => {
             fileHash: TEST_FILE_HASH,
             expanded: !line.left.discussionsExpanded,
           });
+        });
+      });
+    });
+
+    describe('interoperability', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('adds old side interoperability data attributes', () => {
+        expect(findInteropAttributes(wrapper, '.line_content.left-side')).toEqual({
+          type: 'old',
+          line: thisLine.left.old_line.toString(),
+          oldLine: thisLine.left.old_line.toString(),
+        });
+      });
+
+      it('adds new side interoperability data attributes', () => {
+        expect(findInteropAttributes(wrapper, '.line_content.right-side')).toEqual({
+          type: 'new',
+          line: thisLine.right.new_line.toString(),
+          newLine: thisLine.right.new_line.toString(),
         });
       });
     });

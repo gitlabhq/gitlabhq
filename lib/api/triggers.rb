@@ -21,7 +21,7 @@ module API
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
       post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
-        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42283')
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20758')
 
         forbidden! if gitlab_pipeline_hook_request?
 

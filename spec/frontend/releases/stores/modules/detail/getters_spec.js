@@ -1,6 +1,6 @@
-import * as getters from '~/releases/stores/modules/detail/getters';
+import * as getters from '~/releases/stores/modules/edit_new/getters';
 
-describe('Release detail getters', () => {
+describe('Release edit/new getters', () => {
   describe('isExistingRelease', () => {
     it('returns true if the release is an existing release that already exists in the database', () => {
       const state = { tagName: 'test-tag-name' };

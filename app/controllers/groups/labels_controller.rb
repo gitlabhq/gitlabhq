@@ -16,7 +16,8 @@ class Groups::LabelsController < Groups::ApplicationController
       format.html do
         # at group level we do not want to list project labels,
         # we only want `only_group_labels = false` when pulling labels for label filter dropdowns, fetched through json
-        @labels = available_labels(params.merge(only_group_labels: true)).page(params[:page])
+        @labels = available_labels(params.merge(only_group_labels: true)).page(params[:page]) # rubocop: disable CodeReuse/ActiveRecord
+        Preloaders::LabelsPreloader.new(@labels, current_user).preload_all
       end
       format.json do
         render json: LabelSerializer.new.represent_appearance(available_labels)

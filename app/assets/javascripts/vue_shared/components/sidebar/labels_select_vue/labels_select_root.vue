@@ -172,9 +172,11 @@ export default {
       after: this.handleVuexActionDispatch,
     });
 
+    document.addEventListener('mousedown', this.handleDocumentMousedown);
     document.addEventListener('click', this.handleDocumentClick);
   },
   beforeDestroy() {
+    document.removeEventListener('mousedown', this.handleDocumentMousedown);
     document.removeEventListener('click', this.handleDocumentClick);
   },
   methods: {
@@ -197,11 +199,36 @@ export default {
       }
     },
     /**
+     * This method stores a mousedown event's target.
+     * Required by the click listener because the click
+     * event itself has no reference to this element.
+     */
+    handleDocumentMousedown({ target }) {
+      this.mousedownTarget = target;
+    },
+    /**
      * This method listens for document-wide click event
      * and toggle dropdown if user clicks anywhere outside
      * the dropdown while dropdown is visible.
      */
     handleDocumentClick({ target }) {
+      // We also perform the toggle exception check for the
+      // last mousedown event's target to avoid hiding the
+      // box when the mousedown happened inside the box and
+      // only the mouseup did not.
+      if (
+        this.showDropdownContents &&
+        !this.preventDropdownToggleOnClick(target) &&
+        !this.preventDropdownToggleOnClick(this.mousedownTarget)
+      ) {
+        this.toggleDropdownContents();
+      }
+    },
+    /**
+     * This method checks whether a given click target
+     * should prevent the dropdown from being toggled.
+     */
+    preventDropdownToggleOnClick(target) {
       // This approach of element detection is needed
       // as the dropdown wrapper is not using `GlDropdown` as
       // it will also require us to use `BDropdownForm`
@@ -216,19 +243,20 @@ export default {
           target?.parentElement?.classList.contains(className),
       );
 
-      const hadExceptionParent = ['.js-btn-back', '.js-labels-list'].some(
+      const hasExceptionParent = ['.js-btn-back', '.js-labels-list'].some(
         (className) => $(target).parents(className).length,
       );
 
-      if (
-        this.showDropdownContents &&
-        !hadExceptionParent &&
-        !hasExceptionClass &&
-        !this.$refs.dropdownButtonCollapsed?.$el.contains(target) &&
-        !this.$refs.dropdownContents?.$el.contains(target)
-      ) {
-        this.toggleDropdownContents();
-      }
+      const isInDropdownButtonCollapsed = this.$refs.dropdownButtonCollapsed?.$el.contains(target);
+
+      const isInDropdownContents = this.$refs.dropdownContents?.$el.contains(target);
+
+      return (
+        hasExceptionClass ||
+        hasExceptionParent ||
+        isInDropdownButtonCollapsed ||
+        isInDropdownContents
+      );
     },
     handleDropdownClose(labels) {
       // Only emit label updates if there are any labels to update

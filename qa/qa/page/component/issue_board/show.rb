@@ -11,6 +11,7 @@ module QA
 
           view 'app/assets/javascripts/boards/components/board_form.vue' do
             element :board_name_field
+            element :save_changes_button
           end
 
           view 'app/assets/javascripts/boards/components/board_list.vue' do
@@ -23,10 +24,6 @@ module QA
             element :create_new_board_button
           end
 
-          view 'app/assets/javascripts/vue_shared/components/deprecated_modal.vue' do
-            element :save_changes_button
-          end
-
           view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select/base.vue' do
             element :labels_dropdown_content
           end
@@ -35,7 +32,7 @@ module QA
             element :labels_edit_button
           end
 
-          view 'app/views/shared/boards/_show.html.haml' do
+          view 'app/assets/javascripts/boards/components/board_content.vue' do
             element :boards_list
           end
 

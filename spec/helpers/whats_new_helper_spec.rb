@@ -3,25 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe WhatsNewHelper do
-  describe '#whats_new_storage_key' do
-    subject { helper.whats_new_storage_key }
+  include Devise::Test::ControllerHelpers
 
-    context 'when version exist' do
-      let(:release_item) { double(:item) }
+  describe '#whats_new_version_digest' do
+    let(:digest) { 'digest' }
 
-      before do
-        allow(ReleaseHighlight).to receive(:versions).and_return([84.0])
-      end
+    it 'calls ReleaseHighlight.most_recent_version_digest' do
+      expect(ReleaseHighlight).to receive(:most_recent_version_digest).and_return(digest)
 
-      it { is_expected.to eq('display-whats-new-notification-84.0') }
-    end
-
-    context 'when most recent release highlights do NOT exist' do
-      before do
-        allow(ReleaseHighlight).to receive(:versions).and_return(nil)
-      end
-
-      it { is_expected.to be_nil }
+      expect(helper.whats_new_version_digest).to eq(digest)
     end
   end
 
@@ -45,13 +35,29 @@ RSpec.describe WhatsNewHelper do
     end
   end
 
-  describe '#whats_new_versions' do
-    let(:versions) { [84.0] }
+  describe '#display_whats_new?' do
+    subject { helper.display_whats_new? }
 
-    it 'returns ReleaseHighlight.versions' do
-      expect(ReleaseHighlight).to receive(:versions).and_return(versions)
+    it 'returns true when gitlab.com' do
+      allow(Gitlab).to receive(:dev_env_org_or_com?).and_return(true)
 
-      expect(helper.whats_new_versions).to eq(versions)
+      expect(subject).to be true
+    end
+
+    context 'when self-managed' do
+      before do
+        allow(Gitlab).to receive(:dev_env_org_or_com?).and_return(false)
+      end
+
+      it 'returns true if user is signed in' do
+        sign_in(create(:user))
+
+        expect(subject).to be true
+      end
+
+      it "returns false if user isn't signed in" do
+        expect(subject).to be false
+      end
     end
   end
 end

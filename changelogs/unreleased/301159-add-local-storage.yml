@@ -1,0 +1,5 @@
+---
+title: Added local_store to Pages settings in gitlab.yml file
+merge_request: 55470
+author:
+type: added

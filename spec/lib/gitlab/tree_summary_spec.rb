@@ -226,6 +226,7 @@ RSpec.describe Gitlab::TreeSummary do
   describe 'References in commit messages' do
     let_it_be(:project) { create(:project, :empty_repo) }
     let_it_be(:issue) { create(:issue, project: project) }
+
     let(:entries) { summary.summarize.first }
     let(:entry) { entries.find { |entry| entry[:file_name] == 'issue.txt' } }
 

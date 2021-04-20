@@ -1,0 +1,5 @@
+---
+title: Allow to disable exiftool depending on env variable.
+merge_request:
+author:
+type: security

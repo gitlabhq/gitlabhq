@@ -120,7 +120,6 @@
 }
 
 .labels-container {
-  background-color: $gray-100;
   border-radius: $border-radius-default;
   padding: $gl-padding $gl-padding-8;
 }
@@ -160,7 +159,7 @@
       color: $blue-600;
     }
 
-    &.remove-row:hover {
+    &.hover-red:hover {
       color: $red-500;
     }
   }

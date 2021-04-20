@@ -9,7 +9,8 @@ import {
 import { fileByFile } from '../../utils/preferences';
 import { getDefaultWhitespace } from '../utils';
 
-const viewTypeFromQueryString = getParameterValues('view')[0];
+const getViewTypeFromQueryString = () => getParameterValues('view')[0];
+
 const viewTypeFromCookie = Cookies.get(DIFF_VIEW_COOKIE_NAME);
 const defaultViewType = INLINE_DIFF_VIEW_TYPE;
 const whiteSpaceFromQueryString = getParameterValues('w')[0];
@@ -23,6 +24,7 @@ export default () => ({
   addedLines: null,
   removedLines: null,
   endpoint: '',
+  endpointUpdateUser: '',
   basePath: '',
   commit: null,
   startVersion: null, // Null unless a target diff is selected for comparison that is not the "base" diff
@@ -30,7 +32,7 @@ export default () => ({
   coverageFiles: {},
   mergeRequestDiffs: [],
   mergeRequestDiff: null,
-  diffViewType: viewTypeFromQueryString || viewTypeFromCookie || defaultViewType,
+  diffViewType: getViewTypeFromQueryString() || viewTypeFromCookie || defaultViewType,
   tree: [],
   treeEntries: {},
   showTreeList: true,

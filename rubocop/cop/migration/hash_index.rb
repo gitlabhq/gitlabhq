@@ -11,7 +11,7 @@ module RuboCop
         include MigrationHelpers
 
         MSG = 'hash indexes should be avoided at all costs since they are not ' \
-          'recorded in the PostgreSQL WAL, you should use a btree index instead'.freeze
+          'recorded in the PostgreSQL WAL, you should use a btree index instead'
 
         NAMES = Set.new([:add_index, :index, :add_concurrent_index]).freeze
 

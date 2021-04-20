@@ -5,6 +5,7 @@ module Mutations
     class Create < BaseMutation
       include ServiceCompatibility
       include CanMutateSpammable
+      include Mutations::SpamProtection
 
       authorize :create_snippet
 
@@ -56,12 +57,12 @@ module Mutations
         end
 
         snippet = service_response.payload[:snippet]
-        with_spam_action_response_fields(snippet) do
-          {
-            snippet: service_response.success? ? snippet : nil,
-            errors: errors_on_object(snippet)
-          }
-        end
+        check_spam_action_response!(snippet)
+
+        {
+          snippet: service_response.success? ? snippet : nil,
+          errors: errors_on_object(snippet)
+        }
       end
 
       private

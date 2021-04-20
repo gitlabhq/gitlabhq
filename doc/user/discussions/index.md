@@ -119,7 +119,7 @@ the unresolved threads.
 
 ![Issue mentioning threads in a merge request](img/preview_issue_for_threads.png)
 
-Hitting **Submit issue** causes all threads to be marked as resolved and
+Hitting **Create issue** causes all threads to be marked as resolved and
 add a note referring to the newly created issue.
 
 ![Mark threads as resolved notice](img/resolve_thread_issue_notice.png)
@@ -269,10 +269,10 @@ Additionally, locked issues and merge requests can't be reopened.
 ## Confidential Comments
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to enable it. **(FREE SELF)**
+> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it. **(FREE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -285,7 +285,7 @@ To create a confidential comment, select the **Make this comment confidential** 
 
 ## Merge request reviews
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab Premium 11.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) to GitLab Free in 13.1.
 
 When looking at a merge request diff, you are able to start a review.
@@ -334,22 +334,28 @@ comment itself.
 
 ![Unresolve status](img/mr_review_unresolve.png)
 
+### Adding a new comment
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8225) in GitLab 13.10.
+
+If you have a review in progress, you will be presented with the option to **Add to review**:
+
+![New thread](img/mr_review_new_comment_v13_11.png)
+
 ### Submitting a review
 
 If you have any comments that have not been submitted, a bar displays at the
 bottom of the screen with two buttons:
 
-- **Discard**: Discards all comments that have not been submitted.
-- **Finish review**: Opens a list of comments ready to be submitted for review.
-  Clicking **Submit review** publishes all comments. Any quick actions
-  submitted are performed at this time.
+- **Pending comments**: Opens a list of comments ready to be submitted for review.
+- **Submit review**: Publishes all comments. Any quick actions submitted are performed at this time.
 
 Alternatively, to finish the entire review from a pending comment:
 
-- Click the **Finish review** button on the comment.
+- Click the **Submit review** button on the comment.
 - Use the `/submit_review` [quick action](../project/quick_actions.md) in the text of non-review comment.
 
-![Review submission](img/review_preview.png)
+![Review submission](img/review_preview_v13_11.png)
 
 Submitting the review sends a single email to every notifiable user of the
 merge request with all the comments associated to it.
@@ -486,11 +492,9 @@ introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 
 ### Batch Suggestions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
-> - It was deployed behind a feature flag, disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/227799) on GitLab 13.2.
-> - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-batch-suggestions).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) behind a feature flag, disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/227799) in GitLab 13.2.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) in GitLab 13.11.
 
 You can apply multiple suggestions at once to reduce the number of commits added
 to your branch to address your reviewers' requests.
@@ -540,7 +544,7 @@ You can assign an issue to a user who made a comment.
 
 In the comment, click the **More Actions** menu and click **Assign to commenting user**.
 
-Click the button again to unassign the commenter.
+  Click the button again to unassign the commenter.
 
 ![Assign to commenting user](img/quickly_assign_commenter_v13_1.png)
 
@@ -561,25 +565,4 @@ To disable it:
 
 ```ruby
 Feature.disable(:confidential_notes)
-```
-
-## Enable or disable Batch Suggestions **(FREE SELF)**
-
-Batch Suggestions is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it for your instance.
-
-To enable it:
-
-```ruby
-# Instance-wide
-Feature.enable(:batch_suggestions)
-```
-
-To disable it:
-
-```ruby
-# Instance-wide
-Feature.disable(:batch_suggestions)
 ```

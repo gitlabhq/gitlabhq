@@ -1,10 +1,8 @@
-import { GlAlert, GlIcon } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import { EDITOR_READY_EVENT } from '~/editor/constants';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
-import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
-import { INVALID_CI_CONFIG } from '~/pipelines/constants';
 import { mockLintResponse, mockCiConfigPath } from '../../mock_data';
 
 describe('Text editor component', () => {
@@ -33,28 +31,11 @@ describe('Text editor component', () => {
     });
   };
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findEditor = () => wrapper.findComponent(MockEditorLite);
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
-  });
-
-  describe('when status is invalid', () => {
-    beforeEach(() => {
-      createComponent({ props: { ciConfigData: { status: CI_CONFIG_STATUS_INVALID } } });
-    });
-
-    it('show an error message', () => {
-      expect(findAlert().exists()).toBe(true);
-      expect(findAlert().text()).toBe(wrapper.vm.$options.errorTexts[INVALID_CI_CONFIG]);
-    });
-
-    it('hides the editor', () => {
-      expect(findEditor().exists()).toBe(false);
-    });
   });
 
   describe('when status is valid', () => {

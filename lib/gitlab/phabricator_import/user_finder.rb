@@ -4,7 +4,8 @@ module Gitlab
   module PhabricatorImport
     class UserFinder
       def initialize(project, phids)
-        @project, @phids = project, phids
+        @project = project
+        @phids = phids
         @loaded_phids = Set.new
       end
 

@@ -40,7 +40,7 @@ If this is the first time you are setting up instance-level settings for an inte
 When you make further changes to the instance defaults:
 
 - They are immediately applied to all groups and projects that have the integration set to use default settings.
-- They are immediately applied to newer groups and projects, created since you last saved defaults for the
+- They are immediately applied to newer groups and projects, created after you last saved defaults for the
   integration. If your instance-level default setting has the **Enable integration** toggle turned
   on, the integration is automatically enabled for all such groups and projects.
 - Groups and projects with custom settings selected for the integration are not immediately affected and may
@@ -82,7 +82,7 @@ When you make further changes to the group defaults:
 
 - They are immediately applied to all subgroups and projects belonging to the group that have the integration
   set to use default settings.
-- They are immediately applied to newer subgroups and projects, created since you last saved defaults for the
+- They are immediately applied to newer subgroups and projects, even those created after you last saved defaults for the
   integration. If your group-level default setting has the **Enable integration** toggle turned on,
   the integration is automatically enabled for all such subgroups and projects.
 

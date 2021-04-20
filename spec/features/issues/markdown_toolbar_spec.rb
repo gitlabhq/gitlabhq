@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Issue markdown toolbar', :js do
-  let(:project) { create(:project, :public) }
-  let(:issue)   { create(:issue, project: project) }
-  let(:user)    { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:issue)   { create(:issue, project: project) }
+  let_it_be(:user)    { create(:user) }
 
   before do
     sign_in(user)
@@ -14,28 +14,22 @@ RSpec.describe 'Issue markdown toolbar', :js do
   end
 
   it "doesn't include first new line when adding bold" do
-    find('#note-body').native.send_keys('test')
-    find('#note-body').native.send_key(:enter)
-    find('#note-body').native.send_keys('bold')
+    fill_in 'Comment', with: "test\nbold"
 
-    find('.js-main-target-form #note-body')
-    page.evaluate_script('document.querySelectorAll(".js-main-target-form #note-body")[0].setSelectionRange(4, 9)')
+    page.evaluate_script('document.getElementById("note-body").setSelectionRange(4, 9)')
 
-    first('.toolbar-btn').click
+    click_button 'Add bold text'
 
-    expect(find('#note-body')[:value]).to eq("test\n**bold**\n")
+    expect(find_field('Comment').value).to eq("test\n**bold**\n")
   end
 
   it "doesn't include first new line when adding underline" do
-    find('#note-body').native.send_keys('test')
-    find('#note-body').native.send_key(:enter)
-    find('#note-body').native.send_keys('underline')
+    fill_in 'Comment', with: "test\nunderline"
 
-    find('.js-main-target-form #note-body')
-    page.evaluate_script('document.querySelectorAll(".js-main-target-form #note-body")[0].setSelectionRange(4, 50)')
+    page.evaluate_script('document.getElementById("note-body").setSelectionRange(4, 50)')
 
-    all('.toolbar-btn')[1].click
+    click_button 'Add italic text'
 
-    expect(find('#note-body')[:value]).to eq("test\n_underline_\n")
+    expect(find_field('Comment').value).to eq("test\n_underline_\n")
   end
 end

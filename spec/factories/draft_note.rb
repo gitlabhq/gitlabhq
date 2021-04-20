@@ -9,16 +9,29 @@ FactoryBot.define do
       transient do
         line_number { 14 }
         diff_refs { merge_request.try(:diff_refs) }
+        path { "files/ruby/popen.rb" }
       end
 
       position do
         Gitlab::Diff::Position.new(
-          old_path: "files/ruby/popen.rb",
-          new_path: "files/ruby/popen.rb",
+          old_path: path,
+          new_path: path,
           old_line: nil,
           new_line: line_number,
           diff_refs: diff_refs
         )
+      end
+
+      factory :draft_note_on_image_diff do
+        transient do
+          path { "files/images/any_image.png" }
+        end
+
+        position do
+          association(:image_diff_position,
+                file: path,
+                diff_refs: diff_refs)
+        end
       end
     end
 

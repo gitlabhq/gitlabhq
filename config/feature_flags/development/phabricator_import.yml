@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/1197
 milestone: '12.0'
 type: development
 group: group::import
-default_enabled: false
+default_enabled: true

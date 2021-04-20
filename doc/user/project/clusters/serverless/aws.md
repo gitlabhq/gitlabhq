@@ -134,7 +134,7 @@ This example code does the following:
 #### Setting up your AWS credentials with your GitLab account
 
 In order to interact with your AWS account, the GitLab CI/CD pipelines require both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to be defined in your GitLab settings under **Settings > CI/CD > Variables**.
-For more information please see [Create a custom variable in the UI](../../../../ci/variables/README.md#create-a-custom-variable-in-the-ui).
+For more information please see [Create a custom variable in the UI](../../../../ci/variables/README.md#custom-variables-validated-by-gitlab).
 
  The AWS credentials you provide must include IAM policies that provision correct
  access control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
@@ -403,7 +403,7 @@ production:
   environment: production
 ```
 
-Let’s examine the configuration file more closely:
+Let's examine the configuration file more closely:
 
 - `image` specifies the Docker image to use for this build. This is the latest Python
   image since the sample application is written in Python.
@@ -432,7 +432,7 @@ deploys your application. If your:
 
 To test the application you deployed, please go to the build log and follow the following steps:
 
-1. Click on “Show complete raw” on the upper right-hand corner:
+1. Click on "Show complete raw" on the upper right-hand corner:
 
    ![sam-complete-raw](img/sam-complete-raw.png)
 

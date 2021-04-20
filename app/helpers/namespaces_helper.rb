@@ -56,6 +56,33 @@ module NamespacesHelper
     namespaces_options(selected, **options)
   end
 
+  def cascading_namespace_settings_enabled?
+    NamespaceSetting.cascading_settings_feature_enabled?
+  end
+
+  def cascading_namespace_settings_popover_data(attribute, group, settings_path_helper)
+    locked_by_ancestor = group.namespace_settings.public_send("#{attribute}_locked_by_ancestor?") # rubocop:disable GitlabSecurity/PublicSend
+
+    popover_data = {
+      locked_by_application_setting: group.namespace_settings.public_send("#{attribute}_locked_by_application_setting?"), # rubocop:disable GitlabSecurity/PublicSend
+      locked_by_ancestor: locked_by_ancestor
+    }
+
+    if locked_by_ancestor
+      ancestor_namespace = group.namespace_settings.public_send("#{attribute}_locked_ancestor").namespace # rubocop:disable GitlabSecurity/PublicSend
+
+      popover_data[:ancestor_namespace] = {
+        full_name: ancestor_namespace.full_name,
+        path: settings_path_helper.call(ancestor_namespace)
+      }
+    end
+
+    {
+      popover_data: popover_data.to_json,
+      testid: 'cascading-settings-lock-icon'
+    }
+  end
+
   private
 
   # Many importers create a temporary Group, so use the real

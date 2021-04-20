@@ -15,7 +15,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   end
 
   let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
-  let(:thing) { klass.create(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+  let(:thing) { klass.create!(title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
   let(:markdown) { '`Foo`' }
   let(:html) { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Foo</code></p>' }
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
 
     before do
       thing.title = thing.title
-      thing.save
+      thing.save!
     end
 
     it { expect(thing.title).to eq(markdown) }
@@ -38,11 +38,11 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   end
 
   context 'a changed markdown field' do
-    let(:thing) { klass.create(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+    let(:thing) { klass.create!(title: markdown, title_html: html, cached_markdown_version: cache_version) }
 
     before do
       thing.title = updated_markdown
-      thing.save
+      thing.save!
     end
 
     it { expect(thing.title_html).to eq(updated_html) }
@@ -53,9 +53,9 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
     it do
       expect(thing).to receive(:refresh_markdown_cache).once
       thing.title = ''
-      thing.save
+      thing.save!
       thing.title = ''
-      thing.save
+      thing.save!
     end
   end
 
@@ -63,9 +63,9 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
     it do
       expect(thing).to receive(:refresh_markdown_cache).once
       thing.title = '[//]: # (This is also a comment.)'
-      thing.save
+      thing.save!
       thing.title = '[//]: # (This is also a comment.)'
-      thing.save
+      thing.save!
     end
   end
 
@@ -74,7 +74,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
 
     before do
       thing.state_id = 2
-      thing.save
+      thing.save!
     end
 
     it { expect(thing.state_id).to eq(2) }
@@ -87,7 +87,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
     let(:thing) { klass.new(title: updated_markdown, title_html: html, cached_markdown_version: nil) }
 
     before do
-      thing.save
+      thing.save!
     end
 
     it { expect(thing.title_html).to eq(updated_html) }
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
       thing.project = :new_project
       allow(Banzai::Renderer).to receive(:cacheless_render_field).and_return(updated_html)
 
-      thing.save
+      thing.save!
 
       expect(thing.title_html).to eq(updated_html)
       expect(thing.description_html).to eq(updated_html)
@@ -110,7 +110,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
       thing.author = :new_author
       allow(Banzai::Renderer).to receive(:cacheless_render_field).and_return(updated_html)
 
-      thing.save
+      thing.save!
 
       expect(thing.title_html).to eq(updated_html)
       expect(thing.description_html).to eq(updated_html)
@@ -125,7 +125,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   end
 
   describe '#cached_html_up_to_date?' do
-    let(:thing) { klass.create(title: updated_markdown, title_html: html, cached_markdown_version: nil) }
+    let(:thing) { klass.create!(title: updated_markdown, title_html: html, cached_markdown_version: nil) }
 
     subject { thing.cached_html_up_to_date?(:title) }
 

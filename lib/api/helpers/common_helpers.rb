@@ -32,6 +32,10 @@ module API
           end
         end.compact.to_set
       end
+
+      def endpoint_id
+        "#{request.request_method} #{route.origin}"
+      end
     end
   end
 end

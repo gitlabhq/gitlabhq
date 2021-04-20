@@ -1,0 +1,5 @@
+---
+title: Fix cop offenses for Style/HashTransformation in spec directory
+merge_request: 56586
+author: Karthik Sivadas @karthik.sivadas
+type: other

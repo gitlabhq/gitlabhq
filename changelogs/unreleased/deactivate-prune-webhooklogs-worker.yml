@@ -1,0 +1,5 @@
+---
+title: Deactivate prune webhook logs worker
+merge_request: 59120
+author:
+type: changed

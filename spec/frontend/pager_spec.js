@@ -32,37 +32,11 @@ describe('pager', () => {
       window.history.replaceState({}, null, originalHref);
     });
 
-    it('should use data-href attribute from list element', () => {
-      const href = `${TEST_HOST}/some_list.json`;
-      setFixtures(`<div class="content_list" data-href="${href}"></div>`);
-      Pager.init();
-
-      expect(Pager.url).toBe(href);
-    });
-
-    it('should use current url if data-href attribute not provided', () => {
-      const href = `${TEST_HOST}/some_list`;
-      removeParams.mockReturnValue(href);
-      Pager.init();
-
-      expect(Pager.url).toBe(href);
-    });
-
     it('should get initial offset from query parameter', () => {
       window.history.replaceState({}, null, '?offset=100');
       Pager.init();
 
       expect(Pager.offset).toBe(100);
-    });
-
-    it('keeps extra query parameters from url', () => {
-      window.history.replaceState({}, null, '?filter=test&offset=100');
-      const href = `${TEST_HOST}/some_list?filter=test`;
-      removeParams.mockReturnValue(href);
-      Pager.init();
-
-      expect(removeParams).toHaveBeenCalledWith(['limit', 'offset']);
-      expect(Pager.url).toEqual(href);
     });
   });
 
@@ -162,6 +136,51 @@ describe('pager', () => {
         expect(Pager.disable).toBe(true);
 
         done();
+      });
+    });
+
+    describe('has data-href attribute from list element', () => {
+      const href = `${TEST_HOST}/some_list.json`;
+
+      beforeEach(() => {
+        setFixtures(`<div class="content_list" data-href="${href}"></div>`);
+      });
+
+      it('should use data-href attribute', () => {
+        Pager.getOld();
+
+        expect(axios.get).toHaveBeenCalledWith(href, expect.any(Object));
+      });
+
+      it('should not use current url', () => {
+        Pager.getOld();
+
+        expect(removeParams).not.toHaveBeenCalled();
+        expect(removeParams).not.toHaveBeenCalledWith(href);
+      });
+    });
+
+    describe('no data-href attribute attribute provided from list element', () => {
+      beforeEach(() => {
+        setFixtures(`<div class="content_list"></div>`);
+      });
+
+      it('should use current url', () => {
+        const href = `${TEST_HOST}/some_list`;
+        removeParams.mockReturnValue(href);
+        Pager.getOld();
+
+        expect(axios.get).toHaveBeenCalledWith(href, expect.any(Object));
+      });
+
+      it('keeps extra query parameters from url', () => {
+        window.history.replaceState({}, null, '?filter=test&offset=100');
+        const href = `${TEST_HOST}/some_list?filter=test`;
+        removeParams.mockReturnValue(href);
+        Pager.getOld();
+
+        expect(removeParams).toHaveBeenCalledWith(['limit', 'offset']);
+        expect(axios.get).toHaveBeenCalledWith(href, expect.any(Object));
       });
     });
   });

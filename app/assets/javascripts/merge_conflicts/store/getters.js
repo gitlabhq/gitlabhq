@@ -67,7 +67,7 @@ export const isReadyToCommit = (state) => {
     }
   }
 
-  return !state.isSubmitting && hasCommitMessage && !unresolved;
+  return Boolean(!state.isSubmitting && hasCommitMessage && !unresolved);
 };
 
 export const getCommitButtonText = (state) => {

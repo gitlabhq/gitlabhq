@@ -3,8 +3,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = expanded_by_default?
 
-- enable_search_settings
-
 %section.settings.general-settings.no-animate.expanded#js-general-settings
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
@@ -25,7 +23,7 @@
       .js-project-permissions-form
       - if show_visibility_confirm_modal?(@project)
         = render "visibility_modal"
-      = f.submit _('Save changes'), class: "btn gl-button btn-success #{('js-confirm-danger' if show_visibility_confirm_modal?(@project))}", data: { qa_selector: 'visibility_features_permissions_save_button', check_field_name: ("project[visibility_level]" if show_visibility_confirm_modal?(@project)), check_compare_value: @project.visibility_level }
+      = f.submit _('Save changes'), class: "btn gl-button btn-confirm #{('js-confirm-danger' if show_visibility_confirm_modal?(@project))}", data: { qa_selector: 'visibility_features_permissions_save_button', check_field_name: ("project[visibility_level]" if show_visibility_confirm_modal?(@project)), check_compare_value: @project.visibility_level }
 
 %section.rspec-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)], data: { qa_selector: 'merge_request_settings_content' } }
   .settings-header
@@ -39,7 +37,7 @@
     = form_for @project, html: { multipart: true, class: "merge-request-settings-form js-mr-settings-form" }, authenticity_token: true do |f|
       %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
       = render 'projects/merge_request_settings', form: f
-      = f.submit _('Save changes'), class: "btn gl-button btn-success rspec-save-merge-request-changes", data: { qa_selector: 'save_merge_request_changes_button' }
+      = f.submit _('Save changes'), class: "btn gl-button btn-confirm rspec-save-merge-request-changes", data: { qa_selector: 'save_merge_request_changes_button' }
 
 = render_if_exists 'projects/merge_request_approvals_settings', expanded: expanded
 

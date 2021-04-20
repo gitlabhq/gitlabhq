@@ -22,6 +22,8 @@ module Tooling
 
     def cleanup_by_created_at(resource_type:, created_before:, wait: true)
       resource_names = resource_names_created_before(resource_type: resource_type, created_before: created_before)
+      return if resource_names.empty?
+
       delete_by_exact_names(resource_type: resource_type, resource_names: resource_names, wait: wait)
     end
 

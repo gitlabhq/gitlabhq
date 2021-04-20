@@ -72,8 +72,8 @@ RSpec.describe SentNotification do
 
       it_behaves_like 'a successful sent notification'
 
-      it 'does not set in_reply_to_discussion_id' do
-        expect(subject.in_reply_to_discussion_id).to be_nil
+      it 'sets in_reply_to_discussion_id' do
+        expect(subject.in_reply_to_discussion_id).to eq(note.discussion_id)
       end
     end
   end
@@ -212,10 +212,10 @@ RSpec.describe SentNotification do
 
       subject { described_class.record_note(note, note.author.id) }
 
-      it 'creates a comment on the issue' do
+      it 'converts the comment to a discussion on the issue' do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
-        expect(new_note.discussion_id).not_to eq(note.discussion_id)
+        expect(new_note.discussion_id).to eq(note.discussion_id)
       end
     end
 
@@ -247,10 +247,10 @@ RSpec.describe SentNotification do
 
       subject { described_class.record_note(note, note.author.id) }
 
-      it 'creates a comment on the merge request' do
+      it 'converts the comment to a discussion on the merge request' do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
-        expect(new_note.discussion_id).not_to eq(note.discussion_id)
+        expect(new_note.discussion_id).to eq(note.discussion_id)
       end
     end
 

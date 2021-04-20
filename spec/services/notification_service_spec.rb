@@ -105,7 +105,7 @@ RSpec.describe NotificationService, :mailer do
       recipient_1 = NotificationRecipient.new(user_1, :custom, custom_action: :new_release)
       allow(NotificationRecipients::BuildService).to receive(:build_new_release_recipients).and_return([recipient_1])
 
-      expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: current_user.id, klass: object.class, object_id: object.id)
+      expect(Gitlab::AppLogger).to receive(:warn).with(message: 'Skipping sending notifications', user: current_user.id, klass: object.class.to_s, object_id: object.id)
 
       action
 
@@ -285,6 +285,49 @@ RSpec.describe NotificationService, :mailer do
 
         it 'does not send email to the token owner' do
           expect { subject }.not_to have_enqueued_email(user, mail: "access_token_expired_email")
+        end
+      end
+    end
+  end
+
+  describe 'SSH Keys' do
+    let_it_be_with_reload(:user) { create(:user) }
+    let_it_be(:fingerprints) { ["aa:bb:cc:dd:ee:zz"] }
+
+    shared_context 'block user' do
+      before do
+        user.block!
+      end
+    end
+
+    describe '#ssh_key_expired' do
+      subject { notification.ssh_key_expired(user, fingerprints) }
+
+      it 'sends email to the token owner' do
+        expect { subject }.to have_enqueued_email(user, fingerprints, mail: "ssh_key_expired_email")
+      end
+
+      context 'when user is not allowed to receive notifications' do
+        include_context 'block user'
+
+        it 'does not send email to the token owner' do
+          expect { subject }.not_to have_enqueued_email(user, fingerprints, mail: "ssh_key_expired_email")
+        end
+      end
+    end
+
+    describe '#ssh_key_expiring_soon' do
+      subject { notification.ssh_key_expiring_soon(user, fingerprints) }
+
+      it 'sends email to the token owner' do
+        expect { subject }.to have_enqueued_email(user, fingerprints, mail: "ssh_key_expiring_soon_email")
+      end
+
+      context 'when user is not allowed to receive notifications' do
+        include_context 'block user'
+
+        it 'does not send email to the token owner' do
+          expect { subject }.not_to have_enqueued_email(user, fingerprints, mail: "ssh_key_expiring_soon_email")
         end
       end
     end
@@ -1662,7 +1705,7 @@ RSpec.describe NotificationService, :mailer do
         notification.issue_due(issue)
         email = find_email_for(@subscriber)
 
-        expect(email.header[:from].display_names).to eq([issue.author.name])
+        expect(email.header[:from].display_names).to eq(["#{issue.author.name} (@#{issue.author.username})"])
       end
 
       it_behaves_like 'participating notifications' do

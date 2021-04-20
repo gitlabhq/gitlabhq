@@ -108,7 +108,7 @@ RSpec.describe 'Group issues page' do
 
       it 'shows projects only with issues feature enabled', :js do
         find('.empty-state .js-lazy-loaded')
-        find('.new-project-item-link').click
+        find('.empty-state .new-project-item-link').click
 
         page.within('.select2-results') do
           expect(page).to have_content(project.full_name)

@@ -114,7 +114,7 @@ In this example:
 
 After GitLab fetches the secret from Vault, the value is saved in a temporary file.
 The path to this file is stored in a CI/CD variable named `DATABASE_PASSWORD`,
-similar to [variables of type `file`](../variables/README.md#custom-cicd-variables-of-type-file).
+similar to [variables of type `file`](../variables/README.md#cicd-variable-types).
 
 For more information about the supported syntax, read the
 [`.gitlab-ci.yml` reference](../yaml/README.md#secretsvault).

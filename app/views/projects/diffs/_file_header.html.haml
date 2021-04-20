@@ -23,7 +23,7 @@
       %strong.file-title-name.has-tooltip.gl-word-break-all{ data: { title: diff_file.new_path, container: 'body' } }
         = new_path
     - else
-      %strong.file-title-name.has-tooltip.gl-word-break-all{ data: { title: diff_file.file_path, container: 'body' } }
+      %strong.file-title-name.has-tooltip.gl-word-break-all{ data: { title: diff_file.file_path, container: 'body', qa_selector: 'file_name_content' } }
         = diff_file.file_path
 
       - if diff_file.deleted_file?
@@ -37,3 +37,4 @@
 
   - if diff_file.stored_externally? && diff_file.external_storage == :lfs
     %span.badge.label-lfs.gl-mr-2 LFS
+

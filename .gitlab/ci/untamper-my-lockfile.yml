@@ -1,0 +1,26 @@
+untamper-my-lockfile:
+  image: registry.gitlab.com/gitlab-org/frontend/untamper-my-lockfile:main
+  stage: test
+  needs: []
+  before_script: []
+  after_script: []
+  cache: {}
+  retry: 1
+  script:
+    - untamper-my-lockfile --lockfile yarn.lock
+  rules:
+    # Create a pipeline if the branch is named 'add-untamper-my-lockfile' in
+    # order to have an integration check added in the MR that introduces it
+    - if: $CI_COMMIT_REF_NAME == "add-untamper-my-lockfile"
+    # Create a pipeline if there are changes in yarn.lock _and_ we are in a
+    # merge request _or_ branch pipeline.
+    #
+    # This ensures that the pipeline isn't run in scheduled jobs for example
+    #
+    # Also our best effort to support both branch and MR pipelines. In certain
+    # projects this might trigger _two_ pipelines. These projects can be fixed
+    # by adding proper workflow:rules
+    # https://docs.gitlab.com/ee/ci/yaml/#workflowrules
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH
+      changes:
+        - yarn.lock

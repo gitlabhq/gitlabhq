@@ -11,7 +11,9 @@ module Projects
     attr_reader :current_user, :params
 
     def initialize(user, import_params, override_params = nil)
-      @current_user, @params, @override_params = user, import_params.dup, override_params
+      @current_user = user
+      @params = import_params.dup
+      @override_params = override_params
     end
 
     def execute

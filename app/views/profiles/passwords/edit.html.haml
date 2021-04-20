@@ -30,6 +30,6 @@
         = f.label :password_confirmation, _('Password confirmation'), class: 'label-bold'
         = f.password_field :password_confirmation, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'confirm_password_field' }
       .gl-mt-3.gl-mb-3
-        = f.submit _('Save password'), class: "gl-button btn btn-success gl-mr-3", data: { qa_selector: 'save_password_button' }
+        = f.submit _('Save password'), class: "gl-button btn btn-confirm gl-mr-3", data: { qa_selector: 'save_password_button' }
         - unless @user.password_automatically_set?
           = link_to _('I forgot my password'), reset_profile_password_path, method: :put

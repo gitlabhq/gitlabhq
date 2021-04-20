@@ -1,0 +1,5 @@
+---
+title: Reduce milestone issue list display limit to 500
+merge_request: 58168
+author:
+type: performance

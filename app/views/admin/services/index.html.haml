@@ -1,23 +1,13 @@
 - page_title _("Service Templates")
 - @content_class = 'limit-container-width' unless fluid_layout
 
-- if show_service_templates_deprecated?
-  .gl-alert.gl-alert-tip.js-service-templates-deprecated.gl-mt-5{ role: 'alert', data: { feature_id: UserCalloutsHelper::SERVICE_TEMPLATES_DEPRECATED, dismiss_endpoint: user_callouts_path } }
-    = sprite_icon('bulb', css_class: 'gl-alert-icon gl-alert-icon-no-title')
-    %button.js-close.gl-alert-dismiss{ type: 'button', aria: { label: _('Dismiss') } }
-      = sprite_icon('close')
-    %h4.gl-alert-title= s_('AdminSettings|Service Templates will soon be deprecated.')
-    .gl-alert-body
-      = s_('AdminSettings|Try using the latest version of Integrations instead.')
-    .gl-alert-actions
-      = link_to _('Go to Integrations'), integrations_admin_application_settings_path, class: 'btn btn-info gl-alert-action gl-button'
-      = link_to _('Learn more'), help_page_path('user/admin_area/settings/project_integration_management'), class: 'btn btn-default gl-alert-action btn-secondary gl-button', target: '_blank', rel: 'noopener noreferrer'
+= render "service_templates_deprecated_alert"
 
-%h3.page-title Service templates
-%p.light= s_('AdminSettings|Service template allows you to set default values for integrations')
+- if @activated_services.any?
+  %h3.page-title Service templates
+  %p= s_('AdminSettings|Service template allows you to set default values for integrations')
 
-.table-holder
-  %table.table
+  %table.table.b-table.gl-table
     %colgroup
       %col
       %col
@@ -26,10 +16,10 @@
     %thead
       %tr
         %th
-        %th Service
-        %th Description
-        %th Last edit
-    - @services.each do |service|
+        %th= _('Service')
+        %th= _('Description')
+        %th= _('Last edit')
+    - @activated_services.each do |service|
       - if service.type.in?(@existing_instance_types)
         %tr
           %td

@@ -5,11 +5,14 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Notification Emails
+# GitLab Notification Emails **(FREE)**
 
 GitLab Notifications allow you to stay informed about what's happening in GitLab. With notifications
 enabled, you can receive updates about activity in issues, merge requests, epics, and designs.
 Notifications are sent via email.
+
+For the tool that enables GitLab administrators to send messages to users, read
+[Email from GitLab](../../tools/email.md).
 
 ## Receiving notifications
 
@@ -50,16 +53,16 @@ These notification settings apply only to you. They do not affect the notificati
 
 ## Global notification settings
 
-Your **Global notification settings** are the default settings unless you select different values for a project or a group.
+Your **Global notification settings** are the default settings unless you select
+different values for a project or a group.
 
-- Notification email
-  - This is the email address your notifications are sent to.
-- Global notification level
-  - This is the default [notification level](#notification-levels) which applies to all your notifications.
-- Receive product marketing emails
-  - Check this checkbox if you want to receive periodic emails related to GitLab features.
-- Receive notifications about your own activity.
-  - Check this checkbox if you want to receive notification about your own activity. Default: Not checked.
+- **Notification email**: The email address your notifications are sent to.
+- **Global notification level**: The default [notification level](#notification-levels)
+  which applies to all your notifications.
+- **Receive product marketing emails**: Select this check box to receive periodic
+  emails about GitLab features.
+- **Receive notifications about your own activity**: Select this check box to receive
+  notifications about your own activity. Not selected by default.
 
 ### Notification scope
 
@@ -67,16 +70,16 @@ You can tune the scope of your notifications by selecting different notification
 
 Notification scope is applied in order of precedence (highest to lowest):
 
-- Project
-  - For each project, you can select a notification level. Your project setting overrides the group setting.
-- Group
-  - For each group, you can select a notification level. Your group setting overrides your default setting.
-- Global (default)
-  - Your global, or _default_, notification level applies if you have not selected a notification level for the project or group in which the activity occurred.
+- **Project**: For each project, you can select a notification level. Your project
+  setting overrides the group setting.
+- **Group**: For each group, you can select a notification level. Your group setting
+  overrides your default setting.
+- **Global (default)**: Your global, or _default_, notification level applies if you
+  have not selected a notification level for the project or group in which the activity occurred.
 
 #### Project notifications
 
-You can select a notification level for each project. This can be useful if you need to closely monitor activity in select projects.
+You can select a notification level for each project to help you closely monitor activity in select projects.
 
 ![notification settings](img/notification_project_settings_v12_8.png)
 

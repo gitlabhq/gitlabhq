@@ -1,0 +1,26 @@
+test:
+  incoming_email:
+    enabled: true
+    address: "gitlab-incoming+%{key}@gmail.com"
+    user: "gitlab-incoming@gmail.com"
+    mailbox: "inbox"
+    expunge_deleted: true
+    inbox_method: "microsoft_graph"
+    inbox_options:
+      tenant_id: "12345"
+      client_id: "MY-CLIENT-ID"
+      client_secret: "MY-CLIENT-SECRET"
+      poll_interval: 60
+
+  service_desk_email:
+    enabled: true
+    address: "gitlab-incoming+%{key}@gmail.com"
+    user: "gitlab-incoming@gmail.com"
+    mailbox: "inbox"
+    expunge_deleted: true
+    inbox_method: "microsoft_graph"
+    inbox_options:
+      tenant_id: "12345"
+      client_id: "MY-CLIENT-ID"
+      client_secret: "MY-CLIENT-SECRET"
+      poll_interval: 60

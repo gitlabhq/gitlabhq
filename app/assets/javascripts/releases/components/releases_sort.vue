@@ -10,7 +10,7 @@ export default {
     GlSortingItem,
   },
   computed: {
-    ...mapState('list', {
+    ...mapState('index', {
       orderBy: (state) => state.sorting.orderBy,
       sort: (state) => state.sorting.sort,
     }),
@@ -26,7 +26,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('list', ['setSorting']),
+    ...mapActions('index', ['setSorting']),
     onDirectionChange() {
       const sort = this.isSortAscending ? DESCENDING_ORDER : ASCENDING_ODER;
       this.setSorting({ sort });

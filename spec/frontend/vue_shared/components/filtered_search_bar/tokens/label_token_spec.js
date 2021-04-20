@@ -118,6 +118,22 @@ describe('LabelToken', () => {
       wrapper = createComponent();
     });
 
+    describe('getLabelName', () => {
+      it('returns value of `name` or `title` property present in provided label param', () => {
+        let mockLabel = {
+          title: 'foo',
+        };
+
+        expect(wrapper.vm.getLabelName(mockLabel)).toBe(mockLabel.title);
+
+        mockLabel = {
+          name: 'foo',
+        };
+
+        expect(wrapper.vm.getLabelName(mockLabel)).toBe(mockLabel.name);
+      });
+    });
+
     describe('fetchLabelBySearchTerm', () => {
       it('calls `config.fetchLabels` with provided searchTerm param', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels');

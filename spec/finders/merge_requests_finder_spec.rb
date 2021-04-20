@@ -156,6 +156,18 @@ RSpec.describe MergeRequestsFinder do
 
           it { is_expected.to eq([merge_request2]) }
         end
+
+        context 'when project_id is given' do
+          subject(:query) { described_class.new(user, merged_after: 15.days.ago, merged_before: 6.days.ago, project_id: merge_request2.project).execute }
+
+          it { is_expected.to eq([merge_request2]) }
+
+          it 'queries merge_request_metrics.target_project_id table' do
+            expect(query.to_sql).to include(%{"merge_request_metrics"."target_project_id" = #{merge_request2.target_project_id}})
+
+            expect(query.to_sql).not_to include(%{"merge_requests"."target_project_id"})
+          end
+        end
       end
 
       context 'filtering by group' do

@@ -38,23 +38,20 @@ RSpec.describe BulkImports::Pipeline::Runner do
       extractor BulkImports::Extractor
       transformer BulkImports::Transformer
       loader BulkImports::Loader
-
-      def after_run(_); end
     end
 
     stub_const('BulkImports::MyPipeline', pipeline)
   end
 
-  let_it_be_with_refind(:entity) { create(:bulk_import_entity) }
-  let(:context) { BulkImports::Pipeline::Context.new(entity, extra: :data) }
+  let_it_be_with_reload(:entity) { create(:bulk_import_entity) }
+  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker, extra: :data) }
 
   subject { BulkImports::MyPipeline.new(context) }
 
   describe 'pipeline runner' do
     context 'when entity is not marked as failed' do
       it 'runs pipeline extractor, transformer, loader' do
-        extracted_data = BulkImports::Pipeline::ExtractedData.new(data: { foo: :bar })
-
         expect_next_instance_of(BulkImports::Extractor) do |extractor|
           expect(extractor)
             .to receive(:extract)
@@ -132,6 +129,22 @@ RSpec.describe BulkImports::Pipeline::Runner do
         subject.run
       end
 
+      context 'when extracted data has multiple pages' do
+        it 'updates tracker information and runs pipeline again' do
+          first_page = extracted_data(has_next_page: true)
+          last_page = extracted_data
+
+          expect_next_instance_of(BulkImports::Extractor) do |extractor|
+            expect(extractor)
+              .to receive(:extract)
+              .with(context)
+              .and_return(first_page, last_page)
+          end
+
+          subject.run
+        end
+      end
+
       context 'when exception is raised' do
         before do
           allow_next_instance_of(BulkImports::Extractor) do |extractor|
@@ -170,12 +183,7 @@ RSpec.describe BulkImports::Pipeline::Runner do
             BulkImports::MyPipeline.abort_on_failure!
           end
 
-          it 'marks entity as failed' do
-            expect { subject.run }
-              .to change(entity, :status_name).to(:failed)
-          end
-
-          it 'logs warn message' do
+          it 'logs a warn message and marks entity as failed' do
             expect_next_instance_of(Gitlab::Import::Logger) do |logger|
               expect(logger).to receive(:warn)
                 .with(
@@ -188,6 +196,9 @@ RSpec.describe BulkImports::Pipeline::Runner do
             end
 
             subject.run
+
+            expect(entity.status_name).to eq(:failed)
+            expect(tracker.status_name).to eq(:failed)
           end
         end
 
@@ -206,11 +217,11 @@ RSpec.describe BulkImports::Pipeline::Runner do
         entity.fail_op!
 
         expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-          expect(logger).to receive(:info)
+          expect(logger).to receive(:warn)
             .with(
               log_params(
                 context,
-                message: 'Skipping due to failed pipeline status',
+                message: 'Skipping pipeline due to failed entity',
                 pipeline_class: 'BulkImports::MyPipeline'
               )
             )
@@ -219,14 +230,24 @@ RSpec.describe BulkImports::Pipeline::Runner do
         subject.run
       end
     end
-  end
 
-  def log_params(context, extra = {})
-    {
-      bulk_import_id: context.bulk_import.id,
-      bulk_import_entity_id: context.entity.id,
-      bulk_import_entity_type: context.entity.source_type,
-      context_extra: context.extra
-    }.merge(extra)
+    def log_params(context, extra = {})
+      {
+        bulk_import_id: context.bulk_import.id,
+        bulk_import_entity_id: context.entity.id,
+        bulk_import_entity_type: context.entity.source_type,
+        context_extra: context.extra
+      }.merge(extra)
+    end
+
+    def extracted_data(has_next_page: false)
+      BulkImports::Pipeline::ExtractedData.new(
+        data: { foo: :bar },
+        page_info: {
+          'has_next_page' => has_next_page,
+          'next_page' => has_next_page ? 'cursor' : nil
+        }
+      )
+    end
   end
 end

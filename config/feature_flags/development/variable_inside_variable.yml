@@ -1,8 +1,8 @@
 ---
 name: variable_inside_variable
-introduced_by_url:
-rollout_issue_url:
-milestone: '13.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50156
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/297382
+milestone: '13.11'
 type: development
 group: group::runner
 default_enabled: false

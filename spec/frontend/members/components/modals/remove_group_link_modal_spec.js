@@ -4,7 +4,7 @@ import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import RemoveGroupLinkModal from '~/members/components/modals/remove_group_link_modal.vue';
-import { REMOVE_GROUP_LINK_MODAL_ID } from '~/members/constants';
+import { REMOVE_GROUP_LINK_MODAL_ID, MEMBER_TYPES } from '~/members/constants';
 import { group } from '../../mock_data';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -21,13 +21,18 @@ describe('RemoveGroupLinkModal', () => {
 
   const createStore = (state = {}) => {
     return new Vuex.Store({
-      state: {
-        memberPath: '/groups/foo-bar/-/group_links/:id',
-        groupLinkToRemove: group,
-        removeGroupLinkModalVisible: true,
-        ...state,
+      modules: {
+        [MEMBER_TYPES.group]: {
+          namespaced: true,
+          state: {
+            memberPath: '/groups/foo-bar/-/group_links/:id',
+            groupLinkToRemove: group,
+            removeGroupLinkModalVisible: true,
+            ...state,
+          },
+          actions,
+        },
       },
-      actions,
     });
   };
 
@@ -35,6 +40,9 @@ describe('RemoveGroupLinkModal', () => {
     wrapper = mount(RemoveGroupLinkModal, {
       localVue,
       store: createStore(state),
+      provide: {
+        namespace: MEMBER_TYPES.group,
+      },
       attrs: {
         static: true,
       },

@@ -2,11 +2,20 @@
 /* global Mousetrap */
 import 'mousetrap';
 import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
+import {
+  keysFor,
+  ISSUE_PREVIOUS_DESIGN,
+  ISSUE_NEXT_DESIGN,
+} from '~/behaviors/shortcuts/keybindings';
 import { s__, sprintf } from '~/locale';
 import allDesignsMixin from '../../mixins/all_designs';
 import { DESIGN_ROUTE_NAME } from '../../router/constants';
 
 export default {
+  i18n: {
+    nextButton: s__('DesignManagement|Go to next design'),
+    previousButton: s__('DesignManagement|Go to previous design'),
+  },
   components: {
     GlButton,
     GlButtonGroup,
@@ -46,11 +55,14 @@ export default {
     },
   },
   mounted() {
-    Mousetrap.bind('left', () => this.navigateToDesign(this.previousDesign));
-    Mousetrap.bind('right', () => this.navigateToDesign(this.nextDesign));
+    Mousetrap.bind(keysFor(ISSUE_PREVIOUS_DESIGN), () =>
+      this.navigateToDesign(this.previousDesign),
+    );
+    Mousetrap.bind(keysFor(ISSUE_NEXT_DESIGN), () => this.navigateToDesign(this.nextDesign));
   },
   beforeDestroy() {
-    Mousetrap.unbind(['left', 'right'], this.navigateToDesign);
+    Mousetrap.unbind(keysFor(ISSUE_PREVIOUS_DESIGN));
+    Mousetrap.unbind(keysFor(ISSUE_NEXT_DESIGN));
   },
   methods: {
     navigateToDesign(design) {
@@ -73,7 +85,8 @@ export default {
       <gl-button
         v-gl-tooltip.bottom
         :disabled="!previousDesign"
-        :title="s__('DesignManagement|Go to previous design')"
+        :title="$options.i18n.previousButton"
+        :aria-label="$options.i18n.previousButton"
         icon="angle-left"
         class="js-previous-design"
         @click="navigateToDesign(previousDesign)"
@@ -81,7 +94,8 @@ export default {
       <gl-button
         v-gl-tooltip.bottom
         :disabled="!nextDesign"
-        :title="s__('DesignManagement|Go to next design')"
+        :title="$options.i18n.nextButton"
+        :aria-label="$options.i18n.nextButton"
         icon="angle-right"
         class="js-next-design"
         @click="navigateToDesign(nextDesign)"

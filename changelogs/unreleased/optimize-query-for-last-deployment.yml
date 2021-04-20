@@ -1,0 +1,5 @@
+---
+title: Optimize database query for last deployment
+merge_request: 57979
+author:
+type: performance

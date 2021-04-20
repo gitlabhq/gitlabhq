@@ -1,0 +1,5 @@
+---
+title: Fix previous deployment fetches wrong deployment
+merge_request: 58567
+author:
+type: fixed

@@ -47,6 +47,58 @@ RSpec.describe API::Helpers do
     end
   end
 
+  describe '#find_project!' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+
+    shared_examples 'private project without access' do
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+      end
+
+      it 'returns not found' do
+        expect(subject).to receive(:not_found!)
+
+        subject.find_project!(project.id)
+      end
+    end
+
+    context 'when user is authenticated' do
+      before do
+        subject.instance_variable_set(:@current_user, user)
+        subject.instance_variable_set(:@initial_current_user, user)
+      end
+
+      context 'public project' do
+        it 'returns requested project' do
+          expect(subject.find_project!(project.id)).to eq(project)
+        end
+      end
+
+      context 'private project' do
+        it_behaves_like 'private project without access'
+      end
+    end
+
+    context 'when user is not authenticated' do
+      before do
+        subject.instance_variable_set(:@current_user, nil)
+        subject.instance_variable_set(:@initial_current_user, nil)
+      end
+
+      context 'public project' do
+        it 'returns requested project' do
+          expect(subject.find_project!(project.id)).to eq(project)
+        end
+      end
+
+      context 'private project' do
+        it_behaves_like 'private project without access'
+      end
+    end
+  end
+
   describe '#find_namespace' do
     let(:namespace) { create(:namespace) }
 
@@ -175,64 +227,27 @@ RSpec.describe API::Helpers do
     end
   end
 
-  describe '#track_event' do
-    it "creates a gitlab tracking event", :snowplow do
-      subject.track_event('my_event', category: 'foo')
-
-      expect_snowplow_event(category: 'foo', action: 'my_event')
-    end
-
-    it "logs an exception" do
-      expect(Gitlab::AppLogger).to receive(:warn).with(/Tracking event failed/)
-
-      subject.track_event('my_event', category: nil)
-    end
-  end
-
   describe '#increment_unique_values' do
     let(:value) { '9f302fea-f828-4ca9-aef4-e10bd723c0b3' }
     let(:event_name) { 'g_compliance_dashboard' }
     let(:unknown_event) { 'unknown' }
-    let(:feature) { "usage_data_#{event_name}" }
 
-    before do
-      skip_feature_flags_yaml_validation
+    it 'tracks redis hll event' do
+      expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(event_name, values: value)
+
+      subject.increment_unique_values(event_name, value)
     end
 
-    context 'with feature enabled' do
-      before do
-        stub_feature_flags(feature => true)
-      end
+    it 'logs an exception for unknown event' do
+      expect(Gitlab::AppLogger).to receive(:warn).with("Redis tracking event failed for event: #{unknown_event}, message: Unknown event #{unknown_event}")
 
-      it 'tracks redis hll event' do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(event_name, values: value)
-
-        subject.increment_unique_values(event_name, value)
-      end
-
-      it 'logs an exception for unknown event' do
-        expect(Gitlab::AppLogger).to receive(:warn).with("Redis tracking event failed for event: #{unknown_event}, message: Unknown event #{unknown_event}")
-
-        subject.increment_unique_values(unknown_event, value)
-      end
-
-      it 'does not track event for nil values' do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-
-        subject.increment_unique_values(unknown_event, nil)
-      end
+      subject.increment_unique_values(unknown_event, value)
     end
 
-    context 'with feature disabled' do
-      before do
-        stub_feature_flags(feature => false)
-      end
+    it 'does not track event for nil values' do
+      expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 
-      it 'does not track event' do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-
-        subject.increment_unique_values(event_name, value)
-      end
+      subject.increment_unique_values(unknown_event, nil)
     end
   end
 

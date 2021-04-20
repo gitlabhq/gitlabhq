@@ -129,7 +129,10 @@ module Gitlab
           'wiki_blobs'
         elsif view_context.current_controller?(:commits)
           'commits'
-        else nil
+        elsif view_context.current_controller?(:groups)
+          if %w(issues merge_requests).include?(view_context.controller.action_name)
+            view_context.controller.action_name
+          end
         end
       end
     end
@@ -160,3 +163,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::SearchContext::Builder.prepend_ee_mod

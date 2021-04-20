@@ -14,7 +14,7 @@ import {
   GlTab,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { isEmpty, omit } from 'lodash';
+import { isEqual, isEmpty, omit } from 'lodash';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import {
   integrationTypes,
@@ -24,8 +24,9 @@ import {
   JSON_VALIDATE_DELAY,
   targetPrometheusUrlPlaceholder,
   typeSet,
-  viewCredentialsTabIndex,
   i18n,
+  tabIndices,
+  testAlertModalId,
 } from '../constants';
 import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
 import parseSamplePayloadQuery from '../graphql/queries/parse_sample_payload.query.graphql';
@@ -40,6 +41,10 @@ export default {
   typeSet,
   integrationSteps,
   i18n,
+  primaryProps: { text: i18n.integrationFormSteps.testPayload.savedAndTest },
+  secondaryProps: { text: i18n.integrationFormSteps.testPayload.proceedWithoutSave },
+  cancelProps: { text: i18n.integrationFormSteps.testPayload.cancel },
+  testAlertModalId,
   components: {
     ClipboardButton,
     GlButton,
@@ -60,11 +65,8 @@ export default {
     GlModal: GlModalDirective,
   },
   inject: {
-    generic: {
-      default: {},
-    },
-    prometheus: {
-      default: {},
+    alertsUsageUrl: {
+      default: '#',
     },
     multiIntegrations: {
       default: false,
@@ -87,6 +89,11 @@ export default {
       required: false,
       default: null,
     },
+    tabIndex: {
+      type: Number,
+      required: false,
+      default: tabIndices.configureDetails,
+    },
   },
   apollo: {
     currentIntegration: {
@@ -96,11 +103,10 @@ export default {
   data() {
     return {
       integrationTypesOptions: Object.values(integrationTypes),
-      selectedIntegration: integrationTypes.none.value,
-      active: false,
       samplePayload: {
         json: null,
         error: null,
+        loading: false,
       },
       testPayload: {
         json: null,
@@ -108,18 +114,32 @@ export default {
       },
       resetPayloadAndMappingConfirmed: false,
       mapping: [],
-      parsingPayload: false,
+      integrationForm: {
+        active: false,
+        type: integrationTypes.none.value,
+        name: '',
+        token: '',
+        url: '',
+        apiUrl: '',
+      },
+      activeTabIndex: this.tabIndex,
       currentIntegration: null,
       parsedPayload: [],
-      activeTabIndex: 0,
+      validationState: {
+        name: true,
+        apiUrl: true,
+      },
     };
   },
   computed: {
     isPrometheus() {
-      return this.selectedIntegration === this.$options.typeSet.prometheus;
+      return this.integrationForm.type === typeSet.prometheus;
     },
     isHttp() {
-      return this.selectedIntegration === this.$options.typeSet.http;
+      return this.integrationForm.type === typeSet.http;
+    },
+    isNone() {
+      return !this.isHttp && !this.isPrometheus;
     },
     isCreating() {
       return !this.currentIntegration;
@@ -129,29 +149,6 @@ export default {
     },
     isTestPayloadValid() {
       return this.testPayload.error === null;
-    },
-    selectedIntegrationType() {
-      switch (this.selectedIntegration) {
-        case typeSet.http:
-          return this.generic;
-        case typeSet.prometheus:
-          return this.prometheus;
-        default:
-          return {};
-      }
-    },
-    integrationForm() {
-      return {
-        name: this.currentIntegration?.name || '',
-        active: this.currentIntegration?.active || false,
-        token:
-          this.currentIntegration?.token ||
-          (this.selectedIntegrationType !== this.generic ? this.selectedIntegrationType.token : ''),
-        url:
-          this.currentIntegration?.url ||
-          (this.selectedIntegrationType !== this.generic ? this.selectedIntegrationType.url : ''),
-        apiUrl: this.currentIntegration?.apiUrl || '',
-      };
     },
     testAlertPayload() {
       return {
@@ -170,13 +167,7 @@ export default {
       return this.hasSamplePayload && !this.resetPayloadAndMappingConfirmed;
     },
     canParseSamplePayload() {
-      return !this.active || !this.isSampePayloadValid || !this.samplePayload.json;
-    },
-    isResetAuthKeyDisabled() {
-      return !this.active && !this.integrationForm.token !== '';
-    },
-    isPayloadEditDisabled() {
-      return !this.active || this.canEditPayload;
+      return this.isSampePayloadValid && this.samplePayload.json;
     },
     isSelectDisabled() {
       return this.currentIntegration !== null || !this.canAddIntegration;
@@ -186,30 +177,105 @@ export default {
         ? i18n.integrationFormSteps.setupCredentials.prometheusHelp
         : i18n.integrationFormSteps.setupCredentials.help;
     },
+    isFormValid() {
+      return (
+        Object.values(this.validationState).every(Boolean) &&
+        !this.isNone &&
+        this.isSampePayloadValid
+      );
+    },
+    isFormDirty() {
+      const { type, active, name, apiUrl, payloadAlertFields = [], payloadAttributeMappings = [] } =
+        this.currentIntegration || {};
+      const {
+        name: formName,
+        apiUrl: formApiUrl,
+        active: formActive,
+        type: formType,
+      } = this.integrationForm;
+
+      const isDirty =
+        type !== formType ||
+        active !== formActive ||
+        name !== formName ||
+        apiUrl !== formApiUrl ||
+        !isEqual(this.parsedPayload, payloadAlertFields) ||
+        !isEqual(this.mapping, this.getCleanMapping(payloadAttributeMappings));
+
+      return isDirty;
+    },
+    canSubmitForm() {
+      return this.isFormValid && this.isFormDirty;
+    },
+    dataForSave() {
+      const { name, apiUrl, active } = this.integrationForm;
+      const customMappingVariables = {
+        payloadAttributeMappings: this.mapping,
+        payloadExample: this.samplePayload.json || '{}',
+      };
+
+      const variables = this.isHttp
+        ? { name, active, ...customMappingVariables }
+        : { apiUrl, active };
+
+      return { type: this.integrationForm.type, variables };
+    },
+    testAlertModal() {
+      return this.isFormDirty ? testAlertModalId : null;
+    },
+    prometheusUrlInvalidFeedback() {
+      const { blankUrlError, invalidUrlError } = i18n.integrationFormSteps.prometheusFormUrl;
+      return this.integrationForm.apiUrl?.length ? invalidUrlError : blankUrlError;
+    },
   },
   watch: {
+    tabIndex(val) {
+      this.activeTabIndex = val;
+    },
     currentIntegration(val) {
       if (val === null) {
         this.reset();
         return;
       }
-      const { type, active, payloadExample, payloadAlertFields, payloadAttributeMappings } = val;
-      this.selectedIntegration = type;
-      this.active = active;
 
-      if (type === typeSet.http && this.showMappingBuilder) {
+      this.resetPayloadAndMapping();
+      const {
+        name,
+        type,
+        active,
+        url,
+        apiUrl,
+        token,
+        payloadExample,
+        payloadAlertFields,
+        payloadAttributeMappings,
+      } = val;
+      this.integrationForm = { type, name, active, url, apiUrl, token };
+
+      if (this.showMappingBuilder) {
+        this.resetPayloadAndMappingConfirmed = false;
         this.parsedPayload = payloadAlertFields;
-        this.samplePayload.json = this.isValidNonEmptyJSON(payloadExample) ? payloadExample : null;
-        const mapping = payloadAttributeMappings.map((mappingItem) =>
-          omit(mappingItem, '__typename'),
-        );
-        this.updateMapping(mapping);
+        this.samplePayload.json = this.getPrettifiedPayload(payloadExample);
+        this.updateMapping(this.getCleanMapping(payloadAttributeMappings));
       }
-      this.activeTabIndex = viewCredentialsTabIndex;
       this.$el.scrollIntoView({ block: 'center' });
     },
   },
   methods: {
+    getCleanMapping(mapping) {
+      return mapping.map((mappingItem) => omit(mappingItem, '__typename'));
+    },
+    validateName() {
+      this.validationState.name = Boolean(this.integrationForm.name?.length);
+    },
+    validateApiUrl() {
+      try {
+        const parsedUrl = new URL(this.integrationForm.apiUrl);
+        this.validationState.apiUrl = ['http:', 'https:'].includes(parsedUrl.protocol);
+      } catch (e) {
+        this.validationState.apiUrl = false;
+      }
+    },
     isValidNonEmptyJSON(JSONString) {
       if (JSONString) {
         let parsed;
@@ -222,29 +288,37 @@ export default {
       }
       return false;
     },
+    getPrettifiedPayload(payload) {
+      return this.isValidNonEmptyJSON(payload)
+        ? JSON.stringify(JSON.parse(payload), null, '\t')
+        : null;
+    },
+    triggerValidation() {
+      if (this.isHttp) {
+        this.validationState.apiUrl = true;
+        this.validateName();
+        if (!this.validationState.name) {
+          this.$refs.integrationName.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } else if (this.isPrometheus) {
+        this.validationState.name = true;
+        this.validateApiUrl();
+      }
+    },
     sendTestAlert() {
       this.$emit('test-alert-payload', this.testAlertPayload);
     },
-    submit() {
-      const { name, apiUrl } = this.integrationForm;
-      const customMappingVariables = {
-        payloadAttributeMappings: this.mapping,
-        payloadExample: this.samplePayload.json || '{}',
-      };
+    saveAndSendTestAlert() {
+      this.$emit('save-and-test-alert-payload', this.dataForSave, this.testAlertPayload);
+    },
+    submit(testAfterSubmit = false) {
+      this.triggerValidation();
 
-      const variables =
-        this.selectedIntegration === typeSet.http
-          ? { name, active: this.active, ...customMappingVariables }
-          : { apiUrl, active: this.active };
-
-      const integrationPayload = { type: this.selectedIntegration, variables };
-
-      if (this.currentIntegration) {
-        return this.$emit('update-integration', integrationPayload);
+      if (!this.isFormValid) {
+        return;
       }
-
-      this.reset();
-      return this.$emit('create-new-integration', integrationPayload);
+      const event = this.currentIntegration ? 'update-integration' : 'create-new-integration';
+      this.$emit(event, this.dataForSave, testAfterSubmit);
     },
     reset() {
       this.resetFormValues();
@@ -252,14 +326,14 @@ export default {
       this.$emit('clear-current-integration', { type: this.currentIntegration?.type });
     },
     resetFormValues() {
-      this.selectedIntegration = integrationTypes.none.value;
+      this.integrationForm.type = integrationTypes.none.value;
       this.integrationForm.name = '';
+      this.integrationForm.active = false;
       this.integrationForm.apiUrl = '';
       this.samplePayload = {
         json: null,
         error: null,
       };
-      this.active = false;
     },
     resetAuthKey() {
       if (!this.currentIntegration) {
@@ -267,7 +341,7 @@ export default {
       }
 
       this.$emit('reset-token', {
-        type: this.selectedIntegration,
+        type: this.integrationForm.type,
         variables: { id: this.currentIntegration.id },
       });
     },
@@ -285,8 +359,8 @@ export default {
         payload.error = JSON.stringify(e.message);
       }
     },
-    parseMapping() {
-      this.parsingPayload = true;
+    parseSamplePayload() {
+      this.samplePayload.loading = true;
 
       return this.$apollo
         .query({
@@ -303,7 +377,7 @@ export default {
             this.resetPayloadAndMappingConfirmed = false;
 
             this.$toast.show(
-              this.$options.i18n.integrationFormSteps.setSamplePayload.payloadParsedSucessMsg,
+              this.$options.i18n.integrationFormSteps.mapFields.payloadParsedSucessMsg,
             );
           },
         )
@@ -311,7 +385,7 @@ export default {
           this.samplePayload.error = message;
         })
         .finally(() => {
-          this.parsingPayload = false;
+          this.samplePayload.loading = false;
         });
     },
     updateMapping(mapping) {
@@ -338,7 +412,7 @@ export default {
 <template>
   <gl-form class="gl-mt-6" @submit.prevent="submit" @reset.prevent="reset">
     <gl-tabs v-model="activeTabIndex">
-      <gl-tab :title="$options.i18n.integrationTabs.configureDetails">
+      <gl-tab :title="$options.i18n.integrationTabs.configureDetails" class="gl-mt-3">
         <gl-form-group
           v-if="isCreating"
           id="integration-type"
@@ -351,7 +425,7 @@ export default {
           label-for="integration-type"
         >
           <gl-form-select
-            v-model="selectedIntegration"
+            v-model="integrationForm.type"
             :disabled="isSelectDisabled"
             class="gl-max-w-full"
             :options="integrationTypesOptions"
@@ -369,7 +443,6 @@ export default {
         <div class="gl-mt-3">
           <gl-form-group
             v-if="isHttp"
-            id="name-integration"
             :label="
               getLabelWithStepNumber(
                 $options.integrationSteps.nameIntegration,
@@ -377,67 +450,82 @@ export default {
               )
             "
             label-for="name-integration"
+            :invalid-feedback="$options.i18n.integrationFormSteps.nameIntegration.error"
+            :state="validationState.name"
           >
             <gl-form-input
+              id="name-integration"
+              ref="integrationName"
               v-model="integrationForm.name"
               type="text"
               :placeholder="$options.i18n.integrationFormSteps.nameIntegration.placeholder"
+              @input="validateName"
             />
           </gl-form-group>
 
-          <gl-toggle
-            v-model="active"
-            :is-loading="loading"
-            :label="$options.i18n.integrationFormSteps.nameIntegration.activeToggle"
-            class="gl-my-4 gl-font-weight-normal"
-          />
+          <gl-form-group
+            v-if="!isNone"
+            :label="
+              getLabelWithStepNumber(
+                isHttp
+                  ? $options.integrationSteps.enableHttpIntegration
+                  : $options.integrationSteps.enablePrometheusIntegration,
+                $options.i18n.integrationFormSteps.enableIntegration.label,
+              )
+            "
+          >
+            <span>{{ $options.i18n.integrationFormSteps.enableIntegration.help }}</span>
 
-          <div v-if="isPrometheus" class="gl-my-4">
-            <span class="gl-font-weight-bold">
-              {{
-                getLabelWithStepNumber(
-                  $options.integrationSteps.setPrometheusApiUrl,
-                  $options.i18n.integrationFormSteps.prometheusFormUrl.label,
-                )
-              }}
-            </span>
+            <gl-toggle
+              id="enable-integration"
+              v-model="integrationForm.active"
+              :is-loading="loading"
+              :label="$options.i18n.integrationFormSteps.nameIntegration.activeToggle"
+              class="gl-mt-4 gl-font-weight-normal"
+            />
+          </gl-form-group>
 
+          <gl-form-group
+            v-if="isPrometheus"
+            class="gl-my-4"
+            :label="$options.i18n.integrationFormSteps.prometheusFormUrl.label"
+            label-for="api-url"
+            :invalid-feedback="prometheusUrlInvalidFeedback"
+            :state="validationState.apiUrl"
+          >
             <gl-form-input
-              id="integration-apiUrl"
+              id="api-url"
               v-model="integrationForm.apiUrl"
               type="text"
               :placeholder="$options.placeholders.prometheus"
+              @input="validateApiUrl"
             />
-
             <span class="gl-text-gray-400">
               {{ $options.i18n.integrationFormSteps.prometheusFormUrl.help }}
             </span>
-          </div>
+          </gl-form-group>
 
           <template v-if="showMappingBuilder">
             <gl-form-group
               data-testid="sample-payload-section"
               :label="
                 getLabelWithStepNumber(
-                  $options.integrationSteps.setSamplePayload,
-                  $options.i18n.integrationFormSteps.setSamplePayload.label,
+                  $options.integrationSteps.customizeMapping,
+                  $options.i18n.integrationFormSteps.mapFields.label,
                 )
               "
               label-for="sample-payload"
               class="gl-mb-0!"
               :invalid-feedback="samplePayload.error"
             >
-              <alert-settings-form-help-block
-                :message="$options.i18n.integrationFormSteps.setSamplePayload.testPayloadHelpHttp"
-                :link="generic.alertsUsageUrl"
-              />
+              <span>{{ $options.i18n.integrationFormSteps.mapFields.help }}</span>
 
               <gl-form-textarea
                 id="sample-payload"
-                v-model.trim="samplePayload.json"
-                :disabled="isPayloadEditDisabled"
+                v-model="samplePayload.json"
+                :disabled="canEditPayload"
                 :state="isSampePayloadValid"
-                :placeholder="$options.i18n.integrationFormSteps.setSamplePayload.placeholder"
+                :placeholder="$options.i18n.integrationFormSteps.mapFields.placeholder"
                 class="gl-my-3"
                 :debounce="$options.JSON_VALIDATE_DELAY"
                 rows="6"
@@ -450,62 +538,63 @@ export default {
               v-if="canEditPayload"
               v-gl-modal.resetPayloadModal
               data-testid="payload-action-btn"
-              :disabled="!active"
+              :disabled="!integrationForm.active"
               class="gl-mt-3"
             >
-              {{ $options.i18n.integrationFormSteps.setSamplePayload.editPayload }}
+              {{ $options.i18n.integrationFormSteps.mapFields.editPayload }}
             </gl-button>
 
             <gl-button
               v-else
               data-testid="payload-action-btn"
               :class="{ 'gl-mt-3': samplePayload.error }"
-              :disabled="canParseSamplePayload"
-              :loading="parsingPayload"
-              @click="parseMapping"
+              :disabled="!canParseSamplePayload"
+              :loading="samplePayload.loading"
+              @click="parseSamplePayload"
             >
-              {{ $options.i18n.integrationFormSteps.setSamplePayload.parsePayload }}
+              {{ $options.i18n.integrationFormSteps.mapFields.parsePayload }}
             </gl-button>
             <gl-modal
               modal-id="resetPayloadModal"
-              :title="$options.i18n.integrationFormSteps.setSamplePayload.resetHeader"
-              :ok-title="$options.i18n.integrationFormSteps.setSamplePayload.resetOk"
+              :title="$options.i18n.integrationFormSteps.mapFields.resetHeader"
+              :ok-title="$options.i18n.integrationFormSteps.mapFields.resetOk"
               ok-variant="danger"
-              @ok="resetPayloadAndMapping"
+              @ok="resetPayloadAndMappingConfirmed = true"
             >
-              {{ $options.i18n.integrationFormSteps.setSamplePayload.resetBody }}
+              {{ $options.i18n.integrationFormSteps.mapFields.resetBody }}
             </gl-modal>
 
-            <gl-form-group
-              id="mapping-builder"
-              class="gl-mt-5"
-              :label="
-                getLabelWithStepNumber(
-                  $options.integrationSteps.customizeMapping,
-                  $options.i18n.integrationFormSteps.mapFields.label,
-                )
-              "
-              label-for="mapping-builder"
-            >
-              <span>{{ $options.i18n.integrationFormSteps.mapFields.intro }}</span>
+            <div class="gl-mt-5">
+              <span>{{ $options.i18n.integrationFormSteps.mapFields.mapIntro }}</span>
               <mapping-builder
                 :parsed-payload="parsedPayload"
                 :saved-mapping="mapping"
                 :alert-fields="alertFields"
                 @onMappingUpdate="updateMapping"
               />
-            </gl-form-group>
+            </div>
           </template>
         </div>
-
         <div class="gl-display-flex gl-justify-content-start gl-py-3">
           <gl-button
-            type="submit"
+            :disabled="!canSubmitForm"
             variant="confirm"
             class="js-no-auto-disable"
             data-testid="integration-form-submit"
+            @click="submit(false)"
           >
             {{ $options.i18n.saveIntegration }}
+          </gl-button>
+
+          <gl-button
+            :disabled="!canSubmitForm"
+            variant="confirm"
+            category="secondary"
+            class="gl-ml-3 js-no-auto-disable"
+            data-testid="integration-form-test-and-submit"
+            @click="submit(true)"
+          >
+            {{ $options.i18n.saveAndTestIntegration }}
           </gl-button>
 
           <gl-button type="reset" class="gl-ml-3 js-no-auto-disable">{{
@@ -514,7 +603,11 @@ export default {
         </div>
       </gl-tab>
 
-      <gl-tab :title="$options.i18n.integrationTabs.viewCredentials" :disabled="isCreating">
+      <gl-tab
+        :title="$options.i18n.integrationTabs.viewCredentials"
+        :disabled="isCreating"
+        class="gl-mt-3"
+      >
         <alert-settings-form-help-block
           :message="viewCredentialsHelpMsg"
           link="https://docs.gitlab.com/ee/operations/incident_management/alert_integrations.html"
@@ -559,13 +652,15 @@ export default {
           </div>
         </gl-form-group>
 
-        <gl-button v-gl-modal.authKeyModal :disabled="isResetAuthKeyDisabled" variant="danger">
-          {{ $options.i18n.integrationFormSteps.setupCredentials.reset }}
-        </gl-button>
+        <div class="gl-display-flex gl-justify-content-start gl-py-3">
+          <gl-button v-gl-modal.authKeyModal variant="danger">
+            {{ $options.i18n.integrationFormSteps.setupCredentials.reset }}
+          </gl-button>
 
-        <gl-button type="reset" class="gl-ml-3 js-no-auto-disable">{{
-          $options.i18n.cancelAndClose
-        }}</gl-button>
+          <gl-button type="reset" class="gl-ml-3 js-no-auto-disable">
+            {{ $options.i18n.cancelAndClose }}
+          </gl-button>
+        </div>
 
         <gl-modal
           modal-id="authKeyModal"
@@ -578,18 +673,22 @@ export default {
         </gl-modal>
       </gl-tab>
 
-      <gl-tab :title="$options.i18n.integrationTabs.sendTestAlert" :disabled="isCreating">
+      <gl-tab
+        :title="$options.i18n.integrationTabs.sendTestAlert"
+        :disabled="isCreating"
+        class="gl-mt-3"
+      >
         <gl-form-group id="test-integration" :invalid-feedback="testPayload.error">
           <alert-settings-form-help-block
-            :message="$options.i18n.integrationFormSteps.setSamplePayload.testPayloadHelp"
-            :link="generic.alertsUsageUrl"
+            :message="$options.i18n.integrationFormSteps.testPayload.help"
+            :link="alertsUsageUrl"
           />
 
           <gl-form-textarea
             id="test-payload"
-            v-model.trim="testPayload.json"
+            v-model="testPayload.json"
             :state="isTestPayloadValid"
-            :placeholder="$options.i18n.integrationFormSteps.setSamplePayload.placeholder"
+            :placeholder="$options.i18n.integrationFormSteps.testPayload.placeholder"
             class="gl-my-3"
             :debounce="$options.JSON_VALIDATE_DELAY"
             rows="6"
@@ -597,20 +696,35 @@ export default {
             @input="validateJson(false)"
           />
         </gl-form-group>
+        <div class="gl-display-flex gl-justify-content-start gl-py-3">
+          <gl-button
+            v-gl-modal="testAlertModal"
+            :disabled="!isTestPayloadValid"
+            :loading="loading"
+            data-testid="send-test-alert"
+            variant="confirm"
+            class="js-no-auto-disable"
+            @click="isFormDirty ? null : sendTestAlert()"
+          >
+            {{ $options.i18n.send }}
+          </gl-button>
 
-        <gl-button
-          :disabled="!isTestPayloadValid"
-          data-testid="send-test-alert"
-          variant="confirm"
-          class="js-no-auto-disable"
-          @click="sendTestAlert"
+          <gl-button type="reset" class="gl-ml-3 js-no-auto-disable">
+            {{ $options.i18n.cancelAndClose }}
+          </gl-button>
+        </div>
+
+        <gl-modal
+          :modal-id="$options.testAlertModalId"
+          :title="$options.i18n.integrationFormSteps.testPayload.modalTitle"
+          :action-primary="$options.primaryProps"
+          :action-secondary="$options.secondaryProps"
+          :action-cancel="$options.cancelProps"
+          @primary="saveAndSendTestAlert"
+          @secondary="sendTestAlert"
         >
-          {{ $options.i18n.send }}
-        </gl-button>
-
-        <gl-button type="reset" class="gl-ml-3 js-no-auto-disable">{{
-          $options.i18n.cancelAndClose
-        }}</gl-button>
+          {{ $options.i18n.integrationFormSteps.testPayload.modalBody }}
+        </gl-modal>
       </gl-tab>
     </gl-tabs>
   </gl-form>

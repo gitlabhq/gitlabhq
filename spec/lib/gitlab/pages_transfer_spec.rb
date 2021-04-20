@@ -17,7 +17,7 @@ RSpec.describe Gitlab::PagesTransfer do
       end
 
       it 'does nothing if legacy storage is disabled' do
-        stub_feature_flags(pages_update_legacy_storage: false)
+        allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
 
         described_class::METHODS.each do |meth|
           expect(PagesTransferWorker)
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::PagesTransfer do
     end
 
     it 'does nothing if legacy storage is disabled' do
-      stub_feature_flags(pages_update_legacy_storage: false)
+      allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
 
       subject.public_send(meth, *args)
 

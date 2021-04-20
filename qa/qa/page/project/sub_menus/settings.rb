@@ -13,11 +13,12 @@ module QA
             base.class_eval do
               include QA::Page::Project::SubMenus::Common
 
-              view 'app/views/layouts/nav/sidebar/_project.html.haml' do
+              view 'app/views/layouts/nav/sidebar/_project_menus.html.haml' do
                 element :settings_item
                 element :general_settings_link
                 element :integrations_settings_link
                 element :operations_settings_link
+                element :access_tokens_settings_link
               end
             end
           end
@@ -64,6 +65,14 @@ module QA
             hover_settings do
               within_submenu do
                 click_element :operations_settings_link
+              end
+            end
+          end
+
+          def go_to_access_token_settings
+            hover_settings do
+              within_submenu do
+                click_element :access_tokens_settings_link
               end
             end
           end

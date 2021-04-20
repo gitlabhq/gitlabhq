@@ -7,8 +7,8 @@ module Chaos
 
     sidekiq_options retry: false
 
-    def perform
-      Gitlab::Chaos.kill
+    def perform(signal)
+      Gitlab::Chaos.kill(signal)
     end
   end
 end

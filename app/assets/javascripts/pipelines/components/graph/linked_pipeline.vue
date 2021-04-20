@@ -3,9 +3,9 @@ import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon, GlBadge } from '@g
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
+import { reportToSentry } from '../../utils';
 import { accessValue } from './accessors';
 import { DOWNSTREAM, REST, UPSTREAM } from './constants';
-import { reportToSentry } from './utils';
 
 export default {
   directives: {
@@ -183,6 +183,7 @@ export default {
         class="gl-absolute gl-top-0 gl-bottom-0 gl-shadow-none! gl-rounded-0!"
         :class="`js-pipeline-expand-${pipeline.id} ${expandButtonPosition}`"
         :icon="expandedIcon"
+        :aria-label="__('Expand pipeline')"
         data-testid="expand-pipeline-button"
         data-qa-selector="expand_pipeline_button"
         @click="onClickLinkedPipeline"

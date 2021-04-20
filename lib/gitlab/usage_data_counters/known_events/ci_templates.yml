@@ -3,89 +3,74 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_implicit_auto_devops_build
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_implicit_auto_devops_deploy
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_implicit_security_sast
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_implicit_security_secret_detection
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 # Explicit include:template pipeline events
 - name: p_ci_templates_5_min_production_app
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_auto_devops
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_aws_cf_deploy_ec2
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_aws_deploy_ecs
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_auto_devops_build
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_auto_devops_deploy
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_auto_devops_deploy_latest
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_security_sast
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_security_secret_detection
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects
 
 - name: p_ci_templates_terraform_base_latest
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-  feature_flag: usage_data_track_ci_templates_unique_projects

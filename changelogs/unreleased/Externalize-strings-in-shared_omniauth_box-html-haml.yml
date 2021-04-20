@@ -1,0 +1,5 @@
+---
+title: Externalize strings in shared/_omniauth_box.html.haml
+merge_request: 58281
+author: nuwe1
+type: other

@@ -96,11 +96,11 @@ const completeMock = [
 describe('Shared pipeline unwrapping utils', () => {
   describe('unwrapGroups', () => {
     it('takes stages without nodes and returns the unwrapped groups', () => {
-      expect(unwrapGroups(stagesAndGroups)[0].groups).toEqual(groupsArray);
+      expect(unwrapGroups(stagesAndGroups)[0].node.groups).toEqual(groupsArray);
     });
 
     it('keeps other stage properties intact', () => {
-      expect(unwrapGroups(stagesAndGroups)[0]).toMatchObject(basicStageInfo);
+      expect(unwrapGroups(stagesAndGroups)[0].node).toMatchObject(basicStageInfo);
     });
   });
 

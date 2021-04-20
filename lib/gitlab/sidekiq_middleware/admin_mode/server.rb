@@ -5,7 +5,8 @@ module Gitlab
     module AdminMode
       class Server
         def call(_worker, job, _queue)
-          return yield unless Feature.enabled?(:user_mode_in_session)
+          # Not calling Gitlab::CurrentSettings.admin_mode on purpose on sidekiq middleware
+          # Only when admin_mode setting is enabled can it be true here
 
           admin_mode_user_id = job['admin_mode_user_id']
 

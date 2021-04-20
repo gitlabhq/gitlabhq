@@ -81,13 +81,20 @@ describe('issue_note_body component', () => {
             state: {
               defaultSuggestionCommitMessage:
                 '%{branch_name}%{project_path}%{project_name}%{username}%{user_full_name}%{file_paths}%{suggestions_count}%{files_count}',
-              branchName: 'branch',
-              projectPath: '/path',
-              projectName: 'name',
-              username: 'user',
-              userFullName: 'user userton',
             },
             getters: { suggestionCommitMessage },
+          },
+          page: {
+            namespaced: true,
+            state: {
+              mrMetadata: {
+                branch_name: 'branch',
+                project_path: '/path',
+                project_name: 'name',
+                username: 'user',
+                user_full_name: 'user userton',
+              },
+            },
           },
         },
       });

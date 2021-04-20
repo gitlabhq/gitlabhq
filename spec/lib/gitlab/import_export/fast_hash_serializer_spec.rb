@@ -12,6 +12,7 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { setup_project }
+
   let(:shared) { project.import_export_shared }
   let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
   let(:tree) { reader.project_tree }

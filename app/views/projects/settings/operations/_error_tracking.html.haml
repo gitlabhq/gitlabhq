@@ -4,9 +4,9 @@
 
 %section.settings.no-animate.js-error-tracking-settings
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Error tracking')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.gl-button.btn.btn-default.js-settings-toggle{ type: 'button' }
       = _('Expand')
     %p
       = _('To link Sentry to GitLab, enter your Sentry URL and Auth Token.')

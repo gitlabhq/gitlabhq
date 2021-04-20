@@ -21,6 +21,12 @@ module Resolvers
 
     private
 
+    def preloads
+      {
+        user: [:user, :source]
+      }
+    end
+
     def finder_class
       # override in subclass
     end

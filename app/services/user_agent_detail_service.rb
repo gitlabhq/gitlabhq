@@ -4,7 +4,8 @@ class UserAgentDetailService
   attr_accessor :spammable, :request
 
   def initialize(spammable, request)
-    @spammable, @request = spammable, request
+    @spammable = spammable
+    @request = request
   end
 
   def create

@@ -24,3 +24,53 @@
 [id^='editor-lite-'] {
   height: 500px;
 }
+
+.monaco-editor.gl-editor-lite {
+  .margin-view-overlays {
+    .line-numbers {
+      @include gl-display-flex;
+      @include gl-justify-content-end;
+      @include gl-relative;
+
+      &::before {
+        @include gl-visibility-hidden;
+        @include gl-align-self-center;
+        @include gl-bg-gray-400;
+        @include gl-mr-2;
+        @include gl-w-4;
+        @include gl-h-4;
+        mask-image: asset_url('icons-stacked.svg#link');
+        mask-repeat: no-repeat;
+        mask-size: cover;
+        mask-position: center;
+        content: '';
+      }
+
+      &:hover {
+        @include gl-text-decoration-underline;
+        cursor: pointer !important;
+      }
+
+      &:hover::before {
+        @include gl-visibility-visible;
+      }
+
+      &:focus::before {
+        @include gl-visibility-visible;
+        outline: auto;
+      }
+
+      .link-anchor {
+        @include gl-display-block;
+        @include gl-absolute;
+        @include gl-w-full;
+        @include gl-h-full;
+      }
+    }
+  }
+}
+
+.active-line-text {
+  @include gl-bg-orange-600;
+  @include gl-opacity-3;
+}

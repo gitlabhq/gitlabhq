@@ -18,9 +18,7 @@ module Pages
     end
 
     def execute
-      unless resolve_public_dir
-        return error("Can not find valid public dir in #{@input_dir}")
-      end
+      return success unless resolve_public_dir
 
       output_file = File.join(real_dir, "@migrated.zip") # '@' to avoid any name collision with groups or projects
 

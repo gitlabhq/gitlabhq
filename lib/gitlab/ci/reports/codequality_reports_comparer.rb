@@ -7,6 +7,11 @@ module Gitlab
         def initialize(base_report, head_report)
           @base_report = base_report
           @head_report = head_report
+
+          unless not_found?
+            @base_report.sort_degradations!
+            @head_report.sort_degradations!
+          end
         end
 
         def success?

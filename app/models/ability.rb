@@ -58,7 +58,8 @@ class Ability
 
     def allowed?(user, action, subject = :global, opts = {})
       if subject.is_a?(Hash)
-        opts, subject = subject, :global
+        opts = subject
+        subject = :global
       end
 
       policy = policy_for(user, subject)

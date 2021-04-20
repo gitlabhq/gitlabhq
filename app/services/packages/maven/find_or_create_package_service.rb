@@ -33,7 +33,8 @@ module Packages
           #
           # The first upload has to create the proper package (the one with the version set).
           if params[:file_name] == Packages::Maven::Metadata.filename && !params[:path]&.ends_with?(SNAPSHOT_TERM)
-            package_name, version = params[:path], nil
+            package_name = params[:path]
+            version = nil
           else
             package_name, _, version = params[:path].rpartition('/')
           end

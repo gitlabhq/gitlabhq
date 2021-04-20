@@ -16,6 +16,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 With the Go proxy for GitLab, every project in GitLab can be fetched with the
 [Go proxy protocol](https://proxy.golang.org/).
 
+For documentation of the specific API endpoints that the Go Proxy uses, see the
+[Go Proxy API documentation](../../../api/packages/go_proxy.md).
+
 ## Enable the Go proxy
 
 The Go proxy for GitLab is under development, and isn't ready for production use

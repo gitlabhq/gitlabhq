@@ -160,7 +160,7 @@ To edit the custom email display name:
 1. Enter a new name in **Email display name**.
 1. Select **Save Changes**.
 
-### Using custom email address
+### Using custom email address **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab Premium 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
@@ -183,7 +183,7 @@ always use separate mailboxes. This is important, because emails picked from
 `service_desk_email` mailbox are processed by a different worker and it would
 not recognize `incoming_email` emails.
 
-To configure a custom email address for Service Desk, add the following snippets to your configuration file:
+To configure a custom email address for Service Desk with IMAP, add the following snippets to your configuration file:
 
 - Example for installations from source:
 
@@ -235,6 +235,38 @@ As a result, a new Service Desk issue is created from this email in the `mygroup
 
 The configuration options are the same as for configuring
 [incoming email](../../administration/incoming_email.md#set-it-up).
+
+#### Microsoft Graph
+
+> Introduced in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/214900)
+
+Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
+Graph API instead of IMAP. Follow the [documentation in the incoming e-mail section for setting up an OAuth2 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
+
+- Example for Omnibus GitLab installations:
+
+  ```ruby
+  gitlab_rails['service_desk_email_enabled'] = true
+
+  gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.onmicrosoft.com"
+
+  gitlab_rails['service_desk_email_email'] = "project_contact@example.onmicrosoft.com"
+
+  gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
+
+  gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
+
+  gitlab_rails['service_desk_inbox_method'] = 'microsoft_graph'
+
+  gitlab_rails['service_desk_inbox_options'] = {
+   'tenant_id': '<YOUR-TENANT-ID>',
+   'client_id': '<YOUR-CLIENT-ID>',
+   'client_secret': '<YOUR-CLIENT-SECRET>',
+   'poll_interval': 60  # Optional
+  }
+  ```
+
+The Microsoft Graph API is not yet supported in source installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
 
 ## Using Service Desk
 

@@ -75,26 +75,3 @@
   padding-top: 5px;
   padding-bottom: 5px;
 }
-
-.ci-variable-row-remove-button {
-  @include transition(color);
-  flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: $ci-variable-remove-button-width;
-  height: $input-height;
-  padding: 0;
-  background: transparent;
-  color: $gl-text-color-secondary;
-
-  &:hover,
-  &:focus {
-    outline: none;
-    color: $gl-text-color;
-  }
-
-  &[disabled] {
-    color: $gl-text-color-disabled;
-  }
-}

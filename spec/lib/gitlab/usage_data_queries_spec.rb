@@ -11,11 +11,23 @@ RSpec.describe Gitlab::UsageDataQueries do
     it 'returns the raw SQL' do
       expect(described_class.count(User)).to start_with('SELECT COUNT("users"."id") FROM "users"')
     end
+
+    it 'does not mix a nil column with keyword arguments' do
+      expect(described_class).to receive(:raw_sql).with(User, nil)
+
+      described_class.count(User, start: 1, finish: 2)
+    end
   end
 
   describe '.distinct_count' do
     it 'returns the raw SQL' do
       expect(described_class.distinct_count(Issue, :author_id)).to eq('SELECT COUNT(DISTINCT "issues"."author_id") FROM "issues"')
+    end
+
+    it 'does not mix a nil column with keyword arguments' do
+      expect(described_class).to receive(:raw_sql).with(Issue, nil, :distinct)
+
+      described_class.distinct_count(Issue, nil, start: 1, finish: 2)
     end
   end
 
@@ -44,6 +56,26 @@ RSpec.describe Gitlab::UsageDataQueries do
       expect(described_class.add('SELECT COUNT("users"."id") FROM "users"',
                                  'SELECT COUNT("issues"."id") FROM "issues"'))
         .to eq('SELECT (SELECT COUNT("users"."id") FROM "users") + (SELECT COUNT("issues"."id") FROM "issues")')
+    end
+  end
+
+  describe 'min/max methods' do
+    it 'returns nil' do
+      # user min/max
+      expect(described_class.minimum_id(User)).to eq(nil)
+      expect(described_class.maximum_id(User)).to eq(nil)
+
+      # issue min/max
+      expect(described_class.minimum_id(Issue)).to eq(nil)
+      expect(described_class.maximum_id(Issue)).to eq(nil)
+
+      # deployment min/max
+      expect(described_class.minimum_id(Deployment)).to eq(nil)
+      expect(described_class.maximum_id(Deployment)).to eq(nil)
+
+      # project min/max
+      expect(described_class.minimum_id(Project)).to eq(nil)
+      expect(described_class.maximum_id(Project)).to eq(nil)
     end
   end
 end

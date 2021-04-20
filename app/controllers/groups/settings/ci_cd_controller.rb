@@ -5,10 +5,12 @@ module Groups
     class CiCdController < Groups::ApplicationController
       include RunnerSetupScripts
 
+      layout 'group_settings'
       skip_cross_project_access_check :show
       before_action :authorize_admin_group!
       before_action :authorize_update_max_artifacts_size!, only: [:update]
       before_action :define_variables, only: [:show]
+      before_action :push_licensed_features, only: [:show]
 
       feature_category :continuous_integration
 
@@ -51,7 +53,7 @@ module Groups
       end
 
       def runner_setup_scripts
-        private_runner_setup_scripts(group: group)
+        private_runner_setup_scripts
       end
 
       private
@@ -90,6 +92,12 @@ module Groups
       def update_group_params
         params.require(:group).permit(:max_artifacts_size)
       end
+
+      # Overridden in EE
+      def push_licensed_features
+      end
     end
   end
 end
+
+Groups::Settings::CiCdController.prepend_if_ee('EE::Groups::Settings::CiCdController')

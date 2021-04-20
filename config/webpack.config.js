@@ -121,6 +121,7 @@ const alias = {
   images: path.join(ROOT_PATH, 'app/assets/images'),
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
   vue$: 'vue/dist/vue.esm.js',
+  jquery$: 'jquery/dist/jquery.slim.js',
   spec: path.join(ROOT_PATH, 'spec/javascripts'),
   jest: path.join(ROOT_PATH, 'spec/frontend'),
   shared_queries: path.join(ROOT_PATH, 'app/graphql/queries'),
@@ -306,6 +307,14 @@ module.exports = {
           chunks: 'initial',
           minChunks: autoEntriesCount * 0.9,
         }),
+        tiptap: {
+          priority: 17,
+          name: 'tiptap',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](tiptap|prosemirror)-?\w*[\\/]/,
+          minChunks: 2,
+          reuseExistingChunk: true,
+        },
         graphql: {
           priority: 16,
           name: 'graphql',

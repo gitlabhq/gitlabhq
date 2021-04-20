@@ -12,6 +12,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['namespace'],
   props: {
     groupLink: {
       type: Object,
@@ -19,7 +20,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['showRemoveGroupLinkModal']),
+    ...mapActions({
+      showRemoveGroupLinkModal(dispatch, payload) {
+        return dispatch(`${this.namespace}/showRemoveGroupLinkModal`, payload);
+      },
+    }),
   },
 };
 </script>

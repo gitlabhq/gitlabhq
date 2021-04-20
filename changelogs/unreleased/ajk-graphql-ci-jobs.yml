@@ -1,0 +1,5 @@
+---
+title: Adds CI pipeline and job features to GraphQL API
+merge_request: 44703
+author:
+type: changed

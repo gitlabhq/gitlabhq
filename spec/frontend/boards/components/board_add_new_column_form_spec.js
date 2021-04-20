@@ -1,6 +1,6 @@
-import { GlFormGroup, GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
+import { GlDropdown, GlFormGroup, GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form.vue';
@@ -25,7 +25,7 @@ describe('Board card layout', () => {
 
   const mountComponent = ({
     loading = false,
-    formDescription = '',
+    noneSelected = '',
     searchLabel = '',
     searchPlaceholder = '',
     selectedId,
@@ -34,12 +34,9 @@ describe('Board card layout', () => {
   } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(BoardAddNewColumnForm, {
-        stubs: {
-          GlFormGroup: true,
-        },
         propsData: {
           loading,
-          formDescription,
+          noneSelected,
           searchLabel,
           searchPlaceholder,
           selectedId,
@@ -51,13 +48,15 @@ describe('Board card layout', () => {
             ...actions,
           },
         }),
+        stubs: {
+          GlDropdown,
+        },
       }),
     );
   };
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   const formTitle = () => wrapper.findByTestId('board-add-column-form-title').text();
@@ -65,9 +64,12 @@ describe('Board card layout', () => {
   const findSearchLabel = () => wrapper.find(GlFormGroup);
   const cancelButton = () => wrapper.findByTestId('cancelAddNewColumn');
   const submitButton = () => wrapper.findByTestId('addNewColumnButton');
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
 
   it('shows form title & search input', () => {
     mountComponent();
+
+    findDropdown().vm.$emit('show');
 
     expect(formTitle()).toEqual(BoardAddNewColumnForm.i18n.newList);
     expect(findSearchInput().exists()).toBe(true);
@@ -84,16 +86,6 @@ describe('Board card layout', () => {
     cancelButton().vm.$emit('click');
 
     expect(setAddColumnFormVisibility).toHaveBeenCalledWith(expect.anything(), false);
-  });
-
-  it('sets placeholder and description from props', () => {
-    const props = {
-      formDescription: 'Some description of a list',
-    };
-
-    mountComponent(props);
-
-    expect(wrapper.html()).toHaveText(props.formDescription);
   });
 
   describe('items', () => {
@@ -151,12 +143,10 @@ describe('Board card layout', () => {
       expect(submitButton().props('disabled')).toBe(true);
     });
 
-    it('emits add-list event on click', async () => {
+    it('emits add-list event on click', () => {
       mountComponent({
         selectedId: mockLabelList.label.id,
       });
-
-      await nextTick();
 
       submitButton().vm.$emit('click');
 

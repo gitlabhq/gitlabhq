@@ -75,16 +75,9 @@ module Notes
       increment_usage_counter(note)
       track_event(note, current_user)
 
-      if Feature.enabled?(:notes_create_service_tracking, project)
-        Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))
-      end
-
       if note.for_merge_request? && note.diff_note? && note.start_of_discussion?
         Discussions::CaptureDiffNotePositionService.new(note.noteable, note.diff_file&.paths).execute(note.discussion)
       end
-
-      track_note_creation_usage_for_issues(note) if note.for_issue?
-      track_note_creation_usage_for_merge_requests(note) if note.for_merge_request?
     end
 
     def do_commands(note, update_params, message, only_commands)
@@ -111,6 +104,16 @@ module Notes
       }
     end
 
+    def track_event(note, user)
+      track_note_creation_usage_for_issues(note) if note.for_issue?
+      track_note_creation_usage_for_merge_requests(note) if note.for_merge_request?
+      track_usage_event(:incident_management_incident_comment, user.id) if note.for_issue? && note.noteable.incident?
+
+      if Feature.enabled?(:notes_create_service_tracking, project)
+        Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))
+      end
+    end
+
     def tracking_data_for(note)
       label = Gitlab.ee? && note.author == User.visual_review_bot ? 'anonymous_visual_review_note' : 'note'
 
@@ -118,12 +121,6 @@ module Notes
         label: label,
         value: note.id
       }
-    end
-
-    def track_event(note, user)
-      return unless note.noteable.is_a?(Issue) && note.noteable.incident?
-
-      track_usage_event(:incident_management_incident_comment, user.id)
     end
 
     def track_note_creation_usage_for_issues(note)
@@ -135,3 +132,5 @@ module Notes
     end
   end
 end
+
+Notes::CreateService.prepend_if_ee('EE::Notes::CreateService')

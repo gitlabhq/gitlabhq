@@ -10,7 +10,7 @@ export default class CommitsList {
 
     this.$contentList = $('.content_list');
 
-    Pager.init(parseInt(limit, 10), false, false, this.processCommits.bind(this));
+    Pager.init({ limit: parseInt(limit, 10), prepareData: this.processCommits.bind(this) });
 
     this.content = $('#commits-list');
     this.searchField = $('#commits-search');

@@ -30,6 +30,7 @@ module API
       success Entities::ApplicationSetting
     end
     params do
+      optional :admin_mode, type: Boolean, desc: 'Require admin users to re-authenticate for administrative (i.e. potentially dangerous) operations'
       optional :admin_notification_email, type: String, desc: 'Deprecated: Use :abuse_notification_email instead. Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.'
       optional :abuse_notification_email, type: String, desc: 'Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.'
       optional :after_sign_up_text, type: String, desc: 'Text shown after sign up'

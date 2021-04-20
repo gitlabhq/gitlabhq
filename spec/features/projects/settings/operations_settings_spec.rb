@@ -146,7 +146,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
 
           click_button('Connect')
 
-          assert_text('Connection has failed. Re-check Auth Token and try again.')
+          assert_text('Connection failed. Check Auth Token and try again.')
         end
       end
     end

@@ -88,8 +88,10 @@ RSpec.describe 'Branches' do
       it 'shows filtered branches', :js do
         visit project_branches_path(project)
 
-        fill_in 'branch-search', with: 'fix'
-        find('#branch-search').native.send_keys(:enter)
+        branch_search = find('input[data-testid="branch-search"]')
+
+        branch_search.set('fix')
+        branch_search.native.send_keys(:enter)
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
@@ -114,20 +116,24 @@ RSpec.describe 'Branches' do
         expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_desc))
       end
 
-      it 'sorts the branches by name' do
+      it 'sorts the branches by name', :js do
         visit project_branches_filtered_path(project, state: 'all')
 
         click_button "Last updated" # Open sorting dropdown
-        click_link "Name"
+        within '[data-testid="branches-dropdown"]' do
+          find('p', text: 'Name').click
+        end
 
         expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :name))
       end
 
-      it 'sorts the branches by oldest updated' do
+      it 'sorts the branches by oldest updated', :js do
         visit project_branches_filtered_path(project, state: 'all')
 
         click_button "Last updated" # Open sorting dropdown
-        click_link "Oldest updated"
+        within '[data-testid="branches-dropdown"]' do
+          find('p', text: 'Oldest updated').click
+        end
 
         expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_asc))
       end
@@ -145,8 +151,10 @@ RSpec.describe 'Branches' do
       it 'shows filtered branches', :js do
         visit project_branches_filtered_path(project, state: 'all')
 
-        fill_in 'branch-search', with: 'fix'
-        find('#branch-search').native.send_keys(:enter)
+        branch_search = find('input[data-testid="branch-search"]')
+
+        branch_search.set('fix')
+        branch_search.native.send_keys(:enter)
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
@@ -157,9 +165,10 @@ RSpec.describe 'Branches' do
       it 'removes branch after confirmation', :js do
         visit project_branches_filtered_path(project, state: 'all')
 
-        fill_in 'branch-search', with: 'fix'
+        branch_search = find('input[data-testid="branch-search"]')
 
-        find('#branch-search').native.send_keys(:enter)
+        branch_search.set('fix')
+        branch_search.native.send_keys(:enter)
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)

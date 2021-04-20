@@ -17,7 +17,7 @@ RSpec.describe IdeHelper do
             'branch-name' => nil,
             'file-path' => nil,
             'merge-request' => nil,
-            'forked-project' => nil,
+            'fork-info' => nil,
             'project' => nil
           )
       end
@@ -25,10 +25,12 @@ RSpec.describe IdeHelper do
 
     context 'when instance vars are set' do
       it 'returns instance data in the hash' do
+        fork_info = { ide_path: '/test/ide/path' }
+
         self.instance_variable_set(:@branch, 'master')
         self.instance_variable_set(:@path, 'foo/bar')
         self.instance_variable_set(:@merge_request, '1')
-        self.instance_variable_set(:@forked_project, project)
+        self.instance_variable_set(:@fork_info, fork_info)
         self.instance_variable_set(:@project, project)
 
         serialized_project = API::Entities::Project.represent(project).to_json
@@ -38,7 +40,7 @@ RSpec.describe IdeHelper do
             'branch-name' => 'master',
             'file-path' => 'foo/bar',
             'merge-request' => '1',
-            'forked-project' => serialized_project,
+            'fork-info' => fork_info.to_json,
             'project' => serialized_project
           )
       end

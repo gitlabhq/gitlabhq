@@ -2,6 +2,7 @@
 import { GlSprintf, GlToggle, GlFormGroup, GlFormInput } from '@gitlab/ui';
 
 import {
+  MAVEN_TOGGLE_LABEL,
   MAVEN_TITLE,
   MAVEN_SETTINGS_SUBTITLE,
   MAVEN_DUPLICATES_ALLOWED_DISABLED,
@@ -15,6 +16,7 @@ import {
 export default {
   name: 'MavenSettings',
   i18n: {
+    MAVEN_TOGGLE_LABEL,
     MAVEN_TITLE,
     MAVEN_SETTINGS_SUBTITLE,
     MAVEN_SETTING_EXCEPTION_TITLE,
@@ -80,6 +82,8 @@ export default {
       <div class="gl-display-flex">
         <gl-toggle
           data-qa-selector="allow_duplicates_toggle"
+          :label="$options.i18n.MAVEN_TOGGLE_LABEL"
+          label-position="hidden"
           :value="mavenDuplicatesAllowed"
           @change="update($options.modelNames.MAVEN_DUPLICATES_ALLOWED, $event)"
         />

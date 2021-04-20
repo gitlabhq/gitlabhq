@@ -6,6 +6,7 @@ RSpec.describe Projects::RawController do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }
+
   let(:inline) { nil }
 
   describe 'GET #show' do

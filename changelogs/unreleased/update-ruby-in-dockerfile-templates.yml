@@ -1,0 +1,5 @@
+---
+title: Update Ruby from 2.5 to 2.7 in Dockerfile templates
+merge_request: 59345
+author: Takuya Noguchi
+type: changed

@@ -31,7 +31,7 @@ variables:
 
 To set values for the `POSTGRES_DB`, `POSTGRES_USER`,
 `POSTGRES_PASSWORD` and `POSTGRES_HOST_AUTH_METHOD`,
-[assign them to a CI/CD variable in the user interface](../variables/README.md#create-a-custom-variable-in-the-ui),
+[assign them to a CI/CD variable in the user interface](../variables/README.md#custom-cicd-variables),
 then assign that variable to the corresponding variable in your
 `.gitlab-ci.yml` file.
 
@@ -45,7 +45,7 @@ Database: nice_marmot
 ```
 
 If you're wondering why we used `postgres` for the `Host`, read more at
-[How services are linked to the job](../docker/using_docker_images.md#how-services-are-linked-to-the-job).
+[How services are linked to the job](../services/index.md#how-services-are-linked-to-the-job).
 
 You can also use any other Docker image available on [Docker Hub](https://hub.docker.com/_/postgres).
 For example, to use PostgreSQL 9.3, the service becomes `postgres:9.3`.

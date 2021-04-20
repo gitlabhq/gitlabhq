@@ -133,8 +133,8 @@ operation of the pipeline.
 To execute a pipeline manually:
 
 1. Navigate to your project's **CI/CD > Pipelines**.
-1. Select the **Run Pipeline** button.
-1. On the **Run Pipeline** page:
+1. Select the **Run pipeline** button.
+1. On the **Run pipeline** page:
     1. Select the branch or tag to run the pipeline for in the **Run for branch name or tag** field.
     1. Enter any [environment variables](../variables/README.md) required for the pipeline run.
        You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
@@ -332,10 +332,12 @@ GitLab capitalizes the stages' names in the pipeline graphs.
 
 ### Regular pipeline graphs
 
+> - [Visualization improved](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
+
 Regular pipeline graphs show the names of the jobs in each stage. Regular pipeline graphs can
 be found when you are on a [single pipeline page](#view-pipelines). For example:
 
-![Pipelines example](img/pipelines.png)
+![Pipelines example](img/pipelines_v13_11.png)
 
 [Multi-project pipeline graphs](../multi_project_pipelines.md#multi-project-pipeline-visualization) help
 you visualize the entire pipeline, including all cross-project inter-dependencies. **(PREMIUM)**

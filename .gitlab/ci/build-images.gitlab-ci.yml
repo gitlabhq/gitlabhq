@@ -1,6 +1,8 @@
-# This image is used by the `review-qa-*` jobs. Not currently used by the `omnibus-gitlab` pipelines which rebuild this
-# image, e.g. https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/jobs/587107399, which we could probably avoid.
-# See https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5429.
+# This image is used by the `review-qa-*` jobs. The image name is also passed to the downstream `omnibus-gitlab-mirror` pipeline
+# triggered by `package-and-qa` so that it doesn't have to rebuild it a second time. The downstream `omnibus-gitlab-mirror` pipeline
+# itself passes the image name to the `gitlab-qa-mirror` pipeline so that it can use it instead of inferring an end-to-end image
+# from the GitLab image built by the downstream `omnibus-gitlab-mirror` pipeline.
+# See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#testing-code-in-merge-requests for more details.
 build-qa-image:
   extends:
     - .use-kaniko

@@ -1,7 +1,11 @@
 <script>
 import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 export default {
+  i18n: {
+    buttonLabel: s__('MergeRequests|Resolve this thread in a new issue'),
+  },
   name: 'ResolveWithIssueButton',
   components: {
     GlButton,
@@ -23,7 +27,8 @@ export default {
     <gl-button
       v-gl-tooltip
       :href="url"
-      :title="s__('MergeRequests|Resolve this thread in a new issue')"
+      :title="$options.i18n.buttonLabel"
+      :aria-label="$options.i18n.buttonLabel"
       class="new-issue-for-discussion discussion-create-issue-btn"
       icon="issue-new"
     />

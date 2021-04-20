@@ -76,7 +76,7 @@ module Gitlab
       def project_uploads_except_avatar(avatar_path)
         return @project.uploads unless avatar_path
 
-        @project.uploads.where("path != ?", avatar_path)
+        @project.uploads.where.not(path: avatar_path)
       end
 
       def download_and_copy(upload)

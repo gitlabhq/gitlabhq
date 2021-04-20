@@ -48,6 +48,11 @@ export default {
       required: false,
       default: null,
     },
+    discussionFile: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     helpPagePath: {
       type: String,
       required: false,
@@ -86,7 +91,7 @@ export default {
       isRequesting: false,
       isResolving: false,
       commentLineStart: {},
-      resolveAsThread: this.glFeatures.removeResolveNote,
+      resolveAsThread: true,
     };
   },
   computed: {
@@ -139,14 +144,9 @@ export default {
       return this.note.isDraft;
     },
     canResolve() {
-      if (this.glFeatures.removeResolveNote && !this.discussionRoot) return false;
+      if (!this.discussionRoot) return false;
 
-      if (this.glFeatures.removeResolveNote) return this.note.current_user.can_resolve_discussion;
-
-      return (
-        this.note.current_user.can_resolve ||
-        (this.note.isDraft && this.note.discussion_id !== null)
-      );
+      return this.note.current_user.can_resolve_discussion;
     },
     lineRange() {
       return this.note.position?.line_range;
@@ -172,12 +172,18 @@ export default {
       return commentLineOptions(lines, this.commentLineStart, this.line.line_code);
     },
     diffFile() {
+      let fileResolvedFromAvailableSource;
+
       if (this.commentLineStart.line_code) {
         const lineCode = this.commentLineStart.line_code.split('_')[0];
-        return this.getDiffFileByHash(lineCode);
+        fileResolvedFromAvailableSource = this.getDiffFileByHash(lineCode);
       }
 
-      return null;
+      if (!fileResolvedFromAvailableSource && this.discussionFile) {
+        fileResolvedFromAvailableSource = this.discussionFile;
+      }
+
+      return fileResolvedFromAvailableSource || null;
     },
   },
   created() {

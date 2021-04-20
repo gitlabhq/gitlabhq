@@ -54,7 +54,7 @@ class DiffFileEntity < DiffFileBaseEntity
   end
 
   # Used for inline diffs
-  expose :highlighted_diff_lines, using: DiffLineEntity, if: -> (diff_file, options) { inline_diff_view?(options, diff_file) && diff_file.text? } do |diff_file|
+  expose :highlighted_diff_lines, using: DiffLineEntity, if: -> (diff_file, options) { inline_diff_view?(options) && diff_file.text? } do |diff_file|
     file = conflict_file(options, diff_file) || diff_file
     file.diff_lines_for_serializer
   end
@@ -68,7 +68,7 @@ class DiffFileEntity < DiffFileBaseEntity
   end
 
   # Used for parallel diffs
-  expose :parallel_diff_lines, using: DiffLineParallelEntity, if: -> (diff_file, options) { parallel_diff_view?(options, diff_file) && diff_file.text? }
+  expose :parallel_diff_lines, using: DiffLineParallelEntity, if: -> (diff_file, options) { parallel_diff_view?(options) && diff_file.text? }
 
   expose :code_navigation_path, if: -> (diff_file) { options[:code_navigation_path] } do |diff_file|
     options[:code_navigation_path].full_json_path_for(diff_file.new_path)
@@ -76,14 +76,17 @@ class DiffFileEntity < DiffFileBaseEntity
 
   private
 
-  def parallel_diff_view?(options, diff_file)
-    # If we're not rendering inline, we must be rendering parallel
-    !inline_diff_view?(options, diff_file)
+  def parallel_diff_view?(options)
+    diff_view(options) == :parallel
   end
 
-  def inline_diff_view?(options, diff_file)
+  def inline_diff_view?(options)
+    diff_view(options) == :inline
+  end
+
+  def diff_view(options)
     # If nothing is present, inline will be the default.
-    options.fetch(:diff_view, :inline).to_sym == :inline
+    options.fetch(:diff_view, :inline).to_sym
   end
 
   def conflict_file(options, diff_file)

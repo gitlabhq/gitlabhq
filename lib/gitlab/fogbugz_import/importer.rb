@@ -199,8 +199,7 @@ module Gitlab
 
       def linkify_issues(str)
         str = str.gsub(/([Ii]ssue) ([0-9]+)/, '\1 #\2')
-        str = str.gsub(/([Cc]ase) ([0-9]+)/, '\1 #\2')
-        str
+        str.gsub(/([Cc]ase) ([0-9]+)/, '\1 #\2')
       end
 
       def escape_for_markdown(str)
@@ -208,8 +207,7 @@ module Gitlab
         str = str.gsub(/^-/, "\\-")
         str = str.gsub("`", "\\~")
         str = str.delete("\r")
-        str = str.gsub("\n", "  \n")
-        str
+        str.gsub("\n", "  \n")
       end
 
       def format_content(raw_content)

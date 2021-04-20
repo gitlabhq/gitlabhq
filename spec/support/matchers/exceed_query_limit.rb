@@ -20,6 +20,11 @@ module ExceedQueryLimitHelpers
     self
   end
 
+  def for_model(model)
+    table = model.table_name if model < ActiveRecord::Base
+    for_query(/(FROM|UPDATE|INSERT INTO|DELETE FROM)\s+"#{table}"/)
+  end
+
   def show_common_queries
     @show_common_queries = true
     self

@@ -43,3 +43,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::SidekiqMiddleware.singleton_class.prepend_if_ee('EE::Gitlab::SidekiqMiddleware')

@@ -10,9 +10,7 @@ RSpec.describe DeleteInternalIdsWhereFeatureFlagsUsage do
 
   def setup
     namespace = namespaces.create!(name: 'foo', path: 'foo')
-    project = projects.create!(namespace_id: namespace.id)
-
-    project
+    projects.create!(namespace_id: namespace.id)
   end
 
   it 'deletes feature flag rows from the internal_ids table' do

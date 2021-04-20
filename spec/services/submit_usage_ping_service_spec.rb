@@ -6,6 +6,7 @@ RSpec.describe SubmitUsagePingService do
   include StubRequests
   include UsageDataHelpers
 
+  let(:usage_data_id) { 31643 }
   let(:score_params) do
     {
       score: {
@@ -40,6 +41,8 @@ RSpec.describe SubmitUsagePingService do
         leader_service_desk_issues: 15.8,
         instance_service_desk_issues: 15.1,
 
+        usage_data_id: usage_data_id,
+
         non_existing_column: 'value'
       }
     }
@@ -47,7 +50,6 @@ RSpec.describe SubmitUsagePingService do
 
   let(:with_dev_ops_score_params) { { dev_ops_score: score_params[:score] } }
   let(:with_conv_index_params) { { conv_index: score_params[:score] } }
-  let(:without_dev_ops_score_params) { { dev_ops_score: {} } }
 
   shared_examples 'does not run' do
     it do
@@ -103,7 +105,7 @@ RSpec.describe SubmitUsagePingService do
     end
 
     it 'sends a POST request' do
-      response = stub_response(body: without_dev_ops_score_params)
+      response = stub_response(body: with_dev_ops_score_params)
 
       subject.execute
 
@@ -111,7 +113,7 @@ RSpec.describe SubmitUsagePingService do
     end
 
     it 'forces a refresh of usage data statistics before submitting' do
-      stub_response(body: without_dev_ops_score_params)
+      stub_response(body: with_dev_ops_score_params)
 
       expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_call_original
 
@@ -124,6 +126,33 @@ RSpec.describe SubmitUsagePingService do
       end
 
       it_behaves_like 'saves DevOps report data from the response'
+
+      it 'saves usage_data_id to version_usage_data_id_value' do
+        recorded_at = Time.current
+        usage_data = { uuid: 'uuid', recorded_at: recorded_at }
+
+        expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_return(usage_data)
+
+        subject.execute
+
+        raw_usage_data = RawUsageData.find_by(recorded_at: recorded_at)
+
+        expect(raw_usage_data.version_usage_data_id_value).to eq(31643)
+      end
+    end
+
+    context 'when version app usage_data_id is invalid' do
+      let(:usage_data_id) { -1000 }
+
+      before do
+        stub_response(body: with_conv_index_params)
+      end
+
+      it 'raises an exception' do
+        expect { subject.execute }.to raise_error(described_class::SubmissionError) do |error|
+          expect(error.message).to include('Invalid usage_data_id in response: -1000')
+        end
+      end
     end
 
     context 'when DevOps report data is passed' do

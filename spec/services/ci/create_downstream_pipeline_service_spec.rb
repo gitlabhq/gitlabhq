@@ -112,7 +112,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
     it 'updates bridge status when downstream pipeline gets processed' do
       pipeline = service.execute(bridge)
 
-      expect(pipeline.reload).to be_pending
+      expect(pipeline.reload).to be_created
       expect(bridge.reload).to be_success
     end
 
@@ -227,7 +227,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
           it 'updates bridge status when downstream pipeline gets processed' do
             pipeline = service.execute(bridge)
 
-            expect(pipeline.reload).to be_pending
+            expect(pipeline.reload).to be_created
             expect(bridge.reload).to be_success
           end
 

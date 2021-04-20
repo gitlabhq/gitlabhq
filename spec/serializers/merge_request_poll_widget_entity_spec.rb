@@ -6,14 +6,15 @@ RSpec.describe MergeRequestPollWidgetEntity do
   include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax
 
-  let(:project)  { create :project, :repository }
-  let(:resource) { create(:merge_request, source_project: project, target_project: project) }
-  let(:user)     { create(:user) }
+  let_it_be(:project)  { create :project, :repository }
+  let_it_be(:resource) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be(:user)     { create(:user) }
 
   let(:request) { double('request', current_user: user, project: project) }
+  let(:options) { {} }
 
   subject do
-    described_class.new(resource, request: request).as_json
+    described_class.new(resource, { request: request }.merge(options)).as_json
   end
 
   it 'has default_merge_commit_message_with_description' do
@@ -22,20 +23,33 @@ RSpec.describe MergeRequestPollWidgetEntity do
   end
 
   describe 'merge_pipeline' do
+    before do
+      stub_feature_flags(merge_request_cached_merge_pipeline_serializer: false)
+    end
+
     it 'returns nil' do
       expect(subject[:merge_pipeline]).to be_nil
     end
 
     context 'when is merged' do
-      let(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
-      let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
+      let_it_be(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
+      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
 
       before do
         project.add_maintainer(user)
       end
 
+      context 'when user cannot read pipelines on target project' do
+        before do
+          project.team.truncate
+        end
+
+        it 'returns nil' do
+          expect(subject[:merge_pipeline]).to be_nil
+        end
+      end
+
       it 'returns merge_pipeline' do
-        pipeline.reload
         pipeline_payload =
           MergeRequests::PipelineEntity
             .represent(pipeline, request: request)
@@ -44,9 +58,9 @@ RSpec.describe MergeRequestPollWidgetEntity do
         expect(subject[:merge_pipeline]).to eq(pipeline_payload)
       end
 
-      context 'when user cannot read pipelines on target project' do
+      context 'when merge_request_cached_merge_pipeline_serializer is enabled' do
         before do
-          project.add_guest(user)
+          stub_feature_flags(merge_request_cached_merge_pipeline_serializer: true)
         end
 
         it 'returns nil' do
@@ -69,72 +83,6 @@ RSpec.describe MergeRequestPollWidgetEntity do
     context 'when user cannot push to project' do
       it 'returns nil' do
         expect(subject[:new_blob_path]).to be_nil
-      end
-    end
-  end
-
-  describe 'terraform_reports_path' do
-    context 'when merge request has terraform reports' do
-      before do
-        allow(resource).to receive(:has_terraform_reports?).and_return(true)
-      end
-
-      it 'set the path to poll data' do
-        expect(subject[:terraform_reports_path]).to be_present
-      end
-    end
-
-    context 'when merge request has no terraform reports' do
-      before do
-        allow(resource).to receive(:has_terraform_reports?).and_return(false)
-      end
-
-      it 'set the path to poll data' do
-        expect(subject[:terraform_reports_path]).to be_nil
-      end
-    end
-  end
-
-  describe 'accessibility_report_path' do
-    context 'when merge request has accessibility reports' do
-      before do
-        allow(resource).to receive(:has_accessibility_reports?).and_return(true)
-      end
-
-      it 'set the path to poll data' do
-        expect(subject[:accessibility_report_path]).to be_present
-      end
-    end
-
-    context 'when merge request has no accessibility reports' do
-      before do
-        allow(resource).to receive(:has_accessibility_reports?).and_return(false)
-      end
-
-      it 'set the path to poll data' do
-        expect(subject[:accessibility_report_path]).to be_nil
-      end
-    end
-  end
-
-  describe 'exposed_artifacts_path' do
-    context 'when merge request has exposed artifacts' do
-      before do
-        expect(resource).to receive(:has_exposed_artifacts?).and_return(true)
-      end
-
-      it 'set the path to poll data' do
-        expect(subject[:exposed_artifacts_path]).to be_present
-      end
-    end
-
-    context 'when merge request has no exposed artifacts' do
-      before do
-        expect(resource).to receive(:has_exposed_artifacts?).and_return(false)
-      end
-
-      it 'set the path to poll data' do
-        expect(subject[:exposed_artifacts_path]).to be_nil
       end
     end
   end
@@ -226,19 +174,6 @@ RSpec.describe MergeRequestPollWidgetEntity do
           expect(subject[:pipeline]).to be_nil
         end
 
-        context 'when merge_request_cached_pipeline_serializer is disabled' do
-          it 'returns detailed info about pipeline' do
-            stub_feature_flags(merge_request_cached_pipeline_serializer: false)
-
-            pipeline_payload =
-              MergeRequests::PipelineEntity
-                .represent(pipeline, request: req)
-                .as_json
-
-            expect(subject[:pipeline]).to eq(pipeline_payload)
-          end
-        end
-
         it 'returns ci_status' do
           expect(subject[:ci_status]).to eq('pending')
         end
@@ -276,6 +211,41 @@ RSpec.describe MergeRequestPollWidgetEntity do
         { name: 'rspec', coverage: 91.5 },
         { name: 'jest', coverage: 94.1 }
       ])
+    end
+  end
+
+  describe '#mergeable' do
+    it 'shows whether a merge request is mergeable' do
+      expect(subject[:mergeable]).to eq(true)
+    end
+
+    context 'when merge request is in checking state' do
+      before do
+        resource.mark_as_unchecked!
+        resource.mark_as_checking!
+      end
+
+      it 'calculates mergeability and returns true' do
+        expect(subject[:mergeable]).to eq(true)
+      end
+
+      context 'when async_mergeability_check is passed' do
+        let(:options) { { async_mergeability_check: true } }
+
+        it 'returns false' do
+          expect(subject[:mergeable]).to eq(false)
+        end
+
+        context 'when check_mergeability_async_in_widget is disabled' do
+          before do
+            stub_feature_flags(check_mergeability_async_in_widget: false)
+          end
+
+          it 'calculates mergeability and returns true' do
+            expect(subject[:mergeable]).to eq(true)
+          end
+        end
+      end
     end
   end
 end

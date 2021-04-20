@@ -122,6 +122,7 @@ export default {
       :disabled="!shouldToggleDiscussion"
       class="js-image-badge"
       type="button"
+      :aria-label="__('Show comments')"
       @click="clickedToggle(discussion)"
     >
       <gl-icon v-if="showCommentIcon" name="image-comment-dark" :size="24" />

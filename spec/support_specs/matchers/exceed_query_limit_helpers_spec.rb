@@ -225,6 +225,16 @@ RSpec.describe ExceedQueryLimitHelpers do
     expect(test_matcher.actual_count).to eq(2)
   end
 
+  it 'can filter specific models' do
+    test_matcher = TestMatcher.new.for_model(TestQueries)
+    test_matcher.verify_count do
+      TestQueries.first
+      TestQueries.connection.execute('select 1')
+    end
+
+    expect(test_matcher.actual_count).to eq(1)
+  end
+
   it 'can ignore specific queries' do
     test_matcher = TestMatcher.new.ignoring(/foobar/)
     test_matcher.verify_count do

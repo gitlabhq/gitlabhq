@@ -64,7 +64,7 @@ RSpec.describe Banzai::ReferenceRedactor do
       let(:redactor) { described_class.new(Banzai::RenderContext.new(project, user)) }
 
       before do
-        project.update(pending_delete: true)
+        project.update!(pending_delete: true)
       end
 
       it 'redacts an issue attached' do

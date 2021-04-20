@@ -59,6 +59,7 @@ RSpec.describe Groups::UpdateSharedRunnersService do
 
       context 'disable shared Runners' do
         let_it_be(:group) { create(:group) }
+
         let(:params) { { shared_runners_setting: 'disabled_and_unoverridable' } }
 
         it 'receives correct method and succeeds' do

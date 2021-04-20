@@ -8,14 +8,14 @@
       .form-check
         = f.check_box :throttle_unauthenticated_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_unauthenticated_checkbox' }
         = f.label :throttle_unauthenticated_enabled, class: 'form-check-label label-bold' do
-          Enable unauthenticated request rate limit
+          = _("Enable unauthenticated request rate limit")
         %span.form-text.text-muted
-          Helps reduce request volume (e.g. from crawlers or abusive bots)
+          = _("Helps reduce request volume (e.g. from crawlers or abusive bots)")
     .form-group
-      = f.label :throttle_unauthenticated_requests_per_period, 'Max unauthenticated requests per period per IP', class: 'label-bold'
+      = f.label :throttle_unauthenticated_requests_per_period, _('Max unauthenticated requests per period per IP'), class: 'label-bold'
       = f.number_field :throttle_unauthenticated_requests_per_period, class: 'form-control gl-form-input'
     .form-group
-      = f.label :throttle_unauthenticated_period_in_seconds, 'Unauthenticated rate limit period in seconds', class: 'label-bold'
+      = f.label :throttle_unauthenticated_period_in_seconds, _('Unauthenticated rate limit period in seconds'), class: 'label-bold'
       = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control gl-form-input'
     %hr
     %h5
@@ -24,14 +24,14 @@
       .form-check
         = f.check_box :throttle_authenticated_api_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_authenticated_api_checkbox' }
         = f.label :throttle_authenticated_api_enabled, class: 'form-check-label label-bold' do
-          Enable authenticated API request rate limit
+          = _("Enable authenticated API request rate limit")
         %span.form-text.text-muted
-          Helps reduce request volume (e.g. from crawlers or abusive bots)
+          = _("Helps reduce request volume (e.g. from crawlers or abusive bots)")
     .form-group
-      = f.label :throttle_authenticated_api_requests_per_period, 'Max authenticated API requests per period per user', class: 'label-bold'
+      = f.label :throttle_authenticated_api_requests_per_period, _('Max authenticated API requests per period per user'), class: 'label-bold'
       = f.number_field :throttle_authenticated_api_requests_per_period, class: 'form-control gl-form-input'
     .form-group
-      = f.label :throttle_authenticated_api_period_in_seconds, 'Authenticated API rate limit period in seconds', class: 'label-bold'
+      = f.label :throttle_authenticated_api_period_in_seconds, _('Authenticated API rate limit period in seconds'), class: 'label-bold'
       = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control gl-form-input'
     %hr
     %h5
@@ -44,10 +44,10 @@
         %span.form-text.text-muted
           Helps reduce request volume (e.g. from crawlers or abusive bots)
     .form-group
-      = f.label :throttle_authenticated_web_requests_per_period, 'Max authenticated web requests per period per user', class: 'label-bold'
+      = f.label :throttle_authenticated_web_requests_per_period, _('Max authenticated web requests per period per user'), class: 'label-bold'
       = f.number_field :throttle_authenticated_web_requests_per_period, class: 'form-control gl-form-input'
     .form-group
-      = f.label :throttle_authenticated_web_period_in_seconds, 'Authenticated web rate limit period in seconds', class: 'label-bold'
+      = f.label :throttle_authenticated_web_period_in_seconds, _('Authenticated web rate limit period in seconds'), class: 'label-bold'
       = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control gl-form-input'
     %hr
     %h5
@@ -57,4 +57,4 @@
         = _('A plain-text response to show to clients that hit the rate limit.')
       = f.text_area :rate_limiting_response_text, placeholder: ::Gitlab::Throttle::DEFAULT_RATE_LIMITING_RESPONSE_TEXT, class: 'form-control gl-form-input', rows: 5
 
-  = f.submit 'Save changes', class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

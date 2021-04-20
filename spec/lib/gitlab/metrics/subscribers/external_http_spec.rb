@@ -6,29 +6,45 @@ RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store do
   let(:transaction) { Gitlab::Metrics::Transaction.new }
   let(:subscriber) { described_class.new }
 
+  around do |example|
+    freeze_time { example.run }
+  end
+
   let(:event_1) do
-    double(:event, payload: {
-      method: 'POST', code: "200", duration: 0.321,
-      scheme: 'https', host: 'gitlab.com', port: 80, path: '/api/v4/projects',
-      query: 'current=true'
-    })
+    double(
+      :event,
+      payload: {
+        method: 'POST', code: "200", duration: 0.321,
+        scheme: 'https', host: 'gitlab.com', port: 80, path: '/api/v4/projects',
+        query: 'current=true'
+      },
+      time: Time.current
+    )
   end
 
   let(:event_2) do
-    double(:event, payload: {
-      method: 'GET', code: "301", duration: 0.12,
-      scheme: 'http', host: 'gitlab.com', port: 80, path: '/api/v4/projects/2',
-      query: 'current=true'
-    })
+    double(
+      :event,
+      payload: {
+        method: 'GET', code: "301", duration: 0.12,
+        scheme: 'http', host: 'gitlab.com', port: 80, path: '/api/v4/projects/2',
+        query: 'current=true'
+      },
+      time: Time.current
+    )
   end
 
   let(:event_3) do
-    double(:event, payload: {
-      method: 'POST', duration: 5.3,
-      scheme: 'http', host: 'gitlab.com', port: 80, path: '/api/v4/projects/2/issues',
-      query: 'current=true',
-      exception_object: Net::ReadTimeout.new
-    })
+    double(
+      :event,
+      payload: {
+        method: 'POST', duration: 5.3,
+        scheme: 'http', host: 'gitlab.com', port: 80, path: '/api/v4/projects/2/issues',
+        query: 'current=true',
+        exception_object: Net::ReadTimeout.new
+      },
+      time: Time.current
+    )
   end
 
   describe '.detail_store' do
@@ -134,19 +150,22 @@ RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store do
       subscriber.request(event_3)
 
       expect(Gitlab::SafeRequestStore[:external_http_detail_store].length).to eq(3)
-      expect(Gitlab::SafeRequestStore[:external_http_detail_store][0]).to include(
+      expect(Gitlab::SafeRequestStore[:external_http_detail_store][0]).to match a_hash_including(
+        start: be_like_time(Time.current),
         method: 'POST', code: "200", duration: 0.321,
         scheme: 'https', host: 'gitlab.com', port: 80, path: '/api/v4/projects',
         query: 'current=true', exception_object: nil,
         backtrace: be_a(Array)
       )
-      expect(Gitlab::SafeRequestStore[:external_http_detail_store][1]).to include(
+      expect(Gitlab::SafeRequestStore[:external_http_detail_store][1]).to match a_hash_including(
+        start: be_like_time(Time.current),
         method: 'GET', code: "301", duration: 0.12,
         scheme: 'http', host: 'gitlab.com', port: 80, path: '/api/v4/projects/2',
         query: 'current=true', exception_object: nil,
         backtrace: be_a(Array)
       )
-      expect(Gitlab::SafeRequestStore[:external_http_detail_store][2]).to include(
+      expect(Gitlab::SafeRequestStore[:external_http_detail_store][2]).to match a_hash_including(
+        start: be_like_time(Time.current),
         method: 'POST', duration: 5.3,
         scheme: 'http', host: 'gitlab.com', port: 80, path: '/api/v4/projects/2/issues',
         query: 'current=true',

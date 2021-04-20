@@ -267,6 +267,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
     describe '#saves project tree' do
       let_it_be(:user) { create(:user) }
       let_it_be(:group) { create(:group) }
+
       let(:project) { setup_project }
       let(:full_path) do
         if ndjson_enabled

@@ -19,6 +19,9 @@ function factory(propsData = {}) {
       projectPath: 'gitlab-org/gitlab-ce',
       url: `https://test.com`,
     },
+    provide: {
+      glFeatures: { refactorBlobViewer: true },
+    },
     mocks: {
       $router,
     },
@@ -81,7 +84,7 @@ describe('Repository table row component', () => {
   it.each`
     type        | component         | componentName
     ${'tree'}   | ${RouterLinkStub} | ${'RouterLink'}
-    ${'file'}   | ${'a'}            | ${'hyperlink'}
+    ${'blob'}   | ${RouterLinkStub} | ${'RouterLink'}
     ${'commit'} | ${'a'}            | ${'hyperlink'}
   `('renders a $componentName for type $type', ({ type, component }) => {
     factory({

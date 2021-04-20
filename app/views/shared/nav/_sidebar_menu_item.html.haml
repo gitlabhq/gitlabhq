@@ -1,0 +1,8 @@
+= nav_link(**sidebar_menu_item.active_routes) do
+  = link_to sidebar_menu_item.link, **sidebar_menu_item.container_html_options, data: { qa_selector: 'sidebar_menu_item_link', qa_menu_item: sidebar_menu_item.title } do
+    %span
+      = sidebar_menu_item.title
+      - if sidebar_menu_item.sprite_icon
+        = sprite_icon(sidebar_menu_item.sprite_icon, **sidebar_menu_item.sprite_icon_html_options)
+    - if sidebar_menu_item.show_hint?
+      .js-feature-highlight{ **sidebar_menu_item.hint_html_options }

@@ -113,9 +113,7 @@ module ErrorTracking
         uri = URI(url)
         uri.path.squeeze!('/')
         # Remove trailing slash
-        uri = uri.to_s.delete_suffix('/')
-
-        uri
+        uri.to_s.delete_suffix('/')
       end
 
       def map_to_errors(issues)

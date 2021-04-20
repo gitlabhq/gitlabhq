@@ -54,9 +54,9 @@ module Packages
       end
 
       def dependencies_for_create_dependency_service
-        names_and_versions = @dependencies.map do |dependency|
+        names_and_versions = @dependencies.to_h do |dependency|
           [dependency[:name], version_or_empty_string(dependency[:version])]
-        end.to_h
+        end
 
         { 'dependencies' => names_and_versions }
       end

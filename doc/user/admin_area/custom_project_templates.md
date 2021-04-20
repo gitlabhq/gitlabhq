@@ -16,7 +16,7 @@ Every project directly under the group namespace will be
 available to the user if they have access to them. For example:
 
 - Public projects, in the group will be available to every signed-in user, if all enabled [project features](../project/settings/index.md#sharing-and-permissions)
-  are set to **Everyone With Access**.
+  except for GitLab Pages are set to **Everyone With Access**.
 - Private projects will be available only if the user is a member of the project.
 
 Repository and database information that are copied over to each new project are

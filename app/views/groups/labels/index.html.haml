@@ -8,7 +8,7 @@
   #js-promote-label-modal
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
-  .labels-container.gl-mt-2
+  .labels-container.gl-mt-2.gl-bg-gray-10.gl-border-solid.gl-border-1.gl-border-gray-100
     - if @labels.any?
       .text-muted
         = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuable_types.to_sentence }

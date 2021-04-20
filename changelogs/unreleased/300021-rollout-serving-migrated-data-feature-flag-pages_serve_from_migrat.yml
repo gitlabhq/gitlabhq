@@ -1,0 +1,5 @@
+---
+title: Remove pages_serve_from_migrated_zip feature flag
+merge_request: 59002
+author:
+type: added

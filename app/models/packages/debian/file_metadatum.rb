@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Packages::Debian::FileMetadatum < ApplicationRecord
+  self.primary_key = :package_file_id
+
   belongs_to :package_file, inverse_of: :debian_file_metadatum
 
   validates :package_file, presence: true

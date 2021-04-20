@@ -36,7 +36,9 @@ module Gitlab
       attr_accessor :project, :current_user, :params, :chat_name
 
       def initialize(project, chat_name, params = {})
-        @project, @current_user, @params = project, chat_name.user, params.dup
+        @project = project
+        @current_user = chat_name.user
+        @params = params.dup
         @chat_name = chat_name
       end
 

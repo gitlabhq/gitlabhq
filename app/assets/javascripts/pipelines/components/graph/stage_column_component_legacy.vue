@@ -1,10 +1,10 @@
 <script>
 import { isEmpty, escape } from 'lodash';
 import stageColumnMixin from '../../mixins/stage_column_mixin';
-import ActionComponent from './action_component.vue';
+import { reportToSentry } from '../../utils';
+import ActionComponent from '../jobs_shared/action_component.vue';
 import JobGroupDropdown from './job_group_dropdown.vue';
 import JobItem from './job_item.vue';
-import { reportToSentry } from './utils';
 
 export default {
   components: {

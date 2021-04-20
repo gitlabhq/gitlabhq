@@ -1,8 +1,0 @@
----
-name: user_mode_in_session
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16981
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/321025
-milestone: 12.4
-type: development
-group: group::access
-default_enabled: false

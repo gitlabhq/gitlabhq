@@ -11,43 +11,43 @@ export const STATUSES = {
   STARTED: 'started',
   NONE: 'none',
   SCHEDULING: 'scheduling',
+  CANCELLED: 'cancelled',
+};
+
+const SCHEDULED_STATUS = {
+  icon: 'status-scheduled',
+  text: __('Pending'),
+  iconClass: 'gl-text-orange-400',
 };
 
 const STATUS_MAP = {
+  [STATUSES.NONE]: {
+    icon: 'status-waiting',
+    text: __('Not started'),
+    iconClass: 'gl-text-gray-400',
+  },
+  [STATUSES.SCHEDULING]: SCHEDULED_STATUS,
+  [STATUSES.SCHEDULED]: SCHEDULED_STATUS,
+  [STATUSES.CREATED]: SCHEDULED_STATUS,
+  [STATUSES.STARTED]: {
+    icon: 'status-running',
+    text: __('Importing...'),
+    iconClass: 'gl-text-blue-400',
+  },
   [STATUSES.FINISHED]: {
-    icon: 'success',
-    text: __('Done'),
-    textClass: 'text-success',
+    icon: 'status-success',
+    text: __('Complete'),
+    iconClass: 'gl-text-green-400',
   },
   [STATUSES.FAILED]: {
-    icon: 'failed',
+    icon: 'status-failed',
     text: __('Failed'),
-    textClass: 'text-danger',
+    iconClass: 'gl-text-red-600',
   },
-  [STATUSES.CREATED]: {
-    icon: 'pending',
-    text: __('Scheduled'),
-    textClass: 'text-warning',
-  },
-  [STATUSES.SCHEDULED]: {
-    icon: 'pending',
-    text: __('Scheduled'),
-    textClass: 'text-warning',
-  },
-  [STATUSES.STARTED]: {
-    icon: 'running',
-    text: __('Running…'),
-    textClass: 'text-info',
-  },
-  [STATUSES.NONE]: {
-    icon: 'created',
-    text: __('Not started'),
-    textClass: 'text-muted',
-  },
-  [STATUSES.SCHEDULING]: {
-    loadingIcon: true,
-    text: __('Scheduling'),
-    textClass: 'text-warning',
+  [STATUSES.CANCELLED]: {
+    icon: 'status-stopped',
+    text: __('Cancelled'),
+    iconClass: 'gl-text-red-600',
   },
 };
 

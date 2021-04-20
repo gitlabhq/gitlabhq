@@ -123,6 +123,16 @@ RSpec.describe Tooling::KubernetesClient do
 
       it_behaves_like 'a kubectl command to delete resources by older than given creation time'
     end
+
+    context 'with no resources found' do
+      let(:resource_names) { [] }
+
+      it 'does not call #delete_by_exact_names' do
+        expect(subject).not_to receive(:delete_by_exact_names)
+
+        subject.cleanup_by_created_at(resource_type: resource_type, created_before: two_days_ago)
+      end
+    end
   end
 
   describe '#raw_resource_names' do

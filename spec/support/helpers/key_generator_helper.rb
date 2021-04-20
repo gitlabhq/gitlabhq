@@ -27,7 +27,8 @@ module Spec
 
         # Encodes an openssh-mpi-encoded integer.
         def encode_mpi(n) # rubocop:disable Naming/UncommunicativeMethodParamName
-          chars, n = [], n.to_i
+          chars = []
+          n = n.to_i
           chars << (n & 0xff) && n >>= 8 while n != 0
           chars << 0 if chars.empty? || chars.last >= 0x80
           chars.reverse.pack('C*')

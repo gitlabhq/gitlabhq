@@ -71,7 +71,8 @@ class Projects::BranchesByModeService
     # And increase it whenever we go to the next page
     previous_offset = params[:offset].to_i
 
-    previous_path, next_path = nil, nil
+    previous_path = nil
+    next_path = nil
 
     return [branches, previous_path, next_path] if branches.blank?
 

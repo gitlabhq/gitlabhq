@@ -39,9 +39,11 @@ describe('InviteActionButtons', () => {
     it('sets props correctly', () => {
       expect(findRemoveMemberButton().props()).toEqual({
         memberId: member.id,
+        memberType: null,
         message: `Are you sure you want to revoke the invitation for ${member.invite.email} to join "${member.source.fullName}"`,
         title: 'Revoke invite',
         isAccessRequest: false,
+        isInvite: true,
         icon: 'remove',
       });
     });

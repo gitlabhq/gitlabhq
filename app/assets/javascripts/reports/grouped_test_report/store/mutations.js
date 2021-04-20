@@ -1,9 +1,10 @@
 import * as types from './mutation_types';
-import { countRecentlyFailedTests } from './utils';
+import { countRecentlyFailedTests, formatFilePath } from './utils';
 
 export default {
-  [types.SET_ENDPOINT](state, endpoint) {
+  [types.SET_PATHS](state, { endpoint, headBlobPath }) {
     state.endpoint = endpoint;
+    state.headBlobPath = headBlobPath;
   },
   [types.REQUEST_REPORTS](state) {
     state.isLoading = true;
@@ -42,16 +43,24 @@ export default {
     state.status = null;
   },
   [types.SET_ISSUE_MODAL_DATA](state, payload) {
-    state.modal.title = payload.issue.name;
+    const { issue } = payload;
+    state.modal.title = issue.name;
 
-    Object.keys(payload.issue).forEach((key) => {
+    Object.keys(issue).forEach((key) => {
       if (Object.prototype.hasOwnProperty.call(state.modal.data, key)) {
         state.modal.data[key] = {
           ...state.modal.data[key],
-          value: payload.issue[key],
+          value: issue[key],
         };
       }
     });
+
+    if (issue.file) {
+      state.modal.data.filename.value = {
+        text: issue.file,
+        path: `${state.headBlobPath}/${formatFilePath(issue.file)}`,
+      };
+    }
 
     state.modal.open = true;
   },

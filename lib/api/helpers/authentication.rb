@@ -52,6 +52,11 @@ module API
             token&.user
           end
 
+          def ci_build_from_namespace_inheritable
+            token = token_from_namespace_inheritable
+            token if token.is_a?(::Ci::Build)
+          end
+
           private
 
           def find_token_from_raw_credentials(token_types, raw)

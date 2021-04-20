@@ -13,6 +13,9 @@ class Namespace < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include IgnorableColumns
   include Namespaces::Traversal::Recursive
+  include Namespaces::Traversal::Linear
+
+  ignore_column :delayed_project_removal, remove_with: '14.1', remove_after: '2021-05-22'
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -42,6 +45,9 @@ class Namespace < ApplicationRecord
   has_one :root_storage_statistics, class_name: 'Namespace::RootStorageStatistics'
   has_one :aggregation_schedule, class_name: 'Namespace::AggregationSchedule'
   has_one :package_setting_relation, inverse_of: :namespace, class_name: 'PackageSetting'
+
+  has_one :admin_note, inverse_of: :namespace
+  accepts_nested_attributes_for :admin_note, update_only: true
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
@@ -83,11 +89,11 @@ class Namespace < ApplicationRecord
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
-  before_save :ensure_delayed_project_removal_assigned_to_namespace_settings, if: :delayed_project_removal_changed?
-
   scope :for_user, -> { where('type IS NULL') }
   scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
   scope :include_route, -> { includes(:route) }
+  scope :by_parent, -> (parent) { where(parent_id: parent) }
+  scope :filter_by_path, -> (query) { where('lower(path) = :query', query: query.downcase) }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -107,7 +113,7 @@ class Namespace < ApplicationRecord
 
   # Make sure that the name is same as strong_memoize name in root_ancestor
   # method
-  attr_writer :root_ancestor
+  attr_writer :root_ancestor, :emails_disabled_memoized
 
   class << self
     def by_path(path)
@@ -235,7 +241,7 @@ class Namespace < ApplicationRecord
 
   # any ancestor can disable emails for all descendants
   def emails_disabled?
-    strong_memoize(:emails_disabled) do
+    strong_memoize(:emails_disabled_memoized) do
       if parent_id
         self_and_ancestors.where(emails_disabled: true).exists?
       else
@@ -260,13 +266,8 @@ class Namespace < ApplicationRecord
   # Includes projects from this namespace and projects from all subgroups
   # that belongs to this namespace
   def all_projects
-    return Project.where(namespace: self) if user?
-
-    if Feature.enabled?(:recursive_namespace_lookup_as_inner_join, self)
-      Project.joins("INNER JOIN (#{self_and_descendants.select(:id).to_sql}) namespaces ON namespaces.id=projects.namespace_id")
-    else
-      Project.where(namespace: self_and_descendants)
-    end
+    namespace = user? ? self : self_and_descendants
+    Project.where(namespace: namespace)
   end
 
   # Includes pipelines from this namespace and pipelines from all subgroups
@@ -288,8 +289,13 @@ class Namespace < ApplicationRecord
     false
   end
 
+  # Deprecated, use #licensed_feature_available? instead. Remove once Namespace#feature_available? isn't used anymore.
+  def feature_available?(feature)
+    licensed_feature_available?(feature)
+  end
+
   # Overridden in EE::Namespace
-  def feature_available?(_feature)
+  def licensed_feature_available?(_feature)
     false
   end
 
@@ -345,6 +351,10 @@ class Namespace < ApplicationRecord
 
   def actual_plan
     Plan.default
+  end
+
+  def paid?
+    root? && actual_plan.paid?
   end
 
   def actual_limits
@@ -411,13 +421,6 @@ class Namespace < ApplicationRecord
   end
 
   private
-
-  def ensure_delayed_project_removal_assigned_to_namespace_settings
-    return if Feature.disabled?(:migrate_delayed_project_removal, default_enabled: true)
-
-    self.namespace_settings || build_namespace_settings
-    namespace_settings.delayed_project_removal = delayed_project_removal
-  end
 
   def all_projects_with_pages
     if all_projects.pages_metadata_not_migrated.exists?

@@ -10,7 +10,7 @@
   image_url: https://img.youtube.com/vi/G8fYYrxqF5E/hqdefault.jpg
   published_at: 2020-12-22
   release: 13.7
-- title: Reviewers for Merge Requests
+- title: Reviewers for merge requests
   body: |
     Asking a colleague to review your code should be a routine part of contributing code, but it's often needlessly complex. A simple task like asking for a review can lead to confusion. For example, how should you ask? An email? Comment? Chat message? Without a formal process, reviews can be inconsistent and hard to keep track of. Previously, an option was to assign a reviewer to a merge request, but even with this formality, both the author and the reviewer appeared in the same assignee field, making it hard for other team members to know who was doing what.
 

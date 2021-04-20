@@ -54,6 +54,7 @@ export function initIde(el, options = {}) {
       });
       this.setLinks({
         webIDEHelpPagePath: el.dataset.webIdeHelpPagePath,
+        forkInfo: el.dataset.forkInfo ? JSON.parse(el.dataset.forkInfo) : null,
       });
       this.setInitialData({
         clientsidePreviewEnabled: parseBoolean(el.dataset.clientsidePreviewEnabled),

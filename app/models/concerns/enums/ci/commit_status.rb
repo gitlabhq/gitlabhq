@@ -20,6 +20,8 @@ module Enums
           scheduler_failure: 11,
           data_integrity_failure: 12,
           forward_deployment_failure: 13,
+          user_blocked: 14,
+          project_deleted: 15,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,
           invalid_bridge_trigger: 1_003,

@@ -9,7 +9,9 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
   <div
     class="settings-header"
   >
-    <h4>
+    <h4
+      class="settings-title js-settings-toggle js-settings-toggle-trigger-only"
+    >
       
       Incidents
     

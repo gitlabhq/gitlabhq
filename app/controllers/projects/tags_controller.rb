@@ -9,6 +9,9 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_download_code!
   before_action :authorize_admin_tag!, only: [:new, :create, :destroy]
+  before_action do
+    push_frontend_feature_flag(:gldropdown_tags, default_enabled: :yaml)
+  end
 
   feature_category :source_code_management, [:index, :show, :new, :destroy]
   feature_category :release_evidence, [:create]

@@ -14,6 +14,9 @@ import { sprintf, __ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 export default {
+  i18n: {
+    sendEmail: __('Send email'),
+  },
   name: 'IssuableByEmail',
   components: {
     GlButton,
@@ -116,7 +119,8 @@ export default {
           <gl-button
             v-gl-tooltip.hover
             :href="mailToLink"
-            :title="__('Send email')"
+            :title="$options.i18n.sendEmail"
+            :aria-label="$options.i18n.sendEmail"
             icon="mail"
             data-testid="mail-to-btn"
           />

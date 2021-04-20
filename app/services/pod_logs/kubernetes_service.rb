@@ -2,7 +2,7 @@
 
 module PodLogs
   class KubernetesService < PodLogs::BaseService
-    LOGS_LIMIT = 500.freeze
+    LOGS_LIMIT = 500
     REPLACEMENT_CHAR = "\u{FFFD}"
 
     EncodingHelperError = Class.new(StandardError)

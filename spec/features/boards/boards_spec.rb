@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Boards', :js do
+RSpec.describe 'Project issue boards', :js do
   include DragTo
   include MobileHelpers
 
@@ -23,7 +23,7 @@ RSpec.describe 'Issue Boards', :js do
 
   context 'no lists' do
     before do
-      visit project_board_path(project, board)
+      visit_project_board_path_without_query_limit(project, board)
     end
 
     it 'creates default lists' do
@@ -52,6 +52,7 @@ RSpec.describe 'Issue Boards', :js do
     let_it_be(:a_plus)      { create(:label, project: project, name: 'A+') }
     let_it_be(:list1)       { create(:list, board: board, label: planning, position: 0) }
     let_it_be(:list2)       { create(:list, board: board, label: development, position: 1) }
+    let_it_be(:backlog_list) { create(:backlog_list, board: board) }
 
     let_it_be(:confidential_issue) { create(:labeled_issue, :confidential, project: project, author: user, labels: [planning], relative_position: 9) }
     let_it_be(:issue1) { create(:labeled_issue, project: project, title: 'aaa', description: '111', assignees: [user], labels: [planning], relative_position: 8) }
@@ -68,7 +69,7 @@ RSpec.describe 'Issue Boards', :js do
     before do
       stub_feature_flags(board_new_list: false)
 
-      visit project_board_path(project, board)
+      visit_project_board_path_without_query_limit(project, board)
 
       wait_for_requests
 
@@ -121,7 +122,8 @@ RSpec.describe 'Issue Boards', :js do
       context 'with the NOT queries feature flag disabled' do
         before do
           stub_feature_flags(not_issuable_queries: false)
-          visit project_board_path(project, board)
+
+          visit_project_board_path_without_query_limit(project, board)
         end
 
         it 'does not have the != option' do
@@ -141,7 +143,8 @@ RSpec.describe 'Issue Boards', :js do
       context 'with the NOT queries feature flag enabled' do
         before do
           stub_feature_flags(not_issuable_queries: true)
-          visit project_board_path(project, board)
+
+          visit_project_board_path_without_query_limit(project, board)
         end
 
         it 'does not have the != option' do
@@ -171,8 +174,7 @@ RSpec.describe 'Issue Boards', :js do
     it 'infinite scrolls list' do
       create_list(:labeled_issue, 50, project: project, labels: [planning])
 
-      visit project_board_path(project, board)
-      wait_for_requests
+      visit_project_board_path_without_query_limit(project, board)
 
       page.within(find('.board:nth-child(2)')) do
         expect(page.find('.board-header')).to have_content('58')
@@ -180,15 +182,19 @@ RSpec.describe 'Issue Boards', :js do
         expect(page).to have_content('Showing 20 of 58 issues')
 
         find('.board .board-list')
-        evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
-        wait_for_requests
+
+        inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+          evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+        end
 
         expect(page).to have_selector('.board-card', count: 40)
         expect(page).to have_content('Showing 40 of 58 issues')
 
         find('.board .board-list')
-        evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
-        wait_for_requests
+
+        inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+          evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+        end
 
         expect(page).to have_selector('.board-card', count: 58)
         expect(page).to have_content('Showing all issues')
@@ -236,13 +242,13 @@ RSpec.describe 'Issue Boards', :js do
         wait_for_board_cards(4, 1)
 
         expect(find('.board:nth-child(2)')).to have_content(development.title)
-        expect(find('.board:nth-child(2)')).to have_content(planning.title)
+        expect(find('.board:nth-child(3)')).to have_content(planning.title)
 
         # Make sure list positions are preserved after a reload
-        visit project_board_path(project, board)
+        visit_project_board_path_without_query_limit(project, board)
 
         expect(find('.board:nth-child(2)')).to have_content(development.title)
-        expect(find('.board:nth-child(2)')).to have_content(planning.title)
+        expect(find('.board:nth-child(3)')).to have_content(planning.title)
       end
 
       it 'dragging does not duplicate list' do
@@ -254,7 +260,8 @@ RSpec.describe 'Issue Boards', :js do
         expect(page).to have_selector(selector, text: development.title, count: 1)
       end
 
-      it 'issue moves between lists and does not show the "Development" label since the card is in the "Development" list label' do
+      # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/323551
+      xit 'issue moves between lists and does not show the "Development" label since the card is in the "Development" list label' do
         drag(list_from_index: 1, from_index: 1, list_to_index: 2)
 
         wait_for_board_cards(2, 7)
@@ -467,14 +474,16 @@ RSpec.describe 'Issue Boards', :js do
       end
 
       it 'removes filtered labels' do
-        set_filter("label", testing.title)
-        click_filter_link(testing.title)
-        submit_filter
+        inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+          set_filter("label", testing.title)
+          click_filter_link(testing.title)
+          submit_filter
 
-        wait_for_board_cards(2, 1)
+          wait_for_board_cards(2, 1)
 
-        find('.clear-search').click
-        submit_filter
+          find('.clear-search').click
+          submit_filter
+        end
 
         wait_for_board_cards(2, 8)
       end
@@ -484,7 +493,9 @@ RSpec.describe 'Issue Boards', :js do
 
         set_filter("label", testing.title)
         click_filter_link(testing.title)
-        submit_filter
+        inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+          submit_filter
+        end
 
         wait_for_requests
 
@@ -494,13 +505,18 @@ RSpec.describe 'Issue Boards', :js do
           expect(page).to have_content('Showing 20 of 51 issues')
 
           find('.board .board-list')
-          evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+
+          inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+            evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+          end
 
           expect(page).to have_selector('.board-card', count: 40)
           expect(page).to have_content('Showing 40 of 51 issues')
 
           find('.board .board-list')
-          evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+          inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+            evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
+          end
 
           expect(page).to have_selector('.board-card', count: 51)
           expect(page).to have_content('Showing all issues')
@@ -569,7 +585,7 @@ RSpec.describe 'Issue Boards', :js do
 
   context 'keyboard shortcuts' do
     before do
-      visit project_board_path(project, board)
+      visit_project_board_path_without_query_limit(project, board)
       wait_for_requests
     end
 
@@ -617,15 +633,19 @@ RSpec.describe 'Issue Boards', :js do
 
   def drag(selector: '.board-list', list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0, perform_drop: true)
     # ensure there is enough horizontal space for four boards
-    resize_window(2000, 800)
+    inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+      resize_window(2000, 800)
 
-    drag_to(selector: selector,
-            scrollable: '#board-app',
-            list_from_index: list_from_index,
-            from_index: from_index,
-            to_index: to_index,
-            list_to_index: list_to_index,
-            perform_drop: perform_drop)
+      drag_to(selector: selector,
+              scrollable: '#board-app',
+              list_from_index: list_from_index,
+              from_index: from_index,
+              to_index: to_index,
+              list_to_index: list_to_index,
+              perform_drop: perform_drop)
+    end
+
+    wait_for_requests
   end
 
   def wait_for_board_cards(board_number, expected_cards)
@@ -664,6 +684,12 @@ RSpec.describe 'Issue Boards', :js do
 
     page.within(find('.js-board-settings-sidebar')) do
       accept_confirm { find('[data-testid="remove-list"]').click }
+    end
+  end
+
+  def visit_project_board_path_without_query_limit(project, board)
+    inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+      visit project_board_path(project, board)
     end
   end
 end

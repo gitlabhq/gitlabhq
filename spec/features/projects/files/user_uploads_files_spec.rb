@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User uploads files' do
-  include DropzoneHelper
-
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, name: 'Shop', creator: user) }
   let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
@@ -17,36 +15,17 @@ RSpec.describe 'Projects > Files > User uploads files' do
   context 'when a user has write access' do
     before do
       visit(project_tree_path(project))
+
+      wait_for_requests
     end
 
-    include_examples 'it uploads and commit a new text file'
+    include_examples 'it uploads and commits a new text file'
 
-    include_examples 'it uploads and commit a new image file'
+    include_examples 'it uploads and commits a new image file'
 
-    it 'uploads a file to a sub-directory', :js do
-      click_link 'files'
+    include_examples 'it uploads and commits a new pdf file'
 
-      page.within('.repo-breadcrumb') do
-        expect(page).to have_content('files')
-      end
-
-      find('.add-to-tree').click
-      click_link('Upload file')
-      drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
-
-      page.within('#modal-upload-blob') do
-        fill_in(:commit_message, with: 'New commit message')
-      end
-
-      click_button('Upload file')
-
-      expect(page).to have_content('New commit message')
-
-      page.within('.repo-breadcrumb') do
-        expect(page).to have_content('files')
-        expect(page).to have_content('doc_sample.txt')
-      end
-    end
+    include_examples 'it uploads a file to a sub-directory'
   end
 
   context 'when a user does not have write access' do
@@ -56,6 +35,6 @@ RSpec.describe 'Projects > Files > User uploads files' do
       visit(project_tree_path(project2))
     end
 
-    include_examples 'it uploads and commit a new file to a forked project'
+    include_examples 'it uploads and commits a new file to a forked project'
   end
 end

@@ -69,11 +69,8 @@ RSpec.describe Notify do
       it_behaves_like 'an email sent to a user'
 
       it 'is sent to the assignee as the author' do
-        sender = subject.header[:from].addrs.first
-
         aggregate_failures do
-          expect(sender.display_name).to eq(current_user.name)
-          expect(sender.address).to eq(gitlab_sender)
+          expect_sender(current_user)
           expect(subject).to deliver_to(recipient.notification_email)
         end
       end
@@ -146,9 +143,7 @@ RSpec.describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'is sent as the author' do
-          sender = subject.header[:from].addrs[0]
-          expect(sender.display_name).to eq(current_user.name)
-          expect(sender.address).to eq(gitlab_sender)
+          expect_sender(current_user)
         end
 
         it 'has the correct subject and body' do
@@ -187,9 +182,7 @@ RSpec.describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'is sent as the author' do
-          sender = subject.header[:from].addrs[0]
-          expect(sender.display_name).to eq(current_user.name)
-          expect(sender.address).to eq(gitlab_sender)
+          expect_sender(current_user)
         end
 
         it 'has the correct subject and body' do
@@ -251,9 +244,7 @@ RSpec.describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'is sent as the author' do
-          sender = subject.header[:from].addrs[0]
-          expect(sender.display_name).to eq(current_user.name)
-          expect(sender.address).to eq(gitlab_sender)
+          expect_sender(current_user)
         end
 
         it 'has the correct subject and body' do
@@ -389,9 +380,7 @@ RSpec.describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'is sent as the author' do
-          sender = subject.header[:from].addrs[0]
-          expect(sender.display_name).to eq(current_user.name)
-          expect(sender.address).to eq(gitlab_sender)
+          expect_sender(current_user)
         end
 
         it 'has the correct subject and body' do
@@ -456,9 +445,7 @@ RSpec.describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'is sent as the author' do
-          sender = subject.header[:from].addrs[0]
-          expect(sender.display_name).to eq(current_user.name)
-          expect(sender.address).to eq(gitlab_sender)
+          expect_sender(current_user)
         end
 
         it 'has the correct subject and body' do
@@ -486,10 +473,7 @@ RSpec.describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'is sent as the push user' do
-          sender = subject.header[:from].addrs[0]
-
-          expect(sender.display_name).to eq(push_user.name)
-          expect(sender.address).to eq(gitlab_sender)
+          expect_sender(push_user)
         end
 
         it 'has the correct subject and body' do
@@ -815,14 +799,14 @@ RSpec.describe Notify do
           is_expected.to have_link('Join now', href: invite_url(project_member.invite_token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE))
         end
 
-        it 'contains invite link for the avatar', :experiment do
+        it 'contains invite link for the avatar' do
           stub_experiments('members/invite_email': :avatar)
 
           is_expected.not_to have_content('You are invited!')
           is_expected.not_to have_body_text 'What is a GitLab'
         end
 
-        it 'contains invite link for the avatar', :experiment do
+        it 'contains invite link for the avatar' do
           stub_experiments('members/invite_email': :permission_info)
 
           is_expected.not_to have_content('You are invited!')
@@ -1002,11 +986,8 @@ RSpec.describe Notify do
         it_behaves_like 'it should have Gmail Actions links'
 
         it 'is sent to the given recipient as the author' do
-          sender = subject.header[:from].addrs[0]
-
           aggregate_failures do
-            expect(sender.display_name).to eq(note_author.name)
-            expect(sender.address).to eq(gitlab_sender)
+            expect_sender(note_author)
             expect(subject).to deliver_to(recipient.notification_email)
           end
         end
@@ -1162,11 +1143,8 @@ RSpec.describe Notify do
         it_behaves_like 'it should have Gmail Actions links'
 
         it 'is sent to the given recipient as the author' do
-          sender = subject.header[:from].addrs[0]
-
           aggregate_failures do
-            expect(sender.display_name).to eq(note_author.name)
-            expect(sender.address).to eq(gitlab_sender)
+            expect_sender(note_author)
             expect(subject).to deliver_to(recipient.notification_email)
           end
         end
@@ -1221,12 +1199,6 @@ RSpec.describe Notify do
         issue.issue_email_participants.create!(email: 'service.desk@example.com')
       end
 
-      def expect_sender(username)
-        sender = subject.header[:from].addrs[0]
-        expect(sender.display_name).to eq(username)
-        expect(sender.address).to eq(gitlab_sender)
-      end
-
       describe 'thank you email' do
         subject { described_class.service_desk_thank_you_email(issue.id) }
 
@@ -1244,14 +1216,16 @@ RSpec.describe Notify do
         end
 
         it 'uses service bot name by default' do
-          expect_sender(User.support_bot.name)
+          expect_sender(User.support_bot)
         end
 
         context 'when custom outgoing name is set' do
           let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: 'some custom name') }
 
           it 'uses custom name in "from" header' do
-            expect_sender('some custom name')
+            sender = subject.header[:from].addrs[0]
+            expect(sender.display_name).to eq('some custom name')
+            expect(sender.address).to eq(gitlab_sender)
           end
         end
 
@@ -1259,7 +1233,7 @@ RSpec.describe Notify do
           let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: '') }
 
           it 'uses service bot name' do
-            expect_sender(User.support_bot.name)
+            expect_sender(User.support_bot)
           end
         end
       end
@@ -1276,7 +1250,7 @@ RSpec.describe Notify do
         end
 
         it 'uses author\'s name in "from" header' do
-          expect_sender(first_note.author.name)
+          expect_sender(first_note.author)
         end
 
         it 'has the correct subject and body' do
@@ -1672,9 +1646,7 @@ RSpec.describe Notify do
     it_behaves_like 'appearance header and footer not enabled'
 
     it 'is sent as the author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(user.name)
-      expect(sender.address).to eq(gitlab_sender)
+      expect_sender(user)
     end
 
     it 'has the correct subject and body' do
@@ -1699,9 +1671,7 @@ RSpec.describe Notify do
     it_behaves_like 'appearance header and footer not enabled'
 
     it 'is sent as the author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(user.name)
-      expect(sender.address).to eq(gitlab_sender)
+      expect_sender(user)
     end
 
     it 'has the correct subject and body' do
@@ -1725,9 +1695,7 @@ RSpec.describe Notify do
     it_behaves_like 'appearance header and footer not enabled'
 
     it 'is sent as the author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(user.name)
-      expect(sender.address).to eq(gitlab_sender)
+      expect_sender(user)
     end
 
     it 'has the correct subject' do
@@ -1748,9 +1716,7 @@ RSpec.describe Notify do
     it_behaves_like 'appearance header and footer not enabled'
 
     it 'is sent as the author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(user.name)
-      expect(sender.address).to eq(gitlab_sender)
+      expect_sender(user)
     end
 
     it 'has the correct subject' do
@@ -1777,9 +1743,7 @@ RSpec.describe Notify do
     it_behaves_like 'appearance header and footer not enabled'
 
     it 'is sent as the author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(user.name)
-      expect(sender.address).to eq(gitlab_sender)
+      expect_sender(user)
     end
 
     it 'has the correct subject and body' do
@@ -1870,9 +1834,7 @@ RSpec.describe Notify do
     it_behaves_like 'appearance header and footer not enabled'
 
     it 'is sent as the author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(user.name)
-      expect(sender.address).to eq(gitlab_sender)
+      expect_sender(user)
     end
 
     it 'has the correct subject and body' do
@@ -1962,12 +1924,8 @@ RSpec.describe Notify do
     it_behaves_like 'an unsubscribeable thread'
 
     it 'is sent to the given recipient as the author' do
-      sender = subject.header[:from].addrs[0]
-
       aggregate_failures do
-        expect(sender.display_name).to eq(review.author_name)
-        expect(sender.address).to eq(gitlab_sender)
-        expect(subject).to deliver_to(recipient.notification_email)
+        expect_sender(review.author)
       end
     end
 
@@ -2001,5 +1959,11 @@ RSpec.describe Notify do
         is_expected.to have_body_text project_merge_request_path(project, merge_request)
       end
     end
+  end
+
+  def expect_sender(user)
+    sender = subject.header[:from].addrs[0]
+    expect(sender.display_name).to eq("#{user.name} (@#{user.username})")
+    expect(sender.address).to eq(gitlab_sender)
   end
 end

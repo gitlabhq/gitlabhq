@@ -3,7 +3,8 @@
 module Groups
   class CreateService < Groups::BaseService
     def initialize(user, params = {})
-      @current_user, @params = user, params.dup
+      @current_user = user
+      @params = params.dup
       @chat_team = @params.delete(:create_chat_team)
     end
 
@@ -11,7 +12,10 @@ module Groups
       remove_unallowed_params
       set_visibility_level
 
-      @group = Group.new(params)
+      @group = Group.new(params.except(*::NamespaceSetting::NAMESPACE_SETTINGS_PARAMS))
+
+      @group.build_namespace_settings
+      handle_namespace_settings
 
       after_build_hook(@group, params)
 
@@ -33,7 +37,6 @@ module Groups
       Group.transaction do
         if @group.save
           @group.add_owner(current_user)
-          @group.create_namespace_settings unless @group.namespace_settings
           Service.create_from_active_default_integrations(@group, :group_id)
           OnboardingProgress.onboard(@group)
         end
