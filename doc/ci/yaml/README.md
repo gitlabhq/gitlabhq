@@ -3270,7 +3270,7 @@ deploy:
 
 If the artifacts of the job that is set as a dependency are
 [expired](#artifactsexpire_in) or
-[erased](../pipelines/job_artifacts.md#erase-job-artifacts), then
+[deleted](../pipelines/job_artifacts.md#delete-job-artifacts), then
 the dependent job fails.
 
 You can ask your administrator to

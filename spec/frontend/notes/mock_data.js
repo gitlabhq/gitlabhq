@@ -1273,10 +1273,16 @@ export const batchSuggestionsInfoMock = [
 ];
 
 export const draftComments = [
-  { id: 7, note: 'test draft note' },
-  { id: 9, note: 'draft note 2' },
+  { id: 7, note: 'test draft note', isDraft: true },
+  { id: 9, note: 'draft note 2', isDraft: true },
 ];
 
-export const draftReply = { id: 8, note: 'draft reply', discussion_id: 1 };
+export const draftReply = { id: 8, note: 'draft reply', discussion_id: 1, isDraft: true };
 
-export const draftDiffDiscussion = { id: 6, note: 'draft diff discussion', line_code: 1 };
+export const draftDiffDiscussion = {
+  id: 6,
+  note: 'draft diff discussion',
+  line_code: 1,
+  file_path: 'lib/foo.rb',
+  isDraft: true,
+};

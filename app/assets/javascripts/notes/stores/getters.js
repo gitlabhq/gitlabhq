@@ -8,7 +8,7 @@ const getDraftComments = (state) => {
   }
 
   return state.batchComments.drafts
-    .filter((draft) => !draft.line_code && !draft.discussion_id)
+    .filter((draft) => !draft.file_path && !draft.discussion_id)
     .map((x) => ({
       ...x,
       // Treat a top-level draft note as individual_note so it's not included in

@@ -408,10 +408,9 @@ describe('note_app', () => {
       store = createStore();
       store.registerModule('batchComments', batchComments());
       store.state.batchComments.drafts = [
-        { line_code: 1, isDraft: true },
-        { discussion_id: 1, isDraft: true },
-        { note: 'A', isDraft: true },
-        { note: 'B', isDraft: true },
+        mockData.draftDiffDiscussion,
+        mockData.draftReply,
+        ...mockData.draftComments,
       ];
       store.state.isLoading = false;
       wrapper = shallowMount(NotesApp, {
@@ -426,10 +425,9 @@ describe('note_app', () => {
     it('correctly finds only draft comments', () => {
       const drafts = wrapper.findAll(DraftNote).wrappers;
 
-      expect(drafts.map((x) => x.props('draft'))).toEqual([
-        expect.objectContaining({ note: 'A' }),
-        expect.objectContaining({ note: 'B' }),
-      ]);
+      expect(drafts.map((x) => x.props('draft'))).toEqual(
+        mockData.draftComments.map(({ note }) => expect.objectContaining({ note })),
+      );
     });
   });
 });

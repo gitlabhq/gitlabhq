@@ -19,7 +19,6 @@ then
 fi
 
 # Documentation pages need front matter for tracking purposes.
-# See also lint-docs-metadata.sh
 echo '=> Checking documentation for front matter...'
 echo
 no_frontmatter=$(find doc -name "*.md" -exec head -n1 {} \; | grep -v  --count -- ---)

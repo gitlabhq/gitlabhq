@@ -34,7 +34,7 @@ RSpec.shared_examples 'Debian Distribution Architecture' do |factory, container,
       subject { described_class.with_distribution(architecture.distribution) }
 
       it 'does not return other distributions' do
-        expect(subject.to_a).to eq([architecture, architecture_same_distribution])
+        expect(subject.to_a).to match_array([architecture, architecture_same_distribution])
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.shared_examples 'Debian Distribution Architecture' do |factory, container,
       subject { described_class.with_name(architecture.name) }
 
       it 'does not return other distributions' do
-        expect(subject.to_a).to eq([architecture, architecture_same_name])
+        expect(subject.to_a).to match_array([architecture, architecture_same_name])
       end
     end
   end

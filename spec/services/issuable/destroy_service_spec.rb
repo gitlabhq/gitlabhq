@@ -4,37 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Issuable::DestroyService do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:group) { create(:group, :public) }
+  let(:project) { create(:project, :public, group: group) }
 
   subject(:service) { described_class.new(project, user) }
 
   describe '#execute' do
-    shared_examples_for 'service deleting todos' do
-      it 'destroys associated todos asynchronously' do
-        expect(TodosDestroyer::DestroyedIssuableWorker)
-          .to receive(:perform_async)
-          .with(issuable.id, issuable.class.name)
-
-        subject.execute(issuable)
-      end
-
-      context 'when destroy_issuable_todos_async feature is disabled' do
-        before do
-          stub_feature_flags(destroy_issuable_todos_async: false)
-        end
-
-        it 'destroy associated todos synchronously' do
-          expect_next_instance_of(TodosDestroyer::DestroyedIssuableWorker) do |worker|
-            expect(worker)
-              .to receive(:perform)
-              .with(issuable.id, issuable.class.name)
-          end
-
-          subject.execute(issuable)
-        end
-      end
-    end
-
     context 'when issuable is an issue' do
       let!(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
 

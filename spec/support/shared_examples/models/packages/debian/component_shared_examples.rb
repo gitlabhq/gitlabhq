@@ -36,7 +36,7 @@ RSpec.shared_examples 'Debian Distribution Component' do |factory, container, ca
       subject { described_class.with_distribution(component.distribution) }
 
       it 'does not return other distributions' do
-        expect(subject.to_a).to eq([component, component_same_distribution])
+        expect(subject.to_a).to match_array([component, component_same_distribution])
       end
     end
 
@@ -44,7 +44,7 @@ RSpec.shared_examples 'Debian Distribution Component' do |factory, container, ca
       subject { described_class.with_name(component.name) }
 
       it 'does not return other distributions' do
-        expect(subject.to_a).to eq([component, component_same_name])
+        expect(subject.to_a).to match_array([component, component_same_name])
       end
     end
   end

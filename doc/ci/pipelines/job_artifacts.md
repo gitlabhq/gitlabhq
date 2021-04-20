@@ -15,14 +15,14 @@ Jobs can output an archive of files and directories. This output is known as a j
 You can download job artifacts by using the GitLab UI or the [API](../../api/job_artifacts.md#get-job-artifacts).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, watch the video [GitLab CI Pipeline, Artifacts, and Environments](https://www.youtube.com/watch?v=PCKDICEe10s).
-Watch also [GitLab CI pipeline tutorial for beginners](https://www.youtube.com/watch?v=Jav4vbUrqII).
+For an overview of job artifacts, watch the video [GitLab CI pipelines, artifacts, and environments](https://www.youtube.com/watch?v=PCKDICEe10s).
+Or, for an introduction, watch [GitLab CI pipeline tutorial for beginners](https://www.youtube.com/watch?v=Jav4vbUrqII).
 
-Administrators should review our [job artifacts administration](../../administration/job_artifacts.md) documentation.
+For administrator information about job artifact storage, see [administering job artifacts](../../administration/job_artifacts.md).
 
-## Define artifacts in the `.gitlab-ci.yml` file
+## Create job artifacts
 
-This example shows how to configure your `.gitlab-ci.yml` file to create job artifacts:
+To create job artifacts, use the `artifacts` keyword in your `.gitlab-ci.yml` file:
 
 ```yaml
 pdf:
@@ -33,7 +33,7 @@ pdf:
     expire_in: 1 week
 ```
 
-A job named `pdf` calls the `xelatex` command to build a PDF file from the
+In this example, a job named `pdf` calls the `xelatex` command to build a PDF file from the
 LaTeX source file, `mycv.tex`.
 
 The `paths` keyword determines which files to add to the job artifacts.
@@ -45,6 +45,9 @@ If `expire_in` is not defined, the
 [instance-wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration)
 is used.
 
+If you run two types of pipelines (like branch and scheduled) for the same ref,
+the pipeline that finishes later creates the job artifact.
+
 For more examples, view the [keyword reference for the `.gitlab-ci.yml` file](../yaml/README.md#artifacts).
 
 ## Download job artifacts
@@ -53,23 +56,23 @@ You can download job artifacts or view the job archive:
 
 - On the **Pipelines** page, to the right of the pipeline:
 
-  ![Job artifacts in Pipelines page](img/job_artifacts_pipelines_page.png)
+  ![Job artifacts in Pipelines page](img/job_artifacts_pipelines_page_v13_11.png)
 
 - On the **Jobs** page, to the right of the job:
 
-  ![Job artifacts in Builds page](img/job_artifacts_builds_page.png)
+  ![Job artifacts in Jobs page](img/job_artifacts_jobs_page_v13_11.png)
 
 - On a job's detail page. The **Keep** button indicates an `expire_in` value was set:
 
-  ![Job artifacts browser button](img/job_artifacts_browser_button.png)
+  ![Job artifacts browser button](img/job_artifacts_browser_button_v13_11.png)
 
 - On a merge request, by the pipeline details:
 
-  ![Job artifacts in Merge Request](img/job_artifacts_merge_request.png)
+  ![Job artifacts in merge request](img/job_artifacts_merge_request_v13_11.png)
 
 - When browsing an archive:
 
-  ![Job artifacts browser](img/job_artifacts_browser.png)
+  ![Job artifacts browser](img/job_artifacts_browser_v13_11.png)
 
   If [GitLab Pages](../../administration/pages/index.md) is enabled in the project, you can preview
   HTML files in the artifacts directly in your browser. If the project is internal or private, you must
@@ -83,44 +86,37 @@ information in the UI.
 
 ![Latest artifacts button](img/job_latest_artifacts_browser.png)
 
-## Erase job artifacts
+## Delete job artifacts
 
 WARNING:
 This is a destructive action that leads to data loss. Use with caution.
 
-You can erase a single job, which also removes the job's
+You can delete a single job, which also removes the job's
 artifacts and log. You must be:
 
 - The owner of the job.
-- A [Maintainer](../../user/permissions.md#gitlab-cicd-permissions) of the project.
+- A [maintainer](../../user/permissions.md#gitlab-cicd-permissions) of the project.
 
-To erase a job:
+To delete a job:
 
 1. Go to a job's detail page.
 1. At the top right of the job's log, select the trash icon.
 1. Confirm the deletion.
 
-## Retrieve job artifacts for private projects
+## Retrieve job artifacts for other projects
 
 To retrieve a job artifact from a different project, you might need to use a
 private token to [authenticate and download](../../api/job_artifacts.md#get-job-artifacts)
 the artifact.
 
-## The latest job artifacts
-
-Job artifacts created in the most recent successful pipeline for a specific ref
-are considered the latest artifacts. If you run two types of pipelines for the same ref,
-timing determines which artifacts are the latest.
-
-For example, if a merge request creates a branch pipeline at the same time as
-a scheduled pipeline, the pipeline that finished most recently creates the latest job artifact.
+## How searching for job artifacts works
 
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201784) and later, artifacts
 for [parent and child pipelines](../parent_child_pipelines.md) are searched in hierarchical
 order from parent to child. For example, if both parent and child pipelines have a
 job with the same name, the job artifact from the parent pipeline is returned.
 
-### Access the latest job artifacts by URL
+## Access the latest job artifacts by URL
 
 You can download the latest job artifacts by using a URL.
 
@@ -136,12 +132,12 @@ To download a single file from the artifacts:
 https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/raw/<path_to_file>?job=<job_name>
 ```
 
-For example, to download the latest artifacts of the job named `coverage` of
-the `master` branch of the `gitlab` project that belongs to the `gitlab-org`
+For example, to download the latest artifacts of the job named `coverage` in
+the `main` branch of the `gitlab` project in the `gitlab-org`
 namespace:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/download?job=coverage
+https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/main/download?job=coverage
 ```
 
 To download the file `coverage/index.html` from the same artifacts:
@@ -162,7 +158,7 @@ For example:
 https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/browse?job=coverage
 ```
 
-There is also a URL for specific files, including HTML files that
+To download specific files, including HTML files that
 are shown in [GitLab Pages](../../administration/pages/index.md):
 
 ```plaintext
@@ -175,15 +171,17 @@ For example, when a job `coverage` creates the artifact `htmlcov/index.html`:
 https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/file/htmlcov/index.html?job=coverage
 ```
 
+## When job artifacts are deleted
+
+By default, the latest job artifacts from the most recent successful jobs are never deleted.
+If a job is configured with [`expire_in`](../yaml/README.md#artifactsexpire_in),
+its artifacts only expire if a more recent artifact exists.
+
 ### Keep artifacts from most recent successful jobs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16267) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229936) in GitLab 13.4.
 > - [Made optional with a CI/CD setting](https://gitlab.com/gitlab-org/gitlab/-/issues/241026) in GitLab 13.8.
-
-By default, the latest job artifacts from the most recent successful jobs are never deleted.
-If a job is configured with [`expire_in`](../yaml/README.md#artifactsexpire_in),
-its artifacts only expire if a more recent artifact exists.
 
 Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in
@@ -202,21 +200,9 @@ A new pipeline must run before the latest artifacts can expire and be deleted.
 
 ### Error message `No files to upload`
 
-This is often preceded by other errors or warnings that specify the filename and why it wasn't
-generated in the first place. Please check the entire job log for such messages.
+This message is often preceded by other errors or warnings that specify the filename and why it wasn't
+generated. Check the job log for these messages.
 
-If you find no helpful messages, please retry the failed job after activating
+If you find no helpful messages, retry the failed job after activating
 [CI/CD debug logging](../variables/README.md#debug-logging).
-This provides useful information to investigate further.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+This logging should provide information to help you investigate further.

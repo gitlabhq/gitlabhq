@@ -86,6 +86,19 @@ RSpec.describe 'Merge request > Batch comments', :js do
       expect(page).to have_selector('.draft-note-component', text: 'Testing update')
     end
 
+    context 'with image and file draft note' do
+      let(:merge_request) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project) }
+      let!(:draft_on_text) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user, path: 'README.md', note: 'Lorem ipsum on text...') }
+      let!(:draft_on_image) { create(:draft_note_on_image_diff, merge_request: merge_request, author: user, path: 'files/images/ee_repo_logo.png', note: 'Lorem ipsum on an image...') }
+
+      it 'does not show in overview' do
+        visit_overview
+
+        expect(page).to have_no_text(draft_on_text.note)
+        expect(page).to have_no_text(draft_on_image.note)
+      end
+    end
+
     context 'adding single comment to review' do
       before do
         visit_overview

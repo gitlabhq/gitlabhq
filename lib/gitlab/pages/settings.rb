@@ -6,7 +6,7 @@ module Gitlab
       DiskAccessDenied = Class.new(StandardError)
 
       def path
-        ::Gitlab::ErrorTracking.track_exception(DiskAccessDenied.new) if disk_access_denied?
+        report_denied_disk_access
 
         super
       end
@@ -21,6 +21,12 @@ module Gitlab
         return true unless ::Settings.pages.local_store&.enabled
 
         ::Gitlab::Runtime.web_server? && !::Gitlab::Runtime.test_suite?
+      end
+
+      def report_denied_disk_access
+        raise DiskAccessDenied if disk_access_denied?
+      rescue => e
+        ::Gitlab::ErrorTracking.track_exception(e)
       end
     end
   end

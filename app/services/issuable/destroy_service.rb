@@ -17,13 +17,13 @@ module Issuable
     end
 
     def group_for(issuable)
-      issuable.resource_parent
+      issuable.resource_parent.group
     end
 
     def delete_todos(issuable)
-      group = group_for(issuable)
+      actor = group_for(issuable)
 
-      if Feature.enabled?(:destroy_issuable_todos_async, group, default_enabled: :yaml)
+      if Feature.enabled?(:destroy_issuable_todos_async, actor, default_enabled: :yaml)
         TodosDestroyer::DestroyedIssuableWorker
           .perform_async(issuable.id, issuable.class.name)
       else

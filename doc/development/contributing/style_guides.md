@@ -62,7 +62,6 @@ Before you push your changes, Lefthook automatically runs the following checks:
 - SCSS lint: Run `yarn lint:stylelint` checks (with the [`.stylelintrc`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.stylelintrc) configuration) on the modified `*.scss{,.css}` files. Tags: `stylesheet`, `css`, `style`.
 - RuboCop: Run `bundle exec rubocop` checks (with the [`.rubocop.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.rubocop.yml) configuration) on the modified `*.rb` files. Tags: `backend`, `style`.
 - Vale: Run `vale` checks (with the [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) configuration) on the modified `*.md` files. Tags: `documentation`, `style`.
-- Documentation metadata: Run checks for the absence of [documentation metadata](../documentation/index.md#metadata).
 
 In addition to the default configuration, you can define a [local configuration](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#local-config).
 
