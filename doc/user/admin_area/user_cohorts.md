@@ -6,8 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Cohorts **(FREE)**
 
-As a benefit of having the [usage ping active](settings/usage_statistics.md),
-you can analyze your users' GitLab activities over time.
+You can analyze your users' GitLab activities over time.
 
 To see user cohorts, go to **Admin Area > Overview > Users**.
 

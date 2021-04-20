@@ -144,7 +144,7 @@ RSpec.describe CommitsHelper do
       }
     end
 
-    subject { helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate) }
+    subject { helper.conditionally_paginate_diff_files(diffs_collection, paginate: paginate, per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE) }
 
     before do
       allow(helper).to receive(:params).and_return(params)
@@ -168,15 +168,15 @@ RSpec.describe CommitsHelper do
         let(:page) { 1 }
 
         it "has 20 diffs" do
-          expect(subject.size).to eq(75)
+          expect(subject.size).to eq(20)
         end
       end
 
-      context "page 2" do
-        let(:page) { 2 }
+      context "page 5" do
+        let(:page) { 5 }
 
-        it "has the remaining 10 diffs" do
-          expect(subject.size).to eq(10)
+        it "has the remaining 5 out of 85 diffs" do
+          expect(subject.size).to eq(5)
         end
       end
     end

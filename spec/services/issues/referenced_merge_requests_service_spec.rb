@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper.rb'
+require 'spec_helper'
 
 RSpec.describe Issues::ReferencedMergeRequestsService do
   def create_referencing_mr(attributes = {})

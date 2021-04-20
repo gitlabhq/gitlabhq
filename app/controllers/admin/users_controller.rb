@@ -318,13 +318,11 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def load_cohorts
-    if Gitlab::CurrentSettings.usage_ping_enabled
-      cohorts_results = Rails.cache.fetch('cohorts', expires_in: 1.day) do
-        CohortsService.new.execute
-      end
-
-      CohortsSerializer.new.represent(cohorts_results)
+    cohorts_results = Rails.cache.fetch('cohorts', expires_in: 1.day) do
+      CohortsService.new.execute
     end
+
+    CohortsSerializer.new.represent(cohorts_results)
   end
 
   def track_cohorts_visit

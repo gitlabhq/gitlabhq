@@ -66,7 +66,7 @@ RSpec.shared_examples 'a class that supports relative positioning' do
     end
   end
 
-  describe '.move_nulls_to_end' do
+  shared_examples '.move_nulls_to_end' do
     let(:item3) { create_item }
     let(:sibling_query) { item1.class.relative_positioning_query_base(item1) }
 
@@ -186,7 +186,7 @@ RSpec.shared_examples 'a class that supports relative positioning' do
     end
   end
 
-  describe '.move_nulls_to_start' do
+  shared_examples '.move_nulls_to_start' do
     let(:item3) { create_item }
     let(:sibling_query) { item1.class.relative_positioning_query_base(item1) }
 
@@ -259,6 +259,24 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       expect(nils.reverse.sort_by(&:relative_position)).not_to eq(nils)
       expect(bunch.map(&:relative_position)).to all(be > nils.map(&:relative_position).max)
     end
+  end
+
+  context 'when optimize_shifting_relative_positions is enabled' do
+    before do
+      stub_feature_flags(optimize_shifting_relative_positions: true)
+    end
+
+    it_behaves_like '.move_nulls_to_start'
+    it_behaves_like '.move_nulls_to_end'
+  end
+
+  context 'when optimize_shifting_relative_positions is disabled' do
+    before do
+      stub_feature_flags(optimize_shifting_relative_positions: false)
+    end
+
+    it_behaves_like '.move_nulls_to_start'
+    it_behaves_like '.move_nulls_to_end'
   end
 
   describe '#move_before' do

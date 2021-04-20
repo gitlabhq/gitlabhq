@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper.rb'
+require 'spec_helper'
 
 RSpec.describe Issues::BuildService do
   let_it_be(:project) { create(:project, :repository) }

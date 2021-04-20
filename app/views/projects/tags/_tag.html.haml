@@ -8,7 +8,7 @@
     = link_to tag.name, project_tag_path(@project, tag.name), class: 'item-title ref-name'
 
     - if protected_tag?(@project, tag)
-      %span.badge.badge-success.gl-ml-2
+      %span.badge.badge-success.gl-ml-2.gl-badge.sm.badge-pill
         = s_('TagsPage|protected')
 
     - if tag.message.present?

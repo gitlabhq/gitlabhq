@@ -49,7 +49,7 @@
             .input-group
               = search_field_tag :search, params[:search], class: 'form-control gl-form-input', spellcheck: false
               .input-group-append
-                = submit_tag 'Search', class: 'gl-button btn btn-default'
+                = submit_tag _('Search'), class: 'gl-button btn btn-default'
 
         %td
       - @projects.each do |project|
@@ -60,7 +60,7 @@
             .float-right
               = form_for project.runner_projects.new, url: admin_namespace_project_runner_projects_path(project.namespace, project), method: :post do |f|
                 = f.hidden_field :runner_id, value: @runner.id
-                = f.submit 'Enable', class: 'gl-button btn btn-sm'
+                = f.submit _('Enable'), class: 'gl-button btn btn-sm'
     = paginate_without_count @projects
 
   .col-md-6

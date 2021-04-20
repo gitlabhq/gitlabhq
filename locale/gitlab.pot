@@ -1799,9 +1799,6 @@ msgstr ""
 msgid "Activate Service Desk"
 msgstr ""
 
-msgid "Activate user activity analysis"
-msgstr ""
-
 msgid "Active"
 msgstr ""
 
@@ -2769,6 +2766,9 @@ msgid "After that, you will not be able to use merge approvals or epics as well 
 msgstr ""
 
 msgid "After that, you will not be able to use merge approvals or epics as well as many security features."
+msgstr ""
+
+msgid "After you've reviewed these contribution guidelines, you'll be all set to"
 msgstr ""
 
 msgid "Alert"
@@ -10345,6 +10345,9 @@ msgstr ""
 msgid "Default CI configuration path"
 msgstr ""
 
+msgid "Default Timeout Period"
+msgstr ""
+
 msgid "Default artifacts expiration"
 msgstr ""
 
@@ -13380,6 +13383,9 @@ msgid "Failure"
 msgstr ""
 
 msgid "False positive"
+msgstr ""
+
+msgid "Fast Timeout Period"
 msgstr ""
 
 msgid "Fast-forward merge is not possible. Rebase the source branch onto %{targetBranch} to allow this merge request to be merged."
@@ -19671,6 +19677,9 @@ msgid "Measured in bytes of code. Excludes generated and vendored code."
 msgstr ""
 
 msgid "Median"
+msgstr ""
+
+msgid "Medium Timeout Period"
 msgstr ""
 
 msgid "Medium vulnerabilities present"
@@ -33354,9 +33363,6 @@ msgstr ""
 msgid "Turn on"
 msgstr ""
 
-msgid "Turn on %{strongStart}usage ping%{strongEnd} to activate analysis of user activity, known as %{docLinkStart}Cohorts%{docLinkEnd}."
-msgstr ""
-
 msgid "Turn on usage ping"
 msgstr ""
 
@@ -37022,6 +37028,9 @@ msgid "container_name can contain only lowercase letters, digits, '-', and '.' a
 msgstr ""
 
 msgid "container_name cannot be larger than %{max_length} chars"
+msgstr ""
+
+msgid "contribute to this project."
 msgstr ""
 
 msgid "could not read private key, is the passphrase correct?"

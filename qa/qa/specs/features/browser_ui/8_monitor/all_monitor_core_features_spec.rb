@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'cluster_with_prometheus.rb'
+require_relative 'cluster_with_prometheus'
 
 module QA
   RSpec.describe 'Monitor', :orchestrated, :kubernetes, :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/241448', type: :investigating } do

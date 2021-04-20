@@ -60,7 +60,6 @@ GitLab administrators can configure a new default branch name at the
 > - It's deployed behind a feature flag, enabled by default.
 > - It cannot be enabled or disabled per-project.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-custom-initial-branch-name).
 
 GitLab [administrators](../../../permissions.md) of self-managed instances can
 customize the initial branch for projects hosted on that instance. Individual
@@ -74,25 +73,6 @@ groups and subgroups can override this instance-wide setting for their projects.
 Projects created on this instance after you change the setting use the
 custom branch name, unless a group-level or subgroup-level configuration
 overrides it.
-
-#### Enable or disable custom initial branch name **(FREE SELF)**
-
-Setting the default initial branch name is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../../administration/feature_flags.md)
-can opt to disable it for your instance.
-
-To disable it:
-
-```ruby
-Feature.disable(:global_default_branch_name)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:global_default_branch_name)
-```
 
 ### Group-level custom initial branch name **(FREE)**
 

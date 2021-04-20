@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative '../../app/models/concerns/token_authenticatable.rb'
-require_relative '../../app/models/concerns/token_authenticatable_strategies/base.rb'
-require_relative '../../app/models/concerns/token_authenticatable_strategies/insecure.rb'
-require_relative '../../app/models/concerns/token_authenticatable_strategies/digest.rb'
+require_relative '../../app/models/concerns/token_authenticatable'
+require_relative '../../app/models/concerns/token_authenticatable_strategies/base'
+require_relative '../../app/models/concerns/token_authenticatable_strategies/insecure'
+require_relative '../../app/models/concerns/token_authenticatable_strategies/digest'
 
 namespace :tokens do
   desc "Reset all GitLab incoming email tokens"

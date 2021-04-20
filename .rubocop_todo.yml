@@ -876,11 +876,6 @@ Style/RedundantFetchBlock:
     - 'spec/lib/gitlab/null_request_store_spec.rb'
     - 'spec/lib/gitlab/safe_request_store_spec.rb'
 
-# Offense count: 26
-# Cop supports --auto-correct.
-Style/RedundantFileExtensionInRequire:
-  Enabled: false
-
 # Offense count: 206
 # Cop supports --auto-correct.
 Style/RedundantInterpolation:

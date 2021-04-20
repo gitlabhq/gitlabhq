@@ -1,8 +1,0 @@
----
-name: global_default_branch_name
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35269
-rollout_issue_url: 
-milestone: '13.2'
-type: development
-group: group::source code
-default_enabled: true

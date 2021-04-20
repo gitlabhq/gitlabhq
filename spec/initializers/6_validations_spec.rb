@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../config/initializers/6_validations.rb'
+require_relative '../../config/initializers/6_validations'
 
 RSpec.describe '6_validations' do
   describe 'validate_storages_config' do
