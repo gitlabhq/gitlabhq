@@ -1,0 +1,8 @@
+---
+name: security_dast_site_profiles_api_option
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58723
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325130
+milestone: '13.12'
+type: development
+group: group::dynamic analysis
+default_enabled: false

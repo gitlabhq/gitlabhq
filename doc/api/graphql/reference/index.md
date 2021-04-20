@@ -2117,6 +2117,7 @@ Represents a DAST Site Profile.
 | `profileName` | [`String`](#string) | The name of the site profile. |
 | `referencedInSecurityPolicies` | [`[String!]`](#string) | List of security policy names that are referencing given project. |
 | `requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. Will always return `null` if `security_dast_site_profiles_additional_fields` feature flag is disabled. |
+| `targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | The type of target to be scanned. Will always return `null` if `security_dast_site_profiles_api_option` feature flag is disabled. |
 | `targetUrl` | [`String`](#string) | The URL of the target to be scanned. |
 | `userPermissions` | [`DastSiteProfilePermissions!`](#dastsiteprofilepermissions) | Permissions for the current user on the resource. |
 | `validationStatus` | [`DastSiteProfileValidationStatusEnum`](#dastsiteprofilevalidationstatusenum) | The current validation status of the site profile. |
@@ -7870,6 +7871,13 @@ Status of a container repository.
 | ----- | ----------- |
 | `HEADER` | Header validation. |
 | `TEXT_FILE` | Text file validation. |
+
+### `DastTargetTypeEnum`
+
+| Value | Description |
+| ----- | ----------- |
+| `API` | API target. |
+| `WEBSITE` | Website target. |
 
 ### `DataVisualizationColorEnum`
 

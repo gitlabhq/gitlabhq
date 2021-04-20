@@ -5,40 +5,36 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Using GitLab
+# Use GitLab as a microservice
 
-As many applications depend on accessing JSON apis you eventually need them in order for your tests to run.
-In this example we are providing GitLab as a Microservice to be accessible for API clients.
-Below you are guided how to do this with the Docker executors of GitLab Runner.
+Many applications need to access JSON APIs, so application tests might need access
+to APIs too. The following example shows how to use GitLab as a microservice to give
+tests access to the GitLab API.
 
-## Use GitLab with the Docker executor
+1. Configure a [runner](../runners/README.md) with the Docker or Kubernetes executor.
+1. In your `.gitlab-ci.yml` add:
 
-If you're using [GitLab Runner](../runners/README.md) with the Docker/Kubernetes executor,
-you basically have everything set up already.
+   ```yaml
+   services:
+     - name: gitlab/gitlab-ce:latest
+       alias: gitlab
 
-First, in your `.gitlab-ci.yml` add:
+   variables:
+     GITLAB_HTTPS: "false"             # ensure that plain http works
+     GITLAB_ROOT_PASSWORD: "password"  # to access the api with user root:password
+   ```
 
-```yaml
-services:
-  - name: gitlab/gitlab-ce:latest
-    alias: gitlab
+1. To set values for the `GITLAB_HTTPS` and `GITLAB_ROOT_PASSWORD`,
+   [assign them to a variable in the user interface](../variables/README.md#project-cicd-variables).
+   Then assign that variable to the corresponding variable in your
+   `.gitlab-ci.yml` file.
+   
+Then, commands in `script:` sections in your `.gitlab-ci.yml` file can access the API at `http://gitlab/api/v4`.
 
-variables:
-  GITLAB_HTTPS: "false"             # ensure that plain http will work
-  GITLAB_ROOT_PASSWORD: "password"  # in order to access the api with user root:password
-```
-
-To set values for the `GITLAB_HTTPS`, `GITLAB_ROOT_PASSWORD`,
-[assign them to a variable in the user interface](../variables/README.md#project-cicd-variables),
-then assign that variable to the corresponding variable in your
-`.gitlab-ci.yml` file.
-
-From your ci `script:` the API will then be availible at `http://gitlab/api/v4`
-
-If you're wondering why we used `gitlab` for the `Host`, read more at
+For more information about why `gitlab` is used for the `Host`, see
 [How services are linked to the job](../docker/using_docker_images.md#extended-docker-configuration-options).
 
 You can also use any other Docker image available on [Docker Hub](https://hub.docker.com/u/gitlab).
 
-The `gitlab` image can accept some environment variables. For more details,
-see the [omnibus documentation](../../install/README.md).
+The `gitlab` image can accept environment variables. For more details,
+see the [Omnibus documentation](../../install/README.md).
