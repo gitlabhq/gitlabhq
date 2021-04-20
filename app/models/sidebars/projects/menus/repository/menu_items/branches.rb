@@ -3,30 +3,29 @@
 module Sidebars
   module Projects
     module Menus
-      module ProjectOverview
+      module Repository
         module MenuItems
-          class Details < ::Sidebars::MenuItem
+          class Branches < ::Sidebars::MenuItem
             override :link
             def link
-              project_path(context.project)
+              project_branches_path(context.project)
             end
 
             override :extra_container_html_options
             def extra_container_html_options
               {
-                aria: { label: _('Project details') },
-                class: 'shortcuts-project'
+                id: 'js-onboarding-branches-link'
               }
             end
 
             override :active_routes
             def active_routes
-              { path: 'projects#show' }
+              { controller: :branches }
             end
 
             override :title
             def title
-              _('Details')
+              _('Branches')
             end
           end
         end

@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Common do
 
     context 'when user does not have access to read build' do
       before do
-        project.update(public_builds: false)
+        project.update!(public_builds: false)
       end
 
       it { is_expected.not_to have_details }

@@ -149,7 +149,7 @@ Traceback (most recent call last):
 /opt/gitlab/..../runner_command.rb:42:in `load': cannot load such file -- /tmp/helloworld.rb (LoadError)
 ```
 
-In case you encouter a similar error to this:
+In case you encounter a similar error to this:
 
 ```plaintext
 [root ~]# sudo gitlab-rails runner helloworld.rb 
@@ -159,7 +159,7 @@ Run 'rails runner -h' for help.
 undefined local variable or method `helloworld' for main:Object
 ```
 
-You can either move the file to the `/tmp` directory or create a new directory onwed by the user `git` and save the script in that directory as illustrated below:
+You can either move the file to the `/tmp` directory or create a new directory owned by the user `git` and save the script in that directory as illustrated below:
 
 ```shell
 sudo mkdir /scripts

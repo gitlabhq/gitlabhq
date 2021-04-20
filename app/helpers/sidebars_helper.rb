@@ -14,8 +14,10 @@ module SidebarsHelper
     end
   end
 
-  def project_sidebar_context(project, user)
-    Sidebars::Projects::Context.new(**project_sidebar_context_data(project, user))
+  def project_sidebar_context(project, user, current_ref)
+    context_data = project_sidebar_context_data(project, user, current_ref)
+
+    Sidebars::Projects::Context.new(**context_data)
   end
 
   private
@@ -32,11 +34,12 @@ module SidebarsHelper
     tracking_attrs('user_side_navigation', 'render', 'user_side_navigation')
   end
 
-  def project_sidebar_context_data(project, user)
+  def project_sidebar_context_data(project, user, current_ref)
     {
       current_user: user,
       container: project,
-      learn_gitlab_experiment_enabled: learn_gitlab_experiment_enabled?(project)
+      learn_gitlab_experiment_enabled: learn_gitlab_experiment_enabled?(project),
+      current_ref: current_ref
     }
   end
 end

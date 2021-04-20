@@ -14,8 +14,8 @@ RSpec.describe Sidebars::ContainerWithHtmlOptions do
   end
 
   describe '#container_html_options' do
-    it 'includes title attribute' do
-      expect(subject.container_html_options).to eq(title: 'Foo')
+    it 'includes by default aria-label attribute' do
+      expect(subject.container_html_options).to eq(aria: { label: 'Foo' })
     end
   end
 end

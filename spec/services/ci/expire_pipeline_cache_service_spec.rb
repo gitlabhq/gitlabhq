@@ -49,7 +49,7 @@ RSpec.describe Ci::ExpirePipelineCacheService do
       let(:project_with_repo) { create(:project, :repository) }
       let!(:pipeline_with_commit) { create(:ci_pipeline, :success, project: project_with_repo, sha: project_with_repo.commit.id) }
 
-      it 'clears the cache', :use_clean_rails_memory_store_caching do
+      it 'clears the cache', :use_clean_rails_redis_caching do
         create(:commit_status, :success, pipeline: pipeline_with_commit, ref: pipeline_with_commit.ref)
 
         # Sanity check

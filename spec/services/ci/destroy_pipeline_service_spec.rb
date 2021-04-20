@@ -17,7 +17,7 @@ RSpec.describe ::Ci::DestroyPipelineService do
       expect { pipeline.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it 'clears the cache', :use_clean_rails_memory_store_caching do
+    it 'clears the cache', :use_clean_rails_redis_caching do
       create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
 
       expect(project.pipeline_status.has_status?).to be_truthy

@@ -57,14 +57,5 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers do
         end
       end
     end
-
-    context 'when the ci_pipeline_ensure_iid_on_drop feature flag is false' do
-      it 'does not ensure the project iid' do
-        stub_feature_flags(ci_pipeline_ensure_iid_on_drop: false)
-        expect(pipeline).to receive(:ensure_project_iid!).once
-
-        subject.error(message, config_error: true)
-      end
-    end
   end
 end

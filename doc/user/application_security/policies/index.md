@@ -66,7 +66,8 @@ scan_execution_policy:
   enabled: true
   rules:
   - type: pipeline
-    branch: master
+    branches:
+    - master
   actions:
   - scan: dast
     scanner_profile: Scanner Profile A
@@ -76,7 +77,8 @@ scan_execution_policy:
   enabled: true
   rules:
   - type: pipeline
-    branch: main
+    branches:
+    - main
   actions:
   - scan: dast
     scanner_profile: Scanner Profile C
@@ -108,7 +110,7 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
 | `type` | `string` | `pipeline` | The rule's type. |
-| `branch` | `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 
 ### `scan` action type
 
@@ -140,7 +142,8 @@ scan_execution_policy:
   enabled: true
   rules:
   - type: pipeline
-    branch: release/*
+    branches:
+    - release/*
   actions:
   - scan: dast
     scanner_profile: Scanner Profile A
@@ -150,7 +153,8 @@ scan_execution_policy:
   enabled: true
   rules:
   - type: pipeline
-    branch: main
+    branches:
+    - main
   actions:
   - scan: dast
     scanner_profile: Scanner Profile C

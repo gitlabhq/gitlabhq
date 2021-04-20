@@ -9,6 +9,7 @@ module Sidebars
 
         add_menu(Sidebars::Projects::Menus::ProjectOverview::Menu.new(context))
         add_menu(Sidebars::Projects::Menus::LearnGitlab::Menu.new(context))
+        add_menu(Sidebars::Projects::Menus::Repository::Menu.new(context))
       end
 
       override :render_raw_menus_partial

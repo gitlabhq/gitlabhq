@@ -31,12 +31,10 @@ module Gitlab
             return if pipeline.readonly?
 
             if drop_reason && command.save_incompleted
-              if Feature.enabled?(:ci_pipeline_ensure_iid_on_drop, pipeline.project, default_enabled: :yaml)
-                # Project iid must be called outside a transaction, so we ensure it is set here
-                # otherwise it may be set within the state transition transaction of the drop! call
-                # which it will lock the InternalId row for the whole transaction
-                pipeline.ensure_project_iid!
-              end
+              # Project iid must be called outside a transaction, so we ensure it is set here
+              # otherwise it may be set within the state transition transaction of the drop! call
+              # which it will lock the InternalId row for the whole transaction
+              pipeline.ensure_project_iid!
 
               pipeline.drop!(drop_reason)
             else

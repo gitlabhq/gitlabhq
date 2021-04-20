@@ -6382,7 +6382,7 @@ Tiers: `free`
 
 ### `edition`
 
-Edition of GitLab such as EE, CE, Bronze, Silver, Gold
+Edition of GitLab such as EE or CE
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/license/20210216175604_edition.yml)
 

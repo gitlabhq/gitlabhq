@@ -15,7 +15,7 @@
 
   %ul.sidebar-sub-level-items{ class: ('is-fly-out-only' unless sidebar_menu.has_items?) }
     = nav_link(**sidebar_menu.all_active_routes, html_options: { class: 'fly-out-top-item' } ) do
-      = link_to sidebar_menu.link, title: sidebar_menu.title do
+      = link_to sidebar_menu.link, aria: { label: sidebar_menu.title } do
         %strong.fly-out-top-item-name
           = sidebar_menu.title
         - if sidebar_menu.has_pill?

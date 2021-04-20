@@ -730,6 +730,9 @@ msgstr ""
 msgid "%{name}(%{url}) has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
 msgstr ""
 
+msgid "%{name}, confirm your email address now!"
+msgstr ""
+
 msgid "%{no_of_days} day"
 msgid_plural "%{no_of_days} days"
 msgstr[0] ""
@@ -6543,6 +6546,9 @@ msgid "Click %{link_to} to view the request."
 msgstr ""
 
 msgid "Click the button below."
+msgstr ""
+
+msgid "Click the link below to confirm your email address (%{email})"
 msgstr ""
 
 msgid "Click the link below to confirm your email address."
@@ -14893,9 +14899,6 @@ msgstr ""
 msgid "GithubIntegration|This requires mirroring your GitHub repository to this project. %{docs_link}"
 msgstr ""
 
-msgid "Gitlab Pages"
-msgstr ""
-
 msgid "Gitpod"
 msgstr ""
 
@@ -16137,6 +16140,9 @@ msgid "If the number of active users exceeds the user limit, you will be charged
 msgstr ""
 
 msgid "If there is no previous license or if the previous license has expired, some GitLab functionality will be blocked until a new, valid license is uploaded."
+msgstr ""
+
+msgid "If this email was added in error, you can remove it here:"
 msgstr ""
 
 msgid "If this email was added in error, you can remove it here: %{profile_emails_url}"

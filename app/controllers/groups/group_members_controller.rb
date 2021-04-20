@@ -24,8 +24,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
   def index
     @sort = params[:sort].presence || sort_value_name
 
-    @project = @group.projects.find(params[:project_id]) if params[:project_id]
-
     @members = GroupMembersFinder
       .new(@group, current_user, params: filter_params)
       .execute(include_relations: requested_relations)

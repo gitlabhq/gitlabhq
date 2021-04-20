@@ -412,6 +412,46 @@ You can do it quickly by following the hyperlink given to run a new pipeline.
 
 ![Run a new pipeline](img/outdated_report_pipeline_v12_9.png)
 
+## Security report validation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.
+
+As of GitLab 13.11, we've introduced the **optional** validation of the security report artifacts based on the
+[report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/tree/master/dist).
+If you enable validation, GitLab validates the report artifacts before ingesting the vulnerabilities.
+This prevents ingesting broken vulnerability data into the database.
+
+### Enable security report validation
+
+To enable report artifacts validation, set the `VALIDATE_SCHEMA` environment variable to `"true"` for the jobs in the `.gitlab-ci.yml` file.
+
+For example, the configuration below enables validation for only the `sast` job:
+
+  ```yaml
+  include:
+    - template: Security/Dependency-Scanning.gitlab-ci.yml
+    - template: Security/License-Scanning.gitlab-ci.yml
+    - template: Security/SAST.gitlab-ci.yml
+    - template: Security/Secret-Detection.gitlab-ci.yml
+
+  stages:
+    - security-scan
+
+  dependency_scanning:
+    stage: security-scan
+
+  license_scanning:
+    stage: security-scan
+
+  sast:
+    stage: security-scan
+    variables:
+      VALIDATE_SCHEMA: "true"
+
+  .secret-analyzer:
+    stage: security-scan
+  ```
+
 ## Troubleshooting
 
 ### Getting error message `sast job: stage parameter should be [some stage name here]`

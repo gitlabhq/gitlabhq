@@ -82,7 +82,7 @@ $darken-border-dashed-factor: 25% !default;
 $white: #fff !default;
 $white-normal: #f0f0f0 !default;
 $white-dark: #eaeaea !default;
-$white-transparent: rgba(255, 255, 255, 0.8) !default;
+$white-transparent: rgba($white, 0.8) !default;
 
 $gray-lightest: #fdfdfd !default;
 $gray-light: #fafafa !default;

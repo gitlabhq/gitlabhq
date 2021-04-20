@@ -1,0 +1,5 @@
+---
+title: Ensure the project iid is set before dropping pipeline
+merge_request: 59626
+author:
+type: performance

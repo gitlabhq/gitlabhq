@@ -746,25 +746,6 @@ module ProjectsHelper
     ]
   end
 
-  def sidebar_repository_paths
-    %w[
-      tree
-      blob
-      blame
-      edit_tree
-      new_tree
-      find_file
-      commit
-      commits
-      compare
-      projects/repositories
-      tags
-      branches
-      graphs
-      network
-    ]
-  end
-
   def sidebar_operations_paths
     %w[
       environments

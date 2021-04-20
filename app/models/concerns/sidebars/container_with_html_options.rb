@@ -7,7 +7,7 @@ module Sidebars
     # `link_to` or the div containing the container.
     def container_html_options
       {
-        title: title
+        aria: { label: title }
       }.merge(extra_container_html_options)
     end
 
