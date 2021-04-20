@@ -1,15 +1,15 @@
 <script>
-import { GlAvatar, GlButton, GlIcon } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { addSubscription } from '~/jira_connect/api';
+import { persistAlert, reloadPage } from '~/jira_connect/utils';
 import { s__ } from '~/locale';
-import { persistAlert } from '../utils';
+import GroupItemName from './group_item_name.vue';
 
 export default {
   components: {
-    GlAvatar,
     GlButton,
-    GlIcon,
+    GroupItemName,
   },
   inject: {
     subscriptionsPath: {
@@ -20,6 +20,11 @@ export default {
     group: {
       type: Object,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -42,7 +47,7 @@ export default {
             variant: 'success',
           });
 
-          AP.navigator.reload();
+          reloadPage();
         })
         .catch((error) => {
           this.$emit(
@@ -50,8 +55,6 @@ export default {
             error?.response?.data?.error ||
               s__('Integrations|Failed to link namespace. Please try again.'),
           );
-        })
-        .finally(() => {
           this.isLoading = false;
         });
     },
@@ -60,34 +63,22 @@ export default {
 </script>
 
 <template>
-  <li class="gl-border-b-1 gl-border-b-solid gl-border-b-gray-200">
+  <li class="gl-border-b-1 gl-border-b-solid gl-border-b-gray-100">
     <div class="gl-display-flex gl-align-items-center gl-py-3">
-      <gl-icon name="folder-o" class="gl-mr-3" />
-      <div class="gl-display-none gl-flex-shrink-0 gl-sm-display-flex gl-mr-3">
-        <gl-avatar :size="32" shape="rect" :entity-name="group.name" :src="group.avatar_url" />
-      </div>
       <div class="gl-min-w-0 gl-display-flex gl-flex-grow-1 gl-flex-shrink-1 gl-align-items-center">
         <div class="gl-min-w-0 gl-flex-grow-1 flex-shrink-1">
-          <div class="gl-display-flex gl-align-items-center gl-flex-wrap">
-            <span
-              class="gl-mr-3 gl-text-gray-900! gl-font-weight-bold"
-              data-testid="group-list-item-name"
-            >
-              {{ group.full_name }}
-            </span>
-          </div>
-          <div v-if="group.description" data-testid="group-list-item-description">
-            <p class="gl-mt-2! gl-mb-0 gl-text-gray-600" v-text="group.description"></p>
-          </div>
+          <group-item-name :group="group" />
         </div>
 
         <gl-button
           category="secondary"
-          variant="success"
+          variant="confirm"
           :loading="isLoading"
+          :disabled="disabled"
           @click.prevent="onClick"
-          >{{ __('Link') }}</gl-button
         >
+          {{ __('Link') }}
+        </gl-button>
       </div>
     </div>
   </li>

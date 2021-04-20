@@ -45,6 +45,7 @@ class Deployment < ApplicationRecord
   scope :active, -> { where(status: %i[created running]) }
   scope :older_than, -> (deployment) { where('deployments.id < ?', deployment.id) }
   scope :with_deployable, -> { joins('INNER JOIN ci_builds ON ci_builds.id = deployments.deployable_id').preload(:deployable) }
+  scope :with_api_entity_associations, -> { preload({ deployable: { runner: [], tags: [], user: [], job_artifacts_archive: [] } }) }
 
   scope :finished_after, ->(date) { where('finished_at >= ?', date) }
   scope :finished_before, ->(date) { where('finished_at < ?', date) }
@@ -93,11 +94,6 @@ class Deployment < ApplicationRecord
     after_transition any => :success do |deployment|
       deployment.run_after_commit do
         Deployments::UpdateEnvironmentWorker.perform_async(id)
-      end
-    end
-
-    after_transition any => FINISHED_STATUSES do |deployment|
-      deployment.run_after_commit do
         Deployments::LinkMergeRequestWorker.perform_async(id)
       end
     end
@@ -175,7 +171,7 @@ class Deployment < ApplicationRecord
   end
 
   def commit
-    project.commit(sha)
+    @commit ||= project.commit(sha)
   end
 
   def commit_title
@@ -225,7 +221,7 @@ class Deployment < ApplicationRecord
   end
 
   def update_merge_request_metrics!
-    return unless environment.update_merge_request_metrics? && success?
+    return unless environment.production? && success?
 
     merge_requests = project.merge_requests
                      .joins(:metrics)
@@ -243,29 +239,18 @@ class Deployment < ApplicationRecord
 
   def previous_deployment
     @previous_deployment ||=
-      project.deployments.joins(:environment)
-      .where(environments: { name: self.environment.name }, ref: self.ref)
-      .where.not(id: self.id)
-      .order(id: :desc)
-      .take
-  end
-
-  def previous_environment_deployment
-    project
-      .deployments
-      .success
-      .joins(:environment)
-      .where(environments: { name: environment.name })
-      .where.not(id: self.id)
-      .order(id: :desc)
-      .take
+      self.class.for_environment(environment_id)
+        .success
+        .where('id < ?', id)
+        .order(id: :desc)
+        .take
   end
 
   def stop_action
     return unless on_stop.present?
     return unless manual_actions
 
-    @stop_action ||= manual_actions.find_by(name: on_stop)
+    @stop_action ||= manual_actions.find { |action| action.name == self.on_stop }
   end
 
   def finished_at

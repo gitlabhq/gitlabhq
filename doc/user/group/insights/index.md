@@ -13,14 +13,12 @@ Configure the Insights that matter for your groups to explore data such as
 triage hygiene, issues created/closed per a given period, average time for merge
 requests to be merged and much more.
 
-![Insights example stacked bar chart](img/insights_example_stacked_bar_chart.png)
+![Insights example stacked bar chart](img/insights_example_stacked_bar_chart_v13_11.png)
 
 ## View your group's Insights
 
 You can access your group's Insights by clicking the **Analytics > Insights**
-link in the left sidebar:
-
-![Insights sidebar link](img/insights_sidebar_link_v12_8.png)
+link in the left sidebar.
 
 ## Configure your Insights
 

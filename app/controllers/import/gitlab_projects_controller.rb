@@ -3,7 +3,7 @@
 class Import::GitlabProjectsController < Import::BaseController
   include WorkhorseAuthorization
 
-  before_action :whitelist_query_limiting, only: [:create]
+  before_action :disable_query_limiting, only: [:create]
   before_action :verify_gitlab_project_import_enabled
 
   def new
@@ -42,8 +42,8 @@ class Import::GitlabProjectsController < Import::BaseController
     )
   end
 
-  def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42437')
+  def disable_query_limiting
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20823')
   end
 
   def uploader_class

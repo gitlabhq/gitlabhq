@@ -10,9 +10,11 @@ RSpec.describe 'User searches their settings', :js do
   end
 
   context 'in profile page' do
-    let(:visit_path) { profile_path }
+    before do
+      visit profile_path
+    end
 
-    it_behaves_like 'can search settings with feature flag check', 'Public Avatar', 'Main settings'
+    it_behaves_like 'can search settings', 'Public Avatar', 'Main settings'
   end
 
   context 'in preferences page' do

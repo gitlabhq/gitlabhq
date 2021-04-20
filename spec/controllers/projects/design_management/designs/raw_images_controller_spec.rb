@@ -8,6 +8,7 @@ RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:viewer) { issue.author }
+
   let(:design_id) { design.id }
   let(:sha) { design.versions.first.sha }
   let(:filename) { design.filename }
@@ -42,17 +43,6 @@ RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
 
         expect(response.header['Content-Disposition']).to match "attachment; filename=\"#{design.filename}\""
         expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      context 'when the feature flag attachment_with_filename is disabled' do
-        it 'serves files with just `attachment` in the disposition header' do
-          stub_feature_flags(attachment_with_filename: false)
-
-          subject
-
-          expect(response.header['Content-Disposition']).to eq('attachment')
-          expect(response).to have_gitlab_http_status(:ok)
-        end
       end
 
       it 'serves files with Workhorse' do

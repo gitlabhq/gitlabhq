@@ -27,7 +27,7 @@
             - usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: usage_ping_path }
             %p.mb-2= s_('%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc.').html_safe % { usage_ping_link_start: usage_ping_link_start, usage_ping_link_end: '</a>'.html_safe }
 
-            %button.btn.js-payload-preview-trigger{ type: 'button', data: { payload_selector: ".#{payload_class}" } }
+            %button.gl-button.btn.btn-default.js-payload-preview-trigger{ type: 'button', data: { payload_selector: ".#{payload_class}" } }
               .spinner.js-spinner.d-none
               .js-text.d-inline= _('Preview payload')
             %pre.usage-data.js-syntax-highlight.code.highlight.mt-2.d-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }

@@ -31,7 +31,7 @@ module Gitlab
       RACK_ENV_KEY = 'HTTP_GITLAB_WORKHORSE_MULTIPART_FIELDS'
       JWT_PARAM_SUFFIX = '.gitlab-workhorse-upload'
       JWT_PARAM_FIXED_KEY = 'upload'
-      REWRITTEN_FIELD_NAME_MAX_LENGTH = 10000.freeze
+      REWRITTEN_FIELD_NAME_MAX_LENGTH = 10000
 
       class Handler
         def initialize(env, message)

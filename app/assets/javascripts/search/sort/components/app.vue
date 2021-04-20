@@ -96,6 +96,7 @@ export default {
       v-gl-tooltip
       :disabled="!selectedSortOption.sortable"
       :title="sortDirectionData.tooltip"
+      :aria-label="sortDirectionData.tooltip"
       :icon="sortDirectionData.icon"
       @click="handleSortDirectionChange"
     />

@@ -29,7 +29,9 @@ module DesignManagement
     # - design [DesignManagement::Design]: the design that was changed
     # - action [Symbol]: the action that gitaly performed
     def initialize(design, action, content = nil)
-      @design, @action, @content = design, action, content
+      @design = design
+      @action = action
+      @content = content
       validate!
     end
 

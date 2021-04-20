@@ -8,6 +8,7 @@ RSpec.describe Environments::CanaryIngress::UpdateService, :clean_gitlab_redis_c
   let_it_be(:project, refind: true) { create(:project) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
+
   let(:user) { maintainer }
   let(:params) { {} }
   let(:service) { described_class.new(project, user, params) }

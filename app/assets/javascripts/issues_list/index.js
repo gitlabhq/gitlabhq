@@ -73,11 +73,29 @@ export function initIssuesListApp() {
   }
 
   const {
+    calendarPath,
+    canBulkUpdate,
+    canEdit,
+    canImportIssues,
+    email,
+    emptyStateSvgPath,
     endpoint,
+    exportCsvPath,
     fullPath,
     hasBlockedIssuesFeature,
     hasIssuableHealthStatusFeature,
+    hasIssues,
     hasIssueWeightsFeature,
+    importCsvIssuesPath,
+    isSignedIn,
+    issuesPath,
+    jiraIntegrationPath,
+    maxAttachmentSize,
+    newIssuePath,
+    projectImportJiraPath,
+    rssPath,
+    showNewIssueLink,
+    signInPath,
   } = el.dataset;
 
   return new Vue({
@@ -86,11 +104,32 @@ export function initIssuesListApp() {
     // issue is fixed upstream in https://github.com/vuejs/vue-apollo/pull/1153
     apolloProvider: {},
     provide: {
+      calendarPath,
+      canBulkUpdate: parseBoolean(canBulkUpdate),
+      emptyStateSvgPath,
       endpoint,
       fullPath,
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
+      hasIssues: parseBoolean(hasIssues),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
+      isSignedIn: parseBoolean(isSignedIn),
+      issuesPath,
+      jiraIntegrationPath,
+      newIssuePath,
+      rssPath,
+      showNewIssueLink: parseBoolean(showNewIssueLink),
+      signInPath,
+      // For CsvImportExportButtons component
+      canEdit: parseBoolean(canEdit),
+      email,
+      exportCsvPath,
+      importCsvIssuesPath,
+      maxAttachmentSize,
+      projectImportJiraPath,
+      showExportButton: parseBoolean(hasIssues),
+      showImportButton: parseBoolean(canImportIssues),
+      showLabel: !parseBoolean(hasIssues),
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

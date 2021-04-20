@@ -36,7 +36,7 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="widget-mini-pipeline-graph">
+  <div data-testid="pipeline-mini-graph">
     <div
       v-for="stage in stages"
       :key="stage.name"

@@ -214,7 +214,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do
             expect(Gitlab::SidekiqCluster).not_to receive(:start)
 
             expect { cli.run(%W(#{flag} unknown_field=chatops)) }
-              .to raise_error(Gitlab::SidekiqConfig::CliMethods::QueryError)
+              .to raise_error(Gitlab::SidekiqConfig::WorkerMatcher::QueryError)
           end
         end
       end

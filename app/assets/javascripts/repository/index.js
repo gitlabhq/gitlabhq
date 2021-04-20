@@ -1,14 +1,18 @@
 import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import { escapeFileUrl } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
-import { parseBoolean } from '../lib/utils/common_utils';
-import { escapeFileUrl } from '../lib/utils/url_utility';
-import { __ } from '../locale';
 import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
 import LastCommit from './components/last_commit.vue';
 import apolloProvider from './graphql';
+import commitsQuery from './queries/commits.query.graphql';
+import projectPathQuery from './queries/project_path.query.graphql';
+import projectShortPathQuery from './queries/project_short_path.query.graphql';
+import refsQuery from './queries/ref.query.graphql';
 import createRouter from './router';
 import { updateFormAction } from './utils/dom';
 import { setTitle } from './utils/title';
@@ -19,13 +23,32 @@ export default function setupVueRepositoryList() {
   const { projectPath, projectShortPath, ref, escapedRef, fullName } = dataset;
   const router = createRouter(projectPath, escapedRef);
 
-  apolloProvider.clients.defaultClient.cache.writeData({
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: commitsQuery,
+    data: {
+      commits: [],
+    },
+  });
+
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: projectPathQuery,
     data: {
       projectPath,
+    },
+  });
+
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: projectShortPathQuery,
+    data: {
       projectShortPath,
+    },
+  });
+
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: refsQuery,
+    data: {
       ref,
       escapedRef,
-      commits: [],
     },
   });
 
@@ -55,6 +78,8 @@ export default function setupVueRepositoryList() {
     const {
       canCollaborate,
       canEditTree,
+      canPushCode,
+      selectedBranch,
       newBranchPath,
       newTagPath,
       newBlobPath,
@@ -65,8 +90,7 @@ export default function setupVueRepositoryList() {
       newDirPath,
     } = breadcrumbEl.dataset;
 
-    router.afterEach(({ params: { path = '/' } }) => {
-      updateFormAction('.js-upload-blob-form', uploadPath, path);
+    router.afterEach(({ params: { path } }) => {
       updateFormAction('.js-create-dir-form', newDirPath, path);
     });
 
@@ -81,12 +105,16 @@ export default function setupVueRepositoryList() {
             currentPath: this.$route.params.path,
             canCollaborate: parseBoolean(canCollaborate),
             canEditTree: parseBoolean(canEditTree),
+            canPushCode: parseBoolean(canPushCode),
+            originalBranch: ref,
+            selectedBranch,
             newBranchPath,
             newTagPath,
             newBlobPath,
             forkNewBlobPath,
             forkNewDirectoryPath,
             forkUploadBlobPath,
+            uploadPath,
           },
         });
       },

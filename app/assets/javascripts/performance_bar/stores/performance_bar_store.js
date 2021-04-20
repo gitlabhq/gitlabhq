@@ -47,10 +47,15 @@ export default class PerformanceBarStore {
   }
 
   canTrackRequest(requestUrl) {
-    return (
-      requestUrl.endsWith('/api/graphql') ||
-      this.requests.filter((request) => request.url === requestUrl).length < 2
-    );
+    // We want to store at most 2 unique requests per URL, as additional
+    // requests to the same URL probably aren't very interesting.
+    //
+    // GraphQL requests are the exception: because all GraphQL requests
+    // go to the same URL, we set a higher limit of 10 to allow
+    // capturing different queries a page may make.
+    const requestsLimit = requestUrl.endsWith('/api/graphql') ? 10 : 2;
+
+    return this.requests.filter((request) => request.url === requestUrl).length < requestsLimit;
   }
 
   static truncateUrl(requestUrl) {

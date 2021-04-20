@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rspec-parameterized'
 
 RSpec.describe Gitlab::SidekiqConfig::CliMethods do
   let(:dummy_root) { '/tmp/' }
@@ -122,10 +121,8 @@ RSpec.describe Gitlab::SidekiqConfig::CliMethods do
     end
   end
 
-  describe '.query_workers' do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:queues) do
+  describe '.query_queues' do
+    let(:worker_metadatas) do
       [
         {
           name: 'a',
@@ -162,79 +159,16 @@ RSpec.describe Gitlab::SidekiqConfig::CliMethods do
       ]
     end
 
-    context 'with valid input' do
-      where(:query, :selected_queues) do
-        # feature_category
-        'feature_category=category_a' | %w(a a:2)
-        'feature_category=category_a,category_c' | %w(a a:2 c)
-        'feature_category=category_a|feature_category=category_c' | %w(a a:2 c)
-        'feature_category!=category_a' | %w(b c)
+    let(:worker_matcher) { double(:WorkerMatcher) }
+    let(:query) { 'feature_category=category_a,category_c' }
 
-        # has_external_dependencies
-        'has_external_dependencies=true' | %w(b)
-        'has_external_dependencies=false' | %w(a a:2 c)
-        'has_external_dependencies=true,false' | %w(a a:2 b c)
-        'has_external_dependencies=true|has_external_dependencies=false' | %w(a a:2 b c)
-        'has_external_dependencies!=true' | %w(a a:2 c)
-
-        # urgency
-        'urgency=high' | %w(a:2 b)
-        'urgency=low' | %w(a)
-        'urgency=high,low,throttled' | %w(a a:2 b c)
-        'urgency=low|urgency=throttled' | %w(a c)
-        'urgency!=high' | %w(a c)
-
-        # name
-        'name=a' | %w(a)
-        'name=a,b' | %w(a b)
-        'name=a,a:2|name=b' | %w(a a:2 b)
-        'name!=a,a:2' | %w(b c)
-
-        # resource_boundary
-        'resource_boundary=memory' | %w(b c)
-        'resource_boundary=memory,cpu' | %w(a b c)
-        'resource_boundary=memory|resource_boundary=cpu' | %w(a b c)
-        'resource_boundary!=memory,cpu' | %w(a:2)
-
-        # tags
-        'tags=no_disk_io' | %w(a b)
-        'tags=no_disk_io,git_access' | %w(a a:2 b)
-        'tags=no_disk_io|tags=git_access' | %w(a a:2 b)
-        'tags=no_disk_io&tags=git_access' | %w(a)
-        'tags!=no_disk_io' | %w(a:2 c)
-        'tags!=no_disk_io,git_access' | %w(c)
-        'tags=unknown_tag' | []
-        'tags!=no_disk_io' | %w(a:2 c)
-        'tags!=no_disk_io,git_access' | %w(c)
-        'tags!=unknown_tag' | %w(a a:2 b c)
-
-        # combinations
-        'feature_category=category_a&urgency=high' | %w(a:2)
-        'feature_category=category_a&urgency=high|feature_category=category_c' | %w(a:2 c)
-      end
-
-      with_them do
-        it do
-          expect(described_class.query_workers(query, queues))
-            .to match_array(selected_queues)
-        end
-      end
+    before do
+      allow(::Gitlab::SidekiqConfig::WorkerMatcher).to receive(:new).with(query).and_return(worker_matcher)
+      allow(worker_matcher).to receive(:match?).and_return(true, true, false, true)
     end
 
-    context 'with invalid input' do
-      where(:query, :error) do
-        'feature_category="category_a"' | described_class::InvalidTerm
-        'feature_category=' | described_class::InvalidTerm
-        'feature_category~category_a' | described_class::InvalidTerm
-        'worker_name=a' | described_class::UnknownPredicate
-      end
-
-      with_them do
-        it do
-          expect { described_class.query_workers(query, queues) }
-            .to raise_error(error)
-        end
-      end
+    it 'returns the queue names of matched workers' do
+      expect(described_class.query_queues(query, worker_metadatas)).to match(%w(a a:2 c))
     end
   end
 end

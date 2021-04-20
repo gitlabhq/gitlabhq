@@ -1,0 +1,5 @@
+---
+title: 'BulkImports: Track pipeline worker with BulkImports::Tracker#status'
+merge_request: 56242
+author:
+type: changed

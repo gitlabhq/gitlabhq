@@ -64,7 +64,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
     beforeEach(async () => {
       createWrapper();
 
-      jest.spyOn(wrapper.vm, 'setActiveIssueLabels').mockImplementation(() => TEST_LABELS);
+      jest.spyOn(wrapper.vm, 'setActiveBoardItemLabels').mockImplementation(() => TEST_LABELS);
       findLabelsSelect().vm.$emit('updateSelectedLabels', TEST_LABELS_PAYLOAD);
       store.state.boardItems[TEST_ISSUE.id].labels = TEST_LABELS;
       await wrapper.vm.$nextTick();
@@ -76,7 +76,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
     });
 
     it('commits change to the server', () => {
-      expect(wrapper.vm.setActiveIssueLabels).toHaveBeenCalledWith({
+      expect(wrapper.vm.setActiveBoardItemLabels).toHaveBeenCalledWith({
         addLabelIds: TEST_LABELS.map((label) => label.id),
         projectPath: 'gitlab-org/test-subgroup/gitlab-test',
         removeLabelIds: [],
@@ -94,13 +94,13 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
     beforeEach(async () => {
       createWrapper({ labels: TEST_LABELS });
 
-      jest.spyOn(wrapper.vm, 'setActiveIssueLabels').mockImplementation(() => expectedLabels);
+      jest.spyOn(wrapper.vm, 'setActiveBoardItemLabels').mockImplementation(() => expectedLabels);
       findLabelsSelect().vm.$emit('updateSelectedLabels', testLabelsPayload);
       await wrapper.vm.$nextTick();
     });
 
     it('commits change to the server', () => {
-      expect(wrapper.vm.setActiveIssueLabels).toHaveBeenCalledWith({
+      expect(wrapper.vm.setActiveBoardItemLabels).toHaveBeenCalledWith({
         addLabelIds: [5, 7],
         removeLabelIds: [6],
         projectPath: 'gitlab-org/test-subgroup/gitlab-test',
@@ -114,13 +114,13 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
     beforeEach(async () => {
       createWrapper({ labels: [testLabel] });
 
-      jest.spyOn(wrapper.vm, 'setActiveIssueLabels').mockImplementation(() => {});
+      jest.spyOn(wrapper.vm, 'setActiveBoardItemLabels').mockImplementation(() => {});
     });
 
     it('commits change to the server', () => {
       wrapper.find(GlLabel).vm.$emit('close', testLabel);
 
-      expect(wrapper.vm.setActiveIssueLabels).toHaveBeenCalledWith({
+      expect(wrapper.vm.setActiveBoardItemLabels).toHaveBeenCalledWith({
         removeLabelIds: [getIdFromGraphQLId(testLabel.id)],
         projectPath: 'gitlab-org/test-subgroup/gitlab-test',
       });
@@ -131,7 +131,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
     beforeEach(async () => {
       createWrapper({ labels: TEST_LABELS });
 
-      jest.spyOn(wrapper.vm, 'setActiveIssueLabels').mockImplementation(() => {
+      jest.spyOn(wrapper.vm, 'setActiveBoardItemLabels').mockImplementation(() => {
         throw new Error(['failed mutation']);
       });
       findLabelsSelect().vm.$emit('updateSelectedLabels', [{ id: '?' }]);

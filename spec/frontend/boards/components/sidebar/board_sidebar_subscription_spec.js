@@ -1,5 +1,6 @@
 import { GlToggle, GlLoadingIcon } from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import BoardSidebarSubscription from '~/boards/components/sidebar/board_sidebar_subscription.vue';
 import { createStore } from '~/boards/stores';
@@ -9,8 +10,7 @@ import { mockActiveIssue } from '../../mock_data';
 
 jest.mock('~/flash.js');
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () => {
   let wrapper;
@@ -20,14 +20,16 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
   const findToggle = () => wrapper.find(GlToggle);
   const findGlLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
-  const createComponent = (activeIssue = { ...mockActiveIssue }) => {
+  const createComponent = (activeBoardItem = { ...mockActiveIssue }) => {
     store = createStore();
-    store.state.boardItems = { [activeIssue.id]: activeIssue };
-    store.state.activeId = activeIssue.id;
+    store.state.boardItems = { [activeBoardItem.id]: activeBoardItem };
+    store.state.activeId = activeBoardItem.id;
 
     wrapper = mount(BoardSidebarSubscription, {
-      localVue,
       store,
+      provide: {
+        emailsDisabled: false,
+      },
     });
   };
 
@@ -90,9 +92,9 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
 
   describe('Board sidebar subscription component `behavior`', () => {
     const mockSetActiveIssueSubscribed = (subscribedState) => {
-      jest.spyOn(wrapper.vm, 'setActiveIssueSubscribed').mockImplementation(async () => {
-        store.commit(types.UPDATE_ISSUE_BY_ID, {
-          issueId: mockActiveIssue.id,
+      jest.spyOn(wrapper.vm, 'setActiveItemSubscribed').mockImplementation(async () => {
+        store.commit(types.UPDATE_BOARD_ITEM_BY_ID, {
+          itemId: mockActiveIssue.id,
           prop: 'subscribed',
           value: subscribedState,
         });
@@ -110,7 +112,7 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
       await wrapper.vm.$nextTick();
 
       expect(findGlLoadingIcon().exists()).toBe(true);
-      expect(wrapper.vm.setActiveIssueSubscribed).toHaveBeenCalledWith({
+      expect(wrapper.vm.setActiveItemSubscribed).toHaveBeenCalledWith({
         subscribed: true,
         projectPath: 'gitlab-org/test-subgroup/gitlab-test',
       });
@@ -134,7 +136,7 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
 
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.vm.setActiveIssueSubscribed).toHaveBeenCalledWith({
+      expect(wrapper.vm.setActiveItemSubscribed).toHaveBeenCalledWith({
         subscribed: false,
         projectPath: 'gitlab-org/test-subgroup/gitlab-test',
       });
@@ -148,7 +150,7 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
 
     it('flashes an error message when setting the subscribed state fails', async () => {
       createComponent();
-      jest.spyOn(wrapper.vm, 'setActiveIssueSubscribed').mockImplementation(async () => {
+      jest.spyOn(wrapper.vm, 'setActiveItemSubscribed').mockImplementation(async () => {
         throw new Error();
       });
 

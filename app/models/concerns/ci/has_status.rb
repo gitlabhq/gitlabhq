@@ -16,6 +16,19 @@ module Ci
     STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
                       failed: 4, canceled: 5, skipped: 6, manual: 7,
                       scheduled: 8, preparing: 9, waiting_for_resource: 10 }.freeze
+    STATUSES_DESCRIPTION = {
+      created: 'Pipeline has been created',
+      waiting_for_resource: 'A resource (for example, a runner) that the pipeline requires to run is unavailable',
+      preparing: 'Pipeline is preparing to run',
+      pending: 'Pipeline has not started running yet',
+      running: 'Pipeline is running',
+      failed: 'At least one stage of the pipeline failed',
+      success: 'Pipeline completed successfully',
+      canceled: 'Pipeline was canceled before completion',
+      skipped: 'Pipeline was skipped',
+      manual: 'Pipeline needs to be manually started',
+      scheduled: 'Pipeline is scheduled to run'
+    }.freeze
 
     UnknownStatusError = Class.new(StandardError)
 

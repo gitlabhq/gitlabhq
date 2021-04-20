@@ -1,0 +1,8 @@
+---
+name: ci_workflow_rules_variables
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52085
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/300997
+milestone: '13.11'
+type: development
+group: group::pipeline authoring
+default_enabled: false

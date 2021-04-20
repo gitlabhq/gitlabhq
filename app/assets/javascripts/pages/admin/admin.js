@@ -1,16 +1,6 @@
 import $ from 'jquery';
 import { refreshCurrentPage } from '../../lib/utils/url_utility';
 
-function showDenylistType() {
-  if ($('input[name="denylist_type"]:checked').val() === 'file') {
-    $('.js-denylist-file').show();
-    $('.js-denylist-raw').hide();
-  } else {
-    $('.js-denylist-file').hide();
-    $('.js-denylist-raw').show();
-  }
-}
-
 export default function adminInit() {
   $('input#user_force_random_password').on('change', function randomPasswordClick() {
     const $elems = $('#user_password, #user_password_confirmation');
@@ -27,7 +17,4 @@ export default function adminInit() {
   });
 
   $('li.project_member, li.group_member').on('ajax:success', refreshCurrentPage);
-
-  $("input[name='denylist_type']").on('click', showDenylistType);
-  showDenylistType();
 }

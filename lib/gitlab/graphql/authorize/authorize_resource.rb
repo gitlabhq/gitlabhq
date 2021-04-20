@@ -5,15 +5,17 @@ module Gitlab
     module Authorize
       module AuthorizeResource
         extend ActiveSupport::Concern
+        ConfigurationError = Class.new(StandardError)
 
-        RESOURCE_ACCESS_ERROR = "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
+        RESOURCE_ACCESS_ERROR = "The resource that you are attempting to access does " \
+          "not exist or you don't have permission to perform this action"
 
         class_methods do
           def required_permissions
             # If the `#authorize` call is used on multiple classes, we add the
             # permissions specified on a subclass, to the ones that were specified
-            # on it's superclass.
-            @required_permissions ||= if self.respond_to?(:superclass) && superclass.respond_to?(:required_permissions)
+            # on its superclass.
+            @required_permissions ||= if respond_to?(:superclass) && superclass.respond_to?(:required_permissions)
                                         superclass.required_permissions.dup
                                       else
                                         []
@@ -22,6 +24,18 @@ module Gitlab
 
           def authorize(*permissions)
             required_permissions.concat(permissions)
+          end
+
+          def authorizes_object?
+            defined?(@authorizes_object) ? @authorizes_object : false
+          end
+
+          def authorizes_object!
+            @authorizes_object = true
+          end
+
+          def raise_resource_not_available_error!(msg = RESOURCE_ACCESS_ERROR)
+            raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, msg
           end
         end
 
@@ -37,33 +51,21 @@ module Gitlab
           object
         end
 
+        # authorizes the object using the current class authorization.
         def authorize!(object)
-          unless authorized_resource?(object)
-            raise_resource_not_available_error!
-          end
+          raise_resource_not_available_error! unless authorized_resource?(object)
         end
 
-        # this was named `#authorized?`, however it conflicts with the native
-        # graphql gem version
-        # TODO consider adopting the gem's built in authorization system
-        # https://gitlab.com/gitlab-org/gitlab/issues/13984
         def authorized_resource?(object)
           # Sanity check. We don't want to accidentally allow a developer to authorize
           # without first adding permissions to authorize against
-          if self.class.required_permissions.empty?
-            raise Gitlab::Graphql::Errors::ArgumentError, "#{self.class.name} has no authorizations"
-          end
+          raise ConfigurationError, "#{self.class.name} has no authorizations" if self.class.authorization.none?
 
-          self.class.required_permissions.all? do |ability|
-            # The actions could be performed across multiple objects. In which
-            # case the current user is common, and we could benefit from the
-            # caching in `DeclarativePolicy`.
-            Ability.allowed?(current_user, ability, object, scope: :user)
-          end
+          self.class.authorization.ok?(object, current_user)
         end
 
-        def raise_resource_not_available_error!(msg = RESOURCE_ACCESS_ERROR)
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, msg
+        def raise_resource_not_available_error!(*args)
+          self.class.raise_resource_not_available_error!(*args)
         end
       end
     end

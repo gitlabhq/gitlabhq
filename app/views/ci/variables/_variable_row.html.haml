@@ -25,21 +25,21 @@
     %input.js-ci-variable-input-destroy{ type: "hidden", name: destroy_input_name }
     %select.js-ci-variable-input-variable-type.ci-variable-body-item.form-control.select-control.custom-select.table-section.section-15{ name: variable_type_input_name }
       = options_for_select(ci_variable_type_options, variable_type)
-    %input.js-ci-variable-input-key.ci-variable-body-item.qa-ci-variable-input-key.form-control.table-section.section-15{ type: "text",
+    %input.js-ci-variable-input-key.ci-variable-body-item.qa-ci-variable-input-key.form-control.gl-form-input.table-section.section-15{ type: "text",
       name: key_input_name,
       value: key,
       placeholder: s_('CiVariables|Input variable key') }
     .ci-variable-body-item.gl-show-field-errors.table-section.section-15.border-top-0.p-0
       .form-control.js-secret-value-placeholder.qa-ci-variable-input-value.overflow-hidden{ class: ('hide' unless id) }
         = '*' * 17
-      %textarea.js-ci-variable-input-value.js-secret-value.qa-ci-variable-input-value.form-control{ class: ('hide' if id),
+      %textarea.js-ci-variable-input-value.js-secret-value.qa-ci-variable-input-value.form-control.gl-form-input{ class: ('hide' if id),
         rows: 1,
         name: value_input_name,
         placeholder: s_('CiVariables|Input variable value') }
         = value
       %p.masking-validation-error.gl-field-error.hide
         = s_("CiVariables|Cannot use Masked Variable with current value")
-        = link_to sprite_icon('question-o'), help_page_path('ci/variables/README', anchor: 'mask-a-custom-variable'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to sprite_icon('question-o'), help_page_path('ci/variables/README', anchor: 'mask-a-cicd-variable'), target: '_blank', rel: 'noopener noreferrer'
     - unless only_key_value
       .ci-variable-body-item.ci-variable-protected-item.table-section.section-20.mr-0.border-top-0
         .gl-mr-3
@@ -60,5 +60,5 @@
             value: is_masked,
             data: { default: is_masked_default.to_s } }
       = render_if_exists 'ci/variables/environment_scope', form_field: form_field, variable: variable
-    %button.btn.btn-svg.js-row-remove-button.ci-variable-row-remove-button.table-section{ type: 'button', 'aria-label': s_('CiVariables|Remove variable row') }
+    %button.gl-button.btn.btn-default.btn-icon.js-row-remove-button.ci-variable-row-remove-button.table-section{ type: 'button', 'aria-label': s_('CiVariables|Remove variable row') }
       = sprite_icon('close')

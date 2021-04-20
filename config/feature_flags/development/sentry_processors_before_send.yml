@@ -1,0 +1,8 @@
+---
+name: sentry_processors_before_send
+introduced_by_url:
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/849#processors
+milestone: '13.11'
+type: development
+group: team::Scalability
+default_enabled: false

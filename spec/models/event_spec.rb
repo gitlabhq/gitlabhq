@@ -299,11 +299,11 @@ RSpec.describe Event do
     end
 
     def visible_to_none_except(*roles)
-      visible_to_none.merge(roles.map { |role| [role, true] }.to_h)
+      visible_to_none.merge(roles.to_h { |role| [role, true] })
     end
 
     def visible_to_all_except(*roles)
-      visible_to_all.merge(roles.map { |role| [role, false] }.to_h)
+      visible_to_all.merge(roles.to_h { |role| [role, false] })
     end
 
     shared_examples 'visibility examples' do
@@ -723,7 +723,7 @@ RSpec.describe Event do
         note_on_design: true,
         note_on_commit: true
       }
-      valid_target_factories.map do |kind, needs_project|
+      valid_target_factories.to_h do |kind, needs_project|
         extra_data = if kind == :merge_request
                        { source_project: project }
                      elsif needs_project
@@ -735,7 +735,7 @@ RSpec.describe Event do
         target = kind == :project ? nil : build(kind, **extra_data)
 
         [kind, build(:event, :created, author: project.owner, project: project, target: target)]
-      end.to_h
+      end
     end
 
     it 'passes a sanity check', :aggregate_failures do

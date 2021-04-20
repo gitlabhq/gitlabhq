@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe PagesDeployment do
+  let_it_be(:project) { create(:project) }
+
   describe 'associations' do
     it { is_expected.to belong_to(:project).required }
     it { is_expected.to belong_to(:ci_build).optional }
@@ -28,12 +30,32 @@ RSpec.describe PagesDeployment do
 
   describe '.migrated_from_legacy_storage' do
     it 'only returns migrated deployments' do
-      project = create(:project)
       migrated_deployment = create_migrated_deployment(project)
       # create one other deployment
       create(:pages_deployment, project: project)
 
       expect(described_class.migrated_from_legacy_storage).to eq([migrated_deployment])
+    end
+  end
+
+  context 'with deployments stored locally and remotely' do
+    before do
+      stub_pages_object_storage(::Pages::DeploymentUploader)
+    end
+
+    let!(:remote_deployment) { create(:pages_deployment, project: project, file_store: ::ObjectStorage::Store::REMOTE) }
+    let!(:local_deployment) { create(:pages_deployment, project: project, file_store: ::ObjectStorage::Store::LOCAL) }
+
+    describe '.with_files_stored_locally' do
+      it 'only returns deployments with files stored locally' do
+        expect(described_class.with_files_stored_locally).to contain_exactly(local_deployment)
+      end
+    end
+
+    describe '.with_files_stored_remotely' do
+      it 'only returns deployments with files stored remotely' do
+        expect(described_class.with_files_stored_remotely).to contain_exactly(remote_deployment)
+      end
     end
   end
 
@@ -45,7 +67,6 @@ RSpec.describe PagesDeployment do
     end
 
     it 'returns true for migrated deployment' do
-      project = create(:project)
       deployment = create_migrated_deployment(project)
 
       expect(deployment.migrated?).to eq(true)
@@ -67,7 +88,6 @@ RSpec.describe PagesDeployment do
   end
 
   describe 'default for file_store' do
-    let(:project) { create(:project) }
     let(:deployment) do
       filepath = Rails.root.join("spec/fixtures/pages.zip")
 

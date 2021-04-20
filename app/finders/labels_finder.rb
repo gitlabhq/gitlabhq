@@ -2,6 +2,7 @@
 
 class LabelsFinder < UnionFinder
   prepend FinderWithCrossProjectAccess
+  include FinderWithGroupHierarchy
   include FinderMethods
   include Gitlab::Utils::StrongMemoize
 
@@ -14,7 +15,7 @@ class LabelsFinder < UnionFinder
 
   def execute(skip_authorization: false)
     @skip_authorization = skip_authorization
-    items = find_union(label_ids, Label) || Label.none
+    items = find_union(item_ids, Label) || Label.none
     items = with_title(items)
     items = by_subscription(items)
     items = by_search(items)
@@ -26,8 +27,8 @@ class LabelsFinder < UnionFinder
   attr_reader :current_user, :params, :skip_authorization
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def label_ids
-    label_ids = []
+  def item_ids
+    item_ids = []
 
     if project?
       if project
@@ -35,25 +36,25 @@ class LabelsFinder < UnionFinder
           labels_table = Label.arel_table
           group_ids = group_ids_for(project.group)
 
-          label_ids << Label.where(
+          item_ids << Label.where(
             labels_table[:type].eq('GroupLabel').and(labels_table[:group_id].in(group_ids)).or(
               labels_table[:type].eq('ProjectLabel').and(labels_table[:project_id].eq(project.id))
             )
           )
         else
-          label_ids << project.labels
+          item_ids << project.labels
         end
       end
     else
       if group?
-        label_ids << Label.where(group_id: group_ids_for(group))
+        item_ids << Label.where(group_id: group_ids_for(group))
       end
 
-      label_ids << Label.where(group_id: projects.group_ids)
-      label_ids << Label.where(project_id: ids_user_can_read_labels(projects)) unless only_group_labels?
+      item_ids << Label.where(group_id: projects.group_ids)
+      item_ids << Label.where(project_id: ids_user_can_read_labels(projects)) unless only_group_labels?
     end
 
-    label_ids
+    item_ids
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -94,49 +95,6 @@ class LabelsFinder < UnionFinder
     params[:subscribed] == 'true'
   end
 
-  # Gets redacted array of group ids
-  # which can include the ancestors and descendants of the requested group.
-  def group_ids_for(group)
-    strong_memoize(:group_ids) do
-      groups = groups_to_include(group)
-
-      # Because we are sure that all groups are in the same hierarchy tree
-      # we can preset root group for all of them to optimize permission checks
-      Group.preset_root_ancestor_for(groups)
-
-      groups_user_can_read_labels(groups).map(&:id)
-    end
-  end
-
-  def groups_to_include(group)
-    groups = [group]
-
-    groups += group.ancestors if include_ancestor_groups?
-    groups += group.descendants if include_descendant_groups?
-
-    groups
-  end
-
-  def include_ancestor_groups?
-    params[:include_ancestor_groups]
-  end
-
-  def include_descendant_groups?
-    params[:include_descendant_groups]
-  end
-
-  def group?
-    params[:group].present? || params[:group_id].present?
-  end
-
-  def group
-    strong_memoize(:group) { params[:group].presence || Group.find(params[:group_id]) }
-  end
-
-  def project?
-    params[:project].present? || params[:project_id].present?
-  end
-
   def projects?
     params[:project_ids]
   end
@@ -153,12 +111,16 @@ class LabelsFinder < UnionFinder
     params[:title] || params[:name]
   end
 
+  def project?
+    params[:project].present? || params[:project_id].present?
+  end
+
   def project
     return @project if defined?(@project)
 
     if project?
       @project = params[:project] || Project.find(params[:project_id])
-      @project = nil unless authorized_to_read_labels?(@project)
+      @project = nil unless authorized_to_read_item?(@project)
     else
       @project = nil
     end
@@ -191,16 +153,8 @@ class LabelsFinder < UnionFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def authorized_to_read_labels?(label_parent)
-    return true if skip_authorization
-
-    Ability.allowed?(current_user, :read_label, label_parent)
-  end
-
-  def groups_user_can_read_labels(groups)
-    DeclarativePolicy.user_scope do
-      groups.select { |group| authorized_to_read_labels?(group) }
-    end
+  def read_permission
+    :read_label
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

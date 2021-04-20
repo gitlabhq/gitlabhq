@@ -9,12 +9,12 @@ module Gitlab
         QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30, 60, 300, 900, 1800, 3600].freeze
         QUEUE_ACTIVE_RUNNERS_BUCKETS = [1, 3, 10, 30, 60, 300, 900, 1800, 3600].freeze
         QUEUE_DEPTH_TOTAL_BUCKETS = [1, 2, 3, 5, 8, 16, 32, 50, 100, 250, 500, 1000, 2000, 5000].freeze
-        QUEUE_SIZE_TOTAL_BUCKETS = [1, 5, 10, 50, 100, 500, 1000, 2000, 5000].freeze
-        QUEUE_ITERATION_DURATION_SECONDS_BUCKETS = [0.1, 0.3, 0.5, 1, 5, 10, 30, 60, 180, 300].freeze
+        QUEUE_SIZE_TOTAL_BUCKETS = [1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 7500, 10000, 15000, 20000].freeze
+        QUEUE_PROCESSING_DURATION_SECONDS_BUCKETS = [0.01, 0.05, 0.1, 0.3, 0.5, 1, 5, 10, 30, 60, 180, 300].freeze
 
         METRICS_SHARD_TAG_PREFIX = 'metrics_shard::'
         DEFAULT_METRICS_SHARD = 'default'
-        JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5.freeze
+        JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5
 
         OPERATION_COUNTERS = [
           :build_can_pick,
@@ -94,13 +94,13 @@ module Gitlab
           self.class.queue_depth_total.observe({ queue: queue }, size.to_f)
         end
 
-        def observe_queue_size(size_proc)
+        def observe_queue_size(size_proc, runner_type)
           return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, default_enabled: false)
 
-          self.class.queue_size_total.observe({}, size_proc.call.to_f)
+          self.class.queue_size_total.observe({ runner_type: runner_type }, size_proc.call.to_f)
         end
 
-        def observe_queue_time
+        def observe_queue_time(metric, runner_type)
           start_time = ::Gitlab::Metrics::System.monotonic_time
 
           result = yield
@@ -108,7 +108,15 @@ module Gitlab
           return result unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, default_enabled: false)
 
           seconds = ::Gitlab::Metrics::System.monotonic_time - start_time
-          self.class.queue_iteration_duration_seconds.observe({}, seconds.to_f)
+
+          case metric
+          when :process
+            self.class.queue_iteration_duration_seconds.observe({ runner_type: runner_type }, seconds.to_f)
+          when :retrieve
+            self.class.queue_retrieval_duration_seconds.observe({ runner_type: runner_type }, seconds.to_f)
+          else
+            raise ArgumentError unless Rails.env.production?
+          end
 
           result
         end
@@ -187,7 +195,18 @@ module Gitlab
           strong_memoize(:queue_iteration_duration_seconds) do
             name = :gitlab_ci_queue_iteration_duration_seconds
             comment = 'Time it takes to find a build in CI/CD queue'
-            buckets = QUEUE_ITERATION_DURATION_SECONDS_BUCKETS
+            buckets = QUEUE_PROCESSING_DURATION_SECONDS_BUCKETS
+            labels = {}
+
+            Gitlab::Metrics.histogram(name, comment, labels, buckets)
+          end
+        end
+
+        def self.queue_retrieval_duration_seconds
+          strong_memoize(:queue_retrieval_duration_seconds) do
+            name = :gitlab_ci_queue_retrieval_duration_seconds
+            comment = 'Time it takes to execute a SQL query to retrieve builds queue'
+            buckets = QUEUE_PROCESSING_DURATION_SECONDS_BUCKETS
             labels = {}
 
             Gitlab::Metrics.histogram(name, comment, labels, buckets)

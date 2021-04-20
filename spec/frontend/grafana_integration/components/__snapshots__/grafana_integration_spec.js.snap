@@ -9,7 +9,7 @@ exports[`grafana integration component default state to match the default snapsh
     class="settings-header"
   >
     <h4
-      class="js-section-header"
+      class="js-section-header settings-title js-settings-toggle js-settings-toggle-trigger-only"
     >
       
       Grafana authentication

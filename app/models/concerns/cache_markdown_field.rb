@@ -56,12 +56,12 @@ module CacheMarkdownField
   # Update every applicable column in a row if any one is invalidated, as we only store
   # one version per row
   def refresh_markdown_cache
-    updates = cached_markdown_fields.markdown_fields.map do |markdown_field|
+    updates = cached_markdown_fields.markdown_fields.to_h do |markdown_field|
       [
         cached_markdown_fields.html_field(markdown_field),
         rendered_field_content(markdown_field)
       ]
-    end.to_h
+    end
 
     updates['cached_markdown_version'] = latest_cached_markdown_version
 

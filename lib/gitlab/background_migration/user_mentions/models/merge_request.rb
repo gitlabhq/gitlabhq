@@ -17,10 +17,11 @@ module Gitlab
           cache_markdown_field :description, issuable_state_filter_enabled: true
 
           self.table_name = 'merge_requests'
+          self.inheritance_column = :_type_disabled
 
-          belongs_to :author, class_name: "User"
-          belongs_to :target_project, class_name: "Project"
-          belongs_to :source_project, class_name: "Project"
+          belongs_to :author, class_name: "::Gitlab::BackgroundMigration::UserMentions::Models::User"
+          belongs_to :target_project, class_name: "::Gitlab::BackgroundMigration::UserMentions::Models::Project"
+          belongs_to :source_project, class_name: "::Gitlab::BackgroundMigration::UserMentions::Models::Project"
 
           alias_attribute :project, :target_project
 

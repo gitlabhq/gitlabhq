@@ -97,7 +97,7 @@ DAST-fullscan-ruleset5:
   variables:
     DAST_USERNAME: "user5"
   script:
-    - export DAST_EXCLUDE_RULES=$(echo $DAST_RULES | enable_rule 10010 | enable_rule 10011 | enable_rule 10015 | enable_rule 10017 | enable_rule 10019)
+    - export DAST_EXCLUDE_RULES=$(echo $DAST_RULES | enable_rule 10010 | enable_rule 10011 | enable_rule 10017 | enable_rule 10019)
     - echo $DAST_EXCLUDE_RULES
     - /analyze -t $DAST_WEBSITE -d
 

@@ -92,10 +92,8 @@ module NavHelper
       links << :admin_impersonation
     end
 
-    if Feature.enabled?(:user_mode_in_session)
-      if current_user_mode.admin_mode?
-        links << :admin_mode
-      end
+    if Gitlab::CurrentSettings.admin_mode && current_user_mode.admin_mode?
+      links << :admin_mode
     end
 
     links

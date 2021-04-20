@@ -272,7 +272,7 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
     end
 
     it 'closes all todos about failed jobs for pipeline' do
-      expect(MergeRequests::AddTodoWhenBuildFailsService)
+      expect(::MergeRequests::AddTodoWhenBuildFailsService)
         .to receive_message_chain(:new, :close_all)
 
       service.execute(pipeline)

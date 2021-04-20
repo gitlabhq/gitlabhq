@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Evidences::EvidenceEntity do
   let_it_be(:project) { create(:project) }
+
   let(:release) { create(:release, project: project) }
   let(:evidence) { build(:evidence, release: release) }
   let(:schema_file) { 'evidences/evidence' }

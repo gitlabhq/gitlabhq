@@ -1,8 +1,0 @@
----
-name: migrate_delayed_project_removal
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53916
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/300207
-milestone: '13.9'
-type: development
-group: group::access
-default_enabled: true

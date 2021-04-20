@@ -49,7 +49,8 @@ export default {
       return this.job.status && this.job.recoverable ? 'primary' : 'secondary';
     },
     hasArtifact() {
-      return !isEmpty(this.job.artifact);
+      // the artifact object will always have a locked property
+      return Object.keys(this.job.artifact).length > 1;
     },
     hasTriggers() {
       return !isEmpty(this.job.trigger);

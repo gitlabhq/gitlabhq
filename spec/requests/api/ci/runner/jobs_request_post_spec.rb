@@ -143,7 +143,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
         context 'when there is a pending job' do
           let(:expected_job_info) do
-            { 'name' => job.name,
+            { 'id' => job.id,
+              'name' => job.name,
               'stage' => job.stage,
               'project_id' => job.project.id,
               'project_name' => job.project.name }
@@ -489,6 +490,36 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               expect(json_response['dependencies']).to include(
                 { 'id' => job.id, 'name' => job.name, 'token' => job.token },
                 { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+            end
+
+            describe 'preloading job_artifacts_archive' do
+              context 'when the feature flag is disabled' do
+                before do
+                  stub_feature_flags(preload_associations_jobs_request_api_endpoint: false)
+                end
+
+                it 'queries the ci_job_artifacts table multiple times' do
+                  expect { request_job }.to exceed_all_query_limit(1).for_model(::Ci::JobArtifact)
+                end
+
+                it 'queries the ci_builds table more than five times' do
+                  expect { request_job }.to exceed_all_query_limit(5).for_model(::Ci::Build)
+                end
+              end
+
+              context 'when the feature flag is enabled' do
+                before do
+                  stub_feature_flags(preload_associations_jobs_request_api_endpoint: true)
+                end
+
+                it 'queries the ci_job_artifacts table once only' do
+                  expect { request_job }.not_to exceed_all_query_limit(1).for_model(::Ci::JobArtifact)
+                end
+
+                it 'queries the ci_builds table five times' do
+                  expect { request_job }.not_to exceed_all_query_limit(5).for_model(::Ci::Build)
+                end
+              end
             end
           end
 

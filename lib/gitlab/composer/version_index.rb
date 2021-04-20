@@ -28,18 +28,32 @@ module Gitlab
       def package_metadata(package)
         json = package.composer_metadatum.composer_json
 
-        json.merge('dist' => package_dist(package), 'uid' => package.id, 'version' => package.version)
+        json.merge(
+          'dist' => package_dist(package),
+          'source' => package_source(package),
+          'uid' => package.id,
+          'version' => package.version
+        )
       end
 
       def package_dist(package)
-        sha = package.composer_metadatum.target_sha
         archive_api_path = api_v4_projects_packages_composer_archives_package_name_path({ id: package.project_id, package_name: package.name, format: '.zip' }, true)
 
         {
           'type' => 'zip',
-          'url' => expose_url(archive_api_path) + "?sha=#{sha}",
-          'reference' => sha,
+          'url' => expose_url(archive_api_path) + "?sha=#{package.composer_target_sha}",
+          'reference' => package.composer_target_sha,
           'shasum' => ''
+        }
+      end
+
+      def package_source(package)
+        git_url = package.project.http_url_to_repo
+
+        {
+          'type' => 'git',
+          'url' => git_url,
+          'reference' => package.composer_target_sha
         }
       end
     end

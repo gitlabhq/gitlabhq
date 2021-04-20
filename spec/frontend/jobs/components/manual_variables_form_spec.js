@@ -1,11 +1,16 @@
-import { GlButton } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import Form from '~/jobs/components/manual_variables_form.vue';
 
 const localVue = createLocalVue();
 
+Vue.use(Vuex);
+
 describe('Manual Variables Form', () => {
   let wrapper;
+  let store;
 
   const requiredProps = {
     action: {
@@ -16,88 +21,104 @@ describe('Manual Variables Form', () => {
     variablesSettingsUrl: '/settings',
   };
 
-  const factory = (props = {}) => {
-    wrapper = shallowMount(localVue.extend(Form), {
-      propsData: props,
-      localVue,
+  const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
+    store = new Vuex.Store({
+      actions: {
+        triggerManualJob: jest.fn(),
+      },
     });
+
+    wrapper = extendedWrapper(
+      mountFn(localVue.extend(Form), {
+        propsData: { ...requiredProps, ...props },
+        localVue,
+        store,
+      }),
+    );
   };
 
-  beforeEach(() => {
-    factory(requiredProps);
+  const findInputKey = () => wrapper.findComponent({ ref: 'inputKey' });
+  const findInputValue = () => wrapper.findComponent({ ref: 'inputSecretValue' });
+
+  const findTriggerBtn = () => wrapper.findByTestId('trigger-manual-job-btn');
+  const findHelpText = () => wrapper.findByTestId('form-help-text');
+  const findDeleteVarBtn = () => wrapper.findByTestId('delete-variable-btn');
+  const findCiVariableKey = () => wrapper.findByTestId('ci-variable-key');
+  const findCiVariableValue = () => wrapper.findByTestId('ci-variable-value');
+  const findAllVariables = () => wrapper.findAllByTestId('ci-variable-row');
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
-  afterEach((done) => {
-    // The component has a `nextTick` callback after some events so we need
-    // to wait for those to finish before destroying.
-    setImmediate(() => {
-      wrapper.destroy();
-      wrapper = null;
+  describe('shallowMount', () => {
+    beforeEach(() => {
+      createComponent();
+    });
 
-      done();
+    it('renders empty form with correct placeholders', () => {
+      expect(findInputKey().attributes('placeholder')).toBe('Input variable key');
+      expect(findInputValue().attributes('placeholder')).toBe('Input variable value');
+    });
+
+    it('renders help text with provided link', () => {
+      expect(findHelpText().text()).toBe(
+        'Specify variable values to be used in this run. The values specified in CI/CD settings will be used as default',
+      );
+
+      expect(wrapper.find('a').attributes('href')).toBe(requiredProps.variablesSettingsUrl);
+    });
+
+    describe('when adding a new variable', () => {
+      it('creates a new variable when user types a new key and resets the form', async () => {
+        await findInputKey().setValue('new key');
+
+        expect(findAllVariables()).toHaveLength(1);
+        expect(findCiVariableKey().element.value).toBe('new key');
+        expect(findInputKey().attributes('value')).toBe(undefined);
+      });
+
+      it('creates a new variable when user types a new value and resets the form', async () => {
+        await findInputValue().setValue('new value');
+
+        expect(findAllVariables()).toHaveLength(1);
+        expect(findCiVariableValue().element.value).toBe('new value');
+        expect(findInputValue().attributes('value')).toBe(undefined);
+      });
     });
   });
 
-  it('renders empty form with correct placeholders', () => {
-    expect(wrapper.find({ ref: 'inputKey' }).attributes('placeholder')).toBe('Input variable key');
-    expect(wrapper.find({ ref: 'inputSecretValue' }).attributes('placeholder')).toBe(
-      'Input variable value',
-    );
-  });
-
-  it('renders help text with provided link', () => {
-    expect(wrapper.find('p').text()).toBe(
-      'Specify variable values to be used in this run. The values specified in CI/CD settings will be used as default',
-    );
-
-    expect(wrapper.find('a').attributes('href')).toBe(requiredProps.variablesSettingsUrl);
-  });
-
-  describe('when adding a new variable', () => {
-    it('creates a new variable when user types a new key and resets the form', (done) => {
-      wrapper.vm
-        .$nextTick()
-        .then(() => wrapper.find({ ref: 'inputKey' }).setValue('new key'))
-        .then(() => {
-          expect(wrapper.vm.variables.length).toBe(1);
-          expect(wrapper.vm.variables[0].key).toBe('new key');
-          expect(wrapper.find({ ref: 'inputKey' }).attributes('value')).toBe(undefined);
-        })
-        .then(done)
-        .catch(done.fail);
+  describe('mount', () => {
+    beforeEach(() => {
+      createComponent({ mountFn: mount });
     });
 
-    it('creates a new variable when user types a new value and resets the form', (done) => {
-      wrapper.vm
-        .$nextTick()
-        .then(() => wrapper.find({ ref: 'inputSecretValue' }).setValue('new value'))
-        .then(() => {
-          expect(wrapper.vm.variables.length).toBe(1);
-          expect(wrapper.vm.variables[0].secret_value).toBe('new value');
-          expect(wrapper.find({ ref: 'inputSecretValue' }).attributes('value')).toBe(undefined);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-  });
+    describe('when deleting a variable', () => {
+      it('removes the variable row', async () => {
+        await wrapper.setData({
+          variables: [
+            {
+              key: 'new key',
+              secret_value: 'value',
+              id: '1',
+            },
+          ],
+        });
 
-  describe('when deleting a variable', () => {
-    beforeEach((done) => {
-      wrapper.vm.variables = [
-        {
-          key: 'new key',
-          secret_value: 'value',
-          id: '1',
-        },
-      ];
+        findDeleteVarBtn().trigger('click');
 
-      wrapper.vm.$nextTick(done);
+        await wrapper.vm.$nextTick();
+
+        expect(findAllVariables()).toHaveLength(0);
+      });
     });
 
-    it('removes the variable row', () => {
-      wrapper.find(GlButton).vm.$emit('click');
+    it('trigger button is disabled after trigger action', async () => {
+      expect(findTriggerBtn().props('disabled')).toBe(false);
 
-      expect(wrapper.vm.variables.length).toBe(0);
+      await findTriggerBtn().trigger('click');
+
+      expect(findTriggerBtn().props('disabled')).toBe(true);
     });
   });
 });

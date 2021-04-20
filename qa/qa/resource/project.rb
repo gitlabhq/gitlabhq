@@ -155,6 +155,10 @@ module QA
         "#{api_get_path}/registry/repositories"
       end
 
+      def api_packages_path
+        "#{api_get_path}/packages"
+      end
+
       def api_commits_path
         "#{api_get_path}/repository/commits"
       end
@@ -173,6 +177,10 @@ module QA
 
       def api_pipelines_path
         "#{api_get_path}/pipelines"
+      end
+
+      def api_pipeline_schedules_path
+        "#{api_get_path}/pipeline_schedules"
       end
 
       def api_put_path
@@ -262,7 +270,11 @@ module QA
 
       def registry_repositories
         response = get Runtime::API::Request.new(api_client, "#{api_registry_repositories_path}").url
+        parse_body(response)
+      end
 
+      def packages
+        response = get Runtime::API::Request.new(api_client, "#{api_packages_path}").url
         parse_body(response)
       end
 
@@ -280,6 +292,10 @@ module QA
 
       def pipelines
         parse_body(get(Runtime::API::Request.new(api_client, api_pipelines_path).url))
+      end
+
+      def pipeline_schedules
+        parse_body(get(Runtime::API::Request.new(api_client, api_pipeline_schedules_path).url))
       end
 
       private

@@ -34,14 +34,6 @@ class Board < ApplicationRecord
     project_id.present?
   end
 
-  def backlog_list
-    lists.merge(List.backlog).take
-  end
-
-  def closed_list
-    lists.merge(List.closed).take
-  end
-
   def scoped?
     false
   end

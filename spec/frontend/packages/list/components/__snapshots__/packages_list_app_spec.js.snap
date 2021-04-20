@@ -2,11 +2,11 @@
 
 exports[`packages_list_app renders 1`] = `
 <div>
-  <package-title-stub
-    packagehelpurl="foo"
+  <div
+    help-url="foo"
   />
    
-  <package-search-stub />
+  <div />
    
   <div>
     <section
@@ -52,7 +52,9 @@ exports[`packages_list_app renders 1`] = `
              with GitLab.
           </p>
            
-          <div>
+          <div
+            class="gl-display-flex gl-flex-wrap gl-justify-content-center"
+          >
             <!---->
              
             <!---->

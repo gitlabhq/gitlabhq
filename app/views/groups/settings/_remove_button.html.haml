@@ -1,0 +1,7 @@
+- if group.paid?
+  .gl-alert.gl-alert-info.gl-mb-5{ data: { testid: 'group-has-linked-subscription-alert' } }
+    = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    .gl-alert-body
+      = html_escape(_("This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/index', anchor: 'change-the-linked-namespace')}\">".html_safe, linkEnd: '</a>'.html_safe }
+
+= button_to _('Remove group'), '#', class: ['btn gl-button btn-danger js-confirm-danger', ('disabled' if group.paid?)], data: { 'confirm-danger-message' => remove_group_message(group), 'testid' => 'remove-group-button' }

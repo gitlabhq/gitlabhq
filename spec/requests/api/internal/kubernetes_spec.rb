@@ -38,16 +38,22 @@ RSpec.describe API::Internal::Kubernetes do
   end
 
   shared_examples 'agent authentication' do
-    it 'returns 403 if Authorization header not sent' do
+    it 'returns 401 if Authorization header not sent' do
       send_request
 
-      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it 'returns 403 if Authorization is for non-existent agent' do
+    it 'returns 401 if Authorization is for non-existent agent' do
       send_request(headers: { 'Authorization' => 'Bearer NONEXISTENT' })
 
-      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+  end
+
+  shared_examples 'agent token tracking' do
+    it 'tracks token usage' do
+      expect { response }.to change { agent_token.reload.read_attribute(:last_used_at) }
     end
   end
 
@@ -100,6 +106,8 @@ RSpec.describe API::Internal::Kubernetes do
 
       let(:agent) { agent_token.agent }
       let(:project) { agent.project }
+
+      shared_examples 'agent token tracking'
 
       it 'returns expected data', :aggregate_failures do
         send_request(headers: { 'Authorization' => "Bearer #{agent_token.token}" })
@@ -168,6 +176,8 @@ RSpec.describe API::Internal::Kubernetes do
 
     context 'an agent is found' do
       let_it_be(:agent_token) { create(:cluster_agent_token) }
+
+      shared_examples 'agent token tracking'
 
       context 'project is public' do
         let(:project) { create(:project, :public) }

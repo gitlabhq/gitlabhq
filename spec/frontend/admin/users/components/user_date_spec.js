@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
-import UserDate from '~/admin/users/components/user_date.vue';
+import UserDate from '~/vue_shared/components/user_date.vue';
 import { users } from '../mock_data';
 
 const mockDate = users[0].createdAt;

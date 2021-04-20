@@ -31,3 +31,5 @@ maintainers from allowing users to approve merge requests if they have submitted
 any commits to the source branch.
 - **Prevent users from modifying merge request approvers list**. Prevents users from
 modifying the approvers list in project settings or in individual merge requests.
+
+Also read the [project level merge request approval rules](../project/merge_requests/merge_request_approvals.md), which are affected by instance level rules.

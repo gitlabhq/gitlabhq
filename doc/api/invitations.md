@@ -61,8 +61,8 @@ When there was any error sending the email:
 {
   "status": "error",
   "message": {
-               "test@example.com": "Already invited",
-               "test2@example.com": "Member already exsists"
+               "test@example.com": "Invite email has already been taken",
+               "test2@example.com": "User already exists in source"
              }
 }
 ```

@@ -24,7 +24,7 @@ export default {
       target="_blank"
       rel="noopener noreferrer"
     >
-      <img :src="attachment.url" class="note-image-attach" />
+      <img :src="attachment.url" class="note-image-attach col-lg-4" />
     </a>
     <div class="attachment">
       <a

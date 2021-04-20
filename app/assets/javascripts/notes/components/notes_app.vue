@@ -3,8 +3,10 @@ import { mapGetters, mapActions } from 'vuex';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { __ } from '~/locale';
 import initUserPopovers from '~/user_popovers';
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import draftNote from '../../batch_comments/components/draft_note.vue';
 import { deprecatedCreateFlash as Flash } from '../../flash';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
@@ -32,6 +34,8 @@ export default {
     discussionFilterNote,
     OrderedLayout,
     SidebarSubscription,
+    draftNote,
+    TimelineEntryItem,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -276,6 +280,9 @@ export default {
         <ul id="notes-list" class="notes main-notes-list timeline">
           <template v-for="discussion in allDiscussions">
             <skeleton-loading-container v-if="discussion.isSkeletonNote" :key="discussion.id" />
+            <timeline-entry-item v-else-if="discussion.isDraft" :key="discussion.id">
+              <draft-note :draft="discussion" />
+            </timeline-entry-item>
             <template v-else-if="discussion.isPlaceholderNote">
               <placeholder-system-note
                 v-if="discussion.placeholderType === $options.systemNote"

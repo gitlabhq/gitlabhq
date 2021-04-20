@@ -9,6 +9,7 @@ module Clusters
         scope :available, -> do
           where(
             status: [
+              self.state_machines[:status].states[:externally_installed].value,
               self.state_machines[:status].states[:installed].value,
               self.state_machines[:status].states[:updated].value
             ]
@@ -28,6 +29,7 @@ module Clusters
           state :uninstalling, value: 7
           state :uninstall_errored, value: 8
           state :uninstalled, value: 10
+          state :externally_installed, value: 11
 
           # Used for applications that are pre-installed by the cluster,
           # e.g. Knative in GCP Cloud Run enabled clusters
@@ -37,7 +39,7 @@ module Clusters
           state :pre_installed, value: 9
 
           event :make_externally_installed do
-            transition any => :installed
+            transition any => :externally_installed
           end
 
           event :make_externally_uninstalled do
@@ -79,7 +81,7 @@ module Clusters
             transition [:scheduled] => :uninstalling
           end
 
-          before_transition any => [:scheduled, :installed, :uninstalled] do |application, _|
+          before_transition any => [:scheduled, :installed, :uninstalled, :externally_installed] do |application, _|
             application.status_reason = nil
           end
 
@@ -114,7 +116,7 @@ module Clusters
       end
 
       def available?
-        pre_installed? || installed? || updated?
+        pre_installed? || installed? || externally_installed? || updated?
       end
 
       def update_in_progress?

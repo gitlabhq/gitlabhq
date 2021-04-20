@@ -30,7 +30,8 @@ module Taskable
   end
 
   def self.get_updated_tasks(old_content:, new_content:)
-    old_tasks, new_tasks = get_tasks(old_content), get_tasks(new_content)
+    old_tasks = get_tasks(old_content)
+    new_tasks = get_tasks(new_content)
 
     new_tasks.select.with_index do |new_task, i|
       old_task = old_tasks[i]

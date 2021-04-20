@@ -2,13 +2,11 @@
   -  offset = defined?(first_line_number) ? first_line_number : 1
   .line-numbers
     - if blob.data.present?
-      - link_icon = sprite_icon('link', size: 12)
       - link = blob_link if defined?(blob_link)
       - blob.data.each_line.each_with_index do |_, index|
         - i = index + offset
         -# We're not using `link_to` because it is too slow once we get to thousands of lines.
-        %a.diff-line-num{ href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i }
-          = link_icon
+        %a.file-line-num.diff-line-num{ href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i }
           = i
   - highlight = defined?(highlight_line) && highlight_line ? highlight_line - offset : nil
   .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight, qa_selector: 'file_content' } }

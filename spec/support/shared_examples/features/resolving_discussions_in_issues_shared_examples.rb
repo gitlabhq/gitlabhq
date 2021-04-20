@@ -14,11 +14,11 @@ RSpec.shared_examples 'creating an issue for a thread' do
   end
 
   it 'can create a new issue for the project' do
-    expect { click_button 'Submit issue' }.to change { project.issues.reload.size }.by(1)
+    expect { click_button 'Create issue' }.to change { project.issues.reload.size }.by(1)
   end
 
   it 'resolves the discussion in the merge request' do
-    click_button 'Submit issue'
+    click_button 'Create issue'
 
     discussion.first_note.reload
 
@@ -26,7 +26,7 @@ RSpec.shared_examples 'creating an issue for a thread' do
   end
 
   it 'shows a flash messaage after resolving a discussion' do
-    click_button 'Submit issue'
+    click_button 'Create issue'
 
     page.within '.flash-notice' do
       # Only check for the word 'Resolved' since the spec might have resolved

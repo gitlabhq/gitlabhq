@@ -6,6 +6,7 @@ RSpec.describe Gitlab::ImportExport::Project::ExportTask do
   let_it_be(:username) { 'root' }
   let(:namespace_path) { username }
   let_it_be(:user) { create(:user, username: username) }
+
   let(:measurement_enabled) { false }
   let(:file_path) { 'spec/fixtures/gitlab/import_export/test_project_export.tar.gz' }
   let(:project) { create(:project, creator: user, namespace: user.namespace) }

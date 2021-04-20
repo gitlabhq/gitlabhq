@@ -346,6 +346,7 @@ Example Responses:
   "two_factor_enabled": true,
   "external": false,
   "private_profile": false,
+  "commit_email": "john-codes@example.com",
   "current_sign_in_ip": "196.165.1.102",
   "last_sign_in_ip": "172.127.2.22",
   "plan": "gold",
@@ -440,7 +441,6 @@ Parameters:
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
 | `projects_limit`                     | No       | Number of projects user can create                                                                                                                      |
 | `provider`                           | No       | External provider name                                                                                                                                  |
-| `public_email`                       | No       | The public email of the user                                                                                                                            |
 | `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
 | `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` **(STARTER)**                                                                                                      |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
@@ -483,7 +483,7 @@ Parameters:
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
 | `projects_limit`                     | No       | Limit projects each user can create                                                                                                                     |
 | `provider`                           | No       | External provider name                                                                                                                                  |
-| `public_email`                       | No       | The public email of the user                                                                                                                            |
+| `public_email`                       | No       | The public email of the user (must be already verified)                                                                                                                            |
 | `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` **(STARTER)**                                                                                                      |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
@@ -622,6 +622,7 @@ GET /user
   "two_factor_enabled": true,
   "external": false,
   "private_profile": false,
+  "commit_email": "john-codes@example.com",
   "current_sign_in_ip": "196.165.1.102",
   "last_sign_in_ip": "172.127.2.22"
 }
@@ -644,6 +645,7 @@ Example response:
 ```json
 {
   "emoji":"coffee",
+  "availability":"busy",
   "message":"I crave coffee :coffee:",
   "message_html": "I crave coffee <gl-emoji title=\"hot beverage\" data-name=\"coffee\" data-unicode-version=\"4.0\">☕</gl-emoji>",
   "clear_status_at": null
@@ -671,11 +673,34 @@ Example response:
 ```json
 {
   "emoji":"coffee",
+  "availability":"busy",
   "message":"I crave coffee :coffee:",
   "message_html": "I crave coffee <gl-emoji title=\"hot beverage\" data-name=\"coffee\" data-unicode-version=\"4.0\">☕</gl-emoji>",
   "clear_status_at": null
 }
 ```
+
+## User preference modification
+
+Update the current user's preferences.
+
+```plaintext
+PUT /user/preferences
+```
+
+```json
+{
+  "id": 1,
+    "user_id": 1
+      "view_diffs_file_by_file": true
+}
+```
+
+Parameters:
+
+| Attribute                    | Required | Description                                                 |
+| :--------------------------- | :------- | :---------------------------------------------------------- |
+| `view_diffs_file_by_file`    | Yes      | Flag indicating the user sees only one file diff per page.  |
 
 ## Set user status
 
@@ -1190,11 +1215,13 @@ GET /user/emails
 [
   {
     "id": 1,
-    "email": "email@example.com"
+    "email": "email@example.com",
+    "confirmed_at" : "2021-03-26T19:07:56.248Z"
   },
   {
     "id": 3,
-    "email": "email2@example.com"
+    "email": "email2@example.com",
+    "confirmed_at" : null
   }
 ]
 ```
@@ -1234,7 +1261,8 @@ Parameters:
 ```json
 {
   "id": 1,
-  "email": "email@example.com"
+  "email": "email@example.com",
+  "confirmed_at" : "2021-03-26T19:07:56.248Z"
 }
 ```
 
@@ -1253,7 +1281,8 @@ Parameters:
 ```json
 {
   "id": 4,
-  "email": "email@example.com"
+  "email": "email@example.com",
+  "confirmed_at" : "2021-03-26T19:07:56.248Z"
 }
 ```
 

@@ -8,7 +8,7 @@ product_category: collection
 value_type: string
 status: data_available
 time_frame: none
-data_source:
+data_source: ruby
 distribution:
 - ce
 - ee
@@ -16,4 +16,4 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true
+

@@ -13,18 +13,18 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
     it 'raises an error if a required property is missing', :aggregate_failures do
       expect { subject(deprecated: { milestone: '1.10' }) }.to raise_error(
         ArgumentError,
-        'Please provide a `reason` within `deprecated`'
+        include("Reason can't be blank")
       )
       expect { subject(deprecated: { reason: 'Deprecation reason' }) }.to raise_error(
         ArgumentError,
-        'Please provide a `milestone` within `deprecated`'
+        include("Milestone can't be blank")
       )
     end
 
     it 'raises an error if milestone is not a String', :aggregate_failures do
       expect { subject(deprecated: { milestone: 1.10, reason: 'Deprecation reason' }) }.to raise_error(
         ArgumentError,
-        '`milestone` must be a `String`'
+        include("Milestone must be a string")
       )
     end
   end
@@ -48,5 +48,23 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
     deprecable = subject(deprecated: { milestone: '1.10', reason: 'Deprecation reason' })
 
     expect(deprecable.description).to be_nil
+  end
+
+  it 'adds information about the replacement if provided' do
+    deprecable = subject(deprecated: { milestone: '1.10', reason: :renamed, replacement: 'Foo.bar' })
+
+    expect(deprecable.deprecation_reason).to include 'Please use `Foo.bar`'
+  end
+
+  it 'supports named reasons: renamed' do
+    deprecable = subject(deprecated: { milestone: '1.10', reason: :renamed })
+
+    expect(deprecable.deprecation_reason).to include 'This was renamed.'
+  end
+
+  it 'supports named reasons: discouraged' do
+    deprecable = subject(deprecated: { milestone: '1.10', reason: :discouraged })
+
+    expect(deprecable.deprecation_reason).to include 'Use of this is not recommended.'
   end
 end

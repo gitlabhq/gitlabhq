@@ -59,7 +59,7 @@ RSpec.describe Pages::LookupPath do
     it 'return nil when legacy storage is disabled and there is no deployment' do
       stub_feature_flags(pages_serve_from_legacy_storage: false)
       expect(Gitlab::ErrorTracking).to receive(:track_exception)
-                                         .with(described_class::LegacyStorageDisabledError)
+                                         .with(described_class::LegacyStorageDisabledError, project_id: project.id)
                                          .and_call_original
 
       expect(source).to eq(nil)
@@ -135,14 +135,6 @@ RSpec.describe Pages::LookupPath do
                  })
             )
           end
-        end
-
-        context 'when pages_serve_from_migrated_zip feature flag is disabled' do
-          before do
-            stub_feature_flags(pages_serve_from_migrated_zip: false)
-          end
-
-          include_examples 'uses disk storage'
         end
       end
     end

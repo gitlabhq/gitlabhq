@@ -24,6 +24,9 @@ module Milestones
 
           update_issues_milestone(milestone, new_milestone)
           update_merge_requests_milestone(milestone.id, new_milestone&.id)
+
+          delete_milestone_counts_caches(milestone)
+          delete_milestone_counts_caches(new_milestone)
         end
       end
     end
@@ -71,9 +74,6 @@ module Milestones
     def update_issues_milestone(old_milestone, new_milestone)
       Issue.where(project: project, milestone_id: old_milestone.id)
         .update_all(milestone_id: new_milestone&.id)
-
-      delete_milestone_issues_caches(old_milestone)
-      delete_milestone_issues_caches(new_milestone)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -84,11 +84,12 @@ module Milestones
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def delete_milestone_issues_caches(milestone)
+    def delete_milestone_counts_caches(milestone)
       return unless milestone
 
       Milestones::IssuesCountService.new(milestone).delete_cache
       Milestones::ClosedIssuesCountService.new(milestone).delete_cache
+      Milestones::MergeRequestsCountService.new(milestone).delete_cache
     end
   end
 end

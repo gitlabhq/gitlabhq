@@ -30,9 +30,7 @@ module Projects
         relation = by_environment(relation)
         relation = by_metric(relation)
         relation = by_id(relation)
-        relation = ordered(relation)
-
-        relation
+        ordered(relation)
       end
 
       private

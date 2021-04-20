@@ -38,7 +38,8 @@ export default {
       "
       :disabled="isSaving"
       :loading="isSaving"
-      variant="default"
+      category="secondary"
+      variant="confirm"
       size="small"
       @click="openFileUpload"
     >

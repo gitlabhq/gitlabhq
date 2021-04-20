@@ -34,12 +34,16 @@ module Gitlab
         path =~ %r{^/-/(health|liveness|readiness|metrics)}
       end
 
+      def container_registry_event?
+        path =~ %r{^/api/v\d+/container_registry_event/}
+      end
+
       def product_analytics_collector_request?
         path.start_with?('/-/collector/i')
       end
 
       def should_be_skipped?
-        api_internal_request? || health_check_request?
+        api_internal_request? || health_check_request? || container_registry_event?
       end
 
       def web_request?

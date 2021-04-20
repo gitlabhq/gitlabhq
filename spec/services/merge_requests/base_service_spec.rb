@@ -6,6 +6,7 @@ RSpec.describe MergeRequests::BaseService do
   include ProjectForksHelper
 
   let_it_be(:project) { create(:project, :repository) }
+
   let(:title) { 'Awesome merge_request' }
   let(:params) do
     {

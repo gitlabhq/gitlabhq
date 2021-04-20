@@ -1,63 +1,176 @@
 import { shallowMount } from '@vue/test-utils';
-import Vuex from 'vuex';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { getJSONFixture } from 'helpers/fixtures';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import createFlash from '~/flash';
 import ReleaseShowApp from '~/releases/components/app_show.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
+import oneReleaseQuery from '~/releases/queries/one_release.query.graphql';
 
-const originalRelease = getJSONFixture('api/releases/release.json');
+jest.mock('~/flash');
+
+const oneReleaseQueryResponse = getJSONFixture(
+  'graphql/releases/queries/one_release.query.graphql.json',
+);
+
+Vue.use(VueApollo);
+
+const EXPECTED_ERROR_MESSAGE = 'Something went wrong while getting the release details.';
+const MOCK_FULL_PATH = 'project/full/path';
+const MOCK_TAG_NAME = 'test-tag-name';
 
 describe('Release show component', () => {
   let wrapper;
-  let release;
-  let actions;
 
-  beforeEach(() => {
-    release = convertObjectPropsToCamelCase(originalRelease);
-  });
-
-  const factory = (state) => {
-    actions = {
-      fetchRelease: jest.fn(),
-    };
-
-    const store = new Vuex.Store({
-      modules: {
-        detail: {
-          namespaced: true,
-          actions,
-          state,
-        },
+  const createComponent = ({ apolloProvider }) => {
+    wrapper = shallowMount(ReleaseShowApp, {
+      provide: {
+        fullPath: MOCK_FULL_PATH,
+        tagName: MOCK_TAG_NAME,
       },
+      apolloProvider,
     });
-
-    wrapper = shallowMount(ReleaseShowApp, { store });
   };
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
 
   const findLoadingSkeleton = () => wrapper.find(ReleaseSkeletonLoader);
   const findReleaseBlock = () => wrapper.find(ReleaseBlock);
 
-  it('calls fetchRelease when the component is created', () => {
-    factory({ release });
-    expect(actions.fetchRelease).toHaveBeenCalledTimes(1);
+  const expectLoadingIndicator = () => {
+    it('renders a loading indicator', () => {
+      expect(findLoadingSkeleton().exists()).toBe(true);
+    });
+  };
+
+  const expectNoLoadingIndicator = () => {
+    it('does not render a loading indicator', () => {
+      expect(findLoadingSkeleton().exists()).toBe(false);
+    });
+  };
+
+  const expectNoFlash = () => {
+    it('does not show a flash message', () => {
+      expect(createFlash).not.toHaveBeenCalled();
+    });
+  };
+
+  const expectFlashWithMessage = (message) => {
+    it(`shows a flash message that reads "${message}"`, () => {
+      expect(createFlash).toHaveBeenCalledTimes(1);
+      expect(createFlash).toHaveBeenCalledWith({
+        message,
+        captureError: true,
+        error: expect.any(Error),
+      });
+    });
+  };
+
+  const expectReleaseBlock = () => {
+    it('renders a release block', () => {
+      expect(findReleaseBlock().exists()).toBe(true);
+    });
+  };
+
+  const expectNoReleaseBlock = () => {
+    it('does not render a release block', () => {
+      expect(findReleaseBlock().exists()).toBe(false);
+    });
+  };
+
+  describe('GraphQL query variables', () => {
+    const queryHandler = jest.fn().mockResolvedValueOnce(oneReleaseQueryResponse);
+
+    beforeEach(() => {
+      const apolloProvider = createMockApollo([[oneReleaseQuery, queryHandler]]);
+
+      createComponent({ apolloProvider });
+    });
+
+    it('builds a GraphQL with the expected variables', () => {
+      expect(queryHandler).toHaveBeenCalledTimes(1);
+      expect(queryHandler).toHaveBeenCalledWith({
+        fullPath: MOCK_FULL_PATH,
+        tagName: MOCK_TAG_NAME,
+      });
+    });
   });
 
-  it('shows a loading skeleton and hides the release block while the API call is in progress', () => {
-    factory({ isFetchingRelease: true });
-    expect(findLoadingSkeleton().exists()).toBe(true);
-    expect(findReleaseBlock().exists()).toBe(false);
+  describe('when the component is loading data', () => {
+    beforeEach(() => {
+      const apolloProvider = createMockApollo([
+        [oneReleaseQuery, jest.fn().mockReturnValueOnce(new Promise(() => {}))],
+      ]);
+
+      createComponent({ apolloProvider });
+    });
+
+    expectLoadingIndicator();
+    expectNoFlash();
+    expectNoReleaseBlock();
   });
 
-  it('hides the loading skeleton and shows the release block when the API call finishes successfully', () => {
-    factory({ isFetchingRelease: false });
-    expect(findLoadingSkeleton().exists()).toBe(false);
-    expect(findReleaseBlock().exists()).toBe(true);
+  describe('when the component has successfully loaded the release', () => {
+    beforeEach(() => {
+      const apolloProvider = createMockApollo([
+        [oneReleaseQuery, jest.fn().mockResolvedValueOnce(oneReleaseQueryResponse)],
+      ]);
+
+      createComponent({ apolloProvider });
+    });
+
+    expectNoLoadingIndicator();
+    expectNoFlash();
+    expectReleaseBlock();
   });
 
-  it('hides both the loading skeleton and the release block when the API call fails', () => {
-    factory({ fetchError: new Error('Uh oh') });
-    expect(findLoadingSkeleton().exists()).toBe(false);
-    expect(findReleaseBlock().exists()).toBe(false);
+  describe('when the request succeeded, but the returned "project" key was null', () => {
+    beforeEach(() => {
+      const apolloProvider = createMockApollo([
+        [oneReleaseQuery, jest.fn().mockResolvedValueOnce({ data: { project: null } })],
+      ]);
+
+      createComponent({ apolloProvider });
+    });
+
+    expectNoLoadingIndicator();
+    expectFlashWithMessage(EXPECTED_ERROR_MESSAGE);
+    expectNoReleaseBlock();
+  });
+
+  describe('when the request succeeded, but the returned "project.release" key was null', () => {
+    beforeEach(() => {
+      const apolloProvider = createMockApollo([
+        [
+          oneReleaseQuery,
+          jest.fn().mockResolvedValueOnce({ data: { project: { release: null } } }),
+        ],
+      ]);
+
+      createComponent({ apolloProvider });
+    });
+
+    expectNoLoadingIndicator();
+    expectFlashWithMessage(EXPECTED_ERROR_MESSAGE);
+    expectNoReleaseBlock();
+  });
+
+  describe('when an error occurs while loading the release', () => {
+    beforeEach(() => {
+      const apolloProvider = createMockApollo([
+        [oneReleaseQuery, jest.fn().mockRejectedValueOnce('An error occurred!')],
+      ]);
+
+      createComponent({ apolloProvider });
+    });
+
+    expectNoLoadingIndicator();
+    expectFlashWithMessage(EXPECTED_ERROR_MESSAGE);
+    expectNoReleaseBlock();
   });
 });

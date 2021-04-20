@@ -4,7 +4,8 @@ module Packages
   module Debian
     class CreateDistributionService
       def initialize(container, user, params)
-        @container, @params = container, params
+        @container = container
+        @params = params
         @params[:creator] = user
 
         @components = params.delete(:components) || ['main']

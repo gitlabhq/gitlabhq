@@ -208,7 +208,7 @@ RSpec.describe 'Projects > User sees sidebar' do
 
     it 'shows build tab if builds are public' do
       project.public_builds = true
-      project.save
+      project.save!
 
       visit project_path(project)
 

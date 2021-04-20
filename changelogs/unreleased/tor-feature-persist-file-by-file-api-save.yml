@@ -1,0 +1,5 @@
+---
+title: Sync single-file mode user preference when changed from the MR cog menu checkbox
+merge_request: 55931
+author:
+type: changed

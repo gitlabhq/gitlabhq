@@ -1,0 +1,5 @@
+---
+title: Fix mermaid diagrams in dark mode
+merge_request: 56183
+author:
+type: fixed

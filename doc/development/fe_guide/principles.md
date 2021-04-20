@@ -18,4 +18,4 @@ There are multiple ways of writing code to accomplish the same results. We shoul
 
 ## Improve code [iteratively](https://about.gitlab.com/handbook/values/#iteration)
 
-Whenever you see existing code that does not follow our current style guide, update it proactively. You don’t need to fix everything, but each merge request should iteratively improve our codebase, and reduce technical debt where possible.
+Whenever you see existing code that does not follow our current style guide, update it proactively. You don't need to fix everything, but each merge request should iteratively improve our codebase, and reduce technical debt where possible.

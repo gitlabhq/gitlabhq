@@ -6,7 +6,6 @@ $stroke-size: 1px;
   @include gl-relative;
   @include gl-w-full;
   height: $stroke-size;
-  @include gl-display-inline-block;
   background-color: var(--gray-400, $gray-400);
   min-width: $gl-spacing-scale-5;
 

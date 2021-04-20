@@ -4,7 +4,7 @@ module ProtectedRef
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :project
+    belongs_to :project, touch: true
 
     validates :name, presence: true
     validates :project, presence: true

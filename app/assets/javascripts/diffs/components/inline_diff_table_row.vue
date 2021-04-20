@@ -2,6 +2,7 @@
 import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { CONTEXT_LINE_CLASS_NAME } from '../constants';
+import { getInteropInlineAttributes } from '../utils/interoperability';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import {
   isHighlighted,
@@ -96,6 +97,9 @@ export default {
     shouldShowAvatarsOnGutter() {
       return this.line.hasDiscussions;
     },
+    interopAttrs() {
+      return getInteropInlineAttributes(this.line);
+    },
   },
   mounted() {
     this.scrollToLineIfNeededInline(this.line);
@@ -124,6 +128,7 @@ export default {
     :id="inlineRowId"
     :class="classNameMap"
     class="line_holder"
+    v-bind="interopAttrs"
     @mouseover="handleMouseMove"
     @mouseout="handleMouseMove"
   >
@@ -140,8 +145,8 @@ export default {
           ref="addDiffNoteButton"
           type="button"
           class="add-diff-note note-button js-add-diff-note-button"
-          data-qa-selector="diff_comment_button"
           :disabled="line.commentsDisabled"
+          :aria-label="addCommentTooltip"
           @click="handleCommentButton"
         >
           <gl-icon :size="12" name="comment" />

@@ -224,6 +224,8 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
         end
 
         context 'with nested groups' do
+          let(:parent_group) { create(:group, :public) }
+          let(:parent_subgroup) { create(:group)}
           let(:subgroup) { create(:group, :private, parent: group) }
           let(:subgroup2) { create(:group, :private, parent: group) }
           let(:subproject) { create(:project, group: subgroup) }
@@ -235,12 +237,17 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
           let!(:todo_subgroup2_user) { create(:todo, user: user, group: subgroup2) }
           let!(:todo_subproject_user2) { create(:todo, user: user2, project: subproject) }
           let!(:todo_subpgroup_user2)  { create(:todo, user: user2, group: subgroup) }
+          let!(:todo_parent_group_user) { create(:todo, user: user, group: parent_group) }
+
+          before do
+            group.update!(parent: parent_group)
+          end
 
           context 'when the user is not a member of any groups/projects' do
             it 'removes todos for the user including subprojects todos' do
-              expect { subject }.to change { Todo.count }.from(12).to(4)
+              expect { subject }.to change { Todo.count }.from(13).to(5)
 
-              expect(user.todos).to be_empty
+              expect(user.todos).to eq([todo_parent_group_user])
               expect(user2.todos)
                 .to match_array(
                   [todo_issue_c_user2, todo_group_user2, todo_subproject_user2, todo_subpgroup_user2]
@@ -250,8 +257,6 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
 
           context 'when the user is member of a parent group' do
             before do
-              parent_group = create(:group)
-              group.update!(parent: parent_group)
               parent_group.add_developer(user)
             end
 
@@ -264,9 +269,12 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
             end
 
             it 'does not remove group and subproject todos' do
-              expect { subject }.to change { Todo.count }.from(12).to(7)
+              expect { subject }.to change { Todo.count }.from(13).to(8)
 
-              expect(user.todos).to match_array([todo_group_user, todo_subgroup_user, todo_subproject_user])
+              expect(user.todos)
+                .to match_array(
+                  [todo_group_user, todo_subgroup_user, todo_subproject_user, todo_parent_group_user]
+                )
               expect(user2.todos)
                 .to match_array(
                   [todo_issue_c_user2, todo_group_user2, todo_subproject_user2, todo_subpgroup_user2]
@@ -280,9 +288,12 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
             end
 
             it 'does not remove subproject and group todos' do
-              expect { subject }.to change { Todo.count }.from(12).to(7)
+              expect { subject }.to change { Todo.count }.from(13).to(8)
 
-              expect(user.todos).to match_array([todo_subgroup_user, todo_group_user, todo_subproject_user])
+              expect(user.todos)
+                .to match_array(
+                  [todo_subgroup_user, todo_group_user, todo_subproject_user, todo_parent_group_user]
+                )
               expect(user2.todos)
                 .to match_array(
                   [todo_issue_c_user2, todo_group_user2, todo_subproject_user2, todo_subpgroup_user2]

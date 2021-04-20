@@ -55,6 +55,11 @@ export default {
       return this.filteredTags.length;
     },
   },
+  watch: {
+    paramsBranch(newBranch) {
+      this.setSelectedRevision(newBranch);
+    },
+  },
   mounted() {
     this.fetchBranchesAndTags();
   },
@@ -83,10 +88,14 @@ export default {
       return this.paramsBranch || s__('CompareRevisions|Select branch/tag');
     },
     onClick(revision) {
-      this.selectedRevision = revision;
+      this.setSelectedRevision(revision);
     },
     onSearchEnter() {
-      this.selectedRevision = this.searchTerm;
+      this.setSelectedRevision(this.searchTerm);
+    },
+    setSelectedRevision(revision) {
+      this.selectedRevision = revision || s__('CompareRevisions|Select branch/tag');
+      this.$emit('selectRevision', { direction: this.paramsName, revision });
     },
   },
 };

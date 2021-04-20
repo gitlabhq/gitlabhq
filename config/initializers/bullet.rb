@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-def bullet_enabled?
-  Gitlab::Utils.to_boolean(ENV['ENABLE_BULLET'].to_s)
-end
-
-if defined?(Bullet) && (bullet_enabled? || Rails.env.development?)
+if Gitlab::Bullet.configure_bullet?
   Rails.application.configure do
     config.after_initialize do
       Bullet.enable = true
 
-      Bullet.bullet_logger = bullet_enabled?
-      Bullet.console = bullet_enabled?
+      if Gitlab::Bullet.extra_logging_enabled?
+        Bullet.bullet_logger = true
+        Bullet.console = true
+      end
 
       Bullet.raise = Rails.env.test?
+
+      Bullet.stacktrace_excludes = Gitlab::Bullet::Exclusions.new.execute
     end
   end
 end

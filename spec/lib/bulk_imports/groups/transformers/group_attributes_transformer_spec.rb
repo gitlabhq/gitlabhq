@@ -4,11 +4,12 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
   describe '#transform' do
-    let(:user) { create(:user) }
-    let(:parent) { create(:group) }
-    let(:group) { create(:group, name: 'My Source Group', parent: parent) }
-    let(:bulk_import) { create(:bulk_import, user: user) }
-    let(:entity) do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, name: 'My Source Group', parent: parent) }
+    let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+
+    let_it_be(:entity) do
       create(
         :bulk_import_entity,
         bulk_import: bulk_import,
@@ -18,7 +19,8 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
       )
     end
 
-    let(:context) { BulkImports::Pipeline::Context.new(entity) }
+    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
     let(:data) do
       {
@@ -82,14 +84,7 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
 
       context 'when destination namespace is empty' do
         it 'does not set parent id' do
-          entity = create(
-            :bulk_import_entity,
-            bulk_import: bulk_import,
-            source_full_path: 'source/full/path',
-            destination_name: group.name,
-            destination_namespace: ''
-          )
-          context = BulkImports::Pipeline::Context.new(entity)
+          entity.update!(destination_namespace: '')
 
           transformed_data = subject.transform(context, data)
 

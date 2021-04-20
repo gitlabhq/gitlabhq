@@ -67,7 +67,7 @@
         - if member.can_resend_invite?
           = link_to sprite_icon('paper-airplane'), polymorphic_path([:resend_invite, member]),
                     method: :post,
-                    class: 'btn btn-default align-self-center mr-sm-2',
+                    class: 'gl-button btn btn-default align-self-center mr-sm-2',
                     title: _('Resend invite')
 
         - if user != current_user && member.can_update?
@@ -120,7 +120,7 @@
               = sprite_icon('leave', css_class: 'gl-icon')
               = _('Leave')
           - else
-            %button{ data: { member_path: member_path(member.member), message: remove_member_message(member), is_access_request: member.request?.to_s, qa_selector: 'delete_member_button' },
+            %button{ data: { member_path: member_path(member.member), member_type: member.type, message: remove_member_message(member), is_access_request: member.request?.to_s, qa_selector: 'delete_member_button' },
               class: "js-remove-member-button btn gl-button btn-danger align-self-center m-0 #{'ml-sm-2 btn-icon' unless force_mobile_view}",
               title: remove_member_title(member) }
               %span{ class: ('d-block d-sm-none' unless force_mobile_view) }

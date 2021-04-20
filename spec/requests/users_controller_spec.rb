@@ -663,7 +663,7 @@ RSpec.describe UsersController do
       end
 
       context 'when a user changed their username' do
-        let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-username') }
+        let(:redirect_route) { user.namespace.redirect_routes.create!(path: 'old-username') }
 
         it 'returns JSON indicating a user by that username does not exist' do
           get user_exists_url 'old-username'
@@ -705,7 +705,7 @@ RSpec.describe UsersController do
       end
 
       context 'when a user changed their username' do
-        let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-username') }
+        let(:redirect_route) { user.namespace.redirect_routes.create!(path: 'old-username') }
 
         it 'returns JSON indicating a user by that username does not exist' do
           get user_suggests_url 'old-username'
@@ -755,19 +755,19 @@ RSpec.describe UsersController do
         end
 
         context 'when requesting a redirected path' do
-          let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-path') }
+          let(:redirect_route) { user.namespace.redirect_routes.create!(path: 'old-path') }
 
           it_behaves_like 'redirects to the canonical path'
 
           context 'when the old path is a substring of the scheme or host' do
-            let(:redirect_route) { user.namespace.redirect_routes.create(path: 'http') }
+            let(:redirect_route) { user.namespace.redirect_routes.create!(path: 'http') }
 
             # it does not modify the requested host and ...
             it_behaves_like 'redirects to the canonical path'
           end
 
           context 'when the old path is substring of users' do
-            let(:redirect_route) { user.namespace.redirect_routes.create(path: 'ser') }
+            let(:redirect_route) { user.namespace.redirect_routes.create!(path: 'ser') }
 
             it_behaves_like 'redirects to the canonical path'
           end
@@ -806,19 +806,19 @@ RSpec.describe UsersController do
         end
 
         context 'when requesting a redirected path' do
-          let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-path') }
+          let(:redirect_route) { user.namespace.redirect_routes.create!(path: 'old-path') }
 
           it_behaves_like 'redirects to the canonical path'
 
           context 'when the old path is a substring of the scheme or host' do
-            let(:redirect_route) { user.namespace.redirect_routes.create(path: 'http') }
+            let(:redirect_route) { user.namespace.redirect_routes.create!(path: 'http') }
 
             # it does not modify the requested host and ...
             it_behaves_like 'redirects to the canonical path'
           end
 
           context 'when the old path is substring of users' do
-            let(:redirect_route) { user.namespace.redirect_routes.create(path: 'ser') }
+            let(:redirect_route) { user.namespace.redirect_routes.create!(path: 'ser') }
 
             # it does not modify the /users part of the path
             # (i.e. /users/ser should not become /ufoos/ser) and ...

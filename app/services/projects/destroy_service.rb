@@ -27,7 +27,9 @@ module Projects
       # Git data (e.g. a list of branch names).
       flush_caches(project)
 
-      ::Ci::AbortProjectPipelinesService.new.execute(project)
+      if Feature.enabled?(:abort_deleted_project_pipelines, default_enabled: :yaml)
+        ::Ci::AbortPipelinesService.new.execute(project.all_pipelines, :project_deleted)
+      end
 
       Projects::UnlinkForkService.new(project, current_user).execute
 

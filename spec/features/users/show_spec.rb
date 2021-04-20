@@ -33,7 +33,7 @@ RSpec.describe 'User page' do
 
     context 'work information' do
       it 'shows job title and organization details' do
-        user.update(organization: 'GitLab - work info test', job_title: 'Frontend Engineer')
+        user.update!(organization: 'GitLab - work info test', job_title: 'Frontend Engineer')
 
         subject
 
@@ -41,7 +41,7 @@ RSpec.describe 'User page' do
       end
 
       it 'shows job title' do
-        user.update(organization: nil, job_title: 'Frontend Engineer - work info test')
+        user.update!(organization: nil, job_title: 'Frontend Engineer - work info test')
 
         subject
 
@@ -49,7 +49,7 @@ RSpec.describe 'User page' do
       end
 
       it 'shows organization details' do
-        user.update(organization: 'GitLab - work info test', job_title: '')
+        user.update!(organization: 'GitLab - work info test', job_title: '')
 
         subject
 

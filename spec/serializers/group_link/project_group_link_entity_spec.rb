@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe GroupLink::ProjectGroupLinkEntity do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project_group_link) { create(:project_group_link) }
+
   let(:entity) { described_class.new(project_group_link) }
 
   before do

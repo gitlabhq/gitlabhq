@@ -11,7 +11,6 @@ import {
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { isUserBusy } from '~/set_status_modal/utils';
 import { fixTitle, dispose } from '~/tooltips';
-import ModalStore from '../boards/stores/modal_store';
 import axios from '../lib/utils/axios_utils';
 import { parseBoolean, spriteIcon } from '../lib/utils/common_utils';
 import { loadCSSFile } from '../lib/utils/css_utils';
@@ -258,7 +257,11 @@ function UsersSelect(currentUser, els, options = {}) {
           deprecatedJQueryDropdown.options.processData(term, users, callback);
         });
       },
-      processData(term, data, callback) {
+      processData(term, dataArg, callback) {
+        // Sometimes the `dataArg` can contain special dropdown items like
+        // dividers which we don't want to consider here.
+        const data = dataArg.filter((x) => !x.type);
+
         let users = data;
 
         // Only show assigned user list when there is no search term
@@ -504,9 +507,7 @@ function UsersSelect(currentUser, els, options = {}) {
           }
           return;
         }
-        if ($el.closest('.add-issues-modal').length) {
-          ModalStore.store.filter[$dropdown.data('fieldName')] = user.id;
-        } else if (handleClick) {
+        if (handleClick) {
           e.preventDefault();
           handleClick(user, isMarking);
         } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {

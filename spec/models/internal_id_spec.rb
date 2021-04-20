@@ -97,6 +97,25 @@ RSpec.describe InternalId do
         expect(subject).to eq(1)
       end
     end
+
+    context 'when executed outside of transaction' do
+      it 'increments counter with in_transaction: "false"' do
+        expect(ActiveRecord::Base.connection).to receive(:transaction_open?) { false }
+        expect(InternalId::InternalIdGenerator.internal_id_transactions_total).to receive(:increment)
+          .with(operation: :generate, usage: 'issues', in_transaction: 'false').and_call_original
+
+        subject
+      end
+    end
+
+    context 'when executed within transaction' do
+      it 'increments counter with in_transaction: "true"' do
+        expect(InternalId::InternalIdGenerator.internal_id_transactions_total).to receive(:increment)
+          .with(operation: :generate, usage: 'issues', in_transaction: 'true').and_call_original
+
+        InternalId.transaction { subject }
+      end
+    end
   end
 
   describe '.reset' do
@@ -132,6 +151,29 @@ RSpec.describe InternalId do
 
       def generate_next
         described_class.generate_next(issue, scope, usage, init)
+      end
+    end
+
+    context 'when executed outside of transaction' do
+      let(:value) { 2 }
+
+      it 'increments counter with in_transaction: "false"' do
+        expect(ActiveRecord::Base.connection).to receive(:transaction_open?) { false }
+        expect(InternalId::InternalIdGenerator.internal_id_transactions_total).to receive(:increment)
+          .with(operation: :reset, usage: 'issues', in_transaction: 'false').and_call_original
+
+        subject
+      end
+    end
+
+    context 'when executed within transaction' do
+      let(:value) { 2 }
+
+      it 'increments counter with in_transaction: "true"' do
+        expect(InternalId::InternalIdGenerator.internal_id_transactions_total).to receive(:increment)
+          .with(operation: :reset, usage: 'issues', in_transaction: 'true').and_call_original
+
+        InternalId.transaction { subject }
       end
     end
   end
@@ -181,6 +223,25 @@ RSpec.describe InternalId do
 
       it 'accepts classes instead' do
         expect(subject).to eq(value)
+      end
+    end
+
+    context 'when executed outside of transaction' do
+      it 'increments counter with in_transaction: "false"' do
+        expect(ActiveRecord::Base.connection).to receive(:transaction_open?) { false }
+        expect(InternalId::InternalIdGenerator.internal_id_transactions_total).to receive(:increment)
+          .with(operation: :track_greatest, usage: 'issues', in_transaction: 'false').and_call_original
+
+        subject
+      end
+    end
+
+    context 'when executed within transaction' do
+      it 'increments counter with in_transaction: "true"' do
+        expect(InternalId::InternalIdGenerator.internal_id_transactions_total).to receive(:increment)
+          .with(operation: :track_greatest, usage: 'issues', in_transaction: 'true').and_call_original
+
+        InternalId.transaction { subject }
       end
     end
   end

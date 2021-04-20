@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe EnvironmentSerializer do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  include CreateEnvironmentsHelpers
+
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, :repository) }
 
   let(:json) do
     described_class
@@ -12,43 +14,18 @@ RSpec.describe EnvironmentSerializer do
       .represent(resource)
   end
 
-  before do
+  before_all do
     project.add_developer(user)
   end
 
-  context 'when there is a single object provided' do
-    let(:project) { create(:project, :repository) }
-    let(:deployable) { create(:ci_build) }
-    let(:deployment) do
-      create(:deployment, :success,
-                          deployable: deployable,
-                          user: user,
-                          project: project,
-                          sha: project.commit.id)
-    end
-
-    let(:resource) { deployment.environment }
-
-    before do
-      create(:ci_build, :manual, name: 'manual1', pipeline: deployable.pipeline)
-    end
-
-    it 'contains important elements of environment' do
-      expect(json)
-        .to include(:name, :external_url, :environment_path, :last_deployment)
-    end
-
-    it 'contains relevant information about last deployment' do
-      last_deployment = json.fetch(:last_deployment)
-
-      expect(last_deployment)
-        .to include(:ref, :user, :commit, :deployable, :manual_actions)
-    end
-  end
+  it_behaves_like 'avoid N+1 on environments serialization'
 
   context 'when there is a collection of objects provided' do
-    let(:project) { create(:project) }
-    let(:resource) { create_list(:environment, 2) }
+    let(:resource) { project.environments }
+
+    before_all do
+      create_list(:environment, 2, project: project)
+    end
 
     it 'contains important elements of environment' do
       expect(json.first)
@@ -205,6 +182,13 @@ RSpec.describe EnvironmentSerializer do
           expect(response).to have_received(:[]=).with('X-Per-Page', '2')
         end
       end
+    end
+  end
+
+  def create_environment_with_associations(project)
+    create(:environment, project: project).tap do |environment|
+      create(:deployment, :success, environment: environment, project: project)
+      create(:deployment, :running, environment: environment, project: project)
     end
   end
 end

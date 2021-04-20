@@ -1,0 +1,5 @@
+---
+title: Inherit default branch name for subgroups
+merge_request: 57101
+author:
+type: fixed

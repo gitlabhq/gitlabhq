@@ -29,7 +29,6 @@ RSpec.describe 'Projects > Snippets > User comments on a snippet', :js do
   end
 
   it 'has autocomplete' do
-    find('#note_note').native.send_keys('')
     fill_in 'note[note]', with: '@'
 
     expect(page).to have_selector('.atwho-view')

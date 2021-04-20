@@ -264,7 +264,7 @@ export default class MergeRequestTabs {
     }
   }
 
-  // Replaces the current Merge Request-specific action in the URL with a new one
+  // Replaces the current merge request-specific action in the URL with a new one
   //
   // If the action is "notes", the URL is reset to the standard
   // `MergeRequests#show` route.

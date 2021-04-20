@@ -15,10 +15,12 @@ import { isEmpty } from 'lodash';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
+import createFlash from '~/flash';
+import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __ } from '~/locale';
+import SmartInterval from '~/smart_interval';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { deprecatedCreateFlash as Flash } from '../../../flash';
 import MergeRequest from '../../../merge_request';
 import { AUTO_MERGE_STRATEGIES, DANGER, INFO, WARNING } from '../../constants';
 import eventHub from '../../event_hub';
@@ -52,20 +54,27 @@ export default {
       },
       manual: true,
       result({ data }) {
+        if (Object.keys(this.state).length === 0) {
+          this.removeSourceBranch =
+            data.project.mergeRequest.shouldRemoveSourceBranch ||
+            data.project.mergeRequest.forceRemoveSourceBranch ||
+            false;
+          this.commitMessage = data.project.mergeRequest.defaultMergeCommitMessage;
+          this.squashBeforeMerge = data.project.mergeRequest.squashOnMerge;
+          this.isSquashReadOnly = data.project.squashReadOnly;
+          this.squashCommitMessage = data.project.mergeRequest.defaultSquashCommitMessage;
+        }
+
         this.state = {
           ...data.project.mergeRequest,
           mergeRequestsFfOnlyEnabled: data.project.mergeRequestsFfOnlyEnabled,
           onlyAllowMergeIfPipelineSucceeds: data.project.onlyAllowMergeIfPipelineSucceeds,
         };
-        this.removeSourceBranch =
-          data.project.mergeRequest.shouldRemoveSourceBranch ||
-          data.project.mergeRequest.forceRemoveSourceBranch ||
-          false;
-        this.commitMessage = data.project.mergeRequest.defaultMergeCommitMessage;
-        this.squashBeforeMerge = data.project.mergeRequest.squashOnMerge;
-        this.isSquashReadOnly = data.project.squashReadOnly;
-        this.squashCommitMessage = data.project.mergeRequest.defaultSquashCommitMessage;
         this.loading = false;
+
+        if (this.state.mergeTrainsCount !== null && this.state.mergeTrainsCount !== undefined) {
+          this.initPolling();
+        }
       },
     },
   },
@@ -124,7 +133,7 @@ export default {
     },
     pipeline() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.pipelines?.nodes?.[0];
+        return this.state.headPipeline;
       }
 
       return this.mr.pipeline;
@@ -291,8 +300,23 @@ export default {
     if (this.glFeatures.mergeRequestWidgetGraphql) {
       eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
     }
+
+    if (this.pollingInterval) {
+      this.pollingInterval.destroy();
+    }
   },
   methods: {
+    initPolling() {
+      const startingPollInterval = secondsToMilliseconds(5);
+
+      this.pollingInterval = new SmartInterval({
+        callback: () => this.$apollo.queries.state.refetch(),
+        startingInterval: startingPollInterval,
+        maxInterval: startingPollInterval + secondsToMilliseconds(4 * 60),
+        hiddenInterval: secondsToMilliseconds(6 * 60),
+        incrementByFactorOf: 2,
+      });
+    },
     updateGraphqlState() {
       return this.$apollo.queries.state.refetch();
     },
@@ -351,7 +375,9 @@ export default {
         })
         .catch(() => {
           this.isMakingRequest = false;
-          new Flash(__('Something went wrong. Please try again.')); // eslint-disable-line
+          createFlash({
+            message: __('Something went wrong. Please try again.'),
+          });
         });
     },
     handleMergeImmediatelyButtonClick() {
@@ -402,7 +428,9 @@ export default {
           }
         })
         .catch(() => {
-          new Flash(__('Something went wrong while merging this merge request. Please try again.')); // eslint-disable-line
+          createFlash({
+            message: __('Something went wrong while merging this merge request. Please try again.'),
+          });
           stopPolling();
         });
     },
@@ -432,7 +460,9 @@ export default {
           }
         })
         .catch(() => {
-          new Flash(__('Something went wrong while deleting the source branch. Please try again.')); // eslint-disable-line
+          createFlash({
+            message: __('Something went wrong while deleting the source branch. Please try again.'),
+          });
         });
     },
   },

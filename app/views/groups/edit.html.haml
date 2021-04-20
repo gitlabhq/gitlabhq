@@ -3,8 +3,9 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = expanded_by_default?
 
+= render 'shared/namespaces/cascading_settings/lock_popovers'
 
-%section.settings.gs-general.no-animate#js-general-settings{ class: ('expanded') }
+%section.settings.gs-general.no-animate.expanded#js-general-settings
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = _('Naming, visibility')
@@ -45,7 +46,7 @@
 = render_if_exists 'groups/custom_project_templates_setting'
 = render_if_exists 'groups/templates_setting', expanded: expanded
 
-%section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded) }
+%section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded), data: { qa_selector: 'advanced_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = _('Advanced')

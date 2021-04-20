@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { getParameterByName } from '~/lib/utils/common_utils';
@@ -10,7 +10,6 @@ import { ANY_TRIGGER_AUTHOR, RAW_TEXT_WARNING, FILTER_TAG_IDENTIFIER } from '../
 import PipelinesMixin from '../../mixins/pipelines_mixin';
 import PipelinesService from '../../services/pipelines_service';
 import { validateParams } from '../../utils';
-import SvgBlankState from './blank_state.vue';
 import EmptyState from './empty_state.vue';
 import NavigationControls from './nav_controls.vue';
 import PipelinesFilteredSearch from './pipelines_filtered_search.vue';
@@ -19,13 +18,13 @@ import PipelinesTableComponent from './pipelines_table.vue';
 export default {
   components: {
     EmptyState,
+    GlEmptyState,
     GlIcon,
     GlLoadingIcon,
     NavigationTabs,
     NavigationControls,
     PipelinesFilteredSearch,
     PipelinesTableComponent,
-    SvgBlankState,
     TablePagination,
   },
   mixins: [PipelinesMixin],
@@ -314,6 +313,7 @@ export default {
     </div>
 
     <pipelines-filtered-search
+      v-if="stateToRender !== $options.stateMap.emptyState"
       :project-id="projectId"
       :params="validatedParams"
       @filterPipelines="filterPipelines"
@@ -333,19 +333,19 @@ export default {
         :can-set-ci="canCreatePipeline"
       />
 
-      <svg-blank-state
+      <gl-empty-state
         v-else-if="stateToRender === $options.stateMap.error"
         :svg-path="errorStateSvgPath"
-        :message="
+        :title="
           s__(`Pipelines|There was an error fetching the pipelines.
         Try again in a few moments or contact your support team.`)
         "
       />
 
-      <svg-blank-state
+      <gl-empty-state
         v-else-if="stateToRender === $options.stateMap.emptyTab"
         :svg-path="noPipelinesSvgPath"
-        :message="emptyTabMessage"
+        :title="emptyTabMessage"
       />
 
       <div v-else-if="stateToRender === $options.stateMap.tableList">

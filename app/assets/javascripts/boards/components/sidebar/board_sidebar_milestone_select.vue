@@ -56,20 +56,20 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['activeIssue']),
+    ...mapGetters(['activeBoardItem']),
     hasMilestone() {
-      return this.activeIssue.milestone !== null;
+      return this.activeBoardItem.milestone !== null;
     },
     groupFullPath() {
-      const { referencePath = '' } = this.activeIssue;
+      const { referencePath = '' } = this.activeBoardItem;
       return referencePath.slice(0, referencePath.indexOf('/'));
     },
     projectPath() {
-      const { referencePath = '' } = this.activeIssue;
+      const { referencePath = '' } = this.activeBoardItem;
       return referencePath.slice(0, referencePath.indexOf('#'));
     },
     dropdownText() {
-      return this.activeIssue.milestone?.title ?? this.$options.i18n.noMilestone;
+      return this.activeBoardItem.milestone?.title ?? this.$options.i18n.noMilestone;
     },
   },
   methods: {
@@ -113,11 +113,12 @@ export default {
     ref="sidebarItem"
     :title="$options.i18n.milestone"
     :loading="loading"
-    @open="handleOpen()"
+    data-testid="sidebar-milestones"
+    @open="handleOpen"
     @close="handleClose"
   >
     <template v-if="hasMilestone" #collapsed>
-      <strong class="gl-text-gray-900">{{ activeIssue.milestone.title }}</strong>
+      <strong class="gl-text-gray-900">{{ activeBoardItem.milestone.title }}</strong>
     </template>
     <gl-dropdown
       ref="dropdown"
@@ -130,7 +131,7 @@ export default {
       <gl-dropdown-item
         data-testid="no-milestone-item"
         :is-check-item="true"
-        :is-checked="!activeIssue.milestone"
+        :is-checked="!activeBoardItem.milestone"
         @click="setMilestone(null)"
       >
         {{ $options.i18n.noMilestone }}
@@ -142,7 +143,7 @@ export default {
           v-for="milestone in milestones"
           :key="milestone.id"
           :is-check-item="true"
-          :is-checked="activeIssue.milestone && milestone.id === activeIssue.milestone.id"
+          :is-checked="activeBoardItem.milestone && milestone.id === activeBoardItem.milestone.id"
           data-testid="milestone-item"
           @click="setMilestone(milestone.id)"
         >

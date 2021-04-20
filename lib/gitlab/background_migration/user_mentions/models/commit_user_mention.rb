@@ -7,6 +7,7 @@ module Gitlab
       module Models
         class CommitUserMention < ActiveRecord::Base
           self.table_name = 'commit_user_mentions'
+          self.inheritance_column = :_type_disabled
 
           def self.resource_foreign_key
             :commit_id

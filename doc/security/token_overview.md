@@ -22,7 +22,7 @@ they inherit permissions from the user who created them.
 
 ## OAuth2 tokens
 
-GitLab can serve as an [OAuth2 provider](../api/oauth2.md) to allow other services to access the GitLab API on a user’s behalf.
+GitLab can serve as an [OAuth2 provider](../api/oauth2.md) to allow other services to access the GitLab API on a user's behalf.
 
 You can limit the scope and lifetime of your OAuth2 tokens.
 
@@ -57,7 +57,7 @@ Deploy tokens can be managed by project maintainers and owners.
 
 [Deploy keys](../user/project/deploy_keys/index.md) allow read-only or read-write access to your repositories by importing an SSH public key into your GitLab instance. Deploy keys cannot be used with the GitLab API or the registry.
 
-This is useful, for example, for cloning repositories to your Continuous Integration (CI) server. By using deploy keys, you don’t have to set up a fake user account.
+This is useful, for example, for cloning repositories to your Continuous Integration (CI) server. By using deploy keys, you don't have to set up a fake user account.
 
 Project maintainers and owners can add or enable a deploy key for a project repository
 
@@ -65,13 +65,13 @@ Project maintainers and owners can add or enable a deploy key for a project repo
 
 Runner registration tokens are used to [register](https://docs.gitlab.com/runner/register/) a [runner](https://docs.gitlab.com/runner/) with GitLab. Group or project owners or instance admins can obtain them through the GitLab user interface. The registration token is limited to runner registration and has no further scope.
 
-You can use the runner registration token to add runners that execute jobs in a project or group. The runner has access to the project’s code, so be careful when assigning project and group-level permissions.
+You can use the runner registration token to add runners that execute jobs in a project or group. The runner has access to the project's code, so be careful when assigning project and group-level permissions.
 
 ## Runner authentication tokens (also called runner tokens)
 
 After registration, the runner receives an authentication token, which it uses to authenticate with GitLab when picking up jobs from the job queue. The authentication token is stored locally in the runner's [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html) file.
 
-After authentication with GitLab, the runner receives a [job token](../user/project/new_ci_build_permissions_model.md#job-token), which it uses to execute the job.
+After authentication with GitLab, the runner receives a [job token](../api/README.md#gitlab-cicd-job-token), which it uses to execute the job.
 
 In case of Docker Machine/Kubernetes/VirtualBox/Parallels/SSH executors, the execution environment has no access to the runner authentication token, because it stays on the runner machine. They have access to the job token only, which is needed to execute the job.
 
@@ -79,9 +79,9 @@ Malicious access to a runner's file system may expose the `config.toml` file and
 
 ## CI/CD job tokens
 
-The [CI/CD](../api/README.md#gitlab-ci-job-token) job token
+The [CI/CD](../api/README.md#gitlab-cicd-job-token) job token
 is a short lived token only valid for the duration of a job. It gives a CI/CD job
-access to a limited amount of [API endpoints](../api/README.md#gitlab-ci-job-token).
+access to a limited amount of API endpoints.
 API authentication uses the job token, by using the authorization of the user
 triggering the job.
 
@@ -105,4 +105,4 @@ This table shows available scopes per token. Scopes can be limited further on to
 
 1. Limited to the one project.
 1. Runner registration and authentication token don't provide direct access to repositories, but can be used to register and authenticate a new runner that may execute jobs which do have access to the repository
-1. Limited to certain [endpoints](../api/README.md#gitlab-ci-job-token).
+1. Limited to certain [endpoints](../api/README.md#gitlab-cicd-job-token).

@@ -3,30 +3,37 @@
 module Resolvers
   module Ci
     class RunnerSetupResolver < BaseResolver
+      ACCESS_DENIED = 'User is not authorized to register a runner for the specified resource!'
+
       type Types::Ci::RunnerSetupType, null: true
+      description 'Runner setup instructions.'
 
-      argument :platform, GraphQL::STRING_TYPE,
-        required: true,
-        description: 'Platform to generate the instructions for.'
+      argument :platform,
+               type: GraphQL::STRING_TYPE,
+               required: true,
+               description: 'Platform to generate the instructions for.'
 
-      argument :architecture, GraphQL::STRING_TYPE,
-        required: true,
-        description: 'Architecture to generate the instructions for.'
+      argument :architecture,
+               type: GraphQL::STRING_TYPE,
+               required: true,
+               description: 'Architecture to generate the instructions for.'
 
-      argument :project_id, ::Types::GlobalIDType[::Project],
-        required: false,
-        description: 'Project to register the runner for.'
+      argument :project_id,
+               type: ::Types::GlobalIDType[::Project],
+               required: false,
+               deprecated: { reason: 'No longer used', milestone: '13.11' },
+               description: 'Project to register the runner for.'
 
-      argument :group_id, ::Types::GlobalIDType[::Group],
-        required: false,
-        description: 'Group to register the runner for.'
+      argument :group_id,
+               type: ::Types::GlobalIDType[::Group],
+               required: false,
+               deprecated: { reason: 'No longer used', milestone: '13.11' },
+               description: 'Group to register the runner for.'
 
       def resolve(platform:, architecture:, **args)
         instructions = Gitlab::Ci::RunnerInstructions.new(
-          current_user: current_user,
           os: platform,
-          arch: architecture,
-          **target_param(args)
+          arch: architecture
         )
 
         {
@@ -34,10 +41,14 @@ module Resolvers
           register_instructions: instructions.register_command
         }
       ensure
-        raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'User is not authorized to register a runner for the specified resource!' if instructions.errors.include?('Gitlab::Access::AccessDeniedError')
+        raise Gitlab::Graphql::Errors::ResourceNotAvailable, ACCESS_DENIED if access_denied?(instructions)
       end
 
       private
+
+      def access_denied?(instructions)
+        instructions.errors.include?('Gitlab::Access::AccessDeniedError')
+      end
 
       def other_install_instructions(platform)
         Gitlab::Ci::RunnerInstructions::OTHER_ENVIRONMENTS[platform.to_sym][:installation_instructions_url]

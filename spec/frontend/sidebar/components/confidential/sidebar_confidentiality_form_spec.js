@@ -20,11 +20,9 @@ describe('Sidebar Confidentiality Form', () => {
     mutate = jest.fn().mockResolvedValue('Success'),
   } = {}) => {
     wrapper = shallowMount(SidebarConfidentialityForm, {
-      provide: {
+      propsData: {
         fullPath: 'group/project',
         iid: '1',
-      },
-      propsData: {
         confidential: false,
         issuableType: 'issue',
         ...props,

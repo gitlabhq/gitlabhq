@@ -71,7 +71,7 @@ RSpec.describe Projects::ForksController do
 
     context 'when fork is internal' do
       before do
-        forked_project.update(visibility_level: Project::INTERNAL, group: group)
+        forked_project.update!(visibility_level: Project::INTERNAL, group: group)
       end
 
       it 'forks counts are correct' do
@@ -86,7 +86,7 @@ RSpec.describe Projects::ForksController do
 
     context 'when fork is private' do
       before do
-        forked_project.update(visibility_level: Project::PRIVATE, group: group)
+        forked_project.update!(visibility_level: Project::PRIVATE, group: group)
       end
 
       shared_examples 'forks counts' do
@@ -153,8 +153,11 @@ RSpec.describe Projects::ForksController do
   end
 
   describe 'GET new' do
-    subject do
+    let(:format) { :html }
+
+    subject(:do_request) do
       get :new,
+          format: format,
           params: {
             namespace_id: project.namespace,
             project_id: project
@@ -166,24 +169,32 @@ RSpec.describe Projects::ForksController do
         sign_in(user)
       end
 
-      context 'when JSON requested' do
-        it 'responds with available groups' do
-          get :new,
-              format: :json,
-              params: {
-                namespace_id: project.namespace,
-                project_id: project
-              }
-
-          expect(json_response['namespaces'].length).to eq(1)
-          expect(json_response['namespaces'].first['id']).to eq(group.id)
-        end
-      end
-
       it 'responds with status 200' do
-        subject
+        request
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when JSON is requested' do
+        let(:format) { :json }
+
+        it 'responds with user namespace + groups' do
+          do_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['namespaces'].length).to eq(2)
+          expect(json_response['namespaces'][0]['id']).to eq(user.namespace.id)
+          expect(json_response['namespaces'][1]['id']).to eq(group.id)
+        end
+
+        it 'responds with group only when fork_project_form feature flag is disabled' do
+          stub_feature_flags(fork_project_form: false)
+          do_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['namespaces'].length).to eq(1)
+          expect(json_response['namespaces'][0]['id']).to eq(group.id)
+        end
       end
     end
 

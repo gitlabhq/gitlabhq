@@ -98,7 +98,7 @@ RSpec.describe "User views milestone" do
         visit(project_milestone_path(project, milestone))
 
         within('.js-milestone-tabs') do
-          click_link('Merge Requests')
+          click_link('Merge requests')
         end
 
         wait_for_requests
@@ -116,7 +116,7 @@ RSpec.describe "User views milestone" do
         visit(group_milestone_path(group, group_milestone))
 
         within('.js-milestone-tabs') do
-          click_link('Merge Requests')
+          click_link('Merge requests')
         end
 
         expect(page.find('#tab-merge-requests')).to have_text(project.name)

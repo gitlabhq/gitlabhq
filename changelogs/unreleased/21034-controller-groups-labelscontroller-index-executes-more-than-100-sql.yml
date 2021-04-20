@@ -1,0 +1,5 @@
+---
+title: Reduce queries on group labels controller
+merge_request: 57517
+author:
+type: performance

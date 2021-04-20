@@ -46,6 +46,24 @@ RSpec.describe Groups::LabelsController do
 
       it_behaves_like 'disabled when using an external authorization service'
     end
+
+    context 'with views rendered' do
+      render_views
+
+      before do
+        get :index, params: { group_id: group.to_param }
+      end
+
+      it 'avoids N+1 queries' do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get :index, params: { group_id: group.to_param } }
+
+        create_list(:group_label, 3, group: group)
+
+        # some n+1 queries still exist
+        expect { get :index, params: { group_id: group.to_param } }.not_to exceed_all_query_limit(control.count).with_threshold(10)
+        expect(assigns(:labels).count).to eq(4)
+      end
+    end
   end
 
   describe 'POST #toggle_subscription' do

@@ -1,0 +1,5 @@
+---
+title: Create the pipelines asynchronously when refreshing merge requests
+merge_request: 58542
+author:
+type: performance

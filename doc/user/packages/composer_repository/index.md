@@ -8,12 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab Premium 13.2.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
+> - Support for Composer 2.0 [added](https://gitlab.com/gitlab-org/gitlab/-/issues/259840) in GitLab Free 13.10.
 
 Publish [Composer](https://getcomposer.org/) packages in your project's Package Registry.
 Then, install the packages whenever you need to use them as a dependency.
 
-Only Composer 1.x is supported. Consider contributing or even adding support for
-[Composer 2.0 in the Package Registry](https://gitlab.com/gitlab-org/gitlab/-/issues/259840).
+For documentation of the specific API endpoints that the Composer
+client uses, see the [Composer API documentation](../../../api/packages/composer.md).
 
 ## Create a Composer package
 
@@ -268,10 +269,36 @@ To install a package:
    Without the `gitlab-domains` definition in `composer.json`, Composer uses the GitLab token
    as basic-auth, with the token as a username and a blank password. This results in a 401 error.
 
-Output indicates that the package has been successfully installed.
+1. With the `composer.json` and `auth.json` files configured, you can install the package by running:
+
+   ```shell
+   composer update
+   ```
+
+   Or to install the single package:
+
+   ```shell
+   composer req <package-name>:<package-version>
+   ```
+
+   If successful, you should see output indicating that the package installed successfully.
+
+   You can also install from source (by pulling the Git repository directly) using the
+   `--prefer-source` option:
+
+   ```shell
+   composer update --prefer-source
+   ```
 
 WARNING:
 Never commit the `auth.json` file to your repository. To install packages from a CI/CD job,
 consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages.md#satis) tool with your personal access token
 stored in a [GitLab CI/CD variable](../../../ci/variables/README.md) or in
 [HashiCorp Vault](../../../ci/secrets/index.md).
+
+## Supported CLI commands
+
+The GitLab Composer repository supports the following Composer CLI commands:
+
+- `composer install`: Install Composer dependencies.
+- `composer update`: Install the latest version of Composer dependencies.

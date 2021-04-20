@@ -3,8 +3,6 @@
 module Boards
   module Issues
     class MoveService < Boards::BaseItemMoveService
-      extend ::Gitlab::Utils::Override
-
       def execute_multiple(issues)
         return execute_multiple_empty_result if issues.empty?
 
@@ -57,25 +55,8 @@ module Boards
         ::Issues::UpdateService.new(issue.project, current_user, issue_modification_params).execute(issue)
       end
 
-      override :issuable_params
-      def issuable_params(issuable)
-        attrs = super
-
-        move_between_ids = move_between_ids(params)
-        if move_between_ids
-          attrs[:move_between_ids] = move_between_ids
-          attrs[:board_group_id] = board.group&.id
-        end
-
-        attrs
-      end
-
-      def move_between_ids(move_params)
-        ids = [move_params[:move_after_id], move_params[:move_before_id]]
-                .map(&:to_i)
-                .map { |m| m > 0 ? m : nil }
-
-        ids.any? ? ids : nil
+      def reposition_parent
+        { board_group_id: board.group&.id }
       end
     end
   end

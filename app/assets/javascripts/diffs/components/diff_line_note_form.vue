@@ -10,7 +10,12 @@ import {
 } from '../../notes/components/multiline_comment_utils';
 import noteForm from '../../notes/components/note_form.vue';
 import autosave from '../../notes/mixins/autosave';
-import { DIFF_NOTE_TYPE, INLINE_DIFF_LINES_KEY, PARALLEL_DIFF_VIEW_TYPE } from '../constants';
+import {
+  DIFF_NOTE_TYPE,
+  INLINE_DIFF_LINES_KEY,
+  PARALLEL_DIFF_VIEW_TYPE,
+  OLD_LINE_TYPE,
+} from '../constants';
 
 export default {
   components: {
@@ -113,6 +118,34 @@ export default {
       const lines = getDiffLines();
       return commentLineOptions(lines, this.line, this.line.line_code, side);
     },
+    commentLines() {
+      if (!this.selectedCommentPosition) return [];
+
+      const lines = [];
+      const { start, end } = this.selectedCommentPosition;
+      const diffLines = this.diffFile[INLINE_DIFF_LINES_KEY];
+      let isAdding = false;
+
+      for (let i = 0, diffLinesLength = diffLines.length - 1; i <= diffLinesLength; i += 1) {
+        const line = diffLines[i];
+
+        if (start.line_code === line.line_code) {
+          isAdding = true;
+        }
+
+        if (isAdding) {
+          if (line.type !== OLD_LINE_TYPE) {
+            lines.push(line);
+          }
+
+          if (end.line_code === line.line_code) {
+            break;
+          }
+        }
+      }
+
+      return lines;
+    },
   },
   mounted() {
     if (this.isLoggedIn) {
@@ -177,6 +210,7 @@ export default {
       :is-editing="true"
       :line-code="line.line_code"
       :line="line"
+      :lines="commentLines"
       :help-page-path="helpPagePath"
       :diff-file="diffFile"
       :show-suggest-popover="showSuggestPopover"

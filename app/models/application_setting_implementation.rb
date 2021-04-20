@@ -35,6 +35,7 @@ module ApplicationSettingImplementation
   class_methods do
     def defaults
       {
+        admin_mode: false,
         after_sign_up_text: nil,
         akismet_enabled: false,
         allow_local_requests_from_system_hooks: true,
@@ -71,6 +72,9 @@ module ApplicationSettingImplementation
         eks_secret_access_key: nil,
         email_restrictions_enabled: false,
         email_restrictions: nil,
+        external_pipeline_validation_service_timeout: nil,
+        external_pipeline_validation_service_token: nil,
+        external_pipeline_validation_service_url: nil,
         first_day_of_week: 0,
         gitaly_timeout_default: 55,
         gitaly_timeout_fast: 10,
@@ -434,11 +438,14 @@ module ApplicationSettingImplementation
   def parse_addr_and_port(str)
     case str
     when /\A\[(?<address> .* )\]:(?<port> \d+ )\z/x      # string like "[::1]:80"
-      address, port = $~[:address], $~[:port]
+      address = $~[:address]
+      port = $~[:port]
     when /\A(?<address> [^:]+ ):(?<port> \d+ )\z/x       # string like "127.0.0.1:80"
-      address, port = $~[:address], $~[:port]
+      address = $~[:address]
+      port = $~[:port]
     else                                                 # string with no port number
-      address, port = str, nil
+      address = str
+      port = nil
     end
 
     [address, port&.to_i]

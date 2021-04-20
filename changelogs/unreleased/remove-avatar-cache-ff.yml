@@ -1,0 +1,5 @@
+---
+title: Enable cached avatar lookups by email
+merge_request: 58659
+author:
+type: performance

@@ -1,13 +1,12 @@
 import { GlAlert, GlLink } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
-import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
 import { mergeUnwrappedCiConfig, mockLintHelpPagePath } from '../../mock_data';
 
 describe('~/pipeline_editor/components/lint/ci_lint.vue', () => {
   let wrapper;
 
-  const createComponent = (props = {}, mountFn = shallowMount) => {
+  const createComponent = ({ props, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(CiLint, {
       provide: {
         lintHelpPagePath: mockLintHelpPagePath,
@@ -27,12 +26,11 @@ describe('~/pipeline_editor/components/lint/ci_lint.vue', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('Valid Results', () => {
     beforeEach(() => {
-      createComponent({}, mount);
+      createComponent({ props: { isValid: true }, mountFn: mount });
     });
 
     it('displays valid results', () => {
@@ -66,14 +64,7 @@ describe('~/pipeline_editor/components/lint/ci_lint.vue', () => {
     });
 
     it('displays invalid results', () => {
-      createComponent(
-        {
-          ciConfig: mergeUnwrappedCiConfig({
-            status: CI_CONFIG_STATUS_INVALID,
-          }),
-        },
-        mount,
-      );
+      createComponent({ props: { isValid: false }, mountFn: mount });
 
       expect(findAlert().text()).toMatch('Status: Syntax is incorrect.');
     });

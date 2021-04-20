@@ -1,0 +1,5 @@
+---
+title: Fix rails binding for ruby alpine template
+merge_request: 57112
+author:
+type: fixed

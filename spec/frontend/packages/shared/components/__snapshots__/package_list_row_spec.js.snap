@@ -51,20 +51,7 @@ exports[`packages_list_row renders 1`] = `
              
             <!---->
              
-            <div
-              class="d-flex align-items-center"
-              data-testid="package-type"
-            >
-              <gl-icon-stub
-                class="gl-ml-3 gl-mr-2"
-                name="package"
-                size="16"
-              />
-               
-              <span>
-                Maven
-              </span>
-            </div>
+            <div />
              
             <package-path-stub
               path="foo/bar/baz"

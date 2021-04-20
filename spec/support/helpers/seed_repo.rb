@@ -31,64 +31,64 @@
 
 module SeedRepo
   module BigCommit
-    ID               = "913c66a37b4a45b9769037c55c2d238bd0942d2e".freeze
-    PARENT_ID        = "cfe32cf61b73a0d5e9f13e774abde7ff789b1660".freeze
-    MESSAGE          = "Files, encoding and much more".freeze
-    AUTHOR_FULL_NAME = "Dmitriy Zaporozhets".freeze
+    ID               = "913c66a37b4a45b9769037c55c2d238bd0942d2e"
+    PARENT_ID        = "cfe32cf61b73a0d5e9f13e774abde7ff789b1660"
+    MESSAGE          = "Files, encoding and much more"
+    AUTHOR_FULL_NAME = "Dmitriy Zaporozhets"
     FILES_COUNT      = 2
   end
 
   module Commit
-    ID               = "570e7b2abdd848b95f2f578043fc23bd6f6fd24d".freeze
-    PARENT_ID        = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9".freeze
-    MESSAGE          = "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n".freeze
-    AUTHOR_FULL_NAME = "Dmitriy Zaporozhets".freeze
+    ID               = "570e7b2abdd848b95f2f578043fc23bd6f6fd24d"
+    PARENT_ID        = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
+    MESSAGE          = "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n"
+    AUTHOR_FULL_NAME = "Dmitriy Zaporozhets"
     FILES            = ["files/ruby/popen.rb", "files/ruby/regex.rb"].freeze
     FILES_COUNT      = 2
-    C_FILE_PATH      = "files/ruby".freeze
+    C_FILE_PATH      = "files/ruby"
     C_FILES          = ["popen.rb", "regex.rb", "version_info.rb"].freeze
-    BLOB_FILE        = %{%h3= @key.title\n%hr\n%pre= @key.key\n.actions\n  = link_to 'Remove', @key, :confirm => 'Are you sure?', :method => :delete, :class => \"btn danger delete-key\"\n\n\n}.freeze
-    BLOB_FILE_PATH   = "app/views/keys/show.html.haml".freeze
+    BLOB_FILE        = %{%h3= @key.title\n%hr\n%pre= @key.key\n.actions\n  = link_to 'Remove', @key, :confirm => 'Are you sure?', :method => :delete, :class => \"btn danger delete-key\"\n\n\n}
+    BLOB_FILE_PATH   = "app/views/keys/show.html.haml"
   end
 
   module EmptyCommit
-    ID               = "b0e52af38d7ea43cf41d8a6f2471351ac036d6c9".freeze
-    PARENT_ID        = "40f4a7a617393735a95a0bb67b08385bc1e7c66d".freeze
-    MESSAGE          = "Empty commit".freeze
-    AUTHOR_FULL_NAME = "Rémy Coutable".freeze
+    ID               = "b0e52af38d7ea43cf41d8a6f2471351ac036d6c9"
+    PARENT_ID        = "40f4a7a617393735a95a0bb67b08385bc1e7c66d"
+    MESSAGE          = "Empty commit"
+    AUTHOR_FULL_NAME = "Rémy Coutable"
     FILES            = [].freeze
     FILES_COUNT      = FILES.count
   end
 
   module EncodingCommit
-    ID               = "40f4a7a617393735a95a0bb67b08385bc1e7c66d".freeze
-    PARENT_ID        = "66028349a123e695b589e09a36634d976edcc5e8".freeze
-    MESSAGE          = "Add ISO-8859-encoded file".freeze
-    AUTHOR_FULL_NAME = "Stan Hu".freeze
+    ID               = "40f4a7a617393735a95a0bb67b08385bc1e7c66d"
+    PARENT_ID        = "66028349a123e695b589e09a36634d976edcc5e8"
+    MESSAGE          = "Add ISO-8859-encoded file"
+    AUTHOR_FULL_NAME = "Stan Hu"
     FILES            = ["encoding/iso8859.txt"].freeze
     FILES_COUNT      = FILES.count
   end
 
   module FirstCommit
-    ID               = "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863".freeze
+    ID               = "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863"
     PARENT_ID        = nil
-    MESSAGE          = "Initial commit".freeze
-    AUTHOR_FULL_NAME = "Dmitriy Zaporozhets".freeze
+    MESSAGE          = "Initial commit"
+    AUTHOR_FULL_NAME = "Dmitriy Zaporozhets"
     FILES            = ["LICENSE", ".gitignore", "README.md"].freeze
     FILES_COUNT      = 3
   end
 
   module LastCommit
-    ID               = "4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6".freeze
-    PARENT_ID        = "0e1b353b348f8477bdbec1ef47087171c5032cd9".freeze
-    MESSAGE          = "Merge branch 'master' into 'master'".freeze
-    AUTHOR_FULL_NAME = "Stan Hu".freeze
+    ID               = "4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6"
+    PARENT_ID        = "0e1b353b348f8477bdbec1ef47087171c5032cd9"
+    MESSAGE          = "Merge branch 'master' into 'master'"
+    AUTHOR_FULL_NAME = "Stan Hu"
     FILES            = ["bin/executable"].freeze
     FILES_COUNT      = FILES.count
   end
 
   module Repo
-    HEAD = "master".freeze
+    HEAD = "master"
     BRANCHES = %w[
       feature
       fix
@@ -111,9 +111,9 @@ module SeedRepo
   end
 
   module RubyBlob
-    ID = "7e3e39ebb9b2bf433b4ad17313770fbe4051649c".freeze
-    NAME = "popen.rb".freeze
-    CONTENT = <<-eos.freeze
+    ID = "7e3e39ebb9b2bf433b4ad17313770fbe4051649c"
+    NAME = "popen.rb"
+    CONTENT = <<-eos
 require 'fileutils'
 require 'open3'
 

@@ -70,7 +70,7 @@ class Notify < ApplicationMailer
     return unless sender = User.find(sender_id)
 
     address = default_sender_address
-    address.display_name = sender_name.presence || sender.name
+    address.display_name = sender_name.presence || "#{sender.name} (#{sender.to_reference})"
 
     if send_from_user_email && can_send_from_user_email?(sender)
       address.address = sender.email
@@ -178,7 +178,7 @@ class Notify < ApplicationMailer
     headers['In-Reply-To'] = message_id(note.references.last)
     headers['References'] = note.references.map { |ref| message_id(ref) }
 
-    headers['X-GitLab-Discussion-ID'] = note.discussion.id if note.part_of_discussion?
+    headers['X-GitLab-Discussion-ID'] = note.discussion.id if note.part_of_discussion? || note.can_be_discussion_note?
 
     headers[:subject] = "Re: #{headers[:subject]}" if headers[:subject]
 

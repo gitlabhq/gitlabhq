@@ -1,0 +1,5 @@
+---
+title: Use fast path helpers in BuildDetailsEntity
+merge_request: 58824
+author:
+type: performance

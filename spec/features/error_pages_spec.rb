@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Error Pages' do
+RSpec.describe 'Error Pages', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 
@@ -14,7 +14,12 @@ RSpec.describe 'Error Pages' do
     it 'shows nav links' do
       expect(page).to have_link("Home", href: root_path)
       expect(page).to have_link("Help", href: help_path)
-      expect(page).to have_link(nil, href: destroy_user_session_path)
+    end
+
+    it 'allows user to sign out' do
+      click_link 'Sign out and sign in with a different account'
+
+      expect(page).to have_current_path(new_user_session_path)
     end
   end
 

@@ -43,8 +43,6 @@ It's recommended to create two separate migration script files.
    class InsertProjectHooksPlanLimits < ActiveRecord::Migration[5.2]
      include Gitlab::Database::MigrationHelpers
 
-     DOWNTIME = false
-
      def up
        create_or_update_plan_limit('project_hooks', 'default', 0)
        create_or_update_plan_limit('project_hooks', 'free', 10)

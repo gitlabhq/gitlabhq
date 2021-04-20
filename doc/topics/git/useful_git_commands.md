@@ -175,7 +175,7 @@ GIT_TRACE_PACKET=1 GIT_TRACE=2 GIT_CURL_VERBOSE=1 git clone <url>
 Git includes a complete set of [traces for debugging Git commands](https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables#_debugging), for example:
 
 - `GIT_TRACE_PERFORMANCE=1`: enables tracing of performance data, showing how long each particular `git` invocation takes.
-- `GIT_TRACE_SETUP=1`: enables tracing of what `git` is discovering about the repository and environment it’s interacting with.
+- `GIT_TRACE_SETUP=1`: enables tracing of what `git` is discovering about the repository and environment it's interacting with.
 - `GIT_TRACE_PACKET=1`: enables packet-level tracing for network operations.
 
 ## Rebasing

@@ -214,6 +214,9 @@ $yiq-text-light: $gray-950;
 $line-added-dark: $green-200;
 $line-removed-dark: $red-200;
 
+$well-expand-item: $gray-200;
+$well-inner-border: $gray-200;
+
 // Misc component overrides that should live elsewhere
 .gl-label {
   filter: brightness(0.9) contrast(1.1);

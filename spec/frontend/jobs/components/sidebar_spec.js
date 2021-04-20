@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import ArtifactsBlock from '~/jobs/components/artifacts_block.vue';
 import JobRetryForwardDeploymentModal from '~/jobs/components/job_retry_forward_deployment_modal.vue';
 import JobRetryButton from '~/jobs/components/job_sidebar_retry_button.vue';
 import JobsContainer from '~/jobs/components/jobs_container.vue';
@@ -14,6 +15,7 @@ describe('Sidebar details block', () => {
 
   const forwardDeploymentFailure = 'forward_deployment_failure';
   const findModal = () => wrapper.find(JobRetryForwardDeploymentModal);
+  const findArtifactsBlock = () => wrapper.findComponent(ArtifactsBlock);
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findNewIssueButton = () => wrapper.findByTestId('job-new-issue');
   const findRetryButton = () => wrapper.find(JobRetryButton);
@@ -21,6 +23,9 @@ describe('Sidebar details block', () => {
 
   const createWrapper = ({ props = {} } = {}) => {
     store = createStore();
+
+    store.state.job = job;
+
     wrapper = extendedWrapper(
       shallowMount(Sidebar, {
         ...props,
@@ -162,6 +167,31 @@ describe('Sidebar details block', () => {
       it('renders list of jobs', () => {
         expect(wrapper.find(JobsContainer).exists()).toBe(true);
       });
+    });
+  });
+
+  describe('artifacts', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('artifacts are not shown if there are no properties other than locked', () => {
+      expect(findArtifactsBlock().exists()).toBe(false);
+    });
+
+    it('artifacts are shown if present', async () => {
+      store.state.job.artifact = {
+        download_path: '/root/ci-project/-/jobs/1960/artifacts/download',
+        browse_path: '/root/ci-project/-/jobs/1960/artifacts/browse',
+        keep_path: '/root/ci-project/-/jobs/1960/artifacts/keep',
+        expire_at: '2021-03-23T17:57:11.211Z',
+        expired: false,
+        locked: false,
+      };
+
+      await wrapper.vm.$nextTick();
+
+      expect(findArtifactsBlock().exists()).toBe(true);
     });
   });
 });

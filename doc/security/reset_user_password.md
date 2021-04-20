@@ -11,6 +11,8 @@ There are a few ways to reset the password of a user.
 
 ## Rake Task
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52347) in GitLab 13.9.
+
 GitLab provides a Rake Task to reset passwords of users using their usernames,
 which can be invoked by the following command:
 
@@ -38,15 +40,15 @@ The Rake task is capable of finding users via their usernames. However, if only
 user ID or email ID of the user is known, Rails console can be used to find user
 using user ID and then change password of the user manually.
 
-1. Start a Rails console
+1. [Start a Rails console](../administration/operations/rails_console.md)
 
-    ```shell
-    sudo gitlab-rails console -e production
-    ```
-
-1. Find the user either by user ID or email ID:
+1. Find the user either by username, user ID or email ID:
 
     ```ruby
+    user = User.find_by_username 'exampleuser'
+
+    #or
+
     user = User.find(123)
 
     #or
@@ -80,6 +82,23 @@ using user ID and then change password of the user manually.
 
 NOTE:
 You can also reset passwords by using the [Users API](../api/users.md#user-modification).
+
+## Password reset does not appear to work
+
+If you can't sign on with the new password, it might be because of the [reconfirmation feature](../user/upgrade_email_bypass.md).
+
+Try fixing this on the rails console. For example, if your new `root` password isn't working:
+
+1. [Start a Rails console](../administration/operations/rails_console.md).
+
+1. Find the user and skip reconfirmation. Any of the methods to find the user, above, will work:
+
+    ```ruby
+    user = User.find(1)
+    user.skip_reconfirmation!
+    ```
+
+1. Try to sign in again.
 
 ## Reset your root password
 

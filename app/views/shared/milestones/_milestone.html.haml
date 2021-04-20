@@ -44,22 +44,22 @@
       = link_to pluralize(milestone.total_issues_count, _('Issue')), issues_path
       - if milestone.merge_requests_enabled?
         &middot;
-        = link_to pluralize(milestone.merge_requests_visible_to_user(current_user).size, _('Merge Request')), merge_requests_path
+        = link_to pluralize(milestone.total_merge_requests_count, _('Merge request')), merge_requests_path
       .float-lg-right.light #{milestone.percent_complete}% complete
     .col-sm-2
       .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end
         - if @project # if in milestones list on project level
           - if can_admin_group_milestones?
-            %button.js-promote-project-milestone-button.btn.gl-button.btn-default-tertiary.btn-sm.btn-grouped.has-tooltip{ title: s_('Milestones|Promote to Group Milestone'),
+            %button.js-promote-project-milestone-button.btn.gl-button.btn-icon.btn-default-tertiary.btn-sm.has-tooltip{ title: s_('Milestones|Promote to Group Milestone'),
               disabled: true,
               type: 'button',
               data: { url: promote_project_milestone_path(milestone.project, milestone),
                       milestone_title: milestone.title,
                       group_name: @project.group.name } }
-              = sprite_icon('level-up', size: 14)
+              = sprite_icon('level-up', size: 14, css_class: 'gl-button-icon gl-icon')
 
         - if can?(current_user, :admin_milestone, milestone)
           - if milestone.closed?
-            = link_to s_('Milestones|Reopen Milestone'), milestone_path(milestone, milestone: { state_event: :activate }), method: :put, class: "btn gl-button btn-sm btn-grouped"
+            = link_to s_('Milestones|Reopen Milestone'), milestone_path(milestone, milestone: { state_event: :activate }), method: :put, class: "btn gl-button btn-sm gl-ml-3"
           - else
-            = link_to s_('Milestones|Close Milestone'), milestone_path(milestone, milestone: { state_event: :close }), method: :put, class: "btn gl-button btn-warning-secondary btn-sm btn-grouped btn-close"
+            = link_to s_('Milestones|Close Milestone'), milestone_path(milestone, milestone: { state_event: :close }), method: :put, class: "btn gl-button btn-default btn-default-secondary btn-sm gl-ml-3"

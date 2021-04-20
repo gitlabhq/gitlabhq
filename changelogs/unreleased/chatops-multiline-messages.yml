@@ -1,0 +1,5 @@
+---
+title: Support newlines for the chatops "run" command
+merge_request: 56668
+author:
+type: changed

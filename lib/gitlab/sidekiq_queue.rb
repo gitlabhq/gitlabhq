@@ -21,7 +21,7 @@ module Gitlab
       job_search_metadata =
         search_metadata
           .stringify_keys
-          .slice(*Labkit::Context::KNOWN_KEYS)
+          .slice(*Gitlab::ApplicationContext::KNOWN_KEYS)
           .transform_keys { |key| "meta.#{key}" }
           .compact
 

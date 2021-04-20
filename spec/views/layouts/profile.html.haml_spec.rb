@@ -19,21 +19,8 @@ RSpec.describe 'layouts/profile' do
                       .with({ locals: { container_class: 'gl-my-5' } })
   end
 
-  context 'when search_settings_in_page feature flag is on' do
-    it 'displays the search settings entry point' do
-      render
-      expect(rendered).to include('js-search-settings-app')
-    end
-  end
-
-  context 'when search_settings_in_page feature flag is off' do
-    before do
-      stub_feature_flags(search_settings_in_page: false)
-    end
-
-    it 'does not display the search settings entry point' do
-      render
-      expect(rendered).not_to include('js-search-settings-app')
-    end
+  it 'displays the search settings entry point' do
+    render
+    expect(rendered).to include('js-search-settings-app')
   end
 end

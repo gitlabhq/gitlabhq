@@ -39,16 +39,15 @@ describe('Markdown component', () => {
     expect(vm.$el.querySelector('.markdown h1')).not.toBeNull();
   });
 
-  it('sanitizes output', () => {
+  it('sanitizes output', async () => {
     Object.assign(cell, {
       source: [
         '[XSS](data:text/html;base64,PHNjcmlwdD5hbGVydChkb2N1bWVudC5kb21haW4pPC9zY3JpcHQ+Cg==)\n',
       ],
     });
 
-    return vm.$nextTick().then(() => {
-      expect(vm.$el.querySelector('a').getAttribute('href')).toBeNull();
-    });
+    await vm.$nextTick();
+    expect(vm.$el.querySelector('a').getAttribute('href')).toBeNull();
   });
 
   describe('katex', () => {
@@ -56,43 +55,40 @@ describe('Markdown component', () => {
       json = getJSONFixture('blob/notebook/math.json');
     });
 
-    it('renders multi-line katex', () => {
+    it('renders multi-line katex', async () => {
       vm = new Component({
         propsData: {
           cell: json.cells[0],
         },
       }).$mount();
 
-      return vm.$nextTick().then(() => {
-        expect(vm.$el.querySelector('.katex')).not.toBeNull();
-      });
+      await vm.$nextTick();
+      expect(vm.$el.querySelector('.katex')).not.toBeNull();
     });
 
-    it('renders inline katex', () => {
+    it('renders inline katex', async () => {
       vm = new Component({
         propsData: {
           cell: json.cells[1],
         },
       }).$mount();
 
-      return vm.$nextTick().then(() => {
-        expect(vm.$el.querySelector('p:first-child .katex')).not.toBeNull();
-      });
+      await vm.$nextTick();
+      expect(vm.$el.querySelector('p:first-child .katex')).not.toBeNull();
     });
 
-    it('renders multiple inline katex', () => {
+    it('renders multiple inline katex', async () => {
       vm = new Component({
         propsData: {
           cell: json.cells[1],
         },
       }).$mount();
 
-      return vm.$nextTick().then(() => {
-        expect(vm.$el.querySelectorAll('p:nth-child(2) .katex').length).toBe(4);
-      });
+      await vm.$nextTick();
+      expect(vm.$el.querySelectorAll('p:nth-child(2) .katex')).toHaveLength(4);
     });
 
-    it('output cell in case of katex error', () => {
+    it('output cell in case of katex error', async () => {
       vm = new Component({
         propsData: {
           cell: {
@@ -103,14 +99,13 @@ describe('Markdown component', () => {
         },
       }).$mount();
 
-      return vm.$nextTick().then(() => {
-        // expect one paragraph with no katex formula in it
-        expect(vm.$el.querySelectorAll('p').length).toBe(1);
-        expect(vm.$el.querySelectorAll('p .katex').length).toBe(0);
-      });
+      await vm.$nextTick();
+      // expect one paragraph with no katex formula in it
+      expect(vm.$el.querySelectorAll('p')).toHaveLength(1);
+      expect(vm.$el.querySelectorAll('p .katex')).toHaveLength(0);
     });
 
-    it('output cell and render remaining formula in case of katex error', () => {
+    it('output cell and render remaining formula in case of katex error', async () => {
       vm = new Component({
         propsData: {
           cell: {
@@ -121,14 +116,13 @@ describe('Markdown component', () => {
         },
       }).$mount();
 
-      return vm.$nextTick().then(() => {
-        // expect one paragraph with no katex formula in it
-        expect(vm.$el.querySelectorAll('p').length).toBe(1);
-        expect(vm.$el.querySelectorAll('p .katex').length).toBe(1);
-      });
+      await vm.$nextTick();
+      // expect one paragraph with no katex formula in it
+      expect(vm.$el.querySelectorAll('p')).toHaveLength(1);
+      expect(vm.$el.querySelectorAll('p .katex')).toHaveLength(1);
     });
 
-    it('renders math formula in list object', () => {
+    it('renders math formula in list object', async () => {
       vm = new Component({
         propsData: {
           cell: {
@@ -139,14 +133,13 @@ describe('Markdown component', () => {
         },
       }).$mount();
 
-      return vm.$nextTick().then(() => {
-        // expect one list with a katex formula in it
-        expect(vm.$el.querySelectorAll('li').length).toBe(1);
-        expect(vm.$el.querySelectorAll('li .katex').length).toBe(2);
-      });
+      await vm.$nextTick();
+      // expect one list with a katex formula in it
+      expect(vm.$el.querySelectorAll('li')).toHaveLength(1);
+      expect(vm.$el.querySelectorAll('li .katex')).toHaveLength(2);
     });
 
-    it("renders math formula with tick ' in it", () => {
+    it("renders math formula with tick ' in it", async () => {
       vm = new Component({
         propsData: {
           cell: {
@@ -157,11 +150,44 @@ describe('Markdown component', () => {
         },
       }).$mount();
 
-      return vm.$nextTick().then(() => {
-        // expect one list with a katex formula in it
-        expect(vm.$el.querySelectorAll('li').length).toBe(1);
-        expect(vm.$el.querySelectorAll('li .katex').length).toBe(2);
-      });
+      await vm.$nextTick();
+      // expect one list with a katex formula in it
+      expect(vm.$el.querySelectorAll('li')).toHaveLength(1);
+      expect(vm.$el.querySelectorAll('li .katex')).toHaveLength(2);
+    });
+
+    it('renders math formula with less-than-operator < in it', async () => {
+      vm = new Component({
+        propsData: {
+          cell: {
+            cell_type: 'markdown',
+            metadata: {},
+            source: ['- list with inline $a=2$ inline formula $a + b < c$\n', '\n'],
+          },
+        },
+      }).$mount();
+
+      await vm.$nextTick();
+      // expect one list with a katex formula in it
+      expect(vm.$el.querySelectorAll('li')).toHaveLength(1);
+      expect(vm.$el.querySelectorAll('li .katex')).toHaveLength(2);
+    });
+
+    it('renders math formula with greater-than-operator > in it', async () => {
+      vm = new Component({
+        propsData: {
+          cell: {
+            cell_type: 'markdown',
+            metadata: {},
+            source: ['- list with inline $a=2$ inline formula $a + b > c$\n', '\n'],
+          },
+        },
+      }).$mount();
+
+      await vm.$nextTick();
+      // expect one list with a katex formula in it
+      expect(vm.$el.querySelectorAll('li')).toHaveLength(1);
+      expect(vm.$el.querySelectorAll('li .katex')).toHaveLength(2);
     });
   });
 });

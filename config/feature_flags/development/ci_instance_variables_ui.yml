@@ -1,8 +1,0 @@
----
-name: ci_instance_variables_ui
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33510
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/299879
-milestone: '13.1'
-type: development
-group: group::continuous integration
-default_enabled: true

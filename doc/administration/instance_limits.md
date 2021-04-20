@@ -105,7 +105,7 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 
 ## Gitaly concurrency limit
 
-Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly’s configuration file.
+Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly's configuration file.
 
 Read more on [Gitaly concurrency limits](gitaly/configure_gitaly.md#limit-rpc-concurrency).
 
@@ -145,13 +145,14 @@ limited to 1KiB, and descriptions (the rest of the message) will be limited to
 
 ## Number of issues in the milestone overview
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39453) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39453) in GitLab 12.10.
+> - [Set](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58168) to 500 in GitLab 13.11.
 
-The maximum number of issues loaded on the milestone overview page is 3000.
+The maximum number of issues loaded on the milestone overview page is 500.
 When the number exceeds the limit the page displays an alert and links to a paginated
-[issue list](../user/project/issues/index.md#issues-list) of all issues in the milestone.
+[issue list](../user/project/issues/managing_issues.md) of all issues in the milestone.
 
-- **Limit:** 3000 issues
+- **Limit:** 500 issues
 
 ## Number of pipelines per Git push
 
@@ -376,7 +377,7 @@ Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37226) in GitLab 13.3.
 
-Job artifacts defined with [`artifacts:reports`](../ci/pipelines/job_artifacts.md#artifactsreports)
+Job artifacts defined with [`artifacts:reports`](../ci/yaml/README.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
 [maximum artifact size setting](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size)

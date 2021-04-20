@@ -29,10 +29,10 @@ If you just want to delete everything and start over with sample data (approxima
 also does `db:reset` and runs DB-specific migrations:
 
 ```shell
-bundle exec rake dev:setup RAILS_ENV=development
+bundle exec rake db:setup RAILS_ENV=development
 ```
 
-If your test DB is giving you problems, it is safe to nuke it because it doesn't contain important
+If your test DB is giving you problems, it is safe to delete everything because it doesn't contain important
 data:
 
 ```shell

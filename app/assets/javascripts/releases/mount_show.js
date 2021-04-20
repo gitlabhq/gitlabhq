@@ -1,26 +1,28 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import ReleaseShowApp from './components/app_show.vue';
-import createStore from './stores';
-import createDetailModule from './stores/modules/detail';
 
-Vue.use(Vuex);
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 export default () => {
   const el = document.getElementById('js-show-release-page');
 
-  const store = createStore({
-    modules: {
-      detail: createDetailModule(el.dataset),
-    },
-    featureFlags: {
-      graphqlIndividualReleasePage: Boolean(gon.features?.graphqlIndividualReleasePage),
-    },
-  });
+  if (!el) return false;
+
+  const { projectPath, tagName } = el.dataset;
 
   return new Vue({
     el,
-    store,
+    apolloProvider,
+    provide: {
+      fullPath: projectPath,
+      tagName,
+    },
     render: (h) => h(ReleaseShowApp),
   });
 };

@@ -25,6 +25,7 @@ module ButtonHelper
     button_text = data[:button_text] || ''
     hide_tooltip = data[:hide_tooltip] || false
     hide_button_icon = data[:hide_button_icon] || false
+    item_prop = data[:itemprop] || nil
 
     # This supports code in app/assets/javascripts/copy_to_clipboard.js that
     # works around ClipboardJS limitations to allow the context-specific copy/pasting of plain text or GFM.
@@ -49,7 +50,8 @@ module ButtonHelper
       data: data,
       type: :button,
       title: title,
-      aria: { label: title }
+      aria: { label: title },
+      itemprop: item_prop
     }
 
     content_tag :button, button_attributes do

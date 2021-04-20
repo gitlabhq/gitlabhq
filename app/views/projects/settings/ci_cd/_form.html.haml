@@ -96,7 +96,7 @@
             = html_escape(_('The regular expression used to find test coverage output in the job log. For example, use %{regex} for Simplecov (Ruby). Leave blank to disable.')) % { regex: '<code>\(\d+.\d+%\)</code>'.html_safe }
             = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'test-coverage-parsing'), target: '_blank'
 
-        = f.submit _('Save changes'), class: "btn gl-button btn-success", data: { qa_selector: 'save_general_pipelines_changes_button' }
+        = f.submit _('Save changes'), class: "btn gl-button btn-confirm", data: { qa_selector: 'save_general_pipelines_changes_button' }
 
 %hr
 

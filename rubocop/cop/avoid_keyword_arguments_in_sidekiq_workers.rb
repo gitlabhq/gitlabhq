@@ -5,7 +5,7 @@ module RuboCop
     # Cop that blacklists keyword arguments usage in Sidekiq workers
     class AvoidKeywordArgumentsInSidekiqWorkers < RuboCop::Cop::Cop
       MSG = "Do not use keyword arguments in Sidekiq workers. " \
-        "For details, check https://github.com/mperham/sidekiq/issues/2372".freeze
+        "For details, check https://github.com/mperham/sidekiq/issues/2372"
       OBSERVED_METHOD = :perform
 
       def on_def(node)

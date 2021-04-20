@@ -5,7 +5,7 @@ class WhatsNewController < ApplicationController
 
   skip_before_action :authenticate_user!
 
-  before_action :check_valid_page_param, :set_pagination_headers, unless: -> { has_version_param? }
+  before_action :check_valid_page_param, :set_pagination_headers
 
   feature_category :navigation
 
@@ -29,19 +29,11 @@ class WhatsNewController < ApplicationController
 
   def highlights
     strong_memoize(:highlights) do
-      if has_version_param?
-        ReleaseHighlight.for_version(version: params[:version])
-      else
-        ReleaseHighlight.paginated(page: current_page)
-      end
+      ReleaseHighlight.paginated(page: current_page)
     end
   end
 
   def set_pagination_headers
     response.set_header('X-Next-Page', highlights.next_page)
-  end
-
-  def has_version_param?
-    params[:version].present?
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Add migration to index members on user_id, source_id, and source_type
+merge_request: 59051
+author:
+type: performance

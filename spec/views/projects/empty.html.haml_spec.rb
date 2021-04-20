@@ -36,6 +36,16 @@ RSpec.describe 'projects/empty' do
     end
   end
 
+  context 'project is archived' do
+    let(:project) { ProjectPresenter.new(create(:project, :empty_repo, :archived), current_user: user) }
+
+    it 'shows archived notice' do
+      render
+
+      expect(rendered).to have_content('Archived project!')
+    end
+  end
+
   describe 'invite_members_empty_project_version_a experiment' do
     let(:can_import_members) { true }
 

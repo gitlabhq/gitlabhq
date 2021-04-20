@@ -6,7 +6,7 @@
 # This file should not receive new settings. All configuration options #
 # * are being moved to ApplicationSetting model!                       #
 # If a setting requires an application restart say so in that screen.  #
-# If you change this file in a Merge Request, please also create       #
+# If you change this file in a merge request, please also create       #
 # a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests. #
 # For more details see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/gitlab.yml.md #
 ########################################################################
@@ -210,6 +210,13 @@ production: &base
     # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
     expunge_deleted: false
 
+    # For Microsoft Graph support
+    # inbox_method: microsoft_graph
+    # inbox_options:
+    #   tenant_id: "YOUR-TENANT-ID"
+    #   client_id: "YOUR-CLIENT-ID"
+    #   client_secret: "YOUR-CLIENT-SECRET"
+
   ## Consolidated object store config
   ## This will only take effect if the object_store sections are not defined
   ## within the types (e.g. artifacts, lfs, etc.).
@@ -408,6 +415,10 @@ production: &base
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: us-east-1
+    local_store:
+      enabled: true
+      # The location where pages are stored (default: shared/pages).
+      # path: shared/pages
 
   ## Mattermost
   ## For enabling Add to Mattermost button
@@ -485,7 +496,7 @@ production: &base
   ee_cron_jobs:
     # Schedule snapshots for all devops adoption segments
     analytics_devops_adoption_create_all_snapshots_worker:
-      cron: 0 4 * * *
+      cron: 0 4 * * 0
 
     # Snapshot active users statistics
     historical_data_worker:
@@ -1395,6 +1406,9 @@ test:
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: us-east-1
+    local_store:
+      enabled: true
+      path: tmp/tests/pages
   repositories:
     storages:
       default:

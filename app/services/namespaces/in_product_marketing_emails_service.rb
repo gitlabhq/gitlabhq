@@ -23,10 +23,12 @@ module Namespaces
     def initialize(track, interval)
       @track = track
       @interval = interval
-      @sent_email_user_ids = []
+      @in_product_marketing_email_records = []
     end
 
     def execute
+      raise ArgumentError, "Track #{track} not defined" unless TRACKS.key?(track)
+
       groups_for_track.each_batch do |groups|
         groups.each do |group|
           send_email_for_group(group)
@@ -36,16 +38,23 @@ module Namespaces
 
     private
 
-    attr_reader :track, :interval, :sent_email_user_ids
+    attr_reader :track, :interval, :in_product_marketing_email_records
 
     def send_email_for_group(group)
-      experiment_enabled_for_group = experiment_enabled_for_group?(group)
-      experiment_add_group(group, experiment_enabled_for_group)
-      return unless experiment_enabled_for_group
+      if Gitlab.com?
+        experiment_enabled_for_group = experiment_enabled_for_group?(group)
+        experiment_add_group(group, experiment_enabled_for_group)
+        return unless experiment_enabled_for_group
+      end
 
       users_for_group(group).each do |user|
-        send_email(user, group) if can_perform_action?(user, group)
+        if can_perform_action?(user, group)
+          send_email(user, group)
+          track_sent_email(user, track, series)
+        end
       end
+
+      save_tracked_emails!
     end
 
     def experiment_enabled_for_group?(group)
@@ -70,8 +79,9 @@ module Namespaces
     end
 
     def users_for_group(group)
-      group.users.where(email_opted_in: true)
-        .where.not(id: sent_email_user_ids)
+      group.users
+        .where(email_opted_in: true)
+        .merge(Users::InProductMarketingEmail.without_track_and_series(track, series))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -85,14 +95,11 @@ module Namespaces
         user.can?(:start_trial, group)
       when :team
         user.can?(:admin_group_member, group)
-      else
-        raise NotImplementedError, "No ability defined for track #{track}"
       end
     end
 
     def send_email(user, group)
       NotificationService.new.in_product_marketing(user.id, group.id, track, series)
-      sent_email_user_ids << user.id
     end
 
     def completed_actions
@@ -101,7 +108,8 @@ module Namespaces
     end
 
     def range
-      (interval + 1).days.ago.beginning_of_day..(interval + 1).days.ago.end_of_day
+      date = (interval + 1).days.ago
+      date.beginning_of_day..date.end_of_day
     end
 
     def incomplete_action
@@ -110,6 +118,21 @@ module Namespaces
 
     def series
       INTERVAL_DAYS.index(interval)
+    end
+
+    def save_tracked_emails!
+      Users::InProductMarketingEmail.bulk_insert!(in_product_marketing_email_records)
+      @in_product_marketing_email_records = []
+    end
+
+    def track_sent_email(user, track, series)
+      in_product_marketing_email_records << Users::InProductMarketingEmail.new(
+        user: user,
+        track: track,
+        series: series,
+        created_at: Time.zone.now,
+        updated_at: Time.zone.now
+      )
     end
   end
 end

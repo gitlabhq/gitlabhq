@@ -78,7 +78,7 @@ describe('Error Tracking Settings - Getters', () => {
   describe('projectSelectionLabel', () => {
     it('should show the correct message when the token is empty', () => {
       expect(getters.projectSelectionLabel(state)).toEqual(
-        'To enable project selection, enter a valid Auth Token',
+        'To enable project selection, enter a valid Auth Token.',
       );
     });
 
@@ -86,7 +86,7 @@ describe('Error Tracking Settings - Getters', () => {
       state.token = 'test-token';
 
       expect(getters.projectSelectionLabel(state)).toEqual(
-        "Click 'Connect' to re-establish the connection to Sentry and activate the dropdown.",
+        'Click Connect to reestablish the connection to Sentry and activate the dropdown.',
       );
     });
   });

@@ -1,0 +1,8 @@
+---
+name: gitlab_service_measuring_projects_import_service
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30977
+rollout_issue_url: 
+milestone: '13.0'
+type: ops
+group: group::memory
+default_enabled: false

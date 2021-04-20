@@ -168,8 +168,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Parameters:
 
-- `file_path` (required) - URL encoded full path to new file. Ex. lib%2Fclass%2Erb
-- `ref` (required) - The name of branch, tag or commit
+- `file_path` (required) - URL encoded full path to new file, such as lib%2Fclass%2Erb.
+- `ref` (optional) - The name of branch, tag or commit. Default is the `HEAD` of the project.
 
 NOTE:
 Like [Get file from repository](repository_files.md#get-file-from-repository) you can use `HEAD` to get just file metadata.

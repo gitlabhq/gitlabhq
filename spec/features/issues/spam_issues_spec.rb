@@ -43,7 +43,7 @@ RSpec.describe 'New issue', :js do
       end
 
       it 'rejects issue creation' do
-        click_button 'Submit issue'
+        click_button 'Create issue'
 
         expect(page).to have_content('discarded')
         expect(page).not_to have_content('potential spam')
@@ -51,7 +51,7 @@ RSpec.describe 'New issue', :js do
       end
 
       it 'creates a spam log record' do
-        expect { click_button 'Submit issue' }
+        expect { click_button 'Create issue' }
             .to log_spam(title: 'issue title', description: 'issue description', user_id: user.id, noteable_type: 'Issue')
       end
     end
@@ -63,14 +63,14 @@ RSpec.describe 'New issue', :js do
       end
 
       it 'allows issue creation' do
-        click_button 'Submit issue'
+        click_button 'Create issue'
 
         expect(page.find('.issue-details h2.title')).to have_content('issue title')
         expect(page.find('.issue-details .description')).to have_content('issue description')
       end
 
       it 'creates a spam log record' do
-        expect { click_button 'Submit issue' }
+        expect { click_button 'Create issue' }
           .to log_spam(title: 'issue title', description: 'issue description', user_id: user.id, noteable_type: 'Issue')
       end
     end
@@ -101,14 +101,14 @@ RSpec.describe 'New issue', :js do
           fill_in 'issue_title', with: 'issue title'
           fill_in 'issue_description', with: 'issue description'
 
-          click_button 'Submit issue'
+          click_button 'Create issue'
 
           # it is impossible to test reCAPTCHA automatically and there is no possibility to fill in recaptcha
           # reCAPTCHA verification is skipped in test environment and it always returns true
           expect(page).not_to have_content('issue title')
           expect(page).to have_css('.recaptcha')
 
-          click_button 'Submit issue'
+          click_button 'Create issue'
 
           expect(page.find('.issue-details h2.title')).to have_content('issue title')
           expect(page.find('.issue-details .description')).to have_content('issue description')
@@ -122,7 +122,7 @@ RSpec.describe 'New issue', :js do
         end
 
         it 'creates an issue without a need to solve reCAPTCHA' do
-          click_button 'Submit issue'
+          click_button 'Create issue'
 
           expect(page).not_to have_css('.recaptcha')
           expect(page.find('.issue-details h2.title')).to have_content('issue title')
@@ -130,7 +130,7 @@ RSpec.describe 'New issue', :js do
         end
 
         it 'creates a spam log record' do
-          expect { click_button 'Submit issue' }
+          expect { click_button 'Create issue' }
               .to log_spam(title: 'issue title', description: 'issue description', user_id: user.id, noteable_type: 'Issue')
         end
       end
@@ -148,7 +148,7 @@ RSpec.describe 'New issue', :js do
         end
 
         it 'creates an issue without a need to solve reCaptcha' do
-          click_button 'Submit issue'
+          click_button 'Create issue'
 
           expect(page).not_to have_css('.recaptcha')
           expect(page.find('.issue-details h2.title')).to have_content('issue title')
@@ -156,7 +156,7 @@ RSpec.describe 'New issue', :js do
         end
 
         it 'creates a spam log record' do
-          expect { click_button 'Submit issue' }
+          expect { click_button 'Create issue' }
               .to log_spam(title: 'issue title', description: 'issue description', user_id: user.id, noteable_type: 'Issue')
         end
       end
@@ -178,7 +178,7 @@ RSpec.describe 'New issue', :js do
       fill_in 'issue_title', with: 'issue title'
       fill_in 'issue_description', with: 'issue description'
 
-      click_button 'Submit issue'
+      click_button 'Create issue'
 
       expect(page.find('.issue-details h2.title')).to have_content('issue title')
       expect(page.find('.issue-details .description')).to have_content('issue description')

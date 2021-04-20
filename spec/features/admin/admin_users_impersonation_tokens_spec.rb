@@ -75,7 +75,7 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
     end
 
     it "removes expired tokens from 'active' section" do
-      impersonation_token.update(expires_at: 5.days.ago)
+      impersonation_token.update!(expires_at: 5.days.ago)
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 

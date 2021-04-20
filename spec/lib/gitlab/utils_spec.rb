@@ -162,7 +162,7 @@ RSpec.describe Gitlab::Utils do
 
   describe '.nlbr' do
     it 'replaces new lines with <br>' do
-      expect(described_class.nlbr("<b>hello</b>\n<i>world</i>".freeze)).to eq("hello<br>world")
+      expect(described_class.nlbr("<b>hello</b>\n<i>world</i>")).to eq("hello<br>world")
     end
   end
 
@@ -192,6 +192,7 @@ RSpec.describe Gitlab::Utils do
       expect(to_boolean('YeS')).to be(true)
       expect(to_boolean('t')).to be(true)
       expect(to_boolean('1')).to be(true)
+      expect(to_boolean(1)).to be(true)
       expect(to_boolean('ON')).to be(true)
 
       expect(to_boolean('FaLse')).to be(false)
@@ -199,6 +200,7 @@ RSpec.describe Gitlab::Utils do
       expect(to_boolean('NO')).to be(false)
       expect(to_boolean('n')).to be(false)
       expect(to_boolean('0')).to be(false)
+      expect(to_boolean(0)).to be(false)
       expect(to_boolean('oFF')).to be(false)
     end
 
@@ -388,8 +390,8 @@ RSpec.describe Gitlab::Utils do
 
   describe ".safe_downcase!" do
     where(:str, :result) do
-      "test".freeze | "test"
-      "Test".freeze | "test"
+      "test" | "test"
+      "Test" | "test"
       "test" | "test"
       "Test" | "test"
     end

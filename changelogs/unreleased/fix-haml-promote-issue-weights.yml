@@ -1,0 +1,5 @@
+---
+title: Fix HAML in _promote_issue_weights.html.haml
+merge_request: 58546
+author: Yogi (@yo)
+type: changed

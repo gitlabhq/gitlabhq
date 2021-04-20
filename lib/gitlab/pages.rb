@@ -3,7 +3,7 @@
 module Gitlab
   module Pages
     VERSION = File.read(Rails.root.join("GITLAB_PAGES_VERSION")).strip.freeze
-    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Pages-Api-Request'.freeze
+    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Pages-Api-Request'
     MAX_SIZE = 1.terabyte
 
     include JwtAuthenticatable

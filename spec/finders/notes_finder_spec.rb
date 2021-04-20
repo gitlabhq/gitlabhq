@@ -213,6 +213,24 @@ RSpec.describe NotesFinder do
         expect { described_class.new(user, params).execute }.to raise_error(RuntimeError)
       end
     end
+
+    describe 'sorting' do
+      it 'allows sorting' do
+        params = { project: project, sort: 'id_desc' }
+
+        expect(Note).to receive(:order_id_desc).once
+
+        described_class.new(user, params).execute
+      end
+
+      it 'defaults to sort by .fresh' do
+        params = { project: project }
+
+        expect(Note).to receive(:fresh).once
+
+        described_class.new(user, params).execute
+      end
+    end
   end
 
   describe '.search' do

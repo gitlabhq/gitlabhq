@@ -264,18 +264,18 @@ describe('Api', () => {
     it('fetches group labels', (done) => {
       const options = { params: { search: 'foo' } };
       const expectedGroup = 'gitlab-org';
-      const expectedUrl = `${dummyUrlRoot}/groups/${expectedGroup}/-/labels`;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${expectedGroup}/labels`;
       mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           id: 1,
-          title: 'Foo Label',
+          name: 'Foo Label',
         },
       ]);
 
       Api.groupLabels(expectedGroup, options)
         .then((res) => {
           expect(res.length).toBe(1);
-          expect(res[0].title).toBe('Foo Label');
+          expect(res[0].name).toBe('Foo Label');
         })
         .then(done)
         .catch(done.fail);
@@ -593,7 +593,7 @@ describe('Api', () => {
   });
 
   describe('newLabel', () => {
-    it('creates a new label', (done) => {
+    it('creates a new project label', (done) => {
       const namespace = 'some namespace';
       const project = 'some project';
       const labelData = { some: 'data' };
@@ -618,26 +618,23 @@ describe('Api', () => {
       });
     });
 
-    it('creates a group label', (done) => {
+    it('creates a new group label', (done) => {
       const namespace = 'group/subgroup';
-      const labelData = { some: 'data' };
+      const labelData = { name: 'Foo', color: '#000000' };
       const expectedUrl = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
-      const expectedData = {
-        label: labelData,
-      };
       mock.onPost(expectedUrl).reply((config) => {
-        expect(config.data).toBe(JSON.stringify(expectedData));
+        expect(config.data).toBe(JSON.stringify({ color: labelData.color }));
 
         return [
           httpStatus.OK,
           {
-            name: 'test',
+            ...labelData,
           },
         ];
       });
 
       Api.newLabel(namespace, undefined, labelData, (response) => {
-        expect(response.name).toBe('test');
+        expect(response.name).toBe('Foo');
         done();
       });
     });
@@ -1225,11 +1222,24 @@ describe('Api', () => {
     )}/repository/files/${encodeURIComponent(dummyFilePath)}/raw`;
 
     describe('when the raw file is successfully fetched', () => {
-      it('resolves the Promise', () => {
+      beforeEach(() => {
         mock.onGet(expectedUrl).replyOnce(httpStatus.OK);
+      });
 
+      it('resolves the Promise', () => {
         return Api.getRawFile(dummyProjectPath, dummyFilePath).then(() => {
           expect(mock.history.get).toHaveLength(1);
+        });
+      });
+
+      describe('when the method is called with params', () => {
+        it('sets the params on the request', () => {
+          const params = { ref: 'main' };
+          jest.spyOn(axios, 'get');
+
+          Api.getRawFile(dummyProjectPath, dummyFilePath, params);
+
+          expect(axios.get).toHaveBeenCalledWith(expectedUrl, { params });
         });
       });
     });
@@ -1376,6 +1386,38 @@ describe('Api', () => {
         mock.onPost(expectedUrl, options).replyOnce(httpStatus.CREATED, expectedResult);
 
         return Api.createFreezePeriod(projectId, options).then(({ data }) => {
+          expect(data).toStrictEqual(expectedResult);
+        });
+      });
+    });
+  });
+
+  describe('updateFreezePeriod', () => {
+    const options = {
+      id: 10,
+      freeze_start: '* * * * *',
+      freeze_end: '* * * * *',
+      cron_timezone: 'America/Juneau',
+      created_at: '2020-07-11T07:04:50.153Z',
+      updated_at: '2020-07-11T07:04:50.153Z',
+    };
+    const projectId = 8;
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/freeze_periods/${options.id}`;
+
+    const expectedResult = {
+      id: 10,
+      freeze_start: '* * * * *',
+      freeze_end: '* * * * *',
+      cron_timezone: 'America/Juneau',
+      created_at: '2020-07-11T07:04:50.153Z',
+      updated_at: '2020-07-11T07:04:50.153Z',
+    };
+
+    describe('when the freeze period is successfully updated', () => {
+      it('resolves the Promise', () => {
+        mock.onPut(expectedUrl, options).replyOnce(httpStatus.OK, expectedResult);
+
+        return Api.updateFreezePeriod(projectId, options).then(({ data }) => {
           expect(data).toStrictEqual(expectedResult);
         });
       });

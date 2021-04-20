@@ -164,6 +164,7 @@ export default {
             variant="link"
             icon="close"
             class="gl-mr-2 gl-w-auto! gl-p-2!"
+            :aria-label="__('Close')"
             @click.prevent="handleDropdownCloseClick"
           />
         </div>

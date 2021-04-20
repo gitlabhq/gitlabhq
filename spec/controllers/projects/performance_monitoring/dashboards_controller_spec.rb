@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:namespace) }
+
   let!(:project) { create(:project, :repository, name: 'dashboard-project', namespace: namespace) }
   let(:repository) { project.repository }
   let(:branch) { double(name: branch_name) }

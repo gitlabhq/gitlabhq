@@ -66,8 +66,8 @@ Alternatively, you can use the API to protect an environment:
      when: manual
      script:
        - 'echo "Deploying to ${CI_ENVIRONMENT_NAME}"'
-   environment:
-     name: ${CI_JOB_NAME}
+     environment:
+       name: ${CI_JOB_NAME}
    ```
 
 1. Use the UI to [create a new group](../../user/group/index.md#create-a-group).

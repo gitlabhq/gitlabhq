@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Workhorse do
   let_it_be(:project) { create(:project, :repository) }
+
   let(:repository) { project.repository }
 
   def decode_workhorse_header(array)

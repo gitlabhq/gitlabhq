@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'support/helpers/stubbed_feature'
+require 'support/helpers/stub_feature_flags'
 
 RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
+  include StubFeatureFlags
+
   describe '.applies_to?' do
     subject { described_class.applies_to?(config) }
 
@@ -49,6 +53,10 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             variables: {
               'PROVIDER' => 'aws',
               'STACK' => 'app1'
+            },
+            job_variables: {
+              'PROVIDER' => 'aws',
+              'STACK' => 'app1'
             }
           },
           {
@@ -56,6 +64,10 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             instance: 2,
             parallel: { total: 4 },
             variables: {
+              'PROVIDER' => 'aws',
+              'STACK' => 'app2'
+            },
+            job_variables: {
               'PROVIDER' => 'aws',
               'STACK' => 'app2'
             }
@@ -67,6 +79,10 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             variables: {
               'PROVIDER' => 'ovh',
               'STACK' => 'app'
+            },
+            job_variables: {
+              'PROVIDER' => 'ovh',
+              'STACK' => 'app'
             }
           },
           {
@@ -74,6 +90,10 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             instance: 4,
             parallel: { total: 4 },
             variables: {
+              'PROVIDER' => 'gcp',
+              'STACK' => 'app'
+            },
+            job_variables: {
               'PROVIDER' => 'gcp',
               'STACK' => 'app'
             }

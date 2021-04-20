@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ide::TerminalConfigService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:sha) { 'sha' }
 
   describe '#execute' do
@@ -47,6 +48,7 @@ RSpec.describe Ide::TerminalConfigService do
           terminal: {
             tag_list: [],
             yaml_variables: [],
+            job_variables: [],
             options: { script: ["sleep 60"] }
           })
       end
@@ -61,6 +63,7 @@ RSpec.describe Ide::TerminalConfigService do
           terminal: {
             tag_list: [],
             yaml_variables: [],
+            job_variables: [],
             options: { before_script: ["ls"], script: ["sleep 60"] }
           })
       end

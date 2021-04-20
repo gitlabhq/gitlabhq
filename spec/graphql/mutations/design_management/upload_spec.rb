@@ -32,6 +32,10 @@ RSpec.describe Mutations::DesignManagement::Upload do
     end
 
     context "when the feature is not available" do
+      before do
+        enable_design_management(false)
+      end
+
       it_behaves_like "resource not available"
     end
 
@@ -52,10 +56,10 @@ RSpec.describe Mutations::DesignManagement::Upload do
            .map { |f| RenameableUpload.unique_file(f) }
         end
 
-        def creates_designs
+        def creates_designs(&block)
           prior_count = DesignManagement::Design.count
 
-          expect { yield }.not_to raise_error
+          expect(&block).not_to raise_error
 
           expect(DesignManagement::Design.count).to eq(prior_count + files.size)
         end
@@ -99,20 +103,20 @@ RSpec.describe Mutations::DesignManagement::Upload do
         it_behaves_like "resource not available"
       end
 
-      context "a valid design" do
+      context "with a valid design" do
         it "returns the updated designs" do
           expect(resolve[:errors]).to eq []
           expect(resolve[:designs].map(&:filename)).to contain_exactly("dk.png")
         end
       end
 
-      context "context when passing an invalid project" do
+      context "when passing an invalid project" do
         let(:project) { build(:project) }
 
         it_behaves_like "resource not available"
       end
 
-      context "context when passing an invalid issue" do
+      context "when passing an invalid issue" do
         let(:issue) { build(:issue) }
 
         it_behaves_like "resource not available"

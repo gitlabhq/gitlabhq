@@ -3,6 +3,7 @@
 module Groups
   module Settings
     class RepositoryController < Groups::ApplicationController
+      layout 'group_settings'
       skip_cross_project_access_check :show
       before_action :authorize_create_deploy_token!
       before_action :define_deploy_token_variables

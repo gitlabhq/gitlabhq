@@ -4,8 +4,15 @@ import { nextTick } from 'vue';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
+import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
+import {
+  EDITOR_APP_STATUS_EMPTY,
+  EDITOR_APP_STATUS_ERROR,
+  EDITOR_APP_STATUS_LOADING,
+  EDITOR_APP_STATUS_INVALID,
+  EDITOR_APP_STATUS_VALID,
+} from '~/pipeline_editor/constants';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
-
 import { mockLintResponse, mockCiYml } from '../mock_data';
 
 describe('Pipeline editor tabs component', () => {
@@ -20,17 +27,27 @@ describe('Pipeline editor tabs component', () => {
     },
   };
 
-  const createComponent = ({ props = {}, provide = {}, mountFn = shallowMount } = {}) => {
+  const createComponent = ({
+    props = {},
+    provide = {},
+    appStatus = EDITOR_APP_STATUS_VALID,
+    mountFn = shallowMount,
+  } = {}) => {
     wrapper = mountFn(PipelineEditorTabs, {
       propsData: {
         ciConfigData: mockLintResponse,
         ciFileContent: mockCiYml,
-        isCiConfigDataLoading: false,
         ...props,
+      },
+      data() {
+        return {
+          appStatus,
+        };
       },
       provide: { ...mockProvide, ...provide },
       stubs: {
         TextEditor: MockTextEditor,
+        EditorTab,
       },
     });
   };
@@ -49,7 +66,6 @@ describe('Pipeline editor tabs component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('editor tab', () => {
@@ -69,7 +85,7 @@ describe('Pipeline editor tabs component', () => {
     describe('with feature flag on', () => {
       describe('while loading', () => {
         beforeEach(() => {
-          createComponent({ props: { isCiConfigDataLoading: true } });
+          createComponent({ appStatus: EDITOR_APP_STATUS_LOADING });
         });
 
         it('displays a loading icon if the lint query is loading', () => {
@@ -108,7 +124,7 @@ describe('Pipeline editor tabs component', () => {
   describe('lint tab', () => {
     describe('while loading', () => {
       beforeEach(() => {
-        createComponent({ props: { isCiConfigDataLoading: true } });
+        createComponent({ appStatus: EDITOR_APP_STATUS_LOADING });
       });
 
       it('displays a loading icon if the lint query is loading', () => {
@@ -135,7 +151,7 @@ describe('Pipeline editor tabs component', () => {
     describe('with feature flag on', () => {
       describe('while loading', () => {
         beforeEach(() => {
-          createComponent({ props: { isCiConfigDataLoading: true } });
+          createComponent({ appStatus: EDITOR_APP_STATUS_LOADING });
         });
 
         it('displays a loading icon if the lint query is loading', () => {
@@ -143,9 +159,9 @@ describe('Pipeline editor tabs component', () => {
         });
       });
 
-      describe('when `mergedYaml` is undefined', () => {
+      describe('when there is a fetch error', () => {
         beforeEach(() => {
-          createComponent({ props: { ciConfigData: {} } });
+          createComponent({ appStatus: EDITOR_APP_STATUS_ERROR });
         });
 
         it('show an error message', () => {
@@ -179,5 +195,25 @@ describe('Pipeline editor tabs component', () => {
         expect(findMergedPreview().exists()).toBe(false);
       });
     });
+  });
+
+  describe('show tab content based on status', () => {
+    it.each`
+      appStatus                    | editor  | viz      | lint     | merged
+      ${undefined}                 | ${true} | ${true}  | ${true}  | ${true}
+      ${EDITOR_APP_STATUS_EMPTY}   | ${true} | ${false} | ${false} | ${false}
+      ${EDITOR_APP_STATUS_INVALID} | ${true} | ${false} | ${true}  | ${false}
+      ${EDITOR_APP_STATUS_VALID}   | ${true} | ${true}  | ${true}  | ${true}
+    `(
+      'when status is $appStatus, we show - editor:$editor | viz:$viz | lint:$lint | merged:$merged ',
+      ({ appStatus, editor, viz, lint, merged }) => {
+        createComponent({ appStatus });
+
+        expect(findTextEditor().exists()).toBe(editor);
+        expect(findPipelineGraph().exists()).toBe(viz);
+        expect(findCiLint().exists()).toBe(lint);
+        expect(findMergedPreview().exists()).toBe(merged);
+      },
+    );
   });
 });

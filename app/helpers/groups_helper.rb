@@ -22,6 +22,9 @@ module GroupsHelper
       ldap_group_links#index
       hooks#index
       pipeline_quota#index
+      applications#index
+      applications#show
+      applications#edit
       packages_and_registries#index
     ]
   end
@@ -62,14 +65,6 @@ module GroupsHelper
     can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
   end
 
-  def group_open_issues_count(group)
-    if Feature.enabled?(:cached_sidebar_open_issues_count, group, default_enabled: :yaml)
-      cached_open_group_issues_count(group)
-    else
-      number_with_delimiter(group_issues_count(state: 'opened'))
-    end
-  end
-
   def group_issues_count(state:)
     IssuesFinder
       .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
@@ -77,18 +72,11 @@ module GroupsHelper
       .count
   end
 
-  def cached_open_group_issues_count(group)
-    count_service = Groups::OpenIssuesCountService
-    issues_count = count_service.new(group, current_user).count
-
-    if issues_count > count_service::CACHED_COUNT_THRESHOLD
-      ActiveSupport::NumberHelper
-        .number_to_human(
-          issues_count,
-          units: { thousand: 'k', million: 'm' }, precision: 1, significant: false, format: '%n%u'
-        )
+  def group_open_merge_requests_count(group)
+    if Feature.enabled?(:cached_sidebar_merge_requests_count, group, default_enabled: :yaml)
+      cached_issuables_count(@group, type: :merge_requests)
     else
-      number_with_delimiter(issues_count)
+      number_with_delimiter(group_merge_requests_count(state: 'opened'))
     end
   end
 
@@ -97,6 +85,14 @@ module GroupsHelper
       .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
       .execute
       .count
+  end
+
+  def cached_issuables_count(group, type: nil)
+    count_service = issuables_count_service_class(type)
+    return unless count_service.present?
+
+    issuables_count = count_service.new(group, current_user).count
+    format_issuables_count(count_service, issuables_count)
   end
 
   def group_dependency_proxy_url(group)
@@ -117,7 +113,9 @@ module GroupsHelper
     @has_group_title = true
     full_title = []
 
-    group.ancestors.reverse.each_with_index do |parent, index|
+    ancestors = group.ancestors.with_route
+
+    ancestors.reverse_each.with_index do |parent, index|
       if index > 0
         add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false, show_avatar: true, for_dropdown: true), location: :before)
       else
@@ -214,6 +212,10 @@ module GroupsHelper
       !multiple_members?(group)
   end
 
+  def render_setting_to_allow_project_access_token_creation?(group)
+    group.root? && current_user.can?(:admin_setting_to_allow_project_access_token_creation, group)
+  end
+
   def show_thanks_for_purchase_banner?
     params.key?(:purchased_quantity) && params[:purchased_quantity].to_i > 0
   end
@@ -302,6 +304,26 @@ module GroupsHelper
 
   def ancestor_locked_and_has_been_overridden(group)
     s_("GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup.").html_safe % { ancestor_group: ancestor_group(group) }
+  end
+
+  def issuables_count_service_class(type)
+    if type == :issues
+      Groups::OpenIssuesCountService
+    elsif type == :merge_requests
+      Groups::MergeRequestsCountService
+    end
+  end
+
+  def format_issuables_count(count_service, count)
+    if count > count_service::CACHED_COUNT_THRESHOLD
+      ActiveSupport::NumberHelper
+        .number_to_human(
+          count,
+          units: { thousand: 'k', million: 'm' }, precision: 1, significant: false, format: '%n%u'
+        )
+    else
+      number_with_delimiter(count)
+    end
   end
 end
 

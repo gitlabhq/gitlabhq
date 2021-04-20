@@ -5,32 +5,29 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@group.name} issues")
 
-- if group_issues_count(state: 'all') == 0
-  = render 'shared/empty_states/issues', project_select_button: true
+.top-area
+  = render 'shared/issuable/nav', type: :issues
+  .nav-controls
+    = render 'shared/issuable/feed_buttons'
+
+    - if @can_bulk_update
+      = render_if_exists 'shared/issuable/bulk_update_button', type: :issues
+
+    = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", type: :issues, with_feature_enabled: 'issues', with_shared: false, include_projects_in_subgroups: true
+
+= render 'shared/issuable/search_bar', type: :issues
+
+- if @can_bulk_update
+  = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues
+
+- if Feature.enabled?(:vue_issuables_list, @group) && @issues.to_a.any?
+  - if use_startup_call?
+    - add_page_startup_api_call(api_v4_groups_issues_path(id: @group.id, params: startup_call_params))
+  .js-issuables-list{ data: { endpoint: expose_url(api_v4_groups_issues_path(id: @group.id)),
+    'can-bulk-edit': @can_bulk_update.to_json,
+    'empty-state-meta': { svg_path: image_path('illustrations/issues.svg') },
+    'sort-key': @sort,
+    type: 'issues',
+    'scoped-labels-available': scoped_labels_available?(@group).to_json } }
 - else
-  .top-area
-    = render 'shared/issuable/nav', type: :issues
-    .nav-controls
-      = render 'shared/issuable/feed_buttons'
-
-      - if @can_bulk_update
-        = render_if_exists 'shared/issuable/bulk_update_button', type: :issues
-
-      = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", type: :issues, with_feature_enabled: 'issues', with_shared: false, include_projects_in_subgroups: true
-
-  = render 'shared/issuable/search_bar', type: :issues
-
-  - if @can_bulk_update
-    = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues
-
-  - if Feature.enabled?(:vue_issuables_list, @group)
-    - if use_startup_call?
-      - add_page_startup_api_call(api_v4_groups_issues_path(id: @group.id, params: startup_call_params))
-    .js-issuables-list{ data: { endpoint: expose_url(api_v4_groups_issues_path(id: @group.id)),
-      'can-bulk-edit': @can_bulk_update.to_json,
-      'empty-state-meta': { svg_path: image_path('illustrations/issues.svg') },
-      'sort-key': @sort,
-      type: 'issues',
-      'scoped-labels-available': scoped_labels_available?(@group).to_json } }
-  - else
-    = render 'shared/issues'
+  = render 'shared/issues', project_select_button: true

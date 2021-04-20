@@ -10,4 +10,5 @@ RSpec.describe 'layouts/nav/sidebar/_profile' do
   end
 
   it_behaves_like 'has nav sidebar'
+  it_behaves_like 'sidebar includes snowplow attributes', 'render', 'user_side_navigation', 'user_side_navigation'
 end

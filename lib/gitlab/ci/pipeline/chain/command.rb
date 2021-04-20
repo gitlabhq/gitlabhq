@@ -12,7 +12,7 @@ module Gitlab
           :seeds_block, :variables_attributes, :push_options,
           :chat_data, :allow_mirror_update, :bridge, :content, :dry_run,
           # These attributes are set by Chains during processing:
-          :config_content, :yaml_processor_result, :pipeline_seed
+          :config_content, :yaml_processor_result, :workflow_rules_result, :pipeline_seed
         ) do
           include Gitlab::Utils::StrongMemoize
 
@@ -84,7 +84,7 @@ module Gitlab
           end
 
           def metrics
-            @metrics ||= ::Gitlab::Ci::Pipeline::Metrics.new
+            @metrics ||= ::Gitlab::Ci::Pipeline::Metrics
           end
 
           def observe_creation_duration(duration)
@@ -95,6 +95,11 @@ module Gitlab
           def observe_pipeline_size(pipeline)
             metrics.pipeline_size_histogram
               .observe({ source: pipeline.source.to_s }, pipeline.total_size)
+          end
+
+          def increment_pipeline_failure_reason_counter(reason)
+            metrics.pipeline_failure_reason_counter
+              .increment(reason: (reason || :unknown_failure).to_s)
           end
 
           def dangling_build?

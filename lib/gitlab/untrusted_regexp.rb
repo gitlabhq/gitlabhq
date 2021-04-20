@@ -35,6 +35,10 @@ module Gitlab
       matches
     end
 
+    def match(text)
+      scan_regexp.match(text)
+    end
+
     def match?(text)
       text.present? && scan(text).present?
     end

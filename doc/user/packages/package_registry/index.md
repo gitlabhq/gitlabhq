@@ -19,7 +19,8 @@ You can view packages for your project or group.
 1. Go to the project or group.
 1. Go to **Packages & Registries > Package Registry**.
 
-You can search, sort, and filter packages on this page.
+You can search, sort, and filter packages on this page. You can share your search results by copying
+and pasting the URL from your browser.
 
 You can also find helpful code snippets for configuring your package manager or installing a given package.
 

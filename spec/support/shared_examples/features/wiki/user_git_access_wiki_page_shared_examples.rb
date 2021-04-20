@@ -13,7 +13,7 @@ RSpec.shared_examples 'User views Git access wiki page' do
 
     expect(page).to have_text("Clone repository #{wiki.full_path}")
 
-    within('.git-clone-holder') do
+    within('.js-git-clone-holder') do
       expect(page).to have_css('#clone-dropdown', text: 'HTTP')
       expect(page).to have_field('clone_url', with: wiki.http_url_to_repo)
 

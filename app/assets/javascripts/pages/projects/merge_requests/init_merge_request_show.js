@@ -5,21 +5,33 @@ import initPipelines from '~/commit/pipelines/pipelines_bundle';
 import initIssuableSidebar from '~/init_issuable_sidebar';
 import initInviteMemberModal from '~/invite_member/init_invite_member_modal';
 import initInviteMemberTrigger from '~/invite_member/init_invite_member_trigger';
+import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
+import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import StatusBox from '~/merge_request/components/status_box.vue';
 import initSourcegraph from '~/sourcegraph';
 import ZenMode from '~/zen_mode';
 
 export default function initMergeRequestShow() {
+  const awardEmojiEl = document.getElementById('js-vue-awards-block');
+
   new ZenMode(); // eslint-disable-line no-new
   initIssuableSidebar();
   initPipelines();
   new ShortcutsIssuable(true); // eslint-disable-line no-new
   handleLocationHash();
   initSourcegraph();
-  loadAwardsHandler();
+  if (awardEmojiEl) {
+    import('~/emoji/awards_app')
+      .then((m) => m.default(awardEmojiEl))
+      .catch(() => {});
+  } else {
+    loadAwardsHandler();
+  }
   initInviteMemberModal();
   initInviteMemberTrigger();
+  initInviteMembersModal();
+  initInviteMembersTrigger();
 
   const el = document.querySelector('.js-mr-status-box');
   // eslint-disable-next-line no-new

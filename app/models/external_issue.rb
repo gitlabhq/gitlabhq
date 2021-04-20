@@ -6,7 +6,8 @@ class ExternalIssue
   attr_reader :project
 
   def initialize(issue_identifier, project)
-    @issue_identifier, @project = issue_identifier, project
+    @issue_identifier = issue_identifier
+    @project = project
   end
 
   def to_s

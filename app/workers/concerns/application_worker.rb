@@ -18,7 +18,7 @@ module ApplicationWorker
     set_queue
 
     def structured_payload(payload = {})
-      context = Labkit::Context.current.to_h.merge(
+      context = Gitlab::ApplicationContext.current.merge(
         'class' => self.class.name,
         'job_status' => 'running',
         'queue' => self.class.queue,

@@ -13,7 +13,7 @@ module QA
             base.class_eval do
               include QA::Page::Project::SubMenus::Common
 
-              view 'app/views/layouts/nav/sidebar/_project.html.haml' do
+              view 'app/views/layouts/nav/sidebar/_project_menus.html.haml' do
                 element :issue_boards_link
                 element :issues_item
                 element :labels_link

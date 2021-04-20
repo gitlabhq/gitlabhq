@@ -8,7 +8,7 @@
   .actions
     = form_tag profile_chat_names_path, method: :post do
       = hidden_field_tag :token, @chat_name_token.token
-      = submit_tag _("Authorize"), class: "gl-button btn btn-success wide float-left"
+      = submit_tag _("Authorize"), class: "gl-button btn btn-confirm wide float-left"
     = form_tag deny_profile_chat_names_path, method: :delete do
       = hidden_field_tag :token, @chat_name_token.token
       = submit_tag _("Deny"), class: "gl-button btn btn-danger gl-ml-3"

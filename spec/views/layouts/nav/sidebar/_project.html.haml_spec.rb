@@ -5,15 +5,127 @@ require 'spec_helper'
 RSpec.describe 'layouts/nav/sidebar/_project' do
   let_it_be_with_reload(:project) { create(:project, :repository) }
 
+  let(:user) { project.owner }
+  let(:current_ref) { 'master' }
+
   before do
     assign(:project, project)
     assign(:repository, project.repository)
-    allow(view).to receive(:current_ref).and_return('master')
 
+    allow(view).to receive(:current_ref).and_return(current_ref)
     allow(view).to receive(:can?).and_return(true)
+    allow(view).to receive(:current_user).and_return(user)
   end
 
   it_behaves_like 'has nav sidebar'
+
+  describe 'Project Overview' do
+    it 'has a link to the project path' do
+      render
+
+      expect(rendered).to have_link('Project overview', href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+      expect(rendered).to have_selector('[aria-label="Project overview"]')
+    end
+
+    describe 'Details' do
+      it 'has a link to the projects path' do
+        render
+
+        expect(rendered).to have_link('Details', href: project_path(project), class: 'shortcuts-project')
+        expect(rendered).to have_selector('[aria-label="Project details"]')
+      end
+    end
+
+    describe 'Activity' do
+      it 'has a link to the project activity path' do
+        render
+
+        expect(rendered).to have_link('Activity', href: activity_project_path(project), class: 'shortcuts-project-activity')
+      end
+    end
+
+    describe 'Releases' do
+      it 'has a link to the project releases path' do
+        render
+
+        expect(rendered).to have_link('Releases', href: project_releases_path(project), class: 'shortcuts-project-releases')
+      end
+    end
+  end
+
+  describe 'Learn GitLab' do
+    it 'has a link to the learn GitLab experiment' do
+      allow(view).to receive(:learn_gitlab_experiment_enabled?).and_return(true)
+
+      render
+
+      expect(rendered).to have_link('Learn GitLab', href: project_learn_gitlab_path(project))
+    end
+  end
+
+  describe 'Repository' do
+    it 'has a link to the project tree path' do
+      render
+
+      expect(rendered).to have_link('Repository', href: project_tree_path(project, current_ref), class: 'shortcuts-tree')
+    end
+
+    describe 'Files' do
+      it 'has a link to the project tree path' do
+        render
+
+        expect(rendered).to have_link('Files', href: project_tree_path(project, current_ref))
+      end
+    end
+
+    describe 'Commits' do
+      it 'has a link to the project commits path' do
+        render
+
+        expect(rendered).to have_link('Commits', href: project_commits_path(project, current_ref), id: 'js-onboarding-commits-link')
+      end
+    end
+
+    describe 'Branches' do
+      it 'has a link to the project branches path' do
+        render
+
+        expect(rendered).to have_link('Branches', href: project_branches_path(project), id: 'js-onboarding-branches-link')
+      end
+    end
+
+    describe 'Tags' do
+      it 'has a link to the project tags path' do
+        render
+
+        expect(rendered).to have_link('Tags', href: project_tags_path(project))
+      end
+    end
+
+    describe 'Contributors' do
+      it 'has a link to the project contributors path' do
+        render
+
+        expect(rendered).to have_link('Contributors', href: project_graph_path(project, current_ref))
+      end
+    end
+
+    describe 'Graph' do
+      it 'has a link to the project graph path' do
+        render
+
+        expect(rendered).to have_link('Graph', href: project_network_path(project, current_ref))
+      end
+    end
+
+    describe 'Compare' do
+      it 'has a link to the project compare path' do
+        render
+
+        expect(rendered).to have_link('Compare', href: project_compare_index_path(project, from: project.repository.root_ref, to: current_ref))
+      end
+    end
+  end
 
   describe 'issue boards' do
     it 'has board tab' do
@@ -99,19 +211,11 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
-  describe 'releases entry' do
-    it 'renders releases link' do
-      render
-
-      expect(rendered).to have_link('Releases', href: project_releases_path(project))
-    end
-  end
-
   describe 'wiki entry tab' do
     let(:can_read_wiki) { true }
 
     before do
-      allow(view).to receive(:can?).with(nil, :read_wiki, project).and_return(can_read_wiki)
+      allow(view).to receive(:can?).with(user, :read_wiki, project).and_return(can_read_wiki)
     end
 
     describe 'when wiki is enabled' do
@@ -146,7 +250,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       it 'shows the external wiki tab with the external wiki service link' do
         render
 
-        expect(rendered).to have_link('External Wiki', href: properties['external_wiki_url'])
+        expect(rendered).to have_link('External wiki', href: properties['external_wiki_url'])
       end
     end
 
@@ -156,7 +260,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       it 'does not show the external wiki tab' do
         render
 
-        expect(rendered).not_to have_link('External Wiki')
+        expect(rendered).not_to have_link('External wiki')
       end
     end
   end
@@ -299,7 +403,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     let(:read_cycle_analytics) { true }
 
     before do
-      allow(view).to receive(:can?).with(nil, :read_cycle_analytics, project).and_return(read_cycle_analytics)
+      allow(view).to receive(:can?).with(user, :read_cycle_analytics, project).and_return(read_cycle_analytics)
     end
 
     describe 'when value stream analytics is enabled' do
@@ -346,4 +450,6 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       end
     end
   end
+
+  it_behaves_like 'sidebar includes snowplow attributes', 'render', 'projects_side_navigation', 'projects_side_navigation'
 end

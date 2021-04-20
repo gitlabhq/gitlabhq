@@ -1,0 +1,5 @@
+---
+title: Fix updating GraphQL boards cards on assignees update
+merge_request: 57687
+author:
+type: fixed

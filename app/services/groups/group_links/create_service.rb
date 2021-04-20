@@ -2,7 +2,7 @@
 
 module Groups
   module GroupLinks
-    class CreateService < BaseService
+    class CreateService < Groups::BaseService
       def execute(shared_group)
         unless group && shared_group &&
                can?(current_user, :admin_group_member, shared_group) &&

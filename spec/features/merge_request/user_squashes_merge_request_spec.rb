@@ -92,7 +92,7 @@ RSpec.describe 'User squashes a merge request', :js do
     before do
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: source_branch })
       check 'merge_request[squash]'
-      click_on 'Submit merge request'
+      click_on 'Create merge request'
       wait_for_requests
     end
 
@@ -121,7 +121,7 @@ RSpec.describe 'User squashes a merge request', :js do
   context 'when squash is not enabled on merge request creation', :sidekiq_might_not_need_inline do
     before do
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: source_branch })
-      click_on 'Submit merge request'
+      click_on 'Create merge request'
       wait_for_requests
     end
 

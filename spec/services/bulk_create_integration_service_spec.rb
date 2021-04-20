@@ -30,7 +30,7 @@ RSpec.describe BulkCreateIntegrationService do
         described_class.new(integration, batch, association).execute
 
         expect(created_integration.reload.data_fields.attributes.except(*excluded_attributes))
-          .to eq(integration.data_fields.attributes.except(*excluded_attributes))
+          .to eq(integration.reload.data_fields.attributes.except(*excluded_attributes))
       end
     end
   end

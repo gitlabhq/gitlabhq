@@ -20,9 +20,7 @@ class ProtectedBranchesFinder
 
   def execute
     protected_branches = project.limited_protected_branches(LIMIT)
-    protected_branches = by_name(protected_branches)
-
-    protected_branches
+    by_name(protected_branches)
   end
 
   private

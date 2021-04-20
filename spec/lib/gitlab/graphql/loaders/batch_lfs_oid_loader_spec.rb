@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Graphql::Loaders::BatchLfsOidLoader do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }
+
   let(:repository) { project.repository }
   let(:blob) { Gitlab::Graphql::Representation::TreeEntry.new(repository.blob_at('master', 'files/lfs/lfs_object.iso'), repository) }
   let(:otherblob) { Gitlab::Graphql::Representation::TreeEntry.new(repository.blob_at('master', 'README'), repository) }

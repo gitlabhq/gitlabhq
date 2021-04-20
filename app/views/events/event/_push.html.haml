@@ -18,7 +18,7 @@
 
 - if event.push_with_commits?
   .event-body
-    %ul.content-list.event_commits
+    %ul.content-list.event-commits
       = render "events/commit", project: project, event: event
 
       - create_mr = event.new_ref? && create_mr_button?(from: project.default_branch, to: event.ref_name, source_project: project, target_project: project) && event.authored_by?(current_user)
@@ -46,4 +46,4 @@
       - elsif create_mr
         %li.commits-stat
           = link_to create_mr_path do
-            Create Merge Request
+            Create merge request

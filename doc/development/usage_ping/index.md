@@ -13,7 +13,7 @@ This guide describes Usage Ping's purpose and how it's implemented.
 For more information about Product Intelligence, see:
 
 - [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
-- [Snowplow Guide](../snowplow.md)
+- [Snowplow Guide](../snowplow/index.md)
 
 More links:
 
@@ -25,7 +25,7 @@ More links:
 ## What is Usage Ping?
 
 - GitLab sends a weekly payload containing usage data to GitLab Inc. Usage Ping provides high-level data to help our product, support, and sales teams. It does not send any project names, usernames, or any other specific data. The information from the usage ping is not anonymous, it is linked to the hostname of the instance. Sending usage ping is optional, and any instance can disable analytics.
-- The usage data is primarily composed of row counts for different tables in the instance’s database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features in the product. In addition to counts, other facts
+- The usage data is primarily composed of row counts for different tables in the instance's database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features in the product. In addition to counts, other facts
     that help us classify and understand GitLab installations are collected.
 - Usage ping is important to GitLab as we use it to calculate our Stage Monthly Active Users (SMAU) which helps us measure the success of our stages and features.
 - While usage ping is enabled, GitLab gathers data from the other instances and can show usage statistics of your instance to your users.
@@ -33,8 +33,8 @@ More links:
 ### Why should we enable Usage Ping?
 
 - The main purpose of Usage Ping is to build a better GitLab. Data about how GitLab is used is collected to better understand feature/stage adoption and usage, which helps us understand how GitLab is adding value and helps our team better understand the reasons why people use GitLab and with this knowledge we're able to make better product decisions.
-- As a benefit of having the usage ping active, GitLab lets you analyze the users’ activities over time of your GitLab installation.
-- As a benefit of having the usage ping active, GitLab provides you with The DevOps Report,which gives you an overview of your entire instance’s adoption of Concurrent DevOps from planning to monitoring.
+- As a benefit of having the usage ping active, GitLab lets you analyze the users' activities over time of your GitLab installation.
+- As a benefit of having the usage ping active, GitLab provides you with The DevOps Report,which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.
 - You get better, more proactive support. (assuming that our TAMs and support organization used the data to deliver more value)
 - You get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
 - You get a report that illustrates how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
@@ -49,7 +49,9 @@ More links:
 
 You can view the exact JSON payload sent to GitLab Inc. in the administration panel. To view the payload:
 
-1. Navigate to **Admin Area > Settings > Metrics and profiling**.
+1. Sign in as a user with [Administrator](../../user/permissions.md) permissions.
+1. In the top navigation bar, click **(admin)** **Admin Area**.
+1. In the left sidebar, go to **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. Click the **Preview payload** button.
 
@@ -57,9 +59,17 @@ For an example payload, see [Example Usage Ping payload](#example-usage-ping-pay
 
 ## Disable Usage Ping
 
-To disable Usage Ping in the GitLab UI, go to the **Settings** page of your administration panel and uncheck the **Usage Ping** checkbox.
+To disable Usage Ping in the GitLab UI:
 
-To disable Usage Ping and prevent it from being configured in the future through the administration panel, Omnibus installs can set the following in [`gitlab.rb`](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options):
+1. Sign in as a user with [Administrator](../../user/permissions.md) permissions.
+1. In the top navigation bar, click **(admin)** **Admin Area**.
+1. In the left sidebar, go to **Settings > Metrics and profiling**.
+1. Expand the **Usage statistics** section.
+1. Clear the **Usage Ping** checkbox and click **Save changes**.
+
+To disable Usage Ping and prevent it from being configured in the future through
+the administration panel, Omnibus installs can set the following in
+[`gitlab.rb`](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options):
 
 ```ruby
 gitlab_rails['usage_ping_enabled'] = false
@@ -204,11 +214,12 @@ For GitLab.com, there are extremely large tables with 15 second query timeouts, 
 | `merge_request_diff_files`   | 1082                   |
 | `events`                     | 514                    |
 
-We have several batch counting methods available:
+The following operation methods are available for your use:
 
 - [Ordinary Batch Counters](#ordinary-batch-counters)
 - [Distinct Batch Counters](#distinct-batch-counters)
-- [Sum Batch Counters](#sum-batch-counters)
+- [Sum Batch Operation](#sum-batch-operation)
+- [Add Operation](#add-operation)
 - [Estimated Batch Counters](#estimated-batch-counters)
 
 Batch counting requires indexes on columns to calculate max, min, and range queries. In some cases,
@@ -266,7 +277,7 @@ distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::
 distinct_count(::Clusters::Applications::CertManager.where(time_period).available.joins(:cluster), 'clusters.user_id')
 ```
 
-### Sum Batch Counters
+### Sum Batch Operation
 
 Handles `ActiveRecord::StatementInvalid` error
 
@@ -305,6 +316,25 @@ distinct_count(Project.group(:visibility_level), :creator_id)
 
 sum(Issue.group(:state_id), :weight))
 # returns => {1=>3542, 2=>6820}
+```
+
+### Add Operation
+
+Handles `StandardError`.
+
+Returns `-1` if any of the arguments are `-1`.
+
+Sum the values given as parameters.
+
+Method: `add(*args)`
+
+Examples
+
+```ruby
+project_imports = distinct_count(::Project.where.not(import_type: nil), :creator_id)
+bulk_imports = distinct_count(::BulkImport, :user_id)
+
+ add(project_imports, bulk_imports)
 ```
 
 ### Estimated Batch Counters
@@ -467,6 +497,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      redis_slot: compliance
      expiry: 42  # 6 weeks
      aggregation: weekly
+     feature_flag: usage_data_i_compliance_credential_inventory
    ```
 
    Keys:
@@ -498,17 +529,18 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      aggregation.
    - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.
      Aggregation on a `daily` basis does not pull more fine grained data.
-   - `feature_flag`: optional `default_enabled: :yaml`. If no feature flag is set then the tracking is enabled. For details, see our [GitLab internal Feature flags](../feature_flags/index.md) documentation. The feature flags are owned by the group adding the event tracking.
+   - `feature_flag`: optional `default_enabled: :yaml`. If no feature flag is set then the tracking is enabled. One feature flag can be used for multiple events. For details, see our [GitLab internal Feature flags](../feature_flags/index.md) documentation. The feature flags are owned by the group adding the event tracking.
 
 Use one of the following methods to track events:
 
-1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, if: nil)`.
+1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, if: nil, &block)`.
 
    Arguments:
 
    - `controller_actions`: controller actions we want to track.
    - `name`: event name.
    - `if`: optional custom conditions, using the same format as with Rails callbacks.
+   - `&block`: optional block that computes and returns the `custom_id` that we want to track. This will override the `visitor_id`.
 
    Example usage:
 
@@ -535,8 +567,6 @@ Use one of the following methods to track events:
    ```
 
 1. Track event in API using `increment_unique_values(event_name, values)` helper method.
-
-   To be able to track the event, Usage Ping must be enabled and the event feature `usage_data_<event_name>` must be enabled.
 
    Arguments:
 
@@ -581,10 +611,6 @@ Use one of the following methods to track events:
 
    API requests are protected by checking for a valid CSRF token.
 
-   To increment the values, the related feature `usage_data_<event_name>` should be
-   set to `default_enabled: true`. For more information, see
-   [Feature flags in development of GitLab](../feature_flags/index.md).
-
    ```plaintext
    POST /usage_data/increment_unique_users
    ```
@@ -608,8 +634,6 @@ Use one of the following methods to track events:
 
    Usage Data API is behind  `usage_data_api` feature flag which, as of GitLab 13.7, is
    now set to `default_enabled: true`.
-
-   Each event tracked using Usage Data API is behind a feature flag `usage_data_#{event_name}` which should be `default_enabled: true`
 
    ```javascript
    import api from '~/api';
@@ -784,6 +808,16 @@ end
 Please refer to [the `PrometheusClient` definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/prometheus_client.rb)
 for how to use its API to query for data.
 
+### Fallback values for UsagePing
+
+We return fallback values in these cases:
+
+| Case                        | Value |
+|-----------------------------|-------|
+| Deprecated Metric           | -1000 |
+| Timeouts, general failures  | -1    |
+| Standard errors in counters | -2    |
+
 ## Developing and testing Usage Ping
 
 ### 1. Naming and placing the metrics
@@ -827,7 +861,7 @@ pry(main)> Gitlab::UsageData.count(User.active)
 Paste the SQL query into `#database-lab` to see how the query performs at scale.
 
 - `#database-lab` is a Slack channel which uses a production-sized environment to test your queries.
-- GitLab.com’s production database has a 15 second timeout.
+- GitLab.com's production database has a 15 second timeout.
 - Any single query must stay below [1 second execution time](../query_performance.md#timing-guidelines-for-queries) with cold caches.
 - Add a specialized index on columns involved to reduce the execution time.
 
@@ -875,18 +909,56 @@ On GitLab.com, we have DangerBot setup to monitor Product Intelligence related f
 
 On GitLab.com, the Product Intelligence team regularly monitors Usage Ping. They may alert you that your metrics need further optimization to run quicker and with greater success. You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "SaaS" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
 
-### Optional: Test Prometheus based Usage Ping
+### Usage Ping local setup
 
-If the data submitted includes metrics [queried from Prometheus](#prometheus-queries) that you would like to inspect and verify,
-then you need to ensure that a Prometheus server is running locally, and that furthermore the respective GitLab components
-are exporting metrics to it. If you do not need to test data coming from Prometheus, no further action
+To set up Usage Ping locally, you must:
+
+1. [Set up local repositories]#(set-up-local-repositories)
+1. [Test local setup](#test-local-setup)
+1. (Optional) [Test Prometheus-based usage ping](#test-prometheus-based-usage-ping)
+
+#### Set up local repositories
+
+1. Clone and start [GitLab](https://gitlab.com/gitlab-org/gitlab-development-kit).
+1. Clone and start [Versions Application](https://gitlab.com/gitlab-services/version-gitlab-com).
+   Make sure to run `docker-compose up` to start a PostgreSQL and Redis instance.
+1. Point GitLab to the Versions Application endpoint instead of the default endpoint:
+   1. Open [submit_usage_ping_service.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L4) in your local and modified `PRODUCTION_URL`.
+   1. Set it to the local Versions Application URL `http://localhost:3000/usage_data`.
+
+#### Test local setup
+
+1. Using the `gitlab` Rails console, manually trigger a usage ping:
+
+   ```ruby
+   SubmitUsagePingService.new.execute
+   ```
+
+1. Use the `versions` Rails console to check the usage ping was successfully received,
+   parsed, and stored in the Versions database:
+
+   ```ruby
+   UsageData.last
+   ```
+
+### Test Prometheus-based usage ping
+
+If the data submitted includes metrics [queried from Prometheus](#prometheus-queries)
+you want to inspect and verify, you must:
+
+- Ensure that a Prometheus server is running locally.
+- Ensure the respective GitLab components are exporting metrics to the Prometheus server.
+
+If you do not need to test data coming from Prometheus, no further action
 is necessary. Usage Ping should degrade gracefully in the absence of a running Prometheus server.
 
-There are three kinds of components that may export data to Prometheus, and which are included in Usage Ping:
+Three kinds of components may export data to Prometheus, and are included in Usage Ping:
 
-- [`node_exporter`](https://github.com/prometheus/node_exporter) - Exports node metrics from the host machine
-- [`gitlab-exporter`](https://gitlab.com/gitlab-org/gitlab-exporter) - Exports process metrics from various GitLab components
-- various GitLab services such as Sidekiq and the Rails server that export their own metrics
+- [`node_exporter`](https://github.com/prometheus/node_exporter): Exports node metrics
+  from the host machine.
+- [`gitlab-exporter`](https://gitlab.com/gitlab-org/gitlab-exporter): Exports process metrics
+  from various GitLab components.
+- Other various GitLab services, such as Sidekiq and the Rails server, which export their own metrics.
 
 #### Test with an Omnibus container
 
@@ -928,8 +1000,8 @@ appear to be associated to any of the services running, because they all appear 
 WARNING:
 This feature is intended solely for internal GitLab use.
 
-To add data for aggregated metrics into Usage Ping payload you should add corresponding definition at [`lib/gitlab/usage_data_counters/aggregated_metrics/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics/) for metrics available at Community Edition and at [`ee/lib/gitlab/usage_data_counters/aggregated_metrics/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/usage_data_counters/aggregated_metrics/) for Enterprise Edition ones.
- 
+To add data for aggregated metrics into Usage Ping payload you should add corresponding definition at [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/) for metrics available at Community Edition and at [`ee/config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/aggregates/) for Enterprise Edition ones.
+
 Each aggregate definition includes following parts:
 
 - `name`: Unique name under which the aggregate metric is added to the Usage Ping payload.
@@ -957,7 +1029,10 @@ Example aggregated metric entries:
 ```yaml
 - name: example_metrics_union
   operator: OR
-  events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+  events:
+    - 'i_search_total'
+    - 'i_search_advanced'
+    - 'i_search_paid'
   source: redis
   time_frame:
     - 7d
@@ -968,7 +1043,9 @@ Example aggregated metric entries:
   time_frame:
     - 28d
     - all
-  events: ['dependency_scanning_pipeline_all_time', 'container_scanning_pipeline_all_time']
+  events:
+    - 'dependency_scanning_pipeline_all_time'
+    - 'container_scanning_pipeline_all_time'
   feature_flag: example_aggregated_metric
 ```
 
@@ -993,7 +1070,7 @@ Aggregated metrics collected in `7d` and `28d` time frames are added into Usage 
 }
 ```
 
-Aggregated metrics for `all` time frame are present in the `count` top level key, with the `aggregate_` prefix added to their name. 
+Aggregated metrics for `all` time frame are present in the `count` top level key, with the `aggregate_` prefix added to their name.
 
 For example:
 
@@ -1001,7 +1078,7 @@ For example:
 
 Becomes:
 
-`counts.aggregate_example_metrics_intersection` 
+`counts.aggregate_example_metrics_intersection`
 
 ```ruby
 {
@@ -1085,7 +1162,7 @@ end
 #### Add new aggregated metric definition
 
 After all metrics are persisted, you can add an aggregated metric definition at
-[`aggregated_metrics/`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics/).
+[`aggregated_metrics/`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/).
 
 To declare the aggregate of metrics collected with [Estimated Batch Counters](#estimated-batch-counters),
 you must fulfill the following requirements:
@@ -1099,7 +1176,9 @@ Example definition:
 - name: example_metrics_intersection_database_sourced
   operator: AND
   source: database
-  events: ['dependency_scanning_pipeline', 'container_scanning_pipeline']
+  events:
+    - 'dependency_scanning_pipeline'
+    - 'container_scanning_pipeline'
   time_frame:
     - 28d
     - all
@@ -1334,4 +1413,24 @@ bin/rake gitlab:usage_data:dump_sql_in_yaml > ~/Desktop/usage-metrics-2020-09-02
 
 ## Generating and troubleshooting usage ping
 
-To get a usage ping, or to troubleshoot caching issues on your GitLab instance, please follow [instructions to generate usage ping](../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#generate-usage-ping).
+This activity is to be done via a detached screen session on a remote server.
+
+Before you begin these steps, make sure the key is added to the SSH agent locally
+with the `ssh-add` command.
+
+### Triggering
+
+1. Connect to bastion with agent forwarding: `$ ssh -A lb-bastion.gprd.gitlab.com`
+1. Create named screen: `$ screen -S <username>_usage_ping_<date>`
+1. Connect to console host: `$ ssh $USER-rails@console-01-sv-gprd.c.gitlab-production.internal`
+1. Run `SubmitUsagePingService.new.execute`
+1. Detach from screen: `ctrl + a, ctrl + d`
+1. Exit from bastion: `$ exit`
+
+### Verification (After approx 30 hours)
+
+1. Reconnect to bastion: `$ ssh -A lb-bastion.gprd.gitlab.com`
+1. Find your screen session: `$ screen -ls`
+1. Attach to your screen session: `$ screen -x 14226.mwawrzyniak_usage_ping_2021_01_22`
+1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
+1. Check the when the payload was sent: `RawUsageData.last.sent_at`

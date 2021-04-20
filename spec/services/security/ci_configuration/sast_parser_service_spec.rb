@@ -12,8 +12,8 @@ RSpec.describe Security::CiConfiguration::SastParserService do
     let(:sast_analyzer_image_tag) { configuration['global'][2] }
     let(:sast_pipeline_stage) { configuration['pipeline'][0] }
     let(:sast_search_max_depth) { configuration['pipeline'][1] }
-    let(:brakeman) { configuration['analyzers'][0] }
-    let(:bandit) { configuration['analyzers'][1] }
+    let(:bandit) { configuration['analyzers'][0] }
+    let(:brakeman) { configuration['analyzers'][1] }
     let(:sast_brakeman_level) { brakeman['variables'][0] }
 
     it 'parses the configuration for SAST' do

@@ -1,0 +1,6 @@
+---
+title: Hydrate some of the variables in the Overview tab suggestion commit placeholder
+  by switching the Diffs data source for it
+merge_request: 57419
+author:
+type: changed

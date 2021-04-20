@@ -26,7 +26,7 @@ module Packages
               section[field] += line[1..] unless paragraph_separator?(line)
             elsif match = match_section_line(line)
               section_name = match[:name] if section_name.nil?
-              field = match[:field].to_sym
+              field = match[:field]
 
               raise InvalidDebian822Error, "Duplicate field '#{field}' in section '#{section_name}'" if section.include?(field)
 

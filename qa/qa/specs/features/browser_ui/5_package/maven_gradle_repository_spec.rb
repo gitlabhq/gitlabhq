@@ -23,6 +23,13 @@ module QA
         end
       end
 
+      let(:package) do
+        Resource::Package.new.tap do |package|
+          package.name = package_name
+          package.project = project
+        end
+      end
+
       let!(:runner) do
         Resource::Runner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"
@@ -39,6 +46,7 @@ module QA
 
       after do
         runner.remove_via_api!
+        package.remove_via_api!
       end
 
       it 'publishes a maven package via gradle', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1074' do

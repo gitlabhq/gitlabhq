@@ -78,6 +78,10 @@ $white-gc-bg: #eaf2f5;
 }
 
 // Line numbers
+.file-line-num {
+  @include line-number-link($black-transparent);
+}
+
 .line-numbers,
 .diff-line-num {
   background-color: $gray-light;

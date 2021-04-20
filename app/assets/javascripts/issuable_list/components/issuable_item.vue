@@ -65,6 +65,9 @@ export default {
     labels() {
       return this.issuable.labels?.nodes || this.issuable.labels || [];
     },
+    labelIdsString() {
+      return JSON.stringify(this.labels.map((label) => label.id));
+    },
     assignees() {
       return this.issuable.assignees || [];
     },
@@ -149,12 +152,13 @@ export default {
 </script>
 
 <template>
-  <li class="issue gl-px-5!">
+  <li :id="`issuable_${issuable.id}`" class="issue gl-px-5!" :data-labels="labelIdsString">
     <div class="issuable-info-container">
       <div v-if="showCheckbox" class="issue-check">
         <gl-form-checkbox
           class="gl-mr-0"
           :checked="checked"
+          :data-id="issuable.id"
           @input="$emit('checked-input', $event)"
         />
       </div>

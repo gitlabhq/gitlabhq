@@ -48,7 +48,7 @@ export default {
     }"
   >
     <gl-link
-      v-gl-tooltip
+      v-gl-tooltip:tooltip-container.left
       :href="job.status.details_path"
       :title="tooltipText"
       class="js-job-link gl-display-flex gl-align-items-center"

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::AlertManagement::Payload::ManagedPrometheus do
   let_it_be(:project) { create(:project) }
+
   let(:raw_payload) { {} }
 
   let(:parsed_payload) { described_class.new(project: project, payload: raw_payload) }
@@ -136,6 +137,7 @@ RSpec.describe Gitlab::AlertManagement::Payload::ManagedPrometheus do
 
     context 'with sufficient fallback info' do
       let_it_be(:environment) { create(:environment, project: project, name: 'production') }
+
       let(:raw_payload) do
         {
           'labels' => {

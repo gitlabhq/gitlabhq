@@ -30,23 +30,17 @@ describe('Pipelines Table', () => {
     return pipelines.find((p) => p.user !== null && p.commit !== null);
   };
 
-  const createComponent = (props = {}, flagState = false) => {
+  const createComponent = (props = {}) => {
     wrapper = extendedWrapper(
       mount(PipelinesTable, {
         propsData: {
           ...defaultProps,
           ...props,
         },
-        provide: {
-          glFeatures: {
-            newPipelinesTable: flagState,
-          },
-        },
       }),
     );
   };
 
-  const findRows = () => wrapper.findAll('.commit.gl-responsive-table-row');
   const findGlTable = () => wrapper.findComponent(GlTable);
   const findStatusBadge = () => wrapper.findComponent(PipelinesStatusBadge);
   const findPipelineInfo = () => wrapper.findComponent(PipelineUrl);
@@ -56,8 +50,7 @@ describe('Pipelines Table', () => {
   const findTimeAgo = () => wrapper.findComponent(PipelinesTimeago);
   const findActions = () => wrapper.findComponent(PipelineOperations);
 
-  const findLegacyTable = () => wrapper.findByTestId('legacy-ci-table');
-  const findTableRows = () => wrapper.findAll('[data-testid="pipeline-table-row"]');
+  const findTableRows = () => wrapper.findAllByTestId('pipeline-table-row');
   const findStatusTh = () => wrapper.findByTestId('status-th');
   const findPipelineTh = () => wrapper.findByTestId('pipeline-th');
   const findTriggererTh = () => wrapper.findByTestId('triggerer-th');
@@ -75,52 +68,13 @@ describe('Pipelines Table', () => {
     wrapper = null;
   });
 
-  describe('table with feature flag off', () => {
-    describe('renders the table correctly', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('should render a table', () => {
-        expect(wrapper.classes()).toContain('ci-table');
-      });
-
-      it('should render table head with correct columns', () => {
-        expect(wrapper.find('.table-section.js-pipeline-status').text()).toEqual('Status');
-
-        expect(wrapper.find('.table-section.js-pipeline-info').text()).toEqual('Pipeline');
-
-        expect(wrapper.find('.table-section.js-pipeline-commit').text()).toEqual('Commit');
-
-        expect(wrapper.find('.table-section.js-pipeline-stages').text()).toEqual('Stages');
-      });
-    });
-
-    describe('without data', () => {
-      it('should render an empty table', () => {
-        createComponent();
-
-        expect(findRows()).toHaveLength(0);
-      });
-    });
-
-    describe('with data', () => {
-      it('should render rows', () => {
-        createComponent({ pipelines: [pipeline], viewType: 'root' });
-
-        expect(findRows()).toHaveLength(1);
-      });
-    });
-  });
-
-  describe('table with feature flag on', () => {
+  describe('Pipelines Table', () => {
     beforeEach(() => {
-      createComponent({ pipelines: [pipeline], viewType: 'root' }, true);
+      createComponent({ pipelines: [pipeline], viewType: 'root' });
     });
 
-    it('displays new table', () => {
+    it('displays table', () => {
       expect(findGlTable().exists()).toBe(true);
-      expect(findLegacyTable().exists()).toBe(false);
     });
 
     it('should render table head with correct columns', () => {

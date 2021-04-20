@@ -1,34 +1,41 @@
 <script>
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import actionsMixin from '../mixins/line_conflict_actions';
+import { mapActions } from 'vuex';
+import syntaxHighlight from '~/syntax_highlight';
+import { SYNTAX_HIGHLIGHT_CLASS } from '../constants';
 import utilsMixin from '../mixins/line_conflict_utils';
 
 export default {
   directives: {
     SafeHtml,
   },
-  mixins: [utilsMixin, actionsMixin],
+  mixins: [utilsMixin],
+  SYNTAX_HIGHLIGHT_CLASS,
   props: {
     file: {
       type: Object,
       required: true,
     },
   },
+  mounted() {
+    syntaxHighlight(document.querySelectorAll(`.${SYNTAX_HIGHLIGHT_CLASS}`));
+  },
+  methods: {
+    ...mapActions(['handleSelected']),
+  },
 };
 </script>
 <template>
-  <table class="diff-wrap-lines code code-commit js-syntax-highlight">
-    <tr
-      v-for="line in file.inlineLines"
-      :key="(line.isHeader ? line.id : line.new_line) + line.richText"
-      class="line_holder diff-inline"
-    >
+  <table :class="['diff-wrap-lines code code-commit', $options.SYNTAX_HIGHLIGHT_CLASS]">
+    <!-- Unfortunately there isn't a good key for these sections -->
+    <!-- eslint-disable vue/require-v-for-key -->
+    <tr v-for="line in file.inlineLines" class="line_holder diff-inline">
       <template v-if="line.isHeader">
         <td :class="lineCssClass(line)" class="diff-line-num header"></td>
         <td :class="lineCssClass(line)" class="diff-line-num header"></td>
         <td :class="lineCssClass(line)" class="line_content header">
           <strong>{{ line.richText }}</strong>
-          <button class="btn" @click="handleSelected(file, line.id, line.section)">
+          <button class="btn" @click="handleSelected({ file, line })">
             {{ line.buttonTitle }}
           </button>
         </td>

@@ -6,12 +6,13 @@ RSpec.describe 'User activates Jira', :js do
   include_context 'project service activation'
   include_context 'project service Jira context'
 
+  before do
+    stub_request(:get, test_url).to_return(body: { key: 'value' }.to_json)
+  end
+
   describe 'user tests Jira Service' do
     context 'when Jira connection test succeeds' do
       before do
-        server_info = { key: 'value' }.to_json
-        stub_request(:get, test_url).with(basic_auth: %w(username password)).to_return(body: server_info)
-
         visit_project_integration('Jira')
         fill_form
         click_test_then_save_integration(expect_test_to_fail: false)
@@ -79,6 +80,70 @@ RSpec.describe 'User activates Jira', :js do
       page.within('.nav-sidebar') do
         expect(page).not_to have_link('Jira', href: url)
       end
+    end
+  end
+
+  describe 'issue transition settings' do
+    it 'using custom transitions' do
+      visit_project_integration('Jira')
+
+      expect(page).to have_field('Enable Jira transitions', checked: false)
+
+      check 'Enable Jira transitions'
+
+      expect(page).to have_field('Move to Done', checked: true)
+
+      fill_form
+      choose 'Use custom transitions'
+      click_save_integration
+
+      within '[data-testid="issue-transition-mode"]' do
+        expect(page).to have_content('This field is required.')
+      end
+
+      fill_in 'service[jira_issue_transition_id]', with: '1, 2, 3'
+      click_save_integration
+
+      expect(page).to have_content('Jira settings saved and active.')
+      expect(project.reload.jira_service.data_fields).to have_attributes(
+        jira_issue_transition_automatic: false,
+        jira_issue_transition_id: '1, 2, 3'
+      )
+    end
+
+    it 'using automatic transitions' do
+      create(:jira_service, project: project, jira_issue_transition_automatic: false, jira_issue_transition_id: '1, 2, 3')
+      visit_project_integration('Jira')
+
+      expect(page).to have_field('Enable Jira transitions', checked: true)
+      expect(page).to have_field('Use custom transitions', checked: true)
+      expect(page).to have_field('service[jira_issue_transition_id]', with: '1, 2, 3')
+
+      choose 'Move to Done'
+      click_save_integration
+
+      expect(page).to have_content('Jira settings saved and active.')
+      expect(project.reload.jira_service.data_fields).to have_attributes(
+        jira_issue_transition_automatic: true,
+        jira_issue_transition_id: ''
+      )
+    end
+
+    it 'disabling issue transitions' do
+      create(:jira_service, project: project, jira_issue_transition_automatic: true, jira_issue_transition_id: '1, 2, 3')
+      visit_project_integration('Jira')
+
+      expect(page).to have_field('Enable Jira transitions', checked: true)
+      expect(page).to have_field('Move to Done', checked: true)
+
+      uncheck 'Enable Jira transitions'
+      click_save_integration
+
+      expect(page).to have_content('Jira settings saved and active.')
+      expect(project.reload.jira_service.data_fields).to have_attributes(
+        jira_issue_transition_automatic: false,
+        jira_issue_transition_id: ''
+      )
     end
   end
 end

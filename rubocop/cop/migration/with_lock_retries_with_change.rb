@@ -10,7 +10,7 @@ module RuboCop
         include MigrationHelpers
 
         MSG = '`with_lock_retries` cannot be used within `change` so you must manually define ' \
-          'the `up` and `down` methods in your migration class and use `with_lock_retries` in both methods'.freeze
+          'the `up` and `down` methods in your migration class and use `with_lock_retries` in both methods'
 
         def on_send(node)
           return unless in_migration?(node)

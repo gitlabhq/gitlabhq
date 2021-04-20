@@ -1,0 +1,5 @@
+---
+title: Remove JSON endpoint for project container index
+merge_request: 52407
+author: Takuya Noguchi
+type: other

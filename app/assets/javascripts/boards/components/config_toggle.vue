@@ -15,7 +15,8 @@ export default {
   props: {
     boardsStore: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
     canAdminList: {
       type: Boolean,
@@ -25,11 +26,6 @@ export default {
       type: Boolean,
       required: true,
     },
-  },
-  data() {
-    return {
-      state: this.boardsStore.state,
-    };
   },
   computed: {
     buttonText() {
@@ -42,7 +38,9 @@ export default {
   methods: {
     showPage() {
       eventHub.$emit('showBoardModal', formType.edit);
-      return this.boardsStore.showPage(formType.edit);
+      if (this.boardsStore) {
+        this.boardsStore.showPage(formType.edit);
+      }
     },
   },
 };

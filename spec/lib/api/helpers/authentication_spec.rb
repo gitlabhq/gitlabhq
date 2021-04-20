@@ -7,6 +7,7 @@ RSpec.describe API::Helpers::Authentication do
   let_it_be(:project, reload: true) { create(:project, :public) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
+  let_it_be(:ci_build) { create(:ci_build, :running, user: user) }
 
   describe 'class methods' do
     subject { Class.new.include(described_class::ClassMethods).new }
@@ -173,6 +174,20 @@ RSpec.describe API::Helpers::Authentication do
         token = double
         expect(object).to receive(:token_from_namespace_inheritable).and_return(token)
         expect(subject).to be(nil)
+      end
+    end
+
+    describe '#ci_build_from_namespace_inheritable' do
+      subject { object.ci_build_from_namespace_inheritable }
+
+      it 'returns #token_from_namespace_inheritable if it is a ci build' do
+        expect(object).to receive(:token_from_namespace_inheritable).and_return(ci_build)
+        expect(subject).to be(ci_build)
+      end
+
+      it 'returns nil if #token_from_namespace_inheritable is not a ci build' do
+        expect(object).to receive(:token_from_namespace_inheritable).and_return(personal_access_token)
+        expect(subject).to eq(nil)
       end
     end
 

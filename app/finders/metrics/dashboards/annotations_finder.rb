@@ -4,7 +4,8 @@ module Metrics
   module Dashboards
     class AnnotationsFinder
       def initialize(dashboard:, params:)
-        @dashboard, @params = dashboard, params
+        @dashboard = dashboard
+        @params = params
       end
 
       def execute

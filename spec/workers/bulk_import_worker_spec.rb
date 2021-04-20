@@ -4,10 +4,6 @@ require 'spec_helper'
 
 RSpec.describe BulkImportWorker do
   describe '#perform' do
-    before do
-      stub_const("#{described_class}::DEFAULT_BATCH_SIZE", 1)
-    end
-
     context 'when no bulk import is found' do
       it 'does nothing' do
         expect(described_class).not_to receive(:perform_in)
@@ -59,10 +55,26 @@ RSpec.describe BulkImportWorker do
         expect(bulk_import.reload.started?).to eq(true)
       end
 
+      it 'creates all the required pipeline trackers' do
+        bulk_import = create(:bulk_import, :created)
+        entity_1 = create(:bulk_import_entity, :created, bulk_import: bulk_import)
+        entity_2 = create(:bulk_import_entity, :created, bulk_import: bulk_import)
+
+        expect { subject.perform(bulk_import.id) }
+          .to change(BulkImports::Tracker, :count)
+          .by(BulkImports::Stage.pipelines.size * 2)
+
+        expect(entity_1.trackers).not_to be_empty
+        expect(entity_2.trackers).not_to be_empty
+      end
+
       context 'when there are created entities to process' do
         it 'marks a batch of entities as started, enqueues BulkImports::EntityWorker and reenqueues' do
+          stub_const("#{described_class}::DEFAULT_BATCH_SIZE", 1)
+
           bulk_import = create(:bulk_import, :created)
-          (described_class::DEFAULT_BATCH_SIZE + 1).times { |_| create(:bulk_import_entity, :created, bulk_import: bulk_import) }
+          create(:bulk_import_entity, :created, bulk_import: bulk_import)
+          create(:bulk_import_entity, :created, bulk_import: bulk_import)
 
           expect(described_class).to receive(:perform_in).with(described_class::PERFORM_DELAY, bulk_import.id)
           expect(BulkImports::EntityWorker).to receive(:perform_async)

@@ -9,8 +9,11 @@ module QA
             element :pipeline_url_link
           end
 
-          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipelines_table_row.vue' do
+          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipelines_status_badge.vue' do
             element :pipeline_commit_status
+          end
+
+          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipeline_operations.vue' do
             element :pipeline_retry_button
           end
 
@@ -31,7 +34,7 @@ module QA
           end
 
           def wait_for_latest_pipeline_status
-            wait_until(max_duration: 30, reload: true, sleep_interval: 5) { has_pipeline? }
+            wait_until(max_duration: 90, reload: true, sleep_interval: 5) { has_pipeline? }
 
             wait_until(reload: false, max_duration: 360) do
               within_element_by_index(:pipeline_commit_status, 0) { yield }

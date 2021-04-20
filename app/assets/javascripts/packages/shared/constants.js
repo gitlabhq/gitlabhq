@@ -7,6 +7,7 @@ export const PackageType = {
   NUGET: 'nuget',
   PYPI: 'pypi',
   COMPOSER: 'composer',
+  RUBYGEMS: 'rubygems',
   GENERIC: 'generic',
 };
 

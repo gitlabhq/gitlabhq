@@ -34,8 +34,6 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
 
       it 'sets location as an error' do
         codequality_report.add_degradation(invalid_degradation)
-
-        expect(codequality_report.error_message).to eq("Invalid degradation format: The property '#/' did not contain a required property of 'location'")
       end
     end
   end
@@ -77,6 +75,38 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
       it 'returns all degradations' do
         expect(all_degradations).to contain_exactly(degradation_1, degradation_2)
       end
+    end
+  end
+
+  describe '#sort_degradations!' do
+    let(:major) { build(:codequality_degradation, :major) }
+    let(:minor) { build(:codequality_degradation, :minor) }
+    let(:blocker) { build(:codequality_degradation, :blocker) }
+    let(:info) { build(:codequality_degradation, :info) }
+    let(:major_2) { build(:codequality_degradation, :major) }
+    let(:critical) { build(:codequality_degradation, :critical) }
+    let(:codequality_report) { described_class.new }
+
+    before do
+      codequality_report.add_degradation(major)
+      codequality_report.add_degradation(minor)
+      codequality_report.add_degradation(blocker)
+      codequality_report.add_degradation(major_2)
+      codequality_report.add_degradation(info)
+      codequality_report.add_degradation(critical)
+
+      codequality_report.sort_degradations!
+    end
+
+    it 'sorts degradations based on severity' do
+      expect(codequality_report.degradations.values).to eq([
+        blocker,
+        critical,
+        major,
+        major_2,
+        minor,
+        info
+      ])
     end
   end
 end

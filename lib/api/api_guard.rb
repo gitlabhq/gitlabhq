@@ -55,7 +55,7 @@ module API
         user = find_user_from_sources
         return unless user
 
-        if user.is_a?(User) && Feature.enabled?(:user_mode_in_session)
+        if user.is_a?(User) && Gitlab::CurrentSettings.admin_mode
           # Sessions are enforced to be unavailable for API calls, so ignore them for admin mode
           Gitlab::Auth::CurrentUserMode.bypass_session!(user.id)
         end
@@ -236,7 +236,7 @@ module API
       def after
         # Use a Grape middleware since the Grape `after` blocks might run
         # before we are finished rendering the `Grape::Entity` classes
-        Gitlab::Auth::CurrentUserMode.reset_bypass_session! if Feature.enabled?(:user_mode_in_session)
+        Gitlab::Auth::CurrentUserMode.reset_bypass_session! if Gitlab::CurrentSettings.admin_mode
 
         # Explicit nil is needed or the api call return value will be overwritten
         nil

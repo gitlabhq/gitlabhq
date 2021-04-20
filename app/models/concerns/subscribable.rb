@@ -17,10 +17,34 @@ module Subscribable
   def subscribed?(user, project = nil)
     return false unless user
 
-    if subscription = subscriptions.find_by(user: user, project: project)
+    if (subscription = lazy_subscription(user, project)&.itself)
       subscription.subscribed
     else
       subscribed_without_subscriptions?(user, project)
+    end
+  end
+
+  def lazy_subscription(user, project = nil)
+    return unless user
+
+    # handle project and group labels as well as issuable subscriptions
+    subscribable_type = self.class.ancestors.include?(Label) ? 'Label' : self.class.name
+    BatchLoader.for(id: id, subscribable_type: subscribable_type, project_id: project&.id).batch do |items, loader|
+      values = items.each_with_object({ ids: Set.new, subscribable_types: Set.new, project_ids: Set.new }) do |item, result|
+        result[:ids] << item[:id]
+        result[:subscribable_types] << item[:subscribable_type]
+        result[:project_ids] << item[:project_id]
+      end
+
+      subscriptions = Subscription.where(subscribable_id: values[:ids], subscribable_type: values[:subscribable_types], project_id: values[:project_ids], user: user)
+
+      subscriptions.each do |subscription|
+        loader.call({
+          id: subscription.subscribable_id,
+          subscribable_type: subscription.subscribable_type,
+          project_id: subscription.project_id
+          }, subscription)
+      end
     end
   end
 
@@ -41,8 +65,10 @@ module Subscribable
   def toggle_subscription(user, project = nil)
     unsubscribe_from_other_levels(user, project)
 
+    new_value = !subscribed?(user, project)
+
     find_or_initialize_subscription(user, project)
-      .update(subscribed: !subscribed?(user, project))
+      .update(subscribed: new_value)
   end
 
   def subscribe(user, project = nil)
@@ -83,6 +109,8 @@ module Subscribable
   end
 
   def find_or_initialize_subscription(user, project)
+    BatchLoader::Executor.clear_current
+
     subscriptions
       .find_or_initialize_by(user_id: user.id, project_id: project.try(:id))
   end

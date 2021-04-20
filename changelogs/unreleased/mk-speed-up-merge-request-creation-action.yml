@@ -1,0 +1,6 @@
+---
+title: Perform more merge request creation tasks asynchronously to improve response
+  times
+merge_request: 57453
+author:
+type: performance

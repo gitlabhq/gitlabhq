@@ -10,7 +10,7 @@ export const SET_PROJECT = 'SET_PROJECT';
 export const SET_CURRENT_PROJECT = 'SET_CURRENT_PROJECT';
 export const TOGGLE_EMPTY_STATE = 'TOGGLE_EMPTY_STATE';
 
-// Merge Request Mutation Types
+// Merge request mutation types
 export const SET_MERGE_REQUEST = 'SET_MERGE_REQUEST';
 export const SET_CURRENT_MERGE_REQUEST = 'SET_CURRENT_MERGE_REQUEST';
 export const SET_MERGE_REQUEST_CHANGES = 'SET_MERGE_REQUEST_CHANGES';

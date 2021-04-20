@@ -83,7 +83,7 @@ export default [
       'UsageTrends|Could not load the issues and merge requests chart. Please refresh the page to try again.',
     ),
     noDataMessage,
-    chartTitle: s__('UsageTrends|Issues & Merge Requests'),
+    chartTitle: s__('UsageTrends|Issues & merge requests'),
     yAxisTitle: s__('UsageTrends|Items'),
     xAxisTitle: s__('UsageTrends|Month'),
     queries: [

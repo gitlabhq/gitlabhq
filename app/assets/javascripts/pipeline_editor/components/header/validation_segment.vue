@@ -1,8 +1,13 @@
 <script>
 import { GlIcon, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
+import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.graphql';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
-import { CI_CONFIG_STATUS_VALID } from '../../constants';
+import {
+  EDITOR_APP_STATUS_EMPTY,
+  EDITOR_APP_STATUS_LOADING,
+  EDITOR_APP_STATUS_VALID,
+} from '../../constants';
 
 export const i18n = {
   empty: __(
@@ -29,47 +34,51 @@ export default {
     },
   },
   props: {
-    ciFileContent: {
-      type: String,
-      required: true,
-    },
     ciConfig: {
       type: Object,
       required: false,
       default: () => ({}),
     },
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false,
+  },
+  apollo: {
+    appStatus: {
+      query: getAppStatus,
     },
   },
   computed: {
     isEmpty() {
-      return !this.ciFileContent;
+      return this.appStatus === EDITOR_APP_STATUS_EMPTY;
+    },
+    isLoading() {
+      return this.appStatus === EDITOR_APP_STATUS_LOADING;
     },
     isValid() {
-      return this.ciConfig?.status === CI_CONFIG_STATUS_VALID;
+      return this.appStatus === EDITOR_APP_STATUS_VALID;
     },
     icon() {
-      if (this.isValid || this.isEmpty) {
-        return 'check';
+      switch (this.appStatus) {
+        case EDITOR_APP_STATUS_EMPTY:
+          return 'check';
+        case EDITOR_APP_STATUS_VALID:
+          return 'check';
+        default:
+          return 'warning-solid';
       }
-      return 'warning-solid';
     },
     message() {
-      if (this.isEmpty) {
-        return this.$options.i18n.empty;
-      } else if (this.isValid) {
-        return this.$options.i18n.valid;
-      }
-
-      // Only display first error as a reason
       const [reason] = this.ciConfig?.errors || [];
-      if (reason) {
-        return sprintf(this.$options.i18n.invalidWithReason, { reason }, false);
+
+      switch (this.appStatus) {
+        case EDITOR_APP_STATUS_EMPTY:
+          return this.$options.i18n.empty;
+        case EDITOR_APP_STATUS_VALID:
+          return this.$options.i18n.valid;
+        default:
+          // Only display first error as a reason
+          return this.ciConfig?.errors.length > 0
+            ? sprintf(this.$options.i18n.invalidWithReason, { reason }, false)
+            : this.$options.i18n.invalid;
       }
-      return this.$options.i18n.invalid;
     },
   },
 };
@@ -77,7 +86,7 @@ export default {
 
 <template>
   <div>
-    <template v-if="loading">
+    <template v-if="isLoading">
       <gl-loading-icon inline />
       {{ $options.i18n.loading }}
     </template>

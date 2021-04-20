@@ -911,6 +911,9 @@ export const stages = [
 
 export default {
   id: 4757,
+  artifact: {
+    locked: false,
+  },
   name: 'test',
   build_path: '/root/ci-mock/-/jobs/4757',
   retry_path: '/root/ci-mock/-/jobs/4757/retry',
@@ -955,6 +958,7 @@ export default {
   artifacts: [null],
   runner: {
     id: 1,
+    short_sha: 'ABCDEFGH',
     description: 'local ci runner',
     edit_path: '/root/ci-mock/runners/1/edit',
   },
@@ -1189,3 +1193,214 @@ export const jobsInStage = {
   path: '/gitlab-org/gitlab-shell/pipelines/27#build',
   dropdown_path: '/gitlab-org/gitlab-shell/pipelines/27/stage.json?stage=build',
 };
+
+export const mockPipelineWithoutMR = {
+  id: 28029444,
+  details: {
+    status: {
+      details_path: '/gitlab-org/gitlab-foss/pipelines/28029444',
+      group: 'success',
+      has_details: true,
+      icon: 'status_success',
+      label: 'passed',
+      text: 'passed',
+      tooltip: 'passed',
+    },
+  },
+  path: 'pipeline/28029444',
+  ref: {
+    name: 'test-branch',
+  },
+};
+
+export const mockPipelineWithAttachedMR = {
+  id: 28029444,
+  details: {
+    status: {
+      details_path: '/gitlab-org/gitlab-foss/pipelines/28029444',
+      group: 'success',
+      has_details: true,
+      icon: 'status_success',
+      label: 'passed',
+      text: 'passed',
+      tooltip: 'passed',
+    },
+  },
+  path: 'pipeline/28029444',
+  flags: {
+    merge_request_pipeline: true,
+    detached_merge_request_pipeline: false,
+  },
+  merge_request: {
+    iid: 1234,
+    path: '/root/detached-merge-request-pipelines/-/merge_requests/1',
+    title: 'Update README.md',
+    source_branch: 'feature-1234',
+    source_branch_path: '/root/detached-merge-request-pipelines/branches/feature-1234',
+    target_branch: 'master',
+    target_branch_path: '/root/detached-merge-request-pipelines/branches/master',
+  },
+  ref: {
+    name: 'test-branch',
+  },
+};
+
+export const mockPipelineDetached = {
+  id: 28029444,
+  details: {
+    status: {
+      details_path: '/gitlab-org/gitlab-foss/pipelines/28029444',
+      group: 'success',
+      has_details: true,
+      icon: 'status_success',
+      label: 'passed',
+      text: 'passed',
+      tooltip: 'passed',
+    },
+  },
+  path: 'pipeline/28029444',
+  flags: {
+    merge_request_pipeline: false,
+    detached_merge_request_pipeline: true,
+  },
+  merge_request: {
+    iid: 1234,
+    path: '/root/detached-merge-request-pipelines/-/merge_requests/1',
+    title: 'Update README.md',
+    source_branch: 'feature-1234',
+    source_branch_path: '/root/detached-merge-request-pipelines/branches/feature-1234',
+    target_branch: 'master',
+    target_branch_path: '/root/detached-merge-request-pipelines/branches/master',
+  },
+  ref: {
+    name: 'test-branch',
+  },
+};
+
+export const mockJobsInTable = [
+  {
+    detailedStatus: {
+      icon: 'status_manual',
+      label: 'manual play action',
+      text: 'manual',
+      tooltip: 'manual action',
+      action: {
+        buttonTitle: 'Trigger this manual action',
+        icon: 'play',
+        method: 'post',
+        path: '/root/ci-project/-/jobs/2004/play',
+        title: 'Play',
+        __typename: 'StatusAction',
+      },
+      __typename: 'DetailedStatus',
+    },
+    id: 'gid://gitlab/Ci::Build/2004',
+    refName: 'master',
+    refPath: '/root/ci-project/-/commits/master',
+    tags: [],
+    shortSha: '2d5d8323',
+    commitPath: '/root/ci-project/-/commit/2d5d83230bdea0e003d83ef4c16d2bf9a8808ebe',
+    pipeline: {
+      id: 'gid://gitlab/Ci::Pipeline/423',
+      path: '/root/ci-project/-/pipelines/423',
+      user: {
+        webPath: '/root',
+        avatarUrl:
+          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        __typename: 'User',
+      },
+      __typename: 'Pipeline',
+    },
+    stage: { name: 'test', __typename: 'CiStage' },
+    name: 'test_manual_job',
+    duration: null,
+    finishedAt: null,
+    coverage: null,
+    retryable: false,
+    playable: true,
+    cancelable: false,
+    active: false,
+    __typename: 'CiJob',
+  },
+  {
+    detailedStatus: {
+      icon: 'status_skipped',
+      label: 'skipped',
+      text: 'skipped',
+      tooltip: 'skipped',
+      action: null,
+      __typename: 'DetailedStatus',
+    },
+    id: 'gid://gitlab/Ci::Build/2021',
+    refName: 'master',
+    refPath: '/root/ci-project/-/commits/master',
+    tags: [],
+    shortSha: '2d5d8323',
+    commitPath: '/root/ci-project/-/commit/2d5d83230bdea0e003d83ef4c16d2bf9a8808ebe',
+    pipeline: {
+      id: 'gid://gitlab/Ci::Pipeline/425',
+      path: '/root/ci-project/-/pipelines/425',
+      user: {
+        webPath: '/root',
+        avatarUrl:
+          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        __typename: 'User',
+      },
+      __typename: 'Pipeline',
+    },
+    stage: { name: 'test', __typename: 'CiStage' },
+    name: 'coverage_job',
+    duration: null,
+    finishedAt: null,
+    coverage: null,
+    retryable: false,
+    playable: false,
+    cancelable: false,
+    active: false,
+    __typename: 'CiJob',
+  },
+  {
+    detailedStatus: {
+      icon: 'status_success',
+      label: 'passed',
+      text: 'passed',
+      tooltip: 'passed',
+      action: {
+        buttonTitle: 'Retry this job',
+        icon: 'retry',
+        method: 'post',
+        path: '/root/ci-project/-/jobs/2015/retry',
+        title: 'Retry',
+        __typename: 'StatusAction',
+      },
+      __typename: 'DetailedStatus',
+    },
+    id: 'gid://gitlab/Ci::Build/2015',
+    refName: 'master',
+    refPath: '/root/ci-project/-/commits/master',
+    tags: [],
+    shortSha: '2d5d8323',
+    commitPath: '/root/ci-project/-/commit/2d5d83230bdea0e003d83ef4c16d2bf9a8808ebe',
+    pipeline: {
+      id: 'gid://gitlab/Ci::Pipeline/424',
+      path: '/root/ci-project/-/pipelines/424',
+      user: {
+        webPath: '/root',
+        avatarUrl:
+          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        __typename: 'User',
+      },
+      __typename: 'Pipeline',
+    },
+    stage: { name: 'deploy', __typename: 'CiStage' },
+    name: 'artifact_job',
+    duration: 2,
+    finishedAt: '2021-04-01T17:36:18Z',
+    coverage: null,
+    retryable: true,
+    playable: false,
+    cancelable: false,
+    active: false,
+    __typename: 'CiJob',
+  },
+];

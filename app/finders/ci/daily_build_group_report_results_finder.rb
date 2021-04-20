@@ -35,8 +35,7 @@ module Ci
       return Ci::DailyBuildGroupReportResult.none unless query_allowed?
 
       collection = Ci::DailyBuildGroupReportResult.by_projects(params[:project])
-      collection = filter_report_results(collection)
-      collection
+      filter_report_results(collection)
     end
 
     private
@@ -51,8 +50,7 @@ module Ci
       collection = by_dates(collection)
 
       collection = sort(collection)
-      collection = limit_by(collection)
-      collection
+      limit_by(collection)
     end
 
     def by_coverage(items)

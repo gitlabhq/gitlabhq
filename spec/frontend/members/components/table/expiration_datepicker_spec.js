@@ -5,6 +5,7 @@ import Vuex from 'vuex';
 import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 import { member } from '../../mock_data';
 
 const localVue = createLocalVue();
@@ -31,7 +32,11 @@ describe('ExpirationDatepicker', () => {
       ),
     };
 
-    return new Vuex.Store({ actions });
+    return new Vuex.Store({
+      modules: {
+        [MEMBER_TYPES.user]: { namespaced: true, actions },
+      },
+    });
   };
 
   const createComponent = (propsData = {}) => {
@@ -40,6 +45,9 @@ describe('ExpirationDatepicker', () => {
         member,
         permissions: { canUpdate: true },
         ...propsData,
+      },
+      provide: {
+        namespace: MEMBER_TYPES.user,
       },
       localVue,
       store: createStore(),

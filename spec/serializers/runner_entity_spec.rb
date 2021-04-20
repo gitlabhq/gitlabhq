@@ -20,6 +20,7 @@ RSpec.describe RunnerEntity do
     it 'contains required fields' do
       expect(subject).to include(:id, :description)
       expect(subject).to include(:edit_path)
+      expect(subject).to include(:short_sha)
     end
   end
 end

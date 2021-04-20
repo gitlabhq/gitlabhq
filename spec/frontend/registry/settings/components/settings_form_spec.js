@@ -77,33 +77,47 @@ describe('Settings Form', () => {
     });
   };
 
-  const mountComponentWithApollo = ({ provide = defaultProvidedValues, resolver } = {}) => {
+  const mountComponentWithApollo = ({
+    provide = defaultProvidedValues,
+    mutationResolver,
+    queryPayload = expirationPolicyPayload(),
+  } = {}) => {
     localVue.use(VueApollo);
 
     const requestHandlers = [
-      [updateContainerExpirationPolicyMutation, resolver],
-      [expirationPolicyQuery, jest.fn().mockResolvedValue(expirationPolicyPayload())],
+      [updateContainerExpirationPolicyMutation, mutationResolver],
+      [expirationPolicyQuery, jest.fn().mockResolvedValue(queryPayload)],
     ];
 
     fakeApollo = createMockApollo(requestHandlers);
 
+    // This component does not do the query directly, but we need a proper cache to update
     fakeApollo.defaultClient.cache.writeQuery({
       query: expirationPolicyQuery,
       variables: {
         projectPath: provide.projectPath,
       },
-      ...expirationPolicyPayload(),
+      ...queryPayload,
     });
+
+    // we keep in sync what prop we pass to the component with the cache
+    const {
+      data: {
+        project: { containerExpirationPolicy: value },
+      },
+    } = queryPayload;
 
     mountComponent({
       provide,
+      props: {
+        ...defaultProps,
+        value,
+      },
       config: {
         localVue,
         apolloProvider: fakeApollo,
       },
     });
-
-    return requestHandlers.map((resolvers) => resolvers[1]);
   };
 
   beforeEach(() => {
@@ -253,19 +267,44 @@ describe('Settings Form', () => {
         expect(findSaveButton().attributes('type')).toBe('submit');
       });
 
-      it('dispatches the correct apollo mutation', async () => {
-        const [expirationPolicyMutationResolver] = mountComponentWithApollo({
-          resolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
+      it('dispatches the correct apollo mutation', () => {
+        const mutationResolver = jest.fn().mockResolvedValue(expirationPolicyMutationPayload());
+        mountComponentWithApollo({
+          mutationResolver,
         });
 
         findForm().trigger('submit');
-        await expirationPolicyMutationResolver();
-        expect(expirationPolicyMutationResolver).toHaveBeenCalled();
+
+        expect(mutationResolver).toHaveBeenCalled();
+      });
+
+      it('saves the default values when a value is missing did not change the default options', async () => {
+        const mutationResolver = jest.fn().mockResolvedValue(expirationPolicyMutationPayload());
+        mountComponentWithApollo({
+          mutationResolver,
+          queryPayload: expirationPolicyPayload({ keepN: null, cadence: null, olderThan: null }),
+        });
+
+        await waitForPromises();
+
+        findForm().trigger('submit');
+
+        expect(mutationResolver).toHaveBeenCalledWith({
+          input: {
+            cadence: 'EVERY_DAY',
+            enabled: true,
+            keepN: 'TEN_TAGS',
+            nameRegex: 'asdasdssssdfdf',
+            nameRegexKeep: 'sss',
+            olderThan: 'NINETY_DAYS',
+            projectPath: 'path',
+          },
+        });
       });
 
       it('tracks the submit event', () => {
         mountComponentWithApollo({
-          resolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
+          mutationResolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
         });
 
         findForm().trigger('submit');
@@ -274,12 +313,12 @@ describe('Settings Form', () => {
       });
 
       it('show a success toast when submit succeed', async () => {
-        const handlers = mountComponentWithApollo({
-          resolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
+        mountComponentWithApollo({
+          mutationResolver: jest.fn().mockResolvedValue(expirationPolicyMutationPayload()),
         });
 
         findForm().trigger('submit');
-        await Promise.all(handlers);
+        await waitForPromises();
         await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE, {
@@ -290,14 +329,14 @@ describe('Settings Form', () => {
       describe('when submit fails', () => {
         describe('user recoverable errors', () => {
           it('when there is an error is shown in a toast', async () => {
-            const handlers = mountComponentWithApollo({
-              resolver: jest
+            mountComponentWithApollo({
+              mutationResolver: jest
                 .fn()
                 .mockResolvedValue(expirationPolicyMutationPayload({ errors: ['foo'] })),
             });
 
             findForm().trigger('submit');
-            await Promise.all(handlers);
+            await waitForPromises();
             await wrapper.vm.$nextTick();
 
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('foo', {
@@ -308,13 +347,12 @@ describe('Settings Form', () => {
 
         describe('global errors', () => {
           it('shows an error', async () => {
-            const handlers = mountComponentWithApollo({
-              resolver: jest.fn().mockRejectedValue(expirationPolicyMutationPayload()),
+            mountComponentWithApollo({
+              mutationResolver: jest.fn().mockRejectedValue(expirationPolicyMutationPayload()),
             });
 
             findForm().trigger('submit');
-            await Promise.all(handlers);
-            await wrapper.vm.$nextTick();
+            await waitForPromises();
             await wrapper.vm.$nextTick();
 
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE, {

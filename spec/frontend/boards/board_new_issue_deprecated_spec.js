@@ -111,7 +111,7 @@ describe('Issue boards new issue form', () => {
 
   describe('submit success', () => {
     it('creates new issue', () => {
-      wrapper.setData({ title: 'submit issue' });
+      wrapper.setData({ title: 'create issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
@@ -122,7 +122,7 @@ describe('Issue boards new issue form', () => {
 
     it('enables button after submit', () => {
       jest.spyOn(wrapper.vm, 'submit').mockImplementation();
-      wrapper.setData({ title: 'submit issue' });
+      wrapper.setData({ title: 'create issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
@@ -132,7 +132,7 @@ describe('Issue boards new issue form', () => {
     });
 
     it('clears title after submit', () => {
-      wrapper.setData({ title: 'submit issue' });
+      wrapper.setData({ title: 'create issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
@@ -143,17 +143,17 @@ describe('Issue boards new issue form', () => {
 
     it('sets detail issue after submit', () => {
       expect(boardsStore.detail.issue.title).toBe(undefined);
-      wrapper.setData({ title: 'submit issue' });
+      wrapper.setData({ title: 'create issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
-          expect(boardsStore.detail.issue.title).toBe('submit issue');
+          expect(boardsStore.detail.issue.title).toBe('create issue');
         });
     });
 
     it('sets detail list after submit', () => {
-      wrapper.setData({ title: 'submit issue' });
+      wrapper.setData({ title: 'create issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
@@ -164,7 +164,7 @@ describe('Issue boards new issue form', () => {
 
     it('sets detail weight after submit', () => {
       boardsStore.weightFeatureAvailable = true;
-      wrapper.setData({ title: 'submit issue' });
+      wrapper.setData({ title: 'create issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
@@ -175,7 +175,7 @@ describe('Issue boards new issue form', () => {
 
     it('does not set detail weight after submit', () => {
       boardsStore.weightFeatureAvailable = false;
-      wrapper.setData({ title: 'submit issue' });
+      wrapper.setData({ title: 'create issue' });
 
       return Vue.nextTick()
         .then(submitIssue)

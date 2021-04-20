@@ -413,11 +413,39 @@ RSpec.describe Member do
       it { is_expected.not_to include @blocked_developer }
       it { is_expected.not_to include @member_with_minimal_access }
     end
+
+    describe '.distinct_on_user_with_max_access_level' do
+      let_it_be(:other_group) { create(:group) }
+      let_it_be(:member_with_lower_access_level) { create(:group_member, :developer, group: other_group, user: @owner_user) }
+
+      subject { described_class.default_scoped.distinct_on_user_with_max_access_level.to_a }
+
+      it { is_expected.not_to include member_with_lower_access_level }
+      it { is_expected.to include @owner }
+      it { is_expected.to include @maintainer }
+      it { is_expected.to include @invited_member }
+      it { is_expected.to include @accepted_invite_member }
+      it { is_expected.to include @requested_member }
+      it { is_expected.to include @accepted_request_member }
+      it { is_expected.to include @blocked_maintainer }
+      it { is_expected.to include @blocked_developer }
+      it { is_expected.to include @member_with_minimal_access }
+    end
   end
 
   describe "Delegate methods" do
     it { is_expected.to respond_to(:user_name) }
     it { is_expected.to respond_to(:user_email) }
+  end
+
+  describe '.valid_email?' do
+    it 'is a valid email format' do
+      expect(described_class.valid_email?('foo')).to eq(false)
+    end
+
+    it 'is not a valid email format' do
+      expect(described_class.valid_email?('foo@example.com')).to eq(true)
+    end
   end
 
   describe '.add_user' do

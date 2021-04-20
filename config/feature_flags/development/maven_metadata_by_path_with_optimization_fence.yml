@@ -1,0 +1,8 @@
+---
+name: maven_metadata_by_path_with_optimization_fence
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57041
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325460
+milestone: '13.11'
+type: development
+group: group::optimize
+default_enabled: true

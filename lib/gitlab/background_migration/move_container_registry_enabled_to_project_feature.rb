@@ -6,7 +6,7 @@ module Gitlab
     # project_features.container_registry_access_level for the projects within
     # the given range of ids.
     class MoveContainerRegistryEnabledToProjectFeature
-      MAX_BATCH_SIZE = 1_000
+      MAX_BATCH_SIZE = 300
 
       module Migratable
         # Migration model namespace isolated from application code.

@@ -236,8 +236,8 @@ $tabs-holder-z-index: 250;
   }
 
   .label-branch {
-    @extend .ref-name;
-
+    @include gl-font-monospace;
+    font-size: 95%;
     color: $gl-text-color;
     font-weight: normal;
     overflow: hidden;

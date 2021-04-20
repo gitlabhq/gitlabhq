@@ -223,39 +223,37 @@ RSpec.describe PageLayoutHelper do
   end
 
   describe '#user_status_properties' do
-    using RSpec::Parameterized::TableSyntax
-
     let(:user) { build(:user) }
 
-    availability_types = Types::AvailabilityEnum.enum
+    subject { helper.user_status_properties(user) }
 
-    where(:message, :emoji, :availability) do
-      "Some message" | UserStatus::DEFAULT_EMOJI | availability_types[:busy]
-      "Some message" | UserStatus::DEFAULT_EMOJI | availability_types[:not_set]
-      "Some message" | "basketball"              | availability_types[:busy]
-      "Some message" | "basketball"              | availability_types[:not_set]
-      "Some message" | ""                        | availability_types[:busy]
-      "Some message" | ""                        | availability_types[:not_set]
-      ""             | UserStatus::DEFAULT_EMOJI | availability_types[:busy]
-      ""             | UserStatus::DEFAULT_EMOJI | availability_types[:not_set]
-      ""             | "basketball"              | availability_types[:busy]
-      ""             | "basketball"              | availability_types[:not_set]
-      ""             | ""                        | availability_types[:busy]
-      ""             | ""                        | availability_types[:not_set]
+    context 'when the user has no status' do
+      it 'returns default properties' do
+        is_expected.to eq({
+          current_emoji: '',
+          current_message: '',
+          can_set_user_availability: true,
+          default_emoji: UserStatus::DEFAULT_EMOJI
+        })
+      end
     end
 
-    with_them do
-      it "sets the default user status fields" do
-        user.status = UserStatus.new(message: message, emoji: emoji, availability: availability)
-        result = {
-          can_set_user_availability: true,
-          current_availability: availability,
-          current_emoji: emoji,
-          current_message: message,
-          default_emoji: UserStatus::DEFAULT_EMOJI
-        }
+    context 'when user has a status' do
+      let(:time) { 3.hours.ago }
 
-        expect(helper.user_status_properties(user)).to eq(result)
+      before do
+        user.status = UserStatus.new(message: 'Some message', emoji: 'basketball', availability: 'busy', clear_status_at: time)
+      end
+
+      it 'merges the status properties with the defaults' do
+        is_expected.to eq({
+          current_clear_status_after: time.to_s,
+          current_availability: 'busy',
+          current_emoji: 'basketball',
+          current_message: 'Some message',
+          can_set_user_availability: true,
+          default_emoji: UserStatus::DEFAULT_EMOJI
+        })
       end
     end
   end

@@ -1,7 +1,8 @@
-import { GlForm, GlFormInputGroup } from '@gitlab/ui';
+import { GlForm, GlFormInputGroup, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { kebabCase } from 'lodash';
 import createFlash from '~/flash';
 import httpStatus from '~/lib/utils/http_status';
 import * as urlUtility from '~/lib/utils/url_utility';
@@ -59,6 +60,7 @@ describe('ForkForm component', () => {
       },
       stubs: {
         GlFormInputGroup,
+        GlFormInput,
       },
     });
   };
@@ -201,6 +203,37 @@ describe('ForkForm component', () => {
       expect(optionsArray).toHaveLength(MOCK_NAMESPACES_RESPONSE.length + 1);
       expect(optionsArray.at(1).text()).toBe(MOCK_NAMESPACES_RESPONSE[0].name);
       expect(optionsArray.at(2).text()).toBe(MOCK_NAMESPACES_RESPONSE[1].name);
+    });
+  });
+
+  describe('project slug', () => {
+    const projectPath = 'some other project slug';
+
+    beforeEach(() => {
+      mockGetRequest();
+      createComponent({
+        projectPath,
+      });
+    });
+
+    it('initially loads slug without kebab-case transformation', () => {
+      expect(findForkSlugInput().attributes('value')).toBe(projectPath);
+    });
+
+    it('changes to kebab case when project name changes', async () => {
+      const newInput = `${projectPath}1`;
+      findForkNameInput().vm.$emit('input', newInput);
+      await wrapper.vm.$nextTick();
+
+      expect(findForkSlugInput().attributes('value')).toBe(kebabCase(newInput));
+    });
+
+    it('does not change to kebab case when project slug is changed manually', async () => {
+      const newInput = `${projectPath}1`;
+      findForkSlugInput().vm.$emit('input', newInput);
+      await wrapper.vm.$nextTick();
+
+      expect(findForkSlugInput().attributes('value')).toBe(newInput);
     });
   });
 

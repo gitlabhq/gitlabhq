@@ -7,6 +7,7 @@ module Projects
 
       NUMBER_OF_RUNNERS_PER_PAGE = 20
 
+      layout 'project_settings'
       before_action :authorize_admin_pipeline!
       before_action :define_variables
       before_action do
@@ -61,7 +62,7 @@ module Projects
       end
 
       def runner_setup_scripts
-        private_runner_setup_scripts(project: @project)
+        private_runner_setup_scripts
       end
 
       private

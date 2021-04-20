@@ -843,6 +843,17 @@ RSpec.shared_examples 'trace with enabled live trace feature' do
         expect { subject }.to raise_error(Gitlab::Ci::Trace::AlreadyArchivedError)
         expect(build.job_artifacts_trace.file.exists?).to be_truthy
       end
+
+      context 'when live trace chunks still exist' do
+        before do
+          create(:ci_build_trace_chunk, build: build)
+        end
+
+        it 'removes the traces' do
+          expect { subject }.to raise_error(Gitlab::Ci::Trace::AlreadyArchivedError)
+          expect(build.trace_chunks).to be_empty
+        end
+      end
     end
 
     context 'when job is not finished yet' do

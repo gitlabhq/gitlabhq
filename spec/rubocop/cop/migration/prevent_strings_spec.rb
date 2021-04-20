@@ -15,8 +15,6 @@ RSpec.describe RuboCop::Cop::Migration::PreventStrings do
       it 'registers an offense' do
         expect_offense(<<~RUBY, msg: "Do not use the `string` data type, use `text` instead.[...]")
           class Users < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
-
             def up
               create_table :users do |t|
                 t.string :username, null: false
@@ -46,8 +44,6 @@ RSpec.describe RuboCop::Cop::Migration::PreventStrings do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)
           class Users < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
-
             def up
               create_table :users do |t|
                 t.integer :not_a_string, null: false
@@ -65,8 +61,6 @@ RSpec.describe RuboCop::Cop::Migration::PreventStrings do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)
           class Users < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
-
             def up
               create_table :users do |t|
                 t.text :username, null: false
@@ -87,8 +81,6 @@ RSpec.describe RuboCop::Cop::Migration::PreventStrings do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)
           class TestStringArrays < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
-
             def up
               create_table :test_string_arrays, id: false do |t|
                 t.integer :test_id, null: false
@@ -108,8 +100,6 @@ RSpec.describe RuboCop::Cop::Migration::PreventStrings do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)
           class Users < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
-
             def up
               remove_column :users, :bio
               remove_column :users, :url
@@ -137,8 +127,6 @@ RSpec.describe RuboCop::Cop::Migration::PreventStrings do
     it 'registers no offense' do
       expect_no_offenses(<<~RUBY)
         class Users < ActiveRecord::Migration[6.0]
-          DOWNTIME = false
-
           def up
             create_table :users do |t|
               t.string :username, null: false

@@ -8,8 +8,8 @@
 # See http://unicorn.bogomips.org/Unicorn/Configurator.html for complete
 # documentation.
 
-# Note: If you change this file in a Merge Request, please also create a
-# Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
+# Note: If you change this file in a merge request, please also create a
+# merge request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 
 # Relative URL support
 # WARNING: We recommend using an FQDN to host GitLab in a root path instead
@@ -41,7 +41,7 @@ working_directory "/home/git/gitlab" # available in 0.94.0+
 listen "/home/git/gitlab/tmp/sockets/gitlab.socket", :backlog => 1024
 listen "127.0.0.1:8080", :tcp_nopush => true
 
-# nuke workers after 30 seconds instead of 60 seconds (the default)
+# destroy workers after 30 seconds instead of 60 seconds (the default)
 #
 # NOTICE: git push over http depends on this value.
 # If you want to be able to push huge amount of data to git repository over http

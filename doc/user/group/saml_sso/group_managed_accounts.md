@@ -84,6 +84,16 @@ To access the Credentials inventory of a group, navigate to **{shield}** **Secur
 
 This feature is similar to the [Credentials inventory for self-managed instances](../../admin_area/credentials_inventory.md).
 
+### Revoke a group-managed account's personal access token
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214811) in GitLab 13.5.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/267184) in GitLab 13.10.
+
+Group owners can revoke the personal access tokens of accounts in their group. To do so, select
+the Personal Access Tokens tab, and select Revoke.
+
+When a personal access token is revoked, the group-managed account user is notified by email.
+
 ## Limiting lifetime of personal access tokens of users in Group-managed accounts **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118893) in GitLab 12.10.

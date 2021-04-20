@@ -9,12 +9,11 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/views/shared/wikis/_form.html.haml' do
+          base.view 'app/assets/javascripts/pages/shared/wikis/components/wiki_form.vue' do
             element :wiki_title_textbox
             element :wiki_content_textarea
             element :wiki_message_textbox
-            element :save_changes_button
-            element :create_page_button
+            element :wiki_submit_button
           end
 
           base.view 'app/assets/javascripts/pages/shared/wikis/components/delete_wiki_modal.vue' do
@@ -34,12 +33,8 @@ module QA
           fill_element(:wiki_message_textbox, message)
         end
 
-        def click_save_changes
-          click_element(:save_changes_button)
-        end
-
-        def click_create_page
-          click_element(:create_page_button)
+        def click_submit
+          click_element(:wiki_submit_button)
         end
 
         def delete_page

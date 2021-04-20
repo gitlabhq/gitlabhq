@@ -3,12 +3,15 @@ import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import AlertSettingsWrapper from './components/alerts_settings_wrapper.vue';
 import apolloProvider from './graphql';
+import getCurrentIntegrationQuery from './graphql/queries/get_current_integration.query.graphql';
 
-apolloProvider.clients.defaultClient.cache.writeData({
+apolloProvider.clients.defaultClient.cache.writeQuery({
+  query: getCurrentIntegrationQuery,
   data: {
     currentIntegration: null,
   },
 });
+
 Vue.use(GlToast);
 
 export default (el) => {
@@ -16,23 +19,7 @@ export default (el) => {
     return null;
   }
 
-  const {
-    prometheusActivated,
-    prometheusUrl,
-    prometheusAuthorizationKey,
-    prometheusFormPath,
-    prometheusResetKeyPath,
-    prometheusApiUrl,
-    activated: activatedStr,
-    alertsSetupUrl,
-    alertsUsageUrl,
-    formPath,
-    authorizationKey,
-    url,
-    projectPath,
-    multiIntegrations,
-    alertFields,
-  } = el.dataset;
+  const { alertsUsageUrl, projectPath, multiIntegrations, alertFields } = el.dataset;
 
   return new Vue({
     el,
@@ -40,22 +27,7 @@ export default (el) => {
       AlertSettingsWrapper,
     },
     provide: {
-      prometheus: {
-        active: parseBoolean(prometheusActivated),
-        url: prometheusUrl,
-        token: prometheusAuthorizationKey,
-        prometheusFormPath,
-        prometheusResetKeyPath,
-        prometheusApiUrl,
-      },
-      generic: {
-        alertsSetupUrl,
-        alertsUsageUrl,
-        active: parseBoolean(activatedStr),
-        formPath,
-        token: authorizationKey,
-        url,
-      },
+      alertsUsageUrl,
       projectPath,
       multiIntegrations: parseBoolean(multiIntegrations),
     },

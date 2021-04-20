@@ -5,7 +5,8 @@ module Clusters
     attr_reader :current_user, :params
 
     def initialize(user = nil, params = {})
-      @current_user, @params = user, params.dup
+      @current_user = user
+      @params = params.dup
     end
 
     def execute(cluster)

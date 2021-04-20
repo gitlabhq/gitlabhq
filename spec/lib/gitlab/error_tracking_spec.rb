@@ -7,6 +7,7 @@ require 'raven/transports/dummy'
 RSpec.describe Gitlab::ErrorTracking do
   let(:exception) { RuntimeError.new('boom') }
   let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }
+  let(:extra) { { issue_url: issue_url, some_other_info: 'info' } }
 
   let(:user) { create(:user) }
 
@@ -41,6 +42,8 @@ RSpec.describe Gitlab::ErrorTracking do
       'extra.issue_url' => 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1'
     }
   end
+
+  let(:sentry_event) { Gitlab::Json.parse(Raven.client.transport.events.last[1]) }
 
   before do
     stub_sentry_settings
@@ -133,8 +136,6 @@ RSpec.describe Gitlab::ErrorTracking do
   end
 
   describe '.track_exception' do
-    let(:extra) { { issue_url: issue_url, some_other_info: 'info' } }
-
     subject(:track_exception) { described_class.track_exception(exception, extra) }
 
     before do
@@ -195,6 +196,55 @@ RSpec.describe Gitlab::ErrorTracking do
       end
     end
 
+    context 'when the error is kind of an `ActiveRecord::StatementInvalid`' do
+      let(:exception) { ActiveRecord::StatementInvalid.new(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = 1 AND "users"."foo" = $1') }
+
+      it 'injects the normalized sql query into extra' do
+        track_exception
+
+        expect(sentry_event.dig('extra', 'sql')).to eq('SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
+      end
+    end
+
+    context 'when the `ActiveRecord::StatementInvalid` is wrapped in another exception' do
+      it 'injects the normalized sql query into extra' do
+        allow(exception).to receive(:cause).and_return(ActiveRecord::StatementInvalid.new(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = 1 AND "users"."foo" = $1'))
+
+        track_exception
+
+        expect(sentry_event.dig('extra', 'sql')).to eq('SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
+      end
+    end
+  end
+
+  shared_examples 'event processors' do
+    subject(:track_exception) { described_class.track_exception(exception, extra) }
+
+    before do
+      allow(Raven).to receive(:capture_exception).and_call_original
+      allow(Gitlab::ErrorTracking::Logger).to receive(:error)
+    end
+
+    context 'custom GitLab context when using Raven.capture_exception directly' do
+      subject(:raven_capture_exception) { Raven.capture_exception(exception) }
+
+      it 'merges a default set of tags into the existing tags' do
+        allow(Raven.context).to receive(:tags).and_return(foo: 'bar')
+
+        raven_capture_exception
+
+        expect(sentry_event['tags']).to include('correlation_id', 'feature_category', 'foo', 'locale', 'program')
+      end
+
+      it 'merges the current user information into the existing user information' do
+        Raven.user_context(id: -1)
+
+        raven_capture_exception
+
+        expect(sentry_event['user']).to eq('id' => -1, 'username' => user.username)
+      end
+    end
+
     context 'with sidekiq args' do
       context 'when the args does not have anything sensitive' do
         let(:extra) { { sidekiq: { 'class' => 'PostReceive', 'args' => [1, { 'id' => 2, 'name' => 'hello' }, 'some-value', 'another-value'] } } }
@@ -211,15 +261,19 @@ RSpec.describe Gitlab::ErrorTracking do
             )
           )
         end
+
+        it 'does not filter parameters when sending to Sentry' do
+          track_exception
+
+          expect(sentry_event.dig('extra', 'sidekiq', 'args')).to eq([1, { 'id' => 2, 'name' => 'hello' }, 'some-value', 'another-value'])
+        end
       end
 
       context 'when the args has sensitive information' do
         let(:extra) { { sidekiq: { 'class' => 'UnknownWorker', 'args' => ['sensitive string', 1, 2] } } }
 
-        it 'filters sensitive arguments before sending' do
+        it 'filters sensitive arguments before sending and logging' do
           track_exception
-
-          sentry_event = Gitlab::Json.parse(Raven.client.transport.events.last[1])
 
           expect(sentry_event.dig('extra', 'sidekiq', 'args')).to eq(['[FILTERED]', 1, 2])
           expect(Gitlab::ErrorTracking::Logger).to have_received(:error).with(
@@ -234,28 +288,44 @@ RSpec.describe Gitlab::ErrorTracking do
       end
     end
 
-    context 'when the error is kind of an `ActiveRecord::StatementInvalid`' do
-      let(:exception) { ActiveRecord::StatementInvalid.new(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = 1 AND "users"."foo" = $1') }
+    context 'when the error is a GRPC error' do
+      context 'when the GRPC error contains a debug_error_string value' do
+        let(:exception) { GRPC::DeadlineExceeded.new('unknown cause', {}, '{"hello":1}') }
 
-      it 'injects the normalized sql query into extra' do
-        allow(Raven.client.transport).to receive(:send_event) do |event|
-          expect(event.extra).to include(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
+        it 'sets the GRPC debug error string in the Sentry event and adds a custom fingerprint' do
+          track_exception
+
+          expect(sentry_event.dig('extra', 'grpc_debug_error_string')).to eq('{"hello":1}')
+          expect(sentry_event['fingerprint']).to eq(['GRPC::DeadlineExceeded', '4:unknown cause.'])
         end
+      end
 
-        track_exception
+      context 'when the GRPC error does not contain a debug_error_string value' do
+        let(:exception) { GRPC::DeadlineExceeded.new }
+
+        it 'does not do any processing on the event' do
+          track_exception
+
+          expect(sentry_event['extra']).not_to include('grpc_debug_error_string')
+          expect(sentry_event['fingerprint']).to eq(['GRPC::DeadlineExceeded', '4:unknown cause'])
+        end
       end
     end
+  end
 
-    context 'when the `ActiveRecord::StatementInvalid` is wrapped in another exception' do
-      let(:exception) { RuntimeError.new(cause: ActiveRecord::StatementInvalid.new(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = 1 AND "users"."foo" = $1')) }
-
-      it 'injects the normalized sql query into extra' do
-        allow(Raven.client.transport).to receive(:send_event) do |event|
-          expect(event.extra).to include(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = $2 AND "users"."foo" = $1')
-        end
-
-        track_exception
-      end
+  context 'with sentry_processors_before_send enabled' do
+    before do
+      stub_feature_flags(sentry_processors_before_send: true)
     end
+
+    include_examples 'event processors'
+  end
+
+  context 'with sentry_processors_before_send disabled' do
+    before do
+      stub_feature_flags(sentry_processors_before_send: false)
+    end
+
+    include_examples 'event processors'
   end
 end

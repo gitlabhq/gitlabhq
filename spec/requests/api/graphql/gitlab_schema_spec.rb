@@ -125,9 +125,9 @@ RSpec.describe 'GitlabSchema configurations' do
 
     subject do
       queries = [
-        { query: graphql_query_for('project', { 'fullPath' => '$fullPath' }, %w(id name description)) },
-        { query: graphql_query_for('echo', { 'text' => "$test" }, []), variables: { "test" => "Hello world" } },
-        { query: graphql_query_for('project', { 'fullPath' => project.full_path }, "userPermissions { createIssue }") }
+        { query: graphql_query_for('project', { 'fullPath' => '$fullPath' }, %w(id name description)) }, # Complexity 4
+        { query: graphql_query_for('echo', { 'text' => "$test" }, []), variables: { "test" => "Hello world" } }, # Complexity 1
+        { query: graphql_query_for('project', { 'fullPath' => project.full_path }, "userPermissions { createIssue }") } # Complexity 3
       ]
 
       post_multiplex(queries, current_user: current_user)
@@ -139,10 +139,9 @@ RSpec.describe 'GitlabSchema configurations' do
       expect(json_response.last['data']['project']).to be_nil
     end
 
-    it_behaves_like 'imposing query limits' do
-      it 'fails all queries when only one of the queries is too complex' do
-        # The `project` query above has a complexity of 5
-        allow(GitlabSchema).to receive(:max_query_complexity).and_return 4
+    shared_examples 'query is too complex' do |description, max_complexity|
+      it description, :aggregate_failures do
+        allow(GitlabSchema).to receive(:max_query_complexity).and_return max_complexity
 
         subject
 
@@ -155,9 +154,15 @@ RSpec.describe 'GitlabSchema configurations' do
         # Expect errors for each query
         expect(graphql_errors.size).to eq(3)
         graphql_errors.each do |single_query_errors|
-          expect_graphql_errors_to_include(/which exceeds max complexity of 4/)
+          expect_graphql_errors_to_include(/Query has complexity of 8, which exceeds max complexity of #{max_complexity}/)
         end
       end
+    end
+
+    it_behaves_like 'imposing query limits' do
+      # The total complexity of the multiplex query above is 8
+      it_behaves_like 'query is too complex', 'fails all queries when only one of the queries is too complex', 4
+      it_behaves_like 'query is too complex', 'fails when all queries combined are too complex', 7
     end
 
     context 'authentication' do
@@ -191,6 +196,7 @@ RSpec.describe 'GitlabSchema configurations' do
         complexity: 181,
         depth: 13,
         duration_s: 7,
+        operation_name: 'IntrospectionQuery',
         used_fields: an_instance_of(Array),
         used_deprecated_fields: an_instance_of(Array)
       }

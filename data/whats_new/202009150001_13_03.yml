@@ -27,7 +27,7 @@
   body: |
     Dynamic Application Security Testing at GitLab has always been focused on integrating DAST into the DevOps pipeline and enabling developers to scan their review app, running website, or API for vulnerabilities as early as possible.
 
-    However, there are times when it is necessary to run a DAST scan against an already deployed application when no code changes have been made and no Merge Request has been created. These scans could be needed for audit or compliance reasons, to debug and reproduce an issue that has been found, or to support teams who do not commit code, such as security analysts.
+    However, there are times when it is necessary to run a DAST scan against an already deployed application when no code changes have been made and no merge request has been created. These scans could be needed for audit or compliance reasons, to debug and reproduce an issue that has been found, or to support teams who do not commit code, such as security analysts.
 
     Because of the need for DAST scans that are not triggered by a code change or MR, on-demand DAST testing is now available. You don’t need configuration files or code to start running on-demand scans. Configuration options for on-demand DAST scans are available within the GitLab UI.
   stage: Secure

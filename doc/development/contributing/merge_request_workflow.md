@@ -131,9 +131,9 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 - The commit subject must not be longer than 72 characters.
 - The commit subject must not end with a period.
 - The commit body must not contain more than 72 characters per line.
-- Commits that change 30 or more lines across at least 3 files must
-  describe these changes in the commit body.
 - The commit subject or body must not contain Emojis.
+- Commits that change 30 or more lines across at least 3 files should
+  describe these changes in the commit body.
 - Use issues and merge requests' full URLs instead of short references,
   as they are displayed as plain text outside of GitLab.
 - The merge request should not contain more than 10 commit messages.
@@ -178,7 +178,7 @@ Example commit message template that can be used on your machine that embodies t
 #    Do not end the subject line with a period
 #    Subject must contain at least 3 words
 #    Separate subject from body with a blank line
-#    Commits that change 30 or more lines across at least 3 files must
+#    Commits that change 30 or more lines across at least 3 files should
 #    describe these changes in the commit body
 #    Do not use Emojis
 #    Use the body to explain what and why vs. how
@@ -249,6 +249,7 @@ requirements.
 1. [Black-box tests/end-to-end tests](../testing_guide/testing_levels.md#black-box-tests-at-the-system-level-aka-end-to-end-tests)
    added if required. Please contact [the quality team](https://about.gitlab.com/handbook/engineering/quality/#teams)
    with any questions.
+1. The new feature does not degrade the user experience of the product.
 
 ## Dependencies
 

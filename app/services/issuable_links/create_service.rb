@@ -7,7 +7,9 @@ module IssuableLinks
     attr_reader :issuable, :current_user, :params
 
     def initialize(issuable, user, params)
-      @issuable, @current_user, @params = issuable, user, params.dup
+      @issuable = issuable
+      @current_user = user
+      @params = params.dup
     end
 
     def execute
@@ -107,11 +109,11 @@ module IssuableLinks
     end
 
     def issuables_assigned_message
-      'Issue(s) already assigned'
+      _("Issue(s) already assigned")
     end
 
     def issuables_not_found_message
-      'No Issue found for given params'
+      _("No matching issue found. Make sure that you are adding a valid issue URL.")
     end
   end
 end

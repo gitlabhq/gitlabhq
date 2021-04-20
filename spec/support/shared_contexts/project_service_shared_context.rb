@@ -15,7 +15,10 @@ RSpec.shared_context 'project service activation' do
 
   def visit_project_integration(name)
     visit_project_integrations
-    click_link(name)
+
+    within('#content-body') do
+      click_link(name)
+    end
   end
 
   def click_active_checkbox

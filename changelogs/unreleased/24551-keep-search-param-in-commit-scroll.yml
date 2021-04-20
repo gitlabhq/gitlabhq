@@ -1,0 +1,5 @@
+---
+title: Ensure search param is kept in scrolled commit
+merge_request: 57307
+author:
+type: fixed

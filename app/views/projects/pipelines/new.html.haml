@@ -1,9 +1,9 @@
 - breadcrumb_title _('Pipelines')
-- page_title s_('Pipeline|Run Pipeline')
+- page_title s_('Pipeline|Run pipeline')
 - settings_link = link_to _('CI/CD settings'), project_settings_ci_cd_path(@project)
 
 %h3.page-title
-  = s_('Pipeline|Run Pipeline')
+  = s_('Pipeline|Run pipeline')
 %hr
 
 - if Feature.enabled?(:new_pipeline_form, @project, default_enabled: :yaml)
@@ -49,7 +49,7 @@
           = (s_("Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default.") % {settings_link: settings_link}).html_safe
 
     .form-actions
-      = f.submit s_('Pipeline|Run Pipeline'), class: 'btn btn-success js-variables-save-button'
-      = link_to _('Cancel'), project_pipelines_path(@project), class: 'btn btn-default float-right'
+      = f.submit s_('Pipeline|Run pipeline'), class: 'btn gl-button btn-confirm gl-mr-3 js-variables-save-button'
+      = link_to _('Cancel'), project_pipelines_path(@project), class: 'btn gl-button btn-default'
 
   %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

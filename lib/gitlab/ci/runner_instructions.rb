@@ -51,10 +51,7 @@ module Gitlab
 
       attr_reader :errors
 
-      def initialize(current_user:, group: nil, project: nil, os:, arch:)
-        @current_user = current_user
-        @group = group
-        @project = project
+      def initialize(os:, arch:)
         @os = os
         @arch = arch
         @errors = []
@@ -77,7 +74,7 @@ module Gitlab
           server_url = Gitlab::Routing.url_helpers.root_url(only_path: false)
           runner_executable = environment[:runner_executable]
 
-          "#{runner_executable} register --url #{server_url} --registration-token #{registration_token}"
+          "#{runner_executable} register --url #{server_url} --registration-token $REGISTRATION_TOKEN"
         end
       end
 
@@ -107,30 +104,6 @@ module Gitlab
 
       def get_file(path)
         File.read(Rails.root.join(path).to_s)
-      end
-
-      def registration_token
-        project_token || group_token || instance_token
-      end
-
-      def project_token
-        return unless @project
-        raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :admin_pipeline, @project)
-
-        @project.runners_token
-      end
-
-      def group_token
-        return unless @group
-        raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :admin_group, @group)
-
-        @group.runners_token
-      end
-
-      def instance_token
-        raise Gitlab::Access::AccessDeniedError unless @current_user&.admin?
-
-        Gitlab::CurrentSettings.runners_registration_token
       end
     end
   end

@@ -526,7 +526,7 @@ eos
       context 'that is found' do
         before do
           # Artificially mark as completed.
-          merge_request.update(merge_commit_sha: merge_commit.id)
+          merge_request.update!(merge_commit_sha: merge_commit.id)
         end
 
         it do

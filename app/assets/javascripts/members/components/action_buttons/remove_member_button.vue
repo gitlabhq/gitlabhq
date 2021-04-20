@@ -8,10 +8,16 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['namespace'],
   props: {
     memberId: {
       type: Number,
       required: true,
+    },
+    memberType: {
+      type: String,
+      required: false,
+      default: null,
     },
     message: {
       type: String,
@@ -31,11 +37,28 @@ export default {
       required: false,
       default: false,
     },
+    isInvite: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    oncallSchedules: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
   },
   computed: {
-    ...mapState(['memberPath']),
+    ...mapState({
+      memberPath(state) {
+        return state[this.namespace].memberPath;
+      },
+    }),
     computedMemberPath() {
       return this.memberPath.replace(':id', this.memberId);
+    },
+    stringifiedSchedules() {
+      return JSON.stringify(this.oncallSchedules);
     },
   },
 };
@@ -50,8 +73,11 @@ export default {
     :aria-label="title"
     :icon="icon"
     :data-member-path="computedMemberPath"
+    :data-member-type="memberType"
     :data-is-access-request="isAccessRequest"
+    :data-is-invite="isInvite"
     :data-message="message"
+    :data-oncall-schedules="stringifiedSchedules"
     data-qa-selector="delete_member_button"
   />
 </template>

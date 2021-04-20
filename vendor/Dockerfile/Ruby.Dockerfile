@@ -1,4 +1,4 @@
-FROM ruby:2.5
+FROM ruby:2.7
 
 # Edit with nodejs, mysql-client, postgresql-client, sqlite3, etc. for your needs.
 # Or delete entirely if not needed.

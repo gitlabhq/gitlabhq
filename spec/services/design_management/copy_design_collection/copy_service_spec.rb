@@ -7,6 +7,7 @@ RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitla
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:issue, refind: true) { create(:issue, project: project) }
+
   let(:target_issue) { create(:issue) }
 
   subject { described_class.new(project, user, issue: issue, target_issue: target_issue).execute }

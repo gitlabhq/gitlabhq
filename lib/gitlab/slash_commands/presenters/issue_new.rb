@@ -12,16 +12,18 @@ module Gitlab
 
         private
 
-        def fallback_message
-          "New issue #{issue.to_reference}: #{issue.title}"
-        end
-
-        def fields_with_markdown
-          %i(title pretext text fields)
-        end
-
         def pretext
-          "I created an issue on #{author_profile_link}'s behalf: *#{issue.to_reference}* in #{project_link}"
+          "I created an issue on #{author_profile_link}'s behalf: *#{issue_link}* in #{project_link}"
+        end
+
+        def issue_link
+          "[#{issue.to_reference}](#{project_issue_url(issue.project, issue)})"
+        end
+
+        def response_message(custom_pretext: pretext)
+          {
+            text: pretext
+          }
         end
       end
     end

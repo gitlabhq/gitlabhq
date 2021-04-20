@@ -100,9 +100,9 @@ module API
           authorize_admin_source!(source_type, source)
 
           if params[:user_id].to_s.include?(',')
-            create_service_params = params.except(:user_id).merge({ user_ids: params[:user_id] })
+            create_service_params = params.except(:user_id).merge({ user_ids: params[:user_id], source: source })
 
-            ::Members::CreateService.new(current_user, create_service_params).execute(source)
+            ::Members::CreateService.new(current_user, create_service_params).execute
           elsif params[:user_id].present?
             member = source.members.find_by(user_id: params[:user_id])
             conflict!('Member already exists') if member
@@ -155,6 +155,8 @@ module API
         desc 'Removes a user from a group or project.'
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the member'
+          optional :skip_subresources, type: Boolean, default: false,
+                   desc: 'Flag indicating if the deletion of direct memberships of the removed member in subgroups and projects should be skipped'
           optional :unassign_issuables, type: Boolean, default: false,
                    desc: 'Flag indicating if the removed member should be unassigned from any issues or merge requests within given group or project'
         end
@@ -164,7 +166,7 @@ module API
           member = source_members(source).find_by!(user_id: params[:user_id])
 
           destroy_conditionally!(member) do
-            ::Members::DestroyService.new(current_user).execute(member, unassign_issuables: params[:unassign_issuables])
+            ::Members::DestroyService.new(current_user).execute(member, skip_subresources: params[:skip_subresources], unassign_issuables: params[:unassign_issuables])
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord

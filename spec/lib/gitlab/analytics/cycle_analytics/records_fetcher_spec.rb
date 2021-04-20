@@ -7,16 +7,15 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
     Timecop.freeze { example.run }
   end
 
+  let(:params) { { from: 1.year.ago, current_user: user } }
+
   let_it_be(:project) { create(:project, :empty_repo) }
   let_it_be(:user) { create(:user) }
 
   subject do
     Gitlab::Analytics::CycleAnalytics::DataCollector.new(
       stage: stage,
-      params: {
-        from: 1.year.ago,
-        current_user: user
-      }
+      params: params
     ).records_fetcher.serialized_records
   end
 
@@ -34,6 +33,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
     describe 'for issue based stage' do
       let_it_be(:issue1) { create(:issue, project: project) }
       let_it_be(:issue2) { create(:issue, project: project, confidential: true) }
+
       let(:stage) do
         build(:cycle_analytics_project_stage, {
           start_event_identifier: :plan_stage_start,
@@ -128,6 +128,42 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
           include_examples 'orders build records by `latest_build_finished_at`'
         end
       end
+    end
+  end
+
+  describe 'pagination' do
+    let_it_be(:issue1) { create(:issue, project: project) }
+    let_it_be(:issue2) { create(:issue, project: project) }
+    let_it_be(:issue3) { create(:issue, project: project) }
+
+    let(:stage) do
+      build(:cycle_analytics_project_stage, {
+        start_event_identifier: :plan_stage_start,
+        end_event_identifier: :issue_first_mentioned_in_commit,
+        project: project
+      })
+    end
+
+    before(:all) do
+      issue1.metrics.update(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
+      issue2.metrics.update(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
+      issue3.metrics.update(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
+    end
+
+    before do
+      project.add_user(user, Gitlab::Access::DEVELOPER)
+
+      stub_const('Gitlab::Analytics::CycleAnalytics::RecordsFetcher::MAX_RECORDS', 2)
+    end
+
+    it 'limits the results' do
+      expect(subject.size).to eq(2)
+    end
+
+    it 'loads the record for the next page' do
+      params[:page] = 2
+
+      expect(subject.size).to eq(1)
     end
   end
 end

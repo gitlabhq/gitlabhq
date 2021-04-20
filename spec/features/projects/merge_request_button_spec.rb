@@ -14,7 +14,9 @@ RSpec.describe 'Merge Request button' do
       it 'does not show Create merge request button' do
         visit url
 
-        expect(page).not_to have_link(label)
+        within '.content-wrapper' do
+          expect(page).not_to have_link(label)
+        end
       end
     end
 

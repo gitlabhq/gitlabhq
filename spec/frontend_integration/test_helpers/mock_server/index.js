@@ -1,4 +1,5 @@
 import { Server, Model, RestSerializer } from 'miragejs';
+import setupRoutes from 'ee_else_ce_test_helpers/mock_server/routes';
 import {
   getProject,
   getEmptyProject,
@@ -11,7 +12,6 @@ import {
   getBlobImage,
   getBlobZip,
 } from 'test_helpers/fixtures';
-import setupRoutes from './routes';
 
 export const createMockServerOptions = () => ({
   models: {

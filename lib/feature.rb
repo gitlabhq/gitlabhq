@@ -18,10 +18,6 @@ class Feature
     superclass.table_name = 'feature_gates'
   end
 
-  class ActiveSupportCacheStoreAdapter < Flipper::Adapters::ActiveSupportCacheStore
-    # overrides methods in EE
-  end
-
   InvalidFeatureFlagError = Class.new(Exception) # rubocop:disable Lint/InheritException
 
   class << self

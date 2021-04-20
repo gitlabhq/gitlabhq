@@ -24,4 +24,53 @@ RSpec.describe Clusters::AgentToken do
       expect(agent_token.token.length).to be >= 50
     end
   end
+
+  describe '#track_usage', :clean_gitlab_redis_cache do
+    let(:agent_token) { create(:cluster_agent_token) }
+
+    subject { agent_token.track_usage }
+
+    context 'when last_used_at was updated recently' do
+      before do
+        agent_token.update!(last_used_at: 10.minutes.ago)
+      end
+
+      it 'updates cache but not database' do
+        expect { subject }.not_to change { agent_token.reload.read_attribute(:last_used_at) }
+
+        expect_redis_update
+      end
+    end
+
+    context 'when last_used_at was not updated recently' do
+      it 'updates cache and database' do
+        does_db_update
+        expect_redis_update
+      end
+
+      context 'with invalid token' do
+        before do
+          agent_token.description = SecureRandom.hex(2000)
+        end
+
+        it 'still updates caches and database' do
+          expect(agent_token).to be_invalid
+
+          does_db_update
+          expect_redis_update
+        end
+      end
+    end
+
+    def expect_redis_update
+      Gitlab::Redis::Cache.with do |redis|
+        redis_key = "cache:#{described_class.name}:#{agent_token.id}:attributes"
+        expect(redis.get(redis_key)).to be_present
+      end
+    end
+
+    def does_db_update
+      expect { subject }.to change { agent_token.reload.read_attribute(:last_used_at) }
+    end
+  end
 end

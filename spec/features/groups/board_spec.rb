@@ -33,7 +33,7 @@ RSpec.describe 'Group Boards' do
           find('.gl-new-dropdown-item button').click
         end
 
-        click_button 'Submit issue'
+        click_button 'Create issue'
 
         expect(page).to have_content(issue_title)
       end

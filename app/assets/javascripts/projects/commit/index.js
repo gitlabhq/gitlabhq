@@ -1,11 +1,11 @@
 import initCherryPickCommitModal from './init_cherry_pick_commit_modal';
-import initCherryPickCommitTrigger from './init_cherry_pick_commit_trigger';
+import initCommitCommentsButton from './init_commit_comments_button';
+import initCommitOptionsDropdown from './init_commit_options_dropdown';
 import initRevertCommitModal from './init_revert_commit_modal';
-import initRevertCommitTrigger from './init_revert_commit_trigger';
 
 export default () => {
   initRevertCommitModal();
-  initRevertCommitTrigger();
   initCherryPickCommitModal();
-  initCherryPickCommitTrigger();
+  initCommitCommentsButton();
+  initCommitOptionsDropdown();
 };

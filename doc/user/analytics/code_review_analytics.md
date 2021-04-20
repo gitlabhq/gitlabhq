@@ -24,11 +24,11 @@ Initially, no data appears. Data is populated as users comment on open merge req
 
 Code Review Analytics is available to users with Reporter access and above, and displays a table of open merge requests that have at least one non-author comment. The review time is measured from the time the first non-author comment was submitted.
 
-To access Code Review Analytics, from your project's menu, go to **Project Analytics > Code Review**.
+To access Code Review Analytics, from your project's menu, go to **Analytics > Code Review**.
 
 You can filter the list of merge requests by milestone and label.
 
-![Code Review Analytics](img/code_review_analytics_v12_8.png "List of code reviews; oldest review first.")
+![Code Review Analytics](img/code_review_analytics_v13_11.png "List of code reviews; oldest review first.")
 
 The table is sorted by:
 

@@ -215,7 +215,7 @@ module Gitlab
         'client_name' => CLIENT_NAME
       }
 
-      context_data = Labkit::Context.current&.to_h
+      context_data = Gitlab::ApplicationContext.current
 
       feature_stack = Thread.current[:gitaly_feature_stack]
       feature = feature_stack && feature_stack[0]

@@ -38,19 +38,19 @@ RSpec.shared_examples 'User previews wiki changes' do
       end
     end
 
-    context "when there are no spaces or hyphens in the page name" do
+    context "when there are no spaces or hyphens in the page name", :js do
       let(:wiki_page) { build(:wiki_page, wiki: wiki, title: 'a/b/c/d', content: page_content) }
 
       it_behaves_like 'rewrites relative links'
     end
 
-    context "when there are spaces in the page name" do
+    context "when there are spaces in the page name", :js do
       let(:wiki_page) { build(:wiki_page, wiki: wiki, title: 'a page/b page/c page/d page', content: page_content) }
 
       it_behaves_like 'rewrites relative links'
     end
 
-    context "when there are hyphens in the page name" do
+    context "when there are hyphens in the page name", :js do
       let(:wiki_page) { build(:wiki_page, wiki: wiki, title: 'a-page/b-page/c-page/d-page', content: page_content) }
 
       it_behaves_like 'rewrites relative links'

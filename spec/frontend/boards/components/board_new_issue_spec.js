@@ -86,7 +86,7 @@ describe('Issue boards new issue form', () => {
 
   describe('submit success', () => {
     it('creates new issue', async () => {
-      wrapper.setData({ title: 'submit issue' });
+      wrapper.setData({ title: 'create issue' });
 
       await vm.$nextTick();
       await submitIssue();
@@ -95,7 +95,7 @@ describe('Issue boards new issue form', () => {
 
     it('enables button after submit', async () => {
       jest.spyOn(wrapper.vm, 'submit').mockImplementation();
-      wrapper.setData({ title: 'submit issue' });
+      wrapper.setData({ title: 'create issue' });
 
       await vm.$nextTick();
       await submitIssue();
@@ -103,7 +103,7 @@ describe('Issue boards new issue form', () => {
     });
 
     it('clears title after submit', async () => {
-      wrapper.setData({ title: 'submit issue' });
+      wrapper.setData({ title: 'create issue' });
 
       await vm.$nextTick();
       await submitIssue();

@@ -404,7 +404,7 @@ RSpec.describe Boards::IssuesController do
         list_id: list.try(:to_param)
       }
 
-      unless board.try(:parent)&.is_a?(Group)
+      unless board.try(:parent).is_a?(Group)
         params[:namespace_id] = project.namespace.to_param
         params[:project_id] = project
       end

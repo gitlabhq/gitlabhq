@@ -19,6 +19,9 @@ RSpec.describe Gitlab::DataBuilder::Build do
     it { expect(data[:tag]).to eq(build.tag) }
     it { expect(data[:build_id]).to eq(build.id) }
     it { expect(data[:build_status]).to eq(build.status) }
+    it { expect(data[:build_created_at]).to eq(build.created_at) }
+    it { expect(data[:build_started_at]).to eq(build.started_at) }
+    it { expect(data[:build_finished_at]).to eq(build.finished_at) }
     it { expect(data[:build_allow_failure]).to eq(false) }
     it { expect(data[:build_failure_reason]).to eq(build.failure_reason) }
     it { expect(data[:project_id]).to eq(build.project.id) }

@@ -50,7 +50,8 @@ module ResolvesMergeRequests
       approved_by: [:approved_by_users],
       milestone: [:milestone],
       security_auto_fix: [:author],
-      head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request] }]
+      head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request] }],
+      timelogs: [:timelogs]
     }
   end
 end

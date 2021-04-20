@@ -44,6 +44,60 @@ RSpec.describe IssuablesHelper do
     end
   end
 
+  describe '#assignees_label' do
+    let(:issuable) { build(:merge_request) }
+    let(:assignee1) { build_stubbed(:user, name: 'Jane Doe') }
+    let(:assignee2) { build_stubbed(:user, name: 'John Doe') }
+
+    before do
+      allow(issuable).to receive(:assignees).and_return(assignees)
+    end
+
+    context 'when multiple assignees exist' do
+      let(:assignees) { [assignee1, assignee2] }
+
+      it 'returns assignee label with assignee names' do
+        expect(helper.assignees_label(issuable)).to eq("Assignees: Jane Doe and John Doe")
+      end
+
+      it 'returns assignee label only with include_value: false' do
+        expect(helper.assignees_label(issuable, include_value: false)).to eq("Assignees")
+      end
+
+      context 'when the name contains a URL' do
+        let(:assignees) { [build_stubbed(:user, name: 'www.gitlab.com')] }
+
+        it 'returns sanitized name' do
+          expect(helper.assignees_label(issuable)).to eq("Assignee: www_gitlab_com")
+        end
+      end
+    end
+
+    context 'when one assignee exists' do
+      let(:assignees) { [assignee1] }
+
+      it 'returns assignee label with no names' do
+        expect(helper.assignees_label(issuable)).to eq("Assignee: Jane Doe")
+      end
+
+      it 'returns assignee label only with include_value: false' do
+        expect(helper.assignees_label(issuable, include_value: false)).to eq("Assignee")
+      end
+    end
+
+    context 'when no assignees exist' do
+      let(:assignees) { [] }
+
+      it 'returns assignee label with no names' do
+        expect(helper.assignees_label(issuable)).to eq("Assignees: ")
+      end
+
+      it 'returns assignee label only with include_value: false' do
+        expect(helper.assignees_label(issuable, include_value: false)).to eq("Assignees")
+      end
+    end
+  end
+
   describe '#issuable_meta' do
     let(:user) { create(:user) }
 

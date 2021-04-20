@@ -3,6 +3,7 @@
 module API
   module Helpers
     include Gitlab::Utils
+    include Helpers::Caching
     include Helpers::Pagination
     include Helpers::PaginationStrategies
 
@@ -48,7 +49,11 @@ module API
     # Returns the job associated with the token provided for
     # authentication, if any
     def current_authenticated_job
-      @current_authenticated_job
+      if try(:namespace_inheritable, :authentication)
+        ci_build_from_namespace_inheritable
+      else
+        @current_authenticated_job # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      end
     end
 
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -539,17 +544,6 @@ module API
       end
     end
 
-    def track_event(action = action_name, **args)
-      category = args.delete(:category) || self.options[:for].name
-      raise "invalid category" unless category
-
-      ::Gitlab::Tracking.event(category, action.to_s, **args)
-    rescue => error
-      Gitlab::AppLogger.warn(
-        "Tracking event failed for action: #{action}, category: #{category}, message: #{error.message}"
-      )
-    end
-
     def increment_counter(event_name)
       feature_name = "usage_data_#{event_name}"
       return unless Feature.enabled?(feature_name)
@@ -563,10 +557,6 @@ module API
     # @param values [Array|String] the values counted
     def increment_unique_values(event_name, values)
       return unless values.present?
-
-      feature_flag = "usage_data_#{event_name}"
-
-      return unless Feature.enabled?(feature_flag, default_enabled: true)
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: values)
     rescue => error

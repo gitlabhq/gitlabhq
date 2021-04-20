@@ -21,6 +21,7 @@ RSpec.describe 'projects/tags/index.html.haml' do
   end
 
   it 'defaults sort dropdown toggle to last updated' do
+    stub_feature_flags(gldropdown_tags: false)
     render
     expect(rendered).to have_button('Last updated')
   end

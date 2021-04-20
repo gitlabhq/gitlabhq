@@ -9,21 +9,7 @@ module API
 
     feature_category :continuous_integration
 
-    helpers do
-      def filter_variable_parameters(params)
-        # This method exists so that EE can more easily filter out certain
-        # parameters, without having to modify the source code directly.
-        params
-      end
-
-      def find_variable(params)
-        variables = ::Ci::VariablesFinder.new(user_project, params).execute.to_a
-
-        return variables.first unless variables.many? # rubocop: disable CodeReuse/ActiveRecord
-
-        conflict!("There are multiple variables with provided parameters. Please use 'filter[environment_scope]'")
-      end
-    end
+    helpers Helpers::VariablesHelpers
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
@@ -49,7 +35,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/variables/:key' do
-        variable = find_variable(params)
+        variable = find_variable(user_project, params)
         not_found!('Variable') unless variable
 
         present variable, with: Entities::Ci::Variable
@@ -71,7 +57,7 @@ module API
         variable = ::Ci::ChangeVariableService.new(
           container: user_project,
           current_user: current_user,
-          params: { action: :create, variable_params: filter_variable_parameters(declared_params(include_missing: false)) }
+          params: { action: :create, variable_params: declared_params(include_missing: false) }
         ).execute
 
         if variable.valid?
@@ -95,17 +81,13 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ':id/variables/:key' do
-        variable = find_variable(params)
+        variable = find_variable(user_project, params)
         not_found!('Variable') unless variable
 
-        variable_params = filter_variable_parameters(
-          declared_params(include_missing: false)
-            .except(:key, :filter)
-        )
         variable = ::Ci::ChangeVariableService.new(
           container: user_project,
           current_user: current_user,
-          params: { action: :update, variable: variable, variable_params: variable_params }
+          params: { action: :update, variable: variable, variable_params: declared_params(include_missing: false).except(:key, :filter) }
         ).execute
 
         if variable.valid?
@@ -125,7 +107,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/variables/:key' do
-        variable = find_variable(params)
+        variable = find_variable(user_project, params)
         not_found!('Variable') unless variable
 
         ::Ci::ChangeVariableService.new(

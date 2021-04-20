@@ -12,7 +12,7 @@
   image_url: https://about.gitlab.com/images/13_1/alert_management.png
   published_at: 2020-06-22
   release: 13.1
-- title: Accessibility Testing Merge Request Widget
+- title: Accessibility testing merge request widget
   body: |
     Today, developers who want to ensure their application is accessible to everyone suffer from slow feedback loops, which make it difficult to catch degradations in their code.
 
@@ -36,9 +36,9 @@
   image_url: https://about.gitlab.com/images/13_1/resolve-design-comment.gif
   published_at: 2020-06-22
   release: 13.1
-- title: Merge Request Reviews moved to Free
+- title: Merge request reviews moved to Free
   body: |
-    Originally introduced in GitLab 11.4 as a GitLab Premium feature, Merge Request Reviews allow merge request reviewers to submit multiple comments at once, cutting down on notification noise for the merge request author, and allowing for a more cohesive and streamlined review process.
+    Originally introduced in GitLab 11.4 as a GitLab Premium feature, merge request reviews allow merge request reviewers to submit multiple comments at once, cutting down on notification noise for the merge request author, and allowing for a more cohesive and streamlined review process.
   stage: Create
   self-managed: true
   gitlab-com: true

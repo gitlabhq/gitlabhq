@@ -4,16 +4,24 @@ module Resolvers
   class UserMergeRequestsResolverBase < MergeRequestsResolver
     include ResolvesProject
 
-    argument :project_path, GraphQL::STRING_TYPE,
-          required: false,
-          description: 'The full-path of the project the authored merge requests should be in. Incompatible with projectId.'
+    argument :project_path,
+             type: GraphQL::STRING_TYPE,
+             required: false,
+             description: <<~DESC
+               The full-path of the project the authored merge requests should be in.
+               Incompatible with projectId.
+             DESC
 
-    argument :project_id, ::Types::GlobalIDType[::Project],
-          required: false,
-          description: 'The global ID of the project the authored merge requests should be in. Incompatible with projectPath.'
+    argument :project_id,
+             type: ::Types::GlobalIDType[::Project],
+             required: false,
+             description: <<~DESC
+               The global ID of the project the authored merge requests should be in.
+               Incompatible with projectPath.
+             DESC
 
     attr_reader :project
-    alias_method :user, :synchronized_object
+    alias_method :user, :object
 
     def ready?(project_id: nil, project_path: nil, **args)
       return early_return unless can_read_profile?
@@ -22,8 +30,7 @@ module Resolvers
         load_project(project_path, project_id)
         return early_return unless can_read_project?
       elsif args[:iids].present?
-        raise ::Gitlab::Graphql::Errors::ArgumentError,
-          'iids requires projectPath or projectId'
+        raise ::Gitlab::Graphql::Errors::ArgumentError, 'iids requires projectPath or projectId'
       end
 
       super(**args)

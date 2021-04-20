@@ -29,6 +29,10 @@ import EnvironmentsDropdown from './environments_dropdown.vue';
 import Strategy from './strategy.vue';
 
 export default {
+  i18n: {
+    removeLabel: s__('FeatureFlags|Remove'),
+    statusLabel: s__('FeatureFlags|Status'),
+  },
   components: {
     GlButton,
     GlBadge,
@@ -314,7 +318,7 @@ export default {
             <h4>{{ s__('FeatureFlags|Strategies') }}</h4>
             <div class="flex align-items-baseline justify-content-between">
               <p class="mr-3">{{ $options.translations.newHelpText }}</p>
-              <gl-button variant="success" category="secondary" @click="addStrategy">
+              <gl-button variant="confirm" category="secondary" @click="addStrategy">
                 {{ s__('FeatureFlags|Add strategy') }}
               </gl-button>
             </div>
@@ -396,12 +400,14 @@ export default {
 
               <div class="table-section section-20 text-center" role="gridcell">
                 <div class="table-mobile-header" role="rowheader">
-                  {{ s__('FeatureFlags|Status') }}
+                  {{ $options.i18n.statusLabel }}
                 </div>
                 <div class="table-mobile-content gl-display-flex gl-justify-content-center">
                   <gl-toggle
                     :value="scope.active"
                     :disabled="!active || !canUpdateScope(scope)"
+                    :label="$options.i18n.statusLabel"
+                    label-position="hidden"
                     @change="(status) => (scope.active = status)"
                   />
                 </div>
@@ -502,7 +508,8 @@ export default {
                   <gl-button
                     v-if="!isAllEnvironment(scope.environmentScope) && canUpdateScope(scope)"
                     v-gl-tooltip
-                    :title="s__('FeatureFlags|Remove')"
+                    :title="$options.i18n.removeLabel"
+                    :aria-label="$options.i18n.removeLabel"
                     class="js-delete-scope btn-transparent pr-3 pl-3"
                     icon="clear"
                     data-testid="feature-flag-delete"
@@ -529,11 +536,13 @@ export default {
 
               <div class="table-section section-20 text-center" role="gridcell">
                 <div class="table-mobile-header" role="rowheader">
-                  {{ s__('FeatureFlags|Status') }}
+                  {{ $options.i18n.statusLabel }}
                 </div>
                 <div class="table-mobile-content gl-display-flex gl-justify-content-center">
                   <gl-toggle
                     :disabled="!active"
+                    :label="$options.i18n.statusLabel"
+                    label-position="hidden"
                     :value="false"
                     @change="createNewScope({ active: true })"
                   />
@@ -575,7 +584,7 @@ export default {
         ref="submitButton"
         :disabled="readOnly"
         type="button"
-        variant="success"
+        variant="confirm"
         class="js-ff-submit col-xs-12"
         @click="handleSubmit"
         >{{ submitText }}</gl-button

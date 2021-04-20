@@ -36,6 +36,8 @@ class Project < ApplicationRecord
   include Integration
   include Repositories::CanHousekeepRepository
   include EachBatch
+  include GitlabRoutingHelper
+
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
 
@@ -219,7 +221,7 @@ class Project < ApplicationRecord
   has_one :alerting_setting, inverse_of: :project, class_name: 'Alerting::ProjectAlertingSetting'
   has_one :service_desk_setting, class_name: 'ServiceDeskSetting'
 
-  # Merge Requests for target project should be removed with it
+  # Merge requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project
   has_many :merge_request_metrics, foreign_key: 'target_project', class_name: 'MergeRequest::Metrics', inverse_of: :target_project
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
@@ -517,7 +519,7 @@ class Project < ApplicationRecord
   scope :with_packages, -> { joins(:packages) }
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
-  scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
+  scope :joined, ->(user) { where.not(namespace_id: user.namespace_id) }
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
@@ -577,7 +579,7 @@ class Project < ApplicationRecord
     with_issues_available_for_user(user).or(with_merge_requests_available_for_user(user))
   end
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
-  scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
+  scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }) }
   scope :with_limit, -> (maximum) { limit(maximum) }
 
   scope :with_group_runners_enabled, -> do
@@ -621,7 +623,7 @@ class Project < ApplicationRecord
   end
 
   def self.with_web_entity_associations
-    preload(:project_feature, :route, :creator, :group, namespace: [:route, :owner])
+    preload(:project_feature, :route, :creator, group: :parent, namespace: [:route, :owner])
   end
 
   def self.eager_load_namespace_and_owner
@@ -1368,15 +1370,15 @@ class Project < ApplicationRecord
   end
 
   def disabled_services
-    return %w(datadog) unless Feature.enabled?(:datadog_ci_integration, self)
+    return %w[datadog hipchat] unless Feature.enabled?(:datadog_ci_integration, self)
 
-    []
+    %w[hipchat]
   end
 
   def find_or_initialize_service(name)
     return if disabled_services.include?(name)
 
-    find_service(services, name) || build_from_instance_or_template(name) || public_send("build_#{name}_service") # rubocop:disable GitlabSecurity/PublicSend
+    find_service(services, name) || build_from_instance_or_template(name) || build_service(name)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -1713,8 +1715,13 @@ class Project < ApplicationRecord
     end
   end
 
+  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/326989
   def any_active_runners?(&block)
     active_runners_with_tags.any?(&block)
+  end
+
+  def any_online_runners?(&block)
+    online_runners_with_tags.any?(&block)
   end
 
   def valid_runners_token?(token)
@@ -1812,7 +1819,7 @@ class Project < ApplicationRecord
   # TODO: remove this method https://gitlab.com/gitlab-org/gitlab/-/issues/320775
   # rubocop: disable CodeReuse/ServiceClass
   def legacy_remove_pages
-    return unless Feature.enabled?(:pages_update_legacy_storage, default_enabled: true)
+    return unless ::Settings.pages.local_store.enabled
 
     # Projects with a missing namespace cannot have their pages removed
     return unless namespace
@@ -1848,7 +1855,7 @@ class Project < ApplicationRecord
     # where().update_all to perform update in the single transaction with check for null
     ProjectPagesMetadatum
       .where(project_id: id, pages_deployment_id: nil)
-      .update_all(pages_deployment_id: deployment.id)
+      .update_all(deployed: deployment.present?, pages_deployment_id: deployment&.id)
   end
 
   def write_repository_config(gl_full_path: full_path)
@@ -2145,8 +2152,8 @@ class Project < ApplicationRecord
         data = repository.route_map_for(sha)
 
         Gitlab::RouteMap.new(data) if data
-               rescue Gitlab::RouteMap::FormatError
-                 nil
+      rescue Gitlab::RouteMap::FormatError
+        nil
       end
     end
 
@@ -2165,17 +2172,18 @@ class Project < ApplicationRecord
   end
 
   def default_merge_request_target
-    return self unless forked_from_project
-    return self unless forked_from_project.merge_requests_enabled?
+    return self if project_setting.mr_default_target_self
+    return self unless mr_can_target_upstream?
 
-    # When our current visibility is more restrictive than the source project,
-    # (e.g., the fork is `private` but the parent is `public`), target the less
-    # permissive project
-    if visibility_level_value < forked_from_project.visibility_level_value
-      self
-    else
-      forked_from_project
-    end
+    forked_from_project
+  end
+
+  def mr_can_target_upstream?
+    # When our current visibility is more restrictive than the upstream project,
+    # (e.g., the fork is `private` but the parent is `public`), don't allow target upstream
+    forked_from_project &&
+      forked_from_project.merge_requests_enabled? &&
+      forked_from_project.visibility_level_value <= visibility_level_value
   end
 
   def multiple_issue_boards_available?
@@ -2320,6 +2328,11 @@ class Project < ApplicationRecord
   def external_authorization_classification_label
     super || ::Gitlab::CurrentSettings.current_application_settings
                .external_authorization_service_default_label
+  end
+
+  # Overridden in EE::Project
+  def licensed_feature_available?(_feature)
+    false
   end
 
   def licensed_features
@@ -2584,6 +2597,10 @@ class Project < ApplicationRecord
     return Service.build_from_integration(template, project_id: id) if template
   end
 
+  def build_service(name)
+    "#{name}_service".classify.constantize.new(project_id: id)
+  end
+
   def services_templates
     @services_templates ||= Service.for_template
   end
@@ -2734,9 +2751,11 @@ class Project < ApplicationRecord
   end
 
   def active_runners_with_tags
-    strong_memoize(:active_runners_with_tags) do
-      active_runners.with_tags
-    end
+    @active_runners_with_tags ||= active_runners.with_tags
+  end
+
+  def online_runners_with_tags
+    @online_runners_with_tags ||= active_runners_with_tags.online
   end
 end
 

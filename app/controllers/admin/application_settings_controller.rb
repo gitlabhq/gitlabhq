@@ -11,11 +11,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   # https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30233
   before_action :set_application_setting, except: :integrations
 
-  before_action :whitelist_query_limiting, only: [:usage_data]
-
-  before_action only: [:ci_cd] do
-    push_frontend_feature_flag(:ci_instance_variables_ui, default_enabled: true)
-  end
+  before_action :disable_query_limiting, only: [:usage_data]
 
   feature_category :not_owned, [
                      :general, :reporting, :metrics_and_profiling, :network,
@@ -194,8 +190,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     @plans = Plan.all
   end
 
-  def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/63107')
+  def disable_query_limiting
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/29418')
   end
 
   def application_setting_params

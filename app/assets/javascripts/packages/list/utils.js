@@ -1,7 +1,7 @@
 import { LIST_KEY_PROJECT, SORT_FIELDS } from './constants';
 
-export default (isGroupPage) =>
-  SORT_FIELDS.filter((f) => f.key !== LIST_KEY_PROJECT || isGroupPage);
+export const sortableFields = (isGroupPage) =>
+  SORT_FIELDS.filter((f) => f.orderBy !== LIST_KEY_PROJECT || isGroupPage);
 
 /**
  * A small util function that works out if the delete action has deleted the

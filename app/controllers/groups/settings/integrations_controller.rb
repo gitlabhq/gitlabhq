@@ -9,6 +9,8 @@ module Groups
 
       feature_category :integrations
 
+      layout 'group_settings'
+
       def index
         @integrations = Service.find_or_initialize_all_non_project_specific(Service.for_group(group)).sort_by(&:title)
       end

@@ -53,7 +53,7 @@ RSpec.describe PagesUpdateConfigurationWorker do
     end
 
     it "doesn't schedule a worker if updates on legacy storage are disabled", :sidekiq_inline do
-      stub_feature_flags(pages_update_legacy_storage: false)
+      allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
 
       expect(Projects::UpdatePagesConfigurationService).not_to receive(:new)
 

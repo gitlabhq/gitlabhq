@@ -16,6 +16,7 @@ class Group < Namespace
   include Gitlab::Utils::StrongMemoize
   include GroupAPICompatibility
   include EachBatch
+  include HasTimelogsReport
 
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 
@@ -70,6 +71,7 @@ class Group < Namespace
   has_many :group_deploy_keys, through: :group_deploy_keys_groups
   has_many :group_deploy_tokens
   has_many :deploy_tokens, through: :group_deploy_tokens
+  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_one :dependency_proxy_setting, class_name: 'DependencyProxy::GroupSetting'
   has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
@@ -84,7 +86,7 @@ class Group < Namespace
   validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent
   validate :two_factor_authentication_allowed
-  validates :variables, nested_attributes_duplicates: true
+  validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
@@ -176,6 +178,25 @@ class Group < Namespace
 
       root = groups.first.root_ancestor
       groups.drop(1).each { |group| group.root_ancestor = root }
+    end
+
+    # Returns the ids of the passed group models where the `emails_disabled`
+    # column is set to true anywhere in the ancestor hierarchy.
+    def ids_with_disabled_email(groups)
+      innner_query = Gitlab::ObjectHierarchy
+        .new(Group.where('id = namespaces_with_emails_disabled.id'))
+        .base_and_ancestors
+        .where(emails_disabled: true)
+        .select('1')
+        .limit(1)
+
+      group_ids = Namespace
+        .from('(SELECT * FROM namespaces) as namespaces_with_emails_disabled')
+        .where(namespaces_with_emails_disabled: { id: groups })
+        .where('EXISTS (?)', innner_query)
+        .pluck(:id)
+
+      Set.new(group_ids)
     end
 
     private
@@ -325,6 +346,10 @@ class Group < Namespace
     members_with_parents.owners.exists?(user_id: user)
   end
 
+  def blocked_owners
+    members.blocked.where(access_level: Gitlab::Access::OWNER)
+  end
+
   def has_maintainer?(user)
     return false unless user
 
@@ -337,14 +362,29 @@ class Group < Namespace
 
   # Check if user is a last owner of the group.
   def last_owner?(user)
-    has_owner?(user) && members_with_parents.owners.size == 1
+    has_owner?(user) && single_owner?
   end
 
-  def last_blocked_owner?(user)
+  def member_last_owner?(member)
+    return member.last_owner unless member.last_owner.nil?
+
+    last_owner?(member.user)
+  end
+
+  def single_owner?
+    members_with_parents.owners.size == 1
+  end
+
+  def single_blocked_owner?
+    blocked_owners.size == 1
+  end
+
+  def member_last_blocked_owner?(member)
+    return member.last_blocked_owner unless member.last_blocked_owner.nil?
+
     return false if members_with_parents.owners.any?
 
-    blocked_owners = members.blocked.where(access_level: Gitlab::Access::OWNER)
-    blocked_owners.size == 1 && blocked_owners.exists?(user_id: user)
+    single_blocked_owner? && blocked_owners.exists?(user_id: member.user)
   end
 
   def ldap_synced?
@@ -784,13 +824,11 @@ class Group < Namespace
     variables = Ci::GroupVariable.where(group: list_of_ids)
     variables = variables.unprotected unless project.protected_for?(ref)
 
-    if Feature.enabled?(:scoped_group_variables, self, default_enabled: :yaml)
-      variables = if environment
-                    variables.on_environment(environment)
-                  else
-                    variables.where(environment_scope: '*')
-                  end
-    end
+    variables = if environment
+                  variables.on_environment(environment)
+                else
+                  variables.where(environment_scope: '*')
+                end
 
     variables = variables.group_by(&:group_id)
     list_of_ids.reverse.flat_map { |group| variables[group.id] }.compact

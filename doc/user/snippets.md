@@ -14,6 +14,8 @@ You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
 [syntax highlighting](#filenames), [embedding](#embed-snippets), [downloading](#download-snippets),
 and you can maintain your snippets with the [snippets API](../api/snippets.md).
 
+![Example of snippet](img/snippet_intro_v13_11.png)
+
 GitLab provides two types of snippets:
 
 - **Personal snippets**: Created independent of any project.
@@ -57,7 +59,7 @@ To discover all snippets visible to you in GitLab, you can:
 
 - **View all snippets visible to you**: In the top navigation bar of your GitLab
   instance, go to **More > Snippets** to view your snippets dashboard.
-- **Visit [GitLab snippets](http://snippets.gitlab.com/)** for your snippets on GitLab.com.
+- **Visit [GitLab snippets](https://gitlab.com/dashboard/snippets)** for your snippets on GitLab.com.
 - **Explore all public snippets**: In the top navigation bar of your GitLab
   instance, go to **More > Snippets** and select **Explore snippets** to view
   [all public snippets](https://gitlab.com/explore/snippets).
@@ -123,7 +125,16 @@ A single snippet can support up to 10 files, which helps keep related files toge
 - A `gulpfile.js` file and a `package.json` file, which together can be
   used to bootstrap a project and manage its dependencies.
 
-You can manage these by using Git (because they're [versioned](#versioned-snippets)
+If you need more than 10 files for your snippet, we recommend you create a
+[wiki](project/wiki/index.md) instead. Wikis are available for projects at all
+subscription levels, and [groups](project/wiki/index.md#group-wikis) for
+[GitLab Premium](https://about.gitlab.com/pricing).
+
+Snippets with multiple files display a file count in the [snippet list](http://snippets.gitlab.com/):
+
+![Example of snippet](img/snippet_tooltip_v13_10.png)
+
+You can manage snippets with Git (because they're [versioned](#versioned-snippets)
 by a Git repository), through the [Snippets API](../api/snippets.md), and in the GitLab UI.
 
 To add a new file to your snippet through the GitLab UI:

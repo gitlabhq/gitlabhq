@@ -14,7 +14,7 @@ module Gitlab
           end
 
           def counter
-            ::Gitlab::Ci::Pipeline::Metrics.new.pipelines_created_counter
+            ::Gitlab::Ci::Pipeline::Metrics.pipelines_created_counter
           end
         end
       end

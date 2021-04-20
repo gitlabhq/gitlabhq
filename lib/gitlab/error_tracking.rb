@@ -16,6 +16,12 @@ module Gitlab
       Rack::Timeout::RequestTimeoutException
     ].freeze
 
+    PROCESSORS = [
+      ::Gitlab::ErrorTracking::Processor::SidekiqProcessor,
+      ::Gitlab::ErrorTracking::Processor::GrpcErrorProcessor,
+      ::Gitlab::ErrorTracking::Processor::ContextPayloadProcessor
+    ].freeze
+
     class << self
       def configure
         Raven.configure do |config|
@@ -97,7 +103,9 @@ module Gitlab
         inject_context_for_exception(event, hint[:exception])
         custom_fingerprinting(event, hint[:exception])
 
-        event
+        PROCESSORS.reduce(event) do |processed_event, processor|
+          processor.call(processed_event)
+        end
       end
 
       def process_exception(exception, sentry: false, logging: true, extra:)

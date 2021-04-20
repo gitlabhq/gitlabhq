@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
   let_it_be(:mr1) { create(:merge_request, target_project: project, source_project: project, allow_broken: true, created_at: 3.months.ago) }
   let_it_be(:mr2) { create(:merge_request, target_project: project, source_project: project, allow_broken: true, created_at: 1.month.ago) }
   let_it_be(:user) { create(:user) }
+
   let(:params) { { current_user: user } }
   let(:records) do
     stage = build(:cycle_analytics_project_stage, {

@@ -13,7 +13,9 @@ module Enums
           activity_limit_exceeded: 20,
           size_limit_exceeded: 21,
           job_activity_limit_exceeded: 22,
-          deployments_limit_exceeded: 23
+          deployments_limit_exceeded: 23,
+          user_blocked: 24,
+          project_deleted: 25
         }
       end
 

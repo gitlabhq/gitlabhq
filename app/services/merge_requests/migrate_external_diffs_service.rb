@@ -2,7 +2,7 @@
 
 module MergeRequests
   class MigrateExternalDiffsService < ::BaseService
-    MAX_JOBS = 1000.freeze
+    MAX_JOBS = 1000
 
     attr_reader :diff
 

@@ -5,6 +5,10 @@
     "key_path": {
       "type": "string"
     },
+    "name": {
+      "type": ["string", "null"],
+      "pattern": "^([a-z]+_)*[a-z]+$"
+    },
     "description": {
       "type": "string"
     },
@@ -26,7 +30,7 @@
     },
     "status": {
       "type": ["string"],
-      "enum": ["data_available", "planned", "in_progress", "implemented", "not_used", "deprecated"]
+      "enum": ["data_available", "implemented", "not_used", "deprecated", "removed"]
     },
     "milestone": {
       "type": ["string", "null"],

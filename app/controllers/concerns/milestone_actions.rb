@@ -20,7 +20,7 @@ module MilestoneActions
       format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_merge_requests_tab", {
-          merge_requests: @milestone.sorted_merge_requests(current_user), # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          merge_requests: @milestone.sorted_merge_requests(current_user).preload_milestoneish_associations, # rubocop:disable Gitlab/ModuleWithInstanceVariables
           show_project_name: Gitlab::Utils.to_boolean(params[:show_project_name])
         })
       end

@@ -19,6 +19,7 @@ Migration/UpdateLargeTable:
     - :merge_request_diffs
     - :merge_request_metrics
     - :merge_requests
+    - :namespace_settings
     - :namespaces
     - :note_diff_files
     - :notes

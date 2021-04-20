@@ -161,6 +161,7 @@ RSpec.describe GitlabSchema.types['Snippet'] do
 
   describe '#blobs' do
     let_it_be(:snippet) { create(:personal_snippet, :public, author: user) }
+
     let(:query_blobs) { subject.dig('data', 'snippets', 'nodes')[0].dig('blobs', 'nodes') }
     let(:paths) { [] }
     let(:query) do
@@ -201,6 +202,7 @@ RSpec.describe GitlabSchema.types['Snippet'] do
 
     context 'when snippet has repository' do
       let_it_be(:snippet) { create(:personal_snippet, :repository, :public, author: user) }
+
       let(:blobs) { snippet.blobs }
 
       it_behaves_like 'an array'

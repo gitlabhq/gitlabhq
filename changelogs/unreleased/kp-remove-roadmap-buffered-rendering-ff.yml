@@ -1,0 +1,5 @@
+---
+title: Remove unused feature flag ':roadmap_buffered_rendering'
+merge_request: 57486
+author:
+type: removed

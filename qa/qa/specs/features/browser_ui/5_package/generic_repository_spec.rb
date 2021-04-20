@@ -3,11 +3,16 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :packages do
     describe 'Generic Repository' do
-      let(:package_name) { 'my_package' }
-
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'generic-package-project'
+        end
+      end
+
+      let(:package) do
+        Resource::Package.new.tap do |package|
+          package.name = "my_package"
+          package.project = project
         end
       end
 
@@ -90,14 +95,15 @@ module QA
 
       after do
         runner.remove_via_api!
+        package.remove_via_api!
       end
 
       it 'uploads a generic package, downloads and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1108' do
         Page::Project::Menu.perform(&:click_packages_link)
 
         Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_package(package_name)
-          index.click_package(package_name)
+          expect(index).to have_package(package.name)
+          index.click_package(package.name)
         end
 
         Page::Project::Packages::Show.perform(&:click_delete)
@@ -105,7 +111,7 @@ module QA
         Page::Project::Packages::Index.perform do |index|
           aggregate_failures 'package deletion' do
             expect(index).to have_content("Package deleted successfully")
-            expect(index).to have_no_package(package_name)
+            expect(index).to have_no_package(package.name)
           end
         end
       end

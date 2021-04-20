@@ -11,7 +11,6 @@ import boardsStore, {
   boardStoreIssueSet,
   boardStoreIssueDelete,
 } from './boards/stores/boards_store';
-import ModalStore from './boards/stores/modal_store';
 import axios from './lib/utils/axios_utils';
 import { timeFor, parsePikadayDate, dateInWords } from './lib/utils/datetime_utility';
 
@@ -211,7 +210,7 @@ export default class MilestoneSelect {
           const { e } = clickEvent;
           let selected = clickEvent.selectedObj;
 
-          let data, modalStoreFilter;
+          let data;
           if (!selected) return;
 
           if (options.handleClick) {
@@ -234,14 +233,7 @@ export default class MilestoneSelect {
             return;
           }
 
-          if ($dropdown.closest('.add-issues-modal').length) {
-            modalStoreFilter = ModalStore.store.filter;
-          }
-
-          if (modalStoreFilter) {
-            modalStoreFilter[$dropdown.data('fieldName')] = selected.name;
-            e.preventDefault();
-          } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
+          if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             return Issuable.filterResults($dropdown.closest('form'));
           } else if ($dropdown.hasClass('js-filter-submit')) {
             return $dropdown.closest('form').submit();

@@ -5,7 +5,7 @@ module Gitlab
     class Transaction
       THREAD_KEY = :__gitlab_query_counts_transaction
 
-      attr_accessor :count, :whitelisted
+      attr_accessor :count
 
       # The name of the action (e.g. `UsersController#show`) that is being
       # executed.
@@ -45,7 +45,6 @@ module Gitlab
       def initialize
         @action = nil
         @count = 0
-        @whitelisted = false
         @sql_executed = []
       end
 
@@ -59,7 +58,7 @@ module Gitlab
       end
 
       def increment
-        @count += 1 unless whitelisted
+        @count += 1 if enabled?
       end
 
       def executed_sql(sql)
@@ -82,6 +81,10 @@ module Gitlab
         ellipsis = '...' if @count > LOG_THRESHOLD
 
         ["#{header}: #{msg}", log, ellipsis].compact.join("\n")
+      end
+
+      def enabled?
+        ::Gitlab::QueryLimiting.enabled?
       end
     end
   end

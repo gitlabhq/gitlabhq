@@ -1,16 +1,18 @@
 ---
 key_path: redis_hll_counters.quickactions.i_quickactions_unlabel_specific_monthly
-description:
+description: Count of MAU using the `/unlabel` or `/remove_label` quick action to remove one or more specific labels
 product_section: dev
 product_stage: plan
 product_group: group::project management
-product_category:
+product_category: issue_tracking
 value_type: number
 status: data_available
 time_frame: 28d
 data_source: redis_hll
 distribution:
 - ce
+- ee 
 tier:
 - free
-skip_validation: true
+- premium 
+- ultimate

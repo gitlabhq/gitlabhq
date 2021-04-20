@@ -36,7 +36,7 @@ module Projects
 
       override :alert_source
       def alert_source
-        alert.monitoring_tool || integration&.name || 'Generic Alert Endpoint'
+        super || integration&.name || 'Generic Alert Endpoint'
       end
 
       def active_integration?

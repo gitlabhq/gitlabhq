@@ -8,6 +8,7 @@ import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutatio
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
 import getPipelineQuery from '../graphql/queries/get_pipeline_header_data.query.graphql';
+import { getQueryHeaders } from './graph/utils';
 
 const DELETE_MODAL_ID = 'pipeline-delete-modal';
 const POLL_INTERVAL = 10000;
@@ -34,7 +35,9 @@ export default {
     [DEFAULT]: __('An unknown error occurred.'),
   },
   inject: {
-    // Receive `fullProject` and `pipelinesPath`
+    graphqlResourceEtag: {
+      default: '',
+    },
     paths: {
       default: {},
     },
@@ -47,6 +50,9 @@ export default {
   },
   apollo: {
     pipeline: {
+      context() {
+        return getQueryHeaders(this.graphqlResourceEtag);
+      },
       query: getPipelineQuery,
       variables() {
         return {

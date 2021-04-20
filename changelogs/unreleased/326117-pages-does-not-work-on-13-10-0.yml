@@ -1,0 +1,5 @@
+---
+title: Disable pages_serve_with_zip_file_protocol by default
+merge_request: 58253
+author:
+type: fixed

@@ -10,6 +10,7 @@ RSpec.describe DesignManagement::VersionsFinder do
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:design_1) { create(:design, :with_file, issue: issue, versions_count: 1) }
   let_it_be(:design_2) { create(:design, :with_file, issue: issue, versions_count: 1) }
+
   let(:version_1) { design_1.versions.first }
   let(:version_2) { design_2.versions.first }
   let(:design_or_collection) { issue.design_collection }

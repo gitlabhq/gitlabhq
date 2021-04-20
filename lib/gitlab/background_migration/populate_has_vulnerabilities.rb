@@ -8,21 +8,23 @@ module Gitlab
       class ProjectSetting < ActiveRecord::Base # rubocop:disable Style/Documentation
         self.table_name = 'project_settings'
 
-        UPSERT_SQL = <<~SQL
-          WITH upsert_data (project_id, has_vulnerabilities, created_at, updated_at) AS (
-            SELECT projects.id, true, current_timestamp, current_timestamp FROM projects WHERE projects.id IN (%{project_ids})
-          )
-          INSERT INTO project_settings
-          (project_id, has_vulnerabilities, created_at, updated_at)
-          (SELECT * FROM upsert_data)
-          ON CONFLICT (project_id)
-          DO UPDATE SET
-            has_vulnerabilities = true,
-            updated_at = EXCLUDED.updated_at
-        SQL
-
         def self.upsert_for(project_ids)
-          connection.execute(UPSERT_SQL % { project_ids: project_ids.join(', ') })
+          connection.execute(upsert_sql % { project_ids: project_ids.join(', ') })
+        end
+
+        def self.upsert_sql
+          <<~SQL
+            WITH upsert_data (project_id, has_vulnerabilities, created_at, updated_at) AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
+              SELECT projects.id, true, current_timestamp, current_timestamp FROM projects WHERE projects.id IN (%{project_ids})
+            )
+            INSERT INTO project_settings
+            (project_id, has_vulnerabilities, created_at, updated_at)
+            (SELECT * FROM upsert_data)
+            ON CONFLICT (project_id)
+            DO UPDATE SET
+              has_vulnerabilities = true,
+              updated_at = EXCLUDED.updated_at
+          SQL
         end
       end
 

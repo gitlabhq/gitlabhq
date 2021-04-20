@@ -16,13 +16,21 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       time_frame: 'none',
       data_source: 'database',
       distribution: %w(ee ce),
-      tier: %w(free starter premium ultimate bronze silver gold)
+      tier: %w(free starter premium ultimate bronze silver gold),
+      name: 'count_boards'
     }
   end
 
   let(:path) { File.join('metrics', 'uuid.yml') }
   let(:definition) { described_class.new(path, attributes) }
   let(:yaml_content) { attributes.deep_stringify_keys.to_yaml }
+
+  def write_metric(metric, path, content)
+    path = File.join(metric, path)
+    dir = File.dirname(path)
+    FileUtils.mkdir_p(dir)
+    File.write(path, content)
+  end
 
   it 'has all definitons valid' do
     expect { described_class.definitions }.not_to raise_error(Gitlab::Usage::Metric::InvalidMetricError)
@@ -53,6 +61,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :distribution       | nil
       :distribution       | 'test'
       :tier               | %w(test ee)
+      :name               | 'count_<adjective_describing>_boards'
     end
 
     with_them do
@@ -78,6 +87,28 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
 
           described_class.new(path, attributes.merge( { skip_validation: true } )).validate!
         end
+      end
+    end
+  end
+
+  describe 'statuses' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:status, :skip_validation?) do
+      'deprecated'     | true
+      'removed'        | true
+      'data_available' | false
+      'implemented'    | false
+      'not_used'       | false
+    end
+
+    with_them do
+      subject(:validation) do
+        described_class.new(path, attributes.merge( { status: status } )).send(:skip_validation?)
+      end
+
+      it 'returns true/false for skip_validation' do
+        expect(validation).to eq(skip_validation?)
       end
     end
   end
@@ -121,12 +152,54 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       FileUtils.rm_rf(metric1)
       FileUtils.rm_rf(metric2)
     end
+  end
 
-    def write_metric(metric, path, content)
-      path = File.join(metric, path)
-      dir = File.dirname(path)
-      FileUtils.mkdir_p(dir)
-      File.write(path, content)
+  describe 'dump_metrics_yaml' do
+    let(:other_attributes) do
+      {
+        description: 'Test metric definition',
+        value_type: 'string',
+        product_category: 'collection',
+        product_stage: 'growth',
+        status: 'data_available',
+        default_generation: 'generation_1',
+        key_path: 'counter.category.event',
+        product_group: 'group::product analytics',
+        time_frame: 'none',
+        data_source: 'database',
+        distribution: %w(ee ce),
+        tier: %w(free starter premium ultimate bronze silver gold)
+      }
+    end
+
+    let(:other_yaml_content) { other_attributes.deep_stringify_keys.to_yaml }
+    let(:other_path) { File.join('metrics', 'test_metric.yml') }
+    let(:metric1) { Dir.mktmpdir('metric1') }
+    let(:metric2) { Dir.mktmpdir('metric2') }
+
+    before do
+      allow(described_class).to receive(:paths).and_return(
+        [
+          File.join(metric1, '**', '*.yml'),
+          File.join(metric2, '**', '*.yml')
+        ]
+      )
+      # Reset memoized `definitions` result
+      described_class.instance_variable_set(:@definitions, nil)
+    end
+
+    after do
+      FileUtils.rm_rf(metric1)
+      FileUtils.rm_rf(metric2)
+    end
+
+    subject { described_class.dump_metrics_yaml }
+
+    it 'returns a YAML with both metrics in a sequence' do
+      write_metric(metric1, path, yaml_content)
+      write_metric(metric2, other_path, other_yaml_content)
+
+      is_expected.to eq([attributes, other_attributes].map(&:deep_stringify_keys).to_yaml)
     end
   end
 end

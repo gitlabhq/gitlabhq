@@ -54,7 +54,7 @@ RSpec.describe Packages::Dependency, type: :model do
 
     context 'with too big parameter' do
       let(:size) { (Packages::Dependency::MAX_CHUNKED_QUERIES_COUNT * chunk_size) + 1 }
-      let(:names_and_version_patterns) { Hash[(1..size).map { |v| [v, v] }] }
+      let(:names_and_version_patterns) { (1..size).to_h { |v| [v, v] } }
 
       it { expect { subject }.to raise_error(ArgumentError, 'Too many names_and_version_patterns') }
     end

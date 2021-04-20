@@ -13,6 +13,8 @@ RSpec.describe 'Project navbar' do
 
   before do
     insert_package_nav(_('Operations'))
+    insert_infrastructure_registry_nav
+    stub_config(registry: { enabled: false })
 
     project.add_maintainer(user)
     sign_in(user)
@@ -60,7 +62,7 @@ RSpec.describe 'Project navbar' do
     before do
       stub_config(registry: { enabled: true })
 
-      insert_container_nav(_('Operations'))
+      insert_container_nav
 
       visit project_path(project)
     end

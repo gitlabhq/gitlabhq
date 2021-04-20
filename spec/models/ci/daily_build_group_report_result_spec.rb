@@ -86,6 +86,7 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
   describe 'scopes' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
+
     let(:recent_build_group_report_result) { create(:ci_daily_build_group_report_result, project: project, group: group) }
     let(:old_build_group_report_result) do
       create(:ci_daily_build_group_report_result, date: 1.week.ago, project: project)

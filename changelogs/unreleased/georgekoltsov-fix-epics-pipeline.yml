@@ -1,0 +1,5 @@
+---
+title: Fix user reference transformation in EpicsPipeline
+merge_request: 58913
+author:
+type: fixed

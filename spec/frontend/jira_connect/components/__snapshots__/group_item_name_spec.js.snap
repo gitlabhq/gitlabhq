@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GroupItemName template matches the snapshot 1`] = `
+<div
+  class="gl-display-flex gl-align-items-center"
+>
+  <gl-icon-stub
+    class="gl-mr-3"
+    name="folder-o"
+    size="16"
+  />
+   
+  <div
+    class="gl-display-none gl-flex-shrink-0 gl-sm-display-flex gl-mr-3"
+  >
+    <gl-avatar-stub
+      alt="avatar"
+      entityid="0"
+      entityname="Gitlab Org"
+      shape="rect"
+      size="32"
+      src="avatar.png"
+    />
+  </div>
+   
+  <div>
+    <span
+      class="gl-mr-3 gl-text-gray-900! gl-font-weight-bold"
+    >
+      
+      Gitlab Org
+    
+    </span>
+     
+    <div>
+      <p
+        class="gl-mt-2! gl-mb-0 gl-text-gray-600"
+      >
+        Open source software to collaborate on code
+      </p>
+    </div>
+  </div>
+</div>
+`;

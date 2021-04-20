@@ -12,7 +12,7 @@ stages:
 
 variables:
     FUZZAPI_PROFILE: Quick
-    FUZZAPI_VERSION: latest
+    FUZZAPI_VERSION: "1.6"
     FUZZAPI_CONFIG: .gitlab-api-fuzzing.yml
     FUZZAPI_TIMEOUT: 30
     FUZZAPI_REPORT: gl-api-fuzzing-report.json
@@ -45,7 +45,7 @@ apifuzzer_fuzz:
         entrypoint: ["/bin/bash", "-l", "-c"]
     variables:
         FUZZAPI_PROJECT: $CI_PROJECT_PATH
-        FUZZAPI_API: http://localhost:80
+        FUZZAPI_API: http://localhost:5000
         FUZZAPI_NEW_REPORT: 1
         FUZZAPI_LOG_SCANNER: gl-apifuzzing-api-scanner.log
         TZ: America/Los_Angeles
@@ -107,7 +107,7 @@ apifuzzer_fuzz_dnd:
         DOCKER_DRIVER: overlay2
         DOCKER_TLS_CERTDIR: ""
         FUZZAPI_PROJECT: $CI_PROJECT_PATH
-        FUZZAPI_API: http://apifuzzer:80
+        FUZZAPI_API: http://apifuzzer:5000
     allow_failure: true
     rules:
         - if: $FUZZAPI_D_TARGET_IMAGE == null && $FUZZAPI_D_WORKER_IMAGE == null
@@ -142,6 +142,7 @@ apifuzzer_fuzz_dnd:
             -e TZ=America/Los_Angeles \
             -e GITLAB_FEATURES \
             -p 80:80 \
+            -p 5000:5000 \
             -p 8000:8000 \
             -p 514:514 \
             --restart=no \
@@ -168,7 +169,7 @@ apifuzzer_fuzz_dnd:
                 docker run \
                     --name worker \
                     --network $FUZZAPI_D_NETWORK \
-                    -e FUZZAPI_API=http://apifuzzer:80 \
+                    -e FUZZAPI_API=http://apifuzzer:5000 \
                     -e FUZZAPI_PROJECT \
                     -e FUZZAPI_PROFILE \
                     -e FUZZAPI_CONFIG \
@@ -211,7 +212,7 @@ apifuzzer_fuzz_dnd:
                     --name worker \
                     --network $FUZZAPI_D_NETWORK \
                     -e TZ=America/Los_Angeles \
-                    -e FUZZAPI_API=http://apifuzzer:80 \
+                    -e FUZZAPI_API=http://apifuzzer:5000 \
                     -e FUZZAPI_PROJECT \
                     -e FUZZAPI_PROFILE \
                     -e FUZZAPI_CONFIG \
@@ -237,6 +238,7 @@ apifuzzer_fuzz_dnd:
                     -v $CI_PROJECT_DIR:/app \
                     -v `pwd`/$FUZZAPI_REPORT_ASSET_PATH:/app/$FUZZAPI_REPORT_ASSET_PATH:rw \
                     -p 81:80 \
+                    -p 5001:5000 \
                     -p 8001:8000 \
                     -p 515:514 \
                     --restart=no \

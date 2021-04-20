@@ -1,0 +1,5 @@
+---
+title: Validate null constraint for cluster token name
+merge_request: 56868
+author:
+type: changed

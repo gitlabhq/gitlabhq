@@ -1,0 +1,5 @@
+---
+title: Add queue label to metrics dispatched by background transaction
+merge_request: 59344
+author:
+type: changed

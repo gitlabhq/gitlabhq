@@ -46,7 +46,7 @@ export default {
     },
     activeLabel() {
       return this.labels.find(
-        (label) => label.title.toLowerCase() === stripQuotes(this.currentValue),
+        (label) => this.getLabelName(label).toLowerCase() === stripQuotes(this.currentValue),
       );
     },
     containerStyle() {
@@ -69,6 +69,21 @@ export default {
     },
   },
   methods: {
+    /**
+     * There's an inconsistency between private and public API
+     * for labels where label name is included in a different
+     * property;
+     *
+     * Private API => `label.title`
+     * Public API => `label.name`
+     *
+     * This method allows compatibility as there may be instances
+     * where `config.fetchLabels` provided externally may still be
+     * using either of the two APIs.
+     */
+    getLabelName(label) {
+      return label.name || label.title;
+    },
     fetchLabelBySearchTerm(searchTerm) {
       this.loading = true;
       this.config
@@ -85,7 +100,7 @@ export default {
         });
     },
     searchLabels: debounce(function debouncedSearch({ data }) {
-      this.fetchLabelBySearchTerm(data);
+      if (!this.loading) this.fetchLabelBySearchTerm(data);
     }, DEBOUNCE_DELAY),
   },
 };
@@ -100,7 +115,7 @@ export default {
   >
     <template #view-token="{ inputValue, cssClasses, listeners }">
       <gl-token variant="search-value" :class="cssClasses" :style="containerStyle" v-on="listeners"
-        >~{{ activeLabel ? activeLabel.title : inputValue }}</gl-token
+        >~{{ activeLabel ? getLabelName(activeLabel) : inputValue }}</gl-token
       >
     </template>
     <template #suggestions>
@@ -114,13 +129,17 @@ export default {
       <gl-dropdown-divider v-if="defaultLabels.length" />
       <gl-loading-icon v-if="loading" />
       <template v-else>
-        <gl-filtered-search-suggestion v-for="label in labels" :key="label.id" :value="label.title">
-          <div class="gl-display-flex">
+        <gl-filtered-search-suggestion
+          v-for="label in labels"
+          :key="label.id"
+          :value="getLabelName(label)"
+        >
+          <div class="gl-display-flex gl-align-items-center">
             <span
               :style="{ backgroundColor: label.color }"
               class="gl-display-inline-block mr-2 p-2"
             ></span>
-            <div>{{ label.title }}</div>
+            <div>{{ getLabelName(label) }}</div>
           </div>
         </gl-filtered-search-suggestion>
       </template>

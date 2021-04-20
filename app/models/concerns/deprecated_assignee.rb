@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# This module handles backward compatibility for import/export of Merge Requests after
+# This module handles backward compatibility for import/export of merge requests after
 # multiple assignees feature was introduced. Also, it handles the scenarios where
 # the #26496 background migration hasn't finished yet.
 # Ideally, most of this code should be removed at #59457.

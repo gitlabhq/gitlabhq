@@ -57,4 +57,17 @@ RSpec.describe Gitlab::SQL::RecursiveCTE do
       expect(relation.to_a).to eq(User.where(id: user.id).to_a)
     end
   end
+
+  it_behaves_like 'CTE with MATERIALIZED keyword examples' do
+    # MATERIALIZED keyword is not needed for recursive queries
+    let(:expected_query_block_with_materialized) { 'WITH RECURSIVE "some_cte" AS (' }
+    let(:expected_query_block_without_materialized) { 'WITH RECURSIVE "some_cte" AS (' }
+
+    let(:query) do
+      recursive_cte = described_class.new(:some_cte)
+      recursive_cte << User.active
+
+      User.with.recursive(recursive_cte.to_arel).to_sql
+    end
+  end
 end

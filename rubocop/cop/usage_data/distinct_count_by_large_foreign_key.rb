@@ -13,7 +13,7 @@ module RuboCop
       #   distinct_count(Ci::Build, :commit_id)
       #
       class DistinctCountByLargeForeignKey < RuboCop::Cop::Cop
-        MSG = 'Avoid doing `%s` on foreign keys for large tables having above 100 million rows.'.freeze
+        MSG = 'Avoid doing `%s` on foreign keys for large tables having above 100 million rows.'
 
         def_node_matcher :distinct_count?, <<-PATTERN
           (send _ $:distinct_count $...)

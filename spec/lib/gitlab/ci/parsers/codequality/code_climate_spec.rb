@@ -131,7 +131,6 @@ RSpec.describe Gitlab::Ci::Parsers::Codequality::CodeClimate do
         expect { parse }.not_to raise_error
 
         expect(codequality_report.degradations_count).to eq(0)
-        expect(codequality_report.error_message).to eq("Invalid degradation format: The property '#/' did not contain a required property of 'location'")
       end
     end
   end

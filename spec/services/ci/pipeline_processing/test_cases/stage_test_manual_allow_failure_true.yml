@@ -31,7 +31,7 @@ transitions:
         test: manual
         deploy: success
 
-  - event: enqueue
+  - event: play
     jobs: [test]
     expect:
       pipeline: running

@@ -16,9 +16,9 @@ module Gitlab
           attr_mentionable :note, pipeline: :note
           cache_markdown_field :note, pipeline: :note, issuable_state_filter_enabled: true
 
-          belongs_to :author, class_name: "User"
+          belongs_to :author, class_name: "::Gitlab::BackgroundMigration::UserMentions::Models::User"
           belongs_to :noteable, polymorphic: true
-          belongs_to :project
+          belongs_to :project, class_name: "::Gitlab::BackgroundMigration::UserMentions::Models::Project"
 
           def for_personal_snippet?
             noteable && noteable.class.name == 'PersonalSnippet'

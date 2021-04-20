@@ -1275,6 +1275,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     let_it_be(:reporter) { create(:user) }
     let_it_be(:guest) { create(:user) }
     let_it_be(:project) { create(:project, :private, :repository, namespace: owner.namespace) }
+
     let(:user) { maintainer }
     let(:pipeline) { create(:ci_pipeline, project: project, source: :webide, config_source: :webide_source, user: user) }
     let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline, user: user) }

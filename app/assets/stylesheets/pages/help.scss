@@ -26,13 +26,6 @@
     text-align: right;
     white-space: nowrap;
   }
-
-  .key {
-    @extend .badge.badge-pill;
-    background-color: $label-inverse-bg;
-    font: 11px Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-    padding: 3px 5px;
-  }
 }
 
 .documentation {

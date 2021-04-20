@@ -7,6 +7,7 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoSaver do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, namespace: user.namespace) }
     let_it_be(:snippet) { create(:project_snippet, :repository, project: project, author: user) }
+
     let(:shared) { project.import_export_shared }
     let(:bundler) { described_class.new(project: project, shared: shared, repository: snippet.repository) }
     let(:bundle_path) { ::Gitlab::ImportExport.snippets_repo_bundle_path(shared.export_path) }

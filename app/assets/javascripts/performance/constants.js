@@ -74,4 +74,4 @@ export const PIPELINES_DETAIL_LINKS_MEASURE_CALCULATION =
 // (defined in: app/services/ci/prometheus_metrics/observe_histograms_service.rb)
 export const PIPELINES_DETAIL_LINK_DURATION = 'pipeline_graph_link_calculation_duration_seconds';
 export const PIPELINES_DETAIL_LINKS_TOTAL = 'pipeline_graph_links_total';
-export const PIPELINES_DETAIL_LINKS_JOB_RATIO = 'pipeline_graph_link_per_job_ratio';
+export const PIPELINES_DETAIL_LINKS_JOB_RATIO = 'pipeline_graph_links_per_job_ratio';

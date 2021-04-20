@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Sourcegraph do
   let_it_be(:user) { create(:user) }
+
   let(:feature_scope) { true }
 
   before do

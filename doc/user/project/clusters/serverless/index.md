@@ -562,7 +562,7 @@ over `https`, you must manually obtain and install TLS certificates.
 
 The simplest way to accomplish this is to use Certbot to
 [manually obtain Let's Encrypt certificates](https://knative.dev/docs/serving/using-a-tls-cert/#using-certbot-to-manually-obtain-let-s-encrypt-certificates).
-Certbot is a free, open source software tool for automatically using Let’s Encrypt
+Certbot is a free, open source software tool for automatically using Let's Encrypt
 certificates on manually-administered websites to enable HTTPS.
 
 The following instructions relate to installing and running Certbot on a Linux

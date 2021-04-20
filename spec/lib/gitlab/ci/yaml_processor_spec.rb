@@ -43,6 +43,8 @@ module Gitlab
               allow_failure: false,
               when: "on_success",
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             })
           end
@@ -74,6 +76,8 @@ module Gitlab
               allow_failure: false,
               when: 'on_success',
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             })
           end
@@ -111,7 +115,9 @@ module Gitlab
               tag_list: %w[A B],
               allow_failure: false,
               when: "on_success",
-              yaml_variables: []
+              yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true
             })
           end
         end
@@ -158,6 +164,8 @@ module Gitlab
               allow_failure: false,
               when: "on_success",
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             })
           end
@@ -347,6 +355,8 @@ module Gitlab
                   allow_failure: false,
                   when: "on_success",
                   yaml_variables: [],
+                  job_variables: [],
+                  root_variables_inheritance: true,
                   scheduling_type: :stage,
                   options: { script: ["rspec"] },
                   only: { refs: ["branches"] } }] },
@@ -359,6 +369,8 @@ module Gitlab
                   allow_failure: false,
                   when: "on_success",
                   yaml_variables: [],
+                  job_variables: [],
+                  root_variables_inheritance: true,
                   scheduling_type: :stage,
                   options: { script: ["cap prod"] },
                   only: { refs: ["tags"] } }] },
@@ -372,7 +384,7 @@ module Gitlab
         end
       end
 
-      describe '#workflow_attributes' do
+      describe 'workflow attributes' do
         context 'with disallowed workflow:variables' do
           let(:config) do
             <<-EOYML
@@ -403,11 +415,11 @@ module Gitlab
           end
 
           it 'parses the workflow:rules configuration' do
-            expect(subject.workflow_attributes[:rules]).to contain_exactly({ if: '$VAR == "value"' })
+            expect(subject.workflow_rules).to contain_exactly({ if: '$VAR == "value"' })
           end
 
-          it 'parses the root:variables as yaml_variables:' do
-            expect(subject.workflow_attributes[:yaml_variables])
+          it 'parses the root:variables as #root_variables' do
+            expect(subject.root_variables)
               .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
           end
         end
@@ -425,11 +437,11 @@ module Gitlab
           end
 
           it 'parses the workflow:rules configuration' do
-            expect(subject.workflow_attributes[:rules]).to contain_exactly({ if: '$VAR == "value"' })
+            expect(subject.workflow_rules).to contain_exactly({ if: '$VAR == "value"' })
           end
 
-          it 'parses the root:variables as yaml_variables:' do
-            expect(subject.workflow_attributes[:yaml_variables]).to eq([])
+          it 'parses the root:variables as #root_variables' do
+            expect(subject.root_variables).to eq([])
           end
         end
 
@@ -445,11 +457,11 @@ module Gitlab
           end
 
           it 'parses the workflow:rules configuration' do
-            expect(subject.workflow_attributes[:rules]).to be_nil
+            expect(subject.workflow_rules).to be_nil
           end
 
-          it 'parses the root:variables as yaml_variables:' do
-            expect(subject.workflow_attributes[:yaml_variables])
+          it 'parses the root:variables as #root_variables' do
+            expect(subject.root_variables)
               .to contain_exactly({ key: 'SUPPORTED', value: 'parsed', public: true })
           end
         end
@@ -463,11 +475,11 @@ module Gitlab
           end
 
           it 'parses the workflow:rules configuration' do
-            expect(subject.workflow_attributes[:rules]).to be_nil
+            expect(subject.workflow_rules).to be_nil
           end
 
-          it 'parses the root:variables as yaml_variables:' do
-            expect(subject.workflow_attributes[:yaml_variables]).to eq([])
+          it 'parses the root:variables as #root_variables' do
+            expect(subject.root_variables).to eq([])
           end
         end
       end
@@ -853,6 +865,8 @@ module Gitlab
               allow_failure: false,
               when: "on_success",
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             })
           end
@@ -861,7 +875,7 @@ module Gitlab
             config = YAML.dump({ image: "ruby:2.7",
                                  services: ["mysql"],
                                  before_script: ["pwd"],
-                                 rspec: { image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
+                                 rspec: { image: { name: "ruby:3.0", entrypoint: ["/usr/local/bin/init", "run"] },
                                           services: [{ name: "postgresql", alias: "db-pg",
                                                        entrypoint: ["/usr/local/bin/init", "run"],
                                                        command: ["/usr/local/bin/init", "run"] }, "docker:dind"],
@@ -878,7 +892,7 @@ module Gitlab
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
-                image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
+                image: { name: "ruby:3.0", entrypoint: ["/usr/local/bin/init", "run"] },
                 services: [{ name: "postgresql", alias: "db-pg", entrypoint: ["/usr/local/bin/init", "run"],
                              command: ["/usr/local/bin/init", "run"] },
                            { name: "docker:dind" }]
@@ -886,6 +900,8 @@ module Gitlab
               allow_failure: false,
               when: "on_success",
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             })
           end
@@ -915,6 +931,8 @@ module Gitlab
               allow_failure: false,
               when: "on_success",
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             })
           end
@@ -923,7 +941,7 @@ module Gitlab
             config = YAML.dump({ image: "ruby:2.7",
                                  services: ["mysql"],
                                  before_script: ["pwd"],
-                                 rspec: { image: "ruby:2.5", services: ["postgresql", "docker:dind"], script: "rspec" } })
+                                 rspec: { image: "ruby:3.0", services: ["postgresql", "docker:dind"], script: "rspec" } })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
@@ -936,12 +954,14 @@ module Gitlab
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
-                image: { name: "ruby:2.5" },
+                image: { name: "ruby:3.0" },
                 services: [{ name: "postgresql" }, { name: "docker:dind" }]
               },
               allow_failure: false,
               when: "on_success",
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             })
           end
@@ -951,7 +971,10 @@ module Gitlab
       describe 'Variables' do
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
-        let(:build_variables) { subject.builds.first[:yaml_variables] }
+        let(:build) { subject.builds.first }
+        let(:yaml_variables) { build[:yaml_variables] }
+        let(:job_variables) { build[:job_variables] }
+        let(:root_variables_inheritance) { build[:root_variables_inheritance] }
 
         context 'when global variables are defined' do
           let(:variables) do
@@ -967,10 +990,12 @@ module Gitlab
           end
 
           it 'returns global variables' do
-            expect(build_variables).to contain_exactly(
+            expect(yaml_variables).to contain_exactly(
               { key: 'VAR1', value: 'value1', public: true },
               { key: 'VAR2', value: 'value2', public: true }
             )
+            expect(job_variables).to eq([])
+            expect(root_variables_inheritance).to eq(true)
           end
         end
 
@@ -979,7 +1004,7 @@ module Gitlab
             { 'VAR1' => 'global1', 'VAR3' => 'global3', 'VAR4' => 'global4' }
           end
 
-          let(:job_variables) do
+          let(:build_variables) do
             { 'VAR1' => 'value1', 'VAR2' => 'value2' }
           end
 
@@ -987,20 +1012,25 @@ module Gitlab
             {
               before_script: ['pwd'],
               variables: global_variables,
-              rspec: { script: 'rspec', variables: job_variables, inherit: inherit }
+              rspec: { script: 'rspec', variables: build_variables, inherit: inherit }
             }
           end
 
           context 'when no inheritance is specified' do
             let(:inherit) { }
 
-            it 'returns all unique variables' do
-              expect(build_variables).to contain_exactly(
-                { key: 'VAR4', value: 'global4', public: true },
+            it 'returns all variables' do
+              expect(yaml_variables).to contain_exactly(
+                { key: 'VAR1', value: 'value1', public: true },
+                { key: 'VAR2', value: 'value2', public: true },
                 { key: 'VAR3', value: 'global3', public: true },
+                { key: 'VAR4', value: 'global4', public: true }
+              )
+              expect(job_variables).to contain_exactly(
                 { key: 'VAR1', value: 'value1', public: true },
                 { key: 'VAR2', value: 'value2', public: true }
               )
+              expect(root_variables_inheritance).to eq(true)
             end
           end
 
@@ -1008,22 +1038,32 @@ module Gitlab
             let(:inherit) { { variables: false } }
 
             it 'does not inherit variables' do
-              expect(build_variables).to contain_exactly(
+              expect(yaml_variables).to contain_exactly(
                 { key: 'VAR1', value: 'value1', public: true },
                 { key: 'VAR2', value: 'value2', public: true }
               )
+              expect(job_variables).to contain_exactly(
+                { key: 'VAR1', value: 'value1', public: true },
+                { key: 'VAR2', value: 'value2', public: true }
+              )
+              expect(root_variables_inheritance).to eq(false)
             end
           end
 
           context 'when specific variables are to inherited' do
             let(:inherit) { { variables: %w[VAR1 VAR4] } }
 
-            it 'returns all unique variables and inherits only specified variables' do
-              expect(build_variables).to contain_exactly(
-                { key: 'VAR4', value: 'global4', public: true },
+            it 'returns all variables and inherits only specified variables' do
+              expect(yaml_variables).to contain_exactly(
+                { key: 'VAR1', value: 'value1', public: true },
+                { key: 'VAR2', value: 'value2', public: true },
+                { key: 'VAR4', value: 'global4', public: true }
+              )
+              expect(job_variables).to contain_exactly(
                 { key: 'VAR1', value: 'value1', public: true },
                 { key: 'VAR2', value: 'value2', public: true }
               )
+              expect(root_variables_inheritance).to eq(%w[VAR1 VAR4])
             end
           end
         end
@@ -1042,10 +1082,15 @@ module Gitlab
             end
 
             it 'returns job variables' do
-              expect(build_variables).to contain_exactly(
+              expect(yaml_variables).to contain_exactly(
                 { key: 'VAR1', value: 'value1', public: true },
                 { key: 'VAR2', value: 'value2', public: true }
               )
+              expect(job_variables).to contain_exactly(
+                { key: 'VAR1', value: 'value1', public: true },
+                { key: 'VAR2', value: 'value2', public: true }
+              )
+              expect(root_variables_inheritance).to eq(true)
             end
           end
 
@@ -1068,8 +1113,11 @@ module Gitlab
                 # When variables config is empty, we assume this is a valid
                 # configuration, see issue #18775
                 #
-                expect(build_variables).to be_an_instance_of(Array)
-                expect(build_variables).to be_empty
+                expect(yaml_variables).to be_an_instance_of(Array)
+                expect(yaml_variables).to be_empty
+
+                expect(job_variables).to eq([])
+                expect(root_variables_inheritance).to eq(true)
               end
             end
           end
@@ -1084,8 +1132,11 @@ module Gitlab
           end
 
           it 'returns empty array' do
-            expect(build_variables).to be_an_instance_of(Array)
-            expect(build_variables).to be_empty
+            expect(yaml_variables).to be_an_instance_of(Array)
+            expect(yaml_variables).to be_empty
+
+            expect(job_variables).to eq([])
+            expect(root_variables_inheritance).to eq(true)
           end
         end
       end
@@ -1717,6 +1768,8 @@ module Gitlab
             when: "on_success",
             allow_failure: false,
             yaml_variables: [],
+            job_variables: [],
+            root_variables_inheritance: true,
             scheduling_type: :stage
           })
         end
@@ -2080,6 +2133,8 @@ module Gitlab
               when: "on_success",
               allow_failure: false,
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             )
             expect(subject.builds[4]).to eq(
@@ -2095,6 +2150,8 @@ module Gitlab
               when: "on_success",
               allow_failure: false,
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :dag
             )
           end
@@ -2122,6 +2179,8 @@ module Gitlab
               when: "on_success",
               allow_failure: false,
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             )
             expect(subject.builds[4]).to eq(
@@ -2139,6 +2198,8 @@ module Gitlab
               when: "on_success",
               allow_failure: false,
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :dag
             )
           end
@@ -2162,6 +2223,8 @@ module Gitlab
               when: "on_success",
               allow_failure: false,
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :dag
             )
           end
@@ -2193,6 +2256,8 @@ module Gitlab
               when: "on_success",
               allow_failure: false,
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :dag
             )
           end
@@ -2391,6 +2456,8 @@ module Gitlab
               when: "on_success",
               allow_failure: false,
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             })
           end
@@ -2438,6 +2505,8 @@ module Gitlab
               when: "on_success",
               allow_failure: false,
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             })
             expect(subject.second).to eq({
@@ -2451,6 +2520,8 @@ module Gitlab
               when: "on_success",
               allow_failure: false,
               yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
               scheduling_type: :stage
             })
           end

@@ -1,19 +1,26 @@
-- grouped_emojis = awardable.grouped_awards(with_thumbs: inline)
-.awards.js-awards-block{ class: ("hidden" if !inline && grouped_emojis.empty?), data: { award_url: toggle_award_url(awardable) } }
-  - awards_sort(grouped_emojis).each do |emoji, awards|
-    %button.btn.award-control.js-emoji-btn.has-tooltip{ type: "button",
-      class: [(award_state_class(awardable, awards, current_user))],
-      data: { title: award_user_list(awards, current_user) } }
-      = emoji_icon(emoji)
-      %span.award-control-text.js-counter
-        = awards.count
+- api_awards_path = local_assigns.fetch(:api_awards_path, nil)
 
-  - if can?(current_user, :award_emoji, awardable)
-    .award-menu-holder.js-award-holder
-      %button.btn.award-control.has-tooltip.js-add-award{ type: 'button',
-        'aria-label': _('Add reaction'),
-        data: { title: _('Add reaction') } }
-        %span{ class: "award-control-icon award-control-icon-neutral" }= sprite_icon('slight-smile')
-        %span{ class: "award-control-icon award-control-icon-positive" }= sprite_icon('smiley')
-        %span{ class: "award-control-icon award-control-icon-super-positive" }= sprite_icon('smile')
-  = yield
+- if api_awards_path
+  .gl-display-flex.gl-flex-wrap
+    #js-vue-awards-block{ data: { path: api_awards_path, can_award_emoji: can?(current_user, :award_emoji, awardable).to_s } }
+    = yield
+- else
+  - grouped_emojis = awardable.grouped_awards(with_thumbs: inline)
+  .awards.js-awards-block{ class: ("hidden" if !inline && grouped_emojis.empty?), data: { award_url: toggle_award_url(awardable) } }
+    - awards_sort(grouped_emojis).each do |emoji, awards|
+      %button.gl-button.btn.btn-default.award-control.js-emoji-btn.has-tooltip{ type: "button",
+        class: [award_state_class(awardable, awards, current_user)],
+        data: { title: award_user_list(awards, current_user) } }
+        = emoji_icon(emoji)
+        %span.award-control-text.js-counter
+          = awards.count
+
+    - if can?(current_user, :award_emoji, awardable)
+      .award-menu-holder.js-award-holder
+        %button.gl-button.btn.btn-default.award-control.has-tooltip.js-add-award{ type: 'button',
+          'aria-label': _('Add reaction'),
+          data: { title: _('Add reaction') } }
+          %span{ class: "award-control-icon award-control-icon-neutral" }= sprite_icon('slight-smile')
+          %span{ class: "award-control-icon award-control-icon-positive" }= sprite_icon('smiley')
+          %span{ class: "award-control-icon award-control-icon-super-positive" }= sprite_icon('smile')
+    = yield

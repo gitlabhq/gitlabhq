@@ -22,8 +22,8 @@ export const fetchBranches = ({ commit, dispatch, state }, query) => {
     .get(state.branchesEndpoint, {
       params: { search: query },
     })
-    .then(({ data }) => {
-      commit(types.RECEIVE_BRANCHES_SUCCESS, data.Branches || []);
+    .then(({ data = [] }) => {
+      commit(types.RECEIVE_BRANCHES_SUCCESS, data.Branches?.length ? data.Branches : data);
     })
     .catch(() => {
       createFlash({ message: PROJECT_BRANCHES_ERROR });

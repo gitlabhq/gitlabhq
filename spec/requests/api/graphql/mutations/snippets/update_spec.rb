@@ -157,6 +157,9 @@ RSpec.describe 'Updating a Snippet' do
     it_behaves_like 'graphql update actions'
     it_behaves_like 'when the snippet is not found'
     it_behaves_like 'snippet edit usage data counters'
+    it_behaves_like 'has spam protection' do
+      let(:mutation_class) { ::Mutations::Snippets::Update }
+    end
   end
 
   describe 'ProjectSnippet' do
@@ -201,6 +204,10 @@ RSpec.describe 'Updating a Snippet' do
       end
 
       it_behaves_like 'snippet edit usage data counters'
+
+      it_behaves_like 'has spam protection' do
+        let(:mutation_class) { ::Mutations::Snippets::Update }
+      end
     end
 
     it_behaves_like 'when the snippet is not found'

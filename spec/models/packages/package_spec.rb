@@ -99,6 +99,34 @@ RSpec.describe Packages::Package, type: :model do
     end
   end
 
+  describe '.for_projects' do
+    let_it_be(:package1) { create(:maven_package) }
+    let_it_be(:package2) { create(:maven_package) }
+    let_it_be(:package3) { create(:maven_package) }
+
+    let(:projects) { ::Project.id_in([package1.project_id, package2.project_id]) }
+
+    subject { described_class.for_projects(projects.select(:id)) }
+
+    it 'returns package1 and package2' do
+      expect(projects).not_to receive(:any?)
+
+      expect(subject).to match_array([package1, package2])
+    end
+
+    context 'with maven_packages_group_level_improvements disabled' do
+      before do
+        stub_feature_flags(maven_packages_group_level_improvements: false)
+      end
+
+      it 'returns package1 and package2' do
+        expect(projects).to receive(:any?).and_call_original
+
+        expect(subject).to match_array([package1, package2])
+      end
+    end
+  end
+
   describe 'validations' do
     subject { build(:package) }
 
@@ -339,7 +367,14 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.to validate_presence_of(:version) }
         it { is_expected.to allow_value('1.2.3').for(:version) }
         it { is_expected.to allow_value('1.3.350').for(:version) }
-        it { is_expected.not_to allow_value('1.3.350-20201230123456').for(:version) }
+        it { is_expected.to allow_value('1.3.350-20201230123456').for(:version) }
+        it { is_expected.to allow_value('1.2.3-rc1').for(:version) }
+        it { is_expected.to allow_value('1.2.3g').for(:version) }
+        it { is_expected.to allow_value('1.2').for(:version) }
+        it { is_expected.to allow_value('1.2.bananas').for(:version) }
+        it { is_expected.to allow_value('v1.2.4-build').for(:version) }
+        it { is_expected.to allow_value('d50d836eb3de6177ce6c7a5482f27f9c2c84b672').for(:version) }
+        it { is_expected.to allow_value('this_is_a_string_only').for(:version) }
         it { is_expected.not_to allow_value('..1.2.3').for(:version) }
         it { is_expected.not_to allow_value('  1.2.3').for(:version) }
         it { is_expected.not_to allow_value("1.2.3  \r\t").for(:version) }
@@ -621,10 +656,12 @@ RSpec.describe Packages::Package, type: :model do
     describe '.displayable' do
       let_it_be(:hidden_package) { create(:maven_package, :hidden) }
       let_it_be(:processing_package) { create(:maven_package, :processing) }
+      let_it_be(:error_package) { create(:maven_package, :error) }
 
       subject { described_class.displayable }
 
-      it 'does not include hidden packages', :aggregate_failures do
+      it 'does not include non-displayable packages', :aggregate_failures do
+        is_expected.to include(error_package)
         is_expected.not_to include(hidden_package)
         is_expected.not_to include(processing_package)
       end

@@ -6,22 +6,11 @@ module Projects
       include PackagesHelper
 
       before_action :authorize_update_container_image!, only: [:destroy]
-      before_action :ensure_root_container_repository!, only: [:index]
 
       def index
         respond_to do |format|
-          format.html
-          format.json do
-            @images = ContainerRepositoriesFinder.new(user: current_user, subject: project, params: params.slice(:name))
-                                                 .execute
-
-            track_package_event(:list_repositories, :container)
-
-            serializer = ContainerRepositoriesSerializer
-              .new(project: project, current_user: current_user)
-
-            render json: serializer.with_pagination(request, response).represent(@images)
-          end
+          format.html { ensure_root_container_repository! }
+          format.json { render_404 }
         end
       end
 

@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Email::Handler::UnsubscribeHandler do
 
   context 'when the noteable could not be found' do
     before do
-      noteable.destroy
+      noteable.destroy!
     end
 
     it 'raises a NoteableNotFoundError' do

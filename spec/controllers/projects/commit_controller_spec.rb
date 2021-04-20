@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::CommitController do
+  include ProjectForksHelper
+
   let_it_be(:project)  { create(:project, :repository) }
   let_it_be(:user)     { create(:user) }
 
@@ -293,6 +295,102 @@ RSpec.describe Projects::CommitController do
 
         expect(response).to redirect_to project_commit_path(project, master_pickable_commit.id)
         expect(flash[:alert]).to match('Sorry, we cannot cherry-pick this commit automatically.')
+      end
+    end
+
+    context 'when a project has a fork' do
+      let(:project) { create(:project, :repository) }
+      let(:forked_project) { fork_project(project, user, namespace: user.namespace, repository: true) }
+      let(:target_project) { project }
+      let(:create_merge_request) { nil }
+
+      def send_request
+        post(:cherry_pick,
+            params: {
+              namespace_id: forked_project.namespace,
+              project_id: forked_project,
+              target_project_id: target_project.id,
+              start_branch: 'feature',
+              id: forked_project.commit.id,
+              create_merge_request: create_merge_request
+            })
+      end
+
+      def merge_request_url(source_project, branch)
+        project_new_merge_request_path(
+          source_project,
+          merge_request: {
+            source_project_id: source_project.id,
+            target_project_id: project.id,
+            source_branch: branch,
+            target_branch: 'feature'
+          }
+        )
+      end
+
+      before do
+        forked_project.add_maintainer(user)
+      end
+
+      it 'successfully cherry picks a commit from fork to upstream project' do
+        send_request
+
+        expect(response).to redirect_to project_commits_path(project, 'feature')
+        expect(flash[:notice]).to eq('The commit has been successfully cherry-picked into feature.')
+        expect(project.commit('feature').message).to include(forked_project.commit.id)
+      end
+
+      context 'when the cherry pick is performed via merge request' do
+        let(:create_merge_request) { true }
+
+        it 'successfully cherry picks a commit from fork to a cherry pick branch' do
+          branch = forked_project.commit.cherry_pick_branch_name
+          send_request
+
+          expect(response).to redirect_to merge_request_url(project, branch)
+          expect(flash[:notice]).to start_with("The commit has been successfully cherry-picked into #{branch}")
+          expect(project.commit(branch).message).to include(forked_project.commit.id)
+        end
+      end
+
+      context 'when a user cannot push to upstream project' do
+        let(:create_merge_request) { true }
+
+        before do
+          project.add_reporter(user)
+        end
+
+        it 'cherry picks a commit to the fork' do
+          branch = forked_project.commit.cherry_pick_branch_name
+          send_request
+
+          expect(response).to redirect_to merge_request_url(forked_project, branch)
+          expect(flash[:notice]).to start_with("The commit has been successfully cherry-picked into #{branch}")
+          expect(project.commit('feature').message).not_to include(forked_project.commit.id)
+          expect(forked_project.commit(branch).message).to include(forked_project.commit.id)
+        end
+      end
+
+      context 'when a user do not have access to the target project' do
+        let(:target_project) { create(:project, :private) }
+
+        it 'cherry picks a commit to the fork' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'disable pick_into_project feature flag' do
+        before do
+          stub_feature_flags(pick_into_project: false)
+        end
+
+        it 'does not cherry pick a commit from fork to upstream' do
+          send_request
+
+          expect(project.commit('feature').message).not_to include(forked_project.commit.id)
+        end
       end
     end
   end

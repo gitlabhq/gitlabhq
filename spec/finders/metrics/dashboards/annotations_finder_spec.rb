@@ -7,6 +7,7 @@ RSpec.describe Metrics::Dashboards::AnnotationsFinder do
     subject(:annotations) { described_class.new(dashboard: dashboard, params: params).execute }
 
     let_it_be(:current_user) { create(:user) }
+
     let(:path) { 'config/prometheus/common_metrics.yml' }
     let(:params) { {} }
     let(:environment) { create(:environment) }

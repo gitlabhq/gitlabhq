@@ -11,11 +11,41 @@ import {
 } from '../constants';
 import {
   MSG_CANNOT_PUSH_CODE,
-  MSG_CANNOT_PUSH_CODE_SHORT,
+  MSG_CANNOT_PUSH_CODE_SHOULD_FORK,
+  MSG_CANNOT_PUSH_CODE_GO_TO_FORK,
   MSG_CANNOT_PUSH_UNSIGNED,
   MSG_CANNOT_PUSH_UNSIGNED_SHORT,
+  MSG_FORK,
+  MSG_GO_TO_FORK,
 } from '../messages';
 import { getChangesCountForFiles, filePathMatches } from './utils';
+
+const getCannotPushCodeViewModel = (state) => {
+  const { ide_path: idePath, fork_path: forkPath } = state.links.forkInfo || {};
+
+  if (idePath) {
+    return {
+      message: MSG_CANNOT_PUSH_CODE_GO_TO_FORK,
+      action: {
+        href: idePath,
+        text: MSG_GO_TO_FORK,
+      },
+    };
+  } else if (forkPath) {
+    return {
+      message: MSG_CANNOT_PUSH_CODE_SHOULD_FORK,
+      action: {
+        href: forkPath,
+        isForm: true,
+        text: MSG_FORK,
+      },
+    };
+  }
+
+  return {
+    message: MSG_CANNOT_PUSH_CODE,
+  };
+};
 
 export const activeFile = (state) => state.openFiles.find((file) => file.active) || null;
 
@@ -178,7 +208,7 @@ export const canPushCodeStatus = (state, getters) => {
     PUSH_RULE_REJECT_UNSIGNED_COMMITS
   ];
 
-  if (rejectUnsignedCommits) {
+  if (window.gon?.features?.rejectUnsignedCommitsByGitlab && rejectUnsignedCommits) {
     return {
       isAllowed: false,
       message: MSG_CANNOT_PUSH_UNSIGNED,
@@ -188,8 +218,8 @@ export const canPushCodeStatus = (state, getters) => {
   if (!canPushCode) {
     return {
       isAllowed: false,
-      message: MSG_CANNOT_PUSH_CODE,
-      messageShort: MSG_CANNOT_PUSH_CODE_SHORT,
+      messageShort: MSG_CANNOT_PUSH_CODE,
+      ...getCannotPushCodeViewModel(state),
     };
   }
 

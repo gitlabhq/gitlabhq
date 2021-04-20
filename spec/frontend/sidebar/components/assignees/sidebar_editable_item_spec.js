@@ -5,7 +5,7 @@ import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue'
 describe('boards sidebar remove issue', () => {
   let wrapper;
 
-  const findLoader = () => wrapper.find(GlLoadingIcon);
+  const findLoader = () => wrapper.findComponent(GlLoadingIcon);
   const findEditButton = () => wrapper.find('[data-testid="edit-button"]');
   const findTitle = () => wrapper.find('[data-testid="title"]');
   const findCollapsed = () => wrapper.find('[data-testid="collapsed-content"]');
@@ -116,5 +116,36 @@ describe('boards sidebar remove issue', () => {
     wrapper.vm.collapse({ emitEvent: false });
 
     expect(wrapper.emitted().close).toBeUndefined();
+  });
+
+  it('renders `Edit` test when passed `isDirty` prop is false', () => {
+    createComponent({ props: { isDirty: false }, canUpdate: true });
+
+    expect(findEditButton().text()).toBe('Edit');
+  });
+
+  it('renders `Apply` test when passed `isDirty` prop is true', () => {
+    createComponent({ props: { isDirty: true }, canUpdate: true });
+
+    expect(findEditButton().text()).toBe('Apply');
+  });
+
+  describe('when initial loading is true', () => {
+    beforeEach(() => {
+      createComponent({ props: { initialLoading: true } });
+    });
+
+    it('renders loading icon', () => {
+      expect(findLoader().exists()).toBe(true);
+    });
+
+    it('does not render edit button', () => {
+      expect(findEditButton().exists()).toBe(false);
+    });
+
+    it('does not render collapsed and expanded content', () => {
+      expect(findCollapsed().exists()).toBe(false);
+      expect(findExpanded().exists()).toBe(false);
+    });
   });
 });

@@ -125,6 +125,9 @@ FactoryBot.define do
 
       trait(:source) do
         file_name { 'sample_1.2.3~alpha2.tar.xz' }
+        file_md5 { 'd79b34f58f61ff4ad696d9bd0b8daa68' }
+        file_sha1 { '5f8bba5574eb01ac3b1f5e2988e8c29307788236' }
+        file_sha256 { 'b5a599e88e7cbdda3bde808160a21ba1dd1ec76b2ec8d4912aae769648d68362' }
 
         transient do
           file_metadatum_trait { :source }
@@ -133,6 +136,9 @@ FactoryBot.define do
 
       trait(:dsc) do
         file_name { 'sample_1.2.3~alpha2.dsc' }
+        file_md5 { '3b0817804f669e16cdefac583ad88f0e' }
+        file_sha1 { '32ecbd674f0bfd310df68484d87752490685a8d6' }
+        file_sha256 { '844f79825b7e8aaa191e514b58a81f9ac1e58e2180134b0c9512fa66d896d7ba' }
 
         transient do
           file_metadatum_trait { :dsc }
@@ -141,6 +147,9 @@ FactoryBot.define do
 
       trait(:deb) do
         file_name { 'libsample0_1.2.3~alpha2_amd64.deb' }
+        file_md5 { 'fb0842b21adc44207996296fe14439dd' }
+        file_sha1 { '5248b95600e85bfe7f63c0dfce330a75f5777366' }
+        file_sha256 { '1c383a525bfcba619c7305ccd106d61db501a6bbaf0003bf8d0c429fbdb7fcc1' }
 
         transient do
           file_metadatum_trait { :deb }
@@ -149,6 +158,9 @@ FactoryBot.define do
 
       trait(:deb2) do
         file_name { 'sample-dev_1.2.3~binary_amd64.deb' }
+        file_md5 { 'd2afbd28e4d74430d22f9504e18bfdf5' }
+        file_sha1 { 'f81e4f66c8c6bb899653a3340c157965ee69634f' }
+        file_sha256 { '9fbeee2191ce4dab5288fad5ecac1bd369f58fef9a992a880eadf0caf25f086d' }
 
         transient do
           file_metadatum_trait { :deb }
@@ -157,6 +169,9 @@ FactoryBot.define do
 
       trait(:udeb) do
         file_name { 'sample-udeb_1.2.3~alpha2_amd64.udeb' }
+        file_md5 { '72b1dd7d98229e2fb0355feda1d3a165' }
+        file_sha1 { 'e42e8f2fe04ed1bb73b44a187674480d0e49dcba' }
+        file_sha256 { '2b0c152b3ab4cc07663350424de972c2b7621d69fe6df2e0b94308a191e4632f' }
 
         transient do
           file_metadatum_trait { :udeb }
@@ -165,6 +180,9 @@ FactoryBot.define do
 
       trait(:buildinfo) do
         file_name { 'sample_1.2.3~alpha2_amd64.buildinfo' }
+        file_md5 { '4e085dd67c120ca967ec314f65770a42' }
+        file_sha1 { '0d47e899f3cc67a2253a4629456ff927e0db5c60' }
+        file_sha256 { 'f9900d3c94e94b329232668dcbef3dba2d96c07147b15b6dc0533452e4dd8a43' }
 
         transient do
           file_metadatum_trait { :buildinfo }
@@ -225,6 +243,14 @@ FactoryBot.define do
       package
       file_fixture { 'spec/fixtures/packages/rubygems/package-0.0.1.gem' }
       file_name { 'package-0.0.1.gem' }
+      file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }
+      size { 4.kilobytes }
+    end
+
+    trait(:unprocessed_gem) do
+      package
+      file_fixture { 'spec/fixtures/packages/rubygems/package.gem' }
+      file_name { 'package.gem' }
       file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }
       size { 4.kilobytes }
     end

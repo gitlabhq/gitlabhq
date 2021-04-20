@@ -17,6 +17,9 @@ members.
 
 ## Sharing a project with a group of users
 
+NOTE:
+In GitLab 13.11, you can [replace this form with a modal window](#share-a-project-modal-window).
+
 The primary mechanism to give a group of users, say 'Engineering', access to a project,
 say 'Project Acme', in GitLab is to make the 'Engineering' group the owner of 'Project
 Acme'. But what if 'Project Acme' already belongs to another group, say 'Open Source'?
@@ -47,6 +50,46 @@ Note that you can only share a project with:
 - groups that contain a nested subgroup or project for which you have an explicitly defined role
 
 Administrators are able to share projects with any group in the system.
+
+### Share a project modal window
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11.
+> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+> - Replaces the existing form with buttons to open a modal window.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-modal-window). **(FREE SELF)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+In GitLab 13.11, you can optionally replace the sharing form with a modal window.
+To share a project after enabling this feature:
+
+1. Go to your project's page.
+1. In the left sidebar, go to **Members**, and then select **Invite a group**.
+1. Select a group, and select a **Max access level**.
+1. (Optional) Select an **Access expiration date**.
+1. Select **Invite**.
+
+### Enable or disable modal window **(FREE SELF)**
+
+The modal window for sharing a project is under development and is ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:invite_members_group_modal)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:invite_members_group_modal)
+```
 
 ## Maximum access level
 

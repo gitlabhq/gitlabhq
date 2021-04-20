@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'User searches group settings', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, namespace: group) }
 
   before do
     group.add_owner(user)
@@ -13,9 +12,19 @@ RSpec.describe 'User searches group settings', :js do
   end
 
   context 'in general settings page' do
-    let(:visit_path) { edit_group_path(group) }
+    before do
+      visit edit_group_path(group)
+    end
 
-    it_behaves_like 'can search settings with feature flag check', 'Naming', 'Permissions'
+    it_behaves_like 'can search settings', 'Naming', 'Permissions'
+  end
+
+  context 'in Integrations page' do
+    before do
+      visit group_settings_integrations_path(group)
+    end
+
+    it_behaves_like 'can highlight results', 'set default configuration'
   end
 
   context 'in Repository page' do
@@ -32,5 +41,13 @@ RSpec.describe 'User searches group settings', :js do
     end
 
     it_behaves_like 'can search settings', 'Variables', 'Runners'
+  end
+
+  context 'in Packages & Registries page' do
+    before do
+      visit group_settings_packages_and_registries_path(group)
+    end
+
+    it_behaves_like 'can highlight results', 'GitLab Packages'
   end
 end

@@ -187,7 +187,7 @@ git push origin squash_some_bugs
 ## Merge requests
 
 - When you want feedback create a merge request.
-- Target is the ‘default’ branch (usually master).
+- Target is the 'default' branch (usually master).
 - Assign or mention the person you would like to review.
 - Add `[Draft]` to the title if it's a work in progress.
 - When accepting, always delete the branch.
@@ -260,7 +260,7 @@ git checkout master
 git tag my_lightweight_tag
 
 # Annotated tag
-git tag -a v1.0 -m ‘Version 1.0’
+git tag -a v1.0 -m 'Version 1.0'
 git tag
 
 git push origin --tags

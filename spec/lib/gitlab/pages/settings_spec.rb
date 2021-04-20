@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Pages::Settings do
+  let(:settings) { double(path: 'the path', local_store: 'local store') }
+
   describe '#path' do
     subject { described_class.new(settings).path }
-
-    let(:settings) { double(path: 'the path') }
 
     it { is_expected.to eq('the path') }
 
@@ -16,9 +16,43 @@ RSpec.describe Gitlab::Pages::Settings do
         allow(::Gitlab::Runtime).to receive(:web_server?).and_return(true)
       end
 
-      it 'raises a DiskAccessDenied exception' do
-        expect { subject }.to raise_error(described_class::DiskAccessDenied)
+      it 'logs a DiskAccessDenied error' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(described_class::DiskAccessDenied)
+        )
+
+        subject
       end
+    end
+
+    context 'when local_store settings does not exist yet' do
+      before do
+        allow(Settings.pages).to receive(:local_store).and_return(nil)
+      end
+
+      it { is_expected.to eq('the path') }
+    end
+
+    context 'when local store exists but legacy storage is disabled' do
+      before do
+        allow(Settings.pages.local_store).to receive(:enabled).and_return(false)
+      end
+
+      it 'logs a DiskAccessDenied error' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(described_class::DiskAccessDenied)
+        )
+
+        subject
+      end
+    end
+  end
+
+  describe '#local_store' do
+    subject(:local_store) { described_class.new(settings).local_store }
+
+    it 'is an instance of Gitlab::Pages::Stores::LocalStore' do
+      expect(local_store).to be_a(Gitlab::Pages::Stores::LocalStore)
     end
   end
 end

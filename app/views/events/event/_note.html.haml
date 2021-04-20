@@ -22,7 +22,7 @@
     - if note.attachment.url
       - if note.attachment.image?
         = link_to note.attachment.url, target: '_blank' do
-          = image_tag note.attachment.url, class: 'note-image-attach'
+          = image_tag note.attachment.url, class: 'note-image-attach col-lg-4'
       - else
         = link_to note.attachment.url, target: '_blank', class: 'note-file-attach' do
           = sprite_icon("paperclip")

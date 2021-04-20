@@ -20,8 +20,7 @@ class ReleasesFinder
     releases = get_releases
     releases = by_tag(releases)
     releases = releases.preloaded if preload
-    releases = order_releases(releases)
-    releases
+    order_releases(releases)
   end
 
   private

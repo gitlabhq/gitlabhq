@@ -46,6 +46,7 @@ const defaultProps = {
   pagesHelpPath: '/help/user/project/pages/introduction#gitlab-pages-access-control',
   packagesAvailable: false,
   packagesHelpPath: '/help/user/packages/index',
+  requestCveAvailable: true,
 };
 
 describe('Settings Panel', () => {
@@ -76,6 +77,7 @@ describe('Settings Panel', () => {
   const findRepositoryFeatureSetting = () =>
     findRepositoryFeatureProjectRow().find(projectFeatureSetting);
   const findProjectVisibilitySettings = () => wrapper.find({ ref: 'project-visibility-settings' });
+  const findIssuesSettingsRow = () => wrapper.find({ ref: 'issues-settings' });
   const findAnalyticsRow = () => wrapper.find({ ref: 'analytics-settings' });
   const findProjectVisibilityLevelInput = () => wrapper.find('[name="project[visibility_level]"]');
   const findRequestAccessEnabledInput = () =>
@@ -174,6 +176,16 @@ describe('Settings Panel', () => {
     });
   });
 
+  describe('Issues settings', () => {
+    it('has label for CVE request toggle', () => {
+      wrapper = mountComponent();
+
+      expect(findIssuesSettingsRow().findComponent(GlToggle).props('label')).toBe(
+        settingsPanel.i18n.cve_request_toggle_label,
+      );
+    });
+  });
+
   describe('Repository', () => {
     it('should set the repository help text when the visibility level is set to private', () => {
       wrapper = mountComponent({ currentSettings: { visibilityLevel: visibilityOptions.PRIVATE } });
@@ -228,7 +240,7 @@ describe('Settings Panel', () => {
     });
   });
 
-  describe('Pipelines', () => {
+  describe('CI/CD', () => {
     it('should enable the builds access level input when the repository is enabled', () => {
       wrapper = mountComponent({
         currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
@@ -304,6 +316,17 @@ describe('Settings Panel', () => {
 
       expect(findContainerRegistryEnabledInput().props('disabled')).toBe(true);
     });
+
+    it('has label for the toggle', () => {
+      wrapper = mountComponent({
+        currentSettings: { visibilityLevel: visibilityOptions.PUBLIC },
+        registryAvailable: true,
+      });
+
+      expect(findContainerRegistrySettings().findComponent(GlToggle).props('label')).toBe(
+        settingsPanel.i18n.containerRegistryLabel,
+      );
+    });
   });
 
   describe('Git Large File Storage', () => {
@@ -340,6 +363,15 @@ describe('Settings Panel', () => {
       });
 
       expect(findLFSFeatureToggle().props('disabled')).toBe(true);
+    });
+
+    it('has label for toggle', () => {
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
+        lfsAvailable: true,
+      });
+
+      expect(findLFSFeatureToggle().props('label')).toBe(settingsPanel.i18n.lfsLabel);
     });
 
     it('should not change lfsEnabled when disabling the repository', async () => {
@@ -431,6 +463,17 @@ describe('Settings Panel', () => {
       });
 
       expect(findPackagesEnabledInput().props('disabled')).toBe(true);
+    });
+
+    it('has label for toggle', () => {
+      wrapper = mountComponent({
+        currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
+        packagesAvailable: true,
+      });
+
+      expect(findPackagesEnabledInput().findComponent(GlToggle).props('label')).toBe(
+        settingsPanel.i18n.packagesLabel,
+      );
     });
   });
 

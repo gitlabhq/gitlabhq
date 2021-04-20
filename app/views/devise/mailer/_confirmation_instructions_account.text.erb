@@ -1,13 +1,13 @@
 <% if @resource.unconfirmed_email.present? || !@resource.created_recently? %>
 <%= @resource.unconfirmed_email || @resource.email %>,
-Use the link below to confirm your email address.
+<%= _('Use the link below to confirm your email address.') %>
 <% else %>
   <% if Gitlab.com? %>
-Thanks for signing up to GitLab!
+<%= _('Thanks for signing up to GitLab!') %>
   <% else %>
-Welcome, <%= @resource.name %>!
+<%= _("Welcome, %{name}!") % { name: @resource.name } %>
   <% end %>
-To get started, use the link below to confirm your account.
-<% end %>  
+<%= _('To get started, use the link below to confirm your account.') %>
+<% end %>
 
 <%= confirmation_url(@resource, confirmation_token: @token) %>

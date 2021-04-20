@@ -21,6 +21,9 @@ You can use the following environment variables to override certain values:
 |--------------------------------------------|---------|---------------------------------------------------------------------------------------------------------|
 | `DATABASE_URL`                             | string  | The database URL; is of the form: `postgresql://localhost/blog_development`.                            |
 | `ENABLE_BOOTSNAP`                          | string  | Enables Bootsnap for speeding up initial Rails boot (`1` to enable).                                    |
+| `EXTERNAL_VALIDATION_SERVICE_TIMEOUT`      | integer | Timeout, in seconds, for an [external CI/CD pipeline validation service](external_pipeline_validation.md). Default is `5`. |
+| `EXTERNAL_VALIDATION_SERVICE_URL`          | string  | URL to an [external CI/CD pipeline validation service](external_pipeline_validation.md).                |
+| `EXTERNAL_VALIDATION_SERVICE_TOKEN`        | string  | The `X-Gitlab-Token` for authentication with an [external CI/CD pipeline validation service](external_pipeline_validation.md). |
 | `GITLAB_CDN_HOST`                          | string  | Sets the base URL for a CDN to serve static assets (for example, `//mycdnsubdomain.fictional-cdn.com`). |
 | `GITLAB_EMAIL_DISPLAY_NAME`                | string  | The name used in the **From** field in emails sent by GitLab.                                           |
 | `GITLAB_EMAIL_FROM`                        | string  | The email address used in the **From** field in emails sent by GitLab.                                  |
@@ -29,8 +32,8 @@ You can use the following environment variables to override certain values:
 | `GITLAB_HOST`                              | string  | The full URL of the GitLab server (including `http://` or `https://`).                                  |
 | `GITLAB_ROOT_PASSWORD`                     | string  | Sets the password for the `root` user on installation.                                                  |
 | `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` | string  | Sets the initial registration token used for runners.                                                   |
-| `GITLAB_UNICORN_MEMORY_MAX`                | integer | The maximum memory threshold (in bytes) for the [unicorn-worker-killer](operations/unicorn.md#unicorn-worker-killer).      |
-| `GITLAB_UNICORN_MEMORY_MIN`                | integer | The minimum memory threshold (in bytes) for the [unicorn-worker-killer](operations/unicorn.md#unicorn-worker-killer).      |
+| `GITLAB_UNICORN_MEMORY_MAX`                | integer | The maximum memory threshold (in bytes) for the [unicorn-worker-killer](operations/unicorn.md#unicorn-worker-killer). |
+| `GITLAB_UNICORN_MEMORY_MIN`                | integer | The minimum memory threshold (in bytes) for the [unicorn-worker-killer](operations/unicorn.md#unicorn-worker-killer). |
 | `RAILS_ENV`                                | string  | The Rails environment; can be one of `production`, `development`, `staging`, or `test`.                 |
 | `UNSTRUCTURED_RAILS_LOG`                   | string  | Enables the unstructured log in addition to JSON logs (defaults to `true`).                             |
 

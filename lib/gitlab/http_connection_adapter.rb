@@ -17,14 +17,6 @@ module Gitlab
     def connection
       @uri, hostname = validate_url!(uri)
 
-      if options.key?(:http_proxyaddr)
-        proxy_uri_with_port = uri_with_port(options[:http_proxyaddr], options[:http_proxyport])
-        proxy_uri_validated = validate_url!(proxy_uri_with_port).first
-
-        @options[:http_proxyaddr] = proxy_uri_validated.omit(:port).to_s
-        @options[:http_proxyport] = proxy_uri_validated.port
-      end
-
       super.tap do |http|
         http.hostname_override = hostname if hostname
       end
@@ -52,12 +44,6 @@ module Gitlab
 
     def allow_settings_local_requests?
       Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
-    end
-
-    def uri_with_port(address, port)
-      uri = Addressable::URI.parse(address)
-      uri.port = port if port.present?
-      uri
     end
   end
 end

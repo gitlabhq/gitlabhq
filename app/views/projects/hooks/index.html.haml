@@ -9,6 +9,6 @@
   .col-lg-8.gl-mb-3
     = form_for @hook, as: :hook, url: polymorphic_path([@project, :hooks]) do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
-      = f.submit 'Add webhook', class: 'gl-button btn btn-success'
+      = f.submit 'Add webhook', class: 'gl-button btn btn-confirm'
 
     = render 'shared/web_hooks/index', hooks: @hooks, hook_class: @hook.class

@@ -13,16 +13,20 @@ module Packages
         def execute
           return error('Blank package name') unless package_name
           return error('Not allowed') unless Ability.allowed?(current_user, :destroy_package, project)
-          return error('Non existing versionless package') unless versionless_package_for_versions
-          return error('Non existing metadata file for versions') unless metadata_package_file_for_versions
 
+          result = success('Non existing versionless package(s). Nothing to do.')
+
+          # update versionless package for plugins if it exists
           if metadata_package_file_for_plugins
             result = update_plugins_xml
 
             return result if result.error?
           end
 
-          update_versions_xml
+          # update versionless_package for versions if it exists
+          return update_versions_xml if metadata_package_file_for_versions
+
+          result
         end
 
         private
@@ -79,6 +83,9 @@ module Packages
 
         def metadata_package_file_for_plugins
           strong_memoize(:metadata_package_file_for_plugins) do
+            pkg_name = package_name_for_plugins
+            next unless pkg_name
+
             metadata_package_file_for(versionless_package_named(package_name_for_plugins))
           end
         end
@@ -106,6 +113,8 @@ module Packages
         end
 
         def package_name_for_plugins
+          return unless versionless_package_for_versions
+
           group = versionless_package_for_versions.maven_metadatum.app_group
           group.tr('.', '/')
         end

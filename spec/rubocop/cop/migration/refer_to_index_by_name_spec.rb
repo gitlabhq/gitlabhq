@@ -15,8 +15,6 @@ RSpec.describe RuboCop::Cop::Migration::ReferToIndexByName do
       it 'registers an offense' do
         expect_offense(<<~RUBY, msg: 'migration methods that refer to existing indexes must do so by name')
           class TestReferToIndexByName < ActiveRecord::Migration[6.0]
-            DOWNTIME = false
-
             INDEX_NAME = 'my_test_name'
 
             disable_ddl_transaction!
@@ -63,8 +61,6 @@ RSpec.describe RuboCop::Cop::Migration::ReferToIndexByName do
     it 'registers no offenses' do
       expect_no_offenses(<<~RUBY)
         class TestReferToIndexByName < ActiveRecord::Migration[6.0]
-          DOWNTIME = false
-
           disable_ddl_transaction!
 
           def up

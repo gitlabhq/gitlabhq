@@ -38,7 +38,7 @@ module DevOpsReport
         ),
         Card.new(
           metric: subject,
-          title: 'Merge Requests',
+          title: 'Merge requests',
           description: 'per active user',
           feature: 'merge_requests',
           blog: 'https://8thlight.com/blog/uncle-bob/2013/02/01/The-Humble-Craftsman.html',

@@ -571,6 +571,43 @@ entry.
 - Convert mattermost alert to pajamas. !56556
 
 
+## 13.9.6 (2021-04-13)
+
+### Security (2 changes)
+
+- Clean only legitimate JPG and TIFF files.
+- Update ruby-saml and rexml gems.
+
+
+## 13.9.5 (2021-03-31)
+
+### Security (6 changes)
+
+- Leave pool repository on fork unlinking.
+- Fixed XSS in merge requests sidebar.
+- Fix arbitrary read/write in AsciiDoctor and Kroki gems.
+- Prevent infinite loop when checking if collaboration is allowed.
+- Disable arbitrary URI and file reads in JSON validator.
+- Require POST request to trigger system hooks.
+
+### Removed (1 change)
+
+- Make HipChat project service do nothing. !57434
+
+### Other (3 changes)
+
+- Remove direct mimemagic dependency. !57387
+- Refactor MimeMagic calls to new MimeType class. !57421
+- Switch to using a fake mimemagic gem. !57443
+
+
+## 13.9.4 (2021-03-17)
+
+### Security (1 change)
+
+- Patch Kramdown syntax highlighter gem.
+
+
 ## 13.9.3 (2021-03-08)
 
 ### Fixed (4 changes)
@@ -1179,6 +1216,42 @@ entry.
 - Apply new GitLab UI for buttons in pipeline schedules.
 
 
+## 13.8.8 (2021-04-13)
+
+### Security (2 changes)
+
+- Clean only legitimate JPG and TIFF files.
+- Update ruby-saml and rexml gems.
+
+
+## 13.8.7 (2021-03-31)
+
+### Security (5 changes)
+
+- Fixed XSS in merge requests sidebar.
+- Leave pool repository on fork unlinking.
+- Fix arbitrary read/write in AsciiDoctor and Kroki gems.
+- Prevent infinite loop when checking if collaboration is allowed.
+- Require POST request to trigger system hooks.
+
+### Removed (1 change)
+
+- Make HipChat project service do nothing. !57434
+
+### Other (3 changes)
+
+- Remove direct mimemagic dependency. !57387
+- Refactor MimeMagic calls to new MimeType class. !57421
+- Switch to using a fake mimemagic gem. !57443
+
+
+## 13.8.6 (2021-03-17)
+
+### Security (1 change)
+
+- Patch Kramdown syntax highlighter gem.
+
+
 ## 13.8.5 (2021-03-04)
 
 ### Security (6 changes)
@@ -1589,6 +1662,13 @@ entry.
 - Remove unneeded group label index. !51676
 - Apply GitLab UI button styles to buttons in project wiki. !51780 (Yogi (@yo))
 - Add verbiage + link sast to show it's in core. !51935
+
+
+## 13.7.9 (2021-03-17)
+
+### Security (1 change)
+
+- Patch Kramdown syntax highlighter gem.
 
 
 ## 13.7.8 (2021-03-04)

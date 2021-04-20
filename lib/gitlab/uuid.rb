@@ -9,9 +9,9 @@ module Gitlab
       production: "58dc0f06-936c-43b3-93bb-71693f1b6570"
     }.freeze
 
-    UUID_V5_PATTERN = /\h{8}-\h{4}-5\h{3}-\h{4}-\h{4}\h{8}/.freeze
+    UUID_V5_PATTERN = /\h{8}-\h{4}-5\h{3}-\h{4}-\h{12}/.freeze
     NAMESPACE_REGEX = /(\h{8})-(\h{4})-(\h{4})-(\h{4})-(\h{4})(\h{8})/.freeze
-    PACK_PATTERN = "NnnnnN".freeze
+    PACK_PATTERN = "NnnnnN"
 
     class << self
       def v5(name, namespace_id: default_namespace_id)

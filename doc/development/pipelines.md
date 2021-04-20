@@ -497,18 +497,20 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 1. We currently have several different caches defined in
    [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml),
    with fixed keys:
-   - `.setup-test-env-cache`.
-   - `.rails-cache`.
-   - `.static-analysis-cache`.
+   - `.setup-test-env-cache`
+   - `.rails-cache`
+   - `.static-analysis-cache`
    - `.coverage-cache`
+   - `.danger-review-cache`
    - `.qa-cache`
-   - `.yarn-cache`.
+   - `.yarn-cache`
    - `.assets-compile-cache` (the key includes `${NODE_ENV}` so it's actually two different caches).
 1. Only 6 specific jobs, running in 2-hourly scheduled pipelines, are pushing (i.e. updating) to the caches:
    - `update-setup-test-env-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-rails-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-static-analysis-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-coverage-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
+   - `update-danger-review-cache`, defined in [`.gitlab/ci/review.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/review.gitlab-ci.yml).
    - `update-qa-cache`, defined in [`.gitlab/ci/qa.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/qa.gitlab-ci.yml).
    - `update-assets-compile-production-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-assets-compile-test-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
@@ -534,21 +536,23 @@ The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
 The `CI_PRE_CLONE_SCRIPT` is currently defined as a project CI/CD variable:
 
 ```shell
-echo "Downloading archived master..."
-wget -O /tmp/gitlab.tar.gz https://storage.googleapis.com/gitlab-ci-git-repo-cache/project-278964/gitlab-master-shallow.tar.gz
-
-if [ ! -f /tmp/gitlab.tar.gz ]; then
-    echo "Repository cache not available, cloning a new directory..."
-    exit
-fi
-
-rm -rf $CI_PROJECT_DIR
-echo "Extracting tarball into $CI_PROJECT_DIR..."
-mkdir -p $CI_PROJECT_DIR
-cd $CI_PROJECT_DIR
-tar xzf /tmp/gitlab.tar.gz
-rm -f /tmp/gitlab.tar.gz
-chmod a+w $CI_PROJECT_DIR
+(
+  echo "Downloading archived master..."
+  wget -O /tmp/gitlab.tar.gz https://storage.googleapis.com/gitlab-ci-git-repo-cache/project-278964/gitlab-master-shallow.tar.gz
+  
+  if [ ! -f /tmp/gitlab.tar.gz ]; then
+      echo "Repository cache not available, cloning a new directory..."
+      exit
+  fi
+  
+  rm -rf $CI_PROJECT_DIR
+  echo "Extracting tarball into $CI_PROJECT_DIR..."
+  mkdir -p $CI_PROJECT_DIR
+  cd $CI_PROJECT_DIR
+  tar xzf /tmp/gitlab.tar.gz
+  rm -f /tmp/gitlab.tar.gz
+  chmod a+w $CI_PROJECT_DIR
+)
 ```
 
 The first step of the script downloads `gitlab-master.tar.gz` from
@@ -576,7 +580,7 @@ overwrites the Git configuration with the appropriate settings to fetch
 from the GitLab repository.
 
 `CI_REPO_CACHE_CREDENTIALS` contains the Google Cloud service account
-JSON for uploading to the `gitlab-ci-git-repo-cache` bucket. (If you’re a
+JSON for uploading to the `gitlab-ci-git-repo-cache` bucket. (If you're a
 GitLab Team Member, find credentials in the
 [GitLab shared 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
 
@@ -614,6 +618,7 @@ that is deployed in stage `review`.
   [`coverage-javascript`](https://gitlab-org.gitlab.io/gitlab/coverage-javascript/),
   and `webpack-report` (found at `https://gitlab-org.gitlab.io/gitlab/webpack-report/`, but there is
   [an issue with the deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/233458)).
+- `notify`: This stage includes jobs that notify various failures to Slack.
 
 ### Default image
 

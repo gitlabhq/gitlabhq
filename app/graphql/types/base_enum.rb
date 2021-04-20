@@ -21,12 +21,23 @@ module Types
         graphql_name(enum_mod.name) if use_name
         description(enum_mod.description) if use_description
 
-        enum_mod.definition.each { |key, content| value(key.to_s.upcase, **content) }
+        enum_mod.definition.each do |key, content|
+          value(key.to_s.upcase, **content)
+        end
+      end
+
+      # Helper to define an enum member for each element of a Rails AR enum
+      def from_rails_enum(enum, description:)
+        enum.each_key do |name|
+          value name.to_s.upcase,
+                value: name,
+                description: format(description, name: name)
+        end
       end
 
       def value(*args, **kwargs, &block)
         enum[args[0].downcase] = kwargs[:value] || args[0]
-        kwargs = gitlab_deprecation(kwargs)
+        gitlab_deprecation(kwargs)
 
         super(*args, **kwargs, &block)
       end
@@ -35,6 +46,18 @@ module Types
       # and the value being the Ruby value (either the explicit `value` passed or the same as the value attr).
       def enum
         @enum_values ||= {}.with_indifferent_access
+      end
+
+      def authorization
+        @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(authorize)
+      end
+
+      def authorize(*abilities)
+        @abilities = abilities
+      end
+
+      def authorized?(object, context)
+        authorization.ok?(object, context[:current_user])
       end
     end
   end

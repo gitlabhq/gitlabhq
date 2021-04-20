@@ -1,17 +1,22 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import navControlsComp from '~/pipelines/components/pipelines_list/nav_controls.vue';
+import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import NavControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
 
 describe('Pipelines Nav Controls', () => {
-  let NavControlsComponent;
-  let component;
+  let wrapper;
 
-  beforeEach(() => {
-    NavControlsComponent = Vue.extend(navControlsComp);
-  });
+  const createComponent = (props) => {
+    wrapper = shallowMount(NavControls, {
+      propsData: {
+        ...props,
+      },
+    });
+  };
+
+  const findRunPipeline = () => wrapper.find('.js-run-pipeline');
 
   afterEach(() => {
-    component.$destroy();
+    wrapper.destroy();
   });
 
   it('should render link to create a new pipeline', () => {
@@ -21,12 +26,11 @@ describe('Pipelines Nav Controls', () => {
       resetCachePath: 'foo',
     };
 
-    component = mountComponent(NavControlsComponent, mockData);
+    createComponent(mockData);
 
-    expect(component.$el.querySelector('.js-run-pipeline').textContent).toContain('Run Pipeline');
-    expect(component.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(
-      mockData.newPipelinePath,
-    );
+    const runPipeline = findRunPipeline();
+    expect(runPipeline.text()).toContain('Run pipeline');
+    expect(runPipeline.attributes('href')).toBe(mockData.newPipelinePath);
   });
 
   it('should not render link to create pipeline if no path is provided', () => {
@@ -36,9 +40,9 @@ describe('Pipelines Nav Controls', () => {
       resetCachePath: 'foo',
     };
 
-    component = mountComponent(NavControlsComponent, mockData);
+    createComponent(mockData);
 
-    expect(component.$el.querySelector('.js-run-pipeline')).toEqual(null);
+    expect(findRunPipeline().exists()).toBe(false);
   });
 
   it('should render link for CI lint', () => {
@@ -49,12 +53,10 @@ describe('Pipelines Nav Controls', () => {
       resetCachePath: 'foo',
     };
 
-    component = mountComponent(NavControlsComponent, mockData);
+    createComponent(mockData);
 
-    expect(component.$el.querySelector('.js-ci-lint').textContent.trim()).toContain('CI Lint');
-    expect(component.$el.querySelector('.js-ci-lint').getAttribute('href')).toEqual(
-      mockData.ciLintPath,
-    );
+    expect(wrapper.find('.js-ci-lint').text().trim()).toContain('CI lint');
+    expect(wrapper.find('.js-ci-lint').attributes('href')).toBe(mockData.ciLintPath);
   });
 
   describe('Reset Runners Cache', () => {
@@ -64,22 +66,20 @@ describe('Pipelines Nav Controls', () => {
         ciLintPath: 'foo',
         resetCachePath: 'foo',
       };
-
-      component = mountComponent(NavControlsComponent, mockData);
+      createComponent(mockData);
     });
 
     it('should render button for resetting runner caches', () => {
-      expect(component.$el.querySelector('.js-clear-cache').textContent.trim()).toContain(
-        'Clear Runner Caches',
-      );
+      expect(wrapper.find('.js-clear-cache').text().trim()).toContain('Clear runner caches');
     });
 
-    it('should emit postAction event when reset runner cache button is clicked', () => {
-      jest.spyOn(component, '$emit').mockImplementation(() => {});
+    it('should emit postAction event when reset runner cache button is clicked', async () => {
+      jest.spyOn(wrapper.vm, '$emit').mockImplementation(() => {});
 
-      component.$el.querySelector('.js-clear-cache').click();
+      wrapper.find('.js-clear-cache').vm.$emit('click');
+      await nextTick();
 
-      expect(component.$emit).toHaveBeenCalledWith('resetRunnersCache', 'foo');
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('resetRunnersCache', 'foo');
     });
   });
 });

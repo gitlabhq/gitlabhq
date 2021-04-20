@@ -281,3 +281,19 @@ No, you don't. You can create your project first and access it under
 ## Known issues
 
 For a list of known issues, visit the GitLab [public issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages).
+
+## Troubleshooting
+
+### 404 error when accessing a GitLab Pages site URL
+
+This problem most likely results from a missing `index.html` file in the public directory. If after deploying a Pages site
+a 404 is encountered, confirm that the public directory contains an `index.html` file. If the file contains a different name
+such as `test.html`, the Pages site can still be accessed, but the full path would be needed. For example: `https//group-name.pages.example.com/project-name/test.html`.
+
+The contents of the public directory can be confirmed by [browsing the artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts) from the latest pipeline.
+
+Files listed under the public directory can be accessed through the Pages URL for the project.
+
+A 404 can also be related to incorrect permissions. If [Pages Access Control](pages_access_control.md) is enabled, and a user
+navigates to the Pages URL and receives a 404 response, it is possible that the user does not have permission to view the site.
+To fix this, verify that the user is a member of the project.

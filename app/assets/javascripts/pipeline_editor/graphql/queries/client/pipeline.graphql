@@ -1,10 +1,9 @@
 query getPipeline($fullPath: ID!, $sha: String!) {
-  project(fullPath: $fullPath) @client {
+  project(fullPath: $fullPath) {
     pipeline(sha: $sha) {
       commitPath
       id
       iid
-      shortSha
       status
       detailedStatus {
         detailsPath

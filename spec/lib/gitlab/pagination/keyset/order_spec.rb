@@ -417,4 +417,59 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
       end
     end
   end
+
+  context 'extract and apply cursor attributes' do
+    let(:model) { Project.new(id: 100) }
+    let(:scope) { Project.all }
+
+    shared_examples 'cursor attribute examples' do
+      describe '#cursor_attributes_for_node' do
+        it { expect(order.cursor_attributes_for_node(model)).to eq({ id: '100' }.with_indifferent_access) }
+      end
+
+      describe '#apply_cursor_conditions' do
+        context 'when params with string keys are passed' do
+          subject(:sql) { order.apply_cursor_conditions(scope, { 'id' => '100' }).to_sql }
+
+          it { is_expected.to include('"projects"."id" < 100)') }
+        end
+
+        context 'when params with symbol keys are passed' do
+          subject(:sql) { order.apply_cursor_conditions(scope, { id: '100' }).to_sql }
+
+          it { is_expected.to include('"projects"."id" < 100)') }
+        end
+      end
+    end
+
+    context 'when string attribute name is given' do
+      let(:order) do
+        Gitlab::Pagination::Keyset::Order.build([
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id',
+            order_expression: Project.arel_table['id'].desc,
+            nullable: :not_nullable,
+            distinct: true
+          )
+        ])
+      end
+
+      it_behaves_like 'cursor attribute examples'
+    end
+
+    context 'when symbol attribute name is given' do
+      let(:order) do
+        Gitlab::Pagination::Keyset::Order.build([
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :id,
+            order_expression: Project.arel_table['id'].desc,
+            nullable: :not_nullable,
+            distinct: true
+          )
+        ])
+      end
+
+      it_behaves_like 'cursor attribute examples'
+    end
+  end
 end

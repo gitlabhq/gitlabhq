@@ -1,0 +1,5 @@
+---
+title: Fix closed icon for merge requests to match close issue icon
+merge_request: 57981
+author: jesus beltran
+type: fixed

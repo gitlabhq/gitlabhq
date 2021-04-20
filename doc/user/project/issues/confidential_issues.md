@@ -19,7 +19,7 @@ You can make an issue confidential during issue creation or by editing
 an existing one.
 
 When you create a new issue, a checkbox right below the text area is available
-to mark the issue as confidential. Check that box and hit the **Submit issue**
+to mark the issue as confidential. Check that box and hit the **Create issue**
 button to create the issue. For existing issues, edit them, check the
 confidential checkbox and hit **Save changes**.
 

@@ -348,10 +348,6 @@ Now that the database is created, let's move on to setting up Redis with ElastiC
 ElastiCache is an in-memory hosted caching solution. Redis maintains its own
 persistence and is used to store session data, temporary cache information, and background job queues for the GitLab application.
 
-WARNING:
-GitLab recommends you use ElastiCache Redis version 5.0.x, because version 6.x contains
-a bug that [prevents Sidekiq from processing jobs](https://gitlab.com/gitlab-org/gitlab/-/issues/281683).
-
 ### Create a Redis Security Group
 
 1. Navigate to the EC2 dashboard.
@@ -413,7 +409,7 @@ If you do not want to maintain bastion hosts, you can set up [AWS Systems Manage
    1. Leave everything else as default and click **Add Storage**.
 1. For storage, we'll leave everything as default and only add an 8GB root volume. We won't store anything on this instance.
 1. Click **Add Tags** and on the next screen click **Add Tag**.
-   1. We’ll only set `Key: Name` and `Value: Bastion Host A`.
+   1. We'll only set `Key: Name` and `Value: Bastion Host A`.
 1. Click **Configure Security Group**.
    1. Select **Create a new security group**, enter a **Security group name** (we'll use `bastion-sec-group`), and add a description.
    1. We'll enable SSH access from anywhere (`0.0.0.0/0`). If you want stricter security, specify a single IP address or an IP address range in CIDR notation.
@@ -432,7 +428,7 @@ Confirm that you can SSH into the instance:
 
 1. Create an EC2 instance following the same steps as above with the following changes:
    1. For the **Subnet**, select the second public subnet we created earlier (`gitlab-public-10.0.2.0`).
-   1. Under the **Add Tags** section, we’ll set `Key: Name` and `Value: Bastion Host B` so that we can easily identify our two instances.
+   1. Under the **Add Tags** section, we'll set `Key: Name` and `Value: Bastion Host B` so that we can easily identify our two instances.
    1. For the security group, select the existing `bastion-sec-group` we created above.
 
 ### Use SSH Agent Forwarding
@@ -456,10 +452,10 @@ From the EC2 dashboard:
    1. In the **Subnet** dropdown, select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.
    1. Double check that **Auto-assign Public IP** is set to `Use subnet setting (Disable)`.
    1. Click **Add Storage**.
-   1. The root volume is 8GiB by default and should be enough given that we won’t store any data there.
+   1. The root volume is 8GiB by default and should be enough given that we won't store any data there.
 1. Click **Add Tags** and add any tags you may need. In our case, we'll only set `Key: Name` and `Value: GitLab`.
 1. Click **Configure Security Group**. Check **Select an existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
-1. Click **Review and launch** followed by **Launch** if you’re happy with your settings.
+1. Click **Review and launch** followed by **Launch** if you're happy with your settings.
 1. Finally, acknowledge that you have access to the selected private key file or create a new one. Click **Launch Instances**.
 
 ### Add custom configuration
@@ -654,8 +650,9 @@ That concludes the configuration changes for our GitLab instance. Next, we'll cr
 
 ### Log in for the first time
 
-Using the domain name you used when setting up [DNS for the load balancer](#configure-dns-for-load-balancer), you should now be able to visit GitLab in your browser. You will be asked to set up a password
-for the `root` user which has admin privileges on the GitLab instance. This password will be stored in the database.
+Using the domain name you used when setting up [DNS for the load balancer](#configure-dns-for-load-balancer), you should now be able to visit GitLab in your browser.
+If you didn't change the password by any other means, the default password will be the same as the instance ID. To change the default password, login as the `root` user
+with the default password and [change it in the user profile](../../user/profile#change-your-password).
 
 When our [auto scaling group](#create-an-auto-scaling-group) spins up new instances, we'll be able to log in with username `root` and the newly created password.
 
@@ -683,7 +680,7 @@ From the EC2 dashboard:
 1. **Do not** check **Request Spot Instance**.
 1. From the **IAM Role** dropdown, pick the `GitLabAdmin` instance role we [created earlier](#create-an-iam-ec2-instance-role-and-profile).
 1. Leave the rest as defaults and click **Add Storage**.
-1. The root volume is 8GiB by default and should be enough given that we won’t store any data there. Click **Configure Security Group**.
+1. The root volume is 8GiB by default and should be enough given that we won't store any data there. Click **Configure Security Group**.
 1. Check **Select and existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
 1. Click **Review**, review your changes, and click **Create launch configuration**.
 1. Acknowledge that you have access to the private key or create a new one. Click **Create launch configuration**.

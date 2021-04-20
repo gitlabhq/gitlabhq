@@ -7,6 +7,8 @@ import { labelForStrategy } from '../utils';
 
 export default {
   i18n: {
+    deleteLabel: __('Delete'),
+    editLabel: __('Edit'),
     toggleLabel: __('Feature flag status'),
   },
   components: {
@@ -215,19 +217,21 @@ export default {
           <div class="table-action-buttons btn-group">
             <template v-if="featureFlag.edit_path">
               <gl-button
-                v-gl-tooltip.hover.bottom="__('Edit')"
+                v-gl-tooltip.hover.bottom="$options.i18n.editLabel"
                 class="js-feature-flag-edit-button"
                 icon="pencil"
+                :aria-label="$options.i18n.editLabel"
                 :href="featureFlag.edit_path"
               />
             </template>
             <template v-if="featureFlag.destroy_path">
               <gl-button
-                v-gl-tooltip.hover.bottom="__('Delete')"
+                v-gl-tooltip.hover.bottom="$options.i18n.deleteLabel"
                 class="js-feature-flag-delete-button"
                 variant="danger"
                 icon="remove"
                 :disabled="!canDeleteFlag(featureFlag)"
+                :aria-label="$options.i18n.deleteLabel"
                 @click="setDeleteModalData(featureFlag)"
               />
             </template>

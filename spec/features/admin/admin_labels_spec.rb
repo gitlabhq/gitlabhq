@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'admin issues labels' do
-  let!(:bug_label) { Label.create(title: 'bug', template: true) }
-  let!(:feature_label) { Label.create(title: 'feature', template: true) }
+  let!(:bug_label) { Label.create!(title: 'bug', template: true) }
+  let!(:feature_label) { Label.create!(title: 'feature', template: true) }
 
   before do
     admin = create(:admin)
@@ -36,7 +36,7 @@ RSpec.describe 'admin issues labels' do
 
     it 'deletes all labels', :js do
       page.within '.labels' do
-        page.all('.remove-row').each do |remove|
+        page.all('.js-remove-row').each do |remove|
           accept_confirm { remove.click }
           wait_for_requests
         end

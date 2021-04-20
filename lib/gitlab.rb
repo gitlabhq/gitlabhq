@@ -108,8 +108,19 @@ module Gitlab
         !%w[true 1].include?(ENV['FOSS_ONLY'].to_s)
   end
 
+  def self.jh?
+    @is_jh ||=
+      ee? &&
+        root.join('jh').exist? &&
+        !%w[true 1].include?(ENV['EE_ONLY'].to_s)
+  end
+
   def self.ee
     yield if ee?
+  end
+
+  def self.jh
+    yield if jh?
   end
 
   def self.http_proxy_env?

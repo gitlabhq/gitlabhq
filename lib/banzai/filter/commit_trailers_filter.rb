@@ -36,7 +36,7 @@ module Banzai
 
           next if html == content
 
-          node.replace(html)
+          node.replace("\n\n#{html}")
         end
 
         doc

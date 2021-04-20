@@ -117,7 +117,7 @@ must **lock the file** before [editing it](#edit-lockable-files).
 ### Lock files
 
 By locking a file, you verify that no one else is editing it, and
-prevent anyone else from editing the file until you’re done. On the other
+prevent anyone else from editing the file until you're done. On the other
 hand, when you unlock a file, you communicate that you've finished editing
 and allow other people to edit it.
 

@@ -212,6 +212,106 @@ RSpec.describe Emails::Profile do
     end
   end
 
+  describe 'SSH key notification' do
+    let_it_be_with_reload(:user) { create(:user) }
+    let_it_be(:fingerprints) { ["aa:bb:cc:dd:ee:zz"] }
+
+    shared_examples 'is sent to the user' do
+      it { is_expected.to deliver_to user.email }
+    end
+
+    shared_examples 'has the correct subject' do |subject_text|
+      it { is_expected.to have_subject subject_text }
+    end
+
+    shared_examples 'has the correct body text' do |body_text|
+      it { is_expected.to have_body_text body_text }
+    end
+
+    shared_examples 'includes a link to ssh key page' do
+      it { is_expected.to have_body_text /#{profile_keys_url}/ }
+    end
+
+    shared_examples 'includes the email reason' do
+      it { is_expected.to have_body_text /You're receiving this email because of your account on localhost/ }
+    end
+
+    shared_examples 'valid use case' do
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+      it_behaves_like 'is sent to the user'
+      it_behaves_like 'includes a link to ssh key page'
+      it_behaves_like 'includes the email reason'
+    end
+
+    shared_examples 'does not send email' do
+      it do
+        expect { subject }.not_to change { ActionMailer::Base.deliveries.count }
+      end
+    end
+
+    shared_context 'block user' do
+      before do
+        user.block!
+      end
+    end
+
+    context 'notification email for expired ssh key' do
+      context 'when valid' do
+        subject { Notify.ssh_key_expired_email(user, fingerprints) }
+
+        include_examples 'valid use case'
+
+        it_behaves_like 'has the correct subject', /Your SSH key has expired/
+        it_behaves_like 'has the correct body text', /Your SSH keys with the following fingerprints has expired/
+      end
+
+      context 'when invalid' do
+        context 'when user does not exist' do
+          subject { Notify.ssh_key_expired_email(nil, fingerprints) }
+
+          it_behaves_like 'does not send email'
+        end
+
+        context 'when user is not active' do
+          subject { Notify.ssh_key_expired_email(user, fingerprints) }
+
+          include_context 'block user'
+
+          it_behaves_like 'does not send email'
+        end
+      end
+    end
+
+    context 'notification email for expiring ssh key' do
+      context 'when valid' do
+        subject { Notify.ssh_key_expiring_soon_email(user, fingerprints) }
+
+        include_examples 'valid use case'
+
+        it_behaves_like 'has the correct subject', /Your SSH key is expiring soon/
+        it_behaves_like 'has the correct body text', /Your SSH keys with the following fingerprints are scheduled to expire soon/
+      end
+
+      context 'when invalid' do
+        context 'when user does not exist' do
+          subject { Notify.ssh_key_expiring_soon_email(nil, fingerprints) }
+
+          it_behaves_like 'does not send email'
+        end
+
+        context 'when user is not active' do
+          subject { Notify.ssh_key_expiring_soon_email(user, fingerprints) }
+
+          include_context 'block user'
+
+          it_behaves_like 'does not send email'
+        end
+      end
+    end
+  end
+
   describe 'user unknown sign in email' do
     let_it_be(:user) { create(:user) }
     let_it_be(:ip) { '169.0.0.1' }

@@ -80,17 +80,3 @@
     }
   }
 }
-
-.d-block.d-sm-none-inline {
-  .ci-status-link {
-    position: relative;
-    top: 2px;
-    left: 5px;
-  }
-}
-
-.ci-status-link {
-  svg {
-    overflow: visible;
-  }
-}

@@ -255,7 +255,45 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
 
 - In Vue:
 
-  See the section on [Vue component interpolation](#vue-components-interpolation).
+  Use the [`GlSprintf`](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/utilities-sprintf--sentence-with-link) component if:
+
+  - you need to include child components in the translation string.
+  - you need to include HTML in your translation string.
+  - you are using `sprintf` and need to pass `false` as the third argument to
+    prevent it from escaping placeholder values.
+
+  For example:
+
+  ```html
+  <gl-sprintf :message="s__('ClusterIntegration|Learn more about %{linkStart}zones%{linkEnd}')">
+    <template #link="{ content }">
+      <gl-link :href="somePath">{{ content }}</gl-link>
+    </template>
+  </gl-sprintf>
+  ```
+
+  In other cases it may be simpler to use `sprintf`, perhaps in a computed
+  property. For example:
+
+  ```html
+  <script>
+  import { __, sprintf } from '~/locale';
+
+  export default {
+    ...
+    computed: {
+      userWelcome() {
+        sprintf(__('Hello %{username}'), { username: this.user.name });
+      }
+    }
+    ...
+  }
+  </script>
+
+  <template>
+    <span>{{ userWelcome }}</span>
+  </template>
+  ```
 
 - In JavaScript (when Vue cannot be used):
 
@@ -265,12 +303,10 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   sprintf(__('Hello %{username}'), { username: 'Joe' }); // => 'Hello Joe'
   ```
 
-  If you want to use markup within the translation and are using Vue, you
-  **must** use the [`gl-sprintf`](#vue-components-interpolation) component. If
-  for some reason you cannot use Vue, use `sprintf` and stop it from escaping
-  placeholder values by passing `false` as its third argument. You **must**
-  escape any interpolated dynamic values yourself, for instance using
-  `escape` from `lodash`.
+  If you need to use markup within the translation, use `sprintf` and stop it
+  from escaping placeholder values by passing `false` as its third argument.
+  You **must** escape any interpolated dynamic values yourself, for instance
+  using `escape` from `lodash`.
 
   ```javascript
   import { escape } from 'lodash';
@@ -589,7 +625,7 @@ This also applies when using links in between translated sentences, otherwise th
   ```haml
   - zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
   - zones_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: zones_link_url }
-  = s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}').html_safe % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
+  = html_escape(s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}')) % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
   ```
 
 - In Vue, instead of:
@@ -632,7 +668,7 @@ This also applies when using links in between translated sentences, otherwise th
   {{
       sprintf(s__("ClusterIntegration|Learn more about %{link}"), {
           link: '<a href="https://cloud.google.com/compute/docs/regions-zones/regions-zones" target="_blank" rel="noopener noreferrer">zones</a>'
-      })
+      }, false)
   }}
   ```
 
@@ -643,7 +679,7 @@ This also applies when using links in between translated sentences, otherwise th
       sprintf(s__("ClusterIntegration|Learn more about %{linkStart}zones%{linkEnd}"), {
           linkStart: '<a href="https://cloud.google.com/compute/docs/regions-zones/regions-zones" target="_blank" rel="noopener noreferrer">',
           linkEnd: '</a>',
-      })
+      }, false)
   }}
   ```
 
@@ -651,45 +687,6 @@ The reasoning behind this is that in some languages words change depending on co
 
 When in doubt, try to follow the best practices described in this [Mozilla
 Developer documentation](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Splitting).
-
-##### Vue components interpolation
-
-When translating UI text in Vue components, you might want to include child components inside
-the translation string.
-You could not use a JavaScript-only solution to render the translation,
-because Vue would not be aware of the child components and would render them as plain text.
-
-For this use case, you should use the `gl-sprintf` component which is maintained
-in **GitLab UI**.
-
-The `gl-sprintf` component accepts a `message` property, which is the translatable string,
-and it exposes a named slot for every placeholder in the string, which lets you include Vue
-components easily.
-
-Assume you want to print the translatable string
-`Pipeline %{pipelineId} triggered %{timeago} by %{author}`. To replace the `%{timeago}` and
-`%{author}` placeholders with Vue components, here's how you would do that with `gl-sprintf`:
-
-```html
-<template>
-  <div>
-    <gl-sprintf :message="__('Pipeline %{pipelineId} triggered %{timeago} by %{author}')">
-      <template #pipelineId>{{ pipeline.id }}</template>
-      <template #timeago>
-        <timeago :time="pipeline.triggerTime" />
-      </template>
-      <template #author>
-        <gl-avatar-labeled
-          :src="pipeline.triggeredBy.avatarPath"
-          :label="pipeline.triggeredBy.name"
-        />
-      </template>
-    </gl-sprintf>
-  </div>
-</template>
-```
-
-For more information, see the [`gl-sprintf`](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-sprintf--default) documentation.
 
 ## Updating the PO files with the new content
 
@@ -702,7 +699,7 @@ bin/rake gettext:regenerate
 
 This command updates `locale/gitlab.pot` file with the newly externalized
 strings and remove any strings that aren't used anymore. You should check this
-file in. Once the changes are on master, they are picked up by
+file in. Once the changes are on the default branch, they are picked up by
 [CrowdIn](https://translate.gitlab.com) and be presented for
 translation.
 

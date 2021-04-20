@@ -39,7 +39,7 @@ export default {
 
 <template>
   <gl-intersection-observer class="gl-px-5 gl-h-full" @appear="categoryAppeared">
-    <div class="gl-top-0 gl-py-3 gl-w-full emoji-picker-category-header">
+    <div class="gl-top-0 gl-py-3 gl-w-full gl-z-index-1 emoji-picker-category-header">
       <b>{{ categoryTitle }}</b>
     </div>
     <template v-if="emojis.length">

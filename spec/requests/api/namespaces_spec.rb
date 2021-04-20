@@ -216,4 +216,77 @@ RSpec.describe API::Namespaces do
       end
     end
   end
+
+  describe 'GET /namespaces/:namespace/exists' do
+    let!(:namespace1) { create(:group, name: 'Namespace 1', path: 'namespace-1') }
+    let!(:namespace2) { create(:group, name: 'Namespace 2', path: 'namespace-2') }
+    let!(:namespace1sub) { create(:group, name: 'Sub Namespace 1', path: 'sub-namespace-1', parent: namespace1) }
+    let!(:namespace2sub) { create(:group, name: 'Sub Namespace 2', path: 'sub-namespace-2', parent: namespace2) }
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api("/namespaces/#{namespace1.path}/exists")
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authenticated' do
+      it 'returns JSON indicating the namespace exists and a suggestion' do
+        get api("/namespaces/#{namespace1.path}/exists", user)
+
+        expected_json = { exists: true, suggests: ["#{namespace1.path}1"] }.to_json
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(expected_json)
+      end
+
+      it 'returns JSON indicating the namespace does not exist without a suggestion' do
+        get api("/namespaces/non-existing-namespace/exists", user)
+
+        expected_json = { exists: false, suggests: [] }.to_json
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(expected_json)
+      end
+
+      it 'checks the existence of a namespace in case-insensitive manner' do
+        get api("/namespaces/#{namespace1.path.upcase}/exists", user)
+
+        expected_json = { exists: true, suggests: ["#{namespace1.path.upcase}1"] }.to_json
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(expected_json)
+      end
+
+      it 'checks the existence within the parent namespace only' do
+        get api("/namespaces/#{namespace1sub.path}/exists", user), params: { parent_id: namespace1.id }
+
+        expected_json = { exists: true, suggests: ["#{namespace1sub.path}1"] }.to_json
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(expected_json)
+      end
+
+      it 'ignores nested namespaces when checking for top-level namespace' do
+        get api("/namespaces/#{namespace1sub.path}/exists", user)
+
+        expected_json = { exists: false, suggests: [] }.to_json
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(expected_json)
+      end
+
+      it 'ignores top-level namespaces when checking with parent_id' do
+        get api("/namespaces/#{namespace1.path}/exists", user), params: { parent_id: namespace1.id }
+
+        expected_json = { exists: false, suggests: [] }.to_json
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(expected_json)
+      end
+
+      it 'ignores namespaces of other parent namespaces when checking with parent_id' do
+        get api("/namespaces/#{namespace2sub.path}/exists", user), params: { parent_id: namespace1.id }
+
+        expected_json = { exists: false, suggests: [] }.to_json
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(expected_json)
+      end
+    end
+  end
 end

@@ -14,44 +14,44 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
     expect(described_class.new(project, ignore_invalid_entries: true).execute[:status]).to eq(:error)
   end
 
-  it 'marks pages as not deployed if public directory is absent' do
-    project.mark_pages_as_deployed
+  context 'when mark_projects_as_not_deployed is passed' do
+    let(:service) { described_class.new(project, mark_projects_as_not_deployed: true) }
 
-    expect(project.pages_metadatum.reload.deployed).to eq(true)
+    it 'marks pages as not deployed if public directory is absent and invalid entries are ignored' do
+      project.mark_pages_as_deployed
+      expect(project.pages_metadatum.reload.deployed).to eq(true)
 
-    expect(service.execute).to(
-      eq(status: :error,
-         message: "Can't create zip archive: Can not find valid public dir in #{project.pages_path}")
-    )
+      expect(service.execute).to(
+        eq(status: :success,
+           message: "Archive not created. Missing public directory in #{project.pages_path}? Marked project as not deployed")
+      )
 
-    expect(project.pages_metadatum.reload.deployed).to eq(false)
+      expect(project.pages_metadatum.reload.deployed).to eq(false)
+    end
+
+    it 'does not mark pages as not deployed if public directory is absent but pages_deployment exists' do
+      deployment = create(:pages_deployment, project: project)
+      project.update_pages_deployment!(deployment)
+      project.mark_pages_as_deployed
+      expect(project.pages_metadatum.reload.deployed).to eq(true)
+
+      expect(service.execute).to(
+        eq(status: :success,
+           message: "Archive not created. Missing public directory in #{project.pages_path}? Marked project as not deployed")
+      )
+
+      expect(project.pages_metadatum.reload.deployed).to eq(true)
+    end
   end
 
-  it 'does not mark pages as not deployed if public directory is absent but pages_deployment exists' do
-    deployment = create(:pages_deployment, project: project)
-    project.update_pages_deployment!(deployment)
+  it 'does not mark pages as not deployed if public directory is absent but invalid entries are not ignored' do
     project.mark_pages_as_deployed
 
     expect(project.pages_metadatum.reload.deployed).to eq(true)
 
     expect(service.execute).to(
       eq(status: :error,
-         message: "Can't create zip archive: Can not find valid public dir in #{project.pages_path}")
-    )
-
-    expect(project.pages_metadatum.reload.deployed).to eq(true)
-  end
-
-  it 'does not mark pages as not deployed if public directory is absent but feature is disabled' do
-    stub_feature_flags(pages_migration_mark_as_not_deployed: false)
-
-    project.mark_pages_as_deployed
-
-    expect(project.pages_metadatum.reload.deployed).to eq(true)
-
-    expect(service.execute).to(
-      eq(status: :error,
-         message: "Can't create zip archive: Can not find valid public dir in #{project.pages_path}")
+         message: "Archive not created. Missing public directory in #{project.pages_path}")
     )
 
     expect(project.pages_metadatum.reload.deployed).to eq(true)

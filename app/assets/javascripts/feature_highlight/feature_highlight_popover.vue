@@ -71,7 +71,6 @@ export default {
       ref="popover"
       :target="$options.targetId"
       :css-classes="['feature-highlight-popover']"
-      triggers="hover"
       container="body"
       placement="right"
       boundary="viewport"

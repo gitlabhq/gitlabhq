@@ -1,0 +1,5 @@
+---
+title: Fixed an issue where the link commit message did not end with a newline
+merge_request: 49086
+author: Kazuya Kojima
+type: fixed

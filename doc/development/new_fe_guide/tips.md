@@ -27,7 +27,7 @@ Your feature flag can now be:
 ### More on feature flags
 
 - [Deleting a feature flag](../../api/features.md#delete-a-feature)
-- [Manage feature flags](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle)
+- [Manage feature flags](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/)
 - [Feature flags API](../../api/features.md)
 
 ## Running tests locally

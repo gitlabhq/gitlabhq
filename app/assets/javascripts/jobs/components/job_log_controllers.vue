@@ -1,9 +1,15 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { __, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 
 export default {
+  i18n: {
+    eraseLogButtonLabel: s__('Job|Erase job log'),
+    scrollToBottomButtonLabel: s__('Job|Scroll to bottom'),
+    scrollToTopButtonLabel: s__('Job|Scroll to top'),
+    showRawButtonLabel: s__('Job|Show complete raw'),
+  },
   components: {
     GlLink,
     GlButton,
@@ -82,7 +88,8 @@ export default {
       <gl-button
         v-if="rawPath"
         v-gl-tooltip.body
-        :title="s__('Job|Show complete raw')"
+        :title="$options.i18n.showRawButtonLabel"
+        :aria-label="$options.i18n.showRawButtonLabel"
         :href="rawPath"
         data-testid="job-raw-link-controller"
         icon="doc-text"
@@ -91,7 +98,8 @@ export default {
       <gl-button
         v-if="erasePath"
         v-gl-tooltip.body
-        :title="s__('Job|Erase job log')"
+        :title="$options.i18n.eraseLogButtonLabel"
+        :aria-label="$options.i18n.eraseLogButtonLabel"
         :href="erasePath"
         :data-confirm="__('Are you sure you want to erase this build?')"
         class="gl-ml-3"
@@ -102,23 +110,25 @@ export default {
       <!-- eo links -->
 
       <!-- scroll buttons -->
-      <div v-gl-tooltip :title="s__('Job|Scroll to top')" class="gl-ml-3">
+      <div v-gl-tooltip :title="$options.i18n.scrollToTopButtonLabel" class="gl-ml-3">
         <gl-button
           :disabled="isScrollTopDisabled"
           class="btn-scroll"
           data-testid="job-controller-scroll-top"
           icon="scroll_up"
+          :aria-label="$options.i18n.scrollToTopButtonLabel"
           @click="handleScrollToTop"
         />
       </div>
 
-      <div v-gl-tooltip :title="s__('Job|Scroll to bottom')" class="gl-ml-3">
+      <div v-gl-tooltip :title="$options.i18n.scrollToBottomButtonLabel" class="gl-ml-3">
         <gl-button
           :disabled="isScrollBottomDisabled"
           class="js-scroll-bottom btn-scroll"
           data-testid="job-controller-scroll-bottom"
           icon="scroll_down"
           :class="{ animate: isScrollingDown }"
+          :aria-label="$options.i18n.scrollToBottomButtonLabel"
           @click="handleScrollToBottom"
         />
       </div>

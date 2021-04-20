@@ -36,7 +36,8 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
    `~/.ssh/authorized_keys`) or add it as a [deploy key](../../user/project/deploy_keys/index.md)
    if you are accessing a private GitLab repository.
 
-The private key is displayed in the job log, unless you enable
+In the following example, the `ssh-add -` command does not display the value of
+`$SSH_PRIVATE_KEY` in the job log, though it could be exposed if you enable
 [debug logging](../variables/README.md#debug-logging). You might also want to
 check the [visibility of your pipelines](../pipelines/settings.md#visibility-of-pipelines).
 

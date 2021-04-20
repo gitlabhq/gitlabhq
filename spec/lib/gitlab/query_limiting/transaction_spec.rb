@@ -68,11 +68,15 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
     it 'increments the number of executed queries' do
       transaction = described_class.new
 
-      expect(transaction.count).to be_zero
+      expect { transaction.increment }.to change { transaction.count }.by(1)
+    end
 
-      transaction.increment
+    it 'does not increment the number of executed queries when query limiting is disabled' do
+      transaction = described_class.new
 
-      expect(transaction.count).to eq(1)
+      allow(transaction).to receive(:enabled?).and_return(false)
+
+      expect { transaction.increment }.not_to change { transaction.count }
     end
   end
 

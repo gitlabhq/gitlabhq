@@ -95,7 +95,7 @@ module API
 
           # https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
           params do
-            requires :q, type: String, desc: 'The search term'
+            optional :q, type: String, desc: 'The search term'
             optional :skip, type: Integer, desc: 'The number of results to skip', default: 0, regexp: NON_NEGATIVE_INTEGER_REGEX
             optional :take, type: Integer, desc: 'The number of results to return', default: Kaminari.config.default_per_page, regexp: POSITIVE_INTEGER_REGEX
             optional :prerelease, type: ::Grape::API::Boolean, desc: 'Include prerelease versions', default: true

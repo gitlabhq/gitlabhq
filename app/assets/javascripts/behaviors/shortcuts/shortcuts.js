@@ -6,13 +6,29 @@ import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import findAndFollowLink from '~/lib/utils/navigation_utility';
 import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
-
-import { keysFor, TOGGLE_PERFORMANCE_BAR, TOGGLE_CANARY } from './keybindings';
+import {
+  keysFor,
+  TOGGLE_KEYBOARD_SHORTCUTS_DIALOG,
+  START_SEARCH,
+  FOCUS_FILTER_BAR,
+  TOGGLE_PERFORMANCE_BAR,
+  TOGGLE_CANARY,
+  TOGGLE_MARKDOWN_PREVIEW,
+  GO_TO_YOUR_TODO_LIST,
+  GO_TO_ACTIVITY_FEED,
+  GO_TO_YOUR_ISSUES,
+  GO_TO_YOUR_MERGE_REQUESTS,
+  GO_TO_YOUR_PROJECTS,
+  GO_TO_YOUR_GROUPS,
+  GO_TO_MILESTONE_LIST,
+  GO_TO_YOUR_SNIPPETS,
+  GO_TO_PROJECT_FIND_FILE,
+} from './keybindings';
 import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
 
 const defaultStopCallback = Mousetrap.prototype.stopCallback;
 Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo) {
-  if (['ctrl+shift+p', 'command+shift+p'].indexOf(combo) !== -1) {
+  if (keysFor(TOGGLE_MARKDOWN_PREVIEW).indexOf(combo) !== -1) {
     return false;
   }
 
@@ -58,28 +74,41 @@ export default class Shortcuts {
     this.helpModalElement = null;
     this.helpModalVueInstance = null;
 
-    Mousetrap.bind('?', this.onToggleHelp);
-    Mousetrap.bind('s', Shortcuts.focusSearch);
-    Mousetrap.bind('/', Shortcuts.focusSearch);
-    Mousetrap.bind('f', this.focusFilter.bind(this));
+    Mousetrap.bind(keysFor(TOGGLE_KEYBOARD_SHORTCUTS_DIALOG), this.onToggleHelp);
+    Mousetrap.bind(keysFor(START_SEARCH), Shortcuts.focusSearch);
+    Mousetrap.bind(keysFor(FOCUS_FILTER_BAR), this.focusFilter.bind(this));
     Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), Shortcuts.onTogglePerfBar);
     Mousetrap.bind(keysFor(TOGGLE_CANARY), Shortcuts.onToggleCanary);
 
     const findFileURL = document.body.dataset.findFile;
 
-    Mousetrap.bind('shift+t', () => findAndFollowLink('.shortcuts-todos'));
-    Mousetrap.bind('shift+a', () => findAndFollowLink('.dashboard-shortcuts-activity'));
-    Mousetrap.bind('shift+i', () => findAndFollowLink('.dashboard-shortcuts-issues'));
-    Mousetrap.bind('shift+m', () => findAndFollowLink('.dashboard-shortcuts-merge_requests'));
-    Mousetrap.bind('shift+p', () => findAndFollowLink('.dashboard-shortcuts-projects'));
-    Mousetrap.bind('shift+g', () => findAndFollowLink('.dashboard-shortcuts-groups'));
-    Mousetrap.bind('shift+l', () => findAndFollowLink('.dashboard-shortcuts-milestones'));
-    Mousetrap.bind('shift+s', () => findAndFollowLink('.dashboard-shortcuts-snippets'));
+    Mousetrap.bind(keysFor(GO_TO_YOUR_TODO_LIST), () => findAndFollowLink('.shortcuts-todos'));
+    Mousetrap.bind(keysFor(GO_TO_ACTIVITY_FEED), () =>
+      findAndFollowLink('.dashboard-shortcuts-activity'),
+    );
+    Mousetrap.bind(keysFor(GO_TO_YOUR_ISSUES), () =>
+      findAndFollowLink('.dashboard-shortcuts-issues'),
+    );
+    Mousetrap.bind(keysFor(GO_TO_YOUR_MERGE_REQUESTS), () =>
+      findAndFollowLink('.dashboard-shortcuts-merge_requests'),
+    );
+    Mousetrap.bind(keysFor(GO_TO_YOUR_PROJECTS), () =>
+      findAndFollowLink('.dashboard-shortcuts-projects'),
+    );
+    Mousetrap.bind(keysFor(GO_TO_YOUR_GROUPS), () =>
+      findAndFollowLink('.dashboard-shortcuts-groups'),
+    );
+    Mousetrap.bind(keysFor(GO_TO_MILESTONE_LIST), () =>
+      findAndFollowLink('.dashboard-shortcuts-milestones'),
+    );
+    Mousetrap.bind(keysFor(GO_TO_YOUR_SNIPPETS), () =>
+      findAndFollowLink('.dashboard-shortcuts-snippets'),
+    );
 
-    Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], Shortcuts.toggleMarkdownPreview);
+    Mousetrap.bind(keysFor(TOGGLE_MARKDOWN_PREVIEW), Shortcuts.toggleMarkdownPreview);
 
     if (typeof findFileURL !== 'undefined' && findFileURL !== null) {
-      Mousetrap.bind('t', () => {
+      Mousetrap.bind(keysFor(GO_TO_PROJECT_FIND_FILE), () => {
         visitUrl(findFileURL);
       });
     }

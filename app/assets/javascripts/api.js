@@ -44,7 +44,7 @@ const Api = {
   projectMilestonesPath: '/api/:version/projects/:id/milestones',
   projectIssuePath: '/api/:version/projects/:id/issues/:issue_iid',
   mergeRequestsPath: '/api/:version/merge_requests',
-  groupLabelsPath: '/groups/:namespace_path/-/labels',
+  groupLabelsPath: '/api/:version/groups/:namespace_path/labels',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   issuableTemplatesPath: '/:namespace_path/:project_path/templates/:type',
   projectTemplatePath: '/api/:version/projects/:id/templates/:type/:key',
@@ -79,6 +79,7 @@ const Api = {
   issuePath: '/api/:version/projects/:id/issues/:issue_iid',
   tagsPath: '/api/:version/projects/:id/repository/tags',
   freezePeriodsPath: '/api/:version/projects/:id/freeze_periods',
+  freezePeriodPath: '/api/:version/projects/:id/freeze_periods/:freeze_period_id',
   usageDataIncrementCounterPath: '/api/:version/usage_data/increment_counter',
   usageDataIncrementUniqueUsersPath: '/api/:version/usage_data/increment_unique_users',
   featureFlagUserLists: '/api/:version/projects/:id/feature_flags_user_lists',
@@ -282,7 +283,7 @@ const Api = {
   },
 
   /**
-   * Get all Merge Requests for a project, eventually filtering based on
+   * Get all merge requests for a project, eventually filtering based on
    * supplied parameters
    * @param projectPath
    * @param params
@@ -306,7 +307,7 @@ const Api = {
     return axios.post(url, options);
   },
 
-  // Return Merge Request for project
+  // Return merge request for project
   projectMergeRequest(projectPath, mergeRequestId, params = {}) {
     const url = Api.buildUrl(Api.projectMergeRequestPath)
       .replace(':id', encodeURIComponent(projectPath))
@@ -401,18 +402,29 @@ const Api = {
 
   newLabel(namespacePath, projectPath, data, callback) {
     let url;
+    let payload;
 
     if (projectPath) {
       url = Api.buildUrl(Api.projectLabelsPath)
         .replace(':namespace_path', namespacePath)
         .replace(':project_path', projectPath);
+      payload = {
+        label: data,
+      };
     } else {
       url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespacePath);
+
+      // groupLabelsPath uses public API which accepts
+      // `name` and `color` props.
+      payload = {
+        name: data.title,
+        color: data.color,
+      };
     }
 
     return axios
       .post(url, {
-        label: data,
+        ...payload,
       })
       .then((res) => callback(res.data))
       .catch((e) => callback(e.response.data));
@@ -784,7 +796,7 @@ const Api = {
     return axios.delete(url, { data });
   },
 
-  getRawFile(id, path, params = { ref: 'master' }) {
+  getRawFile(id, path, params = {}) {
     const url = Api.buildUrl(this.rawFilePath)
       .replace(':id', encodeURIComponent(id))
       .replace(':path', encodeURIComponent(path));
@@ -830,6 +842,14 @@ const Api = {
     const url = Api.buildUrl(this.freezePeriodsPath).replace(':id', encodeURIComponent(id));
 
     return axios.post(url, freezePeriod);
+  },
+
+  updateFreezePeriod(id, freezePeriod = {}) {
+    const url = Api.buildUrl(this.freezePeriodPath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':freeze_period_id', encodeURIComponent(freezePeriod.id));
+
+    return axios.put(url, freezePeriod);
   },
 
   trackRedisCounterEvent(event) {

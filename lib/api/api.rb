@@ -59,7 +59,7 @@ module API
         project: -> { @project },
         namespace: -> { @group },
         runner: -> { @current_runner || @runner },
-        caller_id: route.origin,
+        caller_id: api_endpoint.endpoint_id,
         remote_ip: request.ip,
         feature_category: feature_category
       )
@@ -293,6 +293,8 @@ module API
       mount ::API::Triggers
       mount ::API::Unleash
       mount ::API::UsageData
+      mount ::API::UsageDataQueries
+      mount ::API::UsageDataNonSqlMetrics
       mount ::API::UserCounts
       mount ::API::Users
       mount ::API::Variables

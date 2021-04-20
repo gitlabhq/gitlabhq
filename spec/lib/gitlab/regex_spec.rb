@@ -667,7 +667,14 @@ RSpec.describe Gitlab::Regex do
 
     it { is_expected.to match('1.2.3') }
     it { is_expected.to match('1.3.350') }
-    it { is_expected.not_to match('1.3.350-20201230123456') }
+    it { is_expected.to match('1.3.350-20201230123456') }
+    it { is_expected.to match('1.2.3-rc1') }
+    it { is_expected.to match('1.2.3g') }
+    it { is_expected.to match('1.2') }
+    it { is_expected.to match('1.2.bananas') }
+    it { is_expected.to match('v1.2.4-build') }
+    it { is_expected.to match('d50d836eb3de6177ce6c7a5482f27f9c2c84b672') }
+    it { is_expected.to match('this_is_a_string_only') }
     it { is_expected.not_to match('..1.2.3') }
     it { is_expected.not_to match('  1.2.3') }
     it { is_expected.not_to match("1.2.3  \r\t") }

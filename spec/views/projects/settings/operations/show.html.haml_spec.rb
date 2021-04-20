@@ -36,8 +36,8 @@ RSpec.describe 'projects/settings/operations/show' do
     it 'renders the Operations Settings page' do
       render
 
-      expect(rendered).to have_content _('Alerts')
-      expect(rendered).to have_content _('Display alerts from all your monitoring tools directly within GitLab.')
+      expect(rendered).to have_content _('Alert integrations')
+      expect(rendered).to have_content _('Display alerts from all configured monitoring tools.')
     end
   end
 

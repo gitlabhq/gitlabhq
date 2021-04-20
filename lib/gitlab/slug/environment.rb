@@ -26,16 +26,13 @@ module Gitlab
         # Repeated dashes are invalid (OpenShift limitation)
         slugified.squeeze!('-')
 
-        slugified =
-          if slugified.size > 24 || slugified != name
-            # Maximum length: 24 characters (OpenShift limitation)
-            shorten_and_add_suffix(slugified)
-          else
-            # Cannot end with a dash (Kubernetes label limitation)
-            slugified.chomp('-')
-          end
-
-        slugified
+        if slugified.size > 24 || slugified != name
+          # Maximum length: 24 characters (OpenShift limitation)
+          shorten_and_add_suffix(slugified)
+        else
+          # Cannot end with a dash (Kubernetes label limitation)
+          slugified.chomp('-')
+        end
       end
 
       private

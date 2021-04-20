@@ -91,6 +91,7 @@ module Gitlab
       when *PUSH_COMMANDS
         check_push_access!
       end
+      check_additional_conditions!
 
       success_result
     end
@@ -529,6 +530,10 @@ module Gitlab
 
     def size_checker
       container.repository_size_checker
+    end
+
+    # overriden in EE
+    def check_additional_conditions!
     end
   end
 end

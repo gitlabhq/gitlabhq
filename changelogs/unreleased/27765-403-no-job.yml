@@ -1,0 +1,5 @@
+---
+title: Return 403 status code to the Runner when CI Job is deleted
+merge_request: 59382
+author:
+type: fixed

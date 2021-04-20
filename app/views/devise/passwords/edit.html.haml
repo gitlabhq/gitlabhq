@@ -1,4 +1,4 @@
-= render 'devise/shared/tab_single', tab_title:'Change your password'
+= render 'devise/shared/tab_single', tab_title: _('Change your password')
 .login-box
   .login-body
     = form_for(resource, as: resource_name, url: password_path(:user), html: { method: :put, class: 'gl-show-field-errors' }) do |f|
@@ -6,16 +6,16 @@
         = render "devise/shared/error_messages", resource: resource
       = f.hidden_field :reset_password_token
       .form-group
-        = f.label 'New password', for: "user_password"
-        = f.password_field :password, class: "form-control gl-form-input top", required: true, title: 'This field is required', data: { qa_selector: 'password_field'}
+        = f.label _('New password'), for: "user_password"
+        = f.password_field :password, class: "form-control gl-form-input top", required: true, title: _('This field is required.'), data: { qa_selector: 'password_field'}
       .form-group
-        = f.label 'Confirm new password', for: "user_password_confirmation"
-        = f.password_field :password_confirmation, class: "form-control gl-form-input bottom", title: 'This field is required', data: { qa_selector: 'password_confirmation_field' }, required: true
+        = f.label _('Confirm new password'), for: "user_password_confirmation"
+        = f.password_field :password_confirmation, class: "form-control gl-form-input bottom", title: _('This field is required.'), data: { qa_selector: 'password_confirmation_field' }, required: true
       .clearfix
-        = f.submit "Change your password", class: "gl-button btn btn-confirm", data: { qa_selector: 'change_password_button' }
+        = f.submit _("Change your password"), class: "gl-button btn btn-confirm", data: { qa_selector: 'change_password_button' }
 
 .clearfix.prepend-top-20
   %p
-    %span.light Didn't receive a confirmation email?
-    = link_to "Request a new one", new_confirmation_path(:user)
+    %span.light= _("Didn't receive a confirmation email?")
+    = link_to _("Request a new one"), new_confirmation_path(:user)
 = render 'devise/shared/sign_in_link'

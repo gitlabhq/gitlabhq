@@ -5,7 +5,8 @@ module ResourceEvents
     attr_reader :resource, :user
 
     def initialize(user:, resource:)
-      @user, @resource = user, resource
+      @user = user
+      @resource = resource
     end
 
     def execute(params)

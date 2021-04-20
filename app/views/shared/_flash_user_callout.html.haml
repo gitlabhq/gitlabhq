@@ -6,6 +6,6 @@
   %div{ class: "flash-#{flash_type}" }
     %div{ class: "#{(container_class unless fluid_layout)} #{(extra_flash_class unless @no_container)} #{@content_class}" }
       %span= message
-      %button.btn.btn-default.close.js-close{ type: 'button',
+      %button.btn.gl-button.btn-default.close.js-close{ type: 'button',
         'aria-label' => _('Dismiss') }
         = sprite_icon('close', css_class: 'dismiss-icon')

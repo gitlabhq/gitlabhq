@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe API::V3::Github do
-  let(:user) { create(:user) }
-  let(:unauthorized_user) { create(:user) }
-  let(:admin) { create(:user, :admin) }
-  let(:project) { create(:project, :repository, creator: user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:unauthorized_user) { create(:user) }
+  let_it_be(:admin) { create(:user, :admin) }
+  let_it_be(:project) { create(:project, :repository, creator: user) }
 
   before do
     project.add_maintainer(user)
@@ -210,14 +210,14 @@ RSpec.describe API::V3::Github do
   end
 
   describe 'repo pulls' do
-    let(:project2) { create(:project, :repository, creator: user) }
-    let(:assignee) { create(:user) }
-    let(:assignee2) { create(:user) }
-    let!(:merge_request) do
+    let_it_be(:project2) { create(:project, :repository, creator: user) }
+    let_it_be(:assignee) { create(:user) }
+    let_it_be(:assignee2) { create(:user) }
+    let_it_be(:merge_request) do
       create(:merge_request, source_project: project, target_project: project, author: user, assignees: [assignee])
     end
 
-    let!(:merge_request_2) do
+    let_it_be(:merge_request_2) do
       create(:merge_request, source_project: project2, target_project: project2, author: user, assignees: [assignee, assignee2])
     end
 
@@ -225,25 +225,56 @@ RSpec.describe API::V3::Github do
       project2.add_maintainer(user)
     end
 
+    def perform_request
+      jira_get v3_api(route, user)
+    end
+
     describe 'GET /-/jira/pulls' do
+      let(:route) { '/repos/-/jira/pulls' }
+
       it 'returns an array of merge requests with github format' do
-        jira_get v3_api('/repos/-/jira/pulls', user)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an(Array)
         expect(json_response.size).to eq(2)
         expect(response).to match_response_schema('entities/github/pull_requests')
       end
+
+      it 'returns multiple merge requests without N + 1' do
+        perform_request
+
+        control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+
+        project3 = create(:project, :repository, creator: user)
+        project3.add_maintainer(user)
+        assignee3 = create(:user)
+        create(:merge_request, source_project: project3, target_project: project3, author: user, assignees: [assignee3])
+
+        expect { perform_request }.not_to exceed_query_limit(control_count)
+      end
     end
 
     describe 'GET /repos/:namespace/:project/pulls' do
+      let(:route) { "/repos/#{project.namespace.path}/#{project.path}/pulls" }
+
       it 'returns an array of merge requests for the proper project in github format' do
-        jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/pulls", user)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an(Array)
         expect(json_response.size).to eq(1)
         expect(response).to match_response_schema('entities/github/pull_requests')
+      end
+
+      it 'returns multiple merge requests without N + 1' do
+        perform_request
+
+        control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+
+        create(:merge_request, source_project: project, source_branch: 'fix')
+
+        expect { perform_request }.not_to exceed_query_limit(control_count)
       end
     end
 

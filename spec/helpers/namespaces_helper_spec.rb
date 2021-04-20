@@ -194,4 +194,75 @@ RSpec.describe NamespacesHelper do
       end
     end
   end
+
+  describe '#cascading_namespace_settings_enabled?' do
+    subject { helper.cascading_namespace_settings_enabled? }
+
+    context 'when `cascading_namespace_settings` feature flag is enabled' do
+      it 'returns `true`' do
+        expect(subject).to be(true)
+      end
+    end
+
+    context 'when `cascading_namespace_settings` feature flag is disabled' do
+      before do
+        stub_feature_flags(cascading_namespace_settings: false)
+      end
+
+      it 'returns `false`' do
+        expect(subject).to be(false)
+      end
+    end
+  end
+
+  describe '#cascading_namespace_settings_popover_data' do
+    attribute = :delayed_project_removal
+
+    subject do
+      helper.cascading_namespace_settings_popover_data(
+        attribute,
+        subgroup1,
+        -> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }
+      )
+    end
+
+    context 'when locked by an application setting' do
+      before do
+        allow(subgroup1.namespace_settings).to receive("#{attribute}_locked_by_application_setting?").and_return(true)
+        allow(subgroup1.namespace_settings).to receive("#{attribute}_locked_by_ancestor?").and_return(false)
+      end
+
+      it 'returns expected hash' do
+        expect(subject).to match({
+          popover_data: {
+            locked_by_application_setting: true,
+            locked_by_ancestor: false
+          }.to_json,
+          testid: 'cascading-settings-lock-icon'
+        })
+      end
+    end
+
+    context 'when locked by an ancestor namespace' do
+      before do
+        allow(subgroup1.namespace_settings).to receive("#{attribute}_locked_by_application_setting?").and_return(false)
+        allow(subgroup1.namespace_settings).to receive("#{attribute}_locked_by_ancestor?").and_return(true)
+        allow(subgroup1.namespace_settings).to receive("#{attribute}_locked_ancestor").and_return(admin_group.namespace_settings)
+      end
+
+      it 'returns expected hash' do
+        expect(subject).to match({
+          popover_data: {
+            locked_by_application_setting: false,
+            locked_by_ancestor: true,
+            ancestor_namespace: {
+              full_name: admin_group.full_name,
+              path: edit_group_path(admin_group, anchor: 'js-permissions-settings')
+            }
+          }.to_json,
+          testid: 'cascading-settings-lock-icon'
+        })
+      end
+    end
+  end
 end

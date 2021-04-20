@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import DiffRow from '~/diffs/components/diff_row.vue';
 import { mapParallel } from '~/diffs/components/diff_row_utils';
 import diffsModule from '~/diffs/store/modules';
+import { findInteropAttributes } from '../find_interop_attributes';
 import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffRow', () => {
@@ -209,6 +210,22 @@ describe('DiffRow', () => {
       expect(coverage.attributes('title')).toBeFalsy();
       expect(coverage.classes('coverage')).toBeFalsy();
       expect(coverage.classes('no-coverage')).toBeFalsy();
+    });
+  });
+
+  describe('interoperability', () => {
+    it.each`
+      desc                                 | line                                                   | inline   | leftSide                                                  | rightSide
+      ${'with inline and new_line'}        | ${{ left: { old_line: 3, new_line: 5, type: 'new' } }} | ${true}  | ${{ type: 'new', line: '5', oldLine: '3', newLine: '5' }} | ${null}
+      ${'with inline and no new_line'}     | ${{ left: { old_line: 3, type: 'old' } }}              | ${true}  | ${{ type: 'old', line: '3', oldLine: '3' }}               | ${null}
+      ${'with parallel and no right side'} | ${{ left: { old_line: 3, new_line: 5 } }}              | ${false} | ${{ type: 'old', line: '3', oldLine: '3' }}               | ${null}
+      ${'with parallel and no left side'}  | ${{ right: { old_line: 3, new_line: 5 } }}             | ${false} | ${null}                                                   | ${{ type: 'new', line: '5', newLine: '5' }}
+      ${'with parallel and right side'}    | ${{ left: { old_line: 3 }, right: { new_line: 5 } }}   | ${false} | ${{ type: 'old', line: '3', oldLine: '3' }}               | ${{ type: 'new', line: '5', newLine: '5' }}
+    `('$desc, sets interop data attributes', ({ line, inline, leftSide, rightSide }) => {
+      const wrapper = createWrapper({ props: { line, inline } });
+
+      expect(findInteropAttributes(wrapper, '[data-testid="left-side"]')).toEqual(leftSide);
+      expect(findInteropAttributes(wrapper, '[data-testid="right-side"]')).toEqual(rightSide);
     });
   });
 });

@@ -1,0 +1,5 @@
+---
+title: Fix N+1 for searching milestone scope
+merge_request: 57715
+author:
+type: performance

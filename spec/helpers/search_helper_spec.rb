@@ -489,6 +489,7 @@ RSpec.describe SearchHelper do
 
   describe '#repository_ref' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:params) { { repository_ref: 'the-repository-ref-param' } }
 
     subject { repository_ref(project) }

@@ -11,7 +11,7 @@ RSpec.describe ProjectHookPresenter do
     subject { web_hook.present.logs_details_path(web_hook_log) }
 
     let(:expected_path) do
-      "/#{project.namespace.path}/#{project.name}/hooks/#{web_hook.id}/hook_logs/#{web_hook_log.id}"
+      "/#{project.namespace.path}/#{project.name}/-/hooks/#{web_hook.id}/hook_logs/#{web_hook_log.id}"
     end
 
     it { is_expected.to eq(expected_path) }
@@ -21,7 +21,7 @@ RSpec.describe ProjectHookPresenter do
     subject { web_hook.present.logs_details_path(web_hook_log) }
 
     let(:expected_path) do
-      "/#{project.namespace.path}/#{project.name}/hooks/#{web_hook.id}/hook_logs/#{web_hook_log.id}"
+      "/#{project.namespace.path}/#{project.name}/-/hooks/#{web_hook.id}/hook_logs/#{web_hook_log.id}"
     end
 
     it { is_expected.to eq(expected_path) }

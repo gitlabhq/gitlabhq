@@ -11,7 +11,7 @@
     - if milestone.merge_requests_enabled?
       %li.nav-item
         = link_to '#tab-merge-requests', class: 'nav-link', data: { toggle: 'tab', endpoint: milestone_tab_path(milestone, 'merge_requests', show_project_name: show_project_name) } do
-          = _('Merge Requests')
+          = _('Merge requests')
           %span.badge.badge-pill= milestone.merge_requests_visible_to_user(current_user).size
     %li.nav-item
       = link_to '#tab-participants', class: 'nav-link', data: { toggle: 'tab', endpoint: milestone_tab_path(milestone, 'participants') } do

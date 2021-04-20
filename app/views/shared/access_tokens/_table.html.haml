@@ -43,7 +43,7 @@
               - else
                 %span.token-never-expires-label= _('Never')
             %td= token.scopes.present? ? token.scopes.join(', ') : _('no scopes selected')
-            %td= link_to _('Revoke'), revoke_route_helper.call(token), method: :put, class: 'gl-button btn btn-danger float-right qa-revoke-button', data: { confirm: _('Are you sure you want to revoke this %{type}? This action cannot be undone.') % { type: type } }
+            %td= link_to _('Revoke'), revoke_route_helper.call(token), method: :put, class: 'gl-button btn btn-danger btn-sm float-right qa-revoke-button', data: { confirm: _('Are you sure you want to revoke this %{type}? This action cannot be undone.') % { type: type } }
 - else
   .settings-message.text-center
     = no_active_tokens_message

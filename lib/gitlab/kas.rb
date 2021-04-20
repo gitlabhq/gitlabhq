@@ -27,7 +27,7 @@ module Gitlab
       def included_in_gitlab_com_rollout?(project)
         return true unless ::Gitlab.com?
 
-        Feature.enabled?(:kubernetes_agent_on_gitlab_com, project)
+        Feature.enabled?(:kubernetes_agent_on_gitlab_com, project, default_enabled: :yaml)
       end
     end
   end

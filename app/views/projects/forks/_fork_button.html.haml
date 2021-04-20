@@ -17,4 +17,4 @@
       = link_to _("Select"), project_forks_path(@project, namespace_key: namespace.id),
           data: { qa_selector: 'fork_namespace_button', qa_name: namespace.human_name },
           method: "POST",
-          class: ["btn gl-button btn-success", ("disabled" unless can_create_project)]
+          class: ["btn gl-button btn-confirm", ("disabled" unless can_create_project)]

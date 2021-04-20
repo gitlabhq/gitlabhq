@@ -25,7 +25,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline do
         issue = create(:issue, project: project)
         markdown = "text #{issue.to_reference(project, full: true)}"
 
-        expect_any_instance_of(Banzai::Filter::ReferenceFilter).to receive(:each_node).once
+        expect_any_instance_of(Banzai::Filter::References::ReferenceFilter).to receive(:each_node).once
 
         described_class.call(markdown, project: project)
       end
@@ -145,6 +145,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline do
 
   describe 'emoji in references' do
     let_it_be(:project) { create(:project, :public) }
+
     let(:emoji) { '💯' }
 
     it 'renders a label reference with emoji inside' do

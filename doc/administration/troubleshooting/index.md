@@ -6,11 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting a GitLab installation
 
-Below are some resources to help you troubleshoot a GitLab installation
-in case something goes wrong:
+This page documents a collection of resources to help you troubleshoot a GitLab
+installation.
 
-- [Debugging tips](debug.md)
-- [Diagnostics tools](diagnostics_tools.md)
+## Troubleshooting guides
+
+- [SSL](ssl.md)
+- [Geo](../geo/replication/troubleshooting.md)
 - [Elasticsearch](elasticsearch.md)
 - [GitLab Rails console cheat sheet](gitlab_rails_cheat_sheet.md)
 - [Group SAML and SCIM troubleshooting](group_saml_scim.md) **(PREMIUM SAAS)**
@@ -18,9 +20,9 @@ in case something goes wrong:
 - [Linux cheat sheet](linux_cheat_sheet.md)
 - [Parsing GitLab logs with `jq`](log_parsing.md)
 - [Navigating GitLab via Rails console](navigating_gitlab_via_rails_console.md)
-- [PostgreSQL](postgresql.md)
-- [Sidekiq](sidekiq.md)
-- [SSL](ssl.md)
+- [Diagnostics tools](diagnostics_tools.md)
+- [Debugging tips](debug.md)
+- [Tracing requests with correlation ID](tracing_correlation_id.md)
 
 If you need a testing environment to troubleshoot, see the
 [apps for a testing environment](test_environments.md).

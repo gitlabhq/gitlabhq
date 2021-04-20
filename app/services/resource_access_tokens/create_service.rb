@@ -39,7 +39,7 @@ module ResourceAccessTokens
     attr_reader :resource_type, :resource
 
     def has_permission_to_create?
-      %w(project group).include?(resource_type) && can?(current_user, :admin_resource_access_tokens, resource)
+      %w(project group).include?(resource_type) && can?(current_user, :create_resource_access_tokens, resource)
     end
 
     def create_user

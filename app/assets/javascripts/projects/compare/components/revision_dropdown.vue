@@ -1,10 +1,12 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlDropdownSectionHeader } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 
-const emptyDropdownText = s__('CompareRevisions|Select branch/tag');
+const EMPTY_DROPDOWN_TEXT = s__('CompareRevisions|Select branch/tag');
+const SEARCH_DEBOUNCE_MS = 300;
 
 export default {
   components: {
@@ -38,19 +40,11 @@ export default {
     };
   },
   computed: {
-    filteredBranches() {
-      return this.branches.filter((branch) =>
-        branch.toLowerCase().includes(this.searchTerm.toLowerCase()),
-      );
+    hasBranches() {
+      return Boolean(this.branches?.length);
     },
-    hasFilteredBranches() {
-      return this.filteredBranches.length;
-    },
-    filteredTags() {
-      return this.tags.filter((tag) => tag.toLowerCase().includes(this.searchTerm.toLowerCase()));
-    },
-    hasFilteredTags() {
-      return this.filteredTags.length;
+    hasTags() {
+      return Boolean(this.tags?.length);
     },
   },
   watch: {
@@ -59,13 +53,34 @@ export default {
         this.fetchBranchesAndTags(true);
       }
     },
+    searchTerm: debounce(function debounceSearch() {
+      this.searchBranchesAndTags();
+    }, SEARCH_DEBOUNCE_MS),
   },
   mounted() {
     this.fetchBranchesAndTags();
   },
   methods: {
+    searchBranchesAndTags() {
+      return axios
+        .get(this.refsProjectPath, {
+          params: {
+            search: this.searchTerm,
+          },
+        })
+        .then(({ data }) => {
+          this.branches = data.Branches || [];
+          this.tags = data.Tags || [];
+        })
+        .catch(() => {
+          createFlash({
+            message: s__(
+              'CompareRevisions|There was an error while searching the branch/tag list. Please try again.',
+            ),
+          });
+        });
+    },
     fetchBranchesAndTags(reset = false) {
-      const endpoint = this.refsProjectPath;
       this.loading = true;
 
       if (reset) {
@@ -73,7 +88,7 @@ export default {
       }
 
       return axios
-        .get(endpoint)
+        .get(this.refsProjectPath)
         .then(({ data }) => {
           this.branches = data.Branches || [];
           this.tags = data.Tags || [];
@@ -90,7 +105,7 @@ export default {
         });
     },
     getDefaultBranch() {
-      return this.paramsBranch || emptyDropdownText;
+      return this.paramsBranch || EMPTY_DROPDOWN_TEXT;
     },
     onClick(revision) {
       this.selectedRevision = revision;
@@ -119,24 +134,24 @@ export default {
           @keyup.enter="onSearchEnter"
         />
       </template>
-      <gl-dropdown-section-header v-if="hasFilteredBranches">
+      <gl-dropdown-section-header v-if="hasBranches">
         {{ s__('CompareRevisions|Branches') }}
       </gl-dropdown-section-header>
       <gl-dropdown-item
-        v-for="(branch, index) in filteredBranches"
-        :key="`branch${index}`"
+        v-for="branch in branches"
+        :key="branch"
         is-check-item
         :is-checked="selectedRevision === branch"
         @click="onClick(branch)"
       >
         {{ branch }}
       </gl-dropdown-item>
-      <gl-dropdown-section-header v-if="hasFilteredTags">
+      <gl-dropdown-section-header v-if="hasTags">
         {{ s__('CompareRevisions|Tags') }}
       </gl-dropdown-section-header>
       <gl-dropdown-item
-        v-for="(tag, index) in filteredTags"
-        :key="`tag${index}`"
+        v-for="tag in tags"
+        :key="tag"
         is-check-item
         :is-checked="selectedRevision === tag"
         @click="onClick(tag)"

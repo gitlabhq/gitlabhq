@@ -4,10 +4,10 @@ class AddHasExternalWikiTrigger < ActiveRecord::Migration[6.0]
   include Gitlab::Database::SchemaHelpers
 
   DOWNTIME = false
-  FUNCTION_NAME = 'set_has_external_wiki'.freeze
-  TRIGGER_ON_INSERT_NAME = 'trigger_has_external_wiki_on_insert'.freeze
-  TRIGGER_ON_UPDATE_NAME = 'trigger_has_external_wiki_on_update'.freeze
-  TRIGGER_ON_DELETE_NAME = 'trigger_has_external_wiki_on_delete'.freeze
+  FUNCTION_NAME = 'set_has_external_wiki'
+  TRIGGER_ON_INSERT_NAME = 'trigger_has_external_wiki_on_insert'
+  TRIGGER_ON_UPDATE_NAME = 'trigger_has_external_wiki_on_update'
+  TRIGGER_ON_DELETE_NAME = 'trigger_has_external_wiki_on_delete'
 
   def up
     create_trigger_function(FUNCTION_NAME, replace: true) do

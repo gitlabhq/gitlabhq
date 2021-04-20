@@ -704,6 +704,72 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
   end
 
+  describe '#drop_nonpartitioned_archive_table' do
+    subject { migration.drop_nonpartitioned_archive_table source_table }
+
+    let(:archived_table) { "#{source_table}_archived" }
+
+    before do
+      migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+      migration.replace_with_partitioned_table source_table
+    end
+
+    it 'drops the archive table' do
+      expect(table_type(archived_table)).to eq('normal')
+
+      subject
+
+      expect(table_type(archived_table)).to eq(nil)
+    end
+
+    it 'drops the trigger on the source table' do
+      expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
+
+      subject
+
+      expect_trigger_not_to_exist(source_table, trigger_name)
+    end
+
+    it 'drops the sync function' do
+      expect_function_to_exist(function_name)
+
+      subject
+
+      expect_function_not_to_exist(function_name)
+    end
+  end
+
+  describe '#create_trigger_to_sync_tables' do
+    subject { migration.create_trigger_to_sync_tables(source_table, target_table, :id) }
+
+    let(:target_table) { "#{source_table}_copy" }
+
+    before do
+      migration.create_table target_table do |t|
+        t.string :name, null: false
+        t.integer :age, null: false
+        t.datetime partition_column
+        t.datetime :updated_at
+      end
+    end
+
+    it 'creates the sync function' do
+      expect_function_not_to_exist(function_name)
+
+      subject
+
+      expect_function_to_exist(function_name)
+    end
+
+    it 'installs the trigger' do
+      expect_trigger_not_to_exist(source_table, trigger_name)
+
+      subject
+
+      expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
+    end
+  end
+
   def filter_columns_by_name(columns, names)
     columns.reject { |c| names.include?(c.name) }
   end

@@ -7,7 +7,7 @@ module Gitlab
         UNION_OF_AGGREGATED_METRICS = 'OR'
         INTERSECTION_OF_AGGREGATED_METRICS = 'AND'
         ALLOWED_METRICS_AGGREGATIONS = [UNION_OF_AGGREGATED_METRICS, INTERSECTION_OF_AGGREGATED_METRICS].freeze
-        AGGREGATED_METRICS_PATH = Rails.root.join('lib/gitlab/usage_data_counters/aggregated_metrics/*.yml')
+        AGGREGATED_METRICS_PATH = Rails.root.join('config/metrics/aggregates/*.yml')
         AggregatedMetricError = Class.new(StandardError)
         UnknownAggregationOperator = Class.new(AggregatedMetricError)
         UnknownAggregationSource = Class.new(AggregatedMetricError)

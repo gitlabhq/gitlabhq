@@ -27,6 +27,9 @@
   = render_name(name)
   \
   = render_description(object.attributes)
+  - if object.has_json_schema?
+    \
+    = render_object_schema(object)
   \
   = render_yaml_link(object.yaml_path)
   \

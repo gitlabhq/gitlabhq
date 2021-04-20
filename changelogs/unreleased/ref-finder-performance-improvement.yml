@@ -1,0 +1,5 @@
+---
+title: Minor performance improvement for ref finder
+merge_request: 58099
+author:
+type: performance

@@ -68,6 +68,7 @@ export default {
       category="primary"
       size="small"
       :title="buttonTitle"
+      :aria-label="buttonTitle"
       :loading="isLoading"
       :disabled="isActionInProgress"
       :class="`inline gl-ml-2 ${containerClasses}`"

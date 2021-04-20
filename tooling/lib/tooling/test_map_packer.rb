@@ -2,7 +2,7 @@
 
 module Tooling
   class TestMapPacker
-    SEPARATOR = '/'.freeze
+    SEPARATOR = '/'
     MARKER = 1
 
     def pack(map)

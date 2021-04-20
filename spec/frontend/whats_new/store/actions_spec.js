@@ -11,9 +11,12 @@ describe('whats new actions', () => {
     useLocalStorageSpy();
 
     it('should commit openDrawer', () => {
-      testAction(actions.openDrawer, 'storage-key', {}, [{ type: types.OPEN_DRAWER }]);
+      testAction(actions.openDrawer, 'digest-hash', {}, [{ type: types.OPEN_DRAWER }]);
 
-      expect(window.localStorage.setItem).toHaveBeenCalledWith('storage-key', 'false');
+      expect(window.localStorage.setItem).toHaveBeenCalledWith(
+        'display-whats-new-notification',
+        'digest-hash',
+      );
     });
   });
 
@@ -45,12 +48,12 @@ describe('whats new actions', () => {
       axiosMock.reset();
 
       axiosMock
-        .onGet('/-/whats_new', { params: { page: 8, version: 40 } })
+        .onGet('/-/whats_new', { params: { page: 8 } })
         .replyOnce(200, [{ title: 'GitLab Stories' }]);
 
       testAction(
         actions.fetchItems,
-        { page: 8, version: 40 },
+        { page: 8 },
         {},
         expect.arrayContaining([
           { type: types.ADD_FEATURES, payload: [{ title: 'GitLab Stories' }] },

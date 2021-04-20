@@ -231,7 +231,7 @@ To add a Kubernetes cluster to your project, group, or instance:
            name: gitlab
            namespace: kube-system
          ---
-         apiVersion: rbac.authorization.k8s.io/v1beta1
+         apiVersion: rbac.authorization.k8s.io/v1
          kind: ClusterRoleBinding
          metadata:
            name: gitlab-admin

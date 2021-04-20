@@ -42,5 +42,12 @@ RSpec.describe RepositoryCheck::DispatchWorker do
 
       subject.perform
     end
+
+    it 'logs unhealthy shards' do
+      log_data = { message: "Excluding unhealthy shards", failed_checks: [{ labels: { shard: unhealthy_shard_name }, message: '14:Connect Failed', status: 'failed' }], class: described_class.name }
+      expect(Gitlab::AppLogger).to receive(:error).with(a_hash_including(log_data))
+
+      subject.perform
+    end
   end
 end

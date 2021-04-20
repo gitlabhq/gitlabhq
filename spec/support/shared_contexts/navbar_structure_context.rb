@@ -59,7 +59,7 @@ RSpec.shared_context 'project navbar structure' do
         ]
       },
       {
-        nav_item: _('Merge Requests'),
+        nav_item: _('Merge requests'),
         nav_sub_items: []
       },
       {
@@ -139,6 +139,7 @@ RSpec.shared_context 'group navbar structure' do
         _('Projects'),
         _('Repository'),
         _('CI/CD'),
+        _('Applications'),
         _('Packages & Registries'),
         _('Webhooks')
       ]
@@ -189,7 +190,7 @@ RSpec.shared_context 'group navbar structure' do
         ]
       },
       {
-        nav_item: _('Merge Requests'),
+        nav_item: _('Merge requests'),
         nav_sub_items: []
       },
       security_and_compliance_nav_item,

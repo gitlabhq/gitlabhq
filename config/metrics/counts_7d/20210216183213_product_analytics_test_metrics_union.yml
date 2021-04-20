@@ -1,0 +1,21 @@
+---
+key_path: counts_weekly.aggregated_metrics.product_analytics_test_metrics_union
+description: This was test metric used for purpose of assuring correct implementation of aggregated metrics feature
+product_section: growth
+product_stage: growth
+product_group: group::product intelligence
+product_category: collection
+value_type: number
+status: removed
+milestone_removed: '13.11'
+milestone: '13.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49886
+time_frame: 7d
+data_source: redis_hll
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate

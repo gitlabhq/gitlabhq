@@ -4,7 +4,7 @@ module Gitlab
   module MarkupHelper
     extend self
 
-    MARKDOWN_EXTENSIONS = %w[mdown mkd mkdn md markdown].freeze
+    MARKDOWN_EXTENSIONS = %w[mdown mkd mkdn md markdown rmd].freeze
     ASCIIDOC_EXTENSIONS = %w[adoc ad asciidoc].freeze
     OTHER_EXTENSIONS = %w[textile rdoc org creole wiki mediawiki rst].freeze
     EXTENSIONS = MARKDOWN_EXTENSIONS + ASCIIDOC_EXTENSIONS + OTHER_EXTENSIONS

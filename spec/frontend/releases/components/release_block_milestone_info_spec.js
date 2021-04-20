@@ -199,7 +199,7 @@ describe('Release block milestone info', () => {
 
     it('renders merge request stats', () => {
       expect(trimText(mergeRequestsContainer().text())).toBe(
-        'Merge Requests 30 Open: 4 • Merged: 24 • Closed: 2',
+        'Merge requests 30 Open: 4 • Merged: 24 • Closed: 2',
       );
     });
   });

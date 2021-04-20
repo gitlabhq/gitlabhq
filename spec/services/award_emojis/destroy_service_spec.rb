@@ -6,6 +6,7 @@ RSpec.describe AwardEmojis::DestroyService do
   let_it_be(:user) { create(:user) }
   let_it_be(:awardable) { create(:note) }
   let_it_be(:project) { awardable.project }
+
   let(:name) { 'thumbsup' }
   let!(:award_from_other_user) do
     create(:award_emoji, name: name, awardable: awardable, user: create(:user))

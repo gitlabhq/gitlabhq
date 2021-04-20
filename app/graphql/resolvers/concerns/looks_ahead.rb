@@ -15,12 +15,7 @@ module LooksAhead
   end
 
   def apply_lookahead(query)
-    selection = node_selection
-
-    includes = preloads.each.flat_map do |name, requirements|
-      selection&.selects?(name) ? requirements : []
-    end
-    all_preloads = (unconditional_includes + includes).uniq
+    all_preloads = (unconditional_includes + filtered_preloads).uniq
 
     return query if all_preloads.empty?
 
@@ -35,6 +30,14 @@ module LooksAhead
 
   def preloads
     {}
+  end
+
+  def filtered_preloads
+    selection = node_selection
+
+    preloads.each.flat_map do |name, requirements|
+      selection&.selects?(name) ? requirements : []
+    end
   end
 
   def node_selection

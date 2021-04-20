@@ -161,6 +161,8 @@ module API
 
           not_found! unless metadata
 
+          track_package_event('pull_package', :composer)
+
           send_git_archive unauthorized_user_project.repository, ref: metadata.target_sha, format: 'zip', append_sha: true
         end
       end

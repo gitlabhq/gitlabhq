@@ -48,7 +48,7 @@ class PostReceiveService
   end
 
   def process_mr_push_options(push_options, changes)
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/61359')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/28494')
     return unless repository
 
     unless repository.repo_type.project?

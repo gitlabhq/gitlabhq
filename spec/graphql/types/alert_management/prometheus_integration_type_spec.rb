@@ -48,15 +48,21 @@ RSpec.describe GitlabSchema.types['AlertManagementPrometheusIntegration'] do
       end
     end
 
-    context 'without project' do
-      let_it_be(:integration) { create(:prometheus_service, project: nil, group: create(:group)) }
+    describe 'a group integration' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:integration) { create(:prometheus_service, project: nil, group: group) }
 
-      it_behaves_like 'has field with value', 'token' do
-        let(:value) { nil }
-      end
+      # Since it is impossible to authorize the parent here, given that the
+      # project is nil, all fields should be redacted:
 
-      it_behaves_like 'has field with value', 'url' do
-        let(:value) { nil }
+      described_class.fields.each_key do |field_name|
+        context "field: #{field_name}" do
+          it 'is redacted' do
+            expect do
+              resolve_field(field_name, integration, current_user: user)
+            end.to raise_error(GraphqlHelpers::UnauthorizedObject)
+          end
+        end
       end
     end
   end

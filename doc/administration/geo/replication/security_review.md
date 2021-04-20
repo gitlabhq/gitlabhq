@@ -34,7 +34,7 @@ from [owasp.org](https://owasp.org/).
 ### How can the data be classified into categories according to its sensitivity?
 
 - The GitLab model of sensitivity is centered around public vs. internal vs.
-  private projects. Geo replicates them all indiscriminately. “Selective sync”
+  private projects. Geo replicates them all indiscriminately. "Selective sync"
   exists for files and repositories (but not database content), which would permit
   only less-sensitive projects to be replicated to a **secondary** node if desired.
 - See also: [GitLab data classification policy](https://about.gitlab.com/handbook/engineering/security/data-classification-standard.html).
@@ -81,7 +81,7 @@ from [owasp.org](https://owasp.org/).
   considered an administrator with super-user privileges.
 - See also: [more granular access control](https://gitlab.com/gitlab-org/gitlab/-/issues/18242)
   (not Geo-specific).
-- Much of Geo’s integration (database replication, for instance) must be
+- Much of Geo's integration (database replication, for instance) must be
   configured with the application, typically by system administrators.
 
 ### What administrative capabilities does the application offer?
@@ -165,7 +165,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What aspects of the product may or may not be hosted via the cloud computing model?
 
-- GitLab is “cloud native” and this applies to Geo as much as to the rest of the
+- GitLab is "cloud native" and this applies to Geo as much as to the rest of the
   product. Deployment in clouds is a common and supported scenario.
 
 ## If applicable, what approach(es) to cloud computing will be taken (Managed Hosting versus "Pure" Cloud, a "full machine" approach such as AWS-EC2 versus a "hosted database" approach such as AWS-RDS and Azure, etc)?
@@ -223,7 +223,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What data input validation requirements have been defined?
 
-- **Secondary** nodes must have a faithful replication of the **primary** node’s data.
+- **Secondary** nodes must have a faithful replication of the **primary** node's data.
 
 ### What data does the application store and how?
 
@@ -235,7 +235,7 @@ from [owasp.org](https://owasp.org/).
   rest. A subset of database columns are encrypted at rest using the `db_otp_key`.
 - A static secret shared across all hosts in a GitLab deployment.
 - In transit, data should be encrypted, although the application does permit
-  communication to proceed unencrypted. The two main transits are the **secondary** node’s
+  communication to proceed unencrypted. The two main transits are the **secondary** node's
   replication process for PostgreSQL, and for Git repositories/files. Both should
   be protected using TLS, with the keys for that managed via Omnibus per existing
   configuration for end-user access to GitLab.

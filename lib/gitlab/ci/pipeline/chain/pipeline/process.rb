@@ -8,9 +8,7 @@ module Gitlab
           # After pipeline has been successfully created we can start processing it.
           class Process < Chain::Base
             def perform!
-              ::Ci::ProcessPipelineService
-                .new(@pipeline)
-                .execute
+              ::Ci::InitialPipelineProcessWorker.perform_async(pipeline.id)
             end
 
             def break?

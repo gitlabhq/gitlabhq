@@ -1,12 +1,14 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import ShortcutsWiki from '~/behaviors/shortcuts/shortcuts_wiki';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import Translate from '~/vue_shared/translate';
 import GLForm from '../../../gl_form';
 import ZenMode from '../../../zen_mode';
 import deleteWikiModal from './components/delete_wiki_modal.vue';
 import wikiAlert from './components/wiki_alert.vue';
+import wikiForm from './components/wiki_form.vue';
 import Wikis from './wikis';
 
 const createModalVueApp = () => {
@@ -61,7 +63,28 @@ const createAlertVueApp = () => {
   }
 };
 
+const createWikiFormApp = () => {
+  const el = document.getElementById('js-wiki-form');
+
+  if (el) {
+    const { pageInfo, formatOptions } = el.dataset;
+
+    // eslint-disable-next-line no-new
+    new Vue({
+      el,
+      provide: {
+        formatOptions: JSON.parse(formatOptions),
+        pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
+      },
+      render(createElement) {
+        return createElement(wikiForm);
+      },
+    });
+  }
+};
+
 export default () => {
   createModalVueApp();
   createAlertVueApp();
+  createWikiFormApp();
 };

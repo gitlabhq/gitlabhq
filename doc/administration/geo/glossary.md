@@ -6,7 +6,7 @@ type: howto
 ---
 
 
-# Geo Glossary
+# Geo Glossary **(PREMIUM SELF)**
 
 NOTE:
 We are updating the Geo documentation, user interface and commands to reflect these changes. Not all pages comply with

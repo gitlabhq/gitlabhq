@@ -5,7 +5,6 @@ import {
   GlBadge,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
-import { mapState } from 'vuex';
 import { generateBadges } from 'ee_else_ce/members/utils';
 import { glEmojiTag } from '~/emoji';
 import { __ } from '~/locale';
@@ -24,6 +23,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  inject: ['canManageMembers'],
   props: {
     member: {
       type: Object,
@@ -35,7 +35,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(['canManageMembers']),
     user() {
       return this.member.user;
     },

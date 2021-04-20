@@ -99,7 +99,7 @@ GitLab CI/CD uses a number of concepts to describe and run your build and deploy
 | [Cache dependencies](caching/index.md)                  | Cache your dependencies for a faster execution.                                |
 | [GitLab Runner](https://docs.gitlab.com/runner/)        | Configure your own runners to execute your scripts.                            |
 | [Pipeline efficiency](pipelines/pipeline_efficiency.md) | Configure your pipelines to run quickly and efficiently.                       |
-| [Test cases](test_cases/index.md) | Configure your pipelines to run quickly and efficiently.                       |
+| [Test cases](test_cases/index.md) | Configure your pipelines to run quickly and efficiently. <!--- this seems to be a duplicate description --->                      |
 
 ## Configuration
 

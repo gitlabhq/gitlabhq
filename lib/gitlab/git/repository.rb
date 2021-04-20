@@ -599,9 +599,9 @@ module Gitlab
         tags.find { |tag| tag.name == name }
       end
 
-      def merge_to_ref(user, source_sha, branch, target_ref, message, first_parent_ref, allow_conflicts)
+      def merge_to_ref(user, **kwargs)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_merge_to_ref(user, source_sha, branch, target_ref, message, first_parent_ref, allow_conflicts)
+          gitaly_operation_client.user_merge_to_ref(user, **kwargs)
         end
       end
 
@@ -1015,6 +1015,10 @@ module Gitlab
         return [] if empty? || safe_query.blank?
 
         gitaly_repository_client.search_files_by_name(ref, safe_query)
+      end
+
+      def search_files_by_regexp(filter, ref = 'HEAD')
+        gitaly_repository_client.search_files_by_regexp(ref, filter)
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)

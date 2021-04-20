@@ -1,8 +1,7 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import { reportToSentry } from '../../utils';
+import { JOB_DROPDOWN, SINGLE_JOB } from './constants';
 import JobItem from './job_item.vue';
-import { reportToSentry } from './utils';
 
 /**
  * Renders the dropdown for the pipeline graph.
@@ -11,12 +10,8 @@ import { reportToSentry } from './utils';
  *
  */
 export default {
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
   components: {
     JobItem,
-    CiIcon,
   },
   props: {
     group: {
@@ -28,6 +23,15 @@ export default {
       required: false,
       default: -1,
     },
+    stageName: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  jobItemTypes: {
+    jobDropdown: JOB_DROPDOWN,
+    singleJob: SINGLE_JOB,
   },
   computed: {
     computedJobId() {
@@ -51,22 +55,20 @@ export default {
 <template>
   <div :id="computedJobId" class="ci-job-dropdown-container dropdown dropright">
     <button
-      v-gl-tooltip.hover="{ boundary: 'viewport' }"
-      :title="tooltipText"
       type="button"
       data-toggle="dropdown"
       data-display="static"
-      class="dropdown-menu-toggle build-content gl-build-content"
+      class="dropdown-menu-toggle build-content gl-build-content gl-pipeline-job-width! gl-pr-4!"
     >
       <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
-        <span class="gl-display-flex gl-align-items-center gl-min-w-0">
-          <ci-icon :status="group.status" :size="24" class="gl-line-height-0" />
-          <span class="gl-text-truncate mw-70p gl-pl-3">
-            {{ group.name }}
-          </span>
-        </span>
+        <job-item
+          :type="$options.jobItemTypes.jobDropdown"
+          :group-tooltip="tooltipText"
+          :job="group"
+          :stage-name="stageName"
+        />
 
-        <span class="gl-font-weight-100 gl-font-size-lg"> {{ group.size }} </span>
+        <div class="gl-font-weight-100 gl-font-size-lg gl-ml-n4">{{ group.size }}</div>
       </div>
     </button>
 
@@ -77,6 +79,7 @@ export default {
             <job-item
               :dropdown-length="group.size"
               :job="job"
+              :type="$options.jobItemTypes.singleJob"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
               @pipelineActionRequestComplete="pipelineActionRequestComplete"
             />

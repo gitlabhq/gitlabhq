@@ -41,6 +41,8 @@ module API
       desc 'Delete an application'
       delete ':id' do
         application = ApplicationsFinder.new(params).execute
+        break not_found!('Application') unless application
+
         application.destroy
 
         no_content!

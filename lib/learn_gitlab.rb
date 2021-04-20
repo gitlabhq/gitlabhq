@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class LearnGitlab
-  PROJECT_NAME = 'Learn GitLab'.freeze
-  BOARD_NAME = 'GitLab onboarding'.freeze
-  LABEL_NAME = 'Novice'.freeze
+  PROJECT_NAME = 'Learn GitLab'
+  BOARD_NAME = 'GitLab onboarding'
+  LABEL_NAME = 'Novice'
 
   def initialize(current_user)
     @current_user = current_user

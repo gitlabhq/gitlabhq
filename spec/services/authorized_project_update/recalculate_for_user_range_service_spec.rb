@@ -7,12 +7,14 @@ RSpec.describe AuthorizedProjectUpdate::RecalculateForUserRangeService do
     let_it_be(:users) { create_list(:user, 2) }
 
     it 'calls Users::RefreshAuthorizedProjectsService' do
-      users.each do |user|
+      user_ids = users.map(&:id)
+
+      User.where(id: user_ids).select(:id).each do |user|
         expect(Users::RefreshAuthorizedProjectsService).to(
           receive(:new).with(user, source: described_class.name).and_call_original)
       end
 
-      range = users.map(&:id).minmax
+      range = user_ids.minmax
       described_class.new(*range).execute
     end
   end

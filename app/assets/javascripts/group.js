@@ -16,9 +16,7 @@ export default class Group {
       if (groupName.value === '') {
         groupName.addEventListener('keyup', this.updateHandler);
 
-        if (!this.parentId.value) {
-          groupName.addEventListener('blur', this.updateGroupPathSlugHandler);
-        }
+        groupName.addEventListener('blur', this.updateGroupPathSlugHandler);
       }
     });
 
@@ -53,7 +51,7 @@ export default class Group {
     const slug = this.groupPaths[0]?.value || slugify(value);
     if (!slug) return;
 
-    fetchGroupPathAvailability(slug)
+    fetchGroupPathAvailability(slug, this.parentId?.value)
       .then(({ data }) => data)
       .then(({ exists, suggests }) => {
         if (exists && suggests.length) {

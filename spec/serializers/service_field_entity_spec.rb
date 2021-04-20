@@ -23,10 +23,10 @@ RSpec.describe ServiceFieldEntity do
             type: 'text',
             name: 'username',
             title: 'Username or Email',
-            placeholder: 'Use a username for server version and an email for cloud version',
+            placeholder: nil,
+            help: 'Use a username for server version and an email for cloud version.',
             required: true,
             choices: nil,
-            help: nil,
             value: 'jira_username'
           }
 
@@ -41,11 +41,11 @@ RSpec.describe ServiceFieldEntity do
           expected_hash = {
             type: 'password',
             name: 'password',
-            title: 'Password or API token',
-            placeholder: 'Use a password for server version and an API token for cloud version',
+            title: 'Enter new password or API token',
+            placeholder: nil,
+            help: 'Leave blank to use your current password or API token.',
             required: true,
             choices: nil,
-            help: nil,
             value: 'true'
           }
 
@@ -72,7 +72,7 @@ RSpec.describe ServiceFieldEntity do
           }
 
           is_expected.to include(expected_hash)
-          expect(subject[:help]).to include("Send notifications from the committer's email address if the domain is part of the domain GitLab is running on")
+          expect(subject[:help]).to include("Send notifications from the committer's email address if the domain matches the domain used by your GitLab instance")
         end
       end
 

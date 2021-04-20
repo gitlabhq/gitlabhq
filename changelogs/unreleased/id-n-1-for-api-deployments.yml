@@ -1,0 +1,5 @@
+---
+title: Resolve N + 1 for deployments API
+merge_request: 57558
+author:
+type: performance

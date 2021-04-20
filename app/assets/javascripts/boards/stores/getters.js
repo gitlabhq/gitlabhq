@@ -1,5 +1,5 @@
 import { find } from 'lodash';
-import { BoardType, inactiveId } from '../constants';
+import { BoardType, inactiveId, issuableTypes } from '../constants';
 
 export default {
   isGroupBoard: (state) => state.boardType === BoardType.group,
@@ -15,17 +15,17 @@ export default {
     return listItemsIds.map((id) => getters.getBoardItemById(id));
   },
 
-  activeIssue: (state) => {
+  activeBoardItem: (state) => {
     return state.boardItems[state.activeId] || {};
   },
 
   groupPathForActiveIssue: (_, getters) => {
-    const { referencePath = '' } = getters.activeIssue;
+    const { referencePath = '' } = getters.activeBoardItem;
     return referencePath.slice(0, referencePath.indexOf('/'));
   },
 
   projectPathForActiveIssue: (_, getters) => {
-    const { referencePath = '' } = getters.activeIssue;
+    const { referencePath = '' } = getters.activeBoardItem;
     return referencePath.slice(0, referencePath.indexOf('#'));
   },
 
@@ -42,6 +42,10 @@ export default {
 
   getListByTitle: (state) => (title) => {
     return find(state.boardLists, (l) => l.title === title);
+  },
+
+  isIssueBoard: (state) => {
+    return state.issuableType === issuableTypes.issue;
   },
 
   isEpicBoard: () => {

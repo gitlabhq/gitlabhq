@@ -43,6 +43,7 @@ export default {
       variables: [],
       key: '',
       secretValue: '',
+      triggerBtnDisabled: false,
     };
   },
   computed: {
@@ -98,6 +99,11 @@ export default {
         1,
       );
     },
+    trigger() {
+      this.triggerBtnDisabled = true;
+
+      this.triggerManualJob(this.variables);
+    },
   },
 };
 </script>
@@ -111,7 +117,12 @@ export default {
         <div class="table-section section-50" role="rowheader">{{ s__('CiVariables|Value') }}</div>
       </div>
 
-      <div v-for="variable in variables" :key="variable.id" class="gl-responsive-table-row">
+      <div
+        v-for="variable in variables"
+        :key="variable.id"
+        class="gl-responsive-table-row"
+        data-testid="ci-variable-row"
+      >
         <div class="table-section section-50">
           <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Key') }}</div>
           <div class="table-mobile-content gl-mr-3">
@@ -120,6 +131,7 @@ export default {
               v-model="variable.key"
               :placeholder="$options.i18n.keyPlaceholder"
               class="ci-variable-body-item form-control"
+              data-testid="ci-variable-key"
             />
           </div>
         </div>
@@ -132,6 +144,7 @@ export default {
               v-model="variable.secret_value"
               :placeholder="$options.i18n.valuePlaceholder"
               class="ci-variable-body-item form-control"
+              data-testid="ci-variable-value"
             />
           </div>
         </div>
@@ -143,6 +156,7 @@ export default {
               category="tertiary"
               icon="clear"
               :aria-label="__('Delete variable')"
+              data-testid="delete-variable-btn"
               @click="deleteVariable(variable.id)"
             />
           </div>
@@ -175,14 +189,16 @@ export default {
       </div>
     </div>
     <div class="d-flex gl-mt-3 justify-content-center">
-      <p class="text-muted" v-html="helpText"></p>
+      <p class="text-muted" data-testid="form-help-text" v-html="helpText"></p>
     </div>
     <div class="d-flex justify-content-center">
       <gl-button
         variant="info"
         category="primary"
         :aria-label="__('Trigger manual job')"
-        @click="triggerManualJob(variables)"
+        :disabled="triggerBtnDisabled"
+        data-testid="trigger-manual-job-btn"
+        @click="trigger"
       >
         {{ action.button_title }}
       </gl-button>

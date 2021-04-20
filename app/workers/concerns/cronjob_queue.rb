@@ -15,7 +15,7 @@ module CronjobQueue
     # Cronjobs never get scheduled with arguments, so this is safe to
     # override
     def context_for_arguments(_args)
-      return if Gitlab::ApplicationContext.current_context_include?('meta.caller_id')
+      return if Gitlab::ApplicationContext.current_context_include?(:caller_id)
 
       Gitlab::ApplicationContext.new(caller_id: "Cronjob")
     end

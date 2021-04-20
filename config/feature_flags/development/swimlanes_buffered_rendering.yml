@@ -1,0 +1,8 @@
+---
+name: swimlanes_buffered_rendering
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56614
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/324994
+milestone: '13.11'
+type: development
+group: group::product planning
+default_enabled: false

@@ -347,7 +347,7 @@ Gitlab::SidekiqDaemon::Monitor.cancel_job('job-id')
 > environment variable.
 
 To perform of the interrupt we use `Thread.raise` which
-has number of drawbacks, as mentioned in [Why Ruby’s Timeout is dangerous (and Thread.raise is terrifying)](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/):
+has number of drawbacks, as mentioned in [Why Ruby's Timeout is dangerous (and Thread.raise is terrifying)](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/):
 
 > This is where the implications get interesting, and terrifying. This means that an exception can get raised:
 >
@@ -357,4 +357,4 @@ has number of drawbacks, as mentioned in [Why Ruby’s Timeout is dangerous (and
 > - while creating an object to save to the database afterwards
 > - in any of your code, regardless of whether it could have possibly raised an exception before
 >
-> Nobody writes code to defend against an exception being raised on literally any line. That’s not even possible. So Thread.raise is basically like a sneak attack on your code that could result in almost anything. It would probably be okay if it were pure-functional code that did not modify any state. But this is Ruby, so that’s unlikely :)
+> Nobody writes code to defend against an exception being raised on literally any line. That's not even possible. So Thread.raise is basically like a sneak attack on your code that could result in almost anything. It would probably be okay if it were pure-functional code that did not modify any state. But this is Ruby, so that's unlikely :)

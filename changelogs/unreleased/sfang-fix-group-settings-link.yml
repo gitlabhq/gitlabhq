@@ -1,0 +1,5 @@
+---
+title: Fix project access token creation group settings link
+merge_request: 58686
+author:
+type: fixed

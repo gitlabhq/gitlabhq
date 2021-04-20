@@ -10,7 +10,7 @@ Please link to the respective test case in the testcases project
 - [ ] Note if the test is intended to run in specific scenarios. If a scenario is new, add a link to the MR that adds the new scenario.
 - [ ] Follow the end-to-end tests [style guide](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/style_guide.html) and [best practices](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/best_practices.html).
 - [ ] Use the appropriate [RSpec metadata tag(s)](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/rspec_metadata_tests.html#rspec-metadata-for-end-to-end-tests).
-- [ ] Ensure that a created resource is removed after test execution.
+- [ ] Ensure that a created resource is removed after test execution. A `Group` resource can be shared between multiple tests. Do not remove it unless it has a unique path. Note that we have a cleanup job that periodically removes groups under `gitlab-qa-sandbox-group`.
 - [ ] Ensure that no [transient bugs](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#transient-bugs) are hidden accidentally due to the usage of `waits` and `reloads`.
 - [ ] Verify the tags to ensure it runs on the desired test environments.
 - [ ] If this MR has a dependency on another MR, such as a GitLab QA MR, specify the order in which the MRs should be merged.

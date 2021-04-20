@@ -13,7 +13,7 @@ RSpec.shared_examples 'lists destroy service' do
       development = create(:list, board: board, position: 0)
       review      = create(:list, board: board, position: 1)
       staging     = create(:list, board: board, position: 2)
-      closed      = board.closed_list
+      closed      = board.lists.closed.first
 
       described_class.new(parent, user).execute(development)
 
@@ -24,7 +24,7 @@ RSpec.shared_examples 'lists destroy service' do
   end
 
   it 'does not remove list from board when list type is closed' do
-    list = board.closed_list
+    list = board.lists.closed.first
     service = described_class.new(parent, user)
 
     expect { service.execute(list) }.not_to change(board.lists, :count)

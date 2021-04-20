@@ -42,7 +42,8 @@ export default (selector) => {
     }),
   });
 
-  apolloProvider.clients.defaultClient.cache.writeData({
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: sidebarStatusQuery,
     data: {
       sidebarStatus: false,
     },
@@ -54,6 +55,7 @@ export default (selector) => {
     page,
     projectIssuesPath,
     projectId,
+    statuses: PAGE_CONFIG[page].STATUSES,
   };
 
   if (page === PAGE_CONFIG.OPERATIONS.TITLE) {

@@ -128,6 +128,7 @@ RSpec.describe Projects::ProjectMembersHelper do
 
     describe "when current user is not the owner of the project's parent group" do
       let_it_be(:user) { create(:user) }
+
       let(:project2) { create(:project, namespace: group) }
 
       before do
@@ -174,6 +175,7 @@ RSpec.describe Projects::ProjectMembersHelper do
 
   describe 'project group links' do
     let_it_be(:project_group_links) { create_list(:project_group_link, 1, project: project) }
+
     let(:allow_admin_project) { true }
 
     describe '#project_group_links_data_json' do

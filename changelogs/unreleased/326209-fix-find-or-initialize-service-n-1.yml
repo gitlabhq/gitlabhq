@@ -1,0 +1,5 @@
+---
+title: Fix N+1 queries to find or initialize services
+merge_request: 58879
+author:
+type: performance

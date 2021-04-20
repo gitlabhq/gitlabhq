@@ -1,0 +1,5 @@
+---
+title: Resolve N + 1 for commits notes API
+merge_request: 57641
+author:
+type: performance

@@ -95,7 +95,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def after_omniauth_failure_path_for(scope)
-    if Feature.enabled?(:user_mode_in_session)
+    if Gitlab::CurrentSettings.admin_mode
       return new_admin_session_path if current_user_mode.admin_mode_requested?
     end
 
@@ -112,7 +112,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       log_audit_event(current_user, with: oauth['provider'])
 
-      if Feature.enabled?(:user_mode_in_session)
+      if Gitlab::CurrentSettings.admin_mode
         return admin_mode_flow(auth_module::User) if current_user_mode.admin_mode_requested?
       end
 

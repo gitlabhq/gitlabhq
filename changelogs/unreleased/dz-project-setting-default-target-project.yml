@@ -1,0 +1,5 @@
+---
+title: Add setting to change default target project for merge requests from forks
+merge_request: 58093
+author:
+type: added

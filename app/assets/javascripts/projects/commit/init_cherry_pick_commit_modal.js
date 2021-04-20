@@ -51,6 +51,7 @@ export default function initInviteMembersModal() {
           i18n: { ...I18N_CHERRY_PICK_MODAL, ...I18N_MODAL },
           openModal: OPEN_CHERRY_PICK_MODAL,
           modalId: CHERRY_PICK_MODAL_ID,
+          isCherryPick: true,
         },
       }),
   });

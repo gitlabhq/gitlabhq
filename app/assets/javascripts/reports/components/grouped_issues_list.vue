@@ -66,8 +66,8 @@ export default {
     },
     listClasses() {
       return {
-        'gl-pl-7': this.nestedLevel === 1,
-        'gl-pl-9': this.nestedLevel === 2,
+        'gl-pl-9': this.nestedLevel === 1,
+        'gl-pl-11-5': this.nestedLevel === 2,
       };
     },
   },

@@ -6,8 +6,16 @@ import SortDropdown from './sort_dropdown.vue';
 export default {
   name: 'FilterSortContainer',
   components: { MembersFilteredSearchBar, SortDropdown },
+  inject: ['namespace'],
   computed: {
-    ...mapState(['filteredSearchBar', 'tableSortableFields']),
+    ...mapState({
+      filteredSearchBar(state) {
+        return state[this.namespace].filteredSearchBar;
+      },
+      tableSortableFields(state) {
+        return state[this.namespace].tableSortableFields;
+      },
+    }),
     showContainer() {
       return this.filteredSearchBar.show || this.showSortDropdown;
     },

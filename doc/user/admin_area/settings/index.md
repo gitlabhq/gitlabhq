@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Create
+group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index
 ---
@@ -38,7 +38,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | [PlantUML](../../../administration/integration/plantuml.md) | Allow rendering of PlantUML diagrams in documents. |
 | [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) **(FREE SAAS)** | Slack integration allows you to interact with GitLab via slash commands in a chat window. This option is only available on GitLab.com, though it may be [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164). |
 | [Third party offers](third_party_offers.md) | Control the display of third party offers. |
-| [Snowplow](../../../development/snowplow.md) | Configure the Snowplow integration. |
+| [Snowplow](../../../development/snowplow/index.md) | Configure the Snowplow integration. |
 | [Google GKE](../../project/clusters/add_gke_clusters.md) | Google GKE integration allows you to provision GKE clusters from GitLab. |
 | [Amazon EKS](../../project/clusters/add_eks_clusters.md) | Amazon EKS integration allows you to provision EKS clusters from GitLab. |
 
@@ -46,7 +46,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 
 | Option | Description |
 | ------ | ----------- |
-| [Repository's custom initial branch name](../../project/repository/branches/index.md#custom-initial-branch-name) | Set a custom branch name rather than master for all the new repositories created within your instance. |
+| [Repository's custom initial branch name](../../project/repository/branches/default.md#instance-level-custom-initial-branch-name) | Set a custom branch name for new repositories created in your instance. |
 | [Repository mirror](visibility_and_access_controls.md#allow-mirrors-to-be-set-up-for-projects) | Configure repository mirroring. |
 | [Repository storage](../../../administration/repository_storage_types.md) | Configure storage path settings. |
 | Repository maintenance | ([Repository checks](../../../administration/repository_checks.md) and [Housekeeping](../../../administration/housekeeping.md)). Configure automatic Git checks and housekeeping on repositories. |

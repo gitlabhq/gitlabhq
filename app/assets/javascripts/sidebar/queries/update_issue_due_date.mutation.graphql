@@ -1,0 +1,9 @@
+mutation updateIssueDueDate($input: UpdateIssueInput!) {
+  issuableSetDueDate: updateIssue(input: $input) {
+    issuable: issue {
+      id
+      dueDate
+    }
+    errors
+  }
+}

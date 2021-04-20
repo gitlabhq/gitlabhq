@@ -43,7 +43,7 @@ RSpec.shared_examples 'a creatable merge request' do
     expect(page.all('input[name="merge_request[label_ids][]"]', visible: false)[1].value).to match(label.id.to_s)
     expect(page.all('input[name="merge_request[label_ids][]"]', visible: false)[2].value).to match(label2.id.to_s)
 
-    click_button 'Submit merge request'
+    click_button 'Create merge request'
 
     page.within '.issuable-sidebar' do
       page.within '.assignee' do

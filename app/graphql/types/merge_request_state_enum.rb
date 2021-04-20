@@ -5,6 +5,6 @@ module Types
     graphql_name 'MergeRequestState'
     description 'State of a GitLab merge request'
 
-    value 'merged', description: "Merge Request has been merged."
+    value 'merged', description: "Merge request has been merged."
   end
 end

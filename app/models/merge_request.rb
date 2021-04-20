@@ -37,7 +37,7 @@ class MergeRequest < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
   ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON = {
-    'Ci::CompareCodequalityReportsService' => ->(project) { ::Gitlab::Ci::Features.display_codequality_backend_comparison?(project) }
+    'Ci::CompareCodequalityReportsService' => ->(project) { true }
   }.freeze
 
   belongs_to :target_project, class_name: "Project"
@@ -276,6 +276,9 @@ class MergeRequest < ApplicationRecord
   scope :by_squash_commit_sha, -> (sha) do
     where(squash_commit_sha: sha)
   end
+  scope :by_merge_or_squash_commit_sha, -> (sha) do
+    from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha)])
+  end
   scope :by_related_commit_sha, -> (sha) do
     from_union(
       [
@@ -285,14 +288,20 @@ class MergeRequest < ApplicationRecord
       ]
     )
   end
-  scope :by_cherry_pick_sha, -> (sha) do
-    joins(:notes).where(notes: { commit_id: sha })
-  end
   scope :join_project, -> { joins(:target_project) }
-  scope :join_metrics, -> do
+  scope :join_metrics, -> (target_project_id = nil) do
+    # Do not join the relation twice
+    return self if self.arel.join_sources.any? { |join| join.left.try(:name).eql?(MergeRequest::Metrics.table_name) }
+
     query = joins(:metrics)
-    query = query.where(MergeRequest.arel_table[:target_project_id].eq(MergeRequest::Metrics.arel_table[:target_project_id]))
-    query
+
+    project_condition = if target_project_id
+                          MergeRequest::Metrics.arel_table[:target_project_id].eq(target_project_id)
+                        else
+                          MergeRequest.arel_table[:target_project_id].eq(MergeRequest::Metrics.arel_table[:target_project_id])
+                        end
+
+    query.where(project_condition)
   end
   scope :references_project, -> { references(:target_project) }
   scope :with_api_entity_associations, -> {
@@ -304,6 +313,7 @@ class MergeRequest < ApplicationRecord
   }
 
   scope :with_csv_entity_associations, -> { preload(:assignees, :approved_by_users, :author, :milestone, metrics: [:merged_by]) }
+  scope :with_jira_integration_associations, -> { preload_routables.preload(:metrics, :assignees, :author) }
 
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))
@@ -346,7 +356,9 @@ class MergeRequest < ApplicationRecord
   scope :preload_metrics, -> (relation) { preload(metrics: relation) }
   scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
   scope :preload_latest_diff_commit, -> { preload(latest_merge_request_diff: :merge_request_diff_commits) }
-  scope :with_web_entity_associations, -> { preload(:author, :target_project) }
+  scope :preload_milestoneish_associations, -> { preload_routables.preload(:assignees, :labels) }
+
+  scope :with_web_entity_associations, -> { preload(:author, target_project: [:project_feature, group: [:route, :parent], namespace: :route]) }
 
   scope :with_auto_merge_enabled, -> do
     with_state(:opened).where(auto_merge_enabled: true)
@@ -1302,11 +1314,8 @@ class MergeRequest < ApplicationRecord
     message.join("\n\n")
   end
 
-  # Returns the oldest multi-line commit message, or the MR title if none found
   def default_squash_commit_message
-    strong_memoize(:default_squash_commit_message) do
-      first_multiline_commit&.safe_message || title
-    end
+    title
   end
 
   # Returns the oldest multi-line commit
@@ -1358,11 +1367,11 @@ class MergeRequest < ApplicationRecord
   def environments_for(current_user, latest: false)
     return [] unless diff_head_commit
 
-    envs = EnvironmentsFinder.new(target_project, current_user,
+    envs = EnvironmentsByDeploymentsFinder.new(target_project, current_user,
       ref: target_branch, commit: diff_head_commit, with_tags: true, find_latest: latest).execute
 
     if source_project
-      envs.concat EnvironmentsFinder.new(source_project, current_user,
+      envs.concat EnvironmentsByDeploymentsFinder.new(source_project, current_user,
         ref: source_branch, commit: diff_head_commit, find_latest: latest).execute
     end
 
@@ -1555,8 +1564,6 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_reports?
-    return false unless ::Gitlab::Ci::Features.display_codequality_backend_comparison?(project)
-
     actual_head_pipeline&.has_reports?(Ci::JobArtifact.codequality_reports)
   end
 

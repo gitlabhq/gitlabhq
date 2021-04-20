@@ -39,8 +39,8 @@ Note the following:
   The Importing GitLab version must be greater than or equal to the Exporting GitLab version.
 - Imports will fail unless the import and export GitLab instances are
   compatible as described in the [Version history](#version-history).
-- Exports are stored in a temporary [shared directory](../../../development/shared_files.md)
-  and are deleted every 24 hours by a specific worker.
+- Exports are generated in your configured `shared_path`, a temporary [shared directory](../../../development/shared_files.md)
+  and are moved to your configured `uploads_directory`. Every 24 hours, a specific worker deletes these export files.
 - Group members are exported as project members, as long as the user has
   maintainer or administrator access to the group where the exported project lives.
 - Project members with owner access will be imported as maintainers.

@@ -54,9 +54,10 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures do
 
   context 'pipelines' do
     it 'benchmarks several pipelines' do
-      path = 'images/example.jpg'
-      gitaly_wiki_file = Gitlab::GitalyClient::WikiFile.new(path: path)
-      allow(wiki).to receive(:find_file).with(path, load_content: false).and_return(Gitlab::Git::WikiFile.new(gitaly_wiki_file))
+      name = 'example.jpg'
+      path = "images/#{name}"
+      blob = double(name: name, path: path, mime_type: 'image/jpeg', data: nil)
+      allow(wiki).to receive(:find_file).with(path, load_content: false).and_return(Gitlab::Git::WikiFile.new(blob))
       allow(wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
 
       puts "\n--> Benchmarking Full, Wiki, and Plain pipelines\n"

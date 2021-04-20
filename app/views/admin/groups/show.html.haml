@@ -62,6 +62,7 @@
             = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
 
         = render_if_exists 'namespaces/shared_runner_status', namespace: @group
+        = render_if_exists 'namespaces/additional_minutes_status', namespace: @group
 
     = render 'shared/custom_attributes', custom_attributes: @group.custom_attributes
 
@@ -103,6 +104,8 @@
                 %span.monospace= project.full_path + '.git'
 
   .col-md-6
+    = render 'shared/admin/admin_note'
+
     - if can?(current_user, :admin_group_member, @group)
       .card
         .card-header
@@ -124,7 +127,7 @@
     .card
       .card-header
         = html_escape(_("%{group_name} group members")) % { group_name: "<strong>#{html_escape(@group.name)}</strong>".html_safe }
-        %span.badge.badge-pill= @group.members.size
+        %span.badge.badge-pill= @group.users_count
         .float-right
           = link_to group_group_members_path(@group), class: 'btn btn-default gl-button btn-sm' do
             = sprite_icon('pencil-square', css_class: 'gl-icon')

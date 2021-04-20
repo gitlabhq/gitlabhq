@@ -24,6 +24,18 @@ module QA
           "#{api_get_path}/events"
         end
 
+        def fetch_events
+          events_returned = nil
+          Support::Waiter.wait_until(max_duration: max_wait, raise_on_failure: raise_on_failure) do
+            events_returned = yield
+            events_returned.any?
+          end
+
+          raise EventNotFoundError, "Timed out waiting for events" unless events_returned
+
+          events_returned
+        end
+
         def wait_for_event
           event_found = Support::Waiter.wait_until(max_duration: max_wait, raise_on_failure: raise_on_failure) do
             yield

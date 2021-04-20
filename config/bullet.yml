@@ -1,0 +1,44 @@
+---
+
+exclusions:
+  # See https://github.com/flyerhzm/bullet#configuration for exclusion formats
+  # Example usage:
+  #
+  # paths with method name(recommended use):
+  #
+  # example_path_with_method_exclusion_name:
+  #   merge_request: 'some merge request link for context'
+  #   exact_file_name: true
+  #   exclude:
+  #     - 'some_ruby_file_name.rb'
+  #     - 'method_name_inside_the_file_above'
+  #
+  # path or pattern only to file(fuzzy, not recommended):
+  #
+  # example_path_with_exact_file_name:
+  #   merge_request: 'some merge request link for context'
+  #   exact_file_name: true
+  #   exclude:
+  #     - 'some_ruby_file_name.rb'
+  #
+  # example_path_with_pattern:
+  #   merge_request: 'some merge request link for context'
+  #   exact_file_name: false
+  #   exclude:
+  #     - 'file_pattern'
+  #
+  # path with line numbers(extremely fragile, not recommended):
+  #
+  # example_path_with_line_range:
+  #   merge_request: 'some merge request link for context'
+  #   exact_file_name: true
+  #   exclude:
+  #     - 'some_ruby_file_name.rb'
+  #     - 5..10
+  #
+  group_member_presenter_managing_group:
+    merge_request: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58927'
+    path_with_method: true
+    exclude:
+      - 'ee/app/presenters/ee/group_member_presenter.rb'
+      - 'group_managed_account?'

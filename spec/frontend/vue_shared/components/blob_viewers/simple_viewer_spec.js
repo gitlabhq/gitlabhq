@@ -1,20 +1,31 @@
 import { shallowMount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import { HIGHLIGHT_CLASS_NAME } from '~/vue_shared/components/blob_viewers/constants';
 import SimpleViewer from '~/vue_shared/components/blob_viewers/simple_viewer.vue';
+import EditorLite from '~/vue_shared/components/editor_lite.vue';
 
 describe('Blob Simple Viewer component', () => {
   let wrapper;
   const contentMock = `<span id="LC1">First</span>\n<span id="LC2">Second</span>\n<span id="LC3">Third</span>`;
   const blobHash = 'foo-bar';
 
-  function createComponent(content = contentMock) {
+  function createComponent(
+    content = contentMock,
+    isRawContent = false,
+    isRefactorFlagEnabled = false,
+  ) {
     wrapper = shallowMount(SimpleViewer, {
       provide: {
         blobHash,
+        glFeatures: {
+          refactorBlobViewer: isRefactorFlagEnabled,
+        },
       },
       propsData: {
         content,
         type: 'text',
+        fileName: 'test.js',
+        isRawContent,
       },
     });
   }
@@ -82,5 +93,33 @@ describe('Blob Simple Viewer component', () => {
         expect(linetoBeHighlighted.classes()).toContain(HIGHLIGHT_CLASS_NAME);
       });
     });
+  });
+
+  describe('Vue refactoring to use Source Editor', () => {
+    const findEditorLite = () => wrapper.find(EditorLite);
+
+    it.each`
+      doesRender    | condition                                          | isRawContent | isRefactorFlagEnabled
+      ${'Does not'} | ${'rawContent is not specified'}                   | ${false}     | ${true}
+      ${'Does not'} | ${'feature flag is disabled is not specified'}     | ${true}      | ${false}
+      ${'Does not'} | ${'both, the FF and rawContent are not specified'} | ${false}     | ${false}
+      ${'Does'}     | ${'both, the FF and rawContent are specified'}     | ${true}      | ${true}
+    `(
+      '$doesRender render Editor Lite component in readonly mode when $condition',
+      async ({ isRawContent, isRefactorFlagEnabled } = {}) => {
+        createComponent('raw content', isRawContent, isRefactorFlagEnabled);
+        await waitForPromises();
+
+        if (isRawContent && isRefactorFlagEnabled) {
+          expect(findEditorLite().exists()).toBe(true);
+
+          expect(findEditorLite().props('value')).toBe('raw content');
+          expect(findEditorLite().props('fileName')).toBe('test.js');
+          expect(findEditorLite().props('editorOptions')).toEqual({ readOnly: true });
+        } else {
+          expect(findEditorLite().exists()).toBe(false);
+        }
+      },
+    );
   });
 });

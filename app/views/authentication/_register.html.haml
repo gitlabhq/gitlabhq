@@ -21,7 +21,7 @@
   %div
     %p
       %span <%= error_message %> (<%= error_name %>)
-    %a.btn.gl-button.btn-warning#js-token-2fa-try-again= _("Try again?")
+    %a.btn.btn-default.gl-button#js-token-2fa-try-again= _("Try again?")
 
 %script#js-register-token-2fa-registered{ type: "text/template" }
   .row.gl-mb-3
@@ -33,4 +33,4 @@
             = text_field_tag 'device_registration[name]', nil, class: 'form-control', placeholder: _("Pick a name")
           .col-md-3
             = hidden_field_tag 'device_registration[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"
-            = submit_tag _("Register device"), class: "btn btn-success"
+            = submit_tag _("Register device"), class: "gl-button btn btn-confirm"

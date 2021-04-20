@@ -42,14 +42,14 @@ module TokenAuthenticatableStrategies
       return insecure_strategy.get_token(instance) if migrating?
 
       encrypted_token = instance.read_attribute(encrypted_field)
-      token = Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_token)
+      token = EncryptionHelper.decrypt_token(encrypted_token)
       token || (insecure_strategy.get_token(instance) if optional?)
     end
 
     def set_token(instance, token)
       raise ArgumentError unless token.present?
 
-      instance[encrypted_field] = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
+      instance[encrypted_field] = EncryptionHelper.encrypt_token(token)
       instance[token_field] = token if migrating?
       instance[token_field] = nil if optional?
       token
@@ -85,16 +85,9 @@ module TokenAuthenticatableStrategies
     end
 
     def find_by_encrypted_token(token, unscoped)
-      nonce = Feature.enabled?(:dynamic_nonce_creation) ? find_hashed_iv(token) : Gitlab::CryptoHelper::AES256_GCM_IV_STATIC
-      encrypted_value = Gitlab::CryptoHelper.aes256_gcm_encrypt(token, nonce: nonce)
-
-      relation(unscoped).find_by(encrypted_field => encrypted_value)
-    end
-
-    def find_hashed_iv(token)
-      token_record = TokenWithIv.find_by_plaintext_token(token)
-
-      token_record&.iv || Gitlab::CryptoHelper::AES256_GCM_IV_STATIC
+      encrypted_value = EncryptionHelper.encrypt_token(token)
+      token_encrypted_with_static_iv = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
+      relation(unscoped).find_by(encrypted_field => [encrypted_value, token_encrypted_with_static_iv])
     end
 
     def insecure_strategy

@@ -23,7 +23,7 @@
           - text, status = domain_presenter.unverified? ? [_('Unverified'), 'badge-danger'] : [_('Verified'), 'badge-success']
           .badge{ class: status }
             = text
-          = link_to sprite_icon("redo"), verify_project_pages_domain_path(@project, domain_presenter), method: :post, class: "btn has-tooltip", title: _("Retry verification")
+          = link_to sprite_icon("redo"), verify_project_pages_domain_path(@project, domain_presenter), method: :post, class: "gl-button btn btn-default has-tooltip", title: _("Retry verification")
         .input-group
           = text_field_tag :domain_verification, verification_record, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-append

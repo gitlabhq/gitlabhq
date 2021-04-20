@@ -33,7 +33,7 @@ module CounterAttribute
   extend AfterCommitQueue
   include Gitlab::ExclusiveLeaseHelpers
 
-  LUA_STEAL_INCREMENT_SCRIPT = <<~EOS.freeze
+  LUA_STEAL_INCREMENT_SCRIPT = <<~EOS
     local increment_key, flushed_key = KEYS[1], KEYS[2]
     local increment_value = redis.call("get", increment_key) or 0
     local flushed_value = redis.call("incrby", flushed_key, increment_value)

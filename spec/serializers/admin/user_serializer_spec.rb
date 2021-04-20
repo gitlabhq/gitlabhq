@@ -9,7 +9,7 @@ RSpec.describe Admin::UserSerializer do
 
   context 'when there is a single object provided' do
     it 'contains important elements for the admin user table' do
-      is_expected.to contain_exactly(
+      is_expected.to include(
         :id,
         :name,
         :created_at,

@@ -13,6 +13,9 @@ module.exports = {
   mode: 'development',
   resolve: {
     extensions: ['.js'],
+    alias: {
+      jquery$: 'jquery/dist/jquery.slim.js',
+    },
   },
 
   // ensure output is not generated when errors are encountered
@@ -22,7 +25,7 @@ module.exports = {
 
   entry: {
     vendor: [
-      'jquery',
+      'jquery/dist/jquery.slim.js',
       'pdfjs-dist/build/pdf',
       'pdfjs-dist/build/pdf.worker.min',
       'sql.js',

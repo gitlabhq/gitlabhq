@@ -5,7 +5,7 @@ module Gitlab
     class Deployment
       include Gitlab::Utils::StrongMemoize
 
-      STABLE_TRACK_VALUE = 'stable'.freeze
+      STABLE_TRACK_VALUE = 'stable'
 
       def initialize(attributes = {}, pods: [])
         @attributes = attributes

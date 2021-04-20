@@ -42,6 +42,7 @@ describe('AccessRequestActionButtons', () => {
         memberId: member.id,
         title: 'Deny access',
         isAccessRequest: true,
+        isInvite: false,
         icon: 'close',
       });
     });

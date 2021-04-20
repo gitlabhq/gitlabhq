@@ -354,32 +354,28 @@ RSpec.shared_examples 'wiki model' do
       subject.repository.create_file(user, 'image.png', image, branch_name: subject.default_branch, message: 'add image')
     end
 
-    shared_examples 'find_file results' do
-      it 'returns the latest version of the file if it exists' do
-        file = subject.find_file('image.png')
+    it 'returns the latest version of the file if it exists' do
+      file = subject.find_file('image.png')
 
-        expect(file.mime_type).to eq('image/png')
-      end
-
-      it 'returns nil if the page does not exist' do
-        expect(subject.find_file('non-existent')).to eq(nil)
-      end
-
-      it 'returns a Gitlab::Git::WikiFile instance' do
-        file = subject.find_file('image.png')
-
-        expect(file).to be_a Gitlab::Git::WikiFile
-      end
-
-      it 'returns the whole file' do
-        file = subject.find_file('image.png')
-        image.rewind
-
-        expect(file.raw_data.b).to eq(image.read.b)
-      end
+      expect(file.mime_type).to eq('image/png')
     end
 
-    it_behaves_like 'find_file results'
+    it 'returns nil if the page does not exist' do
+      expect(subject.find_file('non-existent')).to eq(nil)
+    end
+
+    it 'returns a Gitlab::Git::WikiFile instance' do
+      file = subject.find_file('image.png')
+
+      expect(file).to be_a Gitlab::Git::WikiFile
+    end
+
+    it 'returns the whole file' do
+      file = subject.find_file('image.png')
+      image.rewind
+
+      expect(file.raw_data.b).to eq(image.read.b)
+    end
 
     context 'when load_content is disabled' do
       it 'includes the file data in the Gitlab::Git::WikiFile' do
@@ -387,14 +383,6 @@ RSpec.shared_examples 'wiki model' do
 
         expect(file.raw_data).to be_empty
       end
-    end
-
-    context 'when feature flag :gitaly_find_file is disabled' do
-      before do
-        stub_feature_flags(gitaly_find_file: false)
-      end
-
-      it_behaves_like 'find_file results'
     end
   end
 
@@ -481,28 +469,53 @@ RSpec.shared_examples 'wiki model' do
   end
 
   describe '#delete_page' do
-    let(:page) { create(:wiki_page, wiki: wiki) }
+    shared_examples 'delete_page operations' do
+      let(:page) { create(:wiki_page, wiki: wiki) }
 
-    it 'deletes the page' do
-      subject.delete_page(page)
+      it 'deletes the page' do
+        subject.delete_page(page)
 
-      expect(subject.list_pages.count).to eq(0)
+        expect(subject.list_pages.count).to eq(0)
+      end
+
+      it 'sets the correct commit email' do
+        subject.delete_page(page)
+
+        expect(user.commit_email).not_to eq(user.email)
+        expect(commit.author_email).to eq(user.commit_email)
+        expect(commit.committer_email).to eq(user.commit_email)
+      end
+
+      it 'runs after_wiki_activity callbacks' do
+        page
+
+        expect(subject).to receive(:after_wiki_activity)
+
+        subject.delete_page(page)
+      end
     end
 
-    it 'sets the correct commit email' do
-      subject.delete_page(page)
+    it_behaves_like 'delete_page operations'
 
-      expect(user.commit_email).not_to eq(user.email)
-      expect(commit.author_email).to eq(user.commit_email)
-      expect(commit.committer_email).to eq(user.commit_email)
+    context 'when an error is raised' do
+      it 'logs the error and returns false' do
+        page = build(:wiki_page, wiki: wiki)
+        exception = Gitlab::Git::Index::IndexError.new('foo')
+
+        allow(subject.repository).to receive(:delete_file).and_raise(exception)
+
+        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(exception, action: :deleted, wiki_id: wiki.id)
+
+        expect(subject.delete_page(page)).to be_falsey
+      end
     end
 
-    it 'runs after_wiki_activity callbacks' do
-      page
+    context 'when feature flag :gitaly_replace_wiki_delete_page is disabled' do
+      before do
+        stub_feature_flags(gitaly_replace_wiki_delete_page: false)
+      end
 
-      expect(subject).to receive(:after_wiki_activity)
-
-      subject.delete_page(page)
+      it_behaves_like 'delete_page operations'
     end
   end
 

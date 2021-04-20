@@ -4,18 +4,21 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Crosslinking Issues
+# Crosslinking issues
 
-Please read through the [GitLab Issue Documentation](index.md) for an overview on GitLab Issues.
+There are several ways to mention an issue or make issues appear in each other's
+[Linked issues](related_issues.md) section.
 
-## From Commit Messages
+For more information on GitLab Issues, read the [issues documentation](index.md).
+
+## From commit messages
 
 Every time you mention an issue in your commit message, you're creating
 a relationship between the two stages of the development workflow: the
 issue itself and the first commit related to that issue.
 
 If the issue and the code you're committing are both in the same project,
-you simply add `#xxx` to the commit message, where `xxx` is the issue number.
+add `#xxx` to the commit message, where `xxx` is the issue number.
 If they are not in the same project, you can add the full URL to the issue
 (`https://gitlab.com/<username>/<projectname>/issues/<xxx>`).
 
@@ -36,11 +39,10 @@ for tracking your process with [GitLab Value Stream Analytics](https://about.git
 It measures the time taken for planning the implementation of that issue,
 which is the time between creating an issue and making the first commit.
 
-## From Related Issues
+## From linked issues
 
-Mentioning related issues in merge requests and other issues is useful
-for your team members and collaborators to know that there are opened
-issues regarding the same topic.
+Mentioning linked issues in merge requests and other issues helps your team members and
+collaborators know that there are opened issues regarding the same topic.
 
 You do that as explained above, when [mentioning an issue from a commit message](#from-commit-messages).
 
@@ -50,13 +52,13 @@ display in both issues. The same is valid when mentioning issues in [merge reque
 
 ![issue mentioned in issue](img/mention_in_issue.png)
 
-## From Merge Requests
+## From merge requests
 
 Mentioning issues in merge request comments works exactly the same way as
-they do for [related issues](#from-related-issues).
+they do for [linked issues](#from-linked-issues).
 
 When you mention an issue in a merge request description, it
-[links the issue and merge request together](#from-related-issues). Additionally,
+[links the issue and merge request together](#from-linked-issues). Additionally,
 you can also [set an issue to close automatically](managing_issues.md#closing-issues-automatically)
 as soon as the merge request is merged.
 

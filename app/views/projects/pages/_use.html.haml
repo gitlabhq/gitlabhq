@@ -4,8 +4,7 @@
       = s_('GitLabPages|Configure pages')
     .card-body
       %p.gl-mb-0
-        - docs_link_start = "<a href='#{help_page_path('user/project/pages/index.md')}' target='_blank' rel='noopener noreferrer'>".html_safe
+        - docs_link_start = "<a href='#{help_page_path('user/project/pages/index')}' target='_blank' rel='noopener noreferrer'>".html_safe
         - samples_link_start = "<a href='https://gitlab.com/pages' target='_blank' rel='noopener noreferrer'>".html_safe
-        - templates_link_start = "<a href='https://gitlab.com/gitlab-org/project-templates' target='_blank' rel='noopener noreferrer'>".html_safe
         - link_end = '</a>'.html_safe
-        = s_('GitLabPages|See the %{docs_link_start}GitLab Pages documentation%{link_end} to learn how to upload your static site and have GitLab serve it. You can also follow a %{samples_link_start}sample project%{link_end} or use a %{templates_link_start}GitLab CI template%{link_end}.').html_safe % { docs_link_start: docs_link_start, samples_link_start: samples_link_start, templates_link_start: templates_link_start, link_end: link_end }
+        = s_('GitLabPages|Your Pages site is not configured yet. See the %{docs_link_start}GitLab Pages documentation%{link_end} to learn how to upload your static site and have GitLab serve it. You can also take some inspiration from the %{samples_link_start}sample Pages projects%{link_end}.').html_safe % { docs_link_start: docs_link_start, samples_link_start: samples_link_start, link_end: link_end }

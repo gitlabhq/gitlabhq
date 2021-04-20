@@ -1,7 +1,7 @@
 <script>
 import { GlTable, GlButton, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 
 export default {
   fields: [
@@ -17,9 +17,16 @@ export default {
       key: 'cronTimezone',
       label: s__('DeployFreeze|Time zone'),
     },
+    {
+      key: 'edit',
+      label: s__('DeployFreeze|Edit'),
+    },
   ],
   translations: {
-    addDeployFreeze: __('Add deploy freeze'),
+    addDeployFreeze: s__('DeployFreeze|Add deploy freeze'),
+    emptyStateText: s__(
+      'DeployFreeze|No deploy freezes exist for this project. To add one, select %{strongStart}Add deploy freeze%{strongEnd}',
+    ),
   },
   components: {
     GlTable,
@@ -39,7 +46,7 @@ export default {
     this.fetchFreezePeriods();
   },
   methods: {
-    ...mapActions(['fetchFreezePeriods']),
+    ...mapActions(['fetchFreezePeriods', 'setFreezePeriod']),
   },
 };
 </script>
@@ -53,15 +60,21 @@ export default {
       show-empty
       stacked="lg"
     >
+      <template #cell(cronTimezone)="{ item }">
+        {{ item.cronTimezone.formattedTimezone }}
+      </template>
+      <template #cell(edit)="{ item }">
+        <gl-button
+          v-gl-modal.deploy-freeze-modal
+          icon="pencil"
+          data-testid="edit-deploy-freeze"
+          :aria-label="__('Edit deploy freeze')"
+          @click="setFreezePeriod(item)"
+        />
+      </template>
       <template #empty>
         <p data-testid="empty-freeze-periods" class="gl-text-center text-plain">
-          <gl-sprintf
-            :message="
-              s__(
-                'DeployFreeze|No deploy freezes exist for this project. To add one, click %{strongStart}Add deploy freeze%{strongEnd}',
-              )
-            "
-          >
+          <gl-sprintf :message="$options.translations.emptyStateText">
             <template #strong="{ content }">
               <strong>{{ content }}</strong>
             </template>
@@ -73,7 +86,7 @@ export default {
       v-gl-modal.deploy-freeze-modal
       data-testid="add-deploy-freeze"
       category="primary"
-      variant="success"
+      variant="confirm"
     >
       {{ $options.translations.addDeployFreeze }}
     </gl-button>

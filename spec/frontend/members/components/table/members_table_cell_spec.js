@@ -42,21 +42,21 @@ describe('MembersTableCell', () => {
 
   const createStore = (state = {}) => {
     return new Vuex.Store({
-      state: {
-        sourceId: 1,
-        currentUserId: 1,
-        ...state,
-      },
+      state,
     });
   };
 
   let wrapper;
 
-  const createComponent = (propsData, state = {}) => {
+  const createComponent = (propsData, state) => {
     wrapper = mount(MembersTableCell, {
       localVue,
       propsData,
       store: createStore(state),
+      provide: {
+        sourceId: 1,
+        currentUserId: 1,
+      },
       scopedSlots: {
         default: `
           <wrapped-component

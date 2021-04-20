@@ -65,7 +65,7 @@ module Issuable
 
     has_many :label_links, as: :target, dependent: :destroy, inverse_of: :target # rubocop:disable Cop/ActiveRecordDependent
     has_many :labels, through: :label_links
-    has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :todos, as: :target
 
     has_one :metrics, inverse_of: model_name.singular.to_sym, autosave: true
 
@@ -136,6 +136,14 @@ module Issuable
     scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
+
+    scope :includes_for_bulk_update, -> do
+      associations = %i[author assignees epic group labels metrics project source_project target_project].select do |association|
+        reflect_on_association(association)
+      end
+
+      includes(*associations)
+    end
 
     attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description
@@ -324,7 +332,7 @@ module Issuable
       # This prevents errors when ignored columns are present in the database.
       issuable_columns = with_cte ? issue_grouping_columns(use_cte: with_cte) : "#{table_name}.*"
 
-      extra_select_columns = extra_select_columns.unshift("(#{highest_priority}) AS highest_priority")
+      extra_select_columns.unshift("(#{highest_priority}) AS highest_priority")
 
       select(issuable_columns)
         .select(extra_select_columns)
@@ -437,7 +445,7 @@ module Issuable
   end
 
   def subscribed_without_subscriptions?(user, project)
-    participants(user).include?(user)
+    participant?(user)
   end
 
   def can_assign_epic?(user)

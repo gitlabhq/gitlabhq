@@ -25,7 +25,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
   :feature_category: :authentication_and_authorization
@@ -186,6 +186,14 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: cronjob:database_batched_background_migration
+  :feature_category: :database
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:environments_auto_stop_cron
   :feature_category: :continuous_delivery
@@ -434,6 +442,22 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: cronjob:ssh_keys_expired_notification
+  :feature_category: :compliance_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:ssh_keys_expiring_soon_notification
+  :feature_category: :compliance_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:stuck_ci_jobs
   :feature_category: :continuous_integration
@@ -1083,6 +1107,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: package_repositories:packages_go_sync_packages
+  :feature_category: :package_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_maven_metadata_sync
   :feature_category: :package_registry
   :has_external_dependencies:
@@ -1098,6 +1130,14 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: package_repositories:packages_rubygems_extraction
+  :feature_category: :package_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: pipeline_background:archive_trace
   :feature_category: :continuous_integration
@@ -1187,6 +1227,14 @@
   :weight: 4
   :idempotent:
   :tags: []
+- :name: pipeline_creation:merge_requests_create_pipeline
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 4
+  :idempotent: true
+  :tags: []
 - :name: pipeline_creation:run_pipeline_schedule
   :feature_category: :continuous_integration
   :has_external_dependencies:
@@ -1202,6 +1250,22 @@
   :resource_boundary: :cpu
   :weight: 3
   :idempotent:
+  :tags: []
+- :name: pipeline_default:ci_drop_pipeline
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 3
+  :idempotent: true
+  :tags: []
+- :name: pipeline_default:ci_merge_requests_add_todo_when_build_fails
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 3
+  :idempotent: true
   :tags: []
 - :name: pipeline_default:ci_pipeline_bridge_status
   :feature_category: :continuous_integration
@@ -1283,6 +1347,14 @@
   :weight: 5
   :idempotent:
   :tags: []
+- :name: pipeline_processing:ci_initial_pipeline_process
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 5
+  :idempotent: true
+  :tags: []
 - :name: pipeline_processing:ci_resource_groups_assign_resource_from_resource_group
   :feature_category: :continuous_delivery
   :has_external_dependencies:
@@ -1354,6 +1426,14 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: todos_destroyer:todos_destroyer_destroyed_issuable
+  :feature_category: :issue_tracking
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: todos_destroyer:todos_destroyer_entity_leave
   :feature_category: :issue_tracking
@@ -1468,6 +1548,14 @@
   :idempotent:
   :tags: []
 - :name: bulk_imports_entity
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: bulk_imports_pipeline
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -1781,9 +1869,9 @@
   :idempotent: true
   :tags: []
 - :name: mailers
-  :feature_category:
+  :feature_category: :issue_tracking
   :has_external_dependencies:
-  :urgency:
+  :urgency: low
   :resource_boundary:
   :weight: 2
   :idempotent:
@@ -1812,8 +1900,32 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_assignees_change
+  :feature_category: :source_code_management
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_delete_source_branch
   :feature_category: :source_code_management
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: merge_requests_handle_assignees_change
+  :feature_category: :code_review
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: merge_requests_resolve_todos
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :unknown
@@ -2056,6 +2168,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: projects_post_creation
+  :feature_category: :source_code_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_schedule_bulk_repository_shard_moves
   :feature_category: :gitaly
   :has_external_dependencies:
@@ -2273,7 +2393,7 @@
   :idempotent:
   :tags: []
 - :name: update_highest_role
-  :feature_category: :authentication_and_authorization
+  :feature_category: :utilization
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :unknown

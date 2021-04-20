@@ -27,4 +27,4 @@
 
   .note-search-result
     .term
-      = search_md_sanitize(note.note)
+      = simple_search_highlight_and_truncate(note.note, @search_term)

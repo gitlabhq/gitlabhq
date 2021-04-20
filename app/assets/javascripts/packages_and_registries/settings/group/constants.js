@@ -8,6 +8,7 @@ export const PACKAGE_SETTINGS_DESCRIPTION = s__(
 
 export const MAVEN_TITLE = s__('PackageRegistry|Maven');
 export const MAVEN_SETTINGS_SUBTITLE = s__('PackageRegistry|Settings for Maven packages');
+export const MAVEN_TOGGLE_LABEL = s__('PackageRegistry|Allow duplicates');
 export const MAVEN_DUPLICATES_ALLOWED_DISABLED = s__(
   'PackageRegistry|%{boldStart}Do not allow duplicates%{boldEnd} - Packages with the same name and version are rejected.',
 );

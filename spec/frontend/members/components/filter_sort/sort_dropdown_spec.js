@@ -3,6 +3,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import SortDropdown from '~/members/components/filter_sort/sort_dropdown.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,22 +15,30 @@ describe('SortDropdown', () => {
 
   const createComponent = (state) => {
     const store = new Vuex.Store({
-      state: {
-        sourceId: 1,
-        tableSortableFields: ['account', 'granted', 'expires', 'maxRole', 'lastSignIn'],
-        filteredSearchBar: {
-          show: true,
-          tokens: ['two_factor'],
-          searchParam: 'search',
-          placeholder: 'Filter members',
-          recentSearchesStorageKey: 'group_members',
+      modules: {
+        [MEMBER_TYPES.user]: {
+          namespaced: true,
+          state: {
+            tableSortableFields: ['account', 'granted', 'expires', 'maxRole', 'lastSignIn'],
+            filteredSearchBar: {
+              show: true,
+              tokens: ['two_factor'],
+              searchParam: 'search',
+              placeholder: 'Filter members',
+              recentSearchesStorageKey: 'group_members',
+            },
+            ...state,
+          },
         },
-        ...state,
       },
     });
 
     wrapper = mount(SortDropdown, {
       localVue,
+      provide: {
+        sourceId: 1,
+        namespace: MEMBER_TYPES.user,
+      },
       store,
     });
   };

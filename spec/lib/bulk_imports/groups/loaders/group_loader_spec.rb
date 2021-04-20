@@ -4,12 +4,13 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Loaders::GroupLoader do
   describe '#load' do
-    let(:user) { create(:user) }
-    let(:data) { { foo: :bar } }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+    let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
+    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
     let(:service_double) { instance_double(::Groups::CreateService) }
-    let(:bulk_import) { create(:bulk_import, user: user) }
-    let(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
-    let(:context) { BulkImports::Pipeline::Context.new(entity) }
+    let(:data) { { foo: :bar } }
 
     subject { described_class.new }
 

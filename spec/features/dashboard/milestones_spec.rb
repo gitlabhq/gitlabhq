@@ -30,7 +30,7 @@ RSpec.describe 'Dashboard > Milestones' do
       expect(current_path).to eq dashboard_milestones_path
       expect(page).to have_content(milestone.title)
       expect(page).to have_content(group.name)
-      expect(first('.milestone')).to have_content('Merge Requests')
+      expect(first('.milestone')).to have_content('Merge requests')
     end
 
     describe 'new milestones dropdown', :js do

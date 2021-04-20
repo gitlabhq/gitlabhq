@@ -42,6 +42,11 @@ export default {
       required: false,
       default: true,
     },
+    enableZenMode: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     enableTaskList: {
       type: Boolean,
       required: false,
@@ -120,6 +125,7 @@ export default {
       :enable-edit="enableEdit"
       :enable-autocomplete="enableAutocomplete"
       :enable-autosave="enableAutosave"
+      :enable-zen-mode="enableZenMode"
       :enable-task-list="enableTaskList"
       :edit-form-visible="editFormVisible"
       :show-field-title="showFieldTitle"

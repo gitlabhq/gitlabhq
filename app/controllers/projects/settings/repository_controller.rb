@@ -3,6 +3,7 @@
 module Projects
   module Settings
     class RepositoryController < Projects::ApplicationController
+      layout 'project_settings'
       before_action :authorize_admin_project!
       before_action :define_variables, only: [:create_deploy_token]
       before_action do

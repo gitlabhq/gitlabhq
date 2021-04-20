@@ -23,7 +23,7 @@ module Types
       A global identifier.
 
       A global identifier represents an object uniquely across the application.
-      An example of such an identifier is "gid://gitlab/User/1".
+      An example of such an identifier is `"gid://gitlab/User/1"`.
 
       Global identifiers are encoded as strings.
     DESC
@@ -65,6 +65,17 @@ module Types
 
         define_singleton_method(:inspect) do
           graphql_name
+        end
+
+        define_singleton_method(:as) do |new_name|
+          if @renamed && graphql_name != new_name
+            raise "Conflicting names for ID of #{model_class.name}: " \
+                  "#{graphql_name} and #{new_name}"
+          end
+
+          @renamed = true
+          graphql_name(new_name)
+          self
         end
 
         define_singleton_method(:coerce_result) do |gid, ctx|

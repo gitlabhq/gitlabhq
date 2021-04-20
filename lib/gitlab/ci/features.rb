@@ -10,10 +10,6 @@ module Gitlab
         ::Feature.enabled?(:ci_artifacts_exclude, default_enabled: true)
       end
 
-      def self.instance_variables_ui_enabled?
-        ::Feature.enabled?(:ci_instance_variables_ui, default_enabled: true)
-      end
-
       def self.pipeline_latest?
         ::Feature.enabled?(:ci_pipeline_latest, default_enabled: true)
       end
@@ -60,16 +56,12 @@ module Gitlab
         ::Feature.enabled?(:codequality_mr_diff, project, default_enabled: false)
       end
 
-      def self.display_codequality_backend_comparison?(project)
-        ::Feature.enabled?(:codequality_backend_comparison, project, default_enabled: :yaml)
-      end
-
       def self.multiple_cache_per_job?
         ::Feature.enabled?(:multiple_cache_per_job, default_enabled: :yaml)
       end
 
-      def self.ci_commit_pipeline_mini_graph_vue_enabled?(project)
-        ::Feature.enabled?(:ci_commit_pipeline_mini_graph_vue, project, default_enabled: :yaml)
+      def self.gldropdown_tags_enabled?
+        ::Feature.enabled?(:gldropdown_tags, default_enabled: :yaml)
       end
     end
   end

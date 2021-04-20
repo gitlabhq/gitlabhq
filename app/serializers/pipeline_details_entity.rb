@@ -15,7 +15,7 @@ class PipelineDetailsEntity < Ci::PipelineEntity
         rel = rel.select { |artifact| can?(request.current_user, :read_job_artifacts, artifact.job) }
       end
 
-      BuildArtifactEntity.represent(rel, options)
+      BuildArtifactEntity.represent(rel, options.merge(project: pipeline.project))
     end
     expose :manual_actions, using: BuildActionEntity
     expose :scheduled_actions, using: BuildActionEntity

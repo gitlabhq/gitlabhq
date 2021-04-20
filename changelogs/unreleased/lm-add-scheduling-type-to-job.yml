@@ -1,0 +1,5 @@
+---
+title: Exposes schedulingType on CiJobType and adds usesNeeds to PipelineType
+merge_request: 57398
+author:
+type: added

@@ -5,6 +5,7 @@ require "spec_helper"
 RSpec.describe InviteMembersHelper do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_projects: [project]) }
+
   let(:owner) { project.owner }
 
   before do
@@ -253,6 +254,7 @@ RSpec.describe InviteMembersHelper do
 
     context 'with a project' do
       let_it_be(:form_model) { project }
+
       let(:link_href) { "href=\"#{project_project_members_path(form_model)}\"" }
 
       it_behaves_like 'dropdown invite members link'
@@ -260,6 +262,7 @@ RSpec.describe InviteMembersHelper do
 
     context 'with a group' do
       let_it_be(:form_model) { create(:group) }
+
       let(:link_href) { "href=\"#{group_group_members_path(form_model)}\"" }
 
       it_behaves_like 'dropdown invite members link'

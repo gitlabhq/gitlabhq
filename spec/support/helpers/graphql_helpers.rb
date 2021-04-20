@@ -222,9 +222,12 @@ module GraphqlHelpers
     lazy_vals.is_a?(Array) ? lazy_vals.map { |val| sync(val) } : sync(lazy_vals)
   end
 
-  def graphql_query_for(name, args = {}, selection = nil)
+  def graphql_query_for(name, args = {}, selection = nil, operation_name = nil)
     type = GitlabSchema.types['Query'].fields[GraphqlHelpers.fieldnamerize(name)]&.type
-    wrap_query(query_graphql_field(name, args, selection, type))
+    query = wrap_query(query_graphql_field(name, args, selection, type))
+    query = "query #{operation_name}#{query}" if operation_name
+
+    query
   end
 
   def wrap_query(query)
@@ -274,11 +277,11 @@ module GraphqlHelpers
   # prepare_input_for_mutation({ 'my_key' => 1 })
   #   => { 'myKey' => 1}
   def prepare_input_for_mutation(input)
-    input.map do |name, value|
+    input.to_h do |name, value|
       value = prepare_input_for_mutation(value) if value.is_a?(Hash)
 
       [GraphqlHelpers.fieldnamerize(name), value]
-    end.to_h
+    end
   end
 
   def input_variable_name_for_mutation(mutation_name)
@@ -304,7 +307,10 @@ module GraphqlHelpers
 
   def query_graphql_field(name, attributes = {}, fields = nil, type = nil)
     type ||= name.to_s.classify
-    attributes, fields = [nil, attributes] if fields.nil? && !attributes.is_a?(Hash)
+    if fields.nil? && !attributes.is_a?(Hash)
+      fields = attributes
+      attributes = nil
+    end
 
     field = field_with_params(name, attributes)
 

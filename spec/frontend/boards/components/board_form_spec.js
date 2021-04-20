@@ -226,7 +226,7 @@ describe('BoardForm', () => {
 
       it('passes correct primary action text and variant', () => {
         expect(findModalActionPrimary().text).toBe('Save changes');
-        expect(findModalActionPrimary().attributes[0].variant).toBe('info');
+        expect(findModalActionPrimary().attributes[0].variant).toBe('confirm');
       });
 
       it('does not render delete confirmation message', () => {

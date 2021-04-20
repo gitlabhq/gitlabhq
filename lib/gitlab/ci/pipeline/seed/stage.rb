@@ -10,13 +10,14 @@ module Gitlab
           delegate :size, to: :seeds
           delegate :dig, to: :seeds
 
-          def initialize(pipeline, attributes, previous_stages)
-            @pipeline = pipeline
+          def initialize(context, attributes, previous_stages)
+            @context = context
+            @pipeline = context.pipeline
             @attributes = attributes
             @previous_stages = previous_stages
 
             @builds = attributes.fetch(:builds).map do |attributes|
-              Seed::Build.new(@pipeline, attributes, previous_stages)
+              Seed::Build.new(context, attributes, previous_stages)
             end
           end
 

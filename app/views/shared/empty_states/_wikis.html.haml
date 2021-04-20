@@ -18,14 +18,14 @@
 
 - elsif @project && can?(current_user, :read_issue, @project)
   - issues_link = link_to s_('WikiEmptyIssueMessage|issue tracker'), project_issues_path(@project)
-  - new_issue_link = link_to s_('WikiEmpty|Suggest wiki improvement'), new_project_issue_path(@project), class: 'btn gl-button btn-confirm', title: s_('WikiEmptyIssueMessage|Suggest wiki improvement')
 
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_logout_empty.svg' } do
     %h4
       = messages.dig(:issuable, :title)
     %p.text-left
       = messages.dig(:issuable, :body).html_safe % { issues_link: issues_link }
-    = new_issue_link
+    - if show_new_issue_link?(@project)
+      = link_to s_('WikiEmpty|Suggest wiki improvement'), new_project_issue_path(@project), class: 'btn gl-button btn-confirm', title: s_('WikiEmptyIssueMessage|Suggest wiki improvement')
 
 - else
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_logout_empty.svg' } do

@@ -8,13 +8,14 @@ RSpec.describe Projects::GroupLinksController do
   let_it_be(:project) { create(:project, :private, group: group2) }
   let_it_be(:user) { create(:user) }
 
-  around do |example|
-    travel_to DateTime.new(2019, 4, 1) { example.run }
-  end
-
   before do
+    travel_to DateTime.new(2019, 4, 1)
     project.add_maintainer(user)
     sign_in(user)
+  end
+
+  after do
+    travel_back
   end
 
   describe '#create' do
@@ -31,7 +32,7 @@ RSpec.describe Projects::GroupLinksController do
 
     context 'when project is not allowed to be shared with a group' do
       before do
-        group.update(share_with_group_lock: false)
+        group.update!(share_with_group_lock: false)
       end
 
       include_context 'link project to group'

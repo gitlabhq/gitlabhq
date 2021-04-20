@@ -13,7 +13,11 @@ class UserPresenter < Gitlab::View::Presenter::Delegated
 
   private
 
+  def can?(*args)
+    user.can?(*args)
+  end
+
   def should_be_private?
-    !can?(current_user, :read_user_profile, user)
+    !Ability.allowed?(current_user, :read_user_profile, user)
   end
 end

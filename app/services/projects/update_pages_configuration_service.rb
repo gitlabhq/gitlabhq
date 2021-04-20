@@ -11,7 +11,7 @@ module Projects
     end
 
     def execute
-      return success unless Feature.enabled?(:pages_update_legacy_storage, default_enabled: true)
+      return success unless ::Settings.pages.local_store.enabled
 
       # If the pages were never deployed, we can't write out the config, as the
       # directory would not exist.

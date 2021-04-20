@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Settings > User manages merge request settings' do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, namespace: user.namespace, path: 'gitlab', name: 'sample') }
 
@@ -196,6 +198,38 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
 
       expect(radio).to be_checked
       expect(project.reload.project_setting.squash_option).to eq('never')
+    end
+  end
+
+  describe 'target project settings' do
+    context 'when project is a fork' do
+      let_it_be(:upstream) { create(:project, :public) }
+
+      let(:project) { fork_project(upstream, user) }
+
+      it 'allows to change merge request target project behavior' do
+        expect(page).to have_content 'The default target project for merge requests'
+
+        radio = find_field('project_project_setting_attributes_mr_default_target_self_false')
+        expect(radio).to be_checked
+
+        choose('project_project_setting_attributes_mr_default_target_self_true')
+
+        within('.merge-request-settings-form') do
+          find('.rspec-save-merge-request-changes')
+          click_on('Save changes')
+        end
+
+        find('.flash-notice')
+        radio = find_field('project_project_setting_attributes_mr_default_target_self_true')
+
+        expect(radio).to be_checked
+        expect(project.reload.project_setting.mr_default_target_self).to be_truthy
+      end
+    end
+
+    it 'does not show target project section' do
+      expect(page).not_to have_content 'The default target project for merge requests'
     end
   end
 end

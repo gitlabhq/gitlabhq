@@ -11,7 +11,7 @@ module LabelsAsHash
 
     label_hashes = available_labels.as_json(only: [:title, :color])
 
-    if target&.respond_to?(:labels)
+    if target.respond_to?(:labels)
       already_set_labels = available_labels & target.labels
       if already_set_labels.present?
         titles = already_set_labels.map(&:title)

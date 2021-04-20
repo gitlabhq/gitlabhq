@@ -56,7 +56,7 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
       end
     end
 
-    valid_recipients(recipients).each do |recipient|
+    EmailsOnPushService.valid_recipients(recipients).each do |recipient|
       send_email(
         recipient,
         project_id,
@@ -91,11 +91,5 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
     email.add_message_id
     email.header[:skip_premailer] = true if skip_premailer
     email.deliver_now
-  end
-
-  def valid_recipients(recipients)
-    recipients.split.select do |recipient|
-      recipient.include?('@')
-    end.uniq(&:downcase)
   end
 end

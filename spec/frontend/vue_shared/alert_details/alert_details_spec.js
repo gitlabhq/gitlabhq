@@ -8,7 +8,7 @@ import { joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import AlertDetails from '~/vue_shared/alert_details/components/alert_details.vue';
 import AlertSummaryRow from '~/vue_shared/alert_details/components/alert_summary_row.vue';
-import { SEVERITY_LEVELS } from '~/vue_shared/alert_details/constants';
+import { PAGE_CONFIG, SEVERITY_LEVELS } from '~/vue_shared/alert_details/constants';
 import createIssueMutation from '~/vue_shared/alert_details/graphql/mutations/alert_issue_create.mutation.graphql';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import mockAlerts from './mocks/alerts.json';
@@ -271,7 +271,13 @@ describe('AlertDetails', () => {
       });
 
       it('should display a table of raw alert details data', () => {
-        expect(findDetailsTable().exists()).toBe(true);
+        const details = findDetailsTable();
+        expect(details.exists()).toBe(true);
+        expect(details.props()).toStrictEqual({
+          alert: mockAlert,
+          statuses: PAGE_CONFIG.OPERATIONS.STATUSES,
+          loading: false,
+        });
       });
     });
 

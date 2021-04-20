@@ -1,0 +1,5 @@
+---
+title: Prevent sticking to DB primary when experiments are tracked
+merge_request: 56852
+author:
+type: performance

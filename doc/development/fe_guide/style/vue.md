@@ -615,7 +615,7 @@ component state wherever possible. Instead, set the component's
     ```
 
 1. When asserting multiple props, check the deep equality of the `props()` object with
-[`toEqual`](https://jestjs.io/docs/en/expect#toequalvalue):
+[`toEqual`](https://jestjs.io/docs/expect#toequalvalue):
 
     ```javascript
     // good
@@ -632,8 +632,8 @@ component state wherever possible. Instead, set the component's
     ```
 
 1. If you are only interested in some of the props, you can use
-[`toMatchObject`](https://jestjs.io/docs/en/expect#tomatchobjectobject). Prefer `toMatchObject`
-over [`expect.objectContaining`](https://jestjs.io/docs/en/expect#expectobjectcontainingobject):
+[`toMatchObject`](https://jestjs.io/docs/expect#tomatchobjectobject). Prefer `toMatchObject`
+over [`expect.objectContaining`](https://jestjs.io/docs/expect#expectobjectcontainingobject):
 
     ```javascript
     // good

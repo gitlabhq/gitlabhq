@@ -13,6 +13,7 @@ import {
   GlFormRadioGroup,
   GlFormSelect,
 } from '@gitlab/ui';
+import { kebabCase } from 'lodash';
 import { buildApiUrl } from '~/api/api_utils';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -145,6 +146,10 @@ export default {
         this.fork.visibility = visibility;
       }
     },
+    // eslint-disable-next-line func-names
+    'fork.name': function (newVal) {
+      this.fork.slug = kebabCase(newVal);
+    },
   },
   mounted() {
     this.fetchNamespaces();
@@ -213,6 +218,7 @@ export default {
               id="fork-url"
               v-model="selectedNamespace"
               data-testid="fork-url-input"
+              data-qa-selector="fork_namespace_dropdown"
               required
             >
               <template slot="first">
@@ -286,6 +292,7 @@ export default {
         category="primary"
         variant="confirm"
         data-testid="submit-button"
+        data-qa-selector="fork_project_button"
         :loading="isSaving"
       >
         {{ s__('ForkProject|Fork project') }}

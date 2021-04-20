@@ -34,19 +34,19 @@ RSpec.describe 'shared/runners/show.html.haml' do
 
   describe 'Runner id and type' do
     context 'when runner is of type instance' do
-      it { is_expected.to have_content("Runner ##{runner.id} Shared") }
+      it { is_expected.to have_content("Runner ##{runner.id} shared") }
     end
 
     context 'when runner is of type group' do
       let(:runner) { create(:ci_runner, :group) }
 
-      it { is_expected.to have_content("Runner ##{runner.id} Group") }
+      it { is_expected.to have_content("Runner ##{runner.id} group") }
     end
 
     context 'when runner is of type project' do
       let(:runner) { create(:ci_runner, :project) }
 
-      it { is_expected.to have_content("Runner ##{runner.id} Specific") }
+      it { is_expected.to have_content("Runner ##{runner.id} specific") }
     end
   end
 

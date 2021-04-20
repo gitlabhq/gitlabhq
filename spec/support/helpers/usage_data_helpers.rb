@@ -174,6 +174,22 @@ module UsageDataHelpers
     allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
   end
 
+  def stub_prometheus_queries
+    stub_request(:get, %r{^https?://::1:9090/-/ready})
+      .to_return(
+        status: 200,
+        body: [{}].to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+
+    stub_request(:get, %r{^https?://::1:9090/api/v1/query\?query=.*})
+      .to_return(
+        status: 200,
+        body: [{}].to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+  end
+
   def clear_memoized_values(values)
     values.each { |v| described_class.clear_memoization(v) }
   end
@@ -241,5 +257,13 @@ module UsageDataHelpers
         yield
       end
     end
+  end
+
+  def load_sample_metric_definition(filename: 'sample_metric.yml')
+    load_metric_yaml(fixture_file("lib/generators/gitlab/usage_metric_definition_generator/#{filename}"))
+  end
+
+  def load_metric_yaml(data)
+    ::Gitlab::Config::Loader::Yaml.new(data).load_raw!
   end
 end

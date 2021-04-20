@@ -7,6 +7,8 @@ module Gitlab
         # isolated Group model
         class Group < ::Gitlab::BackgroundMigration::UserMentions::Models::Namespace
           self.store_full_sti_class = false
+          self.inheritance_column = :_type_disabled
+
           has_one :saml_provider
 
           def self.declarative_policy_class

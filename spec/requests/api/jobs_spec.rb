@@ -100,6 +100,18 @@ RSpec.describe API::Jobs do
       end
     end
 
+    context 'when token is valid but not CI_JOB_TOKEN' do
+      let(:token) { create(:personal_access_token, user: user) }
+
+      include_context 'with auth headers' do
+        let(:header) { { 'Private-Token' => token.token } }
+      end
+
+      it 'returns not found' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'with job token authentication header' do
       include_context 'with auth headers' do
         let(:header) { { API::Helpers::Runner::JOB_TOKEN_HEADER => running_job.token } }
@@ -215,7 +227,7 @@ RSpec.describe API::Jobs do
         first_build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline)
         first_build.runner = create(:ci_runner)
         first_build.user = create(:user)
-        first_build.save
+        first_build.save!
 
         control_count = ActiveRecord::QueryRecorder.new { go }.count
 
@@ -223,7 +235,7 @@ RSpec.describe API::Jobs do
         second_build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: second_pipeline)
         second_build.runner = create(:ci_runner)
         second_build.user = create(:user)
-        second_build.save
+        second_build.save!
 
         expect { go }.not_to exceed_query_limit(control_count)
       end
@@ -684,7 +696,7 @@ RSpec.describe API::Jobs do
       context 'with regular branch' do
         before do
           pipeline.reload
-          pipeline.update(ref: 'master',
+          pipeline.update!(ref: 'master',
                           sha: project.commit('master').sha)
 
           get_for_ref('master')
@@ -696,7 +708,7 @@ RSpec.describe API::Jobs do
       context 'with branch name containing slash' do
         before do
           pipeline.reload
-          pipeline.update(ref: 'improve/awesome',
+          pipeline.update!(ref: 'improve/awesome',
                           sha: project.commit('improve/awesome').sha)
         end
 
@@ -732,7 +744,7 @@ RSpec.describe API::Jobs do
         stub_artifacts_object_storage
         job.success
 
-        project.update(visibility_level: visibility_level,
+        project.update!(visibility_level: visibility_level,
                        public_builds: public_builds)
 
         get_artifact_file(artifact)
@@ -826,7 +838,7 @@ RSpec.describe API::Jobs do
       context 'with branch name containing slash' do
         before do
           pipeline.reload
-          pipeline.update(ref: 'improve/awesome',
+          pipeline.update!(ref: 'improve/awesome',
                           sha: project.commit('improve/awesome').sha)
         end
 

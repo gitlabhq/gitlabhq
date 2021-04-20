@@ -5,4 +5,4 @@
     = render 'shared/ref_switcher', destination: 'graphs'
   = link_to s_('Commits|History'), project_commits_path(@project, current_ref), class: 'btn gl-button btn-default'
 
-.js-contributors-graph{ class: container_class, 'data-project-graph-path': project_graph_path(@project, current_ref, format: :json),'data-project-branch': current_ref }
+.js-contributors-graph{ class: container_class, data: { project_graph_path: project_graph_path(@project, current_ref, format: :json), project_branch: current_ref, default_branch: @project.default_branch } }

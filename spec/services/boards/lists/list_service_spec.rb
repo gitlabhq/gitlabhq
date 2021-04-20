@@ -8,46 +8,32 @@ RSpec.describe Boards::Lists::ListService do
   describe '#execute' do
     let(:service) { described_class.new(parent, user) }
 
-    shared_examples 'hidden lists' do
-      let!(:list) { create(:list, board: board, label: label) }
-
-      context 'when hide_backlog_list is true' do
-        it 'hides backlog list' do
-          board.update!(hide_backlog_list: true)
-
-          expect(service.execute(board)).to match_array([board.closed_list, list])
-        end
-      end
-
-      context 'when hide_closed_list is true' do
-        it 'hides closed list' do
-          board.update!(hide_closed_list: true)
-
-          expect(service.execute(board)).to match_array([board.backlog_list, list])
-        end
-      end
-    end
-
     context 'when board parent is a project' do
-      let(:project) { create(:project) }
-      let(:board) { create(:board, project: project) }
-      let(:label) { create(:label, project: project) }
-      let!(:list) { create(:list, board: board, label: label) }
+      let_it_be(:project) { create(:project) }
+      let_it_be_with_reload(:board) { create(:board, project: project) }
+      let_it_be(:label) { create(:label, project: project) }
+      let_it_be(:list) { create(:list, board: board, label: label) }
+      let_it_be(:unrelated_list) { create(:list) }
+
       let(:parent) { project }
 
       it_behaves_like 'lists list service'
-      it_behaves_like 'hidden lists'
     end
 
     context 'when board parent is a group' do
-      let(:group) { create(:group) }
-      let(:board) { create(:board, group: group) }
-      let(:label) { create(:group_label, group: group) }
-      let!(:list) { create(:list, board: board, label: label) }
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:board) { create(:board, group: group) }
+      let_it_be(:label) { create(:group_label, group: group) }
+      let_it_be(:list) { create(:list, board: board, label: label) }
+      let_it_be(:unrelated_list) { create(:list) }
+
       let(:parent) { group }
 
       it_behaves_like 'lists list service'
-      it_behaves_like 'hidden lists'
+    end
+
+    def create_backlog_list(board)
+      create(:backlog_list, board: board)
     end
   end
 end

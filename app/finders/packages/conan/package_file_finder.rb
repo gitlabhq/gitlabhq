@@ -8,8 +8,7 @@ module Packages
       def package_files
         files = super
         files = by_conan_file_type(files)
-        files = by_conan_package_reference(files)
-        files
+        by_conan_package_reference(files)
       end
 
       def by_conan_file_type(files)

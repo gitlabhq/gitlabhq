@@ -25,7 +25,7 @@ RSpec.describe CleanUpNoteableIdForNotesOnCommits do
   end
 
   def dirty_notes_on_commits
-    notes.where(noteable_type: 'Commit').where('noteable_id IS NOT NULL')
+    notes.where(noteable_type: 'Commit').where.not(noteable_id: nil)
   end
 
   def other_notes

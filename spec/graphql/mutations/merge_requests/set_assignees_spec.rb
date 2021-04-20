@@ -11,7 +11,12 @@ RSpec.describe Mutations::MergeRequests::SetAssignees do
     subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
 
     describe '#resolve' do
-      subject { mutation.resolve(project_path: merge_request.project.full_path, iid: merge_request.iid, assignee_usernames: [assignee.username]) }
+      subject do
+        mutation.resolve(project_path: merge_request.project.full_path,
+                         iid: merge_request.iid,
+                         operation_mode: described_class.arguments['operationMode'].default_value,
+                         assignee_usernames: [assignee.username])
+      end
 
       it_behaves_like 'permission level for merge request mutation is correctly verified'
     end

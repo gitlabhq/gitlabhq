@@ -63,6 +63,7 @@ Examples of both configurations can be found here:
 - [Example OpenAPI v2 specification project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing-example/-/tree/openapi)
 - [Example HTTP Archive (HAR) project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing-example/-/tree/har)
 - [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing/postman-api-fuzzing-example)
+- [Example GraphQL project](https://gitlab.com/gitlab-org/security-products/demos/api-fuzzing/graphql-api-fuzzing-example)
 
 WARNING:
 GitLab 14.0 will require that you place API fuzzing configuration files (for example,
@@ -73,10 +74,6 @@ starting in GitLab 14.0, GitLab will not check your repository's root for config
 ### Configuration form
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299234) in GitLab 13.10.
-> - It's [deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-api-fuzzing-configuration-form). **(ULTIMATE)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -101,25 +98,6 @@ Select **Copy code and open `.gitlab-ci.yml` file** to copy the snippet to your 
 to your project's `.gitlab-ci.yml` file where you can paste the YAML configuration.
 
 Select **Copy code only** to copy the snippet to your clipboard and close the modal.
-
-#### Enable or disable API Fuzzing configuration form **(ULTIMATE)**
-
-The API Fuzzing configuration form is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:api_fuzzing_configuration_ui)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:api_fuzzing_configuration_ui)
-```
 
 ### OpenAPI Specification
 
@@ -465,7 +443,7 @@ To use HTTP basic authentication, two CI/CD variables are added to your `.gitlab
 - `FUZZAPI_HTTP_USERNAME`: The username for authentication.
 - `FUZZAPI_HTTP_PASSWORD`: The password for authentication.
 
-For the password, we recommended that you [create a CI/CD variable](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui)
+For the password, we recommended that you [create a CI/CD variable](../../../ci/variables/README.md#custom-cicd-variables)
 (for example, `TEST_API_PASSWORD`) set to the password. You can create CI/CD variables from the
 GitLab projects page at **Settings > CI/CD**, in the **Variables** section. Use that variable
 as the value for `FUZZAPI_HTTP_PASSWORD`:
@@ -500,7 +478,7 @@ outgoing HTTP requests.
 
 Follow these steps to provide the bearer token with `FUZZAPI_OVERRIDES_ENV`:
 
-1. [Create a CI/CD variable](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui),
+1. [Create a CI/CD variable](../../../ci/variables/README.md#custom-cicd-variables),
    for example `TEST_API_BEARERAUTH`, with the value
    `{"headers":{"Authorization":"Bearer dXNlcm5hbWU6cGFzc3dvcmQ="}}` (substitute your token). You
    can create CI/CD variables from the GitLab projects page at **Settings > CI/CD**, in the
@@ -839,7 +817,7 @@ variables:
 ```
 
 In this example `.gitlab-ci.yml`, the `SECRET_OVERRIDES` variable provides the JSON. This is a
-[group or instance level CI/CD variable defined in the UI](../../../ci/variables/README.md#instance-level-cicd-variables):
+[group or instance level CI/CD variable defined in the UI](../../../ci/variables/README.md#instance-cicd-variables):
 
 ```yaml
 include:
@@ -975,7 +953,7 @@ faults it reports.
 ## Viewing fuzzing faults
 
 The API Fuzzing analyzer produces a JSON report that is collected and used
-[to populate the faults into GitLab vulnerability screens](../index.md#view-details-of-an-api-fuzzing-vulnerability).
+[to populate the faults into GitLab vulnerability screens](#view-details-of-an-api-fuzzing-vulnerability).
 Fuzzing faults show up as vulnerabilities with a severity of Unknown.
 
 The faults that API fuzzing finds require manual investigation and aren't associated with a specific
@@ -984,8 +962,42 @@ they should be fixed. See [handling false positives](#handling-false-positives)
 for information about configuration changes you can make to limit the number of false positives
 reported.
 
-For additional information, see
-[View details of an API Fuzzing vulnerability](../index.md#view-details-of-an-api-fuzzing-vulnerability).
+### View details of an API Fuzzing vulnerability
+
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.7.
+
+Faults detected by API Fuzzing occur in the live web application, and require manual investigation
+to determine if they are vulnerabilities. Fuzzing faults are included as vulnerabilities with a
+severity of Unknown. To facilitate investigation of the fuzzing faults, detailed information is
+provided about the HTTP messages sent and received along with a description of the modification(s)
+made.
+
+Follow these steps to view details of a fuzzing fault:
+
+1. You can view faults in a project, or a merge request:
+
+   - In a project, go to the project's **{shield}** **Security & Compliance > Vulnerability Report**
+     page. This page shows all vulnerabilities from the default branch only.
+   - In a merge request, go the merge request's **Security** section and click the **Expand**
+     button. API Fuzzing faults are available in a section labeled
+     **API Fuzzing detected N potential vulnerabilities**. Click the title to display the fault
+     details.
+
+1. Click the fault's title to display the fault's details. The table below describes these details.
+
+   | Field               | Description                                                                             |
+   |:--------------------|:----------------------------------------------------------------------------------------|
+   | Description         | Description of the fault including what was modified.                                   |
+   | Project             | Namespace and project in which the vulnerability was detected.                          |
+   | Method              | HTTP method used to detect the vulnerability.                                           |
+   | URL                 | URL at which the vulnerability was detected.                                            |
+   | Request             | The HTTP request that caused the fault.                                                 |
+   | Unmodified Response | Response from an unmodified request. This is what a normal working response looks like. |
+   | Actual Response     | Response received from fuzzed request.                                                  |
+   | Evidence            | How we determined a fault occurred.                                                     |
+   | Identifiers         | The fuzzing check used to find this fault.                                              |
+   | Severity            | Severity of the finding is always Unknown.                                              |
+   | Scanner Type        | Scanner used to perform testing.                                                        |
 
 ### Security Dashboard
 
@@ -1016,7 +1028,7 @@ False positives can be handled in two ways:
 Checks perform testing of a specific type and can be turned on and off for specific configuration
 profiles. The provided [configuration files](#configuration-files) define several profiles that you
 can use. The profile definition in the configuration file lists all the checks that are active
-during a scan. To turn off a specific check, simply remove it from the profile definition in the
+during a scan. To turn off a specific check, remove it from the profile definition in the
 configuration file. The profiles are defined in the `Profiles` section of the configuration file.
 
 Example profile definition:
@@ -1130,6 +1142,51 @@ Profiles:
               FuzzingCount: 10
               UnicodeFuzzing: true
 ```
+
+## Troubleshooting
+
+### Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema
+
+At the start of an API Fuzzing job the OpenAPI specification is validated against the [published schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas). This error is shown when the provided OpenAPI specification has validation errors. Errors can be introduced when creating an OpenAPI specification manually, and also when the schema is generated.
+
+For OpenAPI specifications that are generated automatically validation errors are often the result of missing code annotations.
+
+**Error message**
+
+- In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/323939), `Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema`
+  - `OpenAPI 2.0 schema validation error ...`
+  - `OpenAPI 3.0.x schema validation error ...`
+
+**Solution** 
+
+**For generated OpenAPI specifications**
+
+1. Identify the validation errors.
+    1. Use the [Swagger Editor](https://editor.swagger.io/) to identify validation problems in your specification. The visual nature of the Swagger Editor makes it easier to understand what needs to change.
+    1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. Note that JSON Schema validation messages might not be easy to understand. This is why we recommend the use of editors to validate schema documents.
+1. Review the documentation for the OpenAPI generation your framework/tech stack is using. Identify the changes needed to produce a correct OpenAPI document.
+1. Once the validation issues are resolved, re-run your pipeline.
+
+**For manually created OpenAPI Specifications**
+
+1. Identify the validation errors.
+   1. The simplest solution is to use a visual tool to edit and validate the OpenAPI document. For example the [Swagger Editor](https://editor.swagger.io/) will point out schema errors and possible solutions.
+   1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. Correct each of the validation failures and then resubmit the OpenAPI doc. Note that JSON Schema validation message might not be easy to understand. This is why we recommend the use of editors to validate document.
+1. Once the validation issues are resolved, re-run your pipeline.
+
+### Failed to start scanner session (version header not found)
+
+The API Fuzzing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `apifuzzer_fuzz` job. A common cause of this issue is changing the `FUZZAPI_API` variable from its default.
+
+**Error message**
+
+- In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/323939), `Failed to start scanner session (version header not found).`
+- In GitLab 13.10 and earlier, `API Security version header not found.  Are you sure that you are connecting to the API Security server?`.
+
+**Solution** 
+
+- Remove the `FUZZAPI_API` variable from the `.gitlab-ci.yml` file. The value will be inherited from the API Fuzzing CI/CD template. We recommend this method instead of manually setting a value.
+- If removing the variable is not possible, check to see if this value has changed in the latest version of the [API Fuzzing CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
 <!--
 ### Target Container

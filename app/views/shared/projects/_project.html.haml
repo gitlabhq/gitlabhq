@@ -24,7 +24,7 @@
       .avatar-container.s48.flex-grow-0.flex-shrink-0{ class: avatar_container_class }
         = link_to project_path(project), class: dom_class(project) do
           - if project.creator && use_creator_avatar
-            = image_tag avatar_icon_for_user(project.creator, 48), class: "avatar s48", alt:''
+            = image_tag avatar_icon_for_user(project.creator, 48), class: "avatar s48", alt: ''
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s48', width: 48, height: 48)
     .project-details.d-sm-flex.flex-sm-fill.align-items-center{ data: { qa_selector: 'project_content', qa_project_name: project.name } }
@@ -90,7 +90,7 @@
           - if show_merge_request_count?(disabled: !merge_requests, compact_mode: compact_mode)
             = link_to project_merge_requests_path(project),
                 class: "d-none d-xl-flex align-items-center icon-wrapper merge-requests has-tooltip",
-                title: _('Merge Requests'), data: { container: 'body', placement: 'top' } do
+                title: _('Merge requests'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('git-merge', size: 14, css_class: 'gl-mr-2')
               = number_with_delimiter(project.open_merge_requests_count)
           - if show_issue_count?(disabled: !issues, compact_mode: compact_mode)

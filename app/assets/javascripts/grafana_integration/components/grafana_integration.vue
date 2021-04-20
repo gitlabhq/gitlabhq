@@ -61,7 +61,9 @@ export default {
 <template>
   <section id="grafana" class="settings no-animate js-grafana-integration">
     <div class="settings-header">
-      <h4 class="js-section-header">
+      <h4
+        class="js-section-header settings-title js-settings-toggle js-settings-toggle-trigger-only"
+      >
         {{ s__('GrafanaIntegration|Grafana authentication') }}
       </h4>
       <gl-button class="js-settings-toggle">{{ __('Expand') }}</gl-button>

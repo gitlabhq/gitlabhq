@@ -195,6 +195,22 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
+  describe '#archived_trace_exists?' do
+    subject { artifact.archived_trace_exists? }
+
+    context 'when the file exists' do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when the file does not exist' do
+      before do
+        artifact.file.remove!
+      end
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '.for_sha' do
     let(:first_pipeline) { create(:ci_pipeline) }
     let(:second_pipeline) { create(:ci_pipeline, project: first_pipeline.project, sha: Digest::SHA1.hexdigest(SecureRandom.hex)) }

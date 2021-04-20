@@ -1,5 +1,5 @@
 #js-authenticate-token-2fa
-%a.btn.btn-block.btn-info#js-login-2fa-device{ href: '#' }= _("Sign in via 2FA code")
+%a.gl-button.btn.btn-block.btn-confirm#js-login-2fa-device{ href: '#' }= _("Sign in via 2FA code")
 
 %script#js-authenticate-token-2fa-in-progress{ type: "text/template" }
   %p= _("Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now.")
@@ -7,7 +7,7 @@
 %script#js-authenticate-token-2fa-error{ type: "text/template" }
   %div
     %p <%= error_message %> (<%= error_name %>)
-    %a.btn.gl-button.btn-block.btn-warning#js-token-2fa-try-again= _("Try again?")
+    %a.btn.btn-default.gl-button.btn-block#js-token-2fa-try-again= _("Try again?")
 
 %script#js-authenticate-token-2fa-authenticated{ type: "text/template" }
   %div

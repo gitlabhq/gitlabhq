@@ -6,6 +6,7 @@ RSpec.describe ChatMessage::AlertMessage do
   subject { described_class.new(args) }
 
   let_it_be(:start_time) { Time.current }
+
   let(:alert) { create(:alert_management_alert, started_at: start_time) }
 
   let(:args) do

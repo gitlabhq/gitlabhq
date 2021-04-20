@@ -1,0 +1,5 @@
+---
+title: Deprecate Product Intelligence test aggregated metrics
+merge_request: 57377
+author:
+type: deprecated

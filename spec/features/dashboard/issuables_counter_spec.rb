@@ -10,7 +10,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
 
   before do
     issue.assignees = [user]
-    merge_request.update(assignees: [user])
+    merge_request.update!(assignees: [user])
     sign_in(user)
   end
 
@@ -35,7 +35,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
 
     expect_counters('merge_requests', '1')
 
-    merge_request.update(assignees: [])
+    merge_request.update!(assignees: [])
 
     user.invalidate_cache_counts
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::PullRequestMergedByImporter, :clean_gitlab_redis_cache do
   let_it_be(:merge_request) { create(:merged_merge_request) }
+
   let(:project) { merge_request.project }
   let(:merged_at) { Time.new(2017, 1, 1, 12, 00).utc }
   let(:client_double) { double(user: double(id: 999, login: 'merger', email: 'merger@email.com')) }

@@ -14,7 +14,9 @@ RSpec.describe Resolvers::AlertManagement::HttpIntegrationsResolver do
   let_it_be(:inactive_http_integration) { create(:alert_management_http_integration, :inactive, project: project) }
   let_it_be(:other_proj_integration) { create(:alert_management_http_integration) }
 
-  subject { sync(resolve_http_integrations) }
+  let(:params) { {} }
+
+  subject { sync(resolve_http_integrations(params)) }
 
   before do
     project.add_developer(developer)
@@ -41,11 +43,25 @@ RSpec.describe Resolvers::AlertManagement::HttpIntegrationsResolver do
     let(:current_user) { maintainer }
 
     it { is_expected.to contain_exactly(active_http_integration) }
+
+    context 'when HTTP Integration ID is given' do
+      context 'when integration is from the current project' do
+        let(:params) { { id: global_id_of(inactive_http_integration) } }
+
+        it { is_expected.to contain_exactly(inactive_http_integration) }
+      end
+
+      context 'when integration is from other project' do
+        let(:params) { { id: global_id_of(other_proj_integration) } }
+
+        it { is_expected.to be_empty }
+      end
+    end
   end
 
   private
 
   def resolve_http_integrations(args = {}, context = { current_user: current_user })
-    resolve(described_class, obj: project, ctx: context)
+    resolve(described_class, obj: project, args: args, ctx: context)
   end
 end

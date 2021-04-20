@@ -28,11 +28,11 @@ function convertPropsToGraphqlState(props) {
   };
 }
 
-function factory(propsData) {
+function factory(propsData, stateOverride = {}) {
   let state = {};
 
   if (mergeRequestWidgetGraphqlEnabled) {
-    state = convertPropsToGraphqlState(propsData);
+    state = { ...convertPropsToGraphqlState(propsData), ...stateOverride };
   }
 
   wrapper = extendedWrapper(
@@ -125,13 +125,36 @@ describe('MRWidgetAutoMergeEnabled', () => {
             },
           );
 
-          it('should return false when shouldRemoveSourceBranch set to false', () => {
+          it('should not find "Delete" button when shouldRemoveSourceBranch set to true', () => {
             factory({
               ...defaultMrProps(),
               shouldRemoveSourceBranch: true,
             });
 
             expect(wrapper.findByTestId('removeSourceBranchButton').exists()).toBe(false);
+          });
+
+          it('should find "Delete" button when shouldRemoveSourceBranch overrides state.forceRemoveSourceBranch', () => {
+            factory(
+              {
+                ...defaultMrProps(),
+                shouldRemoveSourceBranch: false,
+              },
+              {
+                forceRemoveSourceBranch: true,
+              },
+            );
+
+            expect(wrapper.findByTestId('removeSourceBranchButton').exists()).toBe(true);
+          });
+
+          it('should find "Delete" button when shouldRemoveSourceBranch set to false', () => {
+            factory({
+              ...defaultMrProps(),
+              shouldRemoveSourceBranch: false,
+            });
+
+            expect(wrapper.findByTestId('removeSourceBranchButton').exists()).toBe(true);
           });
 
           it('should return false if user is not able to remove the source branch', () => {

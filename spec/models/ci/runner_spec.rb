@@ -353,6 +353,7 @@ RSpec.describe Ci::Runner do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:pipeline) { create(:ci_pipeline) }
+
     let(:build) { create(:ci_build, pipeline: pipeline) }
     let(:runner_project) { build.project }
     let(:runner) { create(:ci_runner, :project, projects: [runner_project], tag_list: tag_list, run_untagged: run_untagged) }

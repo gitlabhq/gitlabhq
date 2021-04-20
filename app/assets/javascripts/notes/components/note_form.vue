@@ -60,6 +60,11 @@ export default {
       required: false,
       default: null,
     },
+    lines: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     note: {
       type: Object,
       required: false,
@@ -333,6 +338,7 @@ export default {
           :help-page-path="helpPagePath"
           :show-suggest-popover="showSuggestPopover"
           :textarea-value="updatedNoteBody"
+          :lines="lines"
           @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
         >
           <template #textarea>
@@ -384,7 +390,7 @@ export default {
             <gl-button
               :disabled="isDisabled"
               category="primary"
-              variant="success"
+              variant="confirm"
               class="gl-mr-3"
               data-qa-selector="start_review_button"
               @click="handleAddToReview"
@@ -418,7 +424,7 @@ export default {
             <gl-button
               :disabled="isDisabled"
               category="primary"
-              variant="success"
+              variant="confirm"
               data-qa-selector="reply_comment_button"
               class="gl-mr-3 js-vue-issue-save js-comment-button"
               @click="handleUpdate()"

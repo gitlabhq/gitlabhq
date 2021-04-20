@@ -14,6 +14,7 @@ RSpec.describe Emails::ServiceDesk do
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:email) { 'someone@gitlab.com' }
+
   let(:template) { double(content: template_content) }
 
   before_all do

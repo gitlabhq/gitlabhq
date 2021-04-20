@@ -4,7 +4,7 @@ module Gitlab
   module Auth
     module Saml
       class OriginValidator
-        AUTH_REQUEST_SESSION_KEY = "last_authn_request_id".freeze
+        AUTH_REQUEST_SESSION_KEY = "last_authn_request_id"
 
         def initialize(session)
           @session = session || {}

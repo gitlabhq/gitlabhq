@@ -6,14 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # API Docs
 
-Automate GitLab by using a simple and powerful API.
+Use the GitLab [REST](http://spec.openapis.org/oas/v3.0.3) API to automate GitLab.
 
-The main GitLab API is a [REST](http://spec.openapis.org/oas/v3.0.3)
-API. Because of this, the documentation in this section assumes that you're
-familiar with REST concepts.
-
-There's also a partial [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/api/openapi/openapi.yaml),
-which allows you to test the API directly from the GitLab user interface.
+You can also use a partial [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/api/openapi/openapi.yaml),
+to test the API directly from the GitLab user interface.
 Contributions are welcome.
 
 ## Available API resources
@@ -31,52 +27,54 @@ GitLab provides an [SCIM API](scim.md) that both implements
 [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644) and provides the
 `/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_path/Users/`.
 
-## Road to GraphQL
+## GraphQL API
 
-[GraphQL](graphql/index.md) is available in GitLab, which allows for the
-deprecation of controller-specific endpoints.
+A [GraphQL](graphql/index.md) API is available in GitLab.
 
-GraphQL has several benefits, including:
-
-- We avoid having to maintain two different APIs.
-- Callers of the API can request only what they need.
-- It's versioned by default.
+With GraphQL, you can make an API request for only what you need,
+and it's versioned by default.
 
 GraphQL co-exists with the current v4 REST API. If we have a v5 API, this should
 be a compatibility layer on top of GraphQL.
 
-Although there were some patenting and licensing concerns with GraphQL, these
-have been resolved to our satisfaction by the relicensing of the reference
-implementations under MIT, and the use of the OWF license for the GraphQL
-specification.
+There were some patenting and licensing concerns with GraphQL. However, these
+have been resolved to our satisfaction. The reference implementations
+were re-licensed under MIT, and the OWF license used for the GraphQL specification.
+
+When GraphQL is fully implemented, GitLab:
+
+- Can delete controller-specific endpoints.
+- Will no longer maintain two different APIs.
 
 ## Compatibility guidelines
 
-The HTTP API is versioned using a single number, (currently _4_). This number
+The HTTP API is versioned with a single number, which is currently `4`. This number
 symbolizes the major version number, as described by [SemVer](https://semver.org/).
-Because of this, backwards-incompatible changes require this version number to
-change. However, the minor version isn't explicit, allowing for a stable API
-endpoint. This also means that new features can be added to the API in the same
+Because of this, backward-incompatible changes require this version number to
+change.
+
+The minor version isn't explicit, which allows for a stable API
+endpoint. New features can be added to the API in the same
 version number.
 
-New features and bug fixes are released in tandem with a new GitLab, and apart
-from incidental patch and security releases, are released on the 22nd of each
-month. Backward incompatible changes (for example, endpoints removal and
-parameters removal), and removal of entire API versions are done in tandem with
-a major point release of GitLab itself. All deprecations and changes between two
-versions should be listed in the documentation. For the changes between v3 and
-v4, see the [v3 to v4 documentation](v3_to_v4.md).
+New features and bug fixes are released in tandem with GitLab. Apart
+from incidental patch and security releases, GitLab is released on the 22nd of each
+month. Backward-incompatible changes (for example, endpoint and parameter removal),
+and removal of entire API versions are done in tandem with major GitLab releases.
+
+All deprecations and changes between versions are in the documentation.
+For the changes between v3 and v4, see the [v3 to v4 documentation](v3_to_v4.md).
 
 ### Current status
 
 Only API version v4 is available. Version v3 was removed in
 [GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36819).
 
-## Basic usage
+## How to use the API
 
-API requests should be prefixed with both `api` and the API version. The API
+API requests must include both `api` and the API version. The API
 version is defined in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/api/api.rb).
-For example, the root of the v4 API is at `/api/v4`. The following sections illustrate different uses:
+For example, the root of the v4 API is at `/api/v4`.
 
 ### Valid API request
 
@@ -87,7 +85,7 @@ curl "https://gitlab.example.com/api/v4/projects"
 ```
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the
-end of an API URL.
+end of the API URL.
 
 ### API request to expose HTTP response headers
 
@@ -99,7 +97,7 @@ HTTP/2 200
 ...
 ```
 
-This can help you investigate an unexpected response.
+This request can help you investigate an unexpected response.
 
 ### API request that includes the exit code
 
@@ -110,34 +108,34 @@ curl --fail "https://gitlab.example.com/api/v4/does-not-exist"
 curl: (22) The requested URL returned error: 404
 ```
 
-The HTTP exit code can help you diagnose the success or failure of your REST call.
+The HTTP exit code can help you diagnose the success or failure of your REST request.
 
 ## Authentication
 
 Most API requests require authentication, or only return public data when
-authentication isn't provided. For cases where it isn't required, this is
-mentioned in the documentation for each individual endpoint (for example, the
-[`/projects/:id` endpoint](projects.md#get-single-project)).
+authentication isn't provided. When authentication is not required, the documentation
+for each endpoint specifies this. For example, the
+[`/projects/:id` endpoint](projects.md#get-single-project) does not require authentication.
 
-There are several methods you can use to authenticate with the GitLab API:
+There are several ways you can authenticate with the GitLab API:
 
 - [OAuth2 tokens](#oauth2-tokens)
 - [Personal access tokens](../user/profile/personal_access_tokens.md)
 - [Project access tokens](../user/project/settings/project_access_tokens.md)
 - [Session cookie](#session-cookie)
-- [GitLab CI/CD job token](#gitlab-ci-job-token) **(Specific endpoints only)**
+- [GitLab CI/CD job token](#gitlab-cicd-job-token) **(Specific endpoints only)**
 
 NOTE:
 Project access tokens are supported for self-managed instances on Free and
 higher. They're also supported on GitLab.com Bronze and higher.
 
-For administrators who want to authenticate with the API as a specific user, or who want
-to build applications or scripts that do so, the following options are available:
+If you are an administrator, you or your application can authenticate as a specific user.
+To do so, use:
 
 - [Impersonation tokens](#impersonation-tokens)
 - [Sudo](#sudo)
 
-If authentication information is invalid or omitted, GitLab returns an error
+If authentication information is not valid or is missing, GitLab returns an error
 message with a status code of `401`:
 
 ```json
@@ -195,37 +193,65 @@ API uses this cookie for authentication if it's present. Using the API to
 generate a new session cookie isn't supported.
 
 The primary user of this authentication method is the web frontend of GitLab
-itself, which can, for example, use the API as the authenticated user to get a
-list of their projects without needing to explicitly pass an access token.
+itself. The web frontend can use the API as the authenticated user to get a
+list of projects without explicitly passing an access token.
 
-### GitLab CI job token
+### GitLab CI/CD job token
 
-With a few API endpoints you can use a [GitLab CI/CD job token](../user/project/new_ci_build_permissions_model.md#job-token)
-to authenticate with the API:
+When a pipeline job is about to run, GitLab generates a unique token and injects it as the
+[`CI_JOB_TOKEN` predefined variable](../ci/variables/predefined_variables.md).
+
+You can use a GitLab CI/CD job token to authenticate with specific API endpoints:
 
 - Packages:
-  - [Package Registry](../user/packages/package_registry/index.md)
+  - [Package Registry](../user/packages/package_registry/index.md). To push to the
+    Package Registry, you can use [deploy tokens](../user/project/deploy_tokens/index.md).
   - [Container Registry](../user/packages/container_registry/index.md)
-    (`$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`)
-- [Get job artifacts](job_artifacts.md#get-job-artifacts)
-- [Get job token's job](jobs.md#get-job-tokens-job)
-- [Pipeline triggers](pipeline_triggers.md) (using the `token=` parameter)
-- [Release creation](releases/index.md#create-a-release)
-- [Terraform plan](../user/infrastructure/index.md)
+    (the `$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`).
+- [Get job artifacts](job_artifacts.md#get-job-artifacts).
+- [Get job token's job](jobs.md#get-job-tokens-job).
+- [Pipeline triggers](pipeline_triggers.md), using the `token=` parameter.
+- [Release creation](releases/index.md#create-a-release).
+- [Terraform plan](../user/infrastructure/index.md).
 
-The token is valid as long as the job is running.
+The token has the same permissions to access the API as the user that triggers the
+pipeline. Therefore, this user must be assigned to [a role that has the required privileges](../user/permissions.md).
+
+The token is valid only while the pipeline job runs. After the job finishes, you can't
+use the token anymore.
+
+A job token can access a project's resources without any configuration, but it might
+give extra permissions that aren't necessary. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
+to redesign the feature for more strategic control of the access permissions.
+
+#### GitLab CI/CD job token security
+
+To make sure that this token doesn't leak, GitLab:
+
+- Masks the job token in job logs.
+- Grants permissions to the job token only when the job is running.
+
+To make sure that this token doesn't leak, you should also configure
+your [runners](../ci/runners/README.md) to be secure. Avoid:
+
+- Using Docker's `privileged` mode if the machines are re-used.
+- Using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
+  run on the same machine.
+
+If you have an insecure GitLab Runner configuration, you increase the risk that someone
+tries to steal tokens from other jobs.
 
 ### Impersonation tokens
 
-Impersonation tokens are a type of [personal access token](../user/profile/personal_access_tokens.md)
-that can be created only by an administrator for a specific user. They can be
-useful if you want to build applications or scripts that authenticate with the
+Impersonation tokens are a type of [personal access token](../user/profile/personal_access_tokens.md).
+They can be created only by an administrator, and are used to authenticate with the
 API as a specific user.
 
-They're an alternative to directly using the user's password (or one of their
-personal access tokens), and to using the [Sudo](#sudo) feature, as the user's
-(or administrator's in the case of Sudo) password or token may not be known, or may
-change over time.
+Use impersonation tokens an alternative to:
+
+- The user's password or one of their personal access tokens.
+- The [Sudo](#sudo) feature. The user's or administrator's password or token
+  may not be known, or may change over time.
 
 For more information, see the [users API](users.md#create-an-impersonation-token)
 documentation.
@@ -270,7 +296,7 @@ To re-enable impersonation, remove this configuration, and then restart GitLab.
 
 ### Sudo
 
-All API requests support performing an API call as if you were another user,
+All API requests support performing an API request as if you were another user,
 provided you're authenticated as an administrator with an OAuth or personal
 access token that has the `sudo` scope. The API requests are executed with the
 permissions of the impersonated user.
@@ -309,7 +335,7 @@ returned with a status code of `404`:
 }
 ```
 
-Example of a valid API call and a request using cURL with sudo request,
+Example of a valid API request and a request using cURL with sudo request,
 providing a username:
 
 ```plaintext
@@ -320,7 +346,7 @@ GET /projects?private_token=<your_access_token>&sudo=username
 curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
 ```
 
-Example of a valid API call and a request using cURL with sudo request,
+Example of a valid API request and a request using cURL with sudo request,
 providing an ID:
 
 ```plaintext
@@ -334,7 +360,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Sudo: 23" "https://
 ## Status codes
 
 The API is designed to return different status codes according to context and
-action. This way, if a request results in an error, the caller is able to get
+action. This way, if a request results in an error, you can get
 insight into what went wrong.
 
 The following table gives an overview of how the API functions generally behave.
@@ -515,7 +541,7 @@ The `:id` path parameter needs to be replaced with the project ID, and the
 `:group_id` needs to be replaced with the ID of the group. The colons `:`
 shouldn't be included.
 
-The resulting cURL call for a project with ID `5` and a group ID of `17` is then:
+The resulting cURL request for a project with ID `5` and a group ID of `17` is then:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
@@ -528,7 +554,7 @@ the URL-encoded path parameters.
 
 ## Namespaced path encoding
 
-If using namespaced API calls, make sure that the `NAMESPACE/PROJECT_PATH` is
+If using namespaced API requests, make sure that the `NAMESPACE/PROJECT_PATH` is
 URL-encoded.
 
 For example, `/` is represented by `%2F`:
@@ -578,7 +604,7 @@ using a payload body instead.
 
 ## Encoding API parameters of `array` and `hash` types
 
-We can call the API with `array` and `hash` types parameters as follows:
+You can request the API with `array` and `hash` types parameters:
 
 ### `array`
 
@@ -636,8 +662,8 @@ usually used instead of `id` to fetch the resource.
 For example, suppose a project with `id: 42` has an issue with `id: 46` and
 `iid: 5`. In this case:
 
-- A valid API call to retrieve the issue is `GET /projects/42/issues/5`.
-- An invalid API call to retrieve the issue is `GET /projects/42/issues/46`.
+- A valid API request to retrieve the issue is `GET /projects/42/issues/5`.
+- An invalid API request to retrieve the issue is `GET /projects/42/issues/46`.
 
 Not all resources with the `iid` field are fetched by `iid`. For guidance
 regarding which field to use, see the documentation for the specific resource.
@@ -734,7 +760,7 @@ The correct encoding for the query parameter would be:
 ## Clients
 
 There are many unofficial GitLab API Clients for most of the popular programming
-languages. For a complete list, visit the [GitLab website](https://about.gitlab.com/partners/#api-clients).
+languages. For a complete list, visit the [GitLab website](https://about.gitlab.com/partners/technology-partners/#api-clients).
 
 ## Rate limits
 

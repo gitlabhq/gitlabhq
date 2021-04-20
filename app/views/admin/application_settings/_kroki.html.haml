@@ -8,7 +8,7 @@
     %p
       = _('Allow rendering of diagrams in AsciiDoc and Markdown documents using %{link}.').html_safe % { link: link_to('Kroki', 'https://kroki.io', target: '_blank') }
   .settings-content
-    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-kroki-settings'), html: { class: 'fieldset-form' } do |f|
+    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-kroki-settings'), html: { class: 'fieldset-form', id: 'kroki-settings' } do |f|
       = form_errors(@application_setting) if expanded
 
       %fieldset

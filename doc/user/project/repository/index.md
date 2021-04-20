@@ -257,7 +257,7 @@ prompted to open XCode.
 
 ### Clone and open in Visual Studio Code
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220957) in GitLab 13.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220957) in GitLab 13.10.
 
 All projects can be cloned into Visual Studio Code. To do that:
 

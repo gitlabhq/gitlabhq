@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
   let_it_be(:end_date) { Date.current }
   let_it_be(:recorded_at) { Time.current }
   let_it_be(:time_period) { { created_at: (start_date..end_date) } }
+
   let(:metric_1) { 'metric_1' }
   let(:metric_2) { 'metric_2' }
   let(:metric_names) { [metric_1, metric_2] }

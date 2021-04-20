@@ -6,6 +6,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter, :clean
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:merge_request) { create(:merge_request) }
+
   let(:project) { merge_request.project }
   let(:client_double) { double(user: double(id: 999, login: 'author', email: 'author@email.com')) }
   let(:submitted_at) { Time.new(2017, 1, 1, 12, 00).utc }

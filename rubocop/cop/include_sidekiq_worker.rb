@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # Cop that makes sure workers include `ApplicationWorker`, not `Sidekiq::Worker`.
     class IncludeSidekiqWorker < RuboCop::Cop::Cop
-      MSG = 'Include `ApplicationWorker`, not `Sidekiq::Worker`.'.freeze
+      MSG = 'Include `ApplicationWorker`, not `Sidekiq::Worker`.'
 
       def_node_matcher :includes_sidekiq_worker?, <<~PATTERN
         (send nil? :include (const (const nil? :Sidekiq) :Worker))

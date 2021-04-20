@@ -82,8 +82,8 @@ RSpec.shared_examples :note_handler_shared_examples do |forwardable|
       let!(:email_raw) { update_commands_only }
 
       context 'and current user cannot update noteable' do
-        it 'raises a CommandsOnlyNoteError' do
-          expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidNoteError)
+        it 'does not raise an error' do
+          expect { receiver.execute }.not_to raise_error
         end
       end
 
@@ -92,14 +92,10 @@ RSpec.shared_examples :note_handler_shared_examples do |forwardable|
           project.add_developer(user)
         end
 
-        it 'does not raise an error', unless: forwardable do
+        it 'does not raise an error' do
           expect { receiver.execute }.to change { noteable.resource_state_events.count }.by(1)
 
           expect(noteable.reload).to be_closed
-        end
-
-        it 'raises an InvalidNoteError', if: forwardable do
-          expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidNoteError)
         end
       end
     end
@@ -189,6 +185,7 @@ RSpec.shared_examples :note_handler_shared_examples do |forwardable|
     let(:email_raw) { with_quick_actions }
 
     let!(:sent_notification) do
+      allow(Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
       SentNotification.record_note(note, support_bot.id, mail_key)
     end
 

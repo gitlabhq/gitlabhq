@@ -33,7 +33,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (function (root, factory) {
      if (typeof module !== 'undefined' && module.exports) {
-        factory(root, root.jasmine, require('jquery'));
+        // The line below is patched from jquery => jquery/dist/jquery
+        // in order to load a jQuery with ajax, so that this testing library
+        // doesn't break
+        factory(root, root.jasmine, require('jquery/dist/jquery'));
     } else {
         factory(root, root.jasmine, root.jQuery);
     }

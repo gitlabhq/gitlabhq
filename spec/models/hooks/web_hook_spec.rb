@@ -26,7 +26,7 @@ RSpec.describe WebHook do
 
       it 'strips :url before saving it' do
         hook.url = ' https://example.com '
-        hook.save
+        hook.save!
 
         expect(hook.url).to eq('https://example.com')
       end
@@ -45,14 +45,14 @@ RSpec.describe WebHook do
 
       it 'gets rid of whitespace' do
         hook.push_events_branch_filter = ' branch '
-        hook.save
+        hook.save!
 
         expect(hook.push_events_branch_filter).to eq('branch')
       end
 
       it 'stores whitespace only as empty' do
         hook.push_events_branch_filter = ' '
-        hook.save
+        hook.save!
 
         expect(hook.push_events_branch_filter).to eq('')
       end
@@ -91,7 +91,7 @@ RSpec.describe WebHook do
       web_hook = create(:project_hook)
       create_list(:web_hook_log, 3, web_hook: web_hook)
 
-      expect { web_hook.destroy }.to change(web_hook.web_hook_logs, :count).by(-3)
+      expect { web_hook.destroy! }.to change(web_hook.web_hook_logs, :count).by(-3)
     end
   end
 end

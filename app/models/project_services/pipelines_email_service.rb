@@ -5,7 +5,7 @@ class PipelinesEmailService < Service
 
   prop_accessor :recipients, :branches_to_be_notified
   boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
-  validates :recipients, presence: true, if: :valid_recipients?
+  validates :recipients, presence: true, if: :validate_recipients?
 
   def initialize_properties
     if properties.nil?
@@ -25,11 +25,11 @@ class PipelinesEmailService < Service
   end
 
   def title
-    _('Pipelines emails')
+    _('Pipeline status emails')
   end
 
   def description
-    _('Email the pipelines status to a list of recipients.')
+    _('Email the pipeline status to a list of recipients.')
   end
 
   def self.to_param
@@ -64,7 +64,7 @@ class PipelinesEmailService < Service
     [
       { type: 'textarea',
         name: 'recipients',
-        placeholder: _('Emails separated by comma'),
+        help: _('Comma-separated list of email addresses.'),
         required: true },
       { type: 'checkbox',
         name: 'notify_only_broken_pipelines' },

@@ -97,6 +97,10 @@ function rspec_paralellized_job() {
     spec_folder_prefix="ee/"
   fi
 
+  if [[ "${test_tool}" =~ "-jh" ]]; then
+    spec_folder_prefix="jh/"
+  fi
+
   export KNAPSACK_LOG_LEVEL="debug"
   export KNAPSACK_REPORT_PATH="knapsack/${report_name}_report.json"
 
@@ -109,7 +113,7 @@ function rspec_paralellized_job() {
   cp "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "${KNAPSACK_REPORT_PATH}"
 
   if [[ -z "${KNAPSACK_TEST_FILE_PATTERN}" ]]; then
-    pattern=$(ruby -r./lib/quality/test_level.rb -e "puts Quality::TestLevel.new(%(${spec_folder_prefix})).pattern(:${test_level})")
+    pattern=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(%(${spec_folder_prefix})).pattern(:${test_level})")
     export KNAPSACK_TEST_FILE_PATTERN="${pattern}"
   fi
 

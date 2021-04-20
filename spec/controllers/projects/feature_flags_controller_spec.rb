@@ -9,6 +9,7 @@ RSpec.describe Projects::FeatureFlagsController do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
+
   let(:user) { developer }
 
   before_all do

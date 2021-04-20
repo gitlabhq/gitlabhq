@@ -27,6 +27,7 @@ module RuboCop
           foreign_key_exists?
           index_exists?
           column_exists?
+          create_trigger_to_sync_tables
         ].sort.freeze
 
         MSG = "The method is not allowed to be called within the `with_lock_retries` block, the only allowed methods are: #{ALLOWED_MIGRATION_METHODS.join(', ')}"

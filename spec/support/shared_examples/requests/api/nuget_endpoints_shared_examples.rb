@@ -156,7 +156,7 @@ RSpec.shared_examples 'handling nuget metadata requests with package name and pa
   include_context 'with expected presenters dependency groups'
 
   let_it_be(:package_name) { 'Dummy.Package' }
-  let_it_be(:package) { create(:nuget_package, :with_metadatum, name: 'Dummy.Package', project: project) }
+  let_it_be(:package) { create(:nuget_package, :with_metadatum, name: package_name, project: project) }
   let_it_be(:tag) { create(:packages_tag, package: package, name: 'test') }
 
   subject { get api(url) }
@@ -225,7 +225,7 @@ RSpec.shared_examples 'handling nuget search requests' do |anonymous_requests_ex
   let(:take) { 26 }
   let(:skip) { 0 }
   let(:include_prereleases) { true }
-  let(:query_parameters) { { q: search_term, take: take, skip: skip, prerelease: include_prereleases } }
+  let(:query_parameters) { { q: search_term, take: take, skip: skip, prerelease: include_prereleases }.compact }
 
   subject { get api(url) }
 

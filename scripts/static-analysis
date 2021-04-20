@@ -33,7 +33,7 @@ class StaticAnalysis
     %w[bin/rake gitlab:sidekiq:all_queues_yml:check] => 13,
     (Gitlab.ee? ? %w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check] : nil) => 13,
     %w[bin/rake config_lint] => 11,
-    %w[yarn run lint:stylelint] => 9,
+    %w[yarn run internal:stylelint] => 9,
     %w[scripts/lint-conflicts.sh] => 0.59,
     %w[yarn run block-dependencies] => 0.35,
     %w[scripts/lint-rugged] => 0.23,

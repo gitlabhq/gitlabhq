@@ -1,0 +1,5 @@
+---
+title: Update label container background and border colour from dark grey to use the same light grey as the board's containers
+merge_request: 58279
+author:
+type: changed

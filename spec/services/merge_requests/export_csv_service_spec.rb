@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::ExportCsvService do
   let_it_be(:merge_request) { create(:merge_request) }
+
   let(:csv) { CSV.parse(subject.csv_data, headers: true).first }
 
   subject { described_class.new(MergeRequest.where(id: merge_request.id), merge_request.project) }
@@ -46,6 +47,7 @@ RSpec.describe MergeRequests::ExportCsvService do
     describe 'approvers' do
       context 'when approved' do
         let_it_be(:merge_request) { create(:merge_request) }
+
         let(:approvers) { create_list(:user, 2) }
 
         before do

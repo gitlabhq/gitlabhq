@@ -61,7 +61,7 @@ export default {
     <div
       class="gl-text-center gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column learn-gitlab-info-card-content"
     >
-      <img :src="svg" />
+      <img :src="svg" :alt="actionLabel" />
       <h6>{{ title }}</h6>
       <p class="gl-font-sm gl-text-gray-700">{{ description }}</p>
       <gl-link :href="url" target="_blank">{{ actionLabel }}</gl-link>

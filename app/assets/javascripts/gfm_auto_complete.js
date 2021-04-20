@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import '~/lib/utils/jquery_at_who';
-import { escape, template } from 'lodash';
+import { escape, sortBy, template } from 'lodash';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __, sprintf } from '~/locale';
@@ -325,25 +325,7 @@ class GfmAutoComplete {
             return items;
           }
 
-          const lowercaseQuery = query.toLowerCase();
-          const members = items.slice();
-          const { nameOrUsernameStartsWith, nameOrUsernameIncludes } = GfmAutoComplete.Members;
-
-          return members.sort((a, b) => {
-            if (nameOrUsernameStartsWith(a, lowercaseQuery)) {
-              return -1;
-            }
-            if (nameOrUsernameStartsWith(b, lowercaseQuery)) {
-              return 1;
-            }
-            if (nameOrUsernameIncludes(a, lowercaseQuery)) {
-              return -1;
-            }
-            if (nameOrUsernameIncludes(b, lowercaseQuery)) {
-              return 1;
-            }
-            return 0;
-          });
+          return GfmAutoComplete.Members.sort(query, items);
         },
       },
     });
@@ -836,6 +818,15 @@ GfmAutoComplete.Members = {
   nameOrUsernameIncludes(member, query) {
     // `member.search` is a name:username string like `MargeSimpson msimpson`
     return member.search.toLowerCase().includes(query);
+  },
+  sort(query, members) {
+    const lowercaseQuery = query.toLowerCase();
+    const { nameOrUsernameStartsWith, nameOrUsernameIncludes } = GfmAutoComplete.Members;
+
+    return sortBy(members, [
+      (member) => (nameOrUsernameStartsWith(member, lowercaseQuery) ? -1 : 0),
+      (member) => (nameOrUsernameIncludes(member, lowercaseQuery) ? -1 : 0),
+    ]);
   },
 };
 GfmAutoComplete.Labels = {

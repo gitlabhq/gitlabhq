@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Setting up Geo
+# Setting up Geo **(PREMIUM SELF)**
 
 These instructions assume you have a working instance of GitLab. They guide you through:
 

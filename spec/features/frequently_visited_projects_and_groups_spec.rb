@@ -6,6 +6,8 @@ RSpec.describe 'Frequently visited items', :js do
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_feature_flags(combined_menu: false)
+
     sign_in(user)
   end
 

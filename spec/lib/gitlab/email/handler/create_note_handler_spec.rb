@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
   end
 
   shared_examples 'a reply to existing comment' do
-    it 'creates a comment' do
+    it 'creates a discussion' do
       expect { receiver.execute }.to change { noteable.notes.count }.by(1)
       new_note = noteable.notes.last
 
@@ -68,11 +68,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
       expect(new_note.note).to include('I could not disagree more.')
       expect(new_note.in_reply_to?(note)).to be_truthy
 
-      if note.part_of_discussion?
-        expect(new_note.discussion_id).to eq(note.discussion_id)
-      else
-        expect(new_note.discussion_id).not_to eq(note.discussion_id)
-      end
+      expect(new_note.discussion_id).to eq(note.discussion_id)
     end
   end
 

@@ -17,3 +17,4 @@ tier:
 - premium
 - ultimate
 skip_validation: true
+name: "count_distinct_user_id_from_<adjective describing: '(clusters.enabled = TRUE)'>_clusters"

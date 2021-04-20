@@ -42,7 +42,7 @@ module QA
           within_element(:invite_members_modal_content) do
             fill_element :access_level_dropdown, with: access_level
 
-            fill_in 'Search for members to invite', with: username
+            fill_in 'Select members or type email addresses', with: username
 
             Support::WaitForRequests.wait_for_requests
 

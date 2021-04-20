@@ -187,6 +187,7 @@ RSpec.describe Gitlab::Utils::UsageData do
 
   describe '#histogram' do
     let_it_be(:projects) { create_list(:project, 3) }
+
     let(:project1) { projects.first }
     let(:project2) { projects.second }
     let(:project3) { projects.third }
@@ -476,6 +477,24 @@ RSpec.describe Gitlab::Utils::UsageData do
 
     it 'raise an error for unknown event' do
       expect { described_class.track_usage_event(unknown_event, value) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
+    end
+  end
+
+  describe 'min/max' do
+    let(:model) { double(:relation) }
+
+    it 'returns min from the model' do
+      allow(model).to receive(:minimum).and_return(2)
+      allow(model).to receive(:name).and_return('sample_min_model')
+
+      expect(described_class.minimum_id(model)).to eq(2)
+    end
+
+    it 'returns max from the model' do
+      allow(model).to receive(:maximum).and_return(100)
+      allow(model).to receive(:name).and_return('sample_max_model')
+
+      expect(described_class.maximum_id(model)).to eq(100)
     end
   end
 end

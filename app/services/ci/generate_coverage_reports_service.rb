@@ -15,7 +15,13 @@ module Ci
         data: head_pipeline.pipeline_artifacts.find_by_file_type(:code_coverage).present.for_files(merge_request.new_paths)
       }
     rescue => e
-      Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
+      Gitlab::ErrorTracking.track_exception(
+        e,
+        project_id: project.id,
+        base_pipeline_id: base_pipeline&.id,
+        head_pipeline_id: head_pipeline&.id
+      )
+
       {
         status: :error,
         key: key(base_pipeline, head_pipeline),

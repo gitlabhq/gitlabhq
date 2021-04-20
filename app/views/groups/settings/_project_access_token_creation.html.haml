@@ -1,0 +1,10 @@
+- return unless render_setting_to_allow_project_access_token_creation?(group)
+
+.form-group.gl-mb-3
+  .gl-form-checkbox.custom-control.custom-checkbox
+    = f.check_box :resource_access_token_creation_allowed, checked: group.namespace_settings.resource_access_token_creation_allowed?, class: 'custom-control-input', data: { qa_selector: 'resource_access_token_creation_allowed_checkbox' }
+    = f.label :resource_access_token_creation_allowed, class: 'custom-control-label' do
+      %span= s_('GroupSettings|Allow project access token creation')
+      - project_access_tokens_link = help_page_path('user/project/settings/project_access_tokens')
+      - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: project_access_tokens_link }
+      %p.help-text= s_('GroupSettings|Users can create %{link_start}project access tokens%{link_end} for projects in this group.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }

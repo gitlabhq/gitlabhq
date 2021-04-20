@@ -11,11 +11,14 @@ module BulkImports
       end
 
       def has_next_page?
-        @page_info['has_next_page']
+        Gitlab::Utils.to_boolean(
+          @page_info&.dig('has_next_page'),
+          default: false
+        )
       end
 
       def next_page
-        @page_info['end_cursor']
+        @page_info&.dig('next_page')
       end
 
       def each(&block)

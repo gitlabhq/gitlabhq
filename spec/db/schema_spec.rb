@@ -19,7 +19,6 @@ RSpec.describe 'Database schema' do
     approver_groups: %w[target_id],
     approvers: %w[target_id user_id],
     audit_events: %w[author_id entity_id target_id],
-    audit_events_archived: %w[author_id entity_id target_id],
     award_emoji: %w[awardable_id user_id],
     aws_roles: %w[role_external_id],
     boards: %w[milestone_id iteration_id],
@@ -86,9 +85,7 @@ RSpec.describe 'Database schema' do
     users: %w[color_scheme_id created_by_id theme_id email_opted_in_source_id],
     users_star_projects: %w[user_id],
     vulnerability_identifiers: %w[external_id],
-    vulnerability_scanners: %w[external_id],
-    web_hooks: %w[group_id],
-    web_hook_logs_part_0c5294f417: %w[web_hook_id]
+    vulnerability_scanners: %w[external_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do
@@ -115,7 +112,7 @@ RSpec.describe 'Database schema' do
             # postgres and mysql both automatically create an index on the primary
             # key. Also, the rails connection.indexes() method does not return
             # automatically generated indexes (like the primary key index).
-            first_indexed_column = first_indexed_column.push(primary_key_column)
+            first_indexed_column.push(primary_key_column)
 
             expect(first_indexed_column.uniq).to include(*foreign_keys_columns)
           end

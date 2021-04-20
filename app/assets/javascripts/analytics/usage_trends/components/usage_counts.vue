@@ -45,7 +45,7 @@ export default {
       projects: s__('UsageTrends|Projects'),
       groups: s__('UsageTrends|Groups'),
       issues: s__('UsageTrends|Issues'),
-      mergeRequests: s__('UsageTrends|Merge Requests'),
+      mergeRequests: s__('UsageTrends|Merge requests'),
       pipelines: s__('UsageTrends|Pipelines'),
     },
     loadCountsError: s__('Could not load usage counts. Please refresh the page to try again.'),

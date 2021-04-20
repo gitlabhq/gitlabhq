@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::CreateService, :clean_gitlab_redis_shared_state, :sidekiq_inline do
+RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_shared_state, :sidekiq_inline do
   let_it_be(:source) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:member) { create(:user) }
@@ -10,7 +10,7 @@ RSpec.describe Members::CreateService, :clean_gitlab_redis_shared_state, :sideki
   let_it_be(:access_level) { Gitlab::Access::GUEST }
   let(:params) { { user_ids: user_ids, access_level: access_level } }
 
-  subject(:execute_service) { described_class.new(user, params).execute(source) }
+  subject(:execute_service) { described_class.new(user, params.merge({ source: source })).execute }
 
   before do
     if source.is_a?(Project)

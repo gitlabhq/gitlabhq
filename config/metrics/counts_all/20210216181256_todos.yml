@@ -1,6 +1,6 @@
 ---
 key_path: counts.todos
-description: Count of ToDos
+description: Count of todos created
 product_section: dev
 product_stage: plan
 product_group: group::project management
@@ -16,4 +16,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

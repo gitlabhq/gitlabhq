@@ -8,7 +8,9 @@ module Git
     attr_reader :wiki
 
     def initialize(wiki, current_user, params)
-      @wiki, @current_user, @params = wiki, current_user, params.dup
+      @wiki = wiki
+      @current_user = current_user
+      @params = params.dup
     end
 
     def execute

@@ -8,7 +8,7 @@
   #js-promote-label-modal
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
-  .labels-container.gl-mt-3
+  .labels-container.gl-mt-3.gl-bg-gray-10.gl-border-solid.gl-border-1.gl-border-gray-100
     - if can_admin_label && search.blank?
       %p.text-muted
         = _('Labels can be applied to issues and merge requests.')

@@ -2,10 +2,8 @@ import { s__, __ } from '~/locale';
 
 export const OPEN_REVERT_MODAL = 'openRevertModal';
 export const REVERT_MODAL_ID = 'revert-commit-modal';
-export const REVERT_LINK_TEST_ID = 'revert-commit-link';
 export const OPEN_CHERRY_PICK_MODAL = 'openCherryPickModal';
 export const CHERRY_PICK_MODAL_ID = 'cherry-pick-commit-modal';
-export const CHERRY_PICK_LINK_TEST_ID = 'cherry-pick-commit-link';
 
 export const I18N_MODAL = {
   startMergeRequest: s__('ChangeTypeAction|Start a %{newMergeRequest} with these changes'),

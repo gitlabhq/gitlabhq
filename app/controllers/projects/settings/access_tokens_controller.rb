@@ -5,7 +5,10 @@ module Projects
     class AccessTokensController < Projects::ApplicationController
       include ProjectsHelper
 
-      before_action :check_feature_availability
+      layout 'project_settings'
+      before_action -> { check_permission(:read_resource_access_tokens) }, only: [:index]
+      before_action -> { check_permission(:destroy_resource_access_tokens) }, only: [:revoke]
+      before_action -> { check_permission(:create_resource_access_tokens) }, only: [:create]
 
       feature_category :authentication_and_authorization
 
@@ -42,8 +45,8 @@ module Projects
 
       private
 
-      def check_feature_availability
-        render_404 unless project_access_token_available?(@project)
+      def check_permission(action)
+        render_404 unless can?(current_user, action, @project)
       end
 
       def create_params

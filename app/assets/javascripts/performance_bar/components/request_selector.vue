@@ -58,12 +58,12 @@ export default {
         <span v-if="request.hasWarnings">(!)</span>
       </option>
     </select>
-    <span v-if="requestsWithWarnings.length">
+    <span v-if="requestsWithWarnings.length" class="gl-cursor-default">
       <span id="performance-bar-request-selector-warning" v-html="glEmojiTag('warning')"></span>
       <gl-popover
+        placement="bottom"
         target="performance-bar-request-selector-warning"
         :content="warningMessage"
-        triggers="hover focus"
       />
     </span>
   </div>

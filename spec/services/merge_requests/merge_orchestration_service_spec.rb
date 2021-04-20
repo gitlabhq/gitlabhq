@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::MergeOrchestrationService do
   let_it_be(:maintainer) { create(:user) }
+
   let(:merge_params) { { sha: merge_request.diff_head_sha } }
   let(:user) { maintainer }
   let(:service) { described_class.new(project, user, merge_params) }

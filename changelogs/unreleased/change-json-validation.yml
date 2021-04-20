@@ -1,0 +1,5 @@
+---
+title: Stop using json-schema gem for production
+merge_request: 56745
+author:
+type: other

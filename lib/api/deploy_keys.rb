@@ -44,7 +44,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ":id/deploy_keys" do
-        keys = user_project.deploy_keys_projects.preload(:deploy_key)
+        keys = user_project.deploy_keys_projects.preload(deploy_key: :user)
 
         present paginate(keys), with: Entities::DeployKeysProject
       end

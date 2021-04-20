@@ -6,6 +6,13 @@ module QA
       module Project
         include Events::Base
 
+        def push_events(commit_message)
+          QA::Runtime::Logger.debug(%Q[#{self.class.name} - wait for and fetch push events"])
+          fetch_events do
+            events(action: 'pushed').select { |event| event.dig(:push_data, :commit_title) == commit_message }
+          end
+        end
+
         def wait_for_merge(title)
           QA::Runtime::Logger.debug(%Q[#{self.class.name} - wait_for_merge with title "#{title}"])
           wait_for_event do

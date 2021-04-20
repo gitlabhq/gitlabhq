@@ -26,7 +26,6 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
   end
 
   before do
-    stub_feature_flags(new_pipelines_table: false)
     stub_application_setting(auto_devops_enabled: false)
     stub_ci_pipeline_yaml_file(YAML.dump(config))
     project.add_maintainer(user)
@@ -62,7 +61,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
     it 'sees branch pipelines and detached merge request pipelines in correct order' do
       page.within('.ci-table') do
-        expect(page).to have_selector('.ci-pending', count: 2)
+        expect(page).to have_selector('.ci-created', count: 2)
         expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{detached_merge_request_pipeline.id}")
       end
     end
@@ -154,7 +153,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       context 'when detached merge request pipeline succeeds' do
         before do
-          detached_merge_request_pipeline.succeed!
+          detached_merge_request_pipeline.reload.succeed!
 
           wait_for_requests
         end
@@ -168,7 +167,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       context 'when branch pipeline succeeds' do
         before do
           click_link 'Overview'
-          push_pipeline.succeed!
+          push_pipeline.reload.succeed!
 
           wait_for_requests
         end
@@ -197,7 +196,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       it 'sees a branch pipeline in pipeline tab' do
         page.within('.ci-table') do
-          expect(page).to have_selector('.ci-pending', count: 1)
+          expect(page).to have_selector('.ci-created', count: 1)
           expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{push_pipeline.id}")
         end
       end
@@ -333,6 +332,31 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       end
     end
 
+    context 'when the latest pipeline is running in the parent project' do
+      before do
+        Ci::CreatePipelineService.new(project, user, ref: 'feature')
+          .execute(:merge_request_event, merge_request: merge_request)
+      end
+
+      context 'when the previous pipeline failed in the fork project' do
+        before do
+          detached_merge_request_pipeline.reload.drop!
+        end
+
+        context 'when the parent project enables pipeline must succeed' do
+          before do
+            project.update!(only_allow_merge_if_pipeline_succeeds: true)
+          end
+
+          it 'shows MWPS button' do
+            visit project_merge_request_path(project, merge_request)
+
+            expect(page).to have_button('Merge when pipeline succeeds')
+          end
+        end
+      end
+    end
+
     context 'when a user merges a merge request from a forked project to the parent project' do
       before do
         click_link("Overview")
@@ -351,7 +375,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       context 'when detached merge request pipeline succeeds' do
         before do
-          detached_merge_request_pipeline.succeed!
+          detached_merge_request_pipeline.reload.succeed!
 
           wait_for_requests
         end
@@ -364,7 +388,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       context 'when branch pipeline succeeds' do
         before do
-          push_pipeline.succeed!
+          push_pipeline.reload.succeed!
 
           wait_for_requests
         end

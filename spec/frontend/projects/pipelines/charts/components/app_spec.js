@@ -10,6 +10,7 @@ import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_char
 jest.mock('~/lib/utils/url_utility');
 
 const DeploymentFrequencyChartsStub = { name: 'DeploymentFrequencyCharts', render: () => {} };
+const LeadTimeChartsStub = { name: 'LeadTimeCharts', render: () => {} };
 
 describe('ProjectsPipelinesChartsApp', () => {
   let wrapper;
@@ -21,10 +22,11 @@ describe('ProjectsPipelinesChartsApp', () => {
         {},
         {
           provide: {
-            shouldRenderDeploymentFrequencyCharts: false,
+            shouldRenderDoraCharts: true,
           },
           stubs: {
             DeploymentFrequencyCharts: DeploymentFrequencyChartsStub,
+            LeadTimeCharts: LeadTimeChartsStub,
           },
         },
         mountOptions,
@@ -32,35 +34,40 @@ describe('ProjectsPipelinesChartsApp', () => {
     );
   }
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   const findGlTabs = () => wrapper.find(GlTabs);
-  const findAllGlTab = () => wrapper.findAll(GlTab);
-  const findGlTabAt = (i) => findAllGlTab().at(i);
+  const findAllGlTabs = () => wrapper.findAll(GlTab);
+  const findGlTabAtIndex = (index) => findAllGlTabs().at(index);
+  const findLeadTimeCharts = () => wrapper.find(LeadTimeChartsStub);
   const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
   const findPipelineCharts = () => wrapper.find(PipelineCharts);
 
-  it('renders the pipeline charts', () => {
-    expect(findPipelineCharts().exists()).toBe(true);
-  });
-
-  describe('when shouldRenderDeploymentFrequencyCharts is true', () => {
+  describe('when all charts are available', () => {
     beforeEach(() => {
-      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
+      createComponent();
     });
 
-    it('renders the deployment frequency charts in a tab', () => {
+    it('renders tabs', () => {
       expect(findGlTabs().exists()).toBe(true);
-      expect(findGlTabAt(0).attributes('title')).toBe('Pipelines');
-      expect(findGlTabAt(1).attributes('title')).toBe('Deployments');
+
+      expect(findGlTabAtIndex(0).attributes('title')).toBe('Pipelines');
+      expect(findGlTabAtIndex(1).attributes('title')).toBe('Deployments');
+      expect(findGlTabAtIndex(2).attributes('title')).toBe('Lead Time');
+    });
+
+    it('renders the pipeline charts', () => {
+      expect(findPipelineCharts().exists()).toBe(true);
+    });
+
+    it('renders the deployment frequency charts', () => {
       expect(findDeploymentFrequencyCharts().exists()).toBe(true);
+    });
+
+    it('renders the lead time charts', () => {
+      expect(findLeadTimeCharts().exists()).toBe(true);
     });
 
     it('sets the tab and url when a tab is clicked', async () => {
@@ -108,6 +115,7 @@ describe('ProjectsPipelinesChartsApp', () => {
   describe('when provided with a query param', () => {
     it.each`
       chart            | tab
+      ${'lead-time'}   | ${'2'}
       ${'deployments'} | ${'1'}
       ${'pipelines'}   | ${'0'}
       ${'fake'}        | ${'0'}
@@ -118,7 +126,7 @@ describe('ProjectsPipelinesChartsApp', () => {
         expect(name).toBe('chart');
         return chart ? [chart] : [];
       });
-      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
+      createComponent();
       expect(findGlTabs().attributes('value')).toBe(tab);
     });
 
@@ -138,7 +146,7 @@ describe('ProjectsPipelinesChartsApp', () => {
         return [];
       });
 
-      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: true } });
+      createComponent();
 
       expect(findGlTabs().attributes('value')).toBe('0');
 
@@ -155,14 +163,17 @@ describe('ProjectsPipelinesChartsApp', () => {
     });
   });
 
-  describe('when shouldRenderDeploymentFrequencyCharts is false', () => {
+  describe('when the dora charts are not available', () => {
     beforeEach(() => {
-      createComponent({ provide: { shouldRenderDeploymentFrequencyCharts: false } });
+      createComponent({ provide: { shouldRenderDoraCharts: false } });
     });
 
-    it('does not render the deployment frequency charts in a tab', () => {
+    it('does not render tabs', () => {
       expect(findGlTabs().exists()).toBe(false);
-      expect(findDeploymentFrequencyCharts().exists()).toBe(false);
+    });
+
+    it('renders the pipeline charts', () => {
+      expect(findPipelineCharts().exists()).toBe(true);
     });
   });
 });

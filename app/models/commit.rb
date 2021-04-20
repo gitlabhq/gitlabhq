@@ -62,7 +62,8 @@ class Commit
       collection.sort do |a, b|
         operands = [a, b].tap { |o| o.reverse! if sort == 'desc' }
 
-        attr1, attr2 = operands.first.public_send(order_by), operands.second.public_send(order_by) # rubocop:disable PublicSend
+        attr1 = operands.first.public_send(order_by) # rubocop:disable GitlabSecurity/PublicSend
+        attr2 = operands.second.public_send(order_by) # rubocop:disable GitlabSecurity/PublicSend
 
         # use case insensitive comparison for string values
         order_by.in?(%w[email name]) ? attr1.casecmp(attr2) : attr1 <=> attr2
@@ -220,6 +221,14 @@ class Commit
       else
         safe_message.split(/[\r\n]/, 2).first
       end
+  end
+
+  def author_full_text
+    return unless author_name && author_email
+
+    strong_memoize(:author_full_text) do
+      "#{author_name} <#{author_email}>"
+    end
   end
 
   # Returns full commit message if title is truncated (greater than 99 characters)

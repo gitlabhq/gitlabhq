@@ -91,15 +91,29 @@ class InvitesController < ApplicationController
   def authenticate_user!
     return if current_user
 
-    notice = ["To accept this invitation, sign in"]
-    notice << "or create an account" if Gitlab::CurrentSettings.allow_signup?
-    notice = notice.join(' ') + "."
-
-    redirect_params = member ? { invite_email: member.invite_email } : {}
-
     store_location_for :user, request.fullpath
 
-    redirect_to new_user_session_path(redirect_params), notice: notice
+    if user_sign_up?
+      redirect_to new_user_registration_path(invite_email: member.invite_email), notice: _("To accept this invitation, create an account or sign in.")
+    else
+      redirect_to new_user_session_path(sign_in_redirect_params), notice: sign_in_notice
+    end
+  end
+
+  def sign_in_redirect_params
+    member ? { invite_email: member.invite_email } : {}
+  end
+
+  def user_sign_up?
+    Gitlab::CurrentSettings.allow_signup? && member && !User.find_by_any_email(member.invite_email)
+  end
+
+  def sign_in_notice
+    if Gitlab::CurrentSettings.allow_signup?
+      _("To accept this invitation, sign in or create an account.")
+    else
+      _("To accept this invitation, sign in.")
+    end
   end
 
   def invite_details

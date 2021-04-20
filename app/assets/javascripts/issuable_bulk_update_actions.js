@@ -87,7 +87,7 @@ export default {
   // From issuable's initial bulk selection
   getOriginalCommonIds() {
     const labelIds = [];
-    this.getElement('.selected-issuable:checked').each((i, el) => {
+    this.getElement('.issuable-list input[type="checkbox"]:checked').each((i, el) => {
       labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
     });
     return intersection.apply(this, labelIds);
@@ -100,7 +100,7 @@ export default {
     let issuableLabels = [];
 
     // Collect unique label IDs for all checked issues
-    this.getElement('.selected-issuable:checked').each((i, el) => {
+    this.getElement('.issuable-list input[type="checkbox"]:checked').each((i, el) => {
       issuableLabels = this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels');
       issuableLabels.forEach((labelId) => {
         // Store unique IDs

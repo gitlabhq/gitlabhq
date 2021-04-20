@@ -1,0 +1,26 @@
+= form_for @application, url: url, html: { role: 'form', class: 'doorkeeper-app-form' } do |f|
+  = form_errors(@application)
+
+  .form-group
+    = f.label :name, class: 'label-bold'
+    = f.text_field :name, class: 'form-control gl-form-input', required: true
+
+  .form-group
+    = f.label :redirect_uri, class: 'label-bold'
+    = f.text_area :redirect_uri, class: 'form-control gl-form-input gl-form-textarea', required: true
+
+    %span.form-text.text-muted
+      = _('Use one line per URI')
+
+  .form-group.form-check
+    = f.check_box :confidential, class: 'form-check-input'
+    = f.label :confidential, class: 'label-bold form-check-label'
+    %span.form-text.text-muted
+      = _('The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.')
+
+  .form-group
+    = f.label :scopes, class: 'label-bold'
+    = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: @application, scopes: @scopes
+
+  .gl-mt-3
+    = f.submit _('Save application'), class: "gl-button btn btn-confirm"

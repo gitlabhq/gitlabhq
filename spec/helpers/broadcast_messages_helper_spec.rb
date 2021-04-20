@@ -28,6 +28,7 @@ RSpec.describe BroadcastMessagesHelper do
 
   describe 'broadcast_message' do
     let_it_be(:user) { create(:user) }
+
     let(:current_broadcast_message) { BroadcastMessage.new(message: 'Current Message') }
 
     before do

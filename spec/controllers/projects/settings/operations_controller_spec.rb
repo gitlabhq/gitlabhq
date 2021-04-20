@@ -493,6 +493,7 @@ RSpec.describe Projects::Settings::OperationsController do
 
     describe 'PATCH #update' do
       let_it_be(:external_url) { 'https://gitlab.com' }
+
       let(:params) do
         {
           tracing_setting_attributes: {

@@ -15,33 +15,33 @@ include a centralized, proprietary version control system similar to Git.
 The following list illustrates the main differences between Perforce Helix and
 Git:
 
-1. In general the biggest difference is that Perforce branching is heavyweight
-   compared to Git's lightweight branching. When you create a branch in Perforce,
-   it creates an integration record in their proprietary database for every file
-   in the branch, regardless how many were actually changed. Whereas Git was
-   implemented with a different architecture so that a single SHA acts as a pointer
-   to the state of the whole repository after the changes, making it very easy to branch.
-   This is what made feature branching workflows so easy to adopt with Git.
-1. Also, context switching between branches is much easier in Git. If your manager
-   said 'You need to stop work on that new feature and fix this security
-   vulnerability' you can do so very easily in Git.
-1. Having a complete copy of the project and its history on your local machine
-   means every transaction is very fast and Git provides that. You can branch/merge
-   and experiment in isolation, then clean up your mess before sharing your new
-   cool stuff with everyone.
-1. Git also made code review simple because you could share your changes without
-   merging them to master, whereas Perforce had to implement a Shelving feature on
-   the server so others could review changes before merging.
+- In general, the biggest difference is that Perforce branching is heavyweight
+  compared to Git's lightweight branching. When you create a branch in Perforce,
+  it creates an integration record in their proprietary database for every file
+  in the branch, regardless how many were actually changed. With Git, however,
+  a single SHA acts as a pointer to the state of the whole repository after the
+  changes, which can be helpful when adopting feature branching workflows.
+- Context switching between branches is less complex in Git. If your manager
+  says, 'You need to stop work on that new feature and fix this security
+  vulnerability,' Git can help you do this.
+- Having a complete copy of the project and its history on your local computer
+  means every transaction is very fast, and Git provides that. You can branch
+  or merge, and experiment in isolation, and then clean up before sharing your
+  changes with others.
+- Git makes code review less complex, because you can share your changes without
+  merging them to the default branch. This is compared to Perforce, which had to
+  implement a Shelving feature on the server so others could review changes
+  before merging.
 
 ## Why migrate
 
 Perforce Helix can be difficult to manage both from a user and an administrator
 perspective. Migrating to Git/GitLab there is:
 
-- **No licensing costs**, Git is GPL while Perforce Helix is proprietary.
-- **Shorter learning curve**, Git has a big community and a vast number of
+- **No licensing costs**: Git is GPL while Perforce Helix is proprietary.
+- **Shorter learning curve**: Git has a big community and a vast number of
   tutorials to get you started.
-- **Integration with modern tools**, migrating to Git and GitLab you can have
+- **Integration with modern tools**: By migrating to Git and GitLab, you can have
   an open source end-to-end software development platform with built-in version
   control, issue tracking, code review, CI/CD, and more.
 

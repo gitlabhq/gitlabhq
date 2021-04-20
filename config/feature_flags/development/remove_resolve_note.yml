@@ -1,8 +1,0 @@
----
-name: remove_resolve_note
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45549
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/320756
-milestone: '13.6'
-type: development
-group: group::code review
-default_enabled: true

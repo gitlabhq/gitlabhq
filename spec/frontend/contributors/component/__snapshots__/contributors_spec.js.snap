@@ -5,7 +5,9 @@ exports[`Contributors charts should render charts when loading completed and the
   <div
     class="contributors-charts"
   >
-    <h4>
+    <h4
+      class="gl-mb-2 gl-mt-5"
+    >
       Commits to master
     </h4>
      
@@ -16,6 +18,7 @@ exports[`Contributors charts should render charts when loading completed and the
     <div>
       <glareachart-stub
         annotations=""
+        class="gl-mb-5"
         data="[object Object]"
         height="264"
         includelegendavgmax="true"
@@ -34,14 +37,20 @@ exports[`Contributors charts should render charts when loading completed and the
       class="row"
     >
       <div
-        class="col-lg-6 col-12"
+        class="col-lg-6 col-12 gl-my-5"
       >
-        <h4>
+        <h4
+          class="gl-mb-2 gl-mt-0"
+        >
           John
         </h4>
          
-        <p>
+        <p
+          class="gl-mb-3"
+        >
+          
           2 commits (jawnnypoo@gmail.com)
+        
         </p>
          
         <div>

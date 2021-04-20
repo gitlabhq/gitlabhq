@@ -132,7 +132,10 @@ module Types
           description: 'The milestone of the merge request.'
     field :assignees, Types::UserType.connection_type, null: true, complexity: 5,
           description: 'Assignees of the merge request.'
-    field :reviewers, Types::UserType.connection_type, null: true, complexity: 5,
+    field :reviewers,
+          type: Types::MergeRequests::ReviewerType.connection_type,
+          null: true,
+          complexity: 5,
           description: 'Users from whom a review has been requested.'
     field :author, Types::UserType, null: true,
           description: 'User who created this merge request.'
@@ -183,6 +186,8 @@ module Types
           description: 'Selected auto merge strategy.'
     field :merge_user, Types::UserType, null: true,
           description: 'User who merged this merge request.'
+    field :timelogs, Types::TimelogType.connection_type, null: false,
+          description: 'Timelogs on the merge request.'
 
     def approved_by
       object.approved_by_users

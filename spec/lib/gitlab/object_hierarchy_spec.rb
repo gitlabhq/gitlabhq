@@ -3,14 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ObjectHierarchy do
-  let!(:parent) { create(:group) }
-  let!(:child1) { create(:group, parent: parent) }
-  let!(:child2) { create(:group, parent: child1) }
+  let_it_be(:parent) { create(:group) }
+  let_it_be(:child1) { create(:group, parent: parent) }
+  let_it_be(:child2) { create(:group, parent: child1) }
+
+  let(:options) { {} }
 
   shared_context 'Gitlab::ObjectHierarchy test cases' do
     describe '#base_and_ancestors' do
       let(:relation) do
-        described_class.new(Group.where(id: child2.id)).base_and_ancestors
+        described_class.new(Group.where(id: child2.id), options: options).base_and_ancestors
       end
 
       it 'includes the base rows' do
@@ -22,13 +24,13 @@ RSpec.describe Gitlab::ObjectHierarchy do
       end
 
       it 'can find ancestors upto a certain level' do
-        relation = described_class.new(Group.where(id: child2)).base_and_ancestors(upto: child1)
+        relation = described_class.new(Group.where(id: child2), options: options).base_and_ancestors(upto: child1)
 
         expect(relation).to contain_exactly(child2)
       end
 
       it 'uses ancestors_base #initialize argument' do
-        relation = described_class.new(Group.where(id: child2.id), Group.none).base_and_ancestors
+        relation = described_class.new(Group.where(id: child2.id), Group.none, options: options).base_and_ancestors
 
         expect(relation).to include(parent, child1, child2)
       end
@@ -40,7 +42,7 @@ RSpec.describe Gitlab::ObjectHierarchy do
 
       describe 'hierarchy_order option' do
         let(:relation) do
-          described_class.new(Group.where(id: child2.id)).base_and_ancestors(hierarchy_order: hierarchy_order)
+          described_class.new(Group.where(id: child2.id), options: options).base_and_ancestors(hierarchy_order: hierarchy_order)
         end
 
         context ':asc' do
@@ -63,7 +65,7 @@ RSpec.describe Gitlab::ObjectHierarchy do
 
     describe '#base_and_descendants' do
       let(:relation) do
-        described_class.new(Group.where(id: parent.id)).base_and_descendants
+        described_class.new(Group.where(id: parent.id), options: options).base_and_descendants
       end
 
       it 'includes the base rows' do
@@ -75,7 +77,7 @@ RSpec.describe Gitlab::ObjectHierarchy do
       end
 
       it 'uses descendants_base #initialize argument' do
-        relation = described_class.new(Group.none, Group.where(id: parent.id)).base_and_descendants
+        relation = described_class.new(Group.none, Group.where(id: parent.id), options: options).base_and_descendants
 
         expect(relation).to include(parent, child1, child2)
       end
@@ -87,7 +89,7 @@ RSpec.describe Gitlab::ObjectHierarchy do
 
       context 'when with_depth is true' do
         let(:relation) do
-          described_class.new(Group.where(id: parent.id)).base_and_descendants(with_depth: true)
+          described_class.new(Group.where(id: parent.id), options: options).base_and_descendants(with_depth: true)
         end
 
         it 'includes depth in the results' do
@@ -106,14 +108,14 @@ RSpec.describe Gitlab::ObjectHierarchy do
 
     describe '#descendants' do
       it 'includes only the descendants' do
-        relation = described_class.new(Group.where(id: parent)).descendants
+        relation = described_class.new(Group.where(id: parent), options: options).descendants
 
         expect(relation).to contain_exactly(child1, child2)
       end
     end
 
     describe '#max_descendants_depth' do
-      subject { described_class.new(base_relation).max_descendants_depth }
+      subject { described_class.new(base_relation, options: options).max_descendants_depth }
 
       context 'when base relation is empty' do
         let(:base_relation) { Group.where(id: nil) }
@@ -136,13 +138,13 @@ RSpec.describe Gitlab::ObjectHierarchy do
 
     describe '#ancestors' do
       it 'includes only the ancestors' do
-        relation = described_class.new(Group.where(id: child2)).ancestors
+        relation = described_class.new(Group.where(id: child2), options: options).ancestors
 
         expect(relation).to contain_exactly(child1, parent)
       end
 
       it 'can find ancestors upto a certain level' do
-        relation = described_class.new(Group.where(id: child2)).ancestors(upto: child1)
+        relation = described_class.new(Group.where(id: child2), options: options).ancestors(upto: child1)
 
         expect(relation).to be_empty
       end
@@ -150,7 +152,7 @@ RSpec.describe Gitlab::ObjectHierarchy do
 
     describe '#all_objects' do
       let(:relation) do
-        described_class.new(Group.where(id: child1.id)).all_objects
+        described_class.new(Group.where(id: child1.id), options: options).all_objects
       end
 
       it 'includes the base rows' do
@@ -166,13 +168,13 @@ RSpec.describe Gitlab::ObjectHierarchy do
       end
 
       it 'uses ancestors_base #initialize argument for ancestors' do
-        relation = described_class.new(Group.where(id: child1.id), Group.where(id: non_existing_record_id)).all_objects
+        relation = described_class.new(Group.where(id: child1.id), Group.where(id: non_existing_record_id), options: options).all_objects
 
         expect(relation).to include(parent)
       end
 
       it 'uses descendants_base #initialize argument for descendants' do
-        relation = described_class.new(Group.where(id: non_existing_record_id), Group.where(id: child1.id)).all_objects
+        relation = described_class.new(Group.where(id: non_existing_record_id), Group.where(id: child1.id), options: options).all_objects
 
         expect(relation).to include(child2)
       end
@@ -187,19 +189,78 @@ RSpec.describe Gitlab::ObjectHierarchy do
   context 'when the use_distinct_in_object_hierarchy feature flag is enabled' do
     before do
       stub_feature_flags(use_distinct_in_object_hierarchy: true)
+      stub_feature_flags(use_distinct_for_all_object_hierarchy: false)
     end
 
     it_behaves_like 'Gitlab::ObjectHierarchy test cases'
 
     it 'calls DISTINCT' do
-      expect(parent.self_and_descendants.to_sql).to include("DISTINCT")
       expect(child2.self_and_ancestors.to_sql).to include("DISTINCT")
+    end
+
+    context 'when use_traversal_ids feature flag is enabled' do
+      it 'does not call DISTINCT' do
+        expect(parent.self_and_descendants.to_sql).not_to include("DISTINCT")
+      end
+    end
+
+    context 'when use_traversal_ids feature flag is disabled' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
+
+      it 'calls DISTINCT' do
+        expect(parent.self_and_descendants.to_sql).to include("DISTINCT")
+      end
+    end
+  end
+
+  context 'when the use_distinct_for_all_object_hierarchy feature flag is enabled' do
+    before do
+      stub_feature_flags(use_distinct_in_object_hierarchy: false)
+      stub_feature_flags(use_distinct_for_all_object_hierarchy: true)
+    end
+
+    it_behaves_like 'Gitlab::ObjectHierarchy test cases'
+
+    it 'calls DISTINCT' do
+      expect(child2.self_and_ancestors.to_sql).to include("DISTINCT")
+    end
+
+    context 'when use_traversal_ids feature flag is enabled' do
+      it 'does not call DISTINCT' do
+        expect(parent.self_and_descendants.to_sql).not_to include("DISTINCT")
+      end
+    end
+
+    context 'when use_traversal_ids feature flag is disabled' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
+
+      it 'calls DISTINCT' do
+        expect(parent.self_and_descendants.to_sql).to include("DISTINCT")
+      end
+
+      context 'when the skip_ordering option is set' do
+        let(:options) { { skip_ordering: true } }
+
+        it_behaves_like 'Gitlab::ObjectHierarchy test cases'
+
+        it 'does not include ROW_NUMBER()' do
+          query = described_class.new(Group.where(id: parent.id), options: options).base_and_descendants.to_sql
+
+          expect(query).to include("DISTINCT")
+          expect(query).not_to include("ROW_NUMBER()")
+        end
+      end
     end
   end
 
   context 'when the use_distinct_in_object_hierarchy feature flag is disabled' do
     before do
       stub_feature_flags(use_distinct_in_object_hierarchy: false)
+      stub_feature_flags(use_distinct_for_all_object_hierarchy: false)
     end
 
     it_behaves_like 'Gitlab::ObjectHierarchy test cases'

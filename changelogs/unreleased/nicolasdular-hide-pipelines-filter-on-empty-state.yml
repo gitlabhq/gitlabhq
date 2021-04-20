@@ -1,0 +1,5 @@
+---
+title: Hide pipeline filtered search when no pipeline exists
+merge_request: 57881
+author:
+type: changed

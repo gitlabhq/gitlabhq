@@ -1,0 +1,5 @@
+---
+title: Create finder for searching branch names via redis.
+merge_request: 58439
+author:
+type: performance

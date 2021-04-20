@@ -50,6 +50,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         end
       end
 
+      resources :applications
+
       resources :packages_and_registries, only: [:index]
     end
 

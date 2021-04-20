@@ -5,7 +5,7 @@ import InviteMemberTrigger from '~/invite_member/components/invite_member_trigge
 import triggerProvides from './invite_member_trigger_mock_data';
 
 const createComponent = () => {
-  return shallowMount(InviteMemberTrigger, { provide: triggerProvides });
+  return shallowMount(InviteMemberTrigger, { propsData: triggerProvides });
 };
 
 describe('InviteMemberTrigger', () => {

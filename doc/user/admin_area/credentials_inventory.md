@@ -11,8 +11,8 @@ type: howto
 
 GitLab administrators are responsible for the overall security of their instance. To assist, GitLab provides a Credentials inventory to keep track of all the credentials that can be used to access their self-managed instance.
 
-Using Credentials inventory, you can see all the personal access tokens (PAT), SSH keys, and GPG keys 
-that exist in your GitLab instance. In addition, you can [revoke](#revoke-a-users-personal-access-token) 
+Using Credentials inventory, you can see all the personal access tokens (PAT), SSH keys, and GPG keys
+that exist in your GitLab instance. In addition, you can [revoke](#revoke-a-users-personal-access-token)
 and [delete](#delete-a-users-ssh-key) and see:
 
 - Who they belong to.
@@ -56,12 +56,16 @@ The instance then notifies the user.
 ## Review existing GPG keys
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282429) in GitLab 13.10.
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-the-gpg-keys-view).
+> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/292961) in GitLab 13.11.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-gpg-keys-view).
 
-You can view all existing GPG in your GitLab instance by navigating to the 
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+You can view all existing GPG in your GitLab instance by navigating to the
 credentials inventory GPG Keys tab, as well as the following properties:
 
 - Who the GPG key belongs to.
@@ -72,10 +76,10 @@ credentials inventory GPG Keys tab, as well as the following properties:
 
 ### Enable or disable the GPG keys view
 
-Enabling or disabling the GPG keys view is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+Enabling or disabling the GPG keys view is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
+can opt to disable it.
 
 To enable it:
 

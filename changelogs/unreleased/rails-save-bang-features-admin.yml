@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang rubocop offenses in spec/features/admin
+merge_request: 57891
+author: Abdul Wadood @abdulwd
+type: fixed

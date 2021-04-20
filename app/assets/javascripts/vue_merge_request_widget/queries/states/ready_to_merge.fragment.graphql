@@ -30,13 +30,11 @@ fragment ReadyToMerge on Project {
         message
       }
     }
-    pipelines(first: 1) {
-      nodes {
-        id
-        status
-        path
-        active
-      }
+    headPipeline {
+      id
+      status
+      path
+      active
     }
   }
 }

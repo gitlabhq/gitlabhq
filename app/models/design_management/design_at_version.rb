@@ -18,7 +18,8 @@ module DesignManagement
     validate :design_and_version_have_issue_id
 
     def initialize(design: nil, version: nil)
-      @design, @version = design, version
+      @design = design
+      @version = version
     end
 
     # The ID, needed by GraphQL types and as part of the Lazy-fetch

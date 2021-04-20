@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Graphql::GetMembersQuery do
   it 'has a valid query' do
-    entity = create(:bulk_import_entity)
-    context = BulkImports::Pipeline::Context.new(entity)
+    tracker = create(:bulk_import_tracker)
+    context = BulkImports::Pipeline::Context.new(tracker)
 
     query = GraphQL::Query.new(
       GitlabSchema,

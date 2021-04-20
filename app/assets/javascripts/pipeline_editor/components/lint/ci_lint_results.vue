@@ -42,21 +42,7 @@ export default {
     CiLintResultsParam,
   },
   props: {
-    valid: {
-      type: Boolean,
-      required: true,
-    },
-    jobs: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     errors: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    warnings: {
       type: Array,
       required: false,
       default: () => [],
@@ -66,9 +52,23 @@ export default {
       required: false,
       default: false,
     },
+    isValid: {
+      type: Boolean,
+      required: true,
+    },
+    jobs: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     lintHelpPagePath: {
       type: String,
       required: true,
+    },
+    warnings: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   data() {
@@ -78,7 +78,7 @@ export default {
   },
   computed: {
     status() {
-      return this.valid ? this.$options.correct : this.$options.incorrect;
+      return this.isValid ? this.$options.correct : this.$options.incorrect;
     },
     shouldShowTable() {
       return this.errors.length === 0;

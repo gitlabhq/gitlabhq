@@ -156,7 +156,7 @@ RSpec.describe 'New/edit issue', :js do
       expect(page.all('input[name="issue[label_ids][]"]', visible: false)[1].value).to match(label.id.to_s)
       expect(page.all('input[name="issue[label_ids][]"]', visible: false)[2].value).to match(label2.id.to_s)
 
-      click_button 'Submit issue'
+      click_button 'Create issue'
 
       page.within '.issuable-sidebar' do
         page.within '.assignee' do

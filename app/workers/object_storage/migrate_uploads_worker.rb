@@ -16,7 +16,8 @@ module ObjectStorage
       attr_accessor :error
 
       def initialize(upload, error = nil)
-        @upload, @error = upload, error
+        @upload = upload
+        @error = error
       end
 
       def success?

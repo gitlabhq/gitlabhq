@@ -35,7 +35,7 @@ RSpec.describe 'User sees user popover', :js do
       end
     end
 
-    it "displays user popover in system note" do
+    it 'displays user popover in system note', :sidekiq_inline do
       add_note("/assign @#{user.username}")
 
       find('.system-note-message .js-user-link').hover

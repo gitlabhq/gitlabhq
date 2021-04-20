@@ -1,5 +1,5 @@
 export const fieldTypes = {
-  codeBock: 'codeBlock',
+  codeBlock: 'codeBlock',
   link: 'link',
   seconds: 'seconds',
   text: 'text',

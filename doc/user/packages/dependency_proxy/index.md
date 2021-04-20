@@ -68,6 +68,11 @@ The requirement to authenticate is a breaking change added in 13.7. An [administ
 disable it](../../../administration/packages/dependency_proxy.md#disabling-authentication) if it
 has disrupted your existing Dependency Proxy usage.
 
+WARNING:
+If [SSO enforcement](../../group/saml_sso/index.md#sso-enforcement)
+is enabled for your Group, requests to the dependency proxy will fail. This bug is being tracked in
+[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/294018).
+
 Because the Dependency Proxy is storing Docker images in a space associated with your group,
 you must authenticate against the Dependency Proxy.
 

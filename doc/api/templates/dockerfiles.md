@@ -1,15 +1,22 @@
 ---
-stage: none
-group: unassigned
+stage: Create
+group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
 # Dockerfiles API
 
-In GitLab, there is an API endpoint available for Dockerfiles. For more
-information on Dockerfiles, see the
-[Docker documentation](https://docs.docker.com/engine/reference/builder/).
+GitLab provides an API endpoint for instance-level Dockerfile templates.
+Default templates are defined at
+[`vendor/Dockerfile`](https://gitlab.com/gitlab-org/gitlab-foss/-/tree/master/vendor/Dockerfile)
+in the GitLab repository.
+
+## Override Dockerfile API templates **(PREMIUM SELF)**
+
+In [GitLab Premium and higher](https://about.gitlab.com/pricing/) tiers, GitLab instance
+administrators can override templates in the
+[Admin Area](../../user/admin_area/settings/instance_template_repository.md).
 
 ## List Dockerfile templates
 

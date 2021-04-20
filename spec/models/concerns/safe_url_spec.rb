@@ -26,14 +26,16 @@ RSpec.describe SafeUrl do
     context 'when URL contains credentials' do
       let(:url) { 'http://foo:bar@example.com' }
 
-      it { is_expected.to eq('http://*****:*****@example.com')}
+      it 'masks username and password' do
+        is_expected.to eq('http://*****:*****@example.com')
+      end
 
-      context 'when username is whitelisted' do
-        subject { test_class.safe_url(usernames_whitelist: usernames_whitelist) }
+      context 'when username is allowed' do
+        subject { test_class.safe_url(allowed_usernames: usernames) }
 
-        let(:usernames_whitelist) { %w[foo] }
+        let(:usernames) { %w[foo] }
 
-        it 'does expect the whitelisted username not to be masked' do
+        it 'masks the password, but not the username' do
           is_expected.to eq('http://foo:*****@example.com')
         end
       end

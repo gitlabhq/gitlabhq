@@ -2,7 +2,7 @@
 
 module Users
   class BatchStatusCleanerService
-    BATCH_SIZE = 100.freeze
+    BATCH_SIZE = 100
 
     # Cleanup BATCH_SIZE user_statuses records
     # rubocop: disable CodeReuse/ActiveRecord

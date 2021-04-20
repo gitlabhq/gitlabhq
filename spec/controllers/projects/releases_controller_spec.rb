@@ -11,6 +11,7 @@ RSpec.describe Projects::ReleasesController do
   let_it_be(:reporter)   { create(:user) }
   let_it_be(:guest)      { create(:user) }
   let_it_be(:user)       { developer }
+
   let!(:release_1)       { create(:release, project: project, released_at: Time.zone.parse('2018-10-18')) }
   let!(:release_2)       { create(:release, project: project, released_at: Time.zone.parse('2019-10-19')) }
 

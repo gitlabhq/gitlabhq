@@ -40,7 +40,7 @@ Consider the following workflow:
 ## How browser performance testing works
 
 First, define a job in your `.gitlab-ci.yml` file that generates the
-[Browser Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance).
+[Browser Performance report artifact](../../../ci/yaml/README.md#artifactsreportsperformance).
 GitLab then checks this report, compares key performance metrics for each page
 between the source and target branches, and shows the information in the merge request.
 
@@ -88,7 +88,7 @@ The example uses a CI/CD template that is included in all GitLab installations s
 or older, you must [add the configuration manually](#gitlab-versions-123-and-older)
 
 The template uses the [GitLab plugin for sitespeed.io](https://gitlab.com/gitlab-org/gl-performance),
-and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance)
+and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../../../ci/yaml/README.md#artifactsreportsperformance)
 that you can later download and analyze. This implementation always takes the latest
 Browser Performance artifact available. If [GitLab Pages](../pages/index.md) is enabled,
 you can view the report directly in your browser.

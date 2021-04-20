@@ -1,0 +1,5 @@
+---
+title: Remove cached_api_merge_request_version feature flag
+merge_request: 58670
+author:
+type: changed

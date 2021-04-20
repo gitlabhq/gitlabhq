@@ -13,19 +13,20 @@
 
 - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
   %p.slead
-    GitLab is open source software to collaborate on code.
+    = _('GitLab is open source software to collaborate on code.')
     %br
-    Manage git repositories with fine-grained access controls that keep your code secure.
+    = _('Manage git repositories with fine-grained access controls that keep your code secure.')
     %br
-    Perform code reviews and enhance collaboration with merge requests.
+    = _('Perform code reviews and enhance collaboration with merge requests.')
     %br
-    Each project can also have an issue tracker and a wiki.
+    = _('Each project can also have an issue tracker and a wiki.')
     %br
-    Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
+    = _('Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.')
     %br
-    Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer'}.
+    - link_to_promo = link_to(promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer')
+    = _("Read more about GitLab at %{link_to_promo}.").html_safe % { link_to_promo: link_to_promo }
 
-%p= link_to 'Check the current instance configuration ', help_instance_configuration_url
+%p= link_to _('Check the current instance configuration '), help_instance_configuration_url
 %hr
 
 .row.gl-mt-3
@@ -35,15 +36,15 @@
   .col-md-4
     .card.links-card
       .card-header
-        Quick help
+        = _('Quick help')
       %ul.content-list
-        %li= link_to 'See our website for getting help', support_url
+        %li= link_to _('See our website for getting help'), support_url
         %li
           %button.btn-blank.btn-link.js-trigger-search-bar{ type: 'button' }
-            Use the search bar on the top of this page
+            = _('Use the search bar on the top of this page')
         %li
           %button.btn-blank.btn-link.js-trigger-shortcut{ type: 'button' }
-            Use shortcuts
+            = _('Use shortcuts')
         - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
-          %li= link_to 'Get a support subscription', 'https://about.gitlab.com/pricing/'
-          %li= link_to 'Compare GitLab editions', 'https://about.gitlab.com/features/#compare'
+          %li= link_to _('Get a support subscription'), 'https://about.gitlab.com/pricing/'
+          %li= link_to _('Compare GitLab editions'), 'https://about.gitlab.com/features/#compare'

@@ -13,8 +13,8 @@
     .gl-alert-actions
       = link_to s_('AdminSettings|Go to General Settings'), general_admin_application_settings_path, class: 'btn gl-alert-action btn-info gl-button'
 
-%h4= s_('AdminSettings|Apply integration settings to all Projects')
-%p
-  = s_('AdminSettings|Integrations configured here will automatically apply to all projects on this instance.')
-  = link_to _('Learn more'), integrations_help_page_path, target: '_blank', rel: 'noopener noreferrer'
+%h3= s_('Integrations|Project integration management')
+
+- integrations_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: integrations_help_page_path }
+%p= s_('Integrations|As a GitLab administrator, you can set default configuration parameters for a given integration that all projects can inherit and use. When you set these parameters, your changes update the integration for all projects that are not already using custom settings. Learn more about %{integrations_link_start}Project integration management%{link_end}.').html_safe % { integrations_link_start: integrations_link_start, link_end: '</a>'.html_safe }
 = render 'shared/integrations/index', integrations: @integrations

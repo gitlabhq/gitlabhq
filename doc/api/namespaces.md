@@ -225,3 +225,33 @@ Example response:
   "trial": false
 }
 ```
+
+## Get existence of a namespace
+
+Get existence of a namespace by path. Suggests a new namespace path that does not already exist.
+
+```plaintext
+GET /namespaces/:namespace/exists
+```
+
+| Attribute   | Type    | Required | Description |
+| ----------- | ------- | -------- | ----------- |
+| `namespace` | string  | yes      | Namespace's path. |
+| `parent_id` | integer | no       | The ID of the parent namespace. If no ID is specified, only top-level namespaces are considered. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces/my-group/exists?parent_id=1"
+```
+
+Example response:
+
+```json
+{
+    "exists": true,
+    "suggests": [
+        "my-group1"
+    ]
+}
+```

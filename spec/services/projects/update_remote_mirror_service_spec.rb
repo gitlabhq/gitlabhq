@@ -12,7 +12,9 @@ RSpec.describe Projects::UpdateRemoteMirrorService do
   subject(:service) { described_class.new(project, project.creator) }
 
   describe '#execute' do
-    subject(:execute!) { service.execute(remote_mirror, 0) }
+    let(:retries) { 0 }
+
+    subject(:execute!) { service.execute(remote_mirror, retries) }
 
     before do
       project.repository.add_branch(project.owner, 'existing-branch', 'master')
@@ -62,8 +64,18 @@ RSpec.describe Projects::UpdateRemoteMirrorService do
         allow(Gitlab::UrlBlocker).to receive(:blocked_url?).and_return(true)
       end
 
-      it 'fails and returns error status' do
+      it 'hard retries and returns error status' do
         expect(execute!).to eq(status: :error, message: 'The remote mirror URL is invalid.')
+        expect(remote_mirror).to be_to_retry
+      end
+
+      context 'when retries are exceeded' do
+        let(:retries) { 4 }
+
+        it 'hard fails and returns error status' do
+          expect(execute!).to eq(status: :error, message: 'The remote mirror URL is invalid.')
+          expect(remote_mirror).to be_failed
+        end
       end
     end
 

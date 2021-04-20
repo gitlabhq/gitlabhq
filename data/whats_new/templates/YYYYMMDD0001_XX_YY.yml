@@ -7,7 +7,7 @@
 # For more information please refer to the handbook documentation here:
 # https://about.gitlab.com/handbook/marketing/blog/release-posts/index.html#create-mr-for-whats-new-entries
 #
-# Please delete this line and above before submitting your Merge Request.
+# Please delete this line and above before submitting your merge request.
 
 - title: # Match the release post entry
   body: | # Do not modify this line, instead modify the lines below.

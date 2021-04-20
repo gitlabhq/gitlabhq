@@ -8,17 +8,17 @@ RSpec.describe BulkImports::Groups::Pipelines::MembersPipeline do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:cursor) { 'cursor' }
   let_it_be(:bulk_import) { create(:bulk_import, user: user) }
   let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import, group: group) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(entity) }
+  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
   subject { described_class.new(context) }
 
   describe '#run' do
     it 'maps existing users to the imported group' do
-      first_page = member_data(email: member_user1.email, has_next_page: true, cursor: cursor)
-      last_page = member_data(email: member_user2.email, has_next_page: false)
+      first_page = extracted_data(email: member_user1.email, has_next_page: true)
+      last_page = extracted_data(email: member_user2.email)
 
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
         allow(extractor)
@@ -88,7 +88,7 @@ RSpec.describe BulkImports::Groups::Pipelines::MembersPipeline do
     end
   end
 
-  def member_data(email:, has_next_page:, cursor: nil)
+  def extracted_data(email:, has_next_page: false)
     data = {
       'created_at' => '2020-01-01T00:00:00Z',
       'updated_at' => '2020-01-01T00:00:00Z',
@@ -102,8 +102,8 @@ RSpec.describe BulkImports::Groups::Pipelines::MembersPipeline do
     }
 
     page_info = {
-      'end_cursor' => cursor,
-      'has_next_page' => has_next_page
+      'has_next_page' => has_next_page,
+      'next_page' => has_next_page ? 'cursor' : nil
     }
 
     BulkImports::Pipeline::ExtractedData.new(data: data, page_info: page_info)

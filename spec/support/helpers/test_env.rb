@@ -92,7 +92,7 @@ module TestEnv
   }.freeze
 
   TMP_TEST_PATH = Rails.root.join('tmp', 'tests').freeze
-  REPOS_STORAGE = 'default'.freeze
+  REPOS_STORAGE = 'default'
   SECOND_STORAGE_PATH = Rails.root.join('tmp', 'tests', 'second_storage')
 
   # Test environment
@@ -170,7 +170,14 @@ module TestEnv
       install_dir: gitaly_dir,
       version: Gitlab::GitalyClient.expected_server_version,
       task: "gitlab:gitaly:install[#{install_gitaly_args}]") do
-        Gitlab::SetupHelper::Gitaly.create_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
+        Gitlab::SetupHelper::Gitaly.create_configuration(
+          gitaly_dir,
+          { 'default' => repos_path },
+          force: true,
+          options: {
+            prometheus_listen_addr: 'localhost:9236'
+          }
+        )
         Gitlab::SetupHelper::Gitaly.create_configuration(
           gitaly_dir,
           { 'default' => repos_path },

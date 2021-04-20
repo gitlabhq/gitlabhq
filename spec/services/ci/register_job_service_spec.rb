@@ -225,6 +225,28 @@ module Ci
             end
           end
 
+          context 'when the use_distinct_in_register_job_object_hierarchy feature flag is enabled' do
+            before do
+              stub_feature_flags(use_distinct_in_register_job_object_hierarchy: true)
+              stub_feature_flags(use_distinct_for_all_object_hierarchy: true)
+            end
+
+            it 'calls DISTINCT' do
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).to_sql).to include("DISTINCT")
+            end
+          end
+
+          context 'when the use_distinct_in_register_job_object_hierarchy feature flag is disabled' do
+            before do
+              stub_feature_flags(use_distinct_in_register_job_object_hierarchy: false)
+              stub_feature_flags(use_distinct_for_all_object_hierarchy: false)
+            end
+
+            it 'does not call DISTINCT' do
+              expect(described_class.new(group_runner).send(:builds_for_group_runner).to_sql).not_to include("DISTINCT")
+            end
+          end
+
           context 'group runner' do
             let(:build) { execute(group_runner) }
 
@@ -593,9 +615,22 @@ module Ci
             create(:ci_build, pipeline: pipeline, tag_list: %w[non-matching])
           end
 
-          it "observes queue size of only matching jobs" do
+          it 'observes queue size of only matching jobs' do
             # pending_job + 2 x matching ones
-            expect(Gitlab::Ci::Queue::Metrics.queue_size_total).to receive(:observe).with({}, 3)
+            expect(Gitlab::Ci::Queue::Metrics.queue_size_total).to receive(:observe)
+              .with({ runner_type: specific_runner.runner_type }, 3)
+
+            expect(execute(specific_runner)).to eq(pending_job)
+          end
+
+          it 'observes queue processing time by the runner type' do
+            expect(Gitlab::Ci::Queue::Metrics.queue_iteration_duration_seconds)
+              .to receive(:observe)
+              .with({ runner_type: specific_runner.runner_type }, anything)
+
+            expect(Gitlab::Ci::Queue::Metrics.queue_retrieval_duration_seconds)
+              .to receive(:observe)
+              .with({ runner_type: specific_runner.runner_type }, anything)
 
             expect(execute(specific_runner)).to eq(pending_job)
           end

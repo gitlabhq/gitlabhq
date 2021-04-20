@@ -1,0 +1,8 @@
+---
+name: x509_forced_cert_loading
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54569
+rollout_issue_url:
+milestone: '13.10'
+type: ops
+group: group::source code
+default_enabled: false

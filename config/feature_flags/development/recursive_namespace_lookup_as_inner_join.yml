@@ -1,8 +1,0 @@
----
-name: recursive_namespace_lookup_as_inner_join
-introduced_by_url:
-rollout_issue_url:
-milestone: '13.10'
-type: development
-group: group::optimize
-default_enabled: false

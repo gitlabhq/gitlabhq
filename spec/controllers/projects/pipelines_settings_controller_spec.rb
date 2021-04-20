@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::PipelinesSettingsController do
   let_it_be(:user) { create(:user) }
   let_it_be(:project_auto_devops) { create(:project_auto_devops) }
+
   let(:project) { project_auto_devops.project }
 
   before do

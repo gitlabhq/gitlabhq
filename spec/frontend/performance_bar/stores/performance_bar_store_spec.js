@@ -59,4 +59,44 @@ describe('PerformanceBarStore', () => {
       expect(store.findRequest('id').details.test.calls).toEqual(123);
     });
   });
+
+  describe('canTrackRequest', () => {
+    let store;
+
+    beforeEach(() => {
+      store = new PerformanceBarStore();
+    });
+
+    it('limits to 10 requests for GraphQL', () => {
+      expect(store.canTrackRequest('https://gitlab.com/api/graphql')).toBe(true);
+
+      store.addRequest('0', 'https://gitlab.com/api/graphql');
+      store.addRequest('1', 'https://gitlab.com/api/graphql');
+      store.addRequest('2', 'https://gitlab.com/api/graphql');
+      store.addRequest('3', 'https://gitlab.com/api/graphql');
+      store.addRequest('4', 'https://gitlab.com/api/graphql');
+      store.addRequest('5', 'https://gitlab.com/api/graphql');
+      store.addRequest('6', 'https://gitlab.com/api/graphql');
+      store.addRequest('7', 'https://gitlab.com/api/graphql');
+      store.addRequest('8', 'https://gitlab.com/api/graphql');
+
+      expect(store.canTrackRequest('https://gitlab.com/api/graphql')).toBe(true);
+
+      store.addRequest('9', 'https://gitlab.com/api/graphql');
+
+      expect(store.canTrackRequest('https://gitlab.com/api/graphql')).toBe(false);
+    });
+
+    it('limits to 2 requests for all other URLs', () => {
+      expect(store.canTrackRequest('https://gitlab.com/api/v4/users/1')).toBe(true);
+
+      store.addRequest('a', 'https://gitlab.com/api/v4/users/1');
+
+      expect(store.canTrackRequest('https://gitlab.com/api/v4/users/1')).toBe(true);
+
+      store.addRequest('b', 'https://gitlab.com/api/v4/users/1');
+
+      expect(store.canTrackRequest('https://gitlab.com/api/v4/users/1')).toBe(false);
+    });
+  });
 });

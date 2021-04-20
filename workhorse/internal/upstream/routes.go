@@ -57,6 +57,7 @@ const (
 	ciAPIPattern         = `^/ci/api/`
 	gitProjectPattern    = `^/.+\.git/`
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
+	apiProjectPattern    = apiPattern + `v4/projects/[^/]+/` // API: Projects can be encoded via group%2Fsubgroup%2Fproject
 	snippetUploadPattern = `^/uploads/personal_snippet`
 	userUploadPattern    = `^/uploads/user`
 	importPattern        = `^/import/`
@@ -253,32 +254,39 @@ func configureRoutes(u *upstream) {
 		u.route("", apiPattern+`v4/jobs/request\z`, ciAPILongPolling),
 		u.route("", ciAPIPattern+`v1/builds/register.json\z`, ciAPILongPolling),
 
+		// Not all API endpoints support encoded project IDs
+		// (e.g. `group%2Fproject`), but for the sake of consistency we
+		// use the apiProjectPattern regex throughout. API endpoints
+		// that do not support this will return 400 regardless of
+		// whether they are accelerated by Workhorse or not.  See
+		// https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56731.
+
 		// Maven Artifact Repository
-		u.route("PUT", apiPattern+`v4/projects/[0-9]+/packages/maven/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/maven/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
 
 		// Conan Artifact Repository
 		u.route("PUT", apiPattern+`v4/packages/conan/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
-		u.route("PUT", apiPattern+`v4/projects/[0-9]+/packages/conan/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/conan/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
 
 		// Generic Packages Repository
-		u.route("PUT", apiPattern+`v4/projects/[0-9]+/packages/generic/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/generic/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
 
 		// NuGet Artifact Repository
-		u.route("PUT", apiPattern+`v4/projects/[0-9]+/packages/nuget/`, upload.Accelerate(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/nuget/`, upload.Accelerate(api, signingProxy, preparers.packages)),
 
 		// PyPI Artifact Repository
-		u.route("POST", apiPattern+`v4/projects/[0-9]+/packages/pypi`, upload.Accelerate(api, signingProxy, preparers.packages)),
+		u.route("POST", apiProjectPattern+`packages/pypi`, upload.Accelerate(api, signingProxy, preparers.packages)),
 
 		// Debian Artifact Repository
-		u.route("PUT", apiPattern+`v4/projects/[0-9]+/packages/debian/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("PUT", apiProjectPattern+`packages/debian/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
 
 		// Gem Artifact Repository
-		u.route("POST", apiPattern+`v4/projects/[0-9]+/packages/rubygems/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
+		u.route("POST", apiProjectPattern+`packages/rubygems/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
 
 		// We are porting API to disk acceleration
 		// we need to declare each routes until we have fixed all the routes on the rails codebase.
 		// Overall status can be seen at https://gitlab.com/groups/gitlab-org/-/epics/1802#current-status
-		u.route("POST", apiPattern+`v4/projects/[0-9]+/wikis/attachments\z`, uploadAccelerateProxy),
+		u.route("POST", apiProjectPattern+`wikis/attachments\z`, uploadAccelerateProxy),
 		u.route("POST", apiPattern+`graphql\z`, uploadAccelerateProxy),
 		u.route("POST", apiPattern+`v4/groups/import`, upload.Accelerate(api, signingProxy, preparers.uploads)),
 		u.route("POST", apiPattern+`v4/projects/import`, upload.Accelerate(api, signingProxy, preparers.uploads)),
@@ -289,10 +297,13 @@ func configureRoutes(u *upstream) {
 		u.route("POST", importPattern+`gitlab_group`, upload.Accelerate(api, signingProxy, preparers.uploads)),
 
 		// Metric image upload
-		u.route("POST", apiPattern+`v4/projects/[0-9]+/issues/[0-9]+/metric_images\z`, upload.Accelerate(api, signingProxy, preparers.uploads)),
+		u.route("POST", apiProjectPattern+`issues/[0-9]+/metric_images\z`, upload.Accelerate(api, signingProxy, preparers.uploads)),
 
 		// Requirements Import via UI upload acceleration
 		u.route("POST", projectPattern+`requirements_management/requirements/import_csv`, upload.Accelerate(api, signingProxy, preparers.uploads)),
+
+		// Uploads via API
+		u.route("POST", apiProjectPattern+`uploads\z`, upload.Accelerate(api, signingProxy, preparers.uploads)),
 
 		// Explicitly proxy API requests
 		u.route("", apiPattern, proxy),

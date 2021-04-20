@@ -1,7 +1,6 @@
 ---
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_title_changed_weekly
-description: Distinct users count that changed issue title in a group for last recent
-  week
+description: Count of WAU editing an issue title
 product_stage: plan
 product_group: group::project management
 product_category: issue_tracking

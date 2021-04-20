@@ -1,0 +1,5 @@
+---
+title: "When removing a user, warn Admin user is part of an on-call schedule"
+merge_request: 57397
+author:
+type: added

@@ -15,6 +15,7 @@ const {
   UNINSTALL_ERRORED,
   PRE_INSTALLED,
   UNINSTALLED,
+  EXTERNALLY_INSTALLED,
 } = APPLICATION_STATUS;
 
 const applicationStateMachine = {
@@ -70,6 +71,9 @@ const applicationStateMachine = {
       },
       [UNINSTALLED]: {
         target: UNINSTALLED,
+      },
+      [EXTERNALLY_INSTALLED]: {
+        target: EXTERNALLY_INSTALLED,
       },
     },
   },

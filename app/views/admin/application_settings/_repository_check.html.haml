@@ -3,56 +3,51 @@
 
   %fieldset
     .sub-section
-      %h4 Repository checks
+      %h4= _("Repository checks")
       .form-group
         .form-check
           = f.check_box :repository_checks_enabled, class: 'form-check-input'
           = f.label :repository_checks_enabled, class: 'form-check-label' do
-            Enable Repository Checks
+            = _("Enable Repository Checks")
           .form-text.text-muted
-            GitLab will periodically run
-            %a{ href: 'https://git-scm.com/docs/git-fsck', target: 'blank' } 'git fsck'
-            in all project and wiki repositories to look for silent disk corruption issues.
+            - link_to_git_fsck = link_to('git fsck', 'https://git-scm.com/docs/git-fsck', target: '_blank')
+            = _("GitLab will periodically run %{link_to_git_fsck} in all project and wiki repositories to look for silent disk corruption issues.").html_safe % { link_to_git_fsck: link_to_git_fsck }
       .form-group
         .form-text.text-muted
-          If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
+          = _("If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.")
           - clear_repository_checks_link = _('Clear all repository checks')
           - clear_repository_checks_message = _('This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?')
         = link_to clear_repository_checks_link, clear_repository_check_states_admin_application_settings_path, data: { confirm: clear_repository_checks_message }, method: :put, class: "gl-button btn btn-sm btn-danger"
 
     .sub-section
-      %h4 Housekeeping
+      %h4= _("Housekeeping")
       .form-group
         .form-check
           = f.check_box :housekeeping_enabled, class: 'form-check-input'
           = f.label :housekeeping_enabled, class: 'form-check-label' do
-            Enable automatic repository housekeeping (git repack, git gc)
+            = _("Enable automatic repository housekeeping (git repack, git gc)")
           .form-text.text-muted
-            If you keep automatic housekeeping disabled for a long time Git
-            repository access on your GitLab server will become slower and your
-            repositories will use more disk space. We recommend to always leave
-            this enabled.
+            = _("If you keep automatic housekeeping disabled for a long time Git repository access on your GitLab server will become slower and your repositories will use more disk space. We recommend to always leave this enabled.")
         .form-check
           = f.check_box :housekeeping_bitmaps_enabled, class: 'form-check-input'
           = f.label :housekeeping_bitmaps_enabled, class: 'form-check-label' do
-            Enable Git pack file bitmap creation
+            = _("Enable Git pack file bitmap creation")
           .form-text.text-muted
-            Creating pack file bitmaps makes housekeeping take a little longer but
-            bitmaps should accelerate 'git clone' performance.
+            = _("Creating pack file bitmaps makes housekeeping take a little longer but bitmaps should accelerate 'git clone' performance.")
       .form-group
         = f.label :housekeeping_incremental_repack_period, 'Incremental repack period', class: 'label-bold'
         = f.number_field :housekeeping_incremental_repack_period, class: 'form-control gl-form-input'
         .form-text.text-muted
-          Number of Git pushes after which an incremental 'git repack' is run.
+          = _("Number of Git pushes after which an incremental 'git repack' is run.")
       .form-group
         = f.label :housekeeping_full_repack_period, 'Full repack period', class: 'label-bold'
         = f.number_field :housekeeping_full_repack_period, class: 'form-control gl-form-input'
         .form-text.text-muted
-          Number of Git pushes after which a full 'git repack' is run.
+          = _("Number of Git pushes after which a full 'git repack' is run.")
       .form-group
-        = f.label :housekeeping_gc_period, 'Git GC period', class: 'label-bold'
+        = f.label :housekeeping_gc_period, _('Git GC period'), class: 'label-bold'
         = f.number_field :housekeeping_gc_period, class: 'form-control gl-form-input'
         .form-text.text-muted
-          Number of Git pushes after which 'git gc' is run.
+          = _("Number of Git pushes after which 'git gc' is run.")
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

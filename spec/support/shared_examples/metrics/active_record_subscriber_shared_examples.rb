@@ -16,7 +16,9 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
             db_primary_duration_s:  record_query ? 0.002 : 0,
             db_replica_cached_count:  0,
             db_replica_count:  0,
-            db_replica_duration_s:  0.0
+            db_replica_duration_s:  0.0,
+            db_primary_wal_count: record_wal_query ? 1 : 0,
+            db_replica_wal_count: 0
           )
         elsif db_role == :replica
           expect(described_class.db_counter_payload).to eq(
@@ -28,7 +30,9 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
             db_primary_duration_s:  0.0,
             db_replica_cached_count:  record_cached_query ? 1 : 0,
             db_replica_count:  record_query ? 1 : 0,
-            db_replica_duration_s:  record_query ? 0.002 : 0
+            db_replica_duration_s:  record_query ? 0.002 : 0,
+            db_replica_wal_count: record_wal_query ? 1 : 0,
+            db_primary_wal_count: 0
           )
         else
           expect(described_class.db_counter_payload).to eq(
@@ -64,6 +68,12 @@ RSpec.shared_examples 'record ActiveRecord metrics in a metrics transaction' do 
     else
       expect(transaction).not_to receive(:increment).with(:gitlab_transaction_db_cached_count_total, 1)
       expect(transaction).not_to receive(:increment).with("gitlab_transaction_db_#{db_role}_cached_count_total".to_sym, 1) if db_role
+    end
+
+    if record_wal_query
+      expect(transaction).to receive(:increment).with("gitlab_transaction_db_#{db_role}_wal_count_total".to_sym, 1) if db_role
+    else
+      expect(transaction).not_to receive(:increment).with("gitlab_transaction_db_#{db_role}_wal_count_total".to_sym, 1) if db_role
     end
 
     subscriber.sql(event)

@@ -39,7 +39,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
         select('7 days', from: 'Remove tags older than:')
         fill_in('Remove tags matching:', with: '.*-production')
 
-        submit_button = find('.btn.gl-button.btn-success')
+        submit_button = find('[data-testid="save-button"')
         expect(submit_button).not_to be_disabled
         submit_button.click
       end
@@ -53,7 +53,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       within '#js-registry-policies' do
         fill_in('Remove tags matching:', with: '*-production')
 
-        submit_button = find('.btn.gl-button.btn-success')
+        submit_button = find('[data-testid="save-button"')
         expect(submit_button).not_to be_disabled
         submit_button.click
       end

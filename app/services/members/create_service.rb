@@ -2,67 +2,98 @@
 
 module Members
   class CreateService < Members::BaseService
-    include Gitlab::Utils::StrongMemoize
+    BlankInvitesError = Class.new(StandardError)
+    TooManyInvitesError = Class.new(StandardError)
 
-    DEFAULT_LIMIT = 100
+    DEFAULT_INVITE_LIMIT = 100
 
-    def execute(source)
-      return error(s_('AddMember|No users specified.')) if user_ids.blank?
+    def initialize(*args)
+      super
 
-      return error(s_("AddMember|Too many users specified (limit is %{user_limit})") % { user_limit: user_limit }) if
-        user_limit && user_ids.size > user_limit
+      @errors = []
+      @invites = invites_from_params&.split(',')&.uniq&.flatten
+      @source = params[:source]
+    end
 
+    def execute
+      validate_invites!
+
+      add_members
+      enqueue_onboarding_progress_action
+      result
+    rescue BlankInvitesError, TooManyInvitesError => e
+      error(e.message)
+    end
+
+    private
+
+    attr_reader :source, :errors, :invites, :member_created_namespace_id
+
+    def invites_from_params
+      params[:user_ids]
+    end
+
+    def validate_invites!
+      raise BlankInvitesError, blank_invites_message if invites.blank?
+
+      return unless user_limit && invites.size > user_limit
+
+      raise TooManyInvitesError,
+            format(s_("AddMember|Too many users specified (limit is %{user_limit})"), user_limit: user_limit)
+    end
+
+    def blank_invites_message
+      s_('AddMember|No users specified.')
+    end
+
+    def add_members
       members = source.add_users(
-        user_ids,
+        invites,
         params[:access_level],
         expires_at: params[:expires_at],
         current_user: current_user
       )
 
-      errors = []
-
-      members.each do |member|
-        if member.invalid?
-          current_error =
-            # Invited users may not have an associated user
-            if member.user.present?
-              "#{member.user.username}: "
-            else
-              ""
-            end
-
-          current_error += member.errors.full_messages.to_sentence
-          errors << current_error
-        else
-          after_execute(member: member)
-        end
-      end
-
-      enqueue_onboarding_progress_action(source) if members.size > errors.size
-
-      return success unless errors.any?
-
-      error(errors.to_sentence)
+      members.each { |member| process_result(member) }
     end
 
-    private
-
-    def user_ids
-      strong_memoize(:user_ids) do
-        ids = params[:user_ids] || ''
-        ids.split(',').uniq.flatten
+    def process_result(member)
+      if member.invalid?
+        add_error_for_member(member)
+      else
+        after_execute(member: member)
+        @member_created_namespace_id ||= member.namespace_id
       end
+    end
+
+    def add_error_for_member(member)
+      prefix = "#{member.user.username}: " if member.user.present?
+
+      errors << "#{prefix}#{member.errors.full_messages.to_sentence}"
     end
 
     def user_limit
-      limit = params.fetch(:limit, DEFAULT_LIMIT)
+      limit = params.fetch(:limit, DEFAULT_INVITE_LIMIT)
 
       limit && limit < 0 ? nil : limit
     end
 
-    def enqueue_onboarding_progress_action(source)
-      namespace_id = source.is_a?(Project) ? source.namespace_id : source.id
-      Namespaces::OnboardingUserAddedWorker.perform_async(namespace_id)
+    def enqueue_onboarding_progress_action
+      return unless member_created_namespace_id
+
+      Namespaces::OnboardingUserAddedWorker.perform_async(member_created_namespace_id)
+    end
+
+    def result
+      if errors.any?
+        error(formatted_errors)
+      else
+        success
+      end
+    end
+
+    def formatted_errors
+      errors.to_sentence
     end
   end
 end

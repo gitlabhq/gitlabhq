@@ -118,6 +118,10 @@ module QA
         '/users'
       end
 
+      def api_block_path
+        "/users/#{id}/block"
+      end
+
       def api_post_body
         {
           admin: admin,
@@ -140,6 +144,14 @@ module QA
             user.username = username if username
             user.password = password if password
           end
+        end
+      end
+
+      def block!
+        response = post(Runtime::API::Request.new(api_client, api_block_path).url, nil)
+
+        unless response.code == HTTP_STATUS_CREATED
+          raise ResourceUpdateFailedError, "Failed to block user. Request returned (#{response.code}): `#{response}`."
         end
       end
 

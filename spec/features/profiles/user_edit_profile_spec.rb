@@ -212,8 +212,10 @@ RSpec.describe 'User edit profile' do
         end
 
         it 'shows author as busy in the assignee dropdown' do
-          find('.block.assignee .edit-link').click
-          wait_for_requests
+          page.within('.assignee') do
+            click_button('Edit')
+            wait_for_requests
+          end
 
           page.within '.dropdown-menu-user' do
             expect(page).to have_content("#{user.name} (Busy)")
@@ -227,7 +229,7 @@ RSpec.describe 'User edit profile' do
           visit project_issue_path(project, issue)
           wait_for_requests
 
-          expect(page.find('[data-testid="expanded-assignee"]')).to have_text("#{user.name} (Busy)")
+          expect(page.find('.issuable-assignees')).to have_content("#{user.name} (Busy)")
         end
       end
 

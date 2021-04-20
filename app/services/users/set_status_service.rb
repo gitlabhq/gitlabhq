@@ -7,7 +7,8 @@ module Users
     attr_reader :current_user, :target_user, :params
 
     def initialize(current_user, params)
-      @current_user, @params = current_user, params.dup
+      @current_user = current_user
+      @params = params.dup
       @target_user = params.delete(:user) || current_user
     end
 

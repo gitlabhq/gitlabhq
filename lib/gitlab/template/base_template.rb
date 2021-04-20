@@ -130,10 +130,10 @@ module Gitlab
           return [] if project && !project.repository.exists?
 
           if categories.any?
-            categories.keys.map do |category|
+            categories.keys.to_h do |category|
               files = self.by_category(category, project)
               [category, files.map { |t| { key: t.key, name: t.name, content: t.content } }]
-            end.to_h
+            end
           else
             files = self.all(project)
             files.map { |t| { key: t.key, name: t.name, content: t.content } }

@@ -1,0 +1,8 @@
+---
+name: usage_data_i_testing_summary_widget_total
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57543
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326058
+milestone: '13.11'
+type: development
+group: group::testing
+default_enabled: true

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'checking spam' do
-  let(:request) { double(:request) }
+  let(:request) { double(:request, headers: headers) }
+  let(:headers) { nil }
   let(:api) { true }
   let(:captcha_response) { 'abc123' }
   let(:spam_log_id) { 1 }
@@ -42,6 +43,44 @@ RSpec.shared_examples 'checking spam' do
     end
 
     subject
+  end
+
+  context 'when CAPTCHA arguments are passed in the headers' do
+    let(:headers) do
+      {
+        'X-GitLab-Spam-Log-Id' => spam_log_id,
+        'X-GitLab-Captcha-Response' => captcha_response
+      }
+    end
+
+    let(:extra_opts) do
+      {
+        request: request,
+        api: api,
+        disable_spam_action_service: disable_spam_action_service
+      }
+    end
+
+    it 'executes the SpamActionService correctly' do
+      spam_params = Spam::SpamParams.new(
+        api: api,
+        captcha_response: captcha_response,
+        spam_log_id: spam_log_id
+      )
+      expect_next_instance_of(
+        Spam::SpamActionService,
+        {
+          spammable: kind_of(Snippet),
+          request: request,
+          user: an_instance_of(User),
+          action: action
+        }
+      ) do |instance|
+        expect(instance).to receive(:execute).with(spam_params: spam_params)
+      end
+
+      subject
+    end
   end
 
   context 'when spam action service is disabled' do

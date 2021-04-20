@@ -56,6 +56,7 @@ describe('diffs/components/app', () => {
         endpointMetadata: `${TEST_HOST}/diff/endpointMetadata`,
         endpointBatch: `${TEST_HOST}/diff/endpointBatch`,
         endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
+        endpointCodequality: '',
         projectPath: 'namespace/project',
         currentUser: {},
         changesEmptyStateIllustration: '',
@@ -105,7 +106,6 @@ describe('diffs/components/app', () => {
       jest.spyOn(wrapper.vm, 'fetchDiffFilesBatch').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchCoverageFiles').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'setDiscussions').mockImplementation(() => {});
-      jest.spyOn(wrapper.vm, 'startRenderDiffsQueue').mockImplementation(() => {});
       jest.spyOn(wrapper.vm, 'unwatchDiscussions').mockImplementation(() => {});
       jest.spyOn(wrapper.vm, 'unwatchRetrievingBatches').mockImplementation(() => {});
       store.state.diffs.retrievingBatches = true;
@@ -119,7 +119,6 @@ describe('diffs/components/app', () => {
 
       await nextTick();
 
-      expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
       expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
       expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
       expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
@@ -134,13 +133,22 @@ describe('diffs/components/app', () => {
 
       await nextTick();
 
-      expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
       expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
       expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
       expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
       expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
       expect(wrapper.vm.diffFilesLength).toBe(100);
       expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
+    });
+  });
+
+  describe('codequality diff', () => {
+    it('does not fetch code quality data on FOSS', async () => {
+      createComponent();
+      jest.spyOn(wrapper.vm, 'fetchCodequality');
+      wrapper.vm.fetchData(false);
+
+      expect(wrapper.vm.fetchCodequality).not.toHaveBeenCalled();
     });
   });
 
@@ -695,6 +703,26 @@ describe('diffs/components/app', () => {
           expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
         },
       );
+    });
+  });
+
+  describe('diff file tree is aware of review bar', () => {
+    it('it does not have review-bar-visible class when review bar is not visible', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles = [{ file_hash: '111', file_path: '111.js' }];
+      });
+
+      expect(wrapper.find('.js-diff-tree-list').exists()).toBe(true);
+      expect(wrapper.find('.js-diff-tree-list.review-bar-visible').exists()).toBe(false);
+    });
+
+    it('it does have review-bar-visible class when review bar is visible', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles = [{ file_hash: '111', file_path: '111.js' }];
+        state.batchComments.drafts = ['draft message'];
+      });
+
+      expect(wrapper.find('.js-diff-tree-list.review-bar-visible').exists()).toBe(true);
     });
   });
 });

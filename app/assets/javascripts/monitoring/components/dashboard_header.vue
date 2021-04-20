@@ -14,6 +14,7 @@ import { debounce } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import invalidUrl from '~/lib/utils/invalid_url';
 import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
+import { s__ } from '~/locale';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
 import { timeRanges } from '~/vue_shared/constants';
@@ -24,6 +25,9 @@ import DashboardsDropdown from './dashboards_dropdown.vue';
 import RefreshButton from './refresh_button.vue';
 
 export default {
+  i18n: {
+    metricsSettings: s__('Metrics|Metrics Settings'),
+  },
   components: {
     GlIcon,
     GlButton,
@@ -282,7 +286,8 @@ export default {
             data-testid="metrics-settings-button"
             icon="settings"
             :href="operationsSettingsPath"
-            :title="s__('Metrics|Metrics Settings')"
+            :title="$options.i18n.metricsSettings"
+            :aria-label="$options.i18n.metricsSettings"
           />
         </div>
       </template>

@@ -58,6 +58,9 @@ emails = Email.where(user_id: 1) # returns emails for the deleted user
 
 Add a `NOT VALID` foreign key constraint to the table, which enforces consistency on the record changes.
 
+[Using the `with_lock_retries` helper method is advised when performing operations on high-traffic tables](../migration_style_guide.md#when-to-use-the-helper-method),
+in this case, if the table or the foreign table is a high-traffic table, we should use the helper method.
+
 In the example above, you'd be still able to update records in the `emails` table. However, when you'd try to update the `user_id` with non-existent value, the constraint causes a database error.
 
 Migration file for adding `NOT VALID` foreign key:
@@ -65,8 +68,6 @@ Migration file for adding `NOT VALID` foreign key:
 ```ruby
 class AddNotValidForeignKeyToEmailsUser < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
-
-  DOWNTIME = false
 
   def up
     # safe to use: it requires short lock on the table since we don't validate the foreign key
@@ -93,8 +94,6 @@ Example for cleaning up records in the `emails` table within a database migratio
 ```ruby
 class RemoveRecordsWithoutUserFromEmailsTable < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
-
-  DOWNTIME = false
 
   disable_ddl_transaction!
 
@@ -129,8 +128,6 @@ Migration file for validating the foreign key:
 
 class ValidateForeignKeyOnEmailUsers < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
-
-  DOWNTIME = false
 
   def up
     validate_foreign_key :emails, :user_id

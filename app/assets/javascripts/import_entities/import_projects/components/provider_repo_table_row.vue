@@ -111,7 +111,7 @@ export default {
       </gl-link>
     </td>
     <td
-      class="gl-display-flex gl-flex-sm-wrap gl-p-4 gl-pt-5 gl-vertical-align-top"
+      class="gl-display-flex gl-sm-flex-wrap gl-p-4 gl-pt-5 gl-vertical-align-top"
       data-testid="fullPath"
       data-qa-selector="project_path_content"
     >

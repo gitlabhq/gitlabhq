@@ -1,0 +1,5 @@
+---
+title: Fix EmptyLineAfterFinalLetItBe Rubocop offenses for groups module
+merge_request: 58183
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

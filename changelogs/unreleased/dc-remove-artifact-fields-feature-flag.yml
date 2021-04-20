@@ -1,0 +1,5 @@
+---
+title: Remove paths from BuildArtifactEntity
+merge_request: 58818
+author:
+type: performance

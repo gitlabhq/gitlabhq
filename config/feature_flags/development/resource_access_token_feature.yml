@@ -1,8 +1,0 @@
----
-name: resource_access_token_feature
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29622
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/235765
-milestone: '13.0'
-type: development
-group: group::access
-default_enabled: true

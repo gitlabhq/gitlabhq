@@ -251,7 +251,7 @@ RSpec.describe API::Notes do
         expect { subject }.not_to change { Note.where(system: false).count }
       end
 
-      it 'does however create a system note about the change' do
+      it 'does however create a system note about the change', :sidekiq_inline do
         expect { subject }.to change { Note.system.count }.by(1)
       end
 

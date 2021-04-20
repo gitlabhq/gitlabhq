@@ -45,7 +45,7 @@ There are 3 ways to resolve an abuse report, with a button for each method:
 
 The following is an example of the **Abuse Reports** page:
 
-![abuse-reports-page-image](img/abuse_reports_page.png)
+![abuse-reports-page-image](img/abuse_reports_page_v13_11.png)
 
 ### Blocking users
 

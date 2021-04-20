@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Admin::DevOpsReportController < Admin::ApplicationController
-  include Analytics::UniqueVisitsHelper
+  include RedisTracking
 
   helper_method :show_adoption?
 
-  track_unique_visits :show, target_id: 'i_analytics_dev_ops_score'
+  track_redis_hll_event :show, name: 'i_analytics_dev_ops_score', if: -> { should_track_devops_score? }
 
   feature_category :devops_reports
 
@@ -17,6 +17,10 @@ class Admin::DevOpsReportController < Admin::ApplicationController
 
   def show_adoption?
     false
+  end
+
+  def should_track_devops_score?
+    true
   end
 end
 

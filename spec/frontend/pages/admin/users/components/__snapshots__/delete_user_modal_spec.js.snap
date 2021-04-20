@@ -50,11 +50,11 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
    
   <gl-button-stub
     buttontextclasses=""
-    category="primary"
+    category="secondary"
     disabled="true"
     icon=""
     size="medium"
-    variant="warning"
+    variant="danger"
   >
     
       secondaryAction

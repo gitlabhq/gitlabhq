@@ -34,7 +34,7 @@ RSpec.describe 'getting Alert Management Alert Assignees' do
   end
 
   let(:gql_alerts) { graphql_data.dig('project', 'alertManagementAlerts', 'nodes') }
-  let(:gql_todos) { gql_alerts.map { |gql_alert| [gql_alert['iid'], gql_alert['todos']['nodes']] }.to_h }
+  let(:gql_todos) { gql_alerts.to_h { |gql_alert| [gql_alert['iid'], gql_alert['todos']['nodes']] } }
   let(:gql_alert_todo) { gql_todos[alert.iid.to_s].first }
   let(:gql_other_alert_todo) { gql_todos[other_alert.iid.to_s].first }
 

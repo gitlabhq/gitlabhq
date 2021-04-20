@@ -91,7 +91,7 @@ apps were fetched from the central Helm stable repository (`https://kubernetes-c
 This repository [was deleted](https://github.com/helm/charts#deprecation-timeline)
 on November 13, 2020. This causes the installation CI/CD pipeline to
 fail. Upgrade to GitLab 13.6, or alternatively, you can
-use the following `.gitlab-ci.yml`, which has been tested on GitLab 13.5:
+use the following `.gitlab-ci.yml`, which has been tested in GitLab 13.5:
 
 ```yaml
 include:
@@ -1001,8 +1001,8 @@ Logs produced by pods running **GitLab Managed Apps** can be browsed using
 ## Install with one click
 
 WARNING:
-The one click installation method is scheduled for removal in GitLab 14.0. The removal
-of this feature from GitLab does not affect installed applications to avoid breaking
+The one-click installation method is deprecated and scheduled for removal in [GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
+This removal does not affect installed applications to avoid breaking
 changes. Following GitLab 14.0, users can take ownership of already installed applications
 using our documentation.
 
@@ -1062,7 +1062,7 @@ supported by GitLab before installing any of the applications.
 used to install the GitLab-managed apps. GitLab runs each `helm` command
 in a pod in the `gitlab-managed-apps` namespace inside the cluster.
 
-- For clusters created on GitLab 13.6 and newer, GitLab uses Helm 3 to manage
+- For clusters created in GitLab 13.6 and newer, GitLab uses Helm 3 to manage
   applications.
 - For clusters created on versions of GitLab prior to 13.6, GitLab uses Helm 2
   with a local [Tiller](https://v2.helm.sh/docs/glossary/#tiller) server. Prior
@@ -1239,7 +1239,7 @@ of a WAF are:
 
 By default, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/),
 which is a toolkit for real-time web application monitoring, logging, and access
-control. GitLab applies the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/),
+control. GitLab applies the [OWASP's Core Rule Set](https://coreruleset.org/),
 which provides generic attack detection capabilities.
 
 This feature:
@@ -1314,7 +1314,7 @@ tracked over time:
 
 - The total amount of traffic to your application.
 - The proportion of traffic that's considered anomalous by the Web Application
-  Firewall's default [OWASP ruleset](https://www.modsecurity.org/CRS/Documentation/).
+  Firewall's default [OWASP ruleset](https://coreruleset.org/).
 
 If a significant percentage of traffic is anomalous, investigate it for potential threats
 by [examining the Web Application Firewall logs](#web-application-firewall-modsecurity).

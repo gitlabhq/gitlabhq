@@ -41,25 +41,25 @@
         = link_to '#tab-members', class: ['nav-link', ('active' unless invited_active)], data: { toggle: 'tab' } do
           %span
             = _('Members')
-          %span.badge.badge-pill= @members.total_count
+          %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @members.total_count
       - if @group.shared_with_group_links.any?
         %li.nav-item
           = link_to '#tab-groups', class: ['nav-link'] , data: { toggle: 'tab', qa_selector: 'groups_list_tab' } do
             %span
               = _('Groups')
-            %span.badge.badge-pill= @group.shared_with_group_links.count
+            %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @group.shared_with_group_links.count
       - if show_invited_members
         %li.nav-item
           = link_to '#tab-invited-members', class: ['nav-link', ('active' if invited_active)], data: { toggle: 'tab' } do
             %span
               = _('Invited')
-            %span.badge.badge-pill= @invited_members.total_count
+            %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @invited_members.total_count
       - if show_access_requests
         %li.nav-item
           = link_to '#tab-access-requests', class: 'nav-link', data: { toggle: 'tab' } do
             %span
               = _('Access requests')
-            %span.badge.badge-pill= @requesters.count
+            %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @requesters.count
     .tab-content
       #tab-members.tab-pane{ class: ('active' unless invited_active) }
         .js-group-members-list{ data: group_members_list_data_attributes(@group, @members) }

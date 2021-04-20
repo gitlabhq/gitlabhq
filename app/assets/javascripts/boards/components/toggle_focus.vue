@@ -38,14 +38,16 @@ export default {
 </script>
 
 <template>
-  <div class="board-extra-actions gl-ml-3 gl-display-flex gl-align-items-center">
+  <div class="gl-ml-3 gl-display-none gl-md-display-flex gl-align-items-center">
     <gl-button
       ref="toggleFocusModeButton"
       v-gl-tooltip
+      category="tertiary"
       :icon="isFullscreen ? 'minimize' : 'maximize'"
       class="js-focus-mode-btn"
       data-qa-selector="focus_mode_button"
       :title="$options.i18n.toggleFocusMode"
+      :aria-label="$options.i18n.toggleFocusMode"
       @click="toggleFocusMode"
     />
   </div>

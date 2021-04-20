@@ -1,31 +1,25 @@
 import { GlAvatarLink, GlBadge } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import { mount, createWrapper } from '@vue/test-utils';
-import Vue from 'vue';
-import Vuex from 'vuex';
 import UserAvatar from '~/members/components/avatars/user_avatar.vue';
 import { member as memberMock, member2faEnabled, orphanedMember } from '../../mock_data';
-
-Vue.use(Vuex);
 
 describe('UserAvatar', () => {
   let wrapper;
 
   const { user } = memberMock;
 
-  const createComponent = (propsData = {}, state = {}) => {
+  const createComponent = (propsData = {}, provide = {}) => {
     wrapper = mount(UserAvatar, {
       propsData: {
         member: memberMock,
         isCurrentUser: false,
         ...propsData,
       },
-      store: new Vuex.Store({
-        state: {
-          canManageMembers: true,
-          ...state,
-        },
-      }),
+      provide: {
+        canManageMembers: true,
+        ...provide,
+      },
     });
   };
 

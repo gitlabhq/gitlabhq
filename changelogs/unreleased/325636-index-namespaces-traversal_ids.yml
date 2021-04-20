@@ -1,0 +1,5 @@
+---
+title: Add gin index for namespaces.traversal_ids
+merge_request: 57207
+author:
+type: performance

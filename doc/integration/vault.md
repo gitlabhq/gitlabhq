@@ -76,15 +76,25 @@ The following assumes you already have Vault installed and running.
 
    This configuration is saved under the name of the role you are creating. In this case, we are creating a `demo` role. Later, we show how you can access this role through the Vault CLI.
 
+   WARNING:
+   If you're using a public GitLab instance (GitLab.com or any other instance publicly
+   accessible), it's paramount to specify the `bound_claims` to allow access only to
+   members of your group/project. Otherwise, anyone with a public account can access
+   your Vault instance.
+
    ```shell
-   vault write auth/oidc/role/demo \
-         user_claim="sub" \
-         allowed_redirect_uris="http://localhost:8250/oidc/callback,http://127.0.0.1:8200/ui/vault/auth/oidc/oidc/callback" \
-         bound_audiences="your_application_id" \
-         role_type="oidc" \
-         oidc_scopes="openid" \
-         policies=demo \
-         ttl=1h
+   vault write auth/oidc/role/demo -<<EOF
+   {
+      "user_claim": "sub",
+      "allowed_redirect_uris": "your_vault_instance_redirect_uris",
+      "bound_audiences": "your_application_id",
+      "oidc_scopes": "openid",
+      "role_type": "oidc",
+      "policies": "demo",
+      "ttl": "1h",
+      "bound_claims": { "groups": ["yourGroup/yourSubgrup"] }
+   }
+   EOF
    ```
 
 1. **Sign in to Vault:**

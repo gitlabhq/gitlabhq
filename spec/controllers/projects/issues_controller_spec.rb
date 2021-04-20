@@ -8,6 +8,7 @@ RSpec.describe Projects::IssuesController do
 
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user, reload: true) { create(:user) }
+
   let(:issue) { create(:issue, project: project) }
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
@@ -44,7 +45,7 @@ RSpec.describe Projects::IssuesController do
         let_it_be(:issue) { create(:issue, project: new_project) }
 
         before do
-          project.route.destroy
+          project.route.destroy!
           new_project.redirect_routes.create!(path: project.full_path)
           new_project.add_developer(user)
         end
@@ -61,23 +62,6 @@ RSpec.describe Projects::IssuesController do
 
           expect(response).to redirect_to(project_issue_path(new_project, issue))
           expect(response).to have_gitlab_http_status(:moved_permanently)
-        end
-      end
-
-      describe 'the null hypothesis experiment', :experiment do
-        before do
-          stub_experiments(null_hypothesis: :candidate)
-        end
-
-        it 'defines the expected before actions' do
-          expect(controller).to use_before_action(:run_null_hypothesis_experiment)
-        end
-
-        it 'assigns the candidate experience and tracks the event' do
-          expect(experiment(:null_hypothesis)).to track('index').on_any_instance.for(:candidate)
-            .with_context(project: project)
-
-          get :index, params: { namespace_id: project.namespace, project_id: project }
         end
       end
     end
@@ -208,6 +192,32 @@ RSpec.describe Projects::IssuesController do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['issue_email_participants']).to contain_exactly({ "email" => participants[0].email }, { "email" => participants[1].email })
+    end
+
+    context 'with the invite_members_in_comment experiment', :experiment do
+      context 'when user can invite' do
+        before do
+          stub_experiments(invite_members_in_comment: :invite_member_link)
+          project.add_maintainer(user)
+        end
+
+        it 'assigns the candidate experience and tracks the event' do
+          expect(experiment(:invite_members_in_comment)).to track(:view, property: project.root_ancestor.id.to_s)
+            .for(:invite_member_link)
+            .with_context(namespace: project.root_ancestor)
+            .on_next_instance
+
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+        end
+      end
+
+      context 'when user can not invite' do
+        it 'does not track the event' do
+          expect(experiment(:invite_members_in_comment)).not_to track(:view)
+
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+        end
+      end
     end
   end
 
@@ -342,6 +352,7 @@ RSpec.describe Projects::IssuesController do
     end
 
     let_it_be(:issue) { create(:issue, project: project) }
+
     let(:developer) { user }
     let(:params) do
       {
@@ -685,7 +696,7 @@ RSpec.describe Projects::IssuesController do
 
         issue.update!(last_edited_by: deleted_user, last_edited_at: Time.current)
 
-        deleted_user.destroy
+        deleted_user.destroy!
         sign_in(user)
       end
 
@@ -1038,10 +1049,10 @@ RSpec.describe Projects::IssuesController do
         labels = create_list(:label, 10, project: project).map(&:to_reference)
         issue = create(:issue, project: project, description: 'Test issue')
 
-        control_count = ActiveRecord::QueryRecorder.new { issue.update(description: [issue.description, label].join(' ')) }.count
+        control_count = ActiveRecord::QueryRecorder.new { issue.update!(description: [issue.description, label].join(' ')) }.count
 
         # Follow-up to get rid of this `2 * label.count` requirement: https://gitlab.com/gitlab-org/gitlab-foss/issues/52230
-        expect { issue.update(description: [issue.description, labels].join(' ')) }
+        expect { issue.update!(description: [issue.description, labels].join(' ')) }
           .not_to exceed_query_limit(control_count + 2 * labels.count)
       end
 
@@ -1158,6 +1169,7 @@ RSpec.describe Projects::IssuesController do
 
     context 'resolving discussions in MergeRequest' do
       let_it_be(:discussion) { create(:diff_note_on_merge_request).to_discussion }
+
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
 
@@ -1420,9 +1432,7 @@ RSpec.describe Projects::IssuesController do
         expect_next_instance_of(Spam::AkismetService) do |akismet_service|
           expect(akismet_service).to receive_messages(submit_spam: true)
         end
-        expect_next_instance_of(ApplicationSetting) do |setting|
-          expect(setting).to receive_messages(akismet_enabled: true)
-        end
+        stub_application_setting(akismet_enabled: true)
       end
 
       def post_spam
@@ -1489,12 +1499,6 @@ RSpec.describe Projects::IssuesController do
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response).to eq({ 'errors' => 'Destroy confirmation not provided for issue' })
-      end
-
-      it 'delegates the update of the todos count cache to TodoService' do
-        expect_any_instance_of(TodoService).to receive(:destroy_target).with(issue).once
-
-        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true }
       end
     end
   end
@@ -1623,6 +1627,7 @@ RSpec.describe Projects::IssuesController do
 
   describe 'POST #import_csv' do
     let_it_be(:project) { create(:project, :public) }
+
     let(:file) { fixture_file_upload('spec/fixtures/csv_comma.csv') }
 
     context 'unauthorized' do
@@ -1822,6 +1827,7 @@ RSpec.describe Projects::IssuesController do
 
       context 'with cross-reference system note', :request_store do
         let_it_be(:new_issue) { create(:issue) }
+
         let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
 
         before do
@@ -1899,7 +1905,7 @@ RSpec.describe Projects::IssuesController do
       before do
         sign_in(user)
 
-        project.route.destroy
+        project.route.destroy!
         new_project.redirect_routes.create!(path: project.full_path)
         new_project.add_developer(user)
       end

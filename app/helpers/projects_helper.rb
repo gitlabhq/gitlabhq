@@ -410,6 +410,10 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
+    if Feature.enabled?(:infrastructure_registry_page)
+      nav_tabs << :infrastructure_registry
+    end
+
     # Pipelines feature is tied to presence of builds
     if can?(current_user, :read_build, project)
       nav_tabs << :pipelines
@@ -725,14 +729,6 @@ module ProjectsHelper
     ]
   end
 
-  def sidebar_projects_paths
-    %w[
-      projects#show
-      projects#activity
-      releases#index
-    ]
-  end
-
   def sidebar_settings_paths
     %w[
       projects#edit
@@ -747,25 +743,6 @@ module ProjectsHelper
       operations#show
       badges#index
       pages#show
-    ]
-  end
-
-  def sidebar_repository_paths
-    %w[
-      tree
-      blob
-      blame
-      edit_tree
-      new_tree
-      find_file
-      commit
-      commits
-      compare
-      projects/repositories
-      tags
-      branches
-      graphs
-      network
     ]
   end
 
@@ -807,10 +784,6 @@ module ProjectsHelper
   def settings_container_registry_expiration_policy_available?(project)
     Gitlab.config.registry.enabled &&
       can?(current_user, :destroy_container_image, project)
-  end
-
-  def project_access_token_available?(project)
-    can?(current_user, :admin_resource_access_tokens, project)
   end
 
   def build_project_breadcrumb_link(project)

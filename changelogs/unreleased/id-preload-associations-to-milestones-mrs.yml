@@ -1,0 +1,5 @@
+---
+title: 'Fix N + 1 for MilestonesController#merge_requests'
+merge_request: 57980
+author:
+type: performance

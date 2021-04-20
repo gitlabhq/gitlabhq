@@ -10,11 +10,15 @@ describe('Reports Store Mutations', () => {
     stateCopy = state();
   });
 
-  describe('SET_ENDPOINT', () => {
+  describe('SET_PATHS', () => {
     it('should set endpoint', () => {
-      mutations[types.SET_ENDPOINT](stateCopy, 'endpoint.json');
+      mutations[types.SET_PATHS](stateCopy, {
+        endpoint: 'endpoint.json',
+        headBlobPath: '/blob/path',
+      });
 
       expect(stateCopy.endpoint).toEqual('endpoint.json');
+      expect(stateCopy.headBlobPath).toEqual('/blob/path');
     });
   });
 

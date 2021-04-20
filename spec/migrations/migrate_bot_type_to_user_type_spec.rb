@@ -15,6 +15,6 @@ RSpec.describe MigrateBotTypeToUserType, :migration do
 
     migrate!
 
-    expect(users.where('user_type IS NOT NULL').map(&:user_type)).to match_array([1, 2, 3])
+    expect(users.where.not(user_type: nil).map(&:user_type)).to match_array([1, 2, 3])
   end
 end

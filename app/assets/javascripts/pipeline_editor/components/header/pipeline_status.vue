@@ -1,9 +1,11 @@
 <script>
 import { GlIcon, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { truncateSha } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import getCommitSha from '~/pipeline_editor/graphql/queries/client/commit_sha.graphql';
 import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
+import { toggleQueryPollingByVisibility } from '~/pipelines/components/graph/utils';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 const POLL_INTERVAL = 10000;
@@ -38,13 +40,11 @@ export default {
         };
       },
       update: (data) => {
-        const { id, commitPath = '', shortSha = '', detailedStatus = {} } =
-          data.project?.pipeline || {};
+        const { id, commitPath = '', detailedStatus = {} } = data.project?.pipeline || {};
 
         return {
           id,
           commitPath,
-          shortSha,
           detailedStatus,
         };
       },
@@ -61,24 +61,34 @@ export default {
   },
   computed: {
     hasPipelineData() {
-      return Boolean(this.$apollo.queries.pipeline?.id);
-    },
-    isQueryLoading() {
-      return this.$apollo.queries.pipeline.loading && !this.hasPipelineData;
-    },
-    status() {
-      return this.pipeline.detailedStatus;
+      return Boolean(this.pipeline?.id);
     },
     pipelineId() {
       return getIdFromGraphQLId(this.pipeline.id);
     },
+    showLoadingState() {
+      // the query is set to poll regularly, so if there is no pipeline data
+      // (e.g. pipeline is null during fetch when the pipeline hasn't been
+      // triggered yet), we can just show the loading state until the pipeline
+      // details are ready to be fetched
+      return this.$apollo.queries.pipeline.loading || (!this.hasPipelineData && !this.hasError);
+    },
+    shortSha() {
+      return truncateSha(this.commitSha);
+    },
+    status() {
+      return this.pipeline.detailedStatus;
+    },
+  },
+  mounted() {
+    toggleQueryPollingByVisibility(this.$apollo.queries.pipeline, POLL_INTERVAL);
   },
 };
 </script>
 
 <template>
   <div class="gl-white-space-nowrap gl-max-w-full">
-    <template v-if="isQueryLoading">
+    <template v-if="showLoadingState">
       <gl-loading-icon class="gl-mr-auto gl-display-inline-block" size="sm" />
       <span data-testid="pipeline-loading-msg">{{ $options.i18n.fetchLoading }}</span>
     </template>
@@ -88,7 +98,7 @@ export default {
     </template>
     <template v-else>
       <a :href="status.detailsPath" class="gl-mr-auto">
-        <ci-icon :status="status" :size="18" />
+        <ci-icon :status="status" :size="16" />
       </a>
       <span class="gl-font-weight-bold">
         <gl-sprintf :message="$options.i18n.pipelineInfo">
@@ -110,7 +120,7 @@ export default {
               target="_blank"
               data-testid="pipeline-commit"
             >
-              {{ pipeline.shortSha }}
+              {{ shortSha }}
             </gl-link>
           </template>
         </gl-sprintf>

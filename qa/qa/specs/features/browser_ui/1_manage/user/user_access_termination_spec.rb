@@ -12,7 +12,9 @@ module QA
       end
 
       let!(:group) do
-        group = Resource::Group.fabricate_via_api!
+        group = QA::Resource::Group.fabricate_via_api! do |group|
+          group.path = "group-to-test-access-termination-#{SecureRandom.hex(8)}"
+        end
         group.sandbox.add_member(user)
         group
       end
@@ -53,11 +55,7 @@ module QA
         after do
           user.remove_via_api!
           project.remove_via_api!
-          begin
-            group.remove_via_api!
-          rescue Resource::ApiFabricator::ResourceNotDeletedError
-            # It is ok if the group is already marked for deletion by another test
-          end
+          group.remove_via_api!
         end
       end
     end

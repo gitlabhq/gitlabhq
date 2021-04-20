@@ -1,15 +1,15 @@
 .form-group.row
   .col-sm-2.col-form-label.pt-0
-    = f.label :lfs_enabled, 'Large File Storage'
+    = f.label :lfs_enabled, _('Large File Storage')
   .col-sm-10
     .form-check
       = f.check_box :lfs_enabled, checked: @group.lfs_enabled?, class: 'form-check-input'
       = f.label :lfs_enabled, class: 'form-check-label' do
         %strong
-          Allow projects within this group to use Git LFS
+          = _('Allow projects within this group to use Git LFS')
           = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
         %br/
-        %span This setting can be overridden in each project.
+        %span= _('This setting can be overridden in each project.')
 .form-group.row
   .col-sm-2.col-form-label
     = f.label s_('ProjectCreationLevel|Allowed to create projects')
@@ -24,16 +24,16 @@
 
 .form-group.row
   .col-sm-2.col-form-label.pt-0
-    = f.label :require_two_factor_authentication, 'Two-factor authentication'
+    = f.label :require_two_factor_authentication, _('Two-factor authentication')
   .col-sm-10
     .form-check
       = f.check_box :require_two_factor_authentication, class: 'form-check-input'
       = f.label :require_two_factor_authentication, class: 'form-check-label' do
         %strong
-          Require all users in this group to set up Two-factor authentication
+          = _("Require all users in this group to setup Two-factor authentication")
           = link_to sprite_icon('question-o'), help_page_path('security/two_factor_authentication', anchor: 'enforcing-2fa-for-all-users-in-a-group')
 .form-group.row
   .offset-sm-2.col-sm-10
     .form-check
       = f.text_field :two_factor_grace_period, class: 'form-control'
-      .form-text.text-muted Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
+      .form-text.text-muted= _("Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication")

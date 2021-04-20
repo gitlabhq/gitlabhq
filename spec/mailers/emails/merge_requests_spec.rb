@@ -31,7 +31,7 @@ RSpec.describe Emails::MergeRequests do
       aggregate_failures do
         is_expected.to have_referable_subject(merge_request, reply: true)
         is_expected.to have_body_text(project_merge_request_path(project, merge_request))
-        is_expected.to have_body_text('You have been mentioned in Merge Request')
+        is_expected.to have_body_text('You have been mentioned in merge request')
         is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
         is_expected.to have_text_part_content(assignee.name)
         is_expected.to have_text_part_content(reviewer.name)
@@ -55,9 +55,7 @@ RSpec.describe Emails::MergeRequests do
     it_behaves_like 'appearance header and footer not enabled'
 
     it 'is sent as the merge request author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(merge_request.author.name)
-      expect(sender.address).to eq(gitlab_sender)
+      expect_sender(merge_request.author)
     end
 
     it 'has the correct subject and body' do
@@ -85,9 +83,7 @@ RSpec.describe Emails::MergeRequests do
     it_behaves_like 'appearance header and footer not enabled'
 
     it 'is sent as the author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(current_user.name)
-      expect(sender.address).to eq(gitlab_sender)
+      expect_sender(current_user)
     end
 
     it 'has the correct subject and body' do
@@ -120,9 +116,7 @@ RSpec.describe Emails::MergeRequests do
     it_behaves_like 'appearance header and footer not enabled'
 
     it 'is sent as the merge author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(merge_author.name)
-      expect(sender.address).to eq(gitlab_sender)
+      expect_sender(merge_author)
     end
 
     it 'has the correct subject and body' do
@@ -153,9 +147,7 @@ RSpec.describe Emails::MergeRequests do
     it_behaves_like 'appearance header and footer not enabled'
 
     it 'is sent as the author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(current_user.name)
-      expect(sender.address).to eq(gitlab_sender)
+      expect_sender(current_user)
     end
 
     it 'has the correct subject and body' do
@@ -228,5 +220,11 @@ RSpec.describe Emails::MergeRequests do
 
       it { expect(subject).to have_content('attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15 MB.') }
     end
+  end
+
+  def expect_sender(user)
+    sender = subject.header[:from].addrs[0]
+    expect(sender.display_name).to eq("#{user.name} (@#{user.username})")
+    expect(sender.address).to eq(gitlab_sender)
   end
 end

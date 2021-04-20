@@ -1,0 +1,5 @@
+---
+title: Add validation for emails on push recipients
+merge_request: 55550
+author:
+type: changed

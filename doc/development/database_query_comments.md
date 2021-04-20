@@ -20,9 +20,8 @@ and its application source from the comments.
 Queries generated from **Rails** include the following metadata in comments:
 
 - `application`
-- `controller`
-- `action`
 - `correlation_id`
+- `endpoint_id`
 - `line`
 
 Queries generated from **Sidekiq** workers will include the following metadata
@@ -30,20 +29,34 @@ in comments:
 
 - `application`
 - `jid`
-- `job_class`
 - `correlation_id`
+- `endpoint_id`
 - `line`
 
-Examples of queries with comments as observed in `development.log`:
+`endpoint_id` is a single field that can represent any endpoint in the application:
 
-1. Rails:
+- For Rails controllers, it's the controller and action. For example, `Projects::BlobController#show`.
+- For Grape API endpoints, it's the route. For example, `/api/:version/users/:id`.
+- For Sidekiq workers, it's the worker class name. For example, `UserStatusCleanup::BatchWorker`.
+
+`line` is not present in production logs due to the additional overhead required.
+
+Examples of queries with comments:
+
+- Rails:
 
    ```sql
-   /*application:web,controller:jobs,action:trace,correlation_id:rYF4mey9CH3,line:/app/policies/project_policy.rb:504:in `feature_available?'*/ SELECT "project_features".* FROM "project_features" WHERE "project_features"."project_id" = $1 LIMIT $2 [["project_id", 5], ["LIMIT", 1]]
+   /*application:web,controller:blob,action:show,correlation_id:01EZVMR923313VV44ZJDJ7PMEZ,endpoint_id:Projects::BlobController#show*/ SELECT "routes".* FROM "routes" WHERE "routes"."source_id" = 75 AND "routes"."source_type" = 'Namespace' LIMIT 1
    ```
 
-1. Sidekiq:
+- Grape:
 
    ```sql
-   /*application:sidekiq,jid:e7d6668a39a991e323009833,job_class:ExpireJobCacheWorker,correlation_id:rYF4mey9CH3,line:/app/workers/expire_job_cache_worker.rb:14:in `perform'*/ SELECT "ci_pipelines".* FROM "ci_pipelines" WHERE "ci_pipelines"."id" = $1 LIMIT $2 [["id", 64], ["LIMIT", 1]]
+   /*application:web,correlation_id:01EZVN0DAYGJF5XHG9N4VX8FAH,endpoint_id:/api/:version/users/:id*/ SELECT COUNT(*) FROM "users" INNER JOIN "user_follow_users" ON "users"."id" = "user_follow_users"."followee_id" WHERE "user_follow_users"."follower_id" = 1
+   ```
+
+- Sidekiq:
+
+   ```sql
+   /*application:sidekiq,correlation_id:df643992563683313bc0a0288fb55e23,jid:15fbc506590c625d7664b074,endpoint_id:UserStatusCleanup::BatchWorker,line:/app/workers/user_status_cleanup/batch_worker.rb:19:in `perform'*/ SELECT $1 AS one FROM "user_statuses" WHERE "user_statuses"."clear_status_at" <= $2 LIMIT $3
    ```

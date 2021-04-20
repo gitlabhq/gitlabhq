@@ -22,7 +22,7 @@ export default {
     TagField,
   },
   computed: {
-    ...mapState('detail', [
+    ...mapState('editNew', [
       'isFetchingRelease',
       'isUpdatingRelease',
       'fetchError',
@@ -36,13 +36,13 @@ export default {
       'groupId',
       'groupMilestonesAvailable',
     ]),
-    ...mapGetters('detail', ['isValid', 'isExistingRelease']),
+    ...mapGetters('editNew', ['isValid', 'isExistingRelease']),
     showForm() {
       return Boolean(!this.isFetchingRelease && !this.fetchError && this.release);
     },
     releaseTitle: {
       get() {
-        return this.$store.state.detail.release.name;
+        return this.$store.state.editNew.release.name;
       },
       set(title) {
         this.updateReleaseTitle(title);
@@ -50,7 +50,7 @@ export default {
     },
     releaseNotes: {
       get() {
-        return this.$store.state.detail.release.description;
+        return this.$store.state.editNew.release.description;
       },
       set(notes) {
         this.updateReleaseNotes(notes);
@@ -58,7 +58,7 @@ export default {
     },
     releaseMilestones: {
       get() {
-        return this.$store.state.detail.release.milestones;
+        return this.$store.state.editNew.release.milestones;
       },
       set(milestones) {
         this.updateReleaseMilestones(milestones);
@@ -93,7 +93,7 @@ export default {
     this.$el.querySelector('input:enabled, button:enabled').focus();
   },
   methods: {
-    ...mapActions('detail', [
+    ...mapActions('editNew', [
       'initializeRelease',
       'saveRelease',
       'updateReleaseTitle',
@@ -114,7 +114,7 @@ export default {
       <gl-sprintf
         :message="
           __(
-            'Releases are based on Git tags. We recommend tags that use semantic versioning, for example %{codeStart}v1.0%{codeEnd}, %{codeStart}v2.0-pre%{codeEnd}.',
+            'Releases are based on Git tags. We recommend tags that use semantic versioning, for example %{codeStart}v1.0.0%{codeEnd}, %{codeStart}v2.1.0-pre%{codeEnd}.',
           )
         "
       >

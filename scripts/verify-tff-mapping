@@ -8,7 +8,7 @@ require 'set'
 # The verification depend on the presence of actual test files,
 # so they would fail if one of the test files mentioned here is deleted.
 # To minimize the chance of this test failing due to unrelated changes,
-# the test files are chosen to be critical files that are unlikely to be deleted in a typical Merge Request
+# the test files are chosen to be critical files that are unlikely to be deleted in a typical merge request
 tests = [
   {
     explanation: 'EE code should map to respective spec',

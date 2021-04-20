@@ -9,7 +9,7 @@
       = button_tag class: 'toggle-mobile-nav', type: 'button' do
         %span.sr-only= _("Open sidebar")
         = sprite_icon('hamburger', size: 18)
-    .breadcrumbs-links.js-title-container{ data: { qa_selector: 'breadcrumb_links_content' } }
+    .breadcrumbs-links{ data: { testid: 'breadcrumb-links', qa_selector: 'breadcrumb_links_content' } }
       %ul.list-unstyled.breadcrumbs-list.js-breadcrumbs-list
         - unless hide_top_links
           = header_title
@@ -21,7 +21,7 @@
           %li
             %h2.breadcrumbs-sub-title
               = link_to @breadcrumb_title, breadcrumb_title_link
-    %script{ type:'application/ld+json' }
+    %script{ type: 'application/ld+json' }
       :plain
         #{schema_breadcrumb_json}
     = yield :header_content

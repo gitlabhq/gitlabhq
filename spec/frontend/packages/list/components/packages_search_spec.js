@@ -2,8 +2,9 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import component from '~/packages/list/components/package_search.vue';
 import PackageTypeToken from '~/packages/list/components/tokens/package_type_token.vue';
-import getTableHeaders from '~/packages/list/utils';
+import { sortableFields } from '~/packages/list/utils';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
+import UrlSync from '~/vue_shared/components/url_sync.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -12,7 +13,8 @@ describe('Package Search', () => {
   let wrapper;
   let store;
 
-  const findRegistrySearch = () => wrapper.find(RegistrySearch);
+  const findRegistrySearch = () => wrapper.findComponent(RegistrySearch);
+  const findUrlSync = () => wrapper.findComponent(UrlSync);
 
   const createStore = (isGroupPage) => {
     const state = {
@@ -37,6 +39,9 @@ describe('Package Search', () => {
     wrapper = shallowMount(component, {
       localVue,
       store,
+      stubs: {
+        UrlSync,
+      },
     });
   };
 
@@ -55,7 +60,7 @@ describe('Package Search', () => {
       tokens: expect.arrayContaining([
         expect.objectContaining({ token: PackageTypeToken, type: 'type', icon: 'package' }),
       ]),
-      sortableFields: getTableHeaders(),
+      sortableFields: sortableFields(),
     });
   });
 
@@ -72,7 +77,7 @@ describe('Package Search', () => {
       tokens: expect.arrayContaining([
         expect.objectContaining({ token: PackageTypeToken, type: 'type', icon: 'package' }),
       ]),
-      sortableFields: getTableHeaders(isGroupPage),
+      sortableFields: sortableFields(isGroupPage),
     });
   });
 
@@ -103,5 +108,21 @@ describe('Package Search', () => {
     findRegistrySearch().vm.$emit('filter:submit');
 
     expect(wrapper.emitted('update')).toEqual([[]]);
+  });
+
+  it('has a UrlSync component', () => {
+    mountComponent();
+
+    expect(findUrlSync().exists()).toBe(true);
+  });
+
+  it('on query:changed calls updateQuery from UrlSync', () => {
+    jest.spyOn(UrlSync.methods, 'updateQuery').mockImplementation(() => {});
+
+    mountComponent();
+
+    findRegistrySearch().vm.$emit('query:changed');
+
+    expect(UrlSync.methods.updateQuery).toHaveBeenCalled();
   });
 });

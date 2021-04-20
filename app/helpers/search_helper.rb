@@ -193,7 +193,7 @@ module SearchHelper
         { category: "In this project", label: _("Network"),        url: project_network_path(@project, ref) },
         { category: "In this project", label: _("Graph"),          url: project_graph_path(@project, ref) },
         { category: "In this project", label: _("Issues"),         url: project_issues_path(@project) },
-        { category: "In this project", label: _("Merge Requests"), url: project_merge_requests_path(@project) },
+        { category: "In this project", label: _("Merge requests"), url: project_merge_requests_path(@project) },
         { category: "In this project", label: _("Milestones"),     url: project_milestones_path(@project) },
         { category: "In this project", label: _("Snippets"),       url: project_snippets_path(@project) },
         { category: "In this project", label: _("Members"),        url: project_project_members_path(@project) },

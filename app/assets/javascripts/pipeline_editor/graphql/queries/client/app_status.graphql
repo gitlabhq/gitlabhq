@@ -1,0 +1,3 @@
+query getAppStatus {
+  appStatus @client
+}

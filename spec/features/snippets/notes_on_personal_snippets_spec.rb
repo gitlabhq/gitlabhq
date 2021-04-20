@@ -108,9 +108,6 @@ RSpec.describe 'Comments on personal snippets', :js do
     end
 
     it 'does not have autocomplete' do
-      wait_for_requests
-
-      find('#note_note').native.send_keys('')
       fill_in 'note[note]', with: '@'
 
       wait_for_requests

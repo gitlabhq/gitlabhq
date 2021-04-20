@@ -1,5 +1,6 @@
 @import '../framework/variables';
 @import './conflict_colors';
+@import 'page_bundles/mixins_and_variables_and_functions';
 
 @mixin diff-background($background, $idiff, $border) {
   background: $background;
@@ -91,5 +92,32 @@
         border-color: map-get($conflict-colors, #{$theme}-line-origin-neutral);
       }
     }
+  }
+}
+
+@mixin line-number-link($color) {
+  &::before {
+    @include gl-visibility-hidden;
+    @include gl-display-inline-block;
+    @include gl-align-self-center;
+    @include gl-mt-2;
+    @include gl-mr-2;
+    @include gl-w-4;
+    @include gl-h-4;
+    @include gl-float-left;
+    background-color: $color;
+    mask-image: asset_url('icons-stacked.svg#link');
+    mask-repeat: no-repeat;
+    mask-size: cover;
+    mask-position: center;
+    content: '';
+  }
+
+  &:hover::before {
+    @include gl-visibility-visible;
+  }
+
+  &:focus::before {
+    @include gl-visibility-visible;
   }
 }

@@ -17,6 +17,8 @@ RSpec.describe Gitlab::Diff::Line do
                         rich_text: rich_text)
   end
 
+  let(:rich_text) { nil }
+
   describe '.init_from_hash' do
     let(:rich_text) { '&lt;input&gt;' }
 
@@ -43,12 +45,45 @@ RSpec.describe Gitlab::Diff::Line do
     end
   end
 
+  describe '#text' do
+    let(:line) { described_class.new(raw_diff, 'new', 0, 0, 0) }
+    let(:raw_diff) { '+Hello' }
+
+    it 'returns raw diff text' do
+      expect(line.text).to eq('+Hello')
+    end
+
+    context 'when prefix is disabled' do
+      it 'returns raw diff text without prefix' do
+        expect(line.text(prefix: false)).to eq('Hello')
+      end
+
+      context 'when diff is empty' do
+        let(:raw_diff) { '' }
+
+        it 'returns an empty raw diff' do
+          expect(line.text(prefix: false)).to eq('')
+        end
+      end
+    end
+  end
+
   context "when setting rich text" do
     it 'escapes any HTML special characters in the diff chunk header' do
       subject = described_class.new("<input>", "", 0, 0, 0)
       line = subject.as_json
 
       expect(line[:rich_text]).to eq("&lt;input&gt;")
+    end
+  end
+
+  describe '#set_marker_ranges' do
+    let(:marker_ranges) { [Gitlab::MarkerRange.new(1, 10, mode: :deletion)] }
+
+    it 'stores MarkerRanges in Diff::Line object' do
+      line.set_marker_ranges(marker_ranges)
+
+      expect(line.marker_ranges).to eq(marker_ranges)
     end
   end
 end

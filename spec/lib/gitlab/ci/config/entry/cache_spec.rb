@@ -13,6 +13,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
     end
 
     describe '#valid?' do
+      context 'with an empty hash as cache' do
+        let(:config) { {} }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+      end
+
       context 'when configuration is valid with a single cache' do
         let(:config)  { { key: 'key', paths: ["logs/"], untracked: true } }
 

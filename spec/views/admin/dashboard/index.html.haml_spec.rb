@@ -29,7 +29,7 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
   it "includes revision of GitLab" do
     render
 
-    expect(rendered).to have_content "#{Gitlab::VERSION} (#{Gitlab.revision})"
+    expect(rendered).to have_content "#{Gitlab::VERSION} #{Gitlab.revision}"
   end
 
   it 'does not include license breakdown' do

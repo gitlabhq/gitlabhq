@@ -3,9 +3,9 @@
 module BulkImports
   module Clients
     class Http
-      API_VERSION = 'v4'.freeze
-      DEFAULT_PAGE = 1.freeze
-      DEFAULT_PER_PAGE = 30.freeze
+      API_VERSION = 'v4'
+      DEFAULT_PAGE = 1
+      DEFAULT_PER_PAGE = 30
 
       ConnectionError = Class.new(StandardError)
 
@@ -23,7 +23,7 @@ module BulkImports
             resource_url(resource),
             headers: request_headers,
             follow_redirects: false,
-            query: query.merge(request_query)
+            query: query.reverse_merge(request_query)
           )
         end
       end

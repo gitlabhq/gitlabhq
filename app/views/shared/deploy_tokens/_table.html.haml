@@ -24,8 +24,9 @@
               - else
                 %span.token-never-expires-label= _('Never')
             %td= token.scopes.present? ? token.scopes.join(', ') : _('no scopes selected')
-            %td= link_to s_('DeployTokens|Revoke'), "#", class: "gl-button btn btn-danger float-right", data: { toggle: "modal", target: "#revoke-modal-#{token.id}"}
-            = render 'shared/deploy_tokens/revoke_modal', token: token, group_or_project: group_or_project
+            %td
+              .js-deploy-token-revoke-button{ data: { button_class: 'float-right', token: token.to_json, revoke_path: revoke_deploy_token_path(group_or_project, token) } }
+
 - else
   .settings-message.text-center
     = s_('DeployTokens|This %{entity_type} has no active Deploy Tokens.') % { entity_type: group_or_project.class.name.downcase }

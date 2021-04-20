@@ -167,7 +167,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         create(:key, user: user)
         create(:project, creator: user, disable_overriding_approvers_per_merge_request: true)
         create(:project, creator: user, disable_overriding_approvers_per_merge_request: false)
-        create(:remote_mirror, project: project)
+        create(:remote_mirror, project: project, enabled: true)
+        another_user = create(:user)
+        another_project = create(:project, :repository, creator: another_user)
+        create(:remote_mirror, project: another_project, enabled: false)
         create(:snippet, author: user)
       end
 
@@ -176,7 +179,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         keys: 2,
         merge_requests: 2,
         projects_with_disable_overriding_approvers_per_merge_request: 2,
-        projects_without_disable_overriding_approvers_per_merge_request: 4,
+        projects_without_disable_overriding_approvers_per_merge_request: 6,
         remote_mirrors: 2,
         snippets: 2
       )
@@ -185,7 +188,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         keys: 1,
         merge_requests: 1,
         projects_with_disable_overriding_approvers_per_merge_request: 1,
-        projects_without_disable_overriding_approvers_per_merge_request: 2,
+        projects_without_disable_overriding_approvers_per_merge_request: 3,
         remote_mirrors: 1,
         snippets: 1
       )
@@ -1288,6 +1291,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           'p_analytics_repo' => 123,
           'i_analytics_cohorts' => 123,
           'i_analytics_dev_ops_score' => 123,
+          'i_analytics_dev_ops_adoption' => 123,
           'i_analytics_instance_statistics' => 123,
           'p_analytics_merge_request' => 123,
           'g_analytics_merge_request' => 123,
@@ -1358,24 +1362,36 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
     let(:ineligible_total_categories) do
-      %w[source_code ci_secrets_management incident_management_alerts snippets terraform epics_usage]
+      %w[source_code ci_secrets_management incident_management_alerts snippets terraform incident_management_oncall secure]
     end
 
-    it 'has all known_events' do
-      expect(subject).to have_key(:redis_hll_counters)
+    context 'with redis_hll_tracking feature enabled' do
+      it 'has all known_events' do
+        stub_feature_flags(redis_hll_tracking: true)
 
-      expect(subject[:redis_hll_counters].keys).to match_array(categories)
+        expect(subject).to have_key(:redis_hll_counters)
 
-      categories.each do |category|
-        keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
+        expect(subject[:redis_hll_counters].keys).to match_array(categories)
 
-        metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
+        categories.each do |category|
+          keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
 
-        if ineligible_total_categories.exclude?(category)
-          metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
+          metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
+
+          if ineligible_total_categories.exclude?(category)
+            metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
+          end
+
+          expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
         end
+      end
+    end
 
-        expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
+    context 'with redis_hll_tracking disabled' do
+      it 'does not have redis_hll_tracking key' do
+        stub_feature_flags(redis_hll_tracking: false)
+
+        expect(subject).not_to have_key(:redis_hll_counters)
       end
     end
   end

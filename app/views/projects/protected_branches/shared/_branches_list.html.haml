@@ -23,7 +23,7 @@
           %th
             = s_("ProtectedBranch|Allowed to push")
 
-          - if ::Feature.enabled?(:allow_force_push_to_protected_branches, @project)
+          - if ::Feature.enabled?(:allow_force_push_to_protected_branches, @project, default_enabled: :yaml)
             %th
               = s_("ProtectedBranch|Allow force push")
               %span.has-tooltip{ data: { container: 'body' }, title: s_('ProtectedBranch|Allow force push for all users with push access.'), 'aria-hidden': 'true' }

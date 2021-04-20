@@ -3,15 +3,56 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Settings::DeployKeysPresenter do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let_it_be(:project, refind: true) { create(:project) }
+  let_it_be(:other_project) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
   subject(:presenter) do
     described_class.new(project, current_user: user)
   end
 
+  before_all do
+    project.add_maintainer(user)
+    other_project.add_maintainer(user)
+  end
+
   it 'inherits from Gitlab::View::Presenter::Simple' do
     expect(described_class.superclass).to eq(Gitlab::View::Presenter::Simple)
+  end
+
+  describe 'deploy key groups' do
+    let_it_be(:deploy_key) { create(:deploy_key, projects: [project]) }
+    let_it_be(:other_deploy_key) { create(:deploy_key, projects: [other_project]) }
+    let_it_be(:public_deploy_key) { create(:deploy_key, public: true) }
+    let_it_be(:unrelated_project) { create(:project, :private) }
+    let_it_be(:unrelated_deploy_key) { create(:deploy_key, projects: [unrelated_project]) }
+
+    context 'with enabled keys' do
+      it 'returns correct deploy keys' do
+        expect(presenter.enabled_keys).to eq([deploy_key])
+        expect(presenter.enabled_keys_size).to eq(1)
+      end
+    end
+
+    context 'with available keys' do
+      it 'returns correct deploy keys' do
+        expect(presenter.available_keys).to eq([other_deploy_key, public_deploy_key])
+      end
+    end
+
+    context 'with available project keys' do
+      it 'returns correct deploy keys' do
+        expect(presenter.available_project_keys).to eq([other_deploy_key])
+        expect(presenter.available_project_keys_size).to eq(1)
+      end
+    end
+
+    context 'with available public keys' do
+      it 'returns correct deploy keys' do
+        expect(presenter.available_public_keys).to eq([public_deploy_key])
+        expect(presenter.available_public_keys_size).to eq(1)
+      end
+    end
   end
 
   describe '#enabled_keys' do

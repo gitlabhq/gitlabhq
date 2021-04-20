@@ -15,7 +15,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'user registers a new specific runner', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/392' do
+      it 'user registers a new specific runner', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1764' do
         Flow::Login.sign_in
 
         runner.project.visit!

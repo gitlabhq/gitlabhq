@@ -90,6 +90,18 @@ RSpec.describe Ci::PipelineSchedule do
     end
   end
 
+  describe '.owned_by' do
+    let(:user) { create(:user) }
+    let!(:owned_pipeline_schedule) { create(:ci_pipeline_schedule, owner: user) }
+    let!(:other_pipeline_schedule) { create(:ci_pipeline_schedule) }
+
+    subject { described_class.owned_by(user) }
+
+    it 'returns owned pipeline schedules' do
+      is_expected.to eq([owned_pipeline_schedule])
+    end
+  end
+
   describe '#set_next_run_at' do
     let(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly) }
     let(:ideal_next_run_at) { pipeline_schedule.send(:ideal_next_run_from, Time.zone.now) }

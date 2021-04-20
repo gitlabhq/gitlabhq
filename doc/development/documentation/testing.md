@@ -166,7 +166,7 @@ You can use markdownlint:
 
 ### Vale
 
-[Vale](https://errata-ai.gitbook.io/vale/) is a grammar, style, and word usage linter for the
+[Vale](https://docs.errata.ai/vale/about/) is a grammar, style, and word usage linter for the
 English language. Vale's configuration is stored in the
 [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) file located in the root
 directory of projects.
@@ -188,7 +188,7 @@ This configuration is also used in build pipelines, where
 
 You can use Vale:
 
-- [On the command line](https://errata-ai.gitbook.io/vale/getting-started/usage).
+- [On the command line](https://docs.errata.ai/vale/cli).
 - [In a code editor](#configure-editors).
 - [In a Git hook](#configure-pre-push-hooks). Vale only reports errors in the Git hook (the same
   configuration as the CI/CD pipelines), and does not report suggestions or warnings.
@@ -333,4 +333,4 @@ document:
 Whenever possible, exclude only the problematic rule and line(s).
 
 For more information, see
-[Vale's documentation](https://errata-ai.gitbook.io/vale/getting-started/markup#markup-based-configuration).
+[Vale's documentation](https://docs.errata.ai/vale/scoping#markup-based-configuration).

@@ -149,9 +149,11 @@ type Response struct {
 	ProcessLsifReferences bool
 	// The maximum accepted size in bytes of the upload
 	MaximumSize int64
+	// Feature flag used to determine whether to strip the multipart filename of any directories
+	FeatureFlagExtractBase bool
 }
 
-// singleJoiningSlash is taken from reverseproxy.go:NewSingleHostReverseProxy
+// singleJoiningSlash is taken from reverseproxy.go:singleJoiningSlash
 func singleJoiningSlash(a, b string) string {
 	aslash := strings.HasSuffix(a, "/")
 	bslash := strings.HasPrefix(b, "/")
@@ -164,14 +166,36 @@ func singleJoiningSlash(a, b string) string {
 	return a + b
 }
 
+// joinURLPath is taken from reverseproxy.go:joinURLPath
+func joinURLPath(a *url.URL, b string) (path string, rawpath string) {
+	if a.RawPath == "" && b == "" {
+		return singleJoiningSlash(a.Path, b), ""
+	}
+
+	// Same as singleJoiningSlash, but uses EscapedPath to determine
+	// whether a slash should be added
+	apath := a.EscapedPath()
+	bpath := b
+
+	aslash := strings.HasSuffix(apath, "/")
+	bslash := strings.HasPrefix(bpath, "/")
+
+	switch {
+	case aslash && bslash:
+		return a.Path + bpath[1:], apath + bpath[1:]
+	case !aslash && !bslash:
+		return a.Path + "/" + bpath, apath + "/" + bpath
+	}
+	return a.Path + bpath, apath + bpath
+}
+
 // rebaseUrl is taken from reverseproxy.go:NewSingleHostReverseProxy
 func rebaseUrl(url *url.URL, onto *url.URL, suffix string) *url.URL {
 	newUrl := *url
 	newUrl.Scheme = onto.Scheme
 	newUrl.Host = onto.Host
-	if suffix != "" {
-		newUrl.Path = singleJoiningSlash(url.Path, suffix)
-	}
+	newUrl.Path, newUrl.RawPath = joinURLPath(url, suffix)
+
 	if onto.RawQuery == "" || newUrl.RawQuery == "" {
 		newUrl.RawQuery = onto.RawQuery + newUrl.RawQuery
 	} else {

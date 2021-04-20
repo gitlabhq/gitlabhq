@@ -22,7 +22,7 @@ module QA
           element :file_tree_table
         end
 
-        view 'app/views/layouts/header/_new_dropdown.haml' do
+        view 'app/views/layouts/header/_new_dropdown.html.haml' do
           element :new_menu_toggle
           element :new_issue_link, "link_to _('New issue'), new_project_issue_path(@project)" # rubocop:disable QA/ElementWithPattern
         end

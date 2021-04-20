@@ -1,0 +1,5 @@
+---
+title: Ensure all tooltips appear with a 500ms delay
+merge_request: 59561
+author:
+type: fixed

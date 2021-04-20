@@ -16,7 +16,9 @@ RSpec.describe 'mail_room.yml' do
     }
     cmd = "puts ERB.new(File.read(#{absolute_path(mailroom_config_path).inspect})).result"
 
-    output, status = Gitlab::Popen.popen(%W(ruby -rerb -e #{cmd}), absolute_path('config'), vars)
+    result = Gitlab::Popen.popen_with_detail(%W(ruby -rerb -e #{cmd}), absolute_path('config'), vars)
+    output = result.stdout
+    status = result.status
     raise "Error interpreting #{mailroom_config_path}: #{output}" unless status == 0
 
     YAML.load(output)
@@ -63,6 +65,39 @@ RSpec.describe 'mail_room.yml' do
 
       expect(configuration[:mailboxes].length).to eq(2)
       expect(configuration[:mailboxes]).to all(include(expected_mailbox))
+      expect(configuration[:mailboxes].map { |m| m[:delivery_options] }).to all(include(expected_options))
+      expect(configuration[:mailboxes].map { |m| m[:arbitration_options] }).to all(include(expected_options))
+    end
+  end
+
+  context 'when both incoming email and service desk email are enabled for Microsoft Graph' do
+    let(:gitlab_config_path) { 'spec/fixtures/config/mail_room_enabled_ms_graph.yml' }
+    let(:queues_config_path) { 'spec/fixtures/config/redis_queues_new_format_host.yml' }
+    let(:gitlab_redis_queues) { Gitlab::Redis::Queues.new(Rails.env) }
+
+    it 'contains the intended configuration' do
+      expected_mailbox = {
+        email: 'gitlab-incoming@gmail.com',
+        name: 'inbox',
+        idle_timeout: 60,
+        expunge_deleted: true
+      }
+      expected_options = {
+        redis_url: gitlab_redis_queues.url,
+        sentinels: gitlab_redis_queues.sentinels
+      }
+      expected_inbox_options = {
+        tenant_id: '12345',
+        client_id: 'MY-CLIENT-ID',
+        client_secret: 'MY-CLIENT-SECRET',
+        poll_interval: 60
+      }
+
+      expect(configuration[:mailboxes].length).to eq(2)
+      expect(configuration[:mailboxes]).to all(include(expected_mailbox))
+      expect(configuration[:mailboxes].map { |m| m[:inbox_method] }).to all(eq('microsoft_graph'))
+      expect(configuration[:mailboxes].map { |m| m[:inbox_options] }).to all(eq(expected_inbox_options))
+      expect(configuration[:mailboxes].map { |m| m[:delivery_options] }).to all(include(expected_options))
       expect(configuration[:mailboxes].map { |m| m[:delivery_options] }).to all(include(expected_options))
       expect(configuration[:mailboxes].map { |m| m[:arbitration_options] }).to all(include(expected_options))
     end

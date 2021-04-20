@@ -6,7 +6,7 @@ module Packages
       include Packages::Nuget::PresenterHelpers
       include Gitlab::Utils::StrongMemoize
 
-      COUNT = 1.freeze
+      COUNT = 1
 
       def initialize(packages)
         @packages = packages

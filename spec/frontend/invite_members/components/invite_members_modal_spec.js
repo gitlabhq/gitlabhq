@@ -3,7 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
+import ExperimentTracking from '~/experimentation/experiment_tracking';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
+import { INVITE_MEMBERS_IN_COMMENT } from '~/invite_members/constants';
+
+jest.mock('~/experimentation/experiment_tracking');
 
 const id = '1';
 const name = 'test name';
@@ -89,7 +93,7 @@ describe('InviteMembersModal', () => {
     });
 
     it('renders the modal with the correct title', () => {
-      expect(wrapper.findComponent(GlModal).props('title')).toBe('Invite team members');
+      expect(wrapper.findComponent(GlModal).props('title')).toBe('Invite members');
     });
 
     it('renders the Cancel button text correctly', () => {
@@ -303,6 +307,7 @@ describe('InviteMembersModal', () => {
           jest.spyOn(Api, 'inviteGroupMembersByEmail').mockResolvedValue({ data: postData });
           jest.spyOn(Api, 'addGroupMembersByUserId').mockResolvedValue({ data: postData });
           jest.spyOn(wrapper.vm, 'showToastMessageSuccess');
+          jest.spyOn(wrapper.vm, 'trackInvite');
 
           clickInviteButton();
         });
@@ -394,6 +399,47 @@ describe('InviteMembersModal', () => {
 
           expect(wrapper.vm.showToastMessageError).toHaveBeenCalled();
         });
+      });
+    });
+
+    describe('tracking', () => {
+      const postData = {
+        user_id: '1',
+        access_level: defaultAccessLevel,
+        expires_at: undefined,
+        format: 'json',
+      };
+
+      beforeEach(() => {
+        wrapper = createComponent({ newUsersToInvite: [user3] });
+
+        wrapper.vm.$toast = { show: jest.fn() };
+        jest.spyOn(Api, 'inviteGroupMembersByEmail').mockResolvedValue({ data: postData });
+      });
+
+      it('tracks the invite', () => {
+        wrapper.vm.openModal({ inviteeType: 'members', source: INVITE_MEMBERS_IN_COMMENT });
+
+        clickInviteButton();
+
+        expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_IN_COMMENT);
+        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith('comment_invite_success');
+      });
+
+      it('does not track invite for unknown source', () => {
+        wrapper.vm.openModal({ inviteeType: 'members', source: 'unknown' });
+
+        clickInviteButton();
+
+        expect(ExperimentTracking).not.toHaveBeenCalled();
+      });
+
+      it('does not track invite undefined source', () => {
+        wrapper.vm.openModal({ inviteeType: 'members' });
+
+        clickInviteButton();
+
+        expect(ExperimentTracking).not.toHaveBeenCalled();
       });
     });
   });

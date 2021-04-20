@@ -7,13 +7,13 @@ export default {
   name: 'ReleasesPaginationGraphql',
   components: { GlKeysetPagination },
   computed: {
-    ...mapState('list', ['graphQlPageInfo']),
+    ...mapState('index', ['graphQlPageInfo']),
     showPagination() {
       return this.graphQlPageInfo.hasPreviousPage || this.graphQlPageInfo.hasNextPage;
     },
   },
   methods: {
-    ...mapActions('list', ['fetchReleases']),
+    ...mapActions('index', ['fetchReleases']),
     onPrev(before) {
       historyPushState(buildUrlWithCurrentLocation(`?before=${before}`));
       this.fetchReleases({ before });

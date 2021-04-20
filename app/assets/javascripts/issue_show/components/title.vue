@@ -1,9 +1,13 @@
 <script>
 import { GlButton, GlTooltipDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { __ } from '~/locale';
 import eventHub from '../event_hub';
 import animateMixin from '../mixins/animate';
 
 export default {
+  i18n: {
+    editTitleAndDescription: __('Edit title and description'),
+  },
   components: {
     GlButton,
   },
@@ -78,7 +82,8 @@ export default {
       v-gl-tooltip.bottom
       icon="pencil"
       class="btn-edit js-issuable-edit qa-edit-button"
-      title="Edit title and description"
+      :title="$options.i18n.editTitleAndDescription"
+      :aria-label="$options.i18n.editTitleAndDescription"
       @click="edit"
     />
   </div>

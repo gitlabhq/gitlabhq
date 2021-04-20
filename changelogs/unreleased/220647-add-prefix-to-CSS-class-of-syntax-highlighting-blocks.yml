@@ -1,0 +1,5 @@
+---
+title: Add language- prefix to CSS class of markdown code blocks
+merge_request: 55076
+author: Camil Staps
+type: fixed

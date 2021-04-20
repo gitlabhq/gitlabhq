@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 comments: false
 ---
 
-# Upgrading Community Edition and Enterprise Edition from source
+# Upgrading Community Edition and Enterprise Edition from source **(FREE SELF)**
 
 NOTE:
 Users wishing to upgrade to 12.0.0 must take some extra steps. See the
@@ -75,7 +75,7 @@ curl --remote-name --progress "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7
 echo 'cb9731a17487e0ad84037490a6baf8bfa31a09e8  ruby-2.7.2.tar.gz' | shasum -c - && tar xzf ruby-2.7.2.tar.gz
 cd ruby-2.7.2
 
-./configure --disable-install-rdoc
+./configure --disable-install-rdoc --enable-shared
 make
 sudo make install
 ```
@@ -269,8 +269,8 @@ sudo systemctl daemon-reload
 cd /home/git/gitlab
 
 # If you haven't done so during installation or a previous upgrade already
-sudo -u git -H bundle config set deployment 'true'
-sudo -u git -H bundle config set without 'development test mysql aws kerberos'
+sudo -u git -H bundle config set --local deployment 'true'
+sudo -u git -H bundle config set --local without 'development test mysql aws kerberos'
 
 # Update gems
 sudo -u git -H bundle install

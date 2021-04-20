@@ -238,16 +238,36 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
     subject { cache.key }
 
     it 'returns cache key' do
-      is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{cache.diff_options}:true")
+      is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{cache.diff_options}:true:true:true")
     end
 
-    context 'when feature flag is disabled' do
+    context 'when the `introduce_marker_ranges` feature flag is disabled' do
       before do
         stub_feature_flags(introduce_marker_ranges: false)
       end
 
       it 'returns the original version of the cache' do
-        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{cache.diff_options}:false")
+        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{cache.diff_options}:false:true:true")
+      end
+    end
+
+    context 'when the `use_marker_ranges` feature flag is disabled' do
+      before do
+        stub_feature_flags(use_marker_ranges: false)
+      end
+
+      it 'returns the original version of the cache' do
+        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{cache.diff_options}:true:false:true")
+      end
+    end
+
+    context 'when the `diff_line_syntax_highlighting` feature flag is disabled' do
+      before do
+        stub_feature_flags(diff_line_syntax_highlighting: false)
+      end
+
+      it 'returns the original version of the cache' do
+        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{cache.diff_options}:true:true:false")
       end
     end
   end

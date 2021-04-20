@@ -434,6 +434,7 @@ RSpec.describe API::ComposerPackages do
           end
 
           it_behaves_like 'process Composer api request', params[:user_role], params[:expected_status], params[:member]
+          it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
         end
       end
     end

@@ -15,6 +15,7 @@ RSpec.describe NotesHelper do
   let_it_be(:owner_note) { create(:note, author: owner, project: project) }
   let_it_be(:maintainer_note) { create(:note, author: maintainer, project: project) }
   let_it_be(:reporter_note) { create(:note, author: reporter, project: project) }
+
   let!(:notes) { [owner_note, maintainer_note, reporter_note] }
 
   before_all do
@@ -73,6 +74,7 @@ RSpec.describe NotesHelper do
 
   describe '#discussion_path' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:anchor) { discussion.line_code }
 
     context 'for a merge request discusion' do

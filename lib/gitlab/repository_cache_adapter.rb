@@ -60,14 +60,17 @@ module Gitlab
         define_method("#{name}_include?") do |value|
           ivar = "@#{name}_include"
           memoized = instance_variable_get(ivar) || {}
+          lookup = proc { __send__(name).include?(value) } # rubocop:disable GitlabSecurity/PublicSend
 
           next memoized[value] if memoized.key?(value)
 
           memoized[value] =
-            if strong_memoized?(name) || !redis_set_cache.exist?(name)
-              __send__(name).include?(value) # rubocop:disable GitlabSecurity/PublicSend
+            if strong_memoized?(name)
+              lookup.call
             else
-              redis_set_cache.include?(name, value)
+              result, exists = redis_set_cache.try_include?(name, value)
+
+              exists ? result : lookup.call
             end
 
           instance_variable_set(ivar, memoized)[value]

@@ -312,6 +312,64 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
       end
     end
+
+    context 'when creating a group with captcha protection' do
+      before do
+        sign_in(user)
+
+        stub_application_setting(recaptcha_enabled: true)
+      end
+
+      after do
+        # Avoid test ordering issue and ensure `verify_recaptcha` returns true
+        unless Recaptcha.configuration.skip_verify_env.include?('test')
+          Recaptcha.configuration.skip_verify_env << 'test'
+        end
+      end
+
+      it 'displays an error when the reCAPTCHA is not solved' do
+        allow(controller).to receive(:verify_recaptcha).and_return(false)
+
+        post :create, params: { group: { name: 'new_group', path: "new_group" } }
+
+        expect(response).to render_template(:new)
+        expect(flash[:alert]).to eq(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
+      end
+
+      it 'allows creating a group when the reCAPTCHA is solved' do
+        expect do
+          post :create, params: { group: { name: 'new_group', path: "new_group" } }
+        end.to change { Group.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+
+      it 'allows creating a sub-group without checking the captcha' do
+        expect(controller).not_to receive(:verify_recaptcha)
+
+        expect do
+          post :create, params: { group: { name: 'new_group', path: "new_group", parent_id: group.id } }
+        end.to change { Group.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+
+      context 'with feature flag switched off' do
+        before do
+          stub_feature_flags(recaptcha_on_top_level_group_creation: false)
+        end
+
+        it 'allows creating a group without the reCAPTCHA' do
+          expect(controller).not_to receive(:verify_recaptcha)
+
+          expect do
+            post :create, params: { group: { name: 'new_group', path: "new_group" } }
+          end.to change { Group.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+    end
   end
 
   describe 'GET #index' do
@@ -556,6 +614,43 @@ RSpec.describe GroupsController, factory_default: :keep do
     end
   end
 
+  context "updating :resource_access_token_creation_allowed" do
+    subject do
+      put :update,
+        params: {
+          id: group.to_param,
+          group: { resource_access_token_creation_allowed: false }
+        }
+    end
+
+    context 'when user is a group owner' do
+      before do
+        group.add_owner(user)
+        sign_in(user)
+      end
+
+      it "updates the attribute" do
+        expect { subject }
+            .to change { group.namespace_settings.reload.resource_access_token_creation_allowed }
+            .from(true)
+            .to(false)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when not a group owner' do
+      before do
+        group.add_developer(user)
+        sign_in(user)
+      end
+
+      it "does not update the attribute" do
+        expect { subject }.not_to change { group.namespace_settings.reload.resource_access_token_creation_allowed }
+      end
+    end
+  end
+
   describe '#ensure_canonical_path' do
     before do
       sign_in(user)
@@ -578,7 +673,7 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
 
         context 'when requesting a redirected path' do
-          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
           let(:group_full_path) { redirect_route.path }
 
           it 'redirects to the canonical path' do
@@ -587,7 +682,7 @@ RSpec.describe GroupsController, factory_default: :keep do
           end
 
           context 'when the old group path is a substring of the scheme or host' do
-            let(:redirect_route) { group.redirect_routes.create(path: 'http') }
+            let(:redirect_route) { group.redirect_routes.create!(path: 'http') }
 
             it 'does not modify the requested host' do
               expect(response).to redirect_to(group)
@@ -597,7 +692,7 @@ RSpec.describe GroupsController, factory_default: :keep do
 
           context 'when the old group path is substring of groups' do
             # I.e. /groups/oups should not become /grfoo/oups
-            let(:redirect_route) { group.redirect_routes.create(path: 'oups') }
+            let(:redirect_route) { group.redirect_routes.create!(path: 'oups') }
 
             it 'does not modify the /groups part of the path' do
               expect(response).to redirect_to(group)
@@ -649,7 +744,7 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
 
         context 'when requesting a redirected path' do
-          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
 
           it 'redirects to the canonical path' do
             get :issues, params: { id: redirect_route.path }
@@ -659,7 +754,7 @@ RSpec.describe GroupsController, factory_default: :keep do
           end
 
           context 'when the old group path is a substring of the scheme or host' do
-            let(:redirect_route) { group.redirect_routes.create(path: 'http') }
+            let(:redirect_route) { group.redirect_routes.create!(path: 'http') }
 
             it 'does not modify the requested host' do
               get :issues, params: { id: redirect_route.path }
@@ -671,7 +766,7 @@ RSpec.describe GroupsController, factory_default: :keep do
 
           context 'when the old group path is substring of groups' do
             # I.e. /groups/oups should not become /grfoo/oups
-            let(:redirect_route) { group.redirect_routes.create(path: 'oups') }
+            let(:redirect_route) { group.redirect_routes.create!(path: 'oups') }
 
             it 'does not modify the /groups part of the path' do
               get :issues, params: { id: redirect_route.path }
@@ -683,7 +778,7 @@ RSpec.describe GroupsController, factory_default: :keep do
 
           context 'when the old group path is substring of groups plus the new path' do
             # I.e. /groups/oups/oup should not become /grfoos
-            let(:redirect_route) { group.redirect_routes.create(path: 'oups/oup') }
+            let(:redirect_route) { group.redirect_routes.create!(path: 'oups/oup') }
 
             it 'does not modify the /groups part of the path' do
               get :issues, params: { id: redirect_route.path }
@@ -711,7 +806,7 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
 
         context 'when requesting a redirected path' do
-          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
 
           it 'returns not found' do
             post :update, params: { id: redirect_route.path, group: { path: 'new_path' } }
@@ -737,7 +832,7 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
 
         context 'when requesting a redirected path' do
-          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+          let(:redirect_route) { group.redirect_routes.create!(path: 'old-path') }
 
           it 'returns not found' do
             delete :destroy, params: { id: redirect_route.path }

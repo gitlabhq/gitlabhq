@@ -20,6 +20,7 @@ RSpec.describe Note do
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Mentionable) }
     it { is_expected.to include_module(Awardable) }
+    it { is_expected.to include_module(Sortable) }
   end
 
   describe 'validation' do
@@ -856,6 +857,22 @@ RSpec.describe Note do
     end
   end
 
+  describe '.simple_sorts' do
+    it 'does not contain name sorts' do
+      expect(described_class.simple_sorts.grep(/name/)).to be_empty
+    end
+  end
+
+  describe '.cherry_picked_merge_requests' do
+    it 'returns merge requests that match the given merge commit' do
+      note = create(:track_mr_picking_note, commit_id: '456abc')
+
+      create(:track_mr_picking_note, project: create(:project), commit_id: '456def')
+
+      expect(MergeRequest.id_in(described_class.cherry_picked_merge_requests('456abc'))).to eq([note.noteable])
+    end
+  end
+
   describe '#for_project_snippet?' do
     it 'returns true for a project snippet note' do
       expect(build(:note_on_project_snippet).for_project_snippet?).to be true
@@ -1322,7 +1339,7 @@ RSpec.describe Note do
     let_it_be(:note1) { create(:note, note: 'Test 345') }
     let_it_be(:note2) { create(:note, note: 'Test 789') }
 
-    describe '#for_note_or_capitalized_note' do
+    describe '.for_note_or_capitalized_note' do
       it 'returns the expected matching note' do
         notes = described_class.for_note_or_capitalized_note('Test 345')
 
@@ -1344,7 +1361,7 @@ RSpec.describe Note do
       end
     end
 
-    describe '#like_note_or_capitalized_note' do
+    describe '.like_note_or_capitalized_note' do
       it 'returns the expected matching note' do
         notes = described_class.like_note_or_capitalized_note('Test 345')
 
@@ -1367,69 +1384,69 @@ RSpec.describe Note do
         expect(notes.second.id).to eq(note2.id)
       end
     end
+  end
 
-    describe '#noteable_assignee_or_author' do
-      let(:user) { create(:user) }
-      let(:noteable) { create(:issue) }
-      let(:note) { create(:note, project: noteable.project, noteable: noteable) }
+  describe '#noteable_assignee_or_author?' do
+    let(:user) { create(:user) }
+    let(:noteable) { create(:issue) }
+    let(:note) { create(:note, project: noteable.project, noteable: noteable) }
 
-      subject { note.noteable_assignee_or_author?(user) }
+    subject { note.noteable_assignee_or_author?(user) }
 
-      shared_examples 'assignee check' do
-        context 'when the provided user is one of the assignees' do
-          before do
-            note.noteable.update(assignees: [user, create(:user)])
-          end
+    shared_examples 'assignee check' do
+      context 'when the provided user is one of the assignees' do
+        before do
+          note.noteable.update(assignees: [user, create(:user)])
+        end
 
-          it 'returns true' do
-            expect(subject).to be_truthy
-          end
+        it 'returns true' do
+          expect(subject).to be_truthy
+        end
+      end
+    end
+
+    shared_examples 'author check' do
+      context 'when the provided user is the author' do
+        before do
+          note.noteable.update(author: user)
+        end
+
+        it 'returns true' do
+          expect(subject).to be_truthy
         end
       end
 
-      shared_examples 'author check' do
-        context 'when the provided user is the author' do
-          before do
-            note.noteable.update(author: user)
-          end
-
-          it 'returns true' do
-            expect(subject).to be_truthy
-          end
-        end
-
-        context 'when the provided user is neither author nor assignee' do
-          it 'returns true' do
-            expect(subject).to be_falsey
-          end
-        end
-      end
-
-      context 'when user is nil' do
-        let(:user) { nil }
-
-        it 'returns false' do
+      context 'when the provided user is neither author nor assignee' do
+        it 'returns true' do
           expect(subject).to be_falsey
         end
       end
+    end
 
-      context 'when noteable is an issue' do
-        it_behaves_like 'author check'
-        it_behaves_like 'assignee check'
+    context 'when user is nil' do
+      let(:user) { nil }
+
+      it 'returns false' do
+        expect(subject).to be_falsey
       end
+    end
 
-      context 'when noteable is a merge request' do
-        let(:noteable) { create(:merge_request) }
+    context 'when noteable is an issue' do
+      it_behaves_like 'author check'
+      it_behaves_like 'assignee check'
+    end
 
-        it_behaves_like 'author check'
-        it_behaves_like 'assignee check'
-      end
+    context 'when noteable is a merge request' do
+      let(:noteable) { create(:merge_request) }
 
-      context 'when noteable is a snippet' do
-        let(:noteable) { create(:personal_snippet) }
+      it_behaves_like 'author check'
+      it_behaves_like 'assignee check'
+    end
 
-        it_behaves_like 'author check'
-      end
+    context 'when noteable is a snippet' do
+      let(:noteable) { create(:personal_snippet) }
+
+      it_behaves_like 'author check'
     end
   end
 

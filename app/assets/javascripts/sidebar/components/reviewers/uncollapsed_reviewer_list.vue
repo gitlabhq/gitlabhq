@@ -1,12 +1,15 @@
 <script>
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { sprintf, s__ } from '~/locale';
+import { __, sprintf, s__ } from '~/locale';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
 const LOADING_STATE = 'loading';
 const SUCCESS_STATE = 'success';
 
 export default {
+  i18n: {
+    reRequestReview: __('Re-request review'),
+  },
   components: {
     GlButton,
     GlIcon,
@@ -109,7 +112,8 @@ export default {
       <gl-button
         v-else-if="user.can_update_merge_request && user.reviewed"
         v-gl-tooltip.left
-        :title="__('Re-request review')"
+        :title="$options.i18n.reRequestReview"
+        :aria-label="$options.i18n.reRequestReview"
         :loading="loadingStates[user.id] === $options.LOADING_STATE"
         class="float-right gl-text-gray-500!"
         size="small"

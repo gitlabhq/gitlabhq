@@ -18,7 +18,10 @@ module API
       end
       get ':id/issues/:issue_iid/links' do
         source_issue = find_project_issue(params[:issue_iid])
-        related_issues = source_issue.related_issues(current_user)
+        related_issues = source_issue.related_issues(current_user) do |issues|
+          issues.with_api_entity_associations.preload_awardable
+        end
+        related_issues.each { |issue| issue.lazy_subscription(current_user, user_project) } # preload subscriptions
 
         present related_issues,
                 with: Entities::RelatedIssue,

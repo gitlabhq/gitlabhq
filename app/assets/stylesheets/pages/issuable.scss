@@ -225,8 +225,7 @@
     }
   }
 
-  .cross-project-reference,
-  .sidebar-mr-source-branch {
+  .cross-project-reference {
     color: inherit;
 
     span {
@@ -236,10 +235,6 @@
       position: relative;
       display: inline-block;
       text-overflow: ellipsis;
-    }
-
-    cite {
-      font-style: normal;
     }
 
     button {
@@ -292,7 +287,7 @@
       padding-top: 10px;
     }
 
-    &:not(.issue-boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
+    &:not(.boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
       .issuable-sidebar-header {
         display: none;
       }
@@ -638,7 +633,7 @@
   }
 
   .btn-link:hover {
-    @extend a:hover;
+    color: $blue-800;
     text-decoration: none;
   }
 
@@ -795,6 +790,40 @@
     padding-left: 2px;
     padding-right: 2px;
   }
+}
+
+.add-issuable-form-input-token-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  list-style: none;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+.add-issuable-form-token-list-item {
+  max-width: 100%;
+  margin-bottom: $gl-vert-padding;
+  margin-right: 5px;
+}
+
+.add-issuable-form-input-list-item {
+  flex: 1;
+  min-width: 200px;
+  margin-bottom: $gl-vert-padding;
+}
+
+.add-issuable-form-input {
+  width: 100%;
+  border: 0;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.add-issuable-form-actions {
+  margin-top: $gl-padding;
 }
 
 .time-tracker {

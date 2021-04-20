@@ -1,5 +1,3 @@
-- can_collaborate = can_collaborate_with_project?(@project)
-
 .page-content-header
   .header-main-content
     = render partial: 'signature', object: @commit.signature
@@ -20,36 +18,9 @@
         = commit_committer_link(@commit, avatar: true, size: 24)
       #{time_ago_with_tooltip(@commit.committed_date)}
 
-  .header-action-buttons
-    - if defined?(@notes_count) && @notes_count > 0
-      %span.btn.gl-button.btn-default.disabled.gl-button.btn-icon.d-none.d-sm-inline.gl-mr-3.has-tooltip{ title: n_("%d comment on this commit", "%d comments on this commit", @notes_count) % @notes_count }
-        = sprite_icon('comment')
-        = @notes_count
-    = link_to project_tree_path(@project, @commit), class: "btn gl-button btn-default gl-mr-3 d-none d-md-inline" do
-      #{ _('Browse files') }
-    .dropdown.inline
-      %a.btn.gl-button.btn-default.dropdown-toggle.qa-options-button.d-md-inline{ data: { toggle: "dropdown" } }
-        %span= _('Options')
-        = sprite_icon('chevron-down', css_class: 'gl-text-gray-500')
-      %ul.dropdown-menu.dropdown-menu-right
-        %li.d-block.d-sm-none
-          = link_to project_tree_path(@project, @commit) do
-            #{ _('Browse Files') }
-        - if can_collaborate && !@commit.has_been_reverted?(current_user)
-          %li.clearfix
-            = revert_commit_link
-        - if can_collaborate
-          %li.clearfix
-            = cherry_pick_commit_link
-        - if can?(current_user, :push_code, @project)
-          %li.clearfix
-            = link_to s_('CreateTag|Tag'), new_project_tag_path(@project, ref: @commit)
-        %li.divider
-        %li.dropdown-header
-          #{ _('Download') }
-        - unless @commit.parents.length > 1
-          %li= link_to s_('DownloadCommit|Email Patches'), project_commit_path(@project, @commit, format: :patch), class: "qa-email-patches", rel: 'nofollow', download: ''
-        %li= link_to s_('DownloadCommit|Plain Diff'), project_commit_path(@project, @commit, format: :diff), class: "qa-plain-diff", rel: 'nofollow', download: ''
+  #js-commit-comments-button{ data: { comments_count: @notes_count.to_i } }
+  = link_to _('Browse files'), project_tree_path(@project, @commit), class: "btn gl-button btn-default gl-mr-3 gl-xs-w-full gl-xs-mb-3"
+  #js-commit-options-dropdown{ data: commit_options_dropdown_data(@project, @commit) }
 
 .commit-box{ data: { project_path: project_path(@project) } }
   %h3.commit-title
@@ -85,11 +56,8 @@
       - if @last_pipeline.stages_count.nonzero?
         #{ n_(s_('Pipeline|with stage'), s_('Pipeline|with stages'), @last_pipeline.stages_count) }
         .mr-widget-pipeline-graph
-          - if ::Gitlab::Ci::Features.ci_commit_pipeline_mini_graph_vue_enabled?(@project)
-            .stage-cell
-              .js-commit-pipeline-mini-graph{ data: { stages: @last_pipeline_stages.to_json.html_safe } }
-          - else
-            = render 'shared/mini_pipeline_graph', pipeline: @last_pipeline, klass: 'js-commit-pipeline-graph'
+          .stage-cell
+            .js-commit-pipeline-mini-graph{ data: { stages: @last_pipeline_stages.to_json.html_safe } }
       - if @last_pipeline.duration
         in
         = time_interval_in_words @last_pipeline.duration

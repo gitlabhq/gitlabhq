@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::SnippetsRepoSaver do
   describe 'bundle a project Git repo' do
     let_it_be(:user) { create(:user) }
+
     let!(:project) { create(:project) }
     let(:shared) { project.import_export_shared }
     let(:bundler) { described_class.new(current_user: user, project: project, shared: shared) }

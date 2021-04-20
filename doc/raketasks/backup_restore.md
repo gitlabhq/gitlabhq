@@ -941,7 +941,7 @@ Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:back
 WARNING:
 `gitlab-rake gitlab:backup:restore` doesn't set the correct file system
 permissions on your Registry directory. This is a [known issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62759).
-On GitLab 12.2 or later, you can use `gitlab-backup restore` to avoid this
+In GitLab 12.2 or later, you can use `gitlab-backup restore` to avoid this
 issue.
 
 If there's a GitLab version mismatch between your backup tar file and the
@@ -963,7 +963,7 @@ sudo gitlab-ctl restart
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
 
-On GitLab 13.1 and later, check [database values can be decrypted](../administration/raketasks/doctor.md)
+In GitLab 13.1 and later, check [database values can be decrypted](../administration/raketasks/doctor.md)
 especially if `/etc/gitlab/gitlab-secrets.json` was restored, or if a different server is
 the target for the restore.
 
@@ -1011,7 +1011,7 @@ Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:back
 WARNING:
 `gitlab-rake gitlab:backup:restore` doesn't set the correct file system
 permissions on your Registry directory. This is a [known issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62759).
-On GitLab 12.2 or later, you can use `gitlab-backup restore` to avoid this
+In GitLab 12.2 or later, you can use `gitlab-backup restore` to avoid this
 issue.
 
 The GitLab Helm chart uses a different process, documented in

@@ -16,22 +16,30 @@ exports[`Repository directory download links component renders downloads links f
     <div
       class="btn-group ml-0 w-100"
     >
-      <gl-link-stub
-        class="btn btn-xs btn-primary"
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
         href="http://test.com/?path=app"
+        icon=""
+        size="small"
+        variant="confirm"
       >
         
         zip
       
-      </gl-link-stub>
-      <gl-link-stub
-        class="btn btn-xs"
+      </gl-button-stub>
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
         href="http://test.com/?path=app"
+        icon=""
+        size="small"
+        variant="default"
       >
         
         tar
       
-      </gl-link-stub>
+      </gl-button-stub>
     </div>
   </div>
 </section>
@@ -53,22 +61,30 @@ exports[`Repository directory download links component renders downloads links f
     <div
       class="btn-group ml-0 w-100"
     >
-      <gl-link-stub
-        class="btn btn-xs btn-primary"
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
         href="http://test.com/?path=app/assets"
+        icon=""
+        size="small"
+        variant="confirm"
       >
         
         zip
       
-      </gl-link-stub>
-      <gl-link-stub
-        class="btn btn-xs"
+      </gl-button-stub>
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
         href="http://test.com/?path=app/assets"
+        icon=""
+        size="small"
+        variant="default"
       >
         
         tar
       
-      </gl-link-stub>
+      </gl-button-stub>
     </div>
   </div>
 </section>

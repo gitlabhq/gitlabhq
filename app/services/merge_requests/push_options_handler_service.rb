@@ -129,13 +129,18 @@ module MergeRequests
         target_branch: push_options[:target],
         force_remove_source_branch: push_options[:remove_source_branch],
         label: push_options[:label],
-        unlabel: push_options[:unlabel]
+        unlabel: push_options[:unlabel],
+        assign: push_options[:assign],
+        unassign: push_options[:unassign]
       }
 
       params.compact!
 
       params[:add_labels] = params.delete(:label).keys if params.has_key?(:label)
       params[:remove_labels] = params.delete(:unlabel).keys if params.has_key?(:unlabel)
+
+      params[:add_assignee_ids] = params.delete(:assign).keys if params.has_key?(:assign)
+      params[:remove_assignee_ids] = params.delete(:unassign).keys if params.has_key?(:unassign)
 
       params
     end

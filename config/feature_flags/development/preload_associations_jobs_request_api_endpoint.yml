@@ -1,0 +1,8 @@
+---
+name: preload_associations_jobs_request_api_endpoint
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57694
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326477
+milestone: "13.11"
+type: development
+group: group::continuous integration
+default_enabled: true

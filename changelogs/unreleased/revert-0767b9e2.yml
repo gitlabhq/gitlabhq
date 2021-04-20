@@ -1,0 +1,5 @@
+---
+title: Revert Ignore default_enabled value in Feature.enabled?
+merge_request: 57707
+author:
+type: fixed

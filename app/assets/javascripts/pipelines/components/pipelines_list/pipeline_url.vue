@@ -49,19 +49,11 @@ export default {
     autoDevopsHelpPath() {
       return helpPagePath('topics/autodevops/index.md');
     },
-    classes() {
-      const tagsClass = 'pipeline-tags';
-
-      if (this.glFeatures.newPipelinesTable) {
-        return tagsClass;
-      }
-      return `table-section section-10 d-none d-md-block ${tagsClass}`;
-    },
   },
 };
 </script>
 <template>
-  <div :class="classes" data-testid="pipeline-url-table-cell">
+  <div class="pipeline-tags" data-testid="pipeline-url-table-cell">
     <gl-link
       :href="pipeline.path"
       data-testid="pipeline-url-link"

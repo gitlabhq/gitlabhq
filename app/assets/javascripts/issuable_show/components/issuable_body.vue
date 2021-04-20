@@ -42,6 +42,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    enableZenMode: {
+      type: Boolean,
+      required: true,
+    },
     enableTaskList: {
       type: Boolean,
       required: false,
@@ -144,6 +148,7 @@ export default {
         :issuable="issuable"
         :enable-autocomplete="enableAutocomplete"
         :enable-autosave="enableAutosave"
+        :enable-zen-mode="enableZenMode"
         :show-field-title="showFieldTitle"
         :description-preview-path="descriptionPreviewPath"
         :description-help-path="descriptionHelpPath"

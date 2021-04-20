@@ -28,6 +28,39 @@ You can [search and filter the results](../../search/index.md#filtering-issue-an
 
 ![Group Issues list view](img/group_merge_requests_list_view.png)
 
+## Cached merge request count
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299542) in GitLab 13.11.
+> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-cached-merge-request-count).
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+In a group, the sidebar displays the total count of open merge requests and this value is cached if higher
+than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
+
+### Enable or disable cached merge request count **(FREE SELF)**
+
+Cached merge request count in the left sidebar is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can disable it.
+
+To disable it:
+
+```ruby
+Feature.disable(:cached_sidebar_merge_requests_count)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:cached_sidebar_merge_requests_count)
+```
+
 ## Semi-linear history merge requests
 
 A merge commit is created for every merge, but the branch is only merged if
@@ -112,10 +145,10 @@ To seamlessly navigate among commits in a merge request:
 1. Select a commit to open it in the single-commit view.
 1. Navigate through the commits by either:
 
-   - Selecting **Prev** and **Next** buttons on the top-right of the page.
+   - Selecting **Prev** and **Next** buttons below the tab buttons.
    - Using the <kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
 
-![Merge requests commit navigation](img/commit_nav_v13_4.png)
+![Merge requests commit navigation](img/commit_nav_v13_11.png)
 
 ### Incrementally expand merge request diffs
 
@@ -235,7 +268,7 @@ the **Merge** button is colored red.
 
 When a merge request is merged, you can see the post-merge pipeline status of
 the branch the merge request was merged into. For example, when a merge request
-is merged into the `master` branch and then triggers a deployment to the staging
+is merged into the [default branch](../repository/branches/default.md) and then triggers a deployment to the staging
 environment.
 
 Ongoing deployments are shown, and the state (deploying or deployed)

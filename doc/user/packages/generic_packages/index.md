@@ -16,18 +16,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-Publish generic files, like release binaries, in your project’s Package Registry. Then, install the packages whenever you need to use them as a dependency.
+Publish generic files, like release binaries, in your project's Package Registry. Then, install the packages whenever you need to use them as a dependency.
 
 ## Authenticate to the Package Registry
 
 To authenticate to the Package Registry, you need either a [personal access token](../../../api/README.md#personalproject-access-tokens),
-[CI job token](../../../api/README.md#gitlab-ci-job-token), or [deploy token](../../project/deploy_tokens/index.md).
+[CI/CD job token](../../../api/README.md#gitlab-cicd-job-token), or [deploy token](../../project/deploy_tokens/index.md).
 
 In addition to the standard API authentication mechanisms, the generic package
 API allows authentication with HTTP Basic authentication for use with tools that
 do not support the other available mechanisms. The `user-id` is not checked and
 may be any value, and the `password` must be either a [personal access token](../../../api/README.md#personalproject-access-tokens),
-a [CI job token](../../../api/README.md#gitlab-ci-job-token), or a [deploy token](../../project/deploy_tokens/index.md).
+a [CI/CD job token](../../../api/README.md#gitlab-cicd-job-token), or a [deploy token](../../project/deploy_tokens/index.md).
 
 ## Publish a package file
 
@@ -47,7 +47,7 @@ PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?sta
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/README.md#namespaced-path-encoding).                                              |
 | `package_name`     | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
-| `package_version`  | string          | yes      | The package version. It can contain only numbers (`0-9`), and dots (`.`). Must be in the format of `X.Y.Z`, i.e. should match `/\A\d+\.\d+\.\d+\z/` regular expression.
+| `package_version`  | string          | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8).
 | `file_name`        | string          | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
 | `status`           | string          | no       | The package status. It can be `default` (default) or `hidden`. Hidden packages do not appear in the UI or [package API list endpoints](../../../api/packages.md).
 

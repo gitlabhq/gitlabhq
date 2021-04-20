@@ -36,7 +36,7 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   expose :merge_request_widget_path do |merge_request|
-    widget_project_json_merge_request_path(merge_request.target_project, merge_request, format: :json)
+    widget_project_json_merge_request_path(merge_request.target_project, merge_request, async_mergeability_check: true, format: :json)
   end
 
   expose :merge_request_cached_widget_path do |merge_request|

@@ -13,8 +13,10 @@ RSpec.describe Gitlab::Utils::LazyAttributes do
 
       def initialize
         @number = -> { 1 }
-        @reader_1, @reader_2 = 'reader_1', -> { 'reader_2' }
-        @incorrect_type, @accessor_2 = -> { :incorrect_type }, -> { 'accessor_2' }
+        @reader_1 = 'reader_1'
+        @reader_2 = -> { 'reader_2' }
+        @incorrect_type = -> { :incorrect_type }
+        @accessor_2 = -> { 'accessor_2' }
       end
     end
   end

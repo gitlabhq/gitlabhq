@@ -87,7 +87,7 @@ export default {
         @input="searchMergeRequests"
         @removeToken="setSearchType(null)"
       />
-      <gl-icon :size="18" name="search" class="ml-3 input-icon" use-deprecated-sizes />
+      <gl-icon :size="16" name="search" class="ml-3 input-icon" />
     </label>
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
       <gl-loading-icon
@@ -105,7 +105,7 @@ export default {
                 @click.stop="setSearchType(searchType)"
               >
                 <span class="d-flex gl-mr-3 ide-search-list-current-icon">
-                  <gl-icon :size="18" name="search" use-deprecated-sizes />
+                  <gl-icon :size="16" name="search" />
                 </span>
                 <span>{{ searchType.label }}</span>
               </button>

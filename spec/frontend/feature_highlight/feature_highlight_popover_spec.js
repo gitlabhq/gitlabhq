@@ -41,7 +41,6 @@ describe('feature_highlight/feature_highlight_popover', () => {
     expect(findPopover().props()).toMatchObject({
       target: POPOVER_TARGET_ID,
       cssClasses: ['feature-highlight-popover'],
-      triggers: 'hover',
       container: 'body',
       placement: 'right',
       boundary: 'viewport',

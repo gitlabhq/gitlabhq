@@ -3,6 +3,7 @@
 class ProjectFeature < ApplicationRecord
   include Featurable
 
+  # When updating this array, make sure to update rubocop/cop/gitlab/feature_available_usage.rb as well.
   FEATURES = %i[
     issues
     forking
@@ -19,7 +20,7 @@ class ProjectFeature < ApplicationRecord
     container_registry
   ].freeze
 
-  EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance]).freeze
+  EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance, :pages]).freeze
 
   set_available_features(FEATURES)
 

@@ -5,7 +5,7 @@ module RuboCop
     module Gitlab
       class ChangeTimezone < RuboCop::Cop::Cop
         MSG = "Do not change timezone in the runtime (application or rspec), " \
-          "it could result in silently modifying other behavior.".freeze
+          "it could result in silently modifying other behavior."
 
         def_node_matcher :changing_timezone?, <<~PATTERN
           (send (const nil? :Time) :zone= ...)

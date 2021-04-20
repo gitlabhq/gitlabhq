@@ -1,0 +1,5 @@
+---
+title: Fix Forward Deployment Worker causes deadlock
+merge_request: 58861
+author:
+type: fixed

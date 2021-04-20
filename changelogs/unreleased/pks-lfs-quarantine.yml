@@ -1,0 +1,5 @@
+---
+title: Use object quarantine directory to enumerate new LFS pointers
+merge_request: 58634
+author:
+type: performance

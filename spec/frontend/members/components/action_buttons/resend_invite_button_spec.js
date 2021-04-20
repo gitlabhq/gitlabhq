@@ -3,6 +3,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ResendInviteButton from '~/members/components/action_buttons/resend_invite_button.vue';
+import { MEMBER_TYPES } from '~/members/constants';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
@@ -14,9 +15,14 @@ describe('ResendInviteButton', () => {
 
   const createStore = (state = {}) => {
     return new Vuex.Store({
-      state: {
-        memberPath: '/groups/foo-bar/-/group_members/:id',
-        ...state,
+      modules: {
+        [MEMBER_TYPES.invite]: {
+          namespaced: true,
+          state: {
+            memberPath: '/groups/foo-bar/-/group_members/:id',
+            ...state,
+          },
+        },
       },
     });
   };
@@ -25,6 +31,9 @@ describe('ResendInviteButton', () => {
     wrapper = shallowMount(ResendInviteButton, {
       localVue,
       store: createStore(state),
+      provide: {
+        namespace: MEMBER_TYPES.invite,
+      },
       propsData: {
         memberId: 1,
         ...propsData,

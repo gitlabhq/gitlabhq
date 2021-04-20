@@ -52,9 +52,12 @@ When importing issues from a CSV file, it must be formatted in a certain way:
 - **data rows:** After the header row, succeeding rows must follow the same column
   order. The issue title is required while the description is optional.
 
+If you have special characters _within_ a field, (such as `\n` or `,`),
+wrap the characters in double quotes.
+
 Sample CSV data:
 
-```csv
+```plaintext
 title,description
 My Issue Title,My Issue Description
 Another Title,"A description, with a comma"

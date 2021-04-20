@@ -6,7 +6,7 @@ module Registrations
 
     before_action :ensure_namespace_path_param
 
-    feature_category :navigation
+    feature_category :onboarding
 
     def update
       current_user.experience_level = params[:experience_level]

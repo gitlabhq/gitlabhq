@@ -18,6 +18,8 @@ class HookButton extends Hook {
   }
 
   clicked(e) {
+    e.preventDefault();
+
     const buttonEvent = new CustomEvent('click.dl', {
       detail: {
         hook: this,

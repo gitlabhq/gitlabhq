@@ -1,0 +1,19 @@
+---
+key_path: database.version
+description: The version of the PostgreSQL database.
+product_section: enablement
+product_stage: enablement
+product_group: group::distribution
+product_category: collection
+value_type: string
+status: data_available
+time_frame: none
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+

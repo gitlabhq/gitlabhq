@@ -35,11 +35,11 @@ describe('Sidebar Confidentiality Widget', () => {
       localVue,
       apolloProvider: fakeApollo,
       provide: {
-        fullPath: 'group/project',
-        iid: '1',
         canUpdate: true,
       },
       propsData: {
+        fullPath: 'group/project',
+        iid: '1',
         issuableType: 'issue',
       },
       stubs: {

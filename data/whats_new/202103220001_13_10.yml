@@ -74,13 +74,13 @@
   image_url:  https://about.gitlab.com/images/13_10/integrate_alerts.png
   published_at: 2021-03-22
   release: 13.10
-- title: "Merge Request test summary usability improvements"
+- title: "Merge request test summary usability improvements"
   body: |
-    Increasing the number of tests or custom metrics in a pipeline gives you additional confidence and information. However, increasing these to a large number has also come with a degraded visual experience of the Merge Request page. The Merge Request test summary widget has been improved so you can better differentiate between the different test jobs in the widget, making it easier to identify which job contains failed tests.
+    Increasing the number of tests or custom metrics in a pipeline gives you additional confidence and information. However, increasing these to a large number has also come with a degraded visual experience of the merge request page. The merge request test summary widget has been improved so you can better differentiate between the different test jobs in the widget, making it easier to identify which job contains failed tests.
 
     It has also been challenging to understand why a `junit.xml` file was not parsed without errors being presented. Now you can see parsing errors in the Test Summary widget, as well as the Unit Test report, to identify and resolve structural issues and see test results in GitLab.
 
-    The [Metrics Reports](https://docs.gitlab.com/ee/ci/metrics_reports.html) widget [(Premium and Ultimate)](https://about.gitlab.com/pricing/) is now sorted so new, changed, and unchanged metrics are all together, making the experience of finding metrics that have changed as part of the Merge Request more intuitive.
+    The [Metrics Reports](https://docs.gitlab.com/ee/ci/metrics_reports.html) widget [(Premium and Ultimate)](https://about.gitlab.com/pricing/) is now sorted so new, changed, and unchanged metrics are all together, making the experience of finding metrics that have changed as part of the merge request more intuitive.
   stage: Verify
   self-managed: true
   gitlab-com: true

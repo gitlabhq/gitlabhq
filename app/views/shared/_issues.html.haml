@@ -3,4 +3,5 @@
     = render partial: 'projects/issues/issue', collection: @issues
   = paginate @issues, theme: "gitlab"
 - else
-  = render 'shared/empty_states/issues'
+  - project_select_button = local_assigns.fetch(:project_select_button, false)
+  = render 'shared/empty_states/issues', project_select_button: project_select_button

@@ -18,8 +18,6 @@ RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
             class TestComplexIndexes < ActiveRecord::Migration[6.0]
-              DOWNTIME = false
-
               def up
                 create_table :test_table do |t|
                   t.integer :column1, null: false
@@ -46,8 +44,6 @@ RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
         it 'registers no offense' do
           expect_no_offenses(<<~RUBY)
             class TestComplexIndexes < ActiveRecord::Migration[6.0]
-              DOWNTIME = false
-
               def up
                 create_table :test_table do |t|
                   t.integer :column1, null: false
@@ -74,8 +70,6 @@ RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
             class TestComplexIndexes < ActiveRecord::Migration[6.0]
-              DOWNTIME = false
-
               disable_ddl_transaction!
 
               def up
@@ -101,8 +95,6 @@ RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
         it 'registers no offenses' do
           expect_no_offenses(<<~RUBY)
             class TestComplexIndexes < ActiveRecord::Migration[6.0]
-              DOWNTIME = false
-
               INDEX_NAME = 'my_test_name'
 
               disable_ddl_transaction!
@@ -135,8 +127,6 @@ RSpec.describe RuboCop::Cop::Migration::ComplexIndexesRequireName do
     it 'registers no offenses' do
       expect_no_offenses(<<~RUBY)
         class TestComplexIndexes < ActiveRecord::Migration[6.0]
-          DOWNTIME = false
-
           disable_ddl_transaction!
 
           def up

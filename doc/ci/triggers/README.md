@@ -188,37 +188,12 @@ source repository. Be sure to URL-encode `ref` if it contains slashes.
 ### Using webhook payload in the triggered pipeline
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31197) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-trigger_payload-variable). **(FREE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321027) in GitLab 13.11.
 
 If you trigger a pipeline by using a webhook, you can access the webhook payload with
 the `TRIGGER_PAYLOAD` [predefined CI/CD variable](../variables/predefined_variables.md).
-The payload is exposed as a [file-type variable](../variables/README.md#custom-cicd-variables-of-type-file),
+The payload is exposed as a [file-type variable](../variables/README.md#cicd-variable-types),
 so you can access the data with `cat $TRIGGER_PAYLOAD` or a similar command.
-
-#### Enable or disable the `TRIGGER_PAYLOAD` variable
-
-The `TRIGGER_PAYLOAD` CI/CD variable is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_trigger_payload_into_pipeline)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_trigger_payload_into_pipeline)
-```
 
 ## Making use of trigger variables
 
@@ -280,7 +255,7 @@ curl --request POST \
   "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
 ```
 
-Trigger variables have the [highest priority](../variables/README.md#priority-of-cicd-variables)
+Trigger variables have the [highest priority](../variables/README.md#cicd-variable-precedence)
 of all types of variables.
 
 ## Using cron to trigger nightly pipelines

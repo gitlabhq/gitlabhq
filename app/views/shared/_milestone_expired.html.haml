@@ -1,4 +1,4 @@
-- if milestone.expired? and not milestone.closed?
+- if milestone.expired? && !milestone.closed?
   .gl-badge.badge-warning.badge-pill.gl-mb-2= _('Expired')
 - if milestone.upcoming?
   .gl-badge.badge-primary.badge-pill.gl-mb-2= _('Upcoming')

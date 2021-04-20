@@ -9,6 +9,7 @@ import {
   mockDefaultBranch,
   mockLintResponse,
   mockProjectFullPath,
+  mockProjectBranches,
 } from '../mock_data';
 
 jest.mock('~/api', () => {
@@ -47,21 +48,20 @@ describe('~/pipeline_editor/graphql/resolvers', () => {
       });
     });
 
-    describe('pipeline', () => {
-      it('resolves pipeline data with type names', async () => {
-        const result = await resolvers.Query.project(null);
+    describe('project', () => {
+      it('resolves project data with type names', async () => {
+        const result = await resolvers.Query.project();
 
         // eslint-disable-next-line no-underscore-dangle
         expect(result.__typename).toBe('Project');
       });
 
-      it('resolves pipeline data with necessary data', async () => {
-        const result = await resolvers.Query.project(null);
-        const pipelineKeys = Object.keys(result.pipeline);
-        const statusKeys = Object.keys(result.pipeline.detailedStatus);
+      it('resolves project with available list of branches', async () => {
+        const result = await resolvers.Query.project();
 
-        expect(pipelineKeys).toContain('id', 'commitPath', 'detailedStatus', 'shortSha');
-        expect(statusKeys).toContain('detailsPath', 'text');
+        expect(result.repository.branches).toHaveLength(
+          mockProjectBranches.repository.branches.length,
+        );
       });
     });
   });

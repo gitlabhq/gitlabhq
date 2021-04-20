@@ -61,7 +61,8 @@ class GroupPolicy < BasePolicy
   end
 
   with_scope :subject
-  condition(:resource_access_token_available) { resource_access_token_available? }
+  condition(:resource_access_token_feature_available) { resource_access_token_feature_available? }
+  condition(:resource_access_token_creation_allowed) { resource_access_token_creation_allowed? }
 
   with_scope :subject
   condition(:has_project_with_service_desk_enabled) { @subject.has_project_with_service_desk_enabled? }
@@ -130,6 +131,7 @@ class GroupPolicy < BasePolicy
     enable :read_prometheus
     enable :read_package
     enable :read_package_settings
+    enable :read_group_timelogs
   end
 
   rule { maintainer }.policy do
@@ -212,8 +214,14 @@ class GroupPolicy < BasePolicy
   rule { developer & dependency_proxy_available }
     .enable :admin_dependency_proxy
 
-  rule { resource_access_token_available & can?(:admin_group) }.policy do
-    enable :admin_resource_access_tokens
+  rule { can?(:admin_group) & resource_access_token_feature_available }.policy do
+    enable :read_resource_access_tokens
+    enable :destroy_resource_access_tokens
+    enable :admin_setting_to_allow_project_access_token_creation
+  end
+
+  rule { resource_access_token_creation_allowed & can?(:read_resource_access_tokens) }.policy do
+    enable :create_resource_access_tokens
   end
 
   rule { support_bot & has_project_with_service_desk_enabled }.policy do
@@ -241,8 +249,12 @@ class GroupPolicy < BasePolicy
     @subject
   end
 
-  def resource_access_token_available?
+  def resource_access_token_feature_available?
     true
+  end
+
+  def resource_access_token_creation_allowed?
+    resource_access_token_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
   end
 end
 

@@ -51,6 +51,7 @@ export default {
         v-gl-tooltip.hover
         class="gl-display-block gl-mb-4 mb-md-0 gl-w-full"
         :title="ignoreBtn.title"
+        :aria-label="ignoreBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: ignoreBtn.status })"
       >
         <gl-icon class="gl-display-none d-md-inline gl-m-0" :name="ignoreBtn.icon" :size="12" />
@@ -62,6 +63,7 @@ export default {
         v-gl-tooltip.hover
         class="gl-display-block gl-mb-4 mb-md-0 gl-w-full"
         :title="resolveBtn.title"
+        :aria-label="resolveBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: resolveBtn.status })"
       >
         <gl-icon class="gl-display-none d-md-inline gl-m-0" :name="resolveBtn.icon" :size="12" />

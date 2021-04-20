@@ -30,6 +30,9 @@ import issueableEventHub from '../eventhub';
 import { emptyStateHelper } from '../service_desk_helper';
 import Issuable from './issuable.vue';
 
+/**
+ * @deprecated Use app/assets/javascripts/issuable_list/components/issuable_list_root.vue instead
+ */
 export default {
   LOADING_LIST_ITEMS_LENGTH,
   directives: {

@@ -1,0 +1,5 @@
+---
+title: Set workhorse_extract_filename_base feature flag to default
+merge_request: 58504
+author:
+type: changed

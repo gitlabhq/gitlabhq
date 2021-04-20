@@ -7,7 +7,7 @@ class GroupMember < Member
   SOURCE_TYPE = 'Namespace'
 
   belongs_to :group, foreign_key: 'source_id'
-
+  alias_attribute :namespace_id, :source_id
   delegate :update_two_factor_requirement, to: :user
 
   # Make sure group member points only to group as it source
@@ -25,6 +25,8 @@ class GroupMember < Member
 
   after_create :update_two_factor_requirement, unless: :invite?
   after_destroy :update_two_factor_requirement, unless: :invite?
+
+  attr_accessor :last_owner, :last_blocked_owner
 
   def self.access_level_roles
     Gitlab::Access.options_with_owner

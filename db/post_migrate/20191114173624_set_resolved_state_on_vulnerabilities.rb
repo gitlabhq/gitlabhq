@@ -6,7 +6,7 @@ class SetResolvedStateOnVulnerabilities < ActiveRecord::Migration[5.2]
   def up
     execute <<~SQL
     -- selecting IDs for all non-orphan Findings that either have no feedback or it's a non-dismissal feedback
-    WITH resolved_vulnerability_ids AS (
+    WITH resolved_vulnerability_ids AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
       SELECT DISTINCT vulnerability_id AS id
       FROM vulnerability_occurrences
       LEFT JOIN vulnerability_feedback ON vulnerability_feedback.project_fingerprint = ENCODE(vulnerability_occurrences.project_fingerprint::bytea, 'HEX')

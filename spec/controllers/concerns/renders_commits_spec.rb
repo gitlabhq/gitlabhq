@@ -57,4 +57,16 @@ RSpec.describe RendersCommits do
       end.not_to exceed_all_query_limit(control_count)
     end
   end
+
+  describe '.prepare_commits_for_rendering' do
+    it 'avoids N+1' do
+      control = ActiveRecord::QueryRecorder.new do
+        subject.prepare_commits_for_rendering(merge_request.commits.take(1))
+      end
+
+      expect do
+        subject.prepare_commits_for_rendering(merge_request.commits)
+      end.not_to exceed_all_query_limit(control.count)
+    end
+  end
 end

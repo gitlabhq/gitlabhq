@@ -14,6 +14,8 @@ class Projects::MergeRequests::ContentController < Projects::MergeRequests::Appl
   SLOW_POLLING_INTERVAL = 5.minutes.in_milliseconds
 
   def widget
+    check_mergeability_async!
+
     respond_to do |format|
       format.json do
         render json: serializer(MergeRequestPollWidgetEntity)
@@ -38,6 +40,13 @@ class Projects::MergeRequests::ContentController < Projects::MergeRequests::Appl
 
   def serializer(entity)
     serializer = MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
-    serializer.represent(merge_request, {}, entity)
+    serializer.represent(merge_request, { async_mergeability_check: params[:async_mergeability_check] }, entity)
+  end
+
+  def check_mergeability_async!
+    return unless Feature.enabled?(:check_mergeability_async_in_widget, merge_request.project, default_enabled: :yaml)
+    return if params[:async_mergeability_check].blank?
+
+    merge_request.check_mergeability(async: true)
   end
 end

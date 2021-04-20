@@ -30,15 +30,13 @@ module Gitlab
 
             # ex: " OR (relative_position = 23 AND id > 500)"
             def second_attribute_condition
-              condition = <<~SQL
+              <<~SQL
                 OR (
                   #{table_condition(order_list.first, values.first, '=').to_sql}
                   AND
                   #{table_condition(order_list[1], values[1], operators[1]).to_sql}
                 )
               SQL
-
-              condition
             end
 
             # ex: " OR (relative_position IS NULL)"

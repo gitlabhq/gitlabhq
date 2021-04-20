@@ -9,8 +9,6 @@ RSpec.describe RuboCop::Cop::Migration::Timestamps do
   let(:migration_with_timestamps) do
     %q(
       class Users < ActiveRecord::Migration[4.2]
-        DOWNTIME = false
-
         def change
           create_table :users do |t|
             t.string :username, null: false
@@ -25,8 +23,6 @@ RSpec.describe RuboCop::Cop::Migration::Timestamps do
   let(:migration_without_timestamps) do
     %q(
       class Users < ActiveRecord::Migration[4.2]
-        DOWNTIME = false
-
         def change
           create_table :users do |t|
             t.string :username, null: false
@@ -40,8 +36,6 @@ RSpec.describe RuboCop::Cop::Migration::Timestamps do
   let(:migration_with_timestamps_with_timezone) do
     %q(
       class Users < ActiveRecord::Migration[4.2]
-        DOWNTIME = false
-
         def change
           create_table :users do |t|
             t.string :username, null: false
@@ -61,8 +55,6 @@ RSpec.describe RuboCop::Cop::Migration::Timestamps do
     it 'registers an offense when the "timestamps" method is used' do
       expect_offense(<<~RUBY)
         class Users < ActiveRecord::Migration[4.2]
-          DOWNTIME = false
-
           def change
             create_table :users do |t|
               t.string :username, null: false

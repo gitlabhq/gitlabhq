@@ -34,6 +34,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'source_code',
         'incident_management',
         'incident_management_alerts',
+        'incident_management_oncall',
         'testing',
         'issues_edit',
         'ci_secrets_management',
@@ -43,7 +44,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'ci_templates',
         'quickactions',
         'pipeline_authoring',
-        'epics_usage'
+        'epics_usage',
+        'secure'
       )
     end
   end
@@ -93,7 +95,25 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     end
 
     describe '.track_event' do
-      context 'with feature flag set' do
+      context 'with redis_hll_tracking' do
+        it 'tracks the event when feature enabled' do
+          stub_feature_flags(redis_hll_tracking: true)
+
+          expect(Gitlab::Redis::HLL).to receive(:add)
+
+          described_class.track_event(weekly_event, values: 1)
+        end
+
+        it 'does not track the event with feature flag disabled' do
+          stub_feature_flags(redis_hll_tracking: false)
+
+          expect(Gitlab::Redis::HLL).not_to receive(:add)
+
+          described_class.track_event(weekly_event, values: 1)
+        end
+      end
+
+      context 'with event feature flag set' do
         it 'tracks the event when feature enabled' do
           stub_feature_flags(feature => true)
 
@@ -111,7 +131,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         end
       end
 
-      context 'with no feature flag set' do
+      context 'with no event feature flag set' do
         it 'tracks the event' do
           expect(Gitlab::Redis::HLL).to receive(:add)
 
@@ -287,6 +307,11 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         # Events 4 weeks ago
         described_class.track_event(daily_event, values: entity3, time: 28.days.ago)
         described_class.track_event(daily_event, values: entity4, time: 29.days.ago)
+      end
+
+      it 'returns 0 if there are no keys for the given events' do
+        expect(Gitlab::Redis::HLL).not_to receive(:count)
+        expect(described_class.unique_events(event_names: [weekly_event], start_date: Date.current, end_date: 4.weeks.ago)).to eq(-1)
       end
 
       it 'raise error if metrics are not in the same slot' do
@@ -507,6 +532,11 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     it 'validates and raise exception if events has mismatched slot or aggregation', :aggregate_failure do
       expect { described_class.calculate_events_union(**time_range.merge(event_names: %w[event1_slot event4])) }.to raise_error described_class::SlotMismatch
       expect { described_class.calculate_events_union(**time_range.merge(event_names: %w[event5_slot event3_slot])) }.to raise_error described_class::AggregationMismatch
+    end
+
+    it 'returns 0 if there are no keys for given events' do
+      expect(Gitlab::Redis::HLL).not_to receive(:count)
+      expect(described_class.calculate_events_union(event_names: %w[event1_slot event2_slot event3_slot], start_date: Date.current, end_date: 4.weeks.ago)).to eq(-1)
     end
   end
 

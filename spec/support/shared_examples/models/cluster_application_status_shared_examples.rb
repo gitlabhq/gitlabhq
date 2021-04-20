@@ -138,7 +138,7 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
       it 'is installed' do
         subject.make_externally_installed
 
-        expect(subject).to be_installed
+        expect(subject).to be_externally_installed
       end
 
       context 'helm record does not exist' do
@@ -170,7 +170,7 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
         it 'is installed' do
           subject.make_externally_installed
 
-          expect(subject).to be_installed
+          expect(subject).to be_externally_installed
         end
       end
 
@@ -180,7 +180,7 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
         it 'is installed' do
           subject.make_externally_installed
 
-          expect(subject).to be_installed
+          expect(subject).to be_externally_installed
         end
 
         it 'clears #status_reason' do
@@ -317,6 +317,7 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
       :uninstall_errored | false
       :uninstalled       | false
       :timed_out         | false
+      :externally_installed | true
     end
 
     with_them do

@@ -532,7 +532,7 @@ That's a lot to take in, isn't it? Let's run through it step by step.
 
 [Runners](../../runners/README.md) run the script defined by `.gitlab-ci.yml`.
 The `image` keyword tells the runners which image to use.
-The `services` keyword defines additional images [that are linked to the main image](../../docker/using_docker_images.md#what-is-a-service).
+The `services` keyword defines additional images [that are linked to the main image](../../services/index.md).
 Here we use the container image we created before as our main image and also use MySQL 5.7 as a service.
 
 ```yaml
@@ -555,7 +555,7 @@ So we should adjust the configuration of MySQL instance by defining `MYSQL_DATAB
 Find out more about MySQL variables at the [official MySQL Docker Image](https://hub.docker.com/_/mysql).
 
 Also set the variables `DB_HOST` to `mysql` and `DB_USERNAME` to `root`, which are Laravel specific variables.
-We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../../docker/using_docker_images.md#how-services-are-linked-to-the-job).
+We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../../services/index.md#how-services-are-linked-to-the-job).
 
 ```yaml
 variables:

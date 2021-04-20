@@ -1,5 +1,5 @@
 %h3.page-title
-  New Merge Request
+  New merge request
 = form_for [@project, @merge_request], html: { class: 'merge-request-form common-note-form js-requires-input js-quick-submit' } do |f|
   = render 'shared/issuable/form', f: f, issuable: @merge_request, commits: @commits, presenter: @mr_presenter
   = f.hidden_field :source_project_id
@@ -33,7 +33,7 @@
                   Pipelines
                   %span.badge.badge-pill= @pipelines.size
             %li.diffs-tab
-              = link_to url_for(safe_params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tabvue'} do
+              = link_to url_for(safe_params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tabvue', qa_selector: 'diffs_tab'} do
                 Changes
                 %span.badge.badge-pill= @merge_request.diff_size
 

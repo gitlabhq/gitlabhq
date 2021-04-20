@@ -5,6 +5,12 @@ module Gitlab
     # This class fetches Peek stats stored in redis and logs them in a
     # structured log (so these can be then analyzed in Kibana)
     class Stats
+      IGNORED_BACKTRACE_LOCATIONS = %w[
+        ee/lib/ee/peek
+        lib/peek
+        lib/gitlab/database
+      ].freeze
+
       def initialize(redis)
         @redis = redis
       end
@@ -53,7 +59,8 @@ module Gitlab
       end
 
       def parse_backtrace(backtrace)
-        return unless match = /(?<filename>.*):(?<filenum>\d+):in `(?<method>.*)'/.match(backtrace.first)
+        return unless backtrace_row = find_caller(backtrace)
+        return unless match = /(?<filename>.*):(?<filenum>\d+):in `(?<method>.*)'/.match(backtrace_row)
 
         {
           filename: match[:filename],
@@ -63,6 +70,12 @@ module Gitlab
           # filenum: match[:filenum].to_i,
           method: match[:method]
         }
+      end
+
+      def find_caller(backtrace)
+        backtrace.find do |line|
+          !line.start_with?(*IGNORED_BACKTRACE_LOCATIONS)
+        end
       end
 
       def logger

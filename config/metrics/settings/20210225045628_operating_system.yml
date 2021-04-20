@@ -6,7 +6,7 @@ product_stage: enablement
 product_group: group::distribution
 product_category: collection
 value_type: string
-status: implemented
+status: data_available
 milestone: "13.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54778
 time_frame: none

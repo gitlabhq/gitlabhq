@@ -33,11 +33,11 @@ RSpec.describe Packages::Debian::ExtractMetadataService do
   where(:case_name, :trait, :expected_file_type, :expected_architecture, :expected_fields) do
     'with invalid'    | :invalid   | :unknown   | nil     | nil
     'with source'     | :source    | :source    | nil     | nil
-    'with dsc'        | :dsc       | :dsc       | nil     | { 'Binary': 'sample-dev, libsample0, sample-udeb' }
-    'with deb'        | :deb       | :deb       | 'amd64' | { 'Multi-Arch': 'same' }
-    'with udeb'       | :udeb      | :udeb      | 'amd64' | { 'Package': 'sample-udeb' }
-    'with buildinfo'  | :buildinfo | :buildinfo | nil     | { 'Architecture': 'amd64 source', 'Build-Architecture': 'amd64' }
-    'with changes'    | :changes   | :changes   | nil     | { 'Architecture': 'source amd64', 'Binary': 'libsample0 sample-dev sample-udeb' }
+    'with dsc'        | :dsc       | :dsc       | nil     | { 'Binary' => 'sample-dev, libsample0, sample-udeb' }
+    'with deb'        | :deb       | :deb       | 'amd64' | { 'Multi-Arch' => 'same' }
+    'with udeb'       | :udeb      | :udeb      | 'amd64' | { 'Package' => 'sample-udeb' }
+    'with buildinfo'  | :buildinfo | :buildinfo | nil     | { 'Architecture' => 'amd64 source', 'Build-Architecture' => 'amd64' }
+    'with changes'    | :changes   | :changes   | nil     | { 'Architecture' => 'source amd64', 'Binary' => 'libsample0 sample-dev sample-udeb' }
   end
 
   with_them do

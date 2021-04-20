@@ -36,16 +36,6 @@ RSpec.shared_examples 'raw snippet blob' do
 
         expect(response.header['Content-Disposition']).to match "attachment; filename=\"#{filepath}\""
       end
-
-      context 'when the feature flag attachment_with_filename is disabled' do
-        it 'returns just attachment in the disposition header' do
-          stub_feature_flags(attachment_with_filename: false)
-
-          subject
-
-          expect(response.header['Content-Disposition']).to eq 'attachment'
-        end
-      end
     end
   end
 

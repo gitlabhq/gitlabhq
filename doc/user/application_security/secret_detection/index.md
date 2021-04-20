@@ -129,21 +129,9 @@ The included template creates Secret Detection jobs in your CI/CD pipeline and s
 your project's source code for secrets.
 
 The results are saved as a
-[Secret Detection report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportssecret_detection)
+[Secret Detection report artifact](../../../ci/yaml/README.md#artifactsreportssecret_detection)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
-
-### Post-processing
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
-
-Upon detection of a secret, GitLab supports post processing hooks. These can be used to take actions like notifying the cloud service who issued the secret. The cloud provider can confirm the credentials and take remediation actions like revoking or reissuing a new secret and notifying the creator of the secret. Post-processing workflows vary by supported cloud providers.
-
-GitLab currently supports post-processing for following service providers:
-
-- Amazon Web Services (AWS)
-
-Third party cloud and SaaS providers can [express integration interest by filling out this form](https://forms.gle/wWpvrtLRK21Q2WJL9). Learn more about the [technical details of post-processing secrets](https://gitlab.com/groups/gitlab-org/-/epics/4639).
 
 ### Customizing settings
 
@@ -248,6 +236,34 @@ From highest to lowest severity, the logging levels are:
 - `warn`
 - `info` (default)
 - `debug`
+
+## Post-processing and revocation
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
+
+Upon detection of a secret, GitLab supports post-processing hooks. These can be used to take actions like notifying the cloud service who issued the secret. The cloud provider can confirm the credentials and take remediation actions like revoking or reissuing a new secret and notifying the creator of the secret. Post-processing workflows vary by supported cloud providers.
+
+GitLab currently supports post-processing for following service providers:
+
+- Amazon Web Services (AWS)
+
+Third party cloud and SaaS providers can [express integration interest by filling out this form](https://forms.gle/wWpvrtLRK21Q2WJL9). Learn more about the [technical details of post-processing secrets](https://gitlab.com/groups/gitlab-org/-/epics/4639).
+
+NOTE:
+Post-processing is currently limited to a project's default branch, see the above epic for future efforts to support additional branches.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    Rails->>+Sidekiq: gl-secret-detection-report.json
+    Sidekiq-->+Sidekiq: BuildFinishedWorker
+    Sidekiq-->+RevocationAPI: GET revocable keys types
+    RevocationAPI-->>-Sidekiq: OK
+    Sidekiq->>+RevocationAPI: POST revoke revocable keys
+    RevocationAPI-->>-Sidekiq: ACCEPTED
+    RevocationAPI-->>+Cloud Vendor: revoke revocable keys
+    Cloud Vendor-->>+RevocationAPI: ACCEPTED
+```
 
 ## Full History Secret Scan
 

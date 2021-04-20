@@ -47,7 +47,11 @@ class SearchController < ApplicationController
     params.require([:search, :scope])
 
     scope = search_service.scope
-    count = search_service.search_results.formatted_count(scope)
+
+    count = 0
+    ApplicationRecord.with_fast_read_statement_timeout do
+      count = search_service.search_results.formatted_count(scope)
+    end
 
     # Users switching tabs will keep fetching the same tab counts so it's a
     # good idea to cache in their browser just for a short time. They can still

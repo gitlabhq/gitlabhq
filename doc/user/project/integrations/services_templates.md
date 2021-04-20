@@ -36,10 +36,11 @@ does not provide central administration of integration settings.
 ## Central administration of project integrations
 
 A new set of features is being introduced in GitLab to provide more control over
-how integrations are configured at the instance, group, and project level.
+how integrations are configured at the instance, group, and project level. For
+more information, read more about:
 
-[Read more about setting up project integration management](../../admin_area/settings/project_integration_management.md)
-(introduced in GitLab 13.3) and [our plans for managing integrations](https://gitlab.com/groups/gitlab-org/-/epics/2137).
+- [Setting up project integration management](../../admin_area/settings/project_integration_management.md) (introduced in GitLab 13.3)
+- [Our plans for managing integrations](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 ## Enable a service template
 

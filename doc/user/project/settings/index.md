@@ -9,10 +9,15 @@ type: reference, index, howto
 
 NOTE:
 Only project maintainers and administrators have the [permissions](../../permissions.md#project-members-permissions)
-to access a project settings.
+to access project settings.
 
-You can adjust your [project](../index.md) settings by navigating
-to your project's homepage and clicking **Settings**.
+The **Settings** page in GitLab provides a centralized home for your
+[project](../index.md) configuration options. To access it, go to your project's homepage
+and, in the left navigation menu, clicking **Settings**. To reduce complexity, settings are
+grouped by topic into sections. To display all settings in a section, click **Expand**.
+
+In GitLab versions [13.10 and later](https://gitlab.com/groups/gitlab-org/-/epics/4842),
+GitLab displays a search box to help you find the settings you want to view.
 
 ## General settings
 
@@ -21,9 +26,9 @@ functionality of a project.
 
 ### General project settings
 
-Adjust your project's name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and topics:
+Adjust your project's name, description, avatar, [default branch](../repository/branches/default.md), and topics:
 
-![general project settings](img/general_settings.png)
+![general project settings](img/general_settings_v13_11.png)
 
 The project description also partially supports [standard Markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
@@ -43,11 +48,10 @@ Compliance framework labels do not affect your project settings.
 #### Custom compliance frameworks
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It can be enabled or disabled for a single group
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-custom-compliance-frameworks). **(PREMIUM)**
+> - [Deployed behind a feature flag](../../feature_flags.md).
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/287779) in GitLab 13.11.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -60,6 +64,71 @@ If existing [Compliance frameworks](#compliance-framework) are not sufficient, p
 can now create their own.
 
 New compliance framework labels can be created and updated using GraphQL.
+
+#### Compliance pipeline configuration **(ULTIMATE)**
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9.
+> - [Deployed behind a feature flag](../../feature_flags.md).
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300324) in GitLab 13.11.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+Group owners can use the compliance pipeline configuration to define compliance requirements
+such as scans or tests, and enforce them in individual projects.
+
+The [custom compliance framework](#custom-compliance-frameworks) feature allows group owners to specify the location
+of a compliance pipeline configuration stored and managed in a dedicated project, distinct from a developer's project.
+
+When you set up the compliance pipeline configuration field, use the
+`file@group/project` format. For example, you can configure
+`.compliance-gitlab-ci.yml@compliance-group/compliance-project`.
+This field is inherited by projects where the compliance framework label is applied. The result
+forces the project to run the compliance configurations.
+
+When a project with a custom label executes a pipeline, it begins by evaluating the compliance pipeline configuration.
+The custom pipeline configuration can then execute any included individual project configuration.
+
+The user running the pipeline in the project should at least have Reporter access to the compliance project.
+
+Example `.compliance-gitlab-ci.yml`
+
+```yaml
+stages: # Allows compliance team to control the ordering and interweaving of stages/jobs
+- pre-compliance
+- build
+- test
+- pre-deploy-compliance
+- deploy
+- post-compliance
+
+variables: # can be overriden by a developer's local .gitlab-ci.yml
+  FOO: sast
+
+sast: # none of these attributes can be overriden by a developer's local .gitlab-ci.yml
+  variables:
+    FOO: sast
+  stage: pre-compliance
+  script:
+  - echo "running $FOO"
+
+sanity check:
+  stage: pre-deploy-compliance
+  script:
+  - echo "running $FOO"
+
+
+audit trail:
+  stage: post-compliance
+  script:
+  - echo "running $FOO"
+
+include: # Execute individual project's configuration
+  project: '$CI_PROJECT_PATH'
+  file: '$CI_PROJECT_CONFIG_PATH'
+```
 
 ### Sharing and permissions
 
@@ -145,8 +214,7 @@ Set up your project's merge request settings:
 - Enable [merge only when all threads are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved).
 - Enable [`delete source branch after merge` option by default](../merge_requests/getting_started.md#deleting-the-source-branch)
 - Configure [suggested changes commit messages](../../discussions/index.md#configure-the-commit-message-for-applied-suggestions)
-
-![project's merge request settings](img/merge_requests_settings.png)
+- Configure [the default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
 
 ### Service Desk
 

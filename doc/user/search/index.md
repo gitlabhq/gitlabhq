@@ -12,9 +12,14 @@ type: index, reference, howto
 To search through issues and merge requests in multiple projects, use the **Issues** or **Merge Requests** links
 in the top-right part of your screen. These instructions are valid for both.
 
-The number displayed on their right represents the number of issues and merge requests assigned to you:
+The numbers in the right-hand side of the top menu indicate how many issues, merge requests,
+and to-do items are assigned to you:
 
-![issues and MRs dashboard links](img/dashboard_links.png)
+![issues and MRs dashboard links](img/dashboard_links_v13_11.png)
+
+- **(issues)** **Issues**: The open issues assigned to you.
+- **(merge-request-open)** **Merge requests**: The [merge requests](../project/merge_requests/index.md) assigned to you.
+- **(todo-done)** **To-do items**: The [to-do items](../todos.md) assigned to you.
 
 When you click **Issues**, GitLab shows the opened issues assigned to you:
 
@@ -282,7 +287,6 @@ search, or choose a specific group or project.
 To search through code or other documents in a single project, you can use
 the search field on the top-right of your screen while the project page is open.
 
-![code search dropdown](img/project_search_dropdown.png)
 ![code search results](img/project_code_search.png)
 
 ### SHA search
@@ -302,37 +306,12 @@ GitLab instance.
 
 ## Search settings
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292941) in GitLab 13.8.
-> - [Added to Group, Admin, and User settings](https://gitlab.com/groups/gitlab-org/-/epics/4842) in GitLab 13.9
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-search-settings). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292941) in GitLab 13.8 behind a feature flag, disabled by default.
+> - [Added to Group, Admin, and User settings](https://gitlab.com/groups/gitlab-org/-/epics/4842) in GitLab 13.9.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-You can search inside a Project, Group, Admin, or User’s settings by entering
+You can search inside a Project, Group, Admin, or User's settings by entering
 a search term in the search box located at the top of the page. The search results
 appear highlighted in the sections that match the search term.
 
 ![Search project settings](img/project_search_general_settings_v13_8.png)
-
-### Enable or disable Search settings **(FREE SELF)**
-
-Search settings is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:search_settings_in_page)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:search_settings_in_page)
-```

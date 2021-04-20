@@ -7,7 +7,7 @@ RSpec.describe 'User activates Asana' do
 
   it 'activates service', :js do
     visit_project_integration('Asana')
-    fill_in('Api key', with: 'verySecret')
+    fill_in('API key', with: 'verySecret')
     fill_in('Restrict to branch', with: 'verySecret')
 
     click_test_then_save_integration

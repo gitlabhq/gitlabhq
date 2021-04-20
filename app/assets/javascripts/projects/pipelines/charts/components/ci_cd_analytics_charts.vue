@@ -41,10 +41,14 @@ export default {
     <gl-segmented-control v-model="selectedChart" :options="chartRanges" class="gl-mb-4" />
     <ci-cd-analytics-area-chart
       v-if="chart"
+      v-bind="$attrs"
       :chart-data="chart.data"
       :area-chart-options="chartOptions"
     >
       {{ dateRange }}
+
+      <slot slot="tooltip-title" name="tooltip-title"></slot>
+      <slot slot="tooltip-content" name="tooltip-content"></slot>
     </ci-cd-analytics-area-chart>
   </div>
 </template>

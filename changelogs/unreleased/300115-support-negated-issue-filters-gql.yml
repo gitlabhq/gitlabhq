@@ -1,0 +1,5 @@
+---
+title: Support negated filtering of issues by iids, label_name, milestone_title, assignee_usernames and assignee_id in GraphQL
+merge_request: 58154
+author:
+type: added

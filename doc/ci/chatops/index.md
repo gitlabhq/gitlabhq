@@ -57,7 +57,7 @@ functions available. Consider these best practices when creating ChatOps jobs:
   in the project, the job runs. The job itself can use existing
   [CI/CD variables](../variables/README.md#predefined-cicd-variables) like
   `GITLAB_USER_ID` to perform additional rights validation, but
-  these variables can be [overridden](../variables/README.md#priority-of-cicd-variables).
+  these variables can be [overridden](../variables/README.md#cicd-variable-precedence).
 
 ### Controlling the ChatOps reply
 

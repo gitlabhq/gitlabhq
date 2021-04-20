@@ -33,7 +33,7 @@ export default {
           <p class="form-text text-muted">
             {{
               s__(
-                "ErrorTracking|If you self-host Sentry, enter the full URL of your Sentry instance. If you're using Sentry's hosted solution, enter https://sentry.io",
+                "ErrorTracking|If you self-host Sentry, enter your Sentry instance's full URL. If you use Sentry's hosted solution, enter https://sentry.io",
               )
             }}
           </p>
@@ -75,12 +75,12 @@ export default {
         </div>
       </div>
       <p v-if="connectError" class="gl-field-error">
-        {{ s__('ErrorTracking|Connection has failed. Re-check Auth Token and try again.') }}
+        {{ s__('ErrorTracking|Connection failed. Check Auth Token and try again.') }}
       </p>
       <p v-else class="form-text text-muted">
         {{
           s__(
-            "ErrorTracking|After adding your Auth Token, use the 'Connect' button to load projects",
+            'ErrorTracking|After adding your Auth Token, select the Connect button to load projects.',
           )
         }}
       </p>

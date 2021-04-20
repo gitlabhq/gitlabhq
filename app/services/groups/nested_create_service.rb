@@ -5,7 +5,8 @@ module Groups
     attr_reader :group_path, :visibility_level
 
     def initialize(user, params)
-      @current_user, @params = user, params.dup
+      @current_user = user
+      @params = params.dup
       @group_path = @params.delete(:group_path)
       @visibility_level = @params.delete(:visibility_level) ||
         Gitlab::CurrentSettings.current_application_settings.default_group_visibility

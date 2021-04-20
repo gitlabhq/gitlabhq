@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Restoring from backup after a failed upgrade
+# Restoring from backup after a failed upgrade **(FREE SELF)**
 
 Upgrades are usually smooth and restoring from backup is a rare occurrence.
 However, it's important to know how to recover when problems do arise.
@@ -12,7 +12,8 @@ However, it's important to know how to recover when problems do arise.
 ## Roll back to an earlier version and restore a backup
 
 In some cases after a failed upgrade, the fastest solution is to roll back to
-the previous version you were using.
+the previous version you were using. We recommend this path because the failed 
+upgrade will likely have made database changes that can not be readily reverted.
 
 First, roll back the code or package. For source installations this involves
 checking out the older version (branch or tag). For Omnibus installations this

@@ -22,7 +22,9 @@ module Metrics
       ].freeze
 
       def initialize(project, panel_yaml, environment)
-        @project, @panel_yaml, @environment = project, panel_yaml, environment
+        @project = project
+        @panel_yaml = panel_yaml
+        @environment = environment
       end
 
       def execute

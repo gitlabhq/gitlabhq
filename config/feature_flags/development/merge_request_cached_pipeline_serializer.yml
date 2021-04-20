@@ -1,8 +1,0 @@
----
-name: merge_request_cached_pipeline_serializer
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38273
-rollout_issue_url: 
-milestone: '13.5'
-type: development
-group: group::code review
-default_enabled: false

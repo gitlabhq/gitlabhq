@@ -115,11 +115,6 @@
         font-size: $gl-font-size;
         line-height: $gl-font-size-large;
       }
-
-      .home-panel-topic-list,
-      .home-panel-metadata {
-        font-size: $gl-font-size-small;
-      }
     }
   }
 
@@ -139,10 +134,6 @@
     svg {
       fill: $gray-500;
     }
-  }
-
-  .notification-dropdown .dropdown-menu {
-    @extend .dropdown-menu-right;
   }
 
   .download-button {
@@ -843,7 +834,7 @@ pre.light-well {
   }
 
   .form-control {
-    @extend .monospace;
+    @include gl-font-monospace;
     background-color: $white;
     border-color: $border-color;
     font-size: 14px;

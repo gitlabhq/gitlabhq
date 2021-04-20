@@ -1,0 +1,5 @@
+---
+title: Update profile SSH key labels to refer to expired keys as "Expired"
+merge_request: 59381
+author:
+type: changed

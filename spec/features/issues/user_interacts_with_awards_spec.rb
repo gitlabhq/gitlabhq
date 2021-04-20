@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe 'User interacts with awards' do
   let(:user) { create(:user) }
 
+  before do
+    stub_feature_flags(improved_emoji_picker: false)
+  end
+
   describe 'User interacts with awards in an issue', :js do
     let(:issue) { create(:issue, project: project)}
     let(:project) { create(:project) }

@@ -23,9 +23,11 @@ module Gitlab
       attr_reader :table
 
       # name - The name of the CTE as a String or Symbol.
-      def initialize(name)
+      # union_args - The arguments supplied to Gitlab::SQL::Union class when building inner recursive query
+      def initialize(name, union_args: {})
         @table = Arel::Table.new(name)
         @queries = []
+        @union_args = union_args
       end
 
       # Adds a query to the body of the CTE.
@@ -37,7 +39,7 @@ module Gitlab
 
       # Returns the Arel relation for this CTE.
       def to_arel
-        sql = Arel::Nodes::SqlLiteral.new(Union.new(@queries).to_sql)
+        sql = Arel::Nodes::SqlLiteral.new(Union.new(@queries, **@union_args).to_sql)
 
         Arel::Nodes::As.new(table, Arel::Nodes::Grouping.new(sql))
       end

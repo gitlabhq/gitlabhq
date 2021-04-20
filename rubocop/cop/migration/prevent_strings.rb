@@ -11,7 +11,7 @@ module RuboCop
 
         MSG = 'Do not use the `string` data type, use `text` instead. ' \
           'Updating limits on strings requires downtime. This can be avoided ' \
-          'by using `text` and adding a limit with `add_text_limit`'.freeze
+          'by using `text` and adding a limit with `add_text_limit`'
 
         def_node_matcher :reverting?, <<~PATTERN
           (def :down ...)

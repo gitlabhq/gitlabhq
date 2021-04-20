@@ -11,7 +11,7 @@ import {
   PIPELINES_DETAIL_LINKS_JOB_RATIO,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import { reportToSentry } from '../graph/utils';
+import { reportToSentry } from '../../utils';
 import { parseData } from '../parsing_utils';
 import { reportPerformance } from './api';
 import LinksInner from './links_inner.vue';

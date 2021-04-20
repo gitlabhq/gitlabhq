@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::SuggestionFilter do
   include FilterSpecHelper
 
-  let(:input) { %(<pre class="code highlight js-syntax-highlight suggestion"><code>foo\n</code></pre>) }
+  let(:input) { %(<pre class="code highlight js-syntax-highlight language-suggestion"><code>foo\n</code></pre>) }
   let(:default_context) do
     { suggestions_filter_enabled: true }
   end
@@ -26,7 +26,7 @@ RSpec.describe Banzai::Filter::SuggestionFilter do
 
   context 'multi-line suggestions' do
     let(:data_attr) { Banzai::Filter::SyntaxHighlightFilter::LANG_PARAMS_ATTR }
-    let(:input) { %(<pre class="code highlight js-syntax-highlight suggestion" #{data_attr}="-3+2"><code>foo\n</code></pre>) }
+    let(:input) { %(<pre class="code highlight js-syntax-highlight language-suggestion" #{data_attr}="-3+2"><code>foo\n</code></pre>) }
 
     it 'element has correct data-lang-params' do
       doc = filter(input, default_context)

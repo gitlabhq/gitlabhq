@@ -684,7 +684,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
 
         it 'overrides project feature access levels' do
           access_level_keys = ProjectFeature.available_features.map { |feature| ProjectFeature.access_level_attribute(feature) }
-          disabled_access_levels = Hash[access_level_keys.collect { |item| [item, 'disabled'] }]
+          disabled_access_levels = access_level_keys.to_h { |item| [item, 'disabled'] }
 
           project.create_import_data(data: { override_params: disabled_access_levels })
 

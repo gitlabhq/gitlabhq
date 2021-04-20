@@ -7,6 +7,10 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
   let(:instance) { double(:instance) }
 
   let(:encrypted) do
+    TokenAuthenticatableStrategies::EncryptionHelper.encrypt_token('my-value')
+  end
+
+  let(:encrypted_with_static_iv) do
     Gitlab::CryptoHelper.aes256_gcm_encrypt('my-value')
   end
 
@@ -15,12 +19,25 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#find_token_authenticatable' do
-    context 'when using optional strategy' do
+    context 'when encryption is required' do
+      let(:options) { { encrypted: :required } }
+
+      it 'finds the encrypted resource by cleartext' do
+        allow(model).to receive(:find_by)
+          .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
+          .and_return('encrypted resource')
+
+        expect(subject.find_token_authenticatable('my-value'))
+          .to eq 'encrypted resource'
+      end
+    end
+
+    context 'when encryption is optional' do
       let(:options) { { encrypted: :optional } }
 
       it 'finds the encrypted resource by cleartext' do
         allow(model).to receive(:find_by)
-          .with('some_field_encrypted' => encrypted)
+          .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
           .and_return('encrypted resource')
 
         expect(subject.find_token_authenticatable('my-value'))
@@ -33,7 +50,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
           .and_return('plaintext resource')
 
         allow(model).to receive(:find_by)
-          .with('some_field_encrypted' => encrypted)
+          .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
           .and_return(nil)
 
         expect(subject.find_token_authenticatable('my-value'))
@@ -41,7 +58,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
       end
     end
 
-    context 'when using migration strategy' do
+    context 'when encryption is migrating' do
       let(:options) { { encrypted: :migrating } }
 
       it 'finds the cleartext resource by cleartext' do
@@ -65,11 +82,15 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#get_token' do
-    context 'when using optional strategy' do
-      let(:options) { { encrypted: :optional } }
+    context 'when encryption is required' do
+      let(:options) { { encrypted: :required } }
 
-      before do
-        stub_feature_flags(dynamic_nonce_creation: false)
+      it 'returns decrypted token when an encrypted with static iv token is present' do
+        allow(instance).to receive(:read_attribute)
+          .with('some_field_encrypted')
+          .and_return(Gitlab::CryptoHelper.aes256_gcm_encrypt('my-test-value'))
+
+        expect(subject.get_token(instance)).to eq 'my-test-value'
       end
 
       it 'returns decrypted token when an encrypted token is present' do
@@ -78,6 +99,26 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
           .and_return(encrypted)
 
         expect(subject.get_token(instance)).to eq 'my-value'
+      end
+    end
+
+    context 'when encryption is optional' do
+      let(:options) { { encrypted: :optional } }
+
+      it 'returns decrypted token when an encrypted token is present' do
+        allow(instance).to receive(:read_attribute)
+          .with('some_field_encrypted')
+          .and_return(encrypted)
+
+        expect(subject.get_token(instance)).to eq 'my-value'
+      end
+
+      it 'returns decrypted token when an encrypted with static iv token is present' do
+        allow(instance).to receive(:read_attribute)
+          .with('some_field_encrypted')
+          .and_return(Gitlab::CryptoHelper.aes256_gcm_encrypt('my-test-value'))
+
+        expect(subject.get_token(instance)).to eq 'my-test-value'
       end
 
       it 'returns the plaintext token when encrypted token is not present' do
@@ -93,7 +134,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
       end
     end
 
-    context 'when using migration strategy' do
+    context 'when encryption is migrating' do
       let(:options) { { encrypted: :migrating } }
 
       it 'returns cleartext token when an encrypted token is present' do
@@ -123,12 +164,22 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#set_token' do
-    context 'when using optional strategy' do
+    context 'when encryption is required' do
+      let(:options) { { encrypted: :required } }
+
+      it 'writes encrypted token and returns it' do
+        expect(instance).to receive(:[]=)
+          .with('some_field_encrypted', encrypted)
+
+        expect(subject.set_token(instance, 'my-value')).to eq 'my-value'
+      end
+    end
+    context 'when encryption is optional' do
       let(:options) { { encrypted: :optional } }
 
       it 'writes encrypted token and removes plaintext token and returns it' do
         expect(instance).to receive(:[]=)
-          .with('some_field_encrypted', any_args)
+          .with('some_field_encrypted', encrypted)
         expect(instance).to receive(:[]=)
           .with('some_field', nil)
 
@@ -136,12 +187,12 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
       end
     end
 
-    context 'when using migration strategy' do
+    context 'when encryption is migrating' do
       let(:options) { { encrypted: :migrating } }
 
       it 'writes encrypted token and writes plaintext token' do
         expect(instance).to receive(:[]=)
-          .with('some_field_encrypted', any_args)
+          .with('some_field_encrypted', encrypted)
         expect(instance).to receive(:[]=)
           .with('some_field', 'my-value')
 

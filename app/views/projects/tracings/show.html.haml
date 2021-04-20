@@ -24,10 +24,10 @@
       .text-content
         %h4.text-left= _('Troubleshoot and monitor your application with tracing')
         %p
-          - jaeger_help_url = "https://www.jaegertracing.io/docs/1.7/getting-started/"
+          - jaeger_help_url = "https://www.jaegertracing.io/docs/getting-started/"
           - link_start_tag = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: jaeger_help_url }
           - link_end_tag = "#{sprite_icon('external-link', css_class: 'ml-1 vertical-align-middle')}</a>".html_safe
-          = _('To get started, link this page to your Jaeger server, or find out how to %{link_start_tag}install Jaeger%{link_end_tag}').html_safe % { link_start_tag: link_start_tag, link_end_tag: link_end_tag }
+          = _('Add a Jaeger URL to replace this page with a link to your Jaeger server. You first need to %{link_start_tag}install Jaeger%{link_end_tag}.').html_safe % { link_start_tag: link_start_tag, link_end_tag: link_end_tag }
 
           .text-center
             = render 'tracing_button'

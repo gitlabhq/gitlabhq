@@ -3,7 +3,7 @@
 - flex_grow_and_shrink_xs = 'd-flex flex-xs-grow-1 flex-xs-shrink-1 flex-grow-0 flex-shrink-0'
 
 .filtered-search-block.row-content-block.bt-0
-  .filtered-search-wrapper.d-flex.flex-nowrap.flex-column.flex-sm-wrap.flex-sm-row.flex-xl-nowrap
+  .filtered-search-wrapper.d-flex.gl-flex-nowrap.flex-column.flex-sm-wrap.flex-sm-row.flex-xl-nowrap
     - unless project_tab_filter == :starred
       .filtered-search-nav.mb-2.mb-lg-0{ class: flex_grow_and_shrink_xs }
         = render 'dashboard/projects/nav', project_tab_filter: project_tab_filter

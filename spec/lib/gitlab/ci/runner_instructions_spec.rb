@@ -6,7 +6,6 @@ RSpec.describe Gitlab::Ci::RunnerInstructions do
   using RSpec::Parameterized::TableSyntax
 
   let(:params) { {} }
-  let(:user) { create(:user) }
 
   describe 'OS' do
     Gitlab::Ci::RunnerInstructions::OS.each do |name, subject|
@@ -37,7 +36,7 @@ RSpec.describe Gitlab::Ci::RunnerInstructions do
   end
 
   describe '#install_script' do
-    subject { described_class.new(current_user: user, **params) }
+    subject { described_class.new(**params) }
 
     context 'invalid params' do
       where(:current_params, :expected_error_message) do
@@ -106,117 +105,18 @@ RSpec.describe Gitlab::Ci::RunnerInstructions do
       end
     end
 
-    context 'group' do
-      let(:group) { create(:group) }
-
-      subject { described_class.new(current_user: user, group: group, **params) }
-
-      context 'user is owner' do
-        before do
-          group.add_owner(user)
-        end
-
-        with_them do
-          let(:params) { { os: commands.each_key.first, arch: 'foo' } }
-
-          it 'have correct configurations' do
-            result = subject.register_command
-
-            expect(result).to include("#{commands[commands.each_key.first]} register")
-            expect(result).to include("--registration-token #{group.runners_token}")
-            expect(result).to include("--url #{Gitlab::Routing.url_helpers.root_url(only_path: false)}")
-          end
-        end
-      end
-
-      context 'user is not owner' do
-        where(:user_permission) do
-          [:maintainer, :developer, :reporter, :guest]
-        end
-
-        with_them do
-          before do
-            create(:group_member, user_permission, group: group, user: user)
-          end
-
-          it 'raises error' do
-            result = subject.register_command
-
-            expect(result).to be_nil
-            expect(subject.errors).to include("Gitlab::Access::AccessDeniedError")
-          end
-        end
-      end
-    end
-
-    context 'project' do
-      let(:project) { create(:project) }
-
-      subject { described_class.new(current_user: user, project: project, **params) }
-
-      context 'user is maintainer' do
-        before do
-          project.add_maintainer(user)
-        end
-
-        with_them do
-          let(:params) { { os: commands.each_key.first, arch: 'foo' } }
-
-          it 'have correct configurations' do
-            result = subject.register_command
-
-            expect(result).to include("#{commands[commands.each_key.first]} register")
-            expect(result).to include("--registration-token #{project.runners_token}")
-            expect(result).to include("--url #{Gitlab::Routing.url_helpers.root_url(only_path: false)}")
-          end
-        end
-      end
-
-      context 'user is not maintainer' do
-        where(:user_permission) do
-          [:developer, :reporter, :guest]
-        end
-
-        with_them do
-          before do
-            create(:project_member, user_permission, project: project, user: user)
-          end
-
-          it 'raises error' do
-            result = subject.register_command
-
-            expect(result).to be_nil
-            expect(subject.errors).to include("Gitlab::Access::AccessDeniedError")
-          end
-        end
-      end
-    end
-
     context 'instance' do
-      subject { described_class.new(current_user: user, **params) }
+      subject { described_class.new(**params) }
 
-      context 'user is admin' do
-        let(:user) { create(:user, :admin) }
+      with_them do
+        let(:params) { { os: commands.each_key.first, arch: 'foo' } }
 
-        with_them do
-          let(:params) { { os: commands.each_key.first, arch: 'foo' } }
-
-          it 'have correct configurations' do
-            result = subject.register_command
-
-            expect(result).to include("#{commands[commands.each_key.first]} register")
-            expect(result).to include("--registration-token #{Gitlab::CurrentSettings.runners_registration_token}")
-            expect(result).to include("--url #{Gitlab::Routing.url_helpers.root_url(only_path: false)}")
-          end
-        end
-      end
-
-      context 'user is not admin' do
-        it 'raises error' do
+        it 'have correct configurations' do
           result = subject.register_command
 
-          expect(result).to be_nil
-          expect(subject.errors).to include("Gitlab::Access::AccessDeniedError")
+          expect(result).to include("#{commands[commands.each_key.first]} register")
+          expect(result).to include("--registration-token $REGISTRATION_TOKEN")
+          expect(result).to include("--url #{Gitlab::Routing.url_helpers.root_url(only_path: false)}")
         end
       end
     end

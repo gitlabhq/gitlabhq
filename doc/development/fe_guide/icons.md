@@ -104,7 +104,7 @@ by the examples that follow:
 
 **Example 1:**
 
-The following HAML expression generates a loading icon’s markup and
+The following HAML expression generates a loading icon's markup and
 centers the icon by wrapping it in a `gl-spinner-container` element.
 
 ```haml
@@ -121,7 +121,7 @@ centers the icon by wrapping it in a `gl-spinner-container` element.
 
 **Example 2:**
 
-The following HAML expression generates a loading icon’s markup
+The following HAML expression generates a loading icon's markup
 with a custom size. It also appends a margin utility class.
 
 ```haml
@@ -137,7 +137,7 @@ with a custom size. It also appends a margin utility class.
 ### Usage in Vue
 
 The [GitLab UI](https://gitlab-org.gitlab.io/gitlab-ui/) components library provides a
-`GlLoadingIcon` component. See the component’s
+`GlLoadingIcon` component. See the component's
 [storybook](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-loading-icon--default)
 for more information about its usage.
 

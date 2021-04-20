@@ -37,6 +37,11 @@ const katexRegexString = `(
   .replace(/\s/g, '')
   .trim();
 
+function deHTMLify(t) {
+  // get some specific characters back, that are allowed for KaTex rendering
+  const text = t.replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  return text;
+}
 function renderKatex(t) {
   let text = t;
   let numInline = 0; // number of successfull converted math formulas
@@ -57,9 +62,7 @@ function renderKatex(t) {
 
         while (matches !== null) {
           try {
-            const renderedKatex = katex.renderToString(
-              matches[0].replace(/\$/g, '').replace(/&#39;/g, "'"),
-            ); // get the tick ' back again from HTMLified string
+            const renderedKatex = katex.renderToString(deHTMLify(matches[0].replace(/\$/g, '')));
             text = `${text.replace(matches[0], ` ${renderedKatex}`)}`;
           } catch {
             numInline -= 1;
@@ -68,7 +71,7 @@ function renderKatex(t) {
         }
       } else {
         try {
-          text = katex.renderToString(matches[2].replace(/&#39;/g, "'"));
+          text = katex.renderToString(deHTMLify(matches[2]));
         } catch (error) {
           numInline -= 1;
         }

@@ -50,6 +50,10 @@ export default {
         };
       },
       update(data) {
+        if (!data?.project?.pipeline) {
+          return this.graphData;
+        }
+
         const {
           stages: { nodes: stages },
         } = data.project.pipeline;

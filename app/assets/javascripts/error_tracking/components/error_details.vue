@@ -322,7 +322,7 @@ export default {
               <gl-button
                 v-if="!error.gitlabIssuePath"
                 category="primary"
-                variant="success"
+                variant="confirm"
                 :loading="issueCreationInProgress"
                 data-qa-selector="create_issue_button"
                 @click="createIssue"

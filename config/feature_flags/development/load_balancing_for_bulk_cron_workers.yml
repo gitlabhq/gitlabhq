@@ -1,0 +1,8 @@
+---
+name: load_balancing_for_bulk_cron_workers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58345
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326721
+milestone: '13.11'
+type: development
+group: group::global search
+default_enabled: false

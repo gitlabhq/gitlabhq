@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   HTTParty.get(url, basic_auth: { username: 'foo' })
       class HTTPartyBasicAuth < RuboCop::Cop::Cop
-        MESSAGE = "`basic_auth: { user: ... }` does not work - replace `user:` with `username:`".freeze
+        MESSAGE = "`basic_auth: { user: ... }` does not work - replace `user:` with `username:`"
 
         RESTRICT_ON_SEND = %i(get put post delete).freeze
 

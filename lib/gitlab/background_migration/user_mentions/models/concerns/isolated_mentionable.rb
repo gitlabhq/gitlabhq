@@ -70,8 +70,8 @@ module Gitlab
             def build_mention_values(resource_foreign_key)
               refs = all_references(author)
 
-              mentioned_users_ids = array_to_sql(refs.mentioned_users.pluck(:id))
-              mentioned_projects_ids = array_to_sql(refs.mentioned_projects.pluck(:id))
+              mentioned_users_ids = array_to_sql(refs.isolated_mentioned_users.pluck(:id))
+              mentioned_projects_ids = array_to_sql(refs.isolated_mentioned_projects.pluck(:id))
               mentioned_groups_ids = array_to_sql(refs.isolated_mentioned_groups.pluck(:id))
 
               return if mentioned_users_ids.blank? && mentioned_projects_ids.blank? && mentioned_groups_ids.blank?

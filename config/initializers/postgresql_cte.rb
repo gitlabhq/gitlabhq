@@ -121,6 +121,8 @@ module ActiveRecord
           end
         when Arel::Nodes::As
           with_value
+        when Gitlab::Database::AsWithMaterialized
+          with_value
         end
       end
 

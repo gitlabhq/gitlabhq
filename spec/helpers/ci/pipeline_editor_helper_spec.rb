@@ -20,4 +20,36 @@ RSpec.describe Ci::PipelineEditorHelper do
       expect(subject).to be false
     end
   end
+
+  describe '#js_pipeline_editor_data' do
+    let(:project) { create(:project, :repository) }
+
+    before do
+      allow(helper)
+        .to receive(:namespace_project_new_merge_request_path)
+        .and_return('/mock/project/-/merge_requests/new')
+
+      allow(helper)
+        .to receive(:image_path)
+        .and_return('foo')
+    end
+
+    subject(:pipeline_editor_data) { helper.js_pipeline_editor_data(project) }
+
+    it 'returns pipeline editor data' do
+      expect(pipeline_editor_data).to eq({
+        "ci-config-path": project.ci_config_path_or_default,
+        "commit-sha" => project.commit.sha,
+        "default-branch" => project.default_branch,
+        "empty-state-illustration-path" => 'foo',
+        "initial-branch-name": nil,
+        "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
+        "new-merge-request-path" => '/mock/project/-/merge_requests/new',
+        "project-path" => project.path,
+        "project-full-path" => project.full_path,
+        "project-namespace" => project.namespace.full_path,
+        "yml-help-page-path" => help_page_path('ci/yaml/README')
+      })
+    end
+  end
 end

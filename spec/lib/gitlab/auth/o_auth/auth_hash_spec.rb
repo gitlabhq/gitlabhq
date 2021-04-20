@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::OAuth::AuthHash do
-  let(:provider) { 'ldap'.freeze }
+  let(:provider) { 'ldap' }
   let(:auth_hash) do
     described_class.new(
       OmniAuth::AuthHash.new(

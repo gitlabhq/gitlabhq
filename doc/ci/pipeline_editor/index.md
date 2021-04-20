@@ -10,11 +10,8 @@ type: reference
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4540) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/270059) in GitLab 13.10.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
 The pipeline editor is the primary place to edit the GitLab CI/CD configuration in
-your `.gitlab-ci.yml` file. To access it, go to **CI/CD > Editor**.
+the `.gitlab-ci.yml` file in the root of your repository. To access the editor, go to **CI/CD > Editor**.
 
 From the pipeline editor page you can:
 
@@ -25,8 +22,7 @@ From the pipeline editor page you can:
 - View an [expanded](#view-expanded-configuration) version of your configuration.
 - [Commit](#commit-changes-to-ci-configuration) the changes to a specific branch.
 
-NOTE:
-You must already have [a `.gitlab-ci.yml` file](../quick_start/index.md#create-a-gitlab-ciyml-file)
+In GitLab 13.9 and earlier, you must already have [a `.gitlab-ci.yml` file](../quick_start/index.md#create-a-gitlab-ciyml-file)
 on the default branch of your project to use the editor.
 
 ## Validate CI configuration

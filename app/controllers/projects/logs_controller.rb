@@ -58,7 +58,7 @@ module Projects
     def environment
       strong_memoize(:environment) do
         if cluster_params.key?(:environment_name)
-          EnvironmentsFinder.new(project, current_user, name: cluster_params[:environment_name]).find.first
+          EnvironmentsFinder.new(project, current_user, name: cluster_params[:environment_name]).execute.first
         else
           project.default_environment
         end

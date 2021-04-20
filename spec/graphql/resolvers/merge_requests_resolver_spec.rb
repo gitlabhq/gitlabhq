@@ -7,6 +7,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
   include SortingHelper
 
   let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:other_project) { create(:project, :repository) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
@@ -16,10 +17,17 @@ RSpec.describe Resolvers::MergeRequestsResolver do
   let_it_be(:merge_request_3) { create(:merge_request, :unique_branches, **common_attrs) }
   let_it_be(:merge_request_4) { create(:merge_request, :unique_branches, :locked, **common_attrs) }
   let_it_be(:merge_request_5) { create(:merge_request, :simple, :locked, **common_attrs) }
-  let_it_be(:merge_request_6) { create(:labeled_merge_request, :unique_branches, labels: create_list(:label, 2, project: project), **common_attrs) }
-  let_it_be(:merge_request_with_milestone) { create(:merge_request, :unique_branches, **common_attrs, milestone: milestone) }
-  let_it_be(:other_project) { create(:project, :repository) }
-  let_it_be(:other_merge_request) { create(:merge_request, source_project: other_project, target_project: other_project) }
+  let_it_be(:merge_request_6) do
+    create(:labeled_merge_request, :unique_branches, **common_attrs, labels: create_list(:label, 2, project: project))
+  end
+
+  let_it_be(:merge_request_with_milestone) do
+    create(:merge_request, :unique_branches, **common_attrs, milestone: milestone)
+  end
+
+  let_it_be(:other_merge_request) do
+    create(:merge_request, source_project: other_project, target_project: other_project)
+  end
 
   let(:iid_1) { merge_request_1.iid }
   let(:iid_2) { merge_request_2.iid }
@@ -41,13 +49,16 @@ RSpec.describe Resolvers::MergeRequestsResolver do
     #   AND "merge_requests"."iid" = 1 ORDER BY "merge_requests"."id" DESC
     # SELECT "projects".* FROM "projects" WHERE "projects"."id" = 2
     # SELECT "project_features".* FROM "project_features" WHERE "project_features"."project_id" = 2
-    let(:queries_per_project) { 3 }
+    let(:queries_per_project) { 4 }
 
-    context 'no arguments' do
+    context 'without arguments' do
       it 'returns all merge requests' do
         result = resolve_mr(project)
 
-        expect(result).to contain_exactly(merge_request_1, merge_request_2, merge_request_3, merge_request_4, merge_request_5, merge_request_6, merge_request_with_milestone)
+        expect(result).to contain_exactly(
+          merge_request_1, merge_request_2, merge_request_3, merge_request_4, merge_request_5,
+          merge_request_6, merge_request_with_milestone
+        )
       end
 
       it 'returns only merge requests that the current user can see' do
@@ -57,7 +68,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
-    context 'by iid alone' do
+    context 'with iid alone' do
       it 'batch-resolves by target project full path and individual IID', :request_store do
         # 1 query for project_authorizations, and 1 for merge_requests
         result = batch_sync(max_queries: queries_per_project) do
@@ -83,7 +94,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
         expect(result).to contain_exactly(merge_request_1, merge_request_2, merge_request_3)
       end
 
-      it 'can batch-resolve merge requests from different projects', :request_store, :use_clean_rails_memory_store_caching do
+      it 'can batch-resolve merge requests from different projects', :request_store do
         # 2 queries for project_authorizations, and 2 for merge_requests
         results = batch_sync(max_queries: queries_per_project * 2) do
           a = resolve_mr(project, iids: [iid_1])
@@ -121,7 +132,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
-    context 'by source branches' do
+    context 'with source branches argument' do
       it 'takes one argument' do
         result = resolve_mr(project, source_branches: [merge_request_3.source_branch])
 
@@ -131,13 +142,13 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       it 'takes more than one argument' do
         mrs = [merge_request_3, merge_request_4]
         branches = mrs.map(&:source_branch)
-        result = resolve_mr(project, source_branches: branches )
+        result = resolve_mr(project, source_branches: branches)
 
         expect(result).to match_array(mrs)
       end
     end
 
-    context 'by target branches' do
+    context 'with target branches argument' do
       it 'takes one argument' do
         result = resolve_mr(project, target_branches: [merge_request_3.target_branch])
 
@@ -153,7 +164,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
-    context 'by state' do
+    context 'with state argument' do
       it 'takes one argument' do
         result = resolve_mr(project, state: 'locked')
 
@@ -161,7 +172,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
-    context 'by label' do
+    context 'with label argument' do
       let_it_be(:label) { merge_request_6.labels.first }
       let_it_be(:with_label) { create(:labeled_merge_request, :closed, labels: [label], **common_attrs) }
 
@@ -178,7 +189,18 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
-    context 'by merged_after and merged_before' do
+    context 'with negated label argument' do
+      let_it_be(:label) { merge_request_6.labels.first }
+      let_it_be(:with_label) { create(:labeled_merge_request, :closed, labels: [label], **common_attrs) }
+
+      it 'excludes merge requests with given label from selection' do
+        result = resolve_mr(project, not: { labels: [label.title] })
+
+        expect(result).not_to include(merge_request_6, with_label)
+      end
+    end
+
+    context 'with merged_after and merged_before arguments' do
       before do
         merge_request_1.metrics.update!(merged_at: 10.days.ago)
       end
@@ -196,7 +218,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
-    context 'by milestone' do
+    context 'with milestone argument' do
       it 'filters merge requests by milestone title' do
         result = resolve_mr(project, milestone_title: milestone.title)
 
@@ -210,9 +232,17 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
+    context 'with negated milestone argument' do
+      it 'filters out merge requests with given milestone title' do
+        result = resolve_mr(project, not: { milestone_title: milestone.title })
+
+        expect(result).not_to include(merge_request_with_milestone)
+      end
+    end
+
     describe 'combinations' do
       it 'requires all filters' do
-        create(:merge_request, :closed, source_project: project, target_project: project, source_branch: merge_request_4.source_branch)
+        create(:merge_request, :closed, **common_attrs, source_branch: merge_request_4.source_branch)
 
         result = resolve_mr(project, source_branches: [merge_request_4.source_branch], state: 'locked')
 

@@ -1,0 +1,5 @@
+---
+title: Fix EmptyLineAfterFinalLetItBe offenses in spec/services/award_emojis
+merge_request: 58407
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

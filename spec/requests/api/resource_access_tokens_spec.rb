@@ -151,6 +151,23 @@ RSpec.describe API::ResourceAccessTokens do
           expect(User.exists?(project_bot.id)).to be_falsy
         end
 
+        context "when using project access token to DELETE other project access token" do
+          let_it_be(:other_project_bot) { create(:user, :project_bot) }
+          let_it_be(:other_token) { create(:personal_access_token, user: other_project_bot) }
+          let_it_be(:token_id) { other_token.id }
+
+          before do
+            project.add_maintainer(other_project_bot)
+          end
+
+          it "deletes the project access token from the project" do
+            delete_token
+
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(User.exists?(other_project_bot.id)).to be_falsy
+          end
+        end
+
         context "when attempting to delete a non-existent project access token" do
           let_it_be(:token_id) { non_existing_record_id }
 

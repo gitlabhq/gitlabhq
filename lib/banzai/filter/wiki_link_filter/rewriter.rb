@@ -6,7 +6,7 @@ module Banzai
       class Rewriter
         def initialize(link_string, wiki:, slug:)
           @uri = Addressable::URI.parse(link_string)
-          @wiki_base_path = wiki && wiki.wiki_base_path
+          @wiki_base_path = wiki&.wiki_base_path
           @slug = slug
         end
 
@@ -41,7 +41,8 @@ module Banzai
         # Any link _not_ of the form `http://example.com/`
         def apply_relative_link_rules!
           if @uri.relative? && @uri.path.present?
-            link = ::File.join(@wiki_base_path, @uri.path)
+            link = @uri.path
+            link = ::File.join(@wiki_base_path, link) unless link.starts_with?(@wiki_base_path)
             link = "#{link}##{@uri.fragment}" if @uri.fragment
             @uri = Addressable::URI.parse(link)
           end

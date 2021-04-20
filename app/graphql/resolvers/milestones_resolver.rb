@@ -7,7 +7,7 @@ module Resolvers
 
     argument :ids, [GraphQL::ID_TYPE],
              required: false,
-             description: 'Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1".'
+             description: 'Array of global milestone IDs, e.g., `"gid://gitlab/Milestone/1"`.'
 
     argument :state, Types::MilestoneStateEnum,
              required: false,
@@ -56,7 +56,7 @@ module Resolvers
     end
 
     def parent
-      synchronized_object
+      object
     end
 
     def parent_id_parameters(args)

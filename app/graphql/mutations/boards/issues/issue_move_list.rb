@@ -52,13 +52,10 @@ module Mutations
           super
         end
 
-        def resolve(board:, **args)
-          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/-/issues/247861')
+        def resolve(board:, project_path:, iid:, **args)
+          Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/247861')
 
-          raise_resource_not_available_error! unless board
-          authorize_board!(board)
-
-          issue = authorized_find!(project_path: args[:project_path], iid: args[:iid])
+          issue = authorized_find!(project_path: project_path, iid: iid)
           move_params = { id: issue.id, board_id: board.id }.merge(move_arguments(args))
 
           move_issue(board, issue, move_params)
@@ -83,12 +80,6 @@ module Mutations
 
         def move_arguments(args)
           args.slice(:from_list_id, :to_list_id, :move_after_id, :move_before_id)
-        end
-
-        def authorize_board!(board)
-          return if Ability.allowed?(current_user, :read_issue_board, board.resource_parent)
-
-          raise_resource_not_available_error!
         end
       end
     end

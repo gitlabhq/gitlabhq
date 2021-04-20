@@ -18,38 +18,39 @@ and is automatically configured on [GitHub import](../../../integration/github.m
 
 ## Configuration
 
-### Complete these steps on GitHub
-
 This integration requires a [GitHub API token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
-with `repo:status` access granted:
+with `repo:status` access granted.
 
-1. Go to your "Personal access tokens" page at <https://github.com/settings/tokens>
-1. Click "Generate New Token"
-1. Ensure that `repo:status` is checked and click "Generate token"
-1. Copy the generated token to use on GitLab
+Complete these steps on GitHub:
 
-### Complete these steps on GitLab
+1. Go to your **Personal access tokens** page at <https://github.com/settings/tokens>.
+1. Select **Generate new token**.
+1. Under **Note**, enter a name for the new token.
+1. Ensure that `repo:status` is checked and select **Generate token**.
+1. Copy the generated token to use in GitLab.
 
-1. Navigate to the project you want to configure.
-1. Navigate to the [Integrations page](overview.md#accessing-integrations)
-1. Click "GitHub".
+Complete these steps in GitLab:
+
+1. Go to the project you want to configure.
+1. Go to the [Integrations page](overview.md#accessing-integrations)
+1. Select **GitHub**.
 1. Ensure that the **Active** toggle is enabled.
-1. Paste the token you've generated on GitHub
-1. Enter the path to your project on GitHub, such as `https://github.com/username/repository`
-1. Optionally uncheck **Static status check names** checkbox to disable static status check names.
-1. Save or optionally click "Test Settings".
+1. Paste the token you generated on GitHub.
+1. Enter the path to your project on GitHub, such as `https://github.com/username/repository`.
+1. (Optional) To disable static status check names, clear the **Static status check names** checkbox.
+1. Select **Save changes** or optionally select **Test settings**.
 
-Once the integration is configured, see [Pipelines for external pull requests](../../../ci/ci_cd_for_external_repos/#pipelines-for-external-pull-requests)
+After configuring the integration, see [Pipelines for external pull requests](../../../ci/ci_cd_for_external_repos/#pipelines-for-external-pull-requests)
 to configure pipelines to run for open pull requests.
 
-#### Static / dynamic status check names
+### Static / dynamic status check names
 
 > - Introduced in GitLab 11.5: using static status check names as opt-in option.
 > - [In GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/9931), static status check names is default behavior for new projects.
 
-This makes it possible to mark these status checks as _Required_ on GitHub.
-With **Static status check names** enabled on the integration page, your
-GitLab instance host name is appended to a status check name,
-whereas in case of dynamic status check names, a branch name is appended.
+This makes it possible to mark these status checks as **Required** on GitHub.
 
-![Configure GitHub Project Integration](img/github_configuration.png)
+When **Static status check names** is enabled on the integration page, your
+GitLab instance host name is appended to a status check name.
+
+When disabled, it uses dynamic status check names and appends the branch name.

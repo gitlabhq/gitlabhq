@@ -21,34 +21,38 @@ class GroupMembersFinder < UnionFinder
   end
 
   def execute(include_relations: DEFAULT_RELATIONS)
-    group_members = group_members_list
-    relations = []
+    return filter_members(group_members_list) if include_relations == [:direct]
 
-    return filter_members(group_members) if include_relations == [:direct]
+    groups = groups_by_relations(include_relations)
+    return GroupMember.none unless groups
 
-    relations << group_members if include_relations.include?(:direct)
+    members = all_group_members(groups).distinct_on_user_with_max_access_level
 
-    if include_relations.include?(:inherited) && group.parent
-      parents_members = relation_group_members(group.ancestors)
-
-      relations << parents_members
-    end
-
-    if include_relations.include?(:descendants)
-      descendant_members = relation_group_members(group.descendants)
-
-      relations << descendant_members
-    end
-
-    return GroupMember.none if relations.empty?
-
-    members = find_union(relations, GroupMember)
     filter_members(members)
   end
 
   private
 
   attr_reader :user, :group
+
+  def groups_by_relations(include_relations)
+    case include_relations.sort
+    when [:inherited]
+      group.ancestors
+    when [:descendants]
+      group.descendants
+    when [:direct, :inherited]
+      group.self_and_ancestors
+    when [:descendants, :direct]
+      group.self_and_descendants
+    when [:descendants, :inherited]
+      find_union([group.ancestors, group.descendants], Group)
+    when [:descendants, :direct, :inherited]
+      group.self_and_hierarchy
+    else
+      nil
+    end
+  end
 
   def filter_members(members)
     members = members.search(params[:search]) if params[:search].present?
@@ -69,17 +73,13 @@ class GroupMembersFinder < UnionFinder
     group.members
   end
 
-  def relation_group_members(relation)
-    all_group_members(relation).non_minimal_access
+  def all_group_members(groups)
+    members_of_groups(groups).non_minimal_access
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def all_group_members(relation)
-    GroupMember.non_request
-      .where(source_id: relation.select(:id))
-      .where.not(user_id: group.users.select(:id))
+  def members_of_groups(groups)
+    GroupMember.non_request.of_groups(groups)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end
 
 GroupMembersFinder.prepend_if_ee('EE::GroupMembersFinder')

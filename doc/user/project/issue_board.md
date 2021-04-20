@@ -14,7 +14,7 @@ It can be used as a [Kanban](https://en.wikipedia.org/wiki/Kanban_(development))
 It pairs issue tracking and project management, keeping everything together,
 so that you don't need to jump between different platforms to organize your workflow.
 
-Issue boards build on the existing [issue tracking functionality](issues/index.md#issues-list) and
+Issue boards build on the existing [issue tracking functionality](issues/index.md) and
 [labels](labels.md). Your issues appear as cards in vertical lists, organized by their assigned
 labels, [milestones](#milestone-lists), or [assignees](#assignee-lists).
 
@@ -88,7 +88,7 @@ You can tailor GitLab issue boards to your own preferred workflow.
 Here are some common use cases for issue boards.
 
 For examples of using issue boards along with [epics](../group/epics/index.md),
-[issue health status](issues/index.md#health-status), and
+[issue health status](issues/managing_issues.md#health-status), and
 [scoped labels](labels.md#scoped-labels) for various Agile frameworks, check:
 
 - The [How to use GitLab for Agile portfolio planning and project management](https://about.gitlab.com/blog/2020/11/11/gitlab-for-agile-portfolio-planning-project-management/) blog post (November 2020)
@@ -280,6 +280,7 @@ group-level objects are available.
 #### GraphQL-based sidebar for group issue boards **(PREMIUM)**
 
 <!-- When the feature flag is removed, integrate this section into the above ("Group issue boards"). -->
+<!-- This anchor is linked from #blocked-issues as well. -->
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285074) in GitLab 13.9.
 > - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
@@ -338,6 +339,33 @@ to and from a milestone list to manipulate the milestone of the dragged issues.
 As in other list types, click the trash icon to remove a list.
 
 ![Milestone lists](img/issue_board_milestone_lists_v13_6.png)
+
+### Iteration lists **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11.
+> - [Deployed behind the `board_new_lists` and `iteration_board_lists` feature flags](../feature_flags.md), disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57439) in GitLab 13.11.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to disable the feature flags: [`board_new_lists`](#enable-or-disable-new-add-list-form) and [`iteration_board_lists`](#enable-or-disable-iteration-lists-in-boards). **(PREMIUM SELF)**
+
+There can be
+[risks when disabling released features](../feature_flags.md#risks-when-disabling-released-features).
+Refer to this feature's version history for more details.
+
+You're also able to create lists of an iteration.
+These are lists that filter issues by the assigned
+iteration. To add an iteration list:
+
+1. Select **Create list**.
+1. Select the **Iteration**.
+1. In the dropdown, select an iteration.
+1. Select **Add to board**.
+
+Like the milestone lists, you're able to [drag issues](#drag-issues-between-lists)
+to and from a iteration list to manipulate the iteration of the dragged issues.
+
+![Iteration lists](img/issue_board_iteration_lists_v13_10.png)
 
 ### Group issues in swimlanes **(PREMIUM)**
 
@@ -407,18 +435,23 @@ To set a WIP limit for a list:
 
 ## Blocked issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34723) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34723) in GitLab 12.8.
+> - [View blocking issues when hovering over blocked icon](https://gitlab.com/gitlab-org/gitlab/-/issues/210452) in GitLab 13.10.
 
 If an issue is blocked by another issue, an icon appears next to its title to indicate its blocked
 status.
 
-![Blocked issues](img/issue_boards_blocked_icon_v13_6.png)
+When you hover over the blocked icon (**{issue-block}**), a detailed information popover is displayed.
+
+To enable this in group issue boards, enable the [GraphQL-based sidebar](#graphql-based-sidebar-for-group-issue-boards).
+The feature is enabled by default when you use group issue boards with epic swimlanes.
+
+![Blocked issues](img/issue_boards_blocked_icon_v13_10.png)
 
 ## Actions you can take on an issue board
 
 - [Create a new list](#create-a-new-list).
 - [Remove an existing list](#remove-a-list).
-- [Add issues to a list](#add-issues-to-a-list).
 - [Remove an issue from a list](#remove-an-issue-from-a-list).
 - [Filter issues](#filter-issues) that appear across your issue board.
 - [Create workflows](#create-workflows).
@@ -457,31 +490,19 @@ To remove a list from an issue board:
 1. Select **Remove list**. A confirmation dialog appears.
 1. Select **OK**.
 
-### Add issues to a list **(FREE SELF)**
+### Add issues to a list
 
-> - Feature flag [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47898) in GitLab 13.7.
-> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-adding-issues-to-the-list). **(FREE SELF)**
+> The **Add issues** button was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57329) in GitLab 13.11.
 
-You can add issues to a list in a project issue board by clicking the **Add issues** button
-in the top right corner of the issue board. This opens up a modal
-window where you can see all the issues that do not belong to any list.
+If your board is scoped to one or more attributes, go to the issues you want to add and apply the
+same attributes as your board scope.
 
-Select one or more issues by clicking the cards and then click **Add issues**
-to add them to the selected list. You can limit the issues you want to add to
-the list by filtering by the following:
+For example, to add an issue to a list scoped to the `Doing` label, in a group issue board:
 
-- Assignee
-- Author
-- Epic
-- Iteration ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)
-- Label
-- Milestone
-- My Reaction
-- Release
-- Weight
+1. Go to an issue in the group or one of the subgroups or projects.
+1. Add the `Doing` label.
+
+The issue should now show in the `Doing` list on your issue board.
 
 ### Remove an issue from a list
 
@@ -542,7 +563,7 @@ worked on by the designers.
 
 Then, when they're done, all they have to do is
 drag it to the next list, **Backend**. Then, a backend developer can
-eventually pick it up. When they’re done, they move it to **Done**, to close the
+eventually pick it up. When they're done, they move it to **Done**, to close the
 issue.
 
 This process can be seen clearly when visiting an issue. With every move
@@ -625,20 +646,43 @@ To disable it:
 Feature.disable(:graphql_board_lists)
 ```
 
-## Enable or disable adding issues to the list **(FREE SELF)**
+### Enable or disable new add list form **(FREE SELF)**
 
-Adding issues to the list is deployed behind a feature flag that is **disabled by default**.
+The new form for adding lists is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
+can disable it.
 
 To enable it:
 
 ```ruby
-Feature.enable(:add_issues_button)
+Feature.enable(:board_new_list)
 ```
 
 To disable it:
 
 ```ruby
-Feature.disable(:add_issues_button)
+Feature.disable(:board_new_list)
+```
+
+### Enable or disable iteration lists in boards **(PREMIUM SELF)**
+
+NOTE:
+When disabling iteration lists in boards, you also need to disable the [new add list form](#enable-or-disable-new-add-list-form).
+
+The iteration list is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:iteration_board_lists)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:iteration_board_lists)
 ```

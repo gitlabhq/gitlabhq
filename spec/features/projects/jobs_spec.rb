@@ -20,6 +20,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
   end
 
   before do
+    stub_feature_flags(jobs_table_vue: false)
     project.add_role(user, user_access_level)
     sign_in(user)
   end
@@ -32,7 +33,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it 'shows the empty state page' do
         expect(page).to have_content('Use jobs to automate your tasks')
-        expect(page).to have_link('Create CI/CD configuration file', href: project.present(current_user: user).add_ci_yml_path)
+        expect(page).to have_link('Create CI/CD configuration file', href: project_ci_pipeline_editor_path(project))
       end
     end
 
@@ -1057,7 +1058,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       before do
         job.run!
         job.cancel!
-        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
         sign_out(:user)
         sign_in(create(:user))

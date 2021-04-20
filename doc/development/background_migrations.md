@@ -142,6 +142,14 @@ migration performing the scheduling. Otherwise the background migration would be
 scheduled multiple times on systems that are upgrading multiple patch releases at
 once.
 
+When you start the second post-deployment migration, you should delete any
+previously queued jobs from the initial migration with the provided
+helper:
+
+```ruby
+delete_queued_jobs('BackgroundMigrationClassName')
+```
+
 ## Cleaning Up
 
 NOTE:

@@ -21,9 +21,7 @@ class Packages::PackageFileFinder
   def package_files
     files = package.package_files
 
-    files = by_file_name(files)
-
-    files
+    by_file_name(files)
   end
 
   def by_file_name(files)

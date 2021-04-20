@@ -1,8 +1,8 @@
 - @gfm_form = true
 - @content_class = "merge-request-container#{' limit-container-width' unless fluid_layout}"
-- add_to_breadcrumbs _("Merge Requests"), project_merge_requests_path(@project)
+- add_to_breadcrumbs _("Merge requests"), project_merge_requests_path(@project)
 - breadcrumb_title @merge_request.to_reference
-- page_title "#{@merge_request.title} (#{@merge_request.to_reference})", _("Merge Requests")
+- page_title "#{@merge_request.title} (#{@merge_request.to_reference})", _("Merge requests")
 - page_description @merge_request.description_html
 - page_card_attributes @merge_request.card_attributes
 - suggest_changes_help_path = help_page_path('user/discussions/index.md', anchor: 'suggest-changes')
@@ -12,6 +12,8 @@
 - add_page_specific_style 'page_bundles/pipelines'
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
+
+- add_page_startup_api_call @endpoint_metadata_url
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
   = render "projects/merge_requests/mr_title"
@@ -24,21 +26,21 @@
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", qa_selector: "notes_tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Overview")
-              %span.badge.badge-pill= @merge_request.related_notes.user.count
+              %span.badge.badge-pill.gl-badge.badge-muted.sm= @merge_request.related_notes.user.count
           - if @merge_request.source_project
-            = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab" do
+            = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", qa_selector: "commits_tab" do
               = tab_link_for @merge_request, :commits do
                 = _("Commits")
-                %span.badge.badge-pill= @commits_count
+                %span.badge.badge-pill.gl-badge.badge-muted.sm= @commits_count
           - if number_of_pipelines.nonzero?
             = render "projects/merge_requests/tabs/tab", name: "pipelines", class: "pipelines-tab" do
               = tab_link_for @merge_request, :pipelines do
                 = _("Pipelines")
-                %span.badge.badge-pill.js-pipelines-mr-count= number_of_pipelines
+                %span.badge.badge-pill.gl-badge.badge-muted.sm.js-pipelines-mr-count= number_of_pipelines
           = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab", id: "diffs-tab", qa_selector: "diffs_tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
-              %span.badge.badge-pill= @merge_request.diff_size
+              %span.badge.badge-pill.gl-badge.badge-muted.sm= @merge_request.diff_size
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter
 
@@ -60,9 +62,10 @@
                   - add_page_startup_api_call notes_url
                 - else
                   - add_page_startup_api_call discussions_path(@merge_request)
-                - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, format: :json)
+                - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, async_mergeability_check: true, format: :json)
                 - add_page_startup_api_call cached_widget_project_json_merge_request_path(@project, @merge_request, format: :json)
               #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request, Feature.enabled?(:paginated_notes, @project)).to_json,
+                endpoint_metadata: @endpoint_metadata_url,
                 noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
                 noteable_type: 'MergeRequest',
                 target_type: 'merge_request',
@@ -75,26 +78,10 @@
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if number_of_pipelines.nonzero?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
-      - if mr_action === "diffs"
-        - add_page_startup_api_call @endpoint_metadata_url
       - params = request.query_parameters
       - if Feature.enabled?(:default_merge_ref_for_diffs, @project, default_enabled: :yaml)
         - params = params.merge(diff_head: true)
-      = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: { "is-locked": @merge_request.discussion_locked?,
-        endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', params),
-        endpoint_metadata: @endpoint_metadata_url,
-        endpoint_batch: diffs_batch_project_json_merge_request_path(@project, @merge_request, 'json', params),
-        endpoint_coverage: @coverage_path,
-        help_page_path: suggest_changes_help_path,
-        current_user_data: @current_user_data,
-        project_path: project_path(@merge_request.project),
-        changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg'),
-        is_fluid_layout: fluid_layout.to_s,
-        dismiss_endpoint: user_callouts_path,
-        show_suggest_popover: show_suggest_popover?.to_s,
-        show_whitespace_default: @show_whitespace_default.to_s,
-        file_by_file_default: @file_by_file_default.to_s,
-        default_suggestion_commit_message: default_suggestion_commit_message }
+      = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
 
     .mr-loading-status
       .loading.hide
@@ -108,3 +95,6 @@
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit
 
 #js-review-bar
+
+= render 'shared/issuable/invite_members_trigger', project: @project
+

@@ -26,7 +26,7 @@ production assets post-compile.
 
 We use the [Renovate GitLab Bot](https://gitlab.com/gitlab-org/frontend/renovate-gitlab-bot) to
 automatically create merge requests for updating dependencies of several projects.
-You can find the up-to-date list of projects managed by the renovate bot in the project’s README.
+You can find the up-to-date list of projects managed by the renovate bot in the project's README.
 
 Some key dependencies updated using renovate are:
 

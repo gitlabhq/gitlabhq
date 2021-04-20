@@ -28,6 +28,21 @@ RSpec.describe 'search/_results' do
     expect(rendered).to have_content('Showing 1 - 2 of 3 issues for foo')
   end
 
+  context 'when searching notes which contain quotes in markdown' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:issue) { create(:issue, project: project, title: '*') }
+    let_it_be(:note) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, note: '```"helloworld"```') }
+    let(:scope) { 'notes' }
+    let(:search_objects) { Note.page(1).per(2) }
+    let(:term) { 'helloworld' }
+
+    it 'renders plain quotes' do
+      render
+
+      expect(rendered).to include('"<mark>helloworld</mark>"')
+    end
+  end
+
   context 'when search results do not have a count' do
     before do
       @search_objects = @search_objects.without_count

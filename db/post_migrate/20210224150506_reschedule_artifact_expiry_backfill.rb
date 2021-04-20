@@ -4,7 +4,7 @@ class RescheduleArtifactExpiryBackfill < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  MIGRATION = 'BackfillArtifactExpiryDate'.freeze
+  MIGRATION = 'BackfillArtifactExpiryDate'
   SWITCH_DATE = Date.new(2020, 06, 22).freeze
 
   disable_ddl_transaction!

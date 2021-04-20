@@ -12,6 +12,7 @@ describe('AlertManagementStatus', () => {
   let wrapper;
   const findStatusDropdown = () => wrapper.find(GlDropdown);
   const findFirstStatusOption = () => findStatusDropdown().find(GlDropdownItem);
+  const findAllStatusOptions = () => findStatusDropdown().findAll(GlDropdownItem);
 
   const selectFirstStatusOption = () => {
     findFirstStatusOption().vm.$emit('click');
@@ -128,6 +129,24 @@ describe('AlertManagementStatus', () => {
       expect(wrapper.emitted('alert-error')[0]).toEqual([
         'There was an error while updating the status of the alert. <span data-testid="htmlError" />',
       ]);
+    });
+  });
+
+  describe('Statuses', () => {
+    it('renders default translated statuses', () => {
+      mountComponent({});
+      expect(findAllStatusOptions().length).toBe(3);
+      expect(findFirstStatusOption().text()).toBe('Triggered');
+    });
+
+    it('renders translated statuses', () => {
+      const status = 'TEST';
+      const translatedStatus = 'Test';
+      mountComponent({
+        props: { alert: { ...mockAlert, status }, statuses: { [status]: translatedStatus } },
+      });
+      expect(findAllStatusOptions().length).toBe(1);
+      expect(findFirstStatusOption().text()).toBe(translatedStatus);
     });
   });
 

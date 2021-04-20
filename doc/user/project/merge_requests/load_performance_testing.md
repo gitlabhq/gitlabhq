@@ -28,7 +28,7 @@ GET calls to a popular API endpoint in your application to see how it performs.
 ## How Load Performance Testing works
 
 First, define a job in your `.gitlab-ci.yml` file that generates the
-[Load Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsload_performance).
+[Load Performance report artifact](../../../ci/yaml/README.md#artifactsreportsload_performance).
 GitLab checks this report, compares key load performance metrics
 between the source and target branches, and then shows the information in a merge request widget:
 
@@ -140,7 +140,7 @@ For example, you can override the duration of the test with a CLI option:
 
 GitLab only displays the key performance metrics in the MR widget if k6's results are saved
 via [summary export](https://k6.io/docs/results-visualization/json#summary-export)
-as a [Load Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsload_performance).
+as a [Load Performance report artifact](../../../ci/yaml/README.md#artifactsreportsload_performance).
 The latest Load Performance artifact available is always used, using the
 summary values from the test.
 

@@ -1,7 +1,11 @@
 <script>
 import { GlLoadingIcon, GlTooltipDirective, GlIcon, GlButton } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 export default {
+  i18n: {
+    buttonLabel: s__('Badges|Reload badge image'),
+  },
   // name: 'Badge' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
   // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'Badge',
@@ -94,7 +98,8 @@ export default {
     <gl-button
       v-show="hasError"
       v-gl-tooltip.hover
-      :title="s__('Badges|Reload badge image')"
+      :title="$options.i18n.buttonLabel"
+      :aria-label="$options.i18n.buttonLabel"
       category="tertiary"
       variant="confirm"
       type="button"

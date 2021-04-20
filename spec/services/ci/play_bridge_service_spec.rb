@@ -35,6 +35,28 @@ RSpec.describe Ci::PlayBridgeService, '#execute' do
       expect(bridge.reload.user).to eq(user)
     end
 
+    context 'when a subsequent job is skipped' do
+      let!(:job) { create(:ci_build, :skipped, pipeline: pipeline, stage_idx: bridge.stage_idx + 1) }
+
+      before do
+        create(:ci_build_need, build: job, name: bridge.name)
+      end
+
+      it 'marks the subsequent job as processable' do
+        expect { execute_service }.to change { job.reload.status }.from('skipped').to('created')
+      end
+
+      context 'when the FF ci_fix_pipeline_status_for_dag_needs_manual is disabled' do
+        before do
+          stub_feature_flags(ci_fix_pipeline_status_for_dag_needs_manual: false)
+        end
+
+        it 'does not change the subsequent job' do
+          expect { execute_service }.not_to change { job.reload.status }.from('skipped')
+        end
+      end
+    end
+
     context 'when bridge is not playable' do
       let(:bridge) { create(:ci_bridge, :failed, pipeline: pipeline, downstream: downstream_project) }
 

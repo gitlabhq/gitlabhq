@@ -1,0 +1,18 @@
+---
+key_path: redis_hll_counters.quickactions.i_quickactions_clone_weekly
+description: Count of WAU using the `/clone` quick action to clone an issue.
+product_section: dev
+product_stage: plan
+product_group: group::project management
+product_category: issue_tracking
+value_type: number
+status: data_available
+time_frame: 7d
+data_source: redis_hll
+distribution:
+- ce
+- ee 
+tier:
+- free
+- premium
+- ultimate

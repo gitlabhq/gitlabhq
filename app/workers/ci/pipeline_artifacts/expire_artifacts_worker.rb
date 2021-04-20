@@ -14,7 +14,7 @@ module Ci
       feature_category :continuous_integration
 
       def perform
-        service = ::Ci::PipelineArtifacts::DestroyExpiredArtifactsService.new
+        service = ::Ci::PipelineArtifacts::DestroyAllExpiredService.new
         artifacts_count = service.execute
         log_extra_metadata_on_done(:destroyed_pipeline_artifacts_count, artifacts_count)
       end

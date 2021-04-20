@@ -197,7 +197,7 @@ could mistakenly trust the merge request because it passed a faked pipeline.
 Parent project members with at least [Developer permissions](../../user/permissions.md)
 can create pipelines in the parent project for merge requests
 from a forked project. In the merge request, go to the **Pipelines** and click
-**Run Pipeline** button.
+**Run pipeline** button.
 
 WARNING:
 Fork merge requests could contain malicious code that tries to steal secrets in the

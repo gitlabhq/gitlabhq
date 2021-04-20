@@ -83,8 +83,7 @@ class ProjectsFinder < UnionFinder
     collection = by_deleted_status(collection)
     collection = by_last_activity_after(collection)
     collection = by_last_activity_before(collection)
-    collection = by_repository_storage(collection)
-    collection
+    by_repository_storage(collection)
   end
 
   def collection_with_user
@@ -131,7 +130,7 @@ class ProjectsFinder < UnionFinder
 
     public_visibility_levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
 
-    !public_visibility_levels.include?(params[:visibility_level])
+    !public_visibility_levels.include?(params[:visibility_level].to_i)
   end
 
   def owned_projects?

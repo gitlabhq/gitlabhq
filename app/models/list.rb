@@ -14,7 +14,6 @@ class List < ApplicationRecord
   validates :label_id, uniqueness: { scope: :board_id }, if: :label?
 
   scope :preload_associated_models, -> { preload(:board, label: :priorities) }
-  scope :without_types, ->(list_types) { where.not(list_type: list_types) }
 
   alias_method :preferences, :list_user_preferences
 

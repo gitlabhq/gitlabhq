@@ -178,6 +178,30 @@ describe('timeIntervalInWords', () => {
   });
 });
 
+describe('humanizeTimeInterval', () => {
+  it.each`
+    intervalInSeconds | expected
+    ${0}              | ${'0 seconds'}
+    ${1}              | ${'1 second'}
+    ${1.48}           | ${'1.5 seconds'}
+    ${2}              | ${'2 seconds'}
+    ${60}             | ${'1 minute'}
+    ${91}             | ${'1.5 minutes'}
+    ${120}            | ${'2 minutes'}
+    ${3600}           | ${'1 hour'}
+    ${5401}           | ${'1.5 hours'}
+    ${7200}           | ${'2 hours'}
+    ${86400}          | ${'1 day'}
+    ${129601}         | ${'1.5 days'}
+    ${172800}         | ${'2 days'}
+  `(
+    'returns "$expected" when the time interval is $intervalInSeconds seconds',
+    ({ intervalInSeconds, expected }) => {
+      expect(datetimeUtility.humanizeTimeInterval(intervalInSeconds)).toBe(expected);
+    },
+  );
+});
+
 describe('dateInWords', () => {
   const date = new Date('07/01/2016');
 
@@ -962,62 +986,6 @@ describe('format24HourTimeStringFromInt', () => {
       expect(datetimeUtility.format24HourTimeStringFromInt(timeInt)).toBe(
         expectedTimeStringIn24HourNotation,
       );
-    });
-  });
-});
-
-describe('getOverlapDateInPeriods', () => {
-  const start = new Date(2021, 0, 11);
-  const end = new Date(2021, 0, 13);
-
-  describe('when date periods overlap', () => {
-    const givenPeriodLeft = new Date(2021, 0, 11);
-    const givenPeriodRight = new Date(2021, 0, 14);
-
-    it('returns an overlap object that contains the amount of days overlapping, the amount of hours overlapping, start date of overlap and end date of overlap', () => {
-      expect(
-        datetimeUtility.getOverlapDateInPeriods(
-          { start, end },
-          { start: givenPeriodLeft, end: givenPeriodRight },
-        ),
-      ).toEqual({
-        daysOverlap: 2,
-        hoursOverlap: 48,
-        overlapStartDate: givenPeriodLeft.getTime(),
-        overlapEndDate: end.getTime(),
-      });
-    });
-  });
-
-  describe('when date periods do not overlap', () => {
-    const givenPeriodLeft = new Date(2021, 0, 9);
-    const givenPeriodRight = new Date(2021, 0, 10);
-
-    it('returns an overlap object that contains a 0 value for days overlapping', () => {
-      expect(
-        datetimeUtility.getOverlapDateInPeriods(
-          { start, end },
-          { start: givenPeriodLeft, end: givenPeriodRight },
-        ),
-      ).toEqual({ daysOverlap: 0 });
-    });
-  });
-
-  describe('when date periods contain an invalid Date', () => {
-    const startInvalid = new Date(NaN);
-    const endInvalid = new Date(NaN);
-    const error = __('Invalid period');
-
-    it('throws an exception when the left period contains an invalid date', () => {
-      expect(() =>
-        datetimeUtility.getOverlapDateInPeriods({ start, end }, { start: startInvalid, end }),
-      ).toThrow(error);
-    });
-
-    it('throws an exception when the right period contains an invalid date', () => {
-      expect(() =>
-        datetimeUtility.getOverlapDateInPeriods({ start, end }, { start, end: endInvalid }),
-      ).toThrow(error);
     });
   });
 });

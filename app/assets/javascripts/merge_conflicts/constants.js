@@ -13,6 +13,7 @@ export const VIEW_TYPES = {
 export const EDIT_RESOLVE_MODE = 'edit';
 export const INTERACTIVE_RESOLVE_MODE = 'interactive';
 export const DEFAULT_RESOLVE_MODE = INTERACTIVE_RESOLVE_MODE;
+export const SYNTAX_HIGHLIGHT_CLASS = 'js-syntax-highlight';
 
 export const HEAD_HEADER_TEXT = s__('MergeConflict|HEAD//our changes');
 export const ORIGIN_HEADER_TEXT = s__('MergeConflict|origin//their changes');

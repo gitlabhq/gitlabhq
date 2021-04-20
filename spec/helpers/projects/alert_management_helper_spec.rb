@@ -7,6 +7,7 @@ RSpec.describe Projects::AlertManagementHelper do
 
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:current_user) { create(:user) }
+
   let(:project_path) { project.full_path }
   let(:project_id) { project.id }
 

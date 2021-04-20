@@ -1,0 +1,5 @@
+---
+title: Refactor member/invitation services to share common code
+merge_request: 57618
+author:
+type: other

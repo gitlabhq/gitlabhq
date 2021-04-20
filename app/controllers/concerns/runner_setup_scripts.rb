@@ -5,8 +5,8 @@ module RunnerSetupScripts
 
   private
 
-  def private_runner_setup_scripts(**kwargs)
-    instructions = Gitlab::Ci::RunnerInstructions.new(current_user: current_user, os: script_params[:os], arch: script_params[:arch], **kwargs)
+  def private_runner_setup_scripts
+    instructions = Gitlab::Ci::RunnerInstructions.new(os: script_params[:os], arch: script_params[:arch])
     output = {
       install: instructions.install_script,
       register: instructions.register_command

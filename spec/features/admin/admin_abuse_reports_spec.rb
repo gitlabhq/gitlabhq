@@ -56,7 +56,7 @@ RSpec.describe "Admin::AbuseReports", :js do
 
     describe 'filtering by user' do
       let!(:user2) { create(:user) }
-      let!(:abuse_report)   { create(:abuse_report, user: user) }
+      let!(:abuse_report) { create(:abuse_report, user: user) }
       let!(:abuse_report_2) { create(:abuse_report, user: user2) }
 
       it 'shows only single user report' do

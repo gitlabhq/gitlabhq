@@ -30,9 +30,9 @@ module Ci
       fog: 3
     }.freeze
 
-    STORE_TYPES = DATA_STORES.keys.map do |store|
+    STORE_TYPES = DATA_STORES.keys.to_h do |store|
       [store, "Ci::BuildTraceChunks::#{store.capitalize}".constantize]
-    end.to_h.freeze
+    end.freeze
 
     enum data_store: DATA_STORES
 

@@ -174,6 +174,10 @@ class ProjectTeam
     end
   end
 
+  def write_member_access_for_user_id(user_id, project_access_level)
+    merge_value_to_request_store(User, user_id, project.id, project_access_level)
+  end
+
   def max_member_access(user_id)
     max_member_access_for_user_ids([user_id])[user_id]
   end

@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang Rubocop offenses for presenters
+merge_request: 57888
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

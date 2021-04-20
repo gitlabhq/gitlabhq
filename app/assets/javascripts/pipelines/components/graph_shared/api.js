@@ -1,5 +1,5 @@
 import axios from '~/lib/utils/axios_utils';
-import { reportToSentry } from '../graph/utils';
+import { reportToSentry } from '../../utils';
 
 export const reportPerformance = (path, stats) => {
   axios.post(path, stats).catch((err) => {

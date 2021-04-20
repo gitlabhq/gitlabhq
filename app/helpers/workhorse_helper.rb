@@ -7,7 +7,7 @@ module WorkhorseHelper
   def send_git_blob(repository, blob, inline: true)
     headers.store(*Gitlab::Workhorse.send_git_blob(repository, blob))
 
-    headers['Content-Disposition'] = inline ? 'inline' : content_disposition_attachment(repository.project, blob.name)
+    headers['Content-Disposition'] = content_disposition_for_blob(blob, inline)
 
     # If enabled, this will override the values set above
     workhorse_set_content_type!
@@ -49,11 +49,9 @@ module WorkhorseHelper
     headers[Gitlab::Workhorse::DETECT_HEADER] = "true"
   end
 
-  def content_disposition_attachment(project, filename)
-    if Feature.enabled?(:attachment_with_filename, project, default_enabled: :yaml)
-      ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: filename)
-    else
-      'attachment'
-    end
+  def content_disposition_for_blob(blob, inline)
+    return 'inline' if inline
+
+    ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: blob.name)
   end
 end

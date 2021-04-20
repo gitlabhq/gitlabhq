@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Profiles::NotificationsController do
   let(:user) do
     create(:user) do |user|
-      user.emails.create(email: 'original@example.com', confirmed_at: Time.current)
-      user.emails.create(email: 'new@example.com', confirmed_at: Time.current)
+      user.emails.create!(email: 'original@example.com', confirmed_at: Time.current)
+      user.emails.create!(email: 'new@example.com', confirmed_at: Time.current)
       user.notification_email = 'original@example.com'
       user.save!
     end
@@ -19,6 +19,30 @@ RSpec.describe Profiles::NotificationsController do
       get :show
 
       expect(response).to render_template :show
+    end
+
+    context 'when personal projects are present', :request_store do
+      let!(:personal_project_1) { create(:project, namespace: user.namespace) }
+
+      context 'N+1 query check' do
+        render_views
+
+        it 'does not have an N+1' do
+          sign_in(user)
+
+          get :show
+
+          control = ActiveRecord::QueryRecorder.new do
+            get :show
+          end
+
+          create_list(:project, 2, namespace: user.namespace)
+
+          expect do
+            get :show
+          end.not_to exceed_query_limit(control)
+        end
+      end
     end
 
     context 'with groups that do not have notification preferences' do
@@ -37,18 +61,24 @@ RSpec.describe Profiles::NotificationsController do
         expect(assigns(:group_notifications).map(&:source_id)).to include(subgroup.id)
       end
 
-      it 'does not have an N+1' do
-        sign_in(user)
+      context 'N+1 query check' do
+        render_views
 
-        control = ActiveRecord::QueryRecorder.new do
+        it 'does not have an N+1' do
+          sign_in(user)
+
           get :show
+
+          control = ActiveRecord::QueryRecorder.new do
+            get :show
+          end
+
+          create_list(:group, 2, parent: group)
+
+          expect do
+            get :show
+          end.not_to exceed_query_limit(control)
         end
-
-        create_list(:group, 2, parent: group)
-
-        expect do
-          get :show
-        end.not_to exceed_query_limit(control)
       end
     end
 

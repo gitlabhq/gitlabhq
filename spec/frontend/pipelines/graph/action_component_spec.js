@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import ActionComponent from '~/pipelines/components/graph/action_component.vue';
+import ActionComponent from '~/pipelines/components/jobs_shared/action_component.vue';
 
 describe('pipeline graph action component', () => {
   let wrapper;

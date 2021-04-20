@@ -108,7 +108,7 @@ For instance `RETRIES=1 bin/rspec ...` would retry the failing examples once.
 
 #### PhantomJS / WebKit related issues
 
-- Memory is through the roof! (TL;DR: Load images but block images requests!): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12003>
+- Memory is through the roof! (Load images but block images requests!): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12003>
 
 #### Capybara expectation times out
 

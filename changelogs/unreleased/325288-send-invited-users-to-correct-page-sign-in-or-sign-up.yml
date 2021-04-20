@@ -1,0 +1,5 @@
+---
+title: Send invited users to sign up instead of sign in when possible
+merge_request: 57240
+author:
+type: other

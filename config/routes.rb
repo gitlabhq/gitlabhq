@@ -179,6 +179,7 @@ Rails.application.routes.draw do
         get :db_spin
         get :sleep
         get :kill
+        get :quit
         post :gc
       end
     end
@@ -218,6 +219,12 @@ Rails.application.routes.draw do
         post :create_gcp
         post :create_aws
         post :authorize_aws_role
+      end
+
+      resource :integration, controller: 'clusters/integrations', only: [] do
+        collection do
+          post :create_or_update
+        end
       end
 
       member do
@@ -284,6 +291,7 @@ Rails.application.routes.draw do
 
   draw :git_http
   draw :api
+  draw :customers_dot
   draw :sidekiq
   draw :help
   draw :google_api

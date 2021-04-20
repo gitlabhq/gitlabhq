@@ -6,10 +6,12 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
   include ProjectForksHelper
 
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user) { create(:user, developer_projects: [project]) }
-  let_it_be(:forked_project) { fork_project(project, user, repository: true) }
+  let_it_be(:user1) { create(:user, developer_projects: [project]) }
+  let_it_be(:user2) { create(:user, developer_projects: [project]) }
+  let_it_be(:user3) { create(:user, developer_projects: [project]) }
+  let_it_be(:forked_project) { fork_project(project, user1, repository: true) }
 
-  let(:service) { described_class.new(project, user, changes, push_options) }
+  let(:service) { described_class.new(project, user1, changes, push_options) }
   let(:source_branch) { 'fix' }
   let(:target_branch) { 'feature' }
   let(:title) { 'my title' }
@@ -23,32 +25,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
   let(:default_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{project.default_branch}" }
   let(:error_mr_required) { "A merge_request.create push option is required to create a merge request for branch #{source_branch}" }
 
-  shared_examples_for 'a service that can create a merge request' do
-    subject(:last_mr) { MergeRequest.last }
-
-    it 'creates a merge request with the correct target branch and assigned user' do
-      branch = push_options[:target] || project.default_branch
-
-      expect { service.execute }.to change { MergeRequest.count }.by(1)
-      expect(last_mr.target_branch).to eq(branch)
-      expect(last_mr.assignees).to contain_exactly(user)
-    end
-
-    context 'when project has been forked', :sidekiq_might_not_need_inline do
-      let(:forked_project) { fork_project(project, user, repository: true) }
-      let(:service) { described_class.new(forked_project, user, changes, push_options) }
-
-      before do
-        allow(forked_project).to receive(:empty_repo?).and_return(false)
-      end
-
-      it 'sets the correct source and target project' do
-        service.execute
-
-        expect(last_mr.source_project).to eq(forked_project)
-        expect(last_mr.target_project).to eq(project)
-      end
-    end
+  before do
+    stub_licensed_features(multiple_merge_request_assignees: false)
   end
 
   shared_examples_for 'a service that can set the target of a merge request' do
@@ -91,7 +69,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
 
       expect(last_mr.auto_merge_enabled).to eq(true)
       expect(last_mr.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
-      expect(last_mr.merge_user).to eq(user)
+      expect(last_mr.merge_user).to eq(user1)
       expect(last_mr.merge_params['sha']).to eq(change[:newrev])
     end
   end
@@ -116,12 +94,6 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
     end
   end
 
-  shared_examples_for 'a service that does not create a merge request' do
-    it do
-      expect { service.execute }.not_to change { MergeRequest.count }
-    end
-  end
-
   shared_examples_for 'a service that does not update a merge request' do
     it do
       expect { service.execute }.not_to change { MergeRequest.maximum(:updated_at) }
@@ -131,6 +103,18 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
   shared_examples_for 'a service that does nothing' do
     include_examples 'a service that does not create a merge request'
     include_examples 'a service that does not update a merge request'
+  end
+
+  shared_examples 'with a deleted branch' do
+    let(:changes) { deleted_branch_changes }
+
+    it_behaves_like 'a service that does nothing'
+  end
+
+  shared_examples 'with the project default branch' do
+    let(:changes) { default_branch_changes }
+
+    it_behaves_like 'a service that does nothing'
   end
 
   describe '`create` push option' do
@@ -155,17 +139,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
     end
 
-    context 'with a deleted branch' do
-      let(:changes) { deleted_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
-
-    context 'with the project default branch' do
-      let(:changes) { default_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
   end
 
   describe '`merge_when_pipeline_succeeds` push option' do
@@ -217,17 +192,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that can set the merge request to merge when pipeline succeeds'
     end
 
-    context 'with a deleted branch' do
-      let(:changes) { deleted_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
-
-    context 'with the project default branch' do
-      let(:changes) { default_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
   end
 
   describe '`remove_source_branch` push option' do
@@ -239,11 +205,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -281,17 +245,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that can remove the source branch when it is merged'
     end
 
-    context 'with a deleted branch' do
-      let(:changes) { deleted_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
-
-    context 'with the project default branch' do
-      let(:changes) { default_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
   end
 
   describe '`target` push option' do
@@ -343,17 +298,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that can set the target of a merge request'
     end
 
-    context 'with a deleted branch' do
-      let(:changes) { deleted_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
-
-    context 'with the project default branch' do
-      let(:changes) { default_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
   end
 
   describe '`title` push option' do
@@ -405,17 +351,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that can set the title of a merge request'
     end
 
-    context 'with a deleted branch' do
-      let(:changes) { deleted_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
-
-    context 'with the project default branch' do
-      let(:changes) { default_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
   end
 
   describe '`description` push option' do
@@ -467,17 +404,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that can set the description of a merge request'
     end
 
-    context 'with a deleted branch' do
-      let(:changes) { deleted_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
-
-    context 'with the project default branch' do
-      let(:changes) { default_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
   end
 
   describe '`label` push option' do
@@ -529,17 +457,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that can change labels of a merge request', 2
     end
 
-    context 'with a deleted branch' do
-      let(:changes) { deleted_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
-
-    context 'with the project default branch' do
-      let(:changes) { default_branch_changes }
-
-      it_behaves_like 'a service that does nothing'
-    end
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
   end
 
   describe '`unlabel` push option' do
@@ -551,11 +470,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -572,11 +489,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that does not create a merge request'
 
       it 'adds an error to the service' do
-        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
-
         service.execute
 
-        expect(service.errors).to include(error)
+        expect(service.errors).to include(error_mr_required)
       end
 
       context 'when coupled with the `create` push option' do
@@ -595,17 +510,42 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
       it_behaves_like 'a service that can change labels of a merge request', 1
     end
 
-    context 'with a deleted branch' do
-      let(:changes) { deleted_branch_changes }
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
+  end
 
-      it_behaves_like 'a service that does nothing'
-    end
+  shared_examples 'with an existing branch that has a merge request open in foss' do
+    let(:changes) { existing_branch_changes }
+    let!(:merge_request) { create(:merge_request, source_project: project, source_branch: source_branch)}
 
-    context 'with the project default branch' do
-      let(:changes) { default_branch_changes }
+    it_behaves_like 'a service that does not create a merge request'
+    it_behaves_like 'a service that can change assignees of a merge request', 1
+  end
 
-      it_behaves_like 'a service that does nothing'
-    end
+  describe '`assign` push option' do
+    let(:assigned) { { user2.id => 1, user3.id => 1 } }
+    let(:unassigned) { nil }
+    let(:push_options) { { assign: assigned, unassign: unassigned } }
+
+    it_behaves_like 'with a new branch', 1
+    it_behaves_like 'with an existing branch but no open MR', 1
+    it_behaves_like 'with an existing branch that has a merge request open in foss'
+
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
+  end
+
+  describe '`unassign` push option' do
+    let(:assigned) { { user2.id => 1, user3.id => 1 } }
+    let(:unassigned) { { user1.id => 1, user3.id => 1 } }
+    let(:push_options) { { assign: assigned, unassign: unassigned } }
+
+    it_behaves_like 'with a new branch', 1
+    it_behaves_like 'with an existing branch but no open MR', 1
+    it_behaves_like 'with an existing branch that has a merge request open in foss'
+
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
   end
 
   describe 'multiple pushed branches' do
@@ -645,7 +585,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
   end
 
   describe 'no user' do
-    let(:user) { nil }
+    let(:user1) { nil }
+    let(:user2) { nil }
+    let(:user3) { nil }
     let(:push_options) { { create: true } }
     let(:changes) { new_branch_changes }
 
@@ -661,7 +603,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
     let(:changes) { new_branch_changes }
 
     it 'records an error' do
-      Members::DestroyService.new(user).execute(ProjectMember.find_by!(user_id: user.id))
+      Members::DestroyService.new(user1).execute(ProjectMember.find_by!(user_id: user1.id))
 
       service.execute
 
@@ -707,7 +649,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
   end
 
   describe 'when MRs are not enabled' do
-    let(:project) { create(:project, :public, :repository).tap { |pr| pr.add_developer(user) } }
+    let(:project) { create(:project, :public, :repository).tap { |pr| pr.add_developer(user1) } }
     let(:push_options) { { create: true } }
     let(:changes) { new_branch_changes }
 

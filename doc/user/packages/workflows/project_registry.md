@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Store all of your packages in one GitLab project
+# Store all of your packages in one GitLab project **(FREE)**
 
 You can store all of your packages in one project's Package Registry. Rather than using
 a GitLab repository to store code, you can use the repository to store all your packages.

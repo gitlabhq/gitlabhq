@@ -7,48 +7,52 @@ RSpec.describe Subscribable, 'Subscribable' do
   let(:resource) { create(:issue, project: project) }
   let(:user_1)   { create(:user) }
 
-  describe '#subscribed?' do
+  shared_examples 'returns expected values' do |method|
     context 'without user' do
       it 'returns false' do
-        expect(resource.subscribed?(nil, project)).to be_falsey
+        expect(resource.public_send(method, nil, project)).to be_falsey
       end
     end
 
     context 'without project' do
       it 'returns false when no subscription exists' do
-        expect(resource.subscribed?(user_1)).to be_falsey
+        expect(resource.public_send(method, user_1)).to be_falsey
       end
 
-      it 'returns true when a subcription exists and subscribed is true' do
+      it 'returns true when a subscription exists and subscribed is true' do
         resource.subscriptions.create!(user: user_1, subscribed: true)
 
-        expect(resource.subscribed?(user_1)).to be_truthy
+        expect(resource.public_send(method, user_1)).to be_truthy
       end
 
-      it 'returns false when a subcription exists and subscribed is false' do
+      it 'returns false when a subscription exists and subscribed is false' do
         resource.subscriptions.create!(user: user_1, subscribed: false)
 
-        expect(resource.subscribed?(user_1)).to be_falsey
+        expect(resource.public_send(method, user_1)).to be_falsey
       end
     end
 
     context 'with project' do
       it 'returns false when no subscription exists' do
-        expect(resource.subscribed?(user_1, project)).to be_falsey
+        expect(resource.public_send(method, user_1, project)).to be_falsey
       end
 
-      it 'returns true when a subcription exists and subscribed is true' do
+      it 'returns true when a subscription exists and subscribed is true' do
         resource.subscriptions.create!(user: user_1, project: project, subscribed: true)
 
-        expect(resource.subscribed?(user_1, project)).to be_truthy
+        expect(resource.public_send(method, user_1, project)).to be_truthy
       end
 
-      it 'returns false when a subcription exists and subscribed is false' do
+      it 'returns false when a subscription exists and subscribed is false' do
         resource.subscriptions.create!(user: user_1, project: project, subscribed: false)
 
-        expect(resource.subscribed?(user_1, project)).to be_falsey
+        expect(resource.public_send(method, user_1, project)).to be_falsey
       end
     end
+  end
+
+  describe '#subscribed?' do
+    it_behaves_like 'returns expected values', :subscribed?
   end
 
   describe '#subscribers' do
@@ -187,6 +191,29 @@ RSpec.describe Subscribable, 'Subscribable' do
       let(:resource_project) { project }
 
       it_behaves_like 'setting subscriptions'
+    end
+  end
+
+  describe '#lazy_subscription' do
+    let(:labels) { create_list(:group_label, 5) }
+
+    before do
+      labels.each do |label|
+        create(:subscription, :group_label, user: user_1, subscribable: label)
+      end
+    end
+
+    it 'executes only one SQL query' do
+      lazy_queries = ActiveRecord::QueryRecorder.new do
+        labels.each { |label| label.lazy_subscription(user_1) }
+      end
+
+      preloaded_queries = ActiveRecord::QueryRecorder.new do
+        labels.each { |label| label.lazy_subscription(user_1)&.subscribed? }
+      end
+
+      expect(lazy_queries.count).to eq(0)
+      expect(preloaded_queries.count).to eq(1)
     end
   end
 end

@@ -26,7 +26,7 @@ module API
       get ':id/environments' do
         authorize! :read_environment, user_project
 
-        environments = ::EnvironmentsFinder.new(user_project, current_user, params).find
+        environments = ::EnvironmentsFinder.new(user_project, current_user, params).execute
 
         present paginate(environments), with: Entities::Environment, current_user: current_user
       end

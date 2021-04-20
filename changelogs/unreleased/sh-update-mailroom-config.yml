@@ -1,0 +1,5 @@
+---
+title: Add config support for using Microsoft Graph with MailRoom
+merge_request: 58250
+author:
+type: added

@@ -22,6 +22,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
     [
       Gitlab::Ci::Pipeline::Chain::Config::Content.new(pipeline, command),
       Gitlab::Ci::Pipeline::Chain::Config::Process.new(pipeline, command),
+      Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules.new(pipeline, command),
       Gitlab::Ci::Pipeline::Chain::SeedBlock.new(pipeline, command),
       Gitlab::Ci::Pipeline::Chain::Seed.new(pipeline, command)
     ]
@@ -94,6 +95,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
 
     it 'wastes pipeline iid' do
       expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
+    end
+
+    it 'increments the error metric' do
+      counter = Gitlab::Metrics.counter(:gitlab_ci_pipeline_failure_reasons, 'desc')
+      expect { run_chain }.to change { counter.get(reason: 'unknown_failure') }.by(1)
     end
   end
 

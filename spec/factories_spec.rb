@@ -32,7 +32,8 @@ RSpec.describe 'factories' do
       [:project_member, :blocked],
       [:project, :remote_mirror],
       [:remote_mirror, :ssh],
-      [:user_preference, :only_comments]
+      [:user_preference, :only_comments],
+      [:ci_pipeline_artifact, :remote_store]
     ]
   end
 
@@ -43,7 +44,7 @@ RSpec.describe 'factories' do
       end
 
       it 'does not raise error when created' do
-        expect { create(factory.name) }.not_to raise_error
+        expect { create(factory.name) }.not_to raise_error # rubocop:disable Rails/SaveBang
       end
 
       factory.definition.defined_traits.map(&:name).each do |trait_name|
@@ -65,14 +66,23 @@ RSpec.describe 'factories' do
   # associations must be unique and cannot be reused, or the factory default
   # is being mutated.
   skip_factory_defaults = %i[
+    evidence
+    exported_protected_branch
     fork_network_member
     group_member
     import_state
+    milestone_release
     namespace
     project_broken_repo
     prometheus_alert
     prometheus_alert_event
     prometheus_metric
+    protected_branch
+    protected_branch_merge_access_level
+    protected_branch_push_access_level
+    protected_tag
+    release
+    release_link
     self_managed_prometheus_alert_event
     users_star_project
     wiki_page

@@ -25,6 +25,9 @@ export default () => {
 
       return {
         noteableData,
+        endpoints: {
+          metadata: notesDataset.endpointMetadata,
+        },
         currentUserData: JSON.parse(notesDataset.currentUserData),
         notesData: JSON.parse(notesDataset.notesData),
         helpPagePath: notesDataset.helpPagePath,
@@ -54,6 +57,9 @@ export default () => {
     },
     created() {
       this.setActiveTab(window.mrTabs.getCurrentAction());
+      this.setEndpoints(this.endpoints);
+
+      this.fetchMrMetadata();
     },
     mounted() {
       this.notesCountBadge = $('.issuable-details').find('.notes-tab .badge');
@@ -65,7 +71,7 @@ export default () => {
       window.mrTabs.eventHub.$off('MergeRequestTabChange', this.setActiveTab);
     },
     methods: {
-      ...mapActions(['setActiveTab']),
+      ...mapActions(['setActiveTab', 'setEndpoints', 'fetchMrMetadata']),
       updateDiscussionTabCounter() {
         this.notesCountBadge.text(this.discussionTabCounter);
       },

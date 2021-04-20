@@ -127,6 +127,35 @@ RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
 
       it { is_expected.to be_for_group }
       it { is_expected.to be_search_context(group: group) }
+
+      context 'with group scope' do
+        let(:action_name) { '' }
+
+        before do
+          allow(controller).to receive(:controller_name).and_return('groups')
+          allow(controller).to receive(:action_name).and_return(action_name)
+        end
+
+        it 'returns nil without groups controller action' do
+          expect(subject.scope).to be(nil)
+        end
+
+        context 'when on issues scope' do
+          let(:action_name) { 'issues' }
+
+          it 'search context returns issues scope' do
+            expect(subject.scope).to be('issues')
+          end
+        end
+
+        context 'when on merge requests scope' do
+          let(:action_name) { 'merge_requests' }
+
+          it 'search context returns issues scope' do
+            expect(subject.scope).to be('merge_requests')
+          end
+        end
+      end
     end
   end
 

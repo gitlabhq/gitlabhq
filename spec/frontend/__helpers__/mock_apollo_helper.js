@@ -2,11 +2,15 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createMockClient } from 'mock-apollo-client';
 import VueApollo from 'vue-apollo';
 
-export default (handlers = [], resolvers = {}) => {
-  const fragmentMatcher = { match: () => true };
+const defaultCacheOptions = {
+  fragmentMatcher: { match: () => true },
+  addTypename: false,
+};
+
+export default (handlers = [], resolvers = {}, cacheOptions = {}) => {
   const cache = new InMemoryCache({
-    fragmentMatcher,
-    addTypename: false,
+    ...defaultCacheOptions,
+    ...cacheOptions,
   });
 
   const mockClient = createMockClient({ cache, resolvers });

@@ -92,6 +92,7 @@ RSpec.describe Gitlab::UrlBuilder do
     context 'when passing a Snippet' do
       let_it_be(:personal_snippet) { create(:personal_snippet, :repository) }
       let_it_be(:project_snippet)  { create(:project_snippet, :repository) }
+
       let(:blob)                   { snippet.blobs.first }
       let(:ref)                    { blob.repository.root_ref }
 

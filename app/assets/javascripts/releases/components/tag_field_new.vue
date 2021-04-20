@@ -27,8 +27,8 @@ export default {
     };
   },
   computed: {
-    ...mapState('detail', ['projectId', 'release', 'createFrom']),
-    ...mapGetters('detail', ['validationErrors']),
+    ...mapState('editNew', ['projectId', 'release', 'createFrom']),
+    ...mapGetters('editNew', ['validationErrors']),
     tagName: {
       get() {
         return this.release.tagName;
@@ -62,7 +62,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('detail', ['updateReleaseTagName', 'updateCreateFrom']),
+    ...mapActions('editNew', ['updateReleaseTagName', 'updateCreateFrom']),
     markInputAsDirty() {
       this.isInputDirty = true;
     },

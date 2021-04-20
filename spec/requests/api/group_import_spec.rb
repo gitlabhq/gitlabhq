@@ -218,12 +218,14 @@ RSpec.describe API::GroupImport do
           stub_uploads_object_storage(ImportExportUploader, direct_upload: true)
         end
 
+        # rubocop:disable Rails/SaveBang
         let(:tmp_object) do
           fog_connection.directories.new(key: 'uploads').files.create(
             key: "tmp/uploads/#{file_name}",
             body: file_upload
           )
         end
+        # rubocop:enable Rails/SaveBang
 
         let(:fog_file) { fog_to_uploaded_file(tmp_object) }
         let(:params) do

@@ -6,7 +6,10 @@ module Gitlab
       module Keyset
         class QueryBuilder
           def initialize(arel_table, order_list, decoded_cursor, before_or_after)
-            @arel_table, @order_list, @decoded_cursor, @before_or_after = arel_table, order_list, decoded_cursor, before_or_after
+            @arel_table = arel_table
+            @order_list = order_list
+            @decoded_cursor = decoded_cursor
+            @before_or_after = before_or_after
 
             if order_list.empty?
               raise ArgumentError.new('No ordering scopes have been supplied')

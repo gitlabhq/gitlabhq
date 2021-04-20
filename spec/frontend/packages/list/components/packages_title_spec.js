@@ -11,7 +11,7 @@ describe('PackageTitle', () => {
   const findTitleArea = () => wrapper.find(TitleArea);
   const findMetadataItem = () => wrapper.find(MetadataItem);
 
-  const mountComponent = (propsData = { packageHelpUrl: 'foo' }) => {
+  const mountComponent = (propsData = { helpUrl: 'foo' }) => {
     wrapper = shallowMount(PackageTitle, {
       store,
       propsData,
@@ -44,15 +44,15 @@ describe('PackageTitle', () => {
   });
 
   describe.each`
-    packagesCount | exist    | text
-    ${null}       | ${false} | ${''}
-    ${undefined}  | ${false} | ${''}
-    ${0}          | ${true}  | ${'0 Packages'}
-    ${1}          | ${true}  | ${'1 Package'}
-    ${2}          | ${true}  | ${'2 Packages'}
-  `('when packagesCount is $packagesCount metadata item', ({ packagesCount, exist, text }) => {
+    count        | exist    | text
+    ${null}      | ${false} | ${''}
+    ${undefined} | ${false} | ${''}
+    ${0}         | ${true}  | ${'0 Packages'}
+    ${1}         | ${true}  | ${'1 Package'}
+    ${2}         | ${true}  | ${'2 Packages'}
+  `('when count is $count metadata item', ({ count, exist, text }) => {
     beforeEach(() => {
-      mountComponent({ packagesCount, packageHelpUrl: 'foo' });
+      mountComponent({ count, helpUrl: 'foo' });
     });
 
     it(`is ${exist} that it exists`, () => {

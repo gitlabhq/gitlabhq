@@ -15,7 +15,7 @@ module Helpers
 
     private
 
-    STUBBED_KEY = '__STUBBED__'.freeze
+    STUBBED_KEY = '__STUBBED__'
 
     def add_stubbed_value(key, value)
       allow(ENV).to receive(:[]).with(key).and_return(value)

@@ -3,26 +3,30 @@
 .form-group.row.gl-mb-0
   = form.label :type, 'Type', class: 'col-form-label col-sm-2'
   .col-sm-10
-    .issuable-form-select-holder.selectbox.form-group.gl-mb-0
-      .dropdown.js-issuable-type-filter-dropdown-wrap
-        %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
-          %span.dropdown-toggle-text.is-default
-            = issuable.issue_type.capitalize || _("Select type")
-          = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
-        .dropdown-menu.dropdown-menu-selectable.dropdown-select
-          .dropdown-title.gl-display-flex
-            %span.gl-ml-auto
-              = _("Select type")
-            %button.dropdown-title-button.dropdown-menu-close.gl-ml-auto{ type: 'button', "aria-label" => _('Close') }
-              = sprite_icon('close', size: 16, css_class: 'dropdown-menu-close-icon')
-          .dropdown-content
-            %ul
-              %li.js-filter-issuable-type
-                = link_to new_project_issue_path(@project), class: ("is-active" if issuable.issue?) do
-                  = _("Issue")
-              %li.js-filter-issuable-type{ data: { track: { event: "select_issue_type_incident", label: "select_issue_type_incident_dropdown_option" } } }
-                = link_to new_project_issue_path(@project, { issuable_template: 'incident', issue: { issue_type: 'incident' } }), class: ("is-active" if issuable.incident?) do
-                  = _("Incident")
+    .gl-display-flex.gl-align-items-center
+      .issuable-form-select-holder.selectbox.form-group.gl-mb-0
+        .dropdown.js-issuable-type-filter-dropdown-wrap
+          %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
+            %span.dropdown-toggle-text.is-default
+              = issuable.issue_type.capitalize || _("Select type")
+            = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
+          .dropdown-menu.dropdown-menu-selectable.dropdown-select
+            .dropdown-title.gl-display-flex
+              %span.gl-ml-auto
+                = _("Select type")
+              %button.dropdown-title-button.dropdown-menu-close.gl-ml-auto{ type: 'button', "aria-label" => _('Close') }
+                = sprite_icon('close', size: 16, css_class: 'dropdown-menu-close-icon')
+            .dropdown-content
+              %ul
+                %li.js-filter-issuable-type
+                  = link_to new_project_issue_path(@project), class: ("is-active" if issuable.issue?) do
+                    = _("Issue")
+                %li.js-filter-issuable-type{ data: { track: { event: "select_issue_type_incident", label: "select_issue_type_incident_dropdown_option" } } }
+                  = link_to new_project_issue_path(@project, { issuable_template: 'incident', issue: { issue_type: 'incident' } }), class: ("is-active" if issuable.incident?) do
+                    = _("Incident")
+
+      #js-type-popover
+
     - if issuable.incident?
       %p.form-text.text-muted
         - incident_docs_url = help_page_path('operations/incident_management/incidents.md')

@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelineStatus, { i18n } from '~/pipeline_editor/components/header/pipeline_status.vue';
+import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { mockCommitSha, mockProjectPipeline, mockProjectFullPath } from '../../mock_data';
 
@@ -19,32 +20,9 @@ describe('Pipeline Status', () => {
   let mockApollo;
   let mockPipelineQuery;
 
-  const createComponent = ({ hasPipeline = true, isQueryLoading = false }) => {
-    const pipeline = hasPipeline
-      ? { loading: isQueryLoading, ...mockProjectPipeline.pipeline }
-      : { loading: isQueryLoading };
-
-    wrapper = shallowMount(PipelineStatus, {
-      provide: mockProvide,
-      stubs: { GlLink, GlSprintf },
-      data: () => (hasPipeline ? { pipeline } : {}),
-      mocks: {
-        $apollo: {
-          queries: {
-            pipeline,
-          },
-        },
-      },
-    });
-  };
-
   const createComponentWithApollo = () => {
-    const resolvers = {
-      Query: {
-        project: mockPipelineQuery,
-      },
-    };
-    mockApollo = createMockApollo([], resolvers);
+    const handlers = [[getPipelineQuery, mockPipelineQuery]];
+    mockApollo = createMockApollo(handlers);
 
     wrapper = shallowMount(PipelineStatus, {
       localVue,
@@ -78,16 +56,17 @@ describe('Pipeline Status', () => {
     wrapper = null;
   });
 
-  describe('while querying', () => {
-    it('renders loading icon', () => {
-      createComponent({ isQueryLoading: true, hasPipeline: false });
+  describe('loading icon', () => {
+    it('renders while query is being fetched', () => {
+      createComponentWithApollo();
 
       expect(findLoadingIcon().exists()).toBe(true);
       expect(findPipelineLoadingMsg().text()).toBe(i18n.fetchLoading);
     });
 
-    it('does not render loading icon if pipeline data is already set', () => {
-      createComponent({ isQueryLoading: true });
+    it('does not render if query is no longer loading', async () => {
+      createComponentWithApollo();
+      await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);
     });
@@ -96,7 +75,9 @@ describe('Pipeline Status', () => {
   describe('when querying data', () => {
     describe('when data is set', () => {
       beforeEach(async () => {
-        mockPipelineQuery.mockResolvedValue(mockProjectPipeline);
+        mockPipelineQuery.mockResolvedValue({
+          data: { project: mockProjectPipeline },
+        });
 
         createComponentWithApollo();
         await waitForPromises();
@@ -104,14 +85,10 @@ describe('Pipeline Status', () => {
 
       it('query is called with correct variables', async () => {
         expect(mockPipelineQuery).toHaveBeenCalledTimes(1);
-        expect(mockPipelineQuery).toHaveBeenCalledWith(
-          expect.anything(),
-          {
-            fullPath: mockProjectFullPath,
-          },
-          expect.anything(),
-          expect.anything(),
-        );
+        expect(mockPipelineQuery).toHaveBeenCalledWith({
+          fullPath: mockProjectFullPath,
+          sha: mockCommitSha,
+        });
       });
 
       it('does not render error', () => {

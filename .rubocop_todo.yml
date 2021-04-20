@@ -32,24 +32,6 @@ Graphql/IDType:
 Layout/ArgumentAlignment:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, Severity.
-# SupportedStylesAlignWith: start_of_line, begin
-Layout/BeginEndAlignment:
-  Exclude:
-    - 'app/controllers/groups/shared_projects_controller.rb'
-    - 'app/workers/concerns/reactive_cacheable_worker.rb'
-    - 'ee/app/services/security/token_revocation_service.rb'
-    - 'ee/lib/gitlab/analytics/cycle_analytics/summary/group/deploy.rb'
-    - 'ee/lib/gitlab/ci/config/entry/vault/secret.rb'
-    - 'lib/api/internal/base.rb'
-    - 'lib/atlassian/jira_connect/serializers/build_entity.rb'
-    - 'lib/gitlab/ci/jwt.rb'
-    - 'lib/gitlab/external_authorization/client.rb'
-    - 'lib/gitlab/phabricator_import/project_creator.rb'
-    - 'scripts/gitaly_test.rb'
-
 # Offense count: 54
 # Cop supports --auto-correct.
 # Configuration parameters: AllowAliasSyntax, AllowedMethods.
@@ -93,20 +75,6 @@ Layout/LineLength:
 # SupportedStyles: aligned, indented
 Layout/MultilineOperationIndentation:
   Enabled: false
-
-# Offense count: 11
-# Cop supports --auto-correct.
-Layout/RescueEnsureAlignment:
-  Exclude:
-    - 'app/models/blob_viewer/dependency_manager.rb'
-    - 'app/models/project.rb'
-    - 'app/services/prometheus/proxy_service.rb'
-    - 'app/workers/concerns/reactive_cacheable_worker.rb'
-    - 'app/workers/delete_stored_files_worker.rb'
-    - 'config/initializers/1_settings.rb'
-    - 'config/initializers/trusted_proxies.rb'
-    - 'lib/api/internal/base.rb'
-    - 'lib/gitlab/highlight.rb'
 
 # Offense count: 53
 # Cop supports --auto-correct.
@@ -202,21 +170,6 @@ Lint/MixedRegexpCaptureTypes:
 Lint/RedundantCopDisableDirective:
   Enabled: false
 
-# Offense count: 9
-# Cop supports --auto-correct.
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: instance_of?, kind_of?, is_a?, eql?, respond_to?, equal?
-Lint/RedundantSafeNavigation:
-  Exclude:
-    - 'app/controllers/concerns/labels_as_hash.rb'
-    - 'app/policies/note_policy.rb'
-    - 'app/services/users/update_canonical_email_service.rb'
-    - 'ee/app/presenters/iteration_presenter.rb'
-    - 'ee/app/services/ee/members/destroy_service.rb'
-    - 'ee/lib/ee/gitlab/email/handler/reply_processing.rb'
-    - 'qa/qa/specs/helpers/quarantine.rb'
-    - 'spec/controllers/boards/issues_controller_spec.rb'
-
 # Offense count: 1
 Lint/SelfAssignment:
   Exclude:
@@ -254,12 +207,6 @@ Metrics/CyclomaticComplexity:
 # Configuration parameters: IgnoredMethods.
 Metrics/PerceivedComplexity:
   Max: 25
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Migration/DepartmentName:
-  Exclude:
-    - 'app/models/commit.rb'
 
 # Offense count: 196
 # Configuration parameters: ExpectMatchingDefinition, CheckDefinitionPathHierarchy, Regex, IgnoreExecutableScripts, AllowedAcronyms.
@@ -693,11 +640,6 @@ Rails/WhereEquals:
 Rails/WhereExists:
   Enabled: false
 
-# Offense count: 21
-# Cop supports --auto-correct.
-Rails/WhereNot:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 Security/YAMLLoad:
@@ -903,11 +845,6 @@ Style/Next:
 Style/NumericLiteralPrefix:
   Enabled: false
 
-# Offense count: 140
-# Cop supports --auto-correct.
-Style/ParallelAssignment:
-  Enabled: false
-
 # Offense count: 2698
 # Cop supports --auto-correct.
 # Configuration parameters: PreferredDelimiters.
@@ -921,11 +858,6 @@ Style/PercentLiteralDelimiters:
 Style/RaiseArgs:
   Enabled: false
   EnforcedStyle: exploded
-
-# Offense count: 73
-# Cop supports --auto-correct.
-Style/RedundantAssignment:
-  Enabled: false
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -949,11 +881,6 @@ Style/RedundantFetchBlock:
 # Offense count: 26
 # Cop supports --auto-correct.
 Style/RedundantFileExtensionInRequire:
-  Enabled: false
-
-# Offense count: 248
-# Cop supports --auto-correct.
-Style/RedundantFreeze:
   Enabled: false
 
 # Offense count: 206
@@ -983,20 +910,6 @@ Style/RedundantRegexpEscape:
 # Offense count: 968
 # Cop supports --auto-correct.
 Style/RedundantSelf:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/RedundantSelfAssignment:
-  Exclude:
-    - 'app/models/concerns/issuable.rb'
-    - 'spec/db/schema_spec.rb'
-
-# Offense count: 213
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, AllowInnerSlashes.
-# SupportedStyles: slashes, percent_r, mixed
-Style/RegexpLiteral:
   Enabled: false
 
 # Offense count: 53

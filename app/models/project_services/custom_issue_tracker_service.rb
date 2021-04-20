@@ -17,9 +17,9 @@ class CustomIssueTrackerService < IssueTrackerService
 
   def fields
     [
-      { type: 'text', name: 'project_url', placeholder: 'Project url', required: true },
-      { type: 'text', name: 'issues_url', placeholder: 'Issue url', required: true },
-      { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url', required: true }
+      { type: 'text', name: 'project_url', title: _('Project URL'), required: true },
+      { type: 'text', name: 'issues_url', title: s_('ProjectService|Issue URL'), required: true },
+      { type: 'text', name: 'new_issue_url', title: s_('ProjectService|New issue URL'), required: true }
     ]
   end
 end

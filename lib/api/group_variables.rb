@@ -8,6 +8,8 @@ module API
     before { authorize! :admin_group, user_group }
     feature_category :continuous_integration
 
+    helpers Helpers::VariablesHelpers
+
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
@@ -30,16 +32,13 @@ module API
       params do
         requires :key, type: String, desc: 'The key of the variable'
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/variables/:key' do
-        key = params[:key]
-        variable = user_group.variables.find_by(key: key)
+        variable = find_variable(user_group, params)
 
         break not_found!('GroupVariable') unless variable
 
         present variable, with: Entities::Ci::Variable
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Create a new variable in a group' do
         success Entities::Ci::Variable
@@ -50,12 +49,19 @@ module API
         optional :protected, type: String, desc: 'Whether the variable is protected'
         optional :masked, type: String, desc: 'Whether the variable is masked'
         optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
+
+        use :optional_group_variable_params_ee
       end
       post ':id/variables' do
+        filtered_params = filter_variable_parameters(
+          user_group,
+          declared_params(include_missing: false)
+        )
+
         variable = ::Ci::ChangeVariableService.new(
           container: user_group,
           current_user: current_user,
-          params: { action: :create, variable_params: declared_params(include_missing: false) }
+          params: { action: :create, variable_params: filtered_params }
         ).execute
 
         if variable.valid?
@@ -74,13 +80,19 @@ module API
         optional :protected, type: String, desc: 'Whether the variable is protected'
         optional :masked, type: String, desc: 'Whether the variable is masked'
         optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
+
+        use :optional_group_variable_params_ee
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/variables/:key' do
+        filtered_params = filter_variable_parameters(
+          user_group,
+          declared_params(include_missing: false)
+        )
+
         variable = ::Ci::ChangeVariableService.new(
           container: user_group,
           current_user: current_user,
-          params: { action: :update, variable_params: declared_params(include_missing: false) }
+          params: { action: :update, variable_params: filtered_params }
         ).execute
 
         if variable.valid?
@@ -91,7 +103,6 @@ module API
       rescue ::ActiveRecord::RecordNotFound
         not_found!('GroupVariable')
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete an existing variable from a group' do
         success Entities::Ci::Variable
@@ -99,21 +110,18 @@ module API
       params do
         requires :key, type: String, desc: 'The key of the variable'
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/variables/:key' do
-        variable = user_group.variables.find_by!(key: params[:key])
+        variable = find_variable(user_group, params)
+        break not_found!('GroupVariable') unless variable
 
         destroy_conditionally!(variable) do |target_variable|
           ::Ci::ChangeVariableService.new(
             container: user_group,
             current_user: current_user,
-            params: { action: :destroy, variable_params: declared_params(include_missing: false) }
+            params: { action: :destroy, variable: variable }
           ).execute
         end
-      rescue ::ActiveRecord::RecordNotFound
-        not_found!('GroupVariable')
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

@@ -9,8 +9,12 @@ RSpec.describe Groups::GroupMembersController do
   let(:group) { create(:group, :public) }
   let(:membership) { create(:group_member, group: group) }
 
-  around do |example|
-    travel_to DateTime.new(2019, 4, 1) { example.run }
+  before do
+    travel_to DateTime.new(2019, 4, 1)
+  end
+
+  after do
+    travel_back
   end
 
   describe 'GET index' do
@@ -288,7 +292,9 @@ RSpec.describe Groups::GroupMembersController do
   end
 
   describe 'DELETE destroy' do
-    let(:member) { create(:group_member, :developer, group: group) }
+    let(:sub_group) { create(:group, parent: group) }
+    let!(:member) { create(:group_member, :developer, group: group) }
+    let!(:sub_member) { create(:group_member, :developer, group: sub_group, user: member.user) }
 
     before do
       sign_in(user)
@@ -324,9 +330,19 @@ RSpec.describe Groups::GroupMembersController do
         it '[HTML] removes user from members' do
           delete :destroy, params: { group_id: group, id: member }
 
-          expect(response).to set_flash.to 'User was successfully removed from group and any subresources.'
+          expect(response).to set_flash.to 'User was successfully removed from group.'
           expect(response).to redirect_to(group_group_members_path(group))
           expect(group.members).not_to include member
+          expect(sub_group.members).to include sub_member
+        end
+
+        it '[HTML] removes user from members including subgroups and projects' do
+          delete :destroy, params: { group_id: group, id: member, remove_sub_memberships: true }
+
+          expect(response).to set_flash.to 'User was successfully removed from group and any subgroups and projects.'
+          expect(response).to redirect_to(group_group_members_path(group))
+          expect(group.members).not_to include member
+          expect(sub_group.members).not_to include sub_member
         end
 
         it '[JS] removes user from members' do

@@ -18,20 +18,20 @@
     .search-holder
       = render 'shared/projects/search_form', autofocus: true, admin_view: true
       .dropdown
-        - toggle_text = 'Namespace'
+        - toggle_text = _('Namespace')
         - if params[:namespace_id].present?
           = hidden_field_tag :namespace_id, params[:namespace_id]
           - namespace = Namespace.find(params[:namespace_id])
           - toggle_text = "#{namespace.kind}: #{namespace.full_path}"
         = dropdown_toggle(toggle_text, { toggle: 'dropdown', is_filter: 'true' }, { toggle_class: 'js-namespace-select large' })
         .dropdown-menu.dropdown-select.dropdown-menu-right
-          = dropdown_title('Namespaces')
-          = dropdown_filter("Search for Namespace")
+          = dropdown_title(_('Namespaces'))
+          = dropdown_filter(_("Search for Namespace"))
           = dropdown_content
           = dropdown_loading
       = render 'shared/projects/dropdown'
       = link_to new_project_path, class: 'gl-button btn btn-confirm' do
-        New Project
-      = button_tag "Search", class: "gl-button btn btn-confirm btn-search hide"
+        = _('New Project')
+      = button_tag _("Search"), class: "gl-button btn btn-confirm btn-search hide"
 
 = render 'projects'

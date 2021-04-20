@@ -13,7 +13,8 @@ module Metrics
               :create
 
         def initialize(user, params)
-          @user, @params = user, params
+          @user = user
+          @params = params
         end
 
         def execute

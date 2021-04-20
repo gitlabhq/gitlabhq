@@ -1,8 +1,0 @@
----
-name: usage_data_track_ci_templates_unique_projects
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50481
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/296880
-milestone: '13.8'
-type: development
-group: group::configure
-default_enabled: true

@@ -44,7 +44,8 @@ module Resolvers
       {
         alert_management_alert: [:alert_management_alert],
         labels: [:labels],
-        assignees: [:assignees]
+        assignees: [:assignees],
+        timelogs: [:timelogs]
       }
     end
 

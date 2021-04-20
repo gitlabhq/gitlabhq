@@ -48,8 +48,7 @@ class GroupProjectsFinder < ProjectsFinder
 
   def filter_projects(collection)
     projects = super
-    projects = by_feature_availability(projects)
-    projects
+    by_feature_availability(projects)
   end
 
   def limit(collection)

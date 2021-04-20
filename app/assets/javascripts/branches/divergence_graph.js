@@ -4,13 +4,13 @@ import axios from '../lib/utils/axios_utils';
 import { __ } from '../locale';
 import DivergenceGraph from './components/divergence_graph.vue';
 
-export function createGraphVueApp(el, data, maxCommits) {
+export function createGraphVueApp(el, data, maxCommits, defaultBranch) {
   return new Vue({
     el,
     render(h) {
       return h(DivergenceGraph, {
         props: {
-          defaultBranch: 'master',
+          defaultBranch,
           distance: data.distance ? parseInt(data.distance, 10) : null,
           aheadCount: parseInt(data.ahead, 10),
           behindCount: parseInt(data.behind, 10),
@@ -21,7 +21,7 @@ export function createGraphVueApp(el, data, maxCommits) {
   });
 }
 
-export default (endpoint) => {
+export default (endpoint, defaultBranch) => {
   const names = [...document.querySelectorAll('.js-branch-item')].map(
     ({ dataset }) => dataset.name,
   );
@@ -47,7 +47,7 @@ export default (endpoint) => {
 
         if (!el) return;
 
-        createGraphVueApp(el, val, maxCommits);
+        createGraphVueApp(el, val, maxCommits, defaultBranch);
       });
     })
     .catch(() =>

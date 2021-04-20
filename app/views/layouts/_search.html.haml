@@ -25,7 +25,7 @@
     = hidden_field_tag :group_id, search_context.for_group? ? search_context.group.id : '', class: 'js-search-group-options', data: search_context.group_metadata
     = hidden_field_tag :project_id, search_context.for_project? ? search_context.project.id : '', id: 'search_project_id', class: 'js-search-project-options', data: search_context.project_metadata
 
-    - if search_context.for_project?
+    - if search_context.for_project? || search_context.for_group?
       = hidden_field_tag :scope, search_context.scope
       = hidden_field_tag :search_code, search_context.code_search?
 

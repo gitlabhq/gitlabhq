@@ -36,13 +36,4 @@ of the project being imported into, then the user will be linked.
 
 ## Enabling this feature
 
-While this feature is incomplete, a feature flag is required to enable it so that
-we can gain early feedback before releasing it for everyone. To enable it:
-
-1. Run the following command in a Rails console:
-
-   ```ruby
-   Feature.enable(:phabricator_import)
-   ```
-
-1. Enable Phabricator as an [import source](../../admin_area/settings/visibility_and_access_controls.md#import-sources) in the Admin Area.
+Enable Phabricator as an [import source](../../admin_area/settings/visibility_and_access_controls.md#import-sources) in the Admin Area.

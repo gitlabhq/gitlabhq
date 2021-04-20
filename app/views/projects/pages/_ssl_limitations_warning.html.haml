@@ -2,6 +2,6 @@
   = sprite_icon("warning-solid", css_class: "gl-text-orange-600")
   %strong= _("Warning:")
   - pages_host = Gitlab.config.pages.host
-  = s_("GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with sub-subdomains. This means that if your username/groupname contains a dot it will not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages will continue to work provided you don't redirect HTTP to HTTPS.").html_safe % { pages_host: pages_host }
-
-  %strong= external_link(s_("GitLabPages|Learn more."), "https://docs.gitlab.com/ee/user/project/pages/introduction.html#limitations")
+  - docs_link_start = "<a href='#{help_page_path('user/project/pages/introduction', anchor: 'limitations')}' target='_blank' rel='noopener noreferrer'>".html_safe
+  - link_end = '</a>'.html_safe
+  = s_("GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with sub-subdomains. This means that if your username/groupname contains a dot it will not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages will continue to work provided you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}").html_safe % { pages_host: pages_host, docs_link_start: docs_link_start, link_end: link_end }

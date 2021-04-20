@@ -379,7 +379,7 @@ it also provides a clear timeline and development structure.
 
 ![Use revert to keep branch flowing](img/revert.png)
 
-If you want to revert changes introduced in certain `commit-id` you can simply
+If you want to revert changes introduced in certain `commit-id`, you can 
 revert that `commit-id` (swap additions and deletions) in newly created commit:
 You can do this with
 

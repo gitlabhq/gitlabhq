@@ -1,0 +1,8 @@
+mutation epicSetSubscription($input: EpicSetSubscriptionInput!) {
+  updateIssuableSubscription: epicSetSubscription(input: $input) {
+    epic {
+      subscribed
+    }
+    errors
+  }
+}

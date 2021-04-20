@@ -134,6 +134,23 @@ export const nugetPackage = {
   },
 };
 
+export const rubygemsPackage = {
+  created_at: '2015-12-10',
+  id: 4,
+  name: 'RubyGem1',
+  package_files: [],
+  package_type: 'rubygems',
+  project_id: 1,
+  tags: [],
+  updated_at: '2015-12-10',
+  version: '1.0.0',
+  rubygems_metadatum: {
+    author: 'Fake Name',
+    summary: 'My gem',
+    email: 'tanuki@fake.com',
+  },
+};
+
 export const pypiPackage = {
   created_at: '2015-12-10',
   id: 5,

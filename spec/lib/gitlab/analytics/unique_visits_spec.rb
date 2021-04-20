@@ -24,18 +24,18 @@ RSpec.describe Gitlab::Analytics::UniqueVisits, :clean_gitlab_redis_shared_state
 
   describe '#track_visit' do
     it 'tracks the unique weekly visits for targets' do
-      unique_visits.track_visit(visitor1_id, target1_id, 7.days.ago)
-      unique_visits.track_visit(visitor1_id, target1_id, 7.days.ago)
-      unique_visits.track_visit(visitor2_id, target1_id, 7.days.ago)
+      unique_visits.track_visit(target1_id, values: visitor1_id, time: 7.days.ago)
+      unique_visits.track_visit(target1_id, values: visitor1_id, time: 7.days.ago)
+      unique_visits.track_visit(target1_id, values: visitor2_id, time: 7.days.ago)
 
-      unique_visits.track_visit(visitor2_id, target2_id, 7.days.ago)
-      unique_visits.track_visit(visitor1_id, target2_id, 8.days.ago)
-      unique_visits.track_visit(visitor1_id, target2_id, 15.days.ago)
+      unique_visits.track_visit(target2_id, values: visitor2_id, time: 7.days.ago)
+      unique_visits.track_visit(target2_id, values: visitor1_id, time: 8.days.ago)
+      unique_visits.track_visit(target2_id, values: visitor1_id, time: 15.days.ago)
 
-      unique_visits.track_visit(visitor3_id, target4_id, 7.days.ago)
+      unique_visits.track_visit(target4_id, values: visitor3_id, time: 7.days.ago)
 
-      unique_visits.track_visit(visitor3_id, target5_id, 15.days.ago)
-      unique_visits.track_visit(visitor2_id, target5_id, 15.days.ago)
+      unique_visits.track_visit(target5_id, values: visitor3_id, time: 15.days.ago)
+      unique_visits.track_visit(target5_id, values: visitor2_id, time: 15.days.ago)
 
       expect(unique_visits.unique_visits_for(targets: target1_id)).to eq(2)
       expect(unique_visits.unique_visits_for(targets: target2_id)).to eq(1)
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Analytics::UniqueVisits, :clean_gitlab_redis_shared_state
     end
 
     it 'sets the keys in Redis to expire automatically after 12 weeks' do
-      unique_visits.track_visit(visitor1_id, target1_id)
+      unique_visits.track_visit(target1_id, values: visitor1_id)
 
       Gitlab::Redis::SharedState.with do |redis|
         redis.scan_each(match: "{#{target1_id}}-*").each do |key|
@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Analytics::UniqueVisits, :clean_gitlab_redis_shared_state
       invalid_target_id = "x_invalid"
 
       expect do
-        unique_visits.track_visit(visitor1_id, invalid_target_id)
+        unique_visits.track_visit(invalid_target_id, values: visitor1_id)
       end.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
     end
   end

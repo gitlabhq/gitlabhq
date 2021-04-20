@@ -2,7 +2,8 @@
 
 require 'rspec-parameterized'
 require 'gitlab-dangerfiles'
-require 'danger/helper'
+require 'danger'
+require 'danger/plugins/helper'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../danger/plugins/project_helper'
@@ -43,7 +44,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
     end
 
     where(:path, :expected_categories) do
-      'usage_data.rb'   | [:database, :backend]
+      'usage_data.rb'   | [:database, :backend, :product_intelligence]
       'doc/foo.md'      | [:docs]
       'CONTRIBUTING.md' | [:docs]
       'LICENSE'         | [:docs]
@@ -140,6 +141,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'ee/db/geo/post_migrate/foo'                                | [:database, :migration]
       'app/models/project_authorization.rb'                       | [:database]
       'app/services/users/refresh_authorized_projects_service.rb' | [:database]
+      'app/services/authorized_project_update/find_records_due_for_refresh_service.rb' | [:database]
       'lib/gitlab/background_migration.rb'                        | [:database]
       'lib/gitlab/background_migration/foo'                       | [:database]
       'ee/lib/gitlab/background_migration/foo'                    | [:database]
@@ -157,6 +159,9 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'qa/foo' | [:qa]
       'ee/qa/foo' | [:qa]
 
+      'workhorse/main.go' | [:workhorse]
+      'workhorse/internal/upload/upload.go' | [:workhorse]
+
       'changelogs/foo'    | [:none]
       'ee/changelogs/foo' | [:none]
       'locale/gitlab.pot' | [:none]
@@ -168,6 +173,21 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'foo/bar.js'  | [:frontend]
       'foo/bar.txt' | [:none]
       'foo/bar.md'  | [:none]
+
+      'ee/config/metrics/counts_7d/20210216174919_g_analytics_issues_weekly.yml' | [:product_intelligence]
+      'lib/gitlab/usage_data_counters/aggregated_metrics/common.yml' | [:product_intelligence]
+      'lib/gitlab/usage_data_counters/hll_redis_counter.rb' | [:backend, :product_intelligence]
+      'doc/development/usage_ping/dictionary.md' | [:docs, :product_intelligence]
+      'lib/gitlab/tracking.rb' | [:backend, :product_intelligence]
+      'spec/lib/gitlab/tracking_spec.rb' | [:backend, :product_intelligence]
+      'app/helpers/tracking_helper.rb' | [:backend, :product_intelligence]
+      'spec/helpers/tracking_helper_spec.rb' | [:backend, :product_intelligence]
+      'lib/generators/rails/usage_metric_definition_generator.rb' | [:backend, :product_intelligence]
+      'spec/lib/generators/usage_metric_definition_generator_spec.rb' | [:backend, :product_intelligence]
+      'config/metrics/schema.json' | [:product_intelligence]
+      'app/assets/javascripts/tracking.js' | [:frontend, :product_intelligence]
+      'spec/frontend/tracking_spec.js' | [:frontend, :product_intelligence]
+      'lib/gitlab/usage_database/foo.rb' | [:backend]
     end
 
     with_them do
@@ -178,12 +198,12 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
     context 'having specific changes' do
       where(:expected_categories, :patch, :changed_files) do
-        [:database, :backend] | '+ count(User.active)'                         | ['usage_data.rb', 'lib/gitlab/usage_data.rb', 'ee/lib/ee/gitlab/usage_data.rb']
-        [:database, :backend] | '+ estimate_batch_distinct_count(User.active)' | ['usage_data.rb']
-        [:backend]            | '+ alt_usage_data(User.active)'                | ['usage_data.rb']
-        [:backend]            | '+ count(User.active)'                         | ['user.rb']
-        [:backend]            | '+ count(User.active)'                         | ['usage_data/topology.rb']
-        [:backend]            | '+ foo_count(User.active)'                     | ['usage_data.rb']
+        [:database, :backend, :product_intelligence] | '+ count(User.active)'                         | ['usage_data.rb', 'lib/gitlab/usage_data.rb', 'ee/lib/ee/gitlab/usage_data.rb']
+        [:database, :backend, :product_intelligence] | '+ estimate_batch_distinct_count(User.active)' | ['usage_data.rb']
+        [:backend, :product_intelligence]            | '+ alt_usage_data(User.active)'                | ['lib/gitlab/usage_data.rb']
+        [:backend, :product_intelligence]            | '+ count(User.active)'                         | ['lib/gitlab/usage_data/topology.rb']
+        [:backend, :product_intelligence]            | '+ foo_count(User.active)'                     | ['lib/gitlab/usage_data.rb']
+        [:backend]                                   | '+ count(User.active)'                         | ['user.rb']
       end
 
       with_them do
@@ -200,7 +220,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
   describe '.local_warning_message' do
     it 'returns an informational message with rules that can run' do
-      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changes_size, commit_messages, database, documentation, duplicate_yarn_dependencies, eslint, karma, pajamas, pipeline, prettier, product_intelligence, utility_css')
+      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, changes_size, commit_messages, database, datateam, documentation, duplicate_yarn_dependencies, eslint, karma, pajamas, pipeline, prettier, product_intelligence, utility_css')
     end
   end
 

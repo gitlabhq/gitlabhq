@@ -9,9 +9,9 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import httpStatus from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
-import * as actions from '~/releases/stores/modules/detail/actions';
-import * as types from '~/releases/stores/modules/detail/mutation_types';
-import createState from '~/releases/stores/modules/detail/state';
+import * as actions from '~/releases/stores/modules/edit_new/actions';
+import * as types from '~/releases/stores/modules/edit_new/mutation_types';
+import createState from '~/releases/stores/modules/edit_new/state';
 import { releaseToApiJson, apiJsonToRelease } from '~/releases/util';
 
 jest.mock('~/flash');
@@ -23,7 +23,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 const originalRelease = getJSONFixture('api/releases/release.json');
 
-describe('Release detail actions', () => {
+describe('Release edit/new actions', () => {
   let state;
   let release;
   let mock;
@@ -163,7 +163,7 @@ describe('Release detail actions', () => {
           return actions.fetchRelease({ commit: jest.fn(), state, rootState: state }).then(() => {
             expect(createFlash).toHaveBeenCalledTimes(1);
             expect(createFlash).toHaveBeenCalledWith(
-              'Something went wrong while getting the release details',
+              'Something went wrong while getting the release details.',
             );
           });
         });

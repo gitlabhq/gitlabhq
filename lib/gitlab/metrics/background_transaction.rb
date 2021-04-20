@@ -34,8 +34,9 @@ module Gitlab
 
       def labels
         @labels ||= {
-          endpoint_id: current_context&.get_attribute(:caller_id),
-          feature_category: current_context&.get_attribute(:feature_category)
+          endpoint_id: endpoint_id,
+          feature_category: feature_category,
+          queue: queue
         }
       end
 
@@ -43,6 +44,21 @@ module Gitlab
 
       def current_context
         Labkit::Context.current
+      end
+
+      def feature_category
+        current_context&.get_attribute(:feature_category)
+      end
+
+      def endpoint_id
+        current_context&.get_attribute(:caller_id)
+      end
+
+      def queue
+        worker_class = endpoint_id.to_s.safe_constantize
+        return if worker_class.blank? || !worker_class.respond_to?(:queue)
+
+        worker_class.queue.to_s
       end
     end
   end

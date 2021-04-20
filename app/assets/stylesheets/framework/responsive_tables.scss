@@ -3,6 +3,7 @@
   max-width: #{$max + '%'};
 }
 
+.gl-responsive-table-row,
 .gl-responsive-table-row-layout {
   width: 100%;
 
@@ -17,7 +18,6 @@
 }
 
 .gl-responsive-table-row {
-  @extend .gl-responsive-table-row-layout;
   margin-top: 10px;
   border: 1px solid $border-color;
   color: $gray-500;

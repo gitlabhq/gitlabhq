@@ -13,7 +13,9 @@ RSpec.describe X509CertificateCredentialsValidator do
       attr_accessor :certificate, :private_key, :passphrase
 
       def initialize(certificate, private_key, passphrase = nil)
-        @certificate, @private_key, @passphrase = certificate, private_key, passphrase
+        @certificate = certificate
+        @private_key = private_key
+        @passphrase = passphrase
       end
     end
   end

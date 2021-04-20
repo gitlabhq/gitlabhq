@@ -188,6 +188,10 @@ RSpec.describe API::NugetProjectPackages do
 
     it_behaves_like 'deploy token for package uploads'
 
+    it_behaves_like 'job token for package uploads', authorize_endpoint: true do
+      let_it_be(:job) { create(:ci_build, :running, user: user) }
+    end
+
     it_behaves_like 'rejects nuget access with unknown target id'
 
     it_behaves_like 'rejects nuget access with invalid target id'
@@ -250,6 +254,10 @@ RSpec.describe API::NugetProjectPackages do
     end
 
     it_behaves_like 'deploy token for package uploads'
+
+    it_behaves_like 'job token for package uploads' do
+      let_it_be(:job) { create(:ci_build, :running, user: user) }
+    end
 
     it_behaves_like 'rejects nuget access with unknown target id'
 

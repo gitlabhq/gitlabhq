@@ -27,7 +27,7 @@ export default {
     registerCiSchema() {
       const editorInstance = this.$refs.editor.getEditor();
 
-      editorInstance.use(new CiSchemaExtension());
+      editorInstance.use(new CiSchemaExtension({ instance: editorInstance }));
       editorInstance.registerCiSchema({
         projectPath: this.projectPath,
         projectNamespace: this.projectNamespace,

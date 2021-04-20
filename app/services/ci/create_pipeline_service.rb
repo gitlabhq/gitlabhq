@@ -96,7 +96,8 @@ module Ci
     # rubocop: enable Metrics/ParameterLists
 
     def execute!(*args, &block)
-      source, params = args[0], Hash(args[1])
+      source = args[0]
+      params = Hash(args[1])
 
       execute(source, **params, &block).tap do |pipeline|
         unless pipeline.persisted?

@@ -21,7 +21,11 @@ export default {
 };
 </script>
 <template>
-  <button v-gl-tooltip="{ title: tooltip }" class="p-0 gl-display-flex toolbar-button">
+  <button
+    v-gl-tooltip="{ title: tooltip }"
+    :aria-label="tooltip"
+    class="p-0 gl-display-flex toolbar-button"
+  >
     <gl-icon class="gl-mx-auto gl-align-self-center" :name="icon" />
   </button>
 </template>

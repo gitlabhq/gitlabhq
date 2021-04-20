@@ -136,13 +136,15 @@ module Trigger
 
     def extra_variables
       # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results
-      # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
-      # We also set IMAGE_TAG so the GitLab and QA docker images are tagged with
-      # that SHA.
+      # and fallback to CI_COMMIT_SHA (merged result commit) for the non-MR pipelines.
+      # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#with-pipeline-for-merged-results.
+      # We also set IMAGE_TAG so the GitLab Docker image is tagged with that SHA.
       source_sha = Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA']
       {
         'GITLAB_VERSION' => source_sha,
         'IMAGE_TAG' => source_sha,
+        'QA_IMAGE' => "#{ENV['CI_REGISTRY']}/#{ENV['CI_PROJECT_PATH']}/gitlab-ee-qa:#{ENV['CI_COMMIT_REF_SLUG']}",
+        'SKIP_QA_DOCKER' => 'true',
         'ALTERNATIVE_SOURCES' => 'true',
         'SECURITY_SOURCES' => Trigger.security? ? 'true' : 'false',
         'ee' => Trigger.ee? ? 'true' : 'false',
@@ -214,15 +216,7 @@ module Trigger
     => If something doesn't work, drop a line in the #docs chat channel.
     MSG
 
-    # Create a remote branch in gitlab-docs and immediately cancel the pipeline
-    # to avoid race conditions, since a triggered pipeline will also run right
-    # after the branch creation. This only happens the very first time a branch
-    # is created and will be skipped in subsequent runs. Read more in
-    # https://gitlab.com/gitlab-org/gitlab-docs/issues/154.
-    #
     def deploy!
-      create_remote_branch!
-      cancel_latest_pipeline!
       invoke!.wait!
       display_success_message
     end
@@ -231,31 +225,52 @@ module Trigger
     # Remove a remote branch in gitlab-docs.
     #
     def cleanup!
-      gitlab_client(:downstream).delete_branch(downstream_project_path, ref)
-      puts "=> Remote branch '#{downstream_project_path}' deleted"
+      environment = gitlab_client(:downstream).environments(downstream_project_path, name: downstream_environment).first
+      return unless environment
+
+      environment = gitlab_client(:downstream).stop_environment(downstream_project_path, environment.id)
+      if environment.state == 'stopped'
+        puts "=> Downstream environment '#{downstream_environment}' stopped"
+      else
+        puts "=> Downstream environment '#{downstream_environment}' failed to stop."
+      end
     end
 
     private
+
+    def downstream_environment
+      "review/#{ref}#{review_slug}"
+    end
+
+    # We prepend the `-` here because we cannot use variable substitution in `environment.name`/`environment.url`
+    # Some projects (e.g. `omnibus-gitlab`) use this script for branch pipelines, so we fallback to using `CI_COMMIT_REF_SLUG` for those cases.
+    def review_slug
+      identifier = ENV['CI_MERGE_REQUEST_IID'] || ENV['CI_COMMIT_REF_SLUG']
+
+      "-#{project_slug}-#{identifier}"
+    end
 
     def downstream_project_path
       ENV['DOCS_PROJECT_PATH'] || 'gitlab-org/gitlab-docs'
     end
 
     def ref
-      if ENV['CI_MERGE_REQUEST_IID'].nil?
-        "docs-preview-#{slug}-#{ENV['CI_COMMIT_REF_SLUG']}"
-      else
-        "docs-preview-#{slug}-#{ENV['CI_MERGE_REQUEST_IID']}"
-      end
+      ENV['DOCS_BRANCH'] || 'master'
+    end
+
+    # `gitlab-org/gitlab-docs` pipeline trigger "Triggered from gitlab-org/gitlab 'review-docs-deploy' job"
+    def trigger_token
+      ENV['DOCS_TRIGGER_TOKEN']
     end
 
     def extra_variables
       {
-        "BRANCH_#{slug.upcase}" => ENV['CI_COMMIT_REF_NAME']
+        "BRANCH_#{project_slug.upcase}" => ENV['CI_COMMIT_REF_NAME'],
+        "REVIEW_SLUG" => review_slug
       }
     end
 
-    def slug
+    def project_slug
       case ENV['CI_PROJECT_PATH']
       when 'gitlab-org/gitlab-foss'
         'ce'
@@ -270,37 +285,14 @@ module Trigger
       end
     end
 
+    # app_url is the URL of the `gitlab-docs` Review App URL defined in
+    # https://gitlab.com/gitlab-org/gitlab-docs/-/blob/b38038132cf82a24271bbb294dead7c2f529e275/.gitlab-ci.yml#L383
     def app_url
-      "http://#{ref}.#{ENV['DOCS_REVIEW_APPS_DOMAIN']}/#{slug}"
-    end
-
-    def create_remote_branch!
-      gitlab_client(:downstream).create_branch(downstream_project_path, ref, 'master')
-      puts "=> Remote branch '#{ref}' created"
-    rescue Gitlab::Error::BadRequest
-      puts "=> Remote branch '#{ref}' already exists!"
-    end
-
-    def cancel_latest_pipeline!
-      pipelines = nil
-
-      # Wait until the pipeline is started
-      loop do
-        sleep 1
-        puts "=> Waiting for pipeline to start..."
-        pipelines = gitlab_client(:downstream).pipelines(downstream_project_path, { ref: ref })
-        break if pipelines.any?
-      end
-
-      # Get the first pipeline ID which should be the only one for the branch
-      pipeline_id = pipelines.first.id
-
-      # Cancel the pipeline
-      gitlab_client(:downstream).cancel_pipeline(downstream_project_path, pipeline_id)
+      "http://#{ref}#{review_slug}.#{ENV['DOCS_REVIEW_APPS_DOMAIN']}/#{project_slug}"
     end
 
     def display_success_message
-      format(SUCCESS_MESSAGE, app_url: app_url)
+      puts format(SUCCESS_MESSAGE, app_url: app_url)
     end
   end
 

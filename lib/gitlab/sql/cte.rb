@@ -15,20 +15,27 @@ module Gitlab
     #     Namespace
     #       with(cte.to_arel).
     #       from(cte.alias_to(ns))
+    #
+    # To skip materialization of the CTE query by passing materialized: false
+    # More context: https://www.postgresql.org/docs/12/queries-with.html
+    #
+    # cte = CTE.new(:my_cte_name, materialized: false)
+    #
     class CTE
       attr_reader :table, :query
 
       # name - The name of the CTE as a String or Symbol.
-      def initialize(name, query)
+      def initialize(name, query, materialized: true)
         @table = Arel::Table.new(name)
         @query = query
+        @materialized = materialized
       end
 
       # Returns the Arel relation for this CTE.
       def to_arel
         sql = Arel::Nodes::SqlLiteral.new("(#{query.to_sql})")
 
-        Arel::Nodes::As.new(table, sql)
+        Gitlab::Database::AsWithMaterialized.new(table, sql, materialized: @materialized)
       end
 
       # Returns an "AS" statement that aliases the CTE name as the given table

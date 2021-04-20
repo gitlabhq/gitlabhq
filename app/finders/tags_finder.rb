@@ -7,7 +7,6 @@ class TagsFinder < GitRefsFinder
 
   def execute
     tags = repository.tags_sorted_by(sort)
-    tags = by_search(tags)
-    tags
+    by_search(tags)
   end
 end

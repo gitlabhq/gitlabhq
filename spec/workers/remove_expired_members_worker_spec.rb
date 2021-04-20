@@ -29,6 +29,15 @@ RSpec.describe RemoveExpiredMembersWorker do
         worker.perform
         expect(non_expiring_project_member.reload).to be_present
       end
+
+      it 'adds context to resulting jobs' do
+        worker.perform
+
+        new_job = Sidekiq::Worker.jobs.last
+
+        expect(new_job).to include('meta.project' => expired_project_member.project.full_path,
+                                   'meta.user' => expired_project_member.user.username)
+      end
     end
 
     context 'project bots' do
@@ -97,6 +106,15 @@ RSpec.describe RemoveExpiredMembersWorker do
       it 'leaves members that do not expire at all' do
         worker.perform
         expect(non_expiring_group_member.reload).to be_present
+      end
+
+      it 'adds context to resulting jobs' do
+        worker.perform
+
+        new_job = Sidekiq::Worker.jobs.last
+
+        expect(new_job).to include('meta.root_namespace' => expired_group_member.group.full_path,
+                                   'meta.user' => expired_group_member.user.username)
       end
     end
 

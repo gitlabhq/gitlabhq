@@ -13,7 +13,7 @@ const CLASSES = {
 const STATUS = {
   opened: [__('Open'), 'issue-open-m'],
   locked: [__('Open'), 'issue-open-m'],
-  closed: [__('Closed'), 'close'],
+  closed: [__('Closed'), 'issue-close'],
   merged: [__('Merged'), 'git-merge'],
 };
 

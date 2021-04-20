@@ -1,15 +1,22 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module QA
   RSpec.describe 'Package', :orchestrated, :packages do
     describe 'Composer Repository' do
       include Runtime::Fixtures
 
-      let(:package_name) { 'my_package' }
-
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'composer-package-project'
+        end
+      end
+
+      let(:package) do
+        Resource::Package.new.tap do |package|
+          package.name = "my_package-#{SecureRandom.hex(4)}"
+          package.project = project
         end
       end
 
@@ -30,7 +37,7 @@ module QA
       let(:composer_json_file) do
         <<~EOF
           {
-            "name": "#{project.path_with_namespace}/#{package_name}",
+            "name": "#{project.path_with_namespace}/#{package.name}",
             "description": "Library XY",
             "type": "library",
             "license": "GPL-3.0-only",
@@ -94,14 +101,15 @@ module QA
 
       after do
         runner.remove_via_api!
+        package.remove_via_api!
       end
 
       it 'publishes a composer package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1088' do
         Page::Project::Menu.perform(&:click_packages_link)
 
         Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_package(package_name)
-          index.click_package(package_name)
+          expect(index).to have_package(package.name)
+          index.click_package(package.name)
         end
 
         Page::Project::Packages::Show.perform(&:click_delete)
@@ -109,7 +117,7 @@ module QA
         Page::Project::Packages::Index.perform do |index|
           aggregate_failures 'package deletion' do
             expect(index).to have_content("Package deleted successfully")
-            expect(index).not_to have_package(package_name)
+            expect(index).not_to have_package(package.name)
           end
         end
       end

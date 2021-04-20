@@ -3,8 +3,8 @@ import { mount } from '@vue/test-utils';
 
 import AdminUserActions from '~/admin/users/components/user_actions.vue';
 import AdminUserAvatar from '~/admin/users/components/user_avatar.vue';
-import AdminUserDate from '~/admin/users/components/user_date.vue';
 import AdminUsersTable from '~/admin/users/components/users_table.vue';
+import AdminUserDate from '~/vue_shared/components/user_date.vue';
 
 import { users, paths } from '../mock_data';
 

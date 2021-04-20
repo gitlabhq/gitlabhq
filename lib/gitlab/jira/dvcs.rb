@@ -3,8 +3,8 @@
 module Gitlab
   module Jira
     module Dvcs
-      ENCODED_SLASH = '@'.freeze
-      SLASH = '/'.freeze
+      ENCODED_SLASH = '@'
+      SLASH = '/'
       ENCODED_ROUTE_REGEX = /[a-zA-Z0-9_\-\.#{ENCODED_SLASH}]+/.freeze
 
       def self.encode_slash(path)

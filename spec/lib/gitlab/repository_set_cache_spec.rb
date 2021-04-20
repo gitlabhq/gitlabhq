@@ -124,12 +124,35 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
     end
   end
 
+  describe '#search' do
+    subject do
+      cache.search(:foo, 'val*') do
+        %w[value helloworld notvalmatch]
+      end
+    end
+
+    it 'returns search pattern matches from the key' do
+      is_expected.to contain_exactly('value')
+    end
+  end
+
   describe '#include?' do
     it 'checks inclusion in the Redis set' do
       cache.write(:foo, ['value'])
 
       expect(cache.include?(:foo, 'value')).to be(true)
       expect(cache.include?(:foo, 'bar')).to be(false)
+    end
+  end
+
+  describe '#try_include?' do
+    it 'checks existence of the redis set and inclusion' do
+      expect(cache.try_include?(:foo, 'value')).to eq([false, false])
+
+      cache.write(:foo, ['value'])
+
+      expect(cache.try_include?(:foo, 'value')).to eq([true, true])
+      expect(cache.try_include?(:foo, 'bar')).to eq([false, true])
     end
   end
 end

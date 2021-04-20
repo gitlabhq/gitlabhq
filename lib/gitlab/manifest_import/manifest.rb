@@ -47,6 +47,10 @@ module Gitlab
           @errors << 'Make sure every <project> tag has name and path attributes.'
         end
 
+        unless validate_scheme
+          @errors << 'Make sure the url does not start with javascript'
+        end
+
         @errors.empty?
       end
 
@@ -62,6 +66,10 @@ module Gitlab
         raw_projects.all? do |project|
           project['name'] && project['path']
         end
+      end
+
+      def validate_scheme
+        remote !~ /\Ajavascript/i
       end
 
       def repository_url(name)

@@ -9,6 +9,7 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowpl
   include ReactiveCachingHelpers
 
   let_it_be_with_reload(:project) { create(:prometheus_project) }
+
   let(:service) { project.prometheus_service }
 
   describe "Associations" do
@@ -337,6 +338,7 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching, :snowpl
 
       context 'cluster belongs to projects group' do
         let_it_be(:group) { create(:group) }
+
         let(:project) { create(:prometheus_project, group: group) }
         let(:cluster) { create(:cluster_for_group, :with_installed_helm, groups: [group]) }
 

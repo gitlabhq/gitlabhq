@@ -17,7 +17,7 @@ class BackfillDeploymentClustersFromDeployments < ActiveRecord::Migration[6.0]
   class Deployment < ActiveRecord::Base
     include EachBatch
 
-    default_scope { where('cluster_id IS NOT NULL') } # rubocop:disable Cop/DefaultScope
+    default_scope { where.not(cluster_id: nil) } # rubocop:disable Cop/DefaultScope
 
     self.table_name = 'deployments'
   end

@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Health
+group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -30,6 +30,10 @@ Once enabled, GitLab detects metrics from known services in the
 ### Managed Prometheus on Kubernetes
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28916) in GitLab 10.5.
+
+**Deprecated:** Managed Prometheus on Kubernetes is deprecated, and
+scheduled for removal in [GitLab
+14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
 
 GitLab can seamlessly deploy and manage Prometheus on a
 [connected Kubernetes cluster](../clusters/index.md), to help you monitor your apps.

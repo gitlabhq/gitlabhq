@@ -1,11 +1,14 @@
-import { GlTabs } from '@gitlab/ui';
+import { GlAlert, GlTabs } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-
 import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
 
 const mockContent1 = 'MOCK CONTENT 1';
 const mockContent2 = 'MOCK CONTENT 2';
+
+const MockEditorLite = {
+  template: '<div>EDITOR</div>',
+};
 
 describe('~/pipeline_editor/components/ui/editor_tab.vue', () => {
   let wrapper;
@@ -37,27 +40,69 @@ describe('~/pipeline_editor/components/ui/editor_tab.vue', () => {
       `,
   };
 
-  const createWrapper = () => {
+  const createMockedWrapper = () => {
     wrapper = mount(MockTabbedContent);
   };
+
+  const createWrapper = ({ props } = {}) => {
+    wrapper = mount(EditorTab, {
+      propsData: props,
+      slots: {
+        default: MockEditorLite,
+      },
+    });
+  };
+
+  const findSlotComponent = () => wrapper.findComponent(MockEditorLite);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   beforeEach(() => {
     mockChildMounted = jest.fn();
   });
 
   it('tabs are mounted lazily', async () => {
-    createWrapper();
+    createMockedWrapper();
 
     expect(mockChildMounted).toHaveBeenCalledTimes(0);
   });
 
   it('first tab is only mounted after nextTick', async () => {
-    createWrapper();
+    createMockedWrapper();
 
     await nextTick();
 
     expect(mockChildMounted).toHaveBeenCalledTimes(1);
     expect(mockChildMounted).toHaveBeenCalledWith(mockContent1);
+  });
+
+  describe('showing the tab content depending on `isEmpty` and `isInvalid`', () => {
+    it.each`
+      isEmpty      | isInvalid    | showSlotComponent | text
+      ${undefined} | ${undefined} | ${true}           | ${'renders'}
+      ${false}     | ${false}     | ${true}           | ${'renders'}
+      ${undefined} | ${true}      | ${false}          | ${'hides'}
+      ${true}      | ${false}     | ${false}          | ${'hides'}
+      ${false}     | ${true}      | ${false}          | ${'hides'}
+    `(
+      '$text the slot component when isEmpty:$isEmpty and isInvalid:$isInvalid',
+      ({ isEmpty, isInvalid, showSlotComponent }) => {
+        createWrapper({
+          props: { isEmpty, isInvalid },
+        });
+        expect(findSlotComponent().exists()).toBe(showSlotComponent);
+        expect(findAlert().exists()).toBe(!showSlotComponent);
+      },
+    );
+
+    it('can have a custom empty message', () => {
+      const text = 'my custom alert message';
+      createWrapper({ props: { isEmpty: true, emptyMessage: text } });
+
+      const alert = findAlert();
+
+      expect(alert.exists()).toBe(true);
+      expect(alert.text()).toBe(text);
+    });
   });
 
   describe('user interaction', () => {
@@ -67,7 +112,7 @@ describe('~/pipeline_editor/components/ui/editor_tab.vue', () => {
     };
 
     beforeEach(() => {
-      createWrapper();
+      createMockedWrapper();
     });
 
     it('mounts a tab once after selecting it', async () => {

@@ -1,14 +1,14 @@
-.git-clone-holder.js-git-clone-holder.input-group
+.js-git-clone-holder.input-group.btn-group
   .input-group-prepend
     - if allowed_protocols_present?
       .input-group-text.clone-dropdown-btn.btn
         %span.js-clone-dropdown-label
           = enabled_protocol_button(container, enabled_protocol)
     - else
-      %a#clone-dropdown.input-group-text.btn.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
+      %a#clone-dropdown.input-group-text.gl-button.btn.btn-default.btn-icon.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
         %span.js-clone-dropdown-label
           = default_clone_protocol.upcase
-        = sprite_icon('chevron-down')
+        = sprite_icon('chevron-down', css_class: 'gl-icon')
       %ul.dropdown-menu.dropdown-menu-selectable.clone-options-dropdown
         %li
           = ssh_clone_button(container)
@@ -16,7 +16,7 @@
           = http_clone_button(container)
         = render_if_exists 'shared/kerberos_clone_button', container: container
 
-  = text_field_tag :clone_url, default_url_to_repo(container), class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }
+  = text_field_tag :clone_url, default_url_to_repo(container), class: "js-select-on-focus btn gl-button", readonly: true, aria: { label: _('Repository clone URL') }
   .input-group-append
-    = clipboard_button(target: '#clone_url', title: _("Copy URL"), class: "input-group-text btn-default btn-clipboard")
+    = clipboard_button(target: '#clone_url', title: _("Copy URL"), class: "input-group-text gl-button btn-default btn-clipboard")
 

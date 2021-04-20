@@ -1,0 +1,8 @@
+---
+name: upgrade_link_in_user_menu_a
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56591
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/300824
+milestone: '13.11'
+type: development
+group: group::expansion
+default_enabled: true

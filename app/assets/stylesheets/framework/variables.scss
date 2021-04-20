@@ -82,7 +82,7 @@ $darken-border-dashed-factor: 25% !default;
 $white: #fff !default;
 $white-normal: #f0f0f0 !default;
 $white-dark: #eaeaea !default;
-$white-transparent: rgba(255, 255, 255, 0.8) !default;
+$white-transparent: rgba($white, 0.8) !default;
 
 $gray-lightest: #fdfdfd !default;
 $gray-light: #fafafa !default;
@@ -352,8 +352,8 @@ $border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
  */
 $border-color: $gray-100;
 $shadow-color: $t-gray-a-08;
-$well-expand-item: #e8f2f7;
-$well-inner-border: #eef0f2;
+$well-expand-item: #e8f2f7 !default;
+$well-inner-border: #eef0f2 !default;
 $well-light-border: #f1f1f1;
 $well-light-text-color: #5b6169;
 
@@ -590,7 +590,7 @@ $gl-btn-xs-line-height: 13px;
 /*
 * Badges
 */
-$badge-bg: rgba(0, 0, 0, 0.07);
+$badge-bg: rgba($black, 0.07);
 
 /*
 * Pagination
@@ -842,10 +842,10 @@ $linked-project-column-margin: 60px;
 /*
 Performance Bar
 */
-$perf-bar-production: #222;
-$perf-bar-staging: #291430;
-$perf-bar-development: #4c1210;
-$perf-bar-bucket-bg: #111;
+$perf-bar-production: $gray-950;
+$perf-bar-staging: $indigo-950;
+$perf-bar-development: $red-950;
+$perf-bar-bucket-bg: $black;
 $perf-bar-bucket-box-shadow-from: rgba($white, 0.2);
 $perf-bar-bucket-box-shadow-to: rgba($black, 0.25);
 $perf-bar-canary-text: $orange-400;
@@ -924,11 +924,12 @@ Issue Analytics
 $issues-analytics-popover-boarder-color: rgba(0, 0, 0, 0.15);
 
 /*
-Merge Requests
+Merge requests
 */
 $mr-tabs-height: 48px;
 $mr-version-controls-height: 56px;
 $mr-widget-margin-left: 40px;
+$mr-review-bar-height: calc(2rem + 13px);
 
 /*
 Compare Branches

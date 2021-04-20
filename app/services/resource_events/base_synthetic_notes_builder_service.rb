@@ -25,9 +25,7 @@ module ResourceEvents
 
     def apply_common_filters(events)
       events = apply_last_fetched_at(events)
-      events = apply_fetch_until(events)
-
-      events
+      apply_fetch_until(events)
     end
 
     def apply_last_fetched_at(events)

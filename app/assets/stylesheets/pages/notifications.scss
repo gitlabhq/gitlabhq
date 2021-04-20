@@ -1,8 +1,4 @@
 .notification-list-item {
-  .dropdown-menu {
-    @extend .dropdown-menu-right;
-  }
-
   @include media-breakpoint-down(sm) {
     .notification-dropdown {
       width: 100%;

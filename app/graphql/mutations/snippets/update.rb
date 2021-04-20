@@ -5,6 +5,7 @@ module Mutations
     class Update < Base
       include ServiceCompatibility
       include CanMutateSpammable
+      include Mutations::SpamProtection
 
       graphql_name 'UpdateSnippet'
 
@@ -45,12 +46,12 @@ module Mutations
         end
 
         snippet = service_response.payload[:snippet]
-        with_spam_action_response_fields(snippet) do
-          {
-            snippet: service_response.success? ? snippet : snippet.reset,
-            errors: errors_on_object(snippet)
-          }
-        end
+        check_spam_action_response!(snippet)
+
+        {
+          snippet: service_response.success? ? snippet : snippet.reset,
+          errors: errors_on_object(snippet)
+        }
       end
 
       private

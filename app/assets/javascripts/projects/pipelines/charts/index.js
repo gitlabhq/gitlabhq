@@ -13,9 +13,7 @@ const apolloProvider = new VueApollo({
 const mountPipelineChartsApp = (el) => {
   const { projectPath } = el.dataset;
 
-  const shouldRenderDeploymentFrequencyCharts = parseBoolean(
-    el.dataset.shouldRenderDeploymentFrequencyCharts,
-  );
+  const shouldRenderDoraCharts = parseBoolean(el.dataset.shouldRenderDoraCharts);
 
   return new Vue({
     el,
@@ -26,7 +24,7 @@ const mountPipelineChartsApp = (el) => {
     apolloProvider,
     provide: {
       projectPath,
-      shouldRenderDeploymentFrequencyCharts,
+      shouldRenderDoraCharts,
     },
     render: (createElement) => createElement(ProjectPipelinesCharts, {}),
   });

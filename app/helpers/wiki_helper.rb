@@ -22,7 +22,7 @@ module WikiHelper
   end
 
   def wiki_sidebar_toggle_button
-    content_tag :button, class: 'btn btn-default sidebar-toggle js-sidebar-wiki-toggle', role: 'button', type: 'button' do
+    content_tag :button, class: 'gl-button btn btn-default btn-icon sidebar-toggle js-sidebar-wiki-toggle', role: 'button', type: 'button' do
       sprite_icon('chevron-double-lg-left')
     end
   end
@@ -61,7 +61,7 @@ module WikiHelper
 
   def wiki_sort_controls(wiki, sort, direction)
     sort ||= Wiki::TITLE_ORDER
-    link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort'
+    link_class = 'gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort'
     reversed_direction = direction == 'desc' ? 'asc' : 'desc'
     icon_class = direction == 'desc' ? 'highest' : 'lowest'
 

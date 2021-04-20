@@ -1,0 +1,5 @@
+---
+title: Limit number of GraphQL requests tracked in performance bar to 10
+merge_request: 59158
+author:
+type: performance

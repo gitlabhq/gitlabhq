@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_unlocked_monthly
-description: Count of MAU marking an issue as blocked or blocked by
+description: Count of MAU unlocking an issue
 product_section: dev
 product_stage: plan
 product_group: group::project management
@@ -11,6 +11,8 @@ time_frame: 28d
 data_source: redis_hll
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

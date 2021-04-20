@@ -3,7 +3,7 @@
 Project: <%= @project.name %> ( <%= project_url(@project) %> )
 Branch: <%= @pipeline.source_ref %> ( <%= commits_url(@pipeline) %> )
 <% if @merge_request -%>
-Merge Request: <%= @merge_request.to_reference %> ( <%= merge_request_url(@merge_request) %> )
+Merge request: <%= @merge_request.to_reference %> ( <%= merge_request_url(@merge_request) %> )
 <% end -%>
 
 Commit: <%= @pipeline.short_sha %> ( <%= commit_url(@pipeline) %> )

@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang Rubocop offenses for mattermost modules
+merge_request: 58048
+author: Huzaifa Iftikhar @huzaifaiftikhar
+type: fixed

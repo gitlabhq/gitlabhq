@@ -71,6 +71,8 @@ module ClustersHelper
       render_if_exists 'clusters/clusters/health'
     when 'apps'
       render 'applications'
+    when 'integrations'
+      render 'integrations'
     when 'settings'
       render 'advanced_settings_container'
     else

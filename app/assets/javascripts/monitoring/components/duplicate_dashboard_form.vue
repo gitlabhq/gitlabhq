@@ -23,7 +23,7 @@ export default {
     },
   },
   radioVals: {
-    /* Use the default branch (e.g. master) */
+    /* Use the default branch (e.g. main) */
     DEFAULT: 'DEFAULT',
     /* Create a new branch */
     NEW: 'NEW',

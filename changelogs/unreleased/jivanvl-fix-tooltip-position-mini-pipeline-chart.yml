@@ -1,0 +1,5 @@
+---
+title: Fix tooltip position in mini pipeline chart
+merge_request: 57425
+author:
+type: fixed

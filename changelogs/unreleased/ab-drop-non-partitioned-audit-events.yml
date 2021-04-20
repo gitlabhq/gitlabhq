@@ -1,0 +1,5 @@
+---
+title: Drop non-partitioned audit_events_archived table
+merge_request: 53880
+author:
+type: other

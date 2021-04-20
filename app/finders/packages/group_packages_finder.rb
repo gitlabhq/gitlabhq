@@ -32,8 +32,7 @@ module Packages
       packages = filter_with_version(packages)
       packages = filter_by_package_type(packages)
       packages = filter_by_package_name(packages)
-      packages = filter_by_status(packages)
-      packages
+      filter_by_status(packages)
     end
 
     def group_projects_visible_to_current_user

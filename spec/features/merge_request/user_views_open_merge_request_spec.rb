@@ -125,7 +125,7 @@ RSpec.describe 'User views an open merge request' do
     end
 
     it 'encodes branch name' do
-      expect(find('cite.ref-name')[:title]).to eq(source_branch)
+      expect(find("[data-testid='ref-name']")[:title]).to eq(source_branch)
     end
   end
 end

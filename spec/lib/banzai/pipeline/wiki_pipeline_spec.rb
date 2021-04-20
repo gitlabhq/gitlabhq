@@ -289,4 +289,29 @@ RSpec.describe Banzai::Pipeline::WikiPipeline do
       expect(output).to include('<audio src="/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/audio%20file%20name.wav"')
     end
   end
+
+  describe 'gollum tag filters' do
+    context 'when local image file exists' do
+      it 'sets the proper attributes for the image' do
+        gollum_file_double = double('Gollum::File',
+          mime_type: 'image/jpeg',
+          name: 'images/image.jpg',
+          path: 'images/image.jpg',
+          data: '')
+
+        wiki_file = Gitlab::Git::WikiFile.new(gollum_file_double)
+        markdown = "[[#{wiki_file.path}]]"
+
+        expect(wiki).to receive(:find_file).with(wiki_file.path, load_content: false).and_return(wiki_file)
+
+        output = described_class.to_html(markdown, project: project, wiki: wiki, page_slug: page.slug)
+        doc = Nokogiri::HTML::DocumentFragment.parse(output)
+
+        full_path = "/wiki_link_ns/wiki_link_project/-/wikis/nested/twice/#{wiki_file.path}"
+        expect(doc.css('a')[0].attr('href')).to eq(full_path)
+        expect(doc.css('img')[0].attr('class')).to eq('gfm lazy')
+        expect(doc.css('img')[0].attr('data-src')).to eq(full_path)
+      end
+    end
+  end
 end

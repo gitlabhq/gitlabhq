@@ -1,0 +1,5 @@
+---
+title: Fix Jenkins integration for GitLab FOSS
+merge_request: 59476
+author:
+type: fixed

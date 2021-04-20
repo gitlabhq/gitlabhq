@@ -1,0 +1,8 @@
+- page_title _("Group applications")
+
+= render 'shared/doorkeeper/applications/index',
+        oauth_applications_enabled: user_oauth_applications?,
+        oauth_authorized_applications_enabled: false,
+        form_url: group_settings_applications_path(@group),
+        application_url: ->(application) { group_settings_application_path(@group, application) },
+        edit_application_url: ->(application) { edit_group_settings_application_path(@group, application) }

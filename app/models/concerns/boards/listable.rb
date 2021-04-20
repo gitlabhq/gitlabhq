@@ -13,6 +13,7 @@ module Boards
       scope :ordered, -> { order(:list_type, :position) }
       scope :destroyable, -> { where(list_type: list_types.slice(*destroyable_types).values) }
       scope :movable, -> { where(list_type: list_types.slice(*movable_types).values) }
+      scope :without_types, ->(list_types) { where.not(list_type: list_types) }
 
       class << self
         def preload_preferences_for_user(lists, user)

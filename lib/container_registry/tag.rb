@@ -10,7 +10,8 @@ module ContainerRegistry
     delegate :revision, :short_revision, to: :config_blob, allow_nil: true
 
     def initialize(repository, name)
-      @repository, @name = repository, name
+      @repository = repository
+      @name = name
     end
 
     def valid?

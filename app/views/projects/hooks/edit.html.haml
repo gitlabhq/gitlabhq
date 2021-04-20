@@ -10,7 +10,7 @@
     = form_for [@project, @hook], as: :hook, url: project_hook_path(@project, @hook) do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
 
-      = f.submit 'Save changes', class: 'btn gl-button btn-success gl-mr-3'
+      = f.submit 'Save changes', class: 'btn gl-button btn-confirm gl-mr-3'
       = render 'shared/web_hooks/test_button', hook: @hook
       = link_to _('Delete'), project_hook_path(@project, @hook), method: :delete, class: 'btn gl-button btn-danger float-right', data: { confirm: _('Are you sure?') }
 

@@ -4,35 +4,18 @@ module Gitlab
   module Tracking
     SNOWPLOW_NAMESPACE = 'gl'
 
-    module ControllerConcern
-      extend ActiveSupport::Concern
-
-      protected
-
-      def track_event(action = action_name, **args)
-        category = args.delete(:category) || self.class.name
-        Gitlab::Tracking.event(category, action.to_s, **args)
-      end
-
-      def track_self_describing_event(schema_url, data:, **args)
-        Gitlab::Tracking.self_describing_event(schema_url, data: data, **args)
-      end
-    end
-
     class << self
       def enabled?
         Gitlab::CurrentSettings.snowplow_enabled?
       end
 
-      def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil) # rubocop:disable Metrics/ParameterLists
-        contexts = [Tracking::StandardContext.new(project: project, user: user, namespace: namespace).to_context, *context]
+      def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
+        contexts = [Tracking::StandardContext.new(project: project, user: user, namespace: namespace, **extra).to_context, *context]
 
         snowplow.event(category, action, label: label, property: property, value: value, context: contexts)
         product_analytics.event(category, action, label: label, property: property, value: value, context: contexts)
-      end
-
-      def self_describing_event(schema_url, data:, context: nil)
-        snowplow.self_describing_event(schema_url, data: data, context: context)
+      rescue => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)
       end
 
       def snowplow_options(group)

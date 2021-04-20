@@ -60,7 +60,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
       let(:extern_uid) { 'my-uid' }
 
       before do
-        user.update(failed_attempts: User.maximum_attempts.pred)
+        user.update!(failed_attempts: User.maximum_attempts.pred)
         subject.response = ActionDispatch::Response.new
       end
 
@@ -233,7 +233,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
           before do
             stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
             settings = Gitlab::CurrentSettings.current_application_settings
-            settings.update(disabled_oauth_sign_in_sources: [provider.to_s])
+            settings.update!(disabled_oauth_sign_in_sources: [provider.to_s])
           end
 
           it 'prevents login via POST' do
@@ -299,7 +299,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
           before do
             stub_omniauth_setting(enabled: true, auto_link_user: true, allow_single_sign_on: ['atlassian_oauth2'])
 
-            user.destroy
+            user.destroy!
           end
 
           it 'denies sign-in if sign-up is enabled, but block_auto_created_users is set' do
@@ -381,7 +381,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
 
     context 'sign up' do
       before do
-        user.destroy
+        user.destroy!
       end
 
       it 'denies login if sign up is enabled, but block_auto_created_users is set' do

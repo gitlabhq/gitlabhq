@@ -644,7 +644,7 @@ RSpec.describe API::Internal::Base do
 
       context 'with Project' do
         it_behaves_like 'storing arguments in the application context' do
-          let(:expected_params) { { user: key.user.username, project: project.full_path } }
+          let(:expected_params) { { user: key.user.username, project: project.full_path, caller_id: "POST /api/:version/internal/allowed" } }
 
           subject { push(key, project) }
         end
@@ -652,7 +652,7 @@ RSpec.describe API::Internal::Base do
 
       context 'with PersonalSnippet' do
         it_behaves_like 'storing arguments in the application context' do
-          let(:expected_params) { { user: key.user.username } }
+          let(:expected_params) { { user: key.user.username, caller_id: "POST /api/:version/internal/allowed" } }
 
           subject { push(key, personal_snippet) }
         end
@@ -660,7 +660,7 @@ RSpec.describe API::Internal::Base do
 
       context 'with ProjectSnippet' do
         it_behaves_like 'storing arguments in the application context' do
-          let(:expected_params) { { user: key.user.username, project: project_snippet.project.full_path } }
+          let(:expected_params) { { user: key.user.username, project: project_snippet.project.full_path, caller_id: "POST /api/:version/internal/allowed" } }
 
           subject { push(key, project_snippet) }
         end
@@ -887,7 +887,7 @@ RSpec.describe API::Internal::Base do
     context 'project does not exist' do
       context 'git pull' do
         it 'returns a 200 response with status: false' do
-          project.destroy
+          project.destroy!
 
           pull(key, project)
 
@@ -1115,7 +1115,7 @@ RSpec.describe API::Internal::Base do
         end
       end
 
-      context 'feature flag :user_mode_in_session is enabled' do
+      context 'application setting :admin_mode is enabled' do
         context 'with an admin user' do
           let(:user) { create(:admin) }
 
@@ -1147,9 +1147,9 @@ RSpec.describe API::Internal::Base do
         end
       end
 
-      context 'feature flag :user_mode_in_session is disabled' do
+      context 'application setting :admin_mode is disabled' do
         before do
-          stub_feature_flags(user_mode_in_session: false)
+          stub_application_setting(admin_mode: false)
         end
 
         context 'with an admin user' do
@@ -1410,6 +1410,29 @@ RSpec.describe API::Internal::Base do
       subject
 
       expect(json_response['success']).to be_falsey
+    end
+  end
+
+  describe 'GET /internal/geo_proxy' do
+    subject { get api('/internal/geo_proxy'), params: { secret_token: secret_token } }
+
+    context 'with valid auth' do
+      it 'returns empty data' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context 'with invalid auth' do
+      let(:secret_token) { 'invalid_token' }
+
+      it 'returns unauthorized' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
     end
   end
 

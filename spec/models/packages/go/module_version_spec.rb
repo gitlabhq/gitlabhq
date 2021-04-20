@@ -3,19 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Go::ModuleVersion, type: :model do
-  let_it_be(:user) { create :user }
-  let_it_be(:project) { create :project_empty_repo, creator: user, path: 'my-go-lib' }
-  let_it_be(:mod) { create :go_module, project: project }
+  include_context 'basic Go module'
 
-  before :all do
-    create :go_module_commit, :files,   project: project, tag: 'v1.0.0', files: { 'README.md' => 'Hi' }
-    create :go_module_commit, :module,  project: project, tag: 'v1.0.1'
-    create :go_module_commit, :package, project: project, tag: 'v1.0.2', path: 'pkg'
-    create :go_module_commit, :module,  project: project, tag: 'v1.0.3', name: 'mod'
-    create :go_module_commit, :files,   project: project,                files: { 'y.go' => "package a\n" }
-    create :go_module_commit, :module,  project: project,                name: 'v2'
-    create :go_module_commit, :files,   project: project, tag: 'v2.0.0', files: { 'v2/x.go' => "package a\n" }
-  end
+  let_it_be(:mod) { create :go_module, project: project }
 
   shared_examples '#files' do |desc, *entries|
     it "returns #{desc}" do

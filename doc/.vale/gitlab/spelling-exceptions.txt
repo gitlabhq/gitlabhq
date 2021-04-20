@@ -245,7 +245,6 @@ Helm
 Heroku
 Herokuish
 Hexo
-HipChat
 hostname
 hostnames
 hotfix
@@ -257,6 +256,7 @@ https
 idempotence
 idmapper
 Iglu
+Immer
 inclusivity
 Ingress
 initializer

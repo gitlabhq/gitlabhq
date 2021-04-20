@@ -565,7 +565,7 @@ In some scenarios such as [this one](https://gitlab.com/gitlab-org/gitlab/-/issu
         return unless user
 
         # Sessions are enforced to be unavailable for API calls, so ignore them for admin mode
-        Gitlab::Auth::CurrentUserMode.bypass_session!(user.id) if Feature.enabled?(:user_mode_in_session)
+        Gitlab::Auth::CurrentUserMode.bypass_session!(user.id) if Gitlab::CurrentSettings.admin_mode
 
         unless api_access_allowed?(user)
           forbidden!(api_access_denied_message(user))
@@ -581,7 +581,7 @@ In order to prevent this from happening, it is recommended to use the method `us
         user = find_user_from_sources
         return unless user
 
-        if user.is_a?(User) && Feature.enabled?(:user_mode_in_session)
+        if user.is_a?(User) && Gitlab::CurrentSettings.admin_mode
           # Sessions are enforced to be unavailable for API calls, so ignore them for admin mode
           Gitlab::Auth::CurrentUserMode.bypass_session!(user.id)
         end

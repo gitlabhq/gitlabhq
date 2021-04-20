@@ -769,7 +769,7 @@ Parameters:
 
 ### Options for `default_branch_protection`
 
-The `default_branch_protection` attribute determines whether developers and maintainers can push to the applicable master branch, as described in the following table:
+The `default_branch_protection` attribute determines whether developers and maintainers can push to the applicable [default branch](../user/project/repository/branches/default.md), as described in the following table:
 
 | Value | Description |
 |-------|-------------------------------------------------------------------------------------------------------------|
@@ -974,6 +974,9 @@ Parameters:
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 
 The response is `202 Accepted` if the user has authorization.
+
+NOTE:
+A GitLab.com group can't be removed if it is linked to a subscription. To remove such a group, first [link the subscription](../subscriptions/index.md#change-the-linked-namespace) with a different group.
 
 ## Restore group marked for deletion **(PREMIUM)**
 
