@@ -5,14 +5,24 @@ import createMarkdownSerializer from '~/content_editor/services/markdown_seriali
 jest.mock('~/content_editor/services/markdown_serializer');
 
 describe('content_editor/services/create_editor', () => {
+  const renderMarkdown = () => true;
   const buildMockSerializer = () => ({
     serialize: jest.fn(),
     deserialize: jest.fn(),
   });
 
+  it('sets gl-py-4 gl-px-5 class selectors to editor attributes', async () => {
+    const editor = await createEditor({ renderMarkdown });
+
+    expect(editor.options.editorProps).toMatchObject({
+      attributes: {
+        class: 'gl-py-4 gl-px-5',
+      },
+    });
+  });
+
   describe('creating an editor', () => {
     it('uses markdown serializer when a renderMarkdown function is provided', async () => {
-      const renderMarkdown = () => true;
       const mockSerializer = buildMockSerializer();
       createMarkdownSerializer.mockReturnValueOnce(mockSerializer);
 

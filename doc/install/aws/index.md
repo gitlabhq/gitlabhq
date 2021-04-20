@@ -838,3 +838,9 @@ You may have to set a password on the `root` user to prevent automatic redirects
 ### "The change you requested was rejected (422)"
 
 If you see this page when trying to set a password via the web interface, make sure `external_url` in `gitlab.rb` matches the domain you are making a request from, and run `sudo gitlab-ctl reconfigure` after making any changes to it.
+
+### Some job logs are not uploaded to object storage
+
+When the GitLab deployment is scaled up to more than one node, some job logs may not be uploaded to [object storage](../../administration/object_storage.md) properly. [Incremental logging is required](../../administration/object_storage.md#incremental-logging-is-required-for-ci-to-use-object-storage) for CI to use object storage. 
+
+Enable [incremental logging](../../administration/job_logs.md#enabling-incremental-logging) if it has not already been enabled. 

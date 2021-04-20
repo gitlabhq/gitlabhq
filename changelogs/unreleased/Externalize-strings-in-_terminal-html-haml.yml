@@ -1,0 +1,5 @@
+---
+title: Externalize strings in application_settings/_terminal.html.haml
+merge_request: 58081
+author: nuwe1
+type: other

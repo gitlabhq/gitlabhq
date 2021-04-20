@@ -1001,7 +1001,7 @@ to using that.
 
 ### Migrate Pages deployments to object storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325285) in GitLab 13.11
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325285) in GitLab 13.11.
 
 Existing Pages deployments objects (which store [ZIP archives](#zip-storage)) can similarly be
 migrated to [object storage](#using-object-storage), if
@@ -1010,7 +1010,7 @@ you've been having them stored locally.
 Migrate your existing Pages deployments from local storage to object storage:
 
 ```shell
-sudo gitlab-rails gitlab:pages:deployments:migrate_to_object_storage
+sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
 ```
 
 ### Rolling Pages deployments back to local storage
@@ -1018,7 +1018,7 @@ sudo gitlab-rails gitlab:pages:deployments:migrate_to_object_storage
 After the migration to object storage is performed, you can choose to revert your Pages deployments back to local storage:
 
 ```shell
-sudo gitlab-rails gitlab:pages:deployments:migrate_to_local
+sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 ```
 
 ## Backup

@@ -1620,11 +1620,7 @@ class User < ApplicationRecord
   end
 
   def count_cache_validity_period
-    if Feature.enabled?(:longer_count_cache_validity, self, default_enabled: :yaml)
-      24.hours
-    else
-      20.minutes
-    end
+    24.hours
   end
 
   def assigned_open_merge_requests_count(force: false)

@@ -143,12 +143,13 @@ dependency_scanning gemnasium-python:
 # See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter
 package_hunter:
   extends:
-    - .reports:schedule-dast
+    - .reports:rules:package_hunter
   stage: test
   image:
     name: registry.gitlab.com/gitlab-com/gl-security/security-research/package-hunter-cli:latest
     entrypoint: [""]
   needs: []
+  allow_failure: true
   script:
     - rm -r spec locale .git app/assets/images doc/
     - cd .. && tar -I "gzip --best" -cf gitlab.tgz gitlab/

@@ -6,6 +6,7 @@ module Gitlab
       module Aggregates
         module Sources
           class PostgresHll
+            extend Calculations::Intersection
             class << self
               def calculate_metrics_union(metric_names:, start_date:, end_date:, recorded_at:)
                 time_period = start_date && end_date ? (start_date..end_date) : nil

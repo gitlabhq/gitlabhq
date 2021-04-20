@@ -299,8 +299,10 @@ first time.
   of your shiny new branch, read through the entire diff. Does it make sense?
   Did you include something unrelated to the overall purpose of the changes? Did
   you forget to remove any debugging code?
-- Consider providing instructions on how to test the merge request. This can be
-  helpful for reviewers not familiar with the product feature or area of the codebase.
+- Write a detailed description as outlined in the [merge request guidelines](contributing/merge_request_workflow.md#merge-request-guidelines).
+  Some reviewers may not be familiar with the product feature or area of the
+  codebase. Thorough descriptions help all reviewers understand your request
+  and test effectively.
 - If you know your change depends on another being merged first, note it in the
   description and set an [merge request dependency](../user/project/merge_requests/merge_request_dependencies.md).
 - Be grateful for the reviewer's suggestions. (`Good call. I'll make that change.`)

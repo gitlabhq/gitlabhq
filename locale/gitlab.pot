@@ -1496,6 +1496,9 @@ msgstr ""
 msgid "API version"
 msgstr ""
 
+msgid "API?"
+msgstr ""
+
 msgid "APIFuzzing|$VariableWithPassword"
 msgstr ""
 
@@ -11244,6 +11247,12 @@ msgstr ""
 msgid "Didn't receive a confirmation email?"
 msgstr ""
 
+msgid "Didn't receive confirmation instructions?"
+msgstr ""
+
+msgid "Didn't receive unlock instructions?"
+msgstr ""
+
 msgid "Diff content limits"
 msgstr ""
 
@@ -19532,6 +19541,9 @@ msgstr ""
 msgid "Max role"
 msgstr ""
 
+msgid "Max session time"
+msgstr ""
+
 msgid "Max unauthenticated requests per period per IP"
 msgstr ""
 
@@ -19644,6 +19656,9 @@ msgid "Maximum size of pages (MB)"
 msgstr ""
 
 msgid "Maximum time between updates that a mirror can have when scheduled to synchronize."
+msgstr ""
+
+msgid "Maximum time for web terminal websocket connection (in seconds). 0 for unlimited."
 msgstr ""
 
 msgid "May"
@@ -24023,6 +24038,9 @@ msgstr ""
 msgid "Primary"
 msgstr ""
 
+msgid "Primary Action"
+msgstr ""
+
 msgid "Print codes"
 msgstr ""
 
@@ -26048,6 +26066,9 @@ msgstr ""
 msgid "Rebase source branch on the target branch."
 msgstr ""
 
+msgid "Recaptcha verified?"
+msgstr ""
+
 msgid "Receive alerts from manually configured Prometheus servers."
 msgstr ""
 
@@ -26974,6 +26995,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Requires values to meet regular expression requirements."
+msgstr ""
+
+msgid "Resend"
 msgstr ""
 
 msgid "Resend Request"
@@ -29712,6 +29736,9 @@ msgstr ""
 msgid "Source Branch"
 msgstr ""
 
+msgid "Source IP"
+msgstr ""
+
 msgid "Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}"
 msgstr ""
 
@@ -30499,6 +30526,12 @@ msgid "SuperSonics|Subscription details"
 msgstr ""
 
 msgid "SuperSonics|Sync Subscription details"
+msgstr ""
+
+msgid "SuperSonics|The subscription details synced successfully."
+msgstr ""
+
+msgid "SuperSonics|There is a connectivity issue. You can no longer sync your subscription details with GitLab. Get help for the most common connectivity issues by %{connectivityHelpLinkStart}troubleshooting the activation code%{connectivityHelpLinkEnd}."
 msgstr ""
 
 msgid "SuperSonics|Type"
@@ -31552,6 +31585,9 @@ msgid "There are no SSH keys associated with this account."
 msgstr ""
 
 msgid "There are no SSH keys with access to your account."
+msgstr ""
+
+msgid "There are no Spam Logs"
 msgstr ""
 
 msgid "There are no abuse reports!"

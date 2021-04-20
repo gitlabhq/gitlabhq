@@ -354,8 +354,6 @@ Performance/Sum:
     - 'ee/spec/lib/gitlab/elastic/bulk_indexer_spec.rb'
     - 'lib/api/entities/issuable_time_stats.rb'
     - 'lib/container_registry/tag.rb'
-    - 'lib/declarative_policy/rule.rb'
-    - 'lib/declarative_policy/runner.rb'
     - 'lib/gitlab/ci/reports/test_suite_comparer.rb'
     - 'lib/gitlab/diff/file.rb'
     - 'lib/gitlab/sherlock/transaction.rb'

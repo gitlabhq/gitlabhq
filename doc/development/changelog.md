@@ -48,7 +48,6 @@ the `author` field. GitLab team members **should not**.
 - Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry. See the [complete list what comprises a GraphQL breaking change](api_graphql_styleguide.md#breaking-changes).
 - Any change that introduces an [Advanced Search migration](elasticsearch.md#creating-a-new-advanced-search-migration) **must** have a changelog entry.
 - Performance improvements **should** have a changelog entry.
-  also require a changelog entry.
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.
   Example: "Fixed a typo on the search results page."

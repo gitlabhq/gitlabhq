@@ -71,56 +71,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
           end
         end
 
-        context 'with AND operator' do
-          let(:aggregated_metrics) do
-            params = { source: datasource, operator: "AND", time_frame: time_frame }
-            [
-              aggregated_metric(**params.merge(name: "gmau_1", events: %w[event3 event5])),
-              aggregated_metric(**params.merge(name: "gmau_2"))
-            ]
-          end
-
-          it 'returns the number of unique events recorded for every metric in aggregate', :aggregate_failures do
-            results = {
-              'gmau_1' => 2,
-              'gmau_2' => 1
-            }
-            params = { start_date: start_date, end_date: end_date, recorded_at: recorded_at }
-
-            # gmau_1 data is as follow
-            # |A| => 4
-            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: 'event3')).and_return(4)
-            # |B| => 6
-            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: 'event5')).and_return(6)
-            # |A + B| => 8
-            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event3 event5])).and_return(8)
-            # Exclusion inclusion principle formula to calculate intersection of 2 sets
-            # |A & B| = (|A| + |B|) - |A + B| => (4 + 6) - 8 => 2
-
-            # gmau_2 data is as follow:
-            # |A| => 2
-            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: 'event1')).and_return(2)
-            # |B| => 3
-            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: 'event2')).and_return(3)
-            # |C| => 5
-            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: 'event3')).and_return(5)
-
-            # |A + B| => 4 therefore |A & B| = (|A| + |B|) - |A + B| =>  2 + 3 - 4 => 1
-            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event1 event2])).and_return(4)
-            # |A + C| => 6 therefore |A & C| = (|A| + |C|) - |A + C| =>  2 + 5 - 6  => 1
-            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event1 event3])).and_return(6)
-            # |B + C| => 7 therefore |B & C| = (|B| + |C|) - |B + C| => 3 + 5 - 7 => 1
-            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event2 event3])).and_return(7)
-            # |A + B + C| => 8
-            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event1 event2 event3])).and_return(8)
-            # Exclusion inclusion principle formula to calculate intersection of 3 sets
-            # |A & B & C| = (|A & B| + |A & C| + |B & C|) - (|A| + |B| + |C|)  + |A + B + C|
-            # (1 + 1 + 1) - (2 + 3 + 5) + 8 => 1
-
-            expect(aggregated_metrics_data).to eq(results)
-          end
-        end
-
         context 'with OR operator' do
           let(:aggregated_metrics) do
             [
@@ -331,36 +281,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
       it_behaves_like 'database_sourced_aggregated_metrics'
       it_behaves_like 'redis_sourced_aggregated_metrics'
       it_behaves_like 'db sourced aggregated metrics without database_sourced_aggregated_metrics feature'
-
-      context 'metrics union calls' do
-        it 'caches intermediate operations', :aggregate_failures do
-          events = %w[event1 event2 event3 event5]
-          allow_next_instance_of(described_class) do |instance|
-            allow(instance).to receive(:aggregated_metrics)
-                                 .and_return([aggregated_metric(name: 'gmau_1', events: events, operator: "AND", time_frame: time_frame)])
-          end
-
-          params = { start_date: start_date, end_date: end_date, recorded_at: recorded_at }
-
-          events.each do |event|
-            expect(sources::RedisHll).to receive(:calculate_metrics_union)
-                                           .with(params.merge(metric_names: event))
-                                           .once
-                                           .and_return(0)
-          end
-
-          2.upto(4) do |subset_size|
-            events.combination(subset_size).each do |events|
-              expect(sources::RedisHll).to receive(:calculate_metrics_union)
-                                             .with(params.merge(metric_names: events))
-                                             .once
-                                             .and_return(0)
-            end
-          end
-
-          aggregated_metrics_data
-        end
-      end
     end
   end
 end
