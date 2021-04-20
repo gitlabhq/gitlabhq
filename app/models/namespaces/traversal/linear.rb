@@ -86,25 +86,7 @@ module Namespaces
         raise UnboundedSearch.new('Must bound search by a top') unless top
 
         without_sti_condition
-          .traversal_ids_contains(latest_traversal_ids(top))
-      end
-
-      # traversal_ids are a cached value.
-      #
-      # The traversal_ids value in a loaded object can become stale when compared
-      # to the database value. For example, if you load a hierarchy and then move
-      # a group, any previously loaded descendant objects will have out of date
-      # traversal_ids.
-      #
-      # To solve this problem, we never depend on the object's traversal_ids
-      # value. We always query the database first with a sub-select for the
-      # latest traversal_ids.
-      #
-      # Note that ActiveRecord will cache query results. You can avoid this by
-      # using `Model.uncached { ... }`
-      def latest_traversal_ids(namespace = self)
-        without_sti_condition.where('id = (?)', namespace)
-                .select('traversal_ids as latest_traversal_ids')
+          .traversal_ids_contains("{#{top.id}}")
       end
     end
   end

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To enable the Authentiq OmniAuth provider for passwordless authentication you must register an application with Authentiq.
 
-Authentiq will generate a Client ID and the accompanying Client Secret for you to use.
+Authentiq generates a Client ID and the accompanying Client Secret for you to use.
 
 1. Get your Client credentials (Client ID and Client Secret) at [Authentiq](https://www.authentiq.com/developers).
 
