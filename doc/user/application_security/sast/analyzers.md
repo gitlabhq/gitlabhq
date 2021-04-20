@@ -54,6 +54,7 @@ support the following features:
 - [Multi-project support](index.md#multi-project-support)
 - [Offline support](index.md#running-sast-in-an-offline-environment)
 - [Emits JSON report format](index.md#reports-json-format)
+- [SELinux support](index.md#running-sast-in-selinux)
 
 ## Official default analyzers
 

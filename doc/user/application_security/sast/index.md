@@ -708,6 +708,10 @@ offline environment, certificate verification with an external source is not pos
 self-signed certificate or disable certificate verification. Refer to the package manager's
 documentation for instructions.
 
+## Running SAST in SELinux
+
+By default SAST analyzers are supported in GitLab instances hosted on SELinux. Adding a `before_script` in an [overriden SAST job](#overriding-sast-jobs) may not work as runners hosted on SELinux have restricted permissions.
+
 ## Troubleshooting
 
 ### SAST debug logging
