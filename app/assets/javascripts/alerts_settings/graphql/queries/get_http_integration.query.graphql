@@ -1,9 +1,8 @@
 #import "ee_else_ce/alerts_settings/graphql/fragments/http_integration_payload_data.fragment.graphql"
 
-# TODO: this query need to accept http integration id to request a sepcific integration
-query getHttpIntegrations($projectPath: ID!) {
+query getHttpIntegration($projectPath: ID!, $id: ID) {
   project(fullPath: $projectPath) {
-    alertManagementHttpIntegrations {
+    alertManagementHttpIntegrations(id: $id) {
       nodes {
         ...HttpIntegrationPayloadData
       }

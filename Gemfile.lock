@@ -244,6 +244,7 @@ GEM
       html-pipeline
     declarative (0.0.20)
     declarative-option (0.1.0)
+    declarative_policy (1.0.0)
     default_value_for (3.4.0)
       activerecord (>= 3.2.0, < 7.0)
     deprecation_toolkit (1.5.1)
@@ -1383,6 +1384,7 @@ DEPENDENCIES
   crystalball (~> 0.7.0)
   database_cleaner (~> 1.7.0)
   deckar01-task_list (= 2.3.1)
+  declarative_policy (~> 1.0.0)
   default_value_for (~> 3.4.0)
   deprecation_toolkit (~> 1.5.1)
   derailed_benchmarks

@@ -6,7 +6,6 @@ mutation updateCurrentPrometheusIntegration(
   $type: String
   $url: String
   $apiUrl: String
-  $samplePayload: String
 ) {
   updateCurrentIntegration(
     id: $id
@@ -16,6 +15,5 @@ mutation updateCurrentPrometheusIntegration(
     type: $type
     url: $url
     apiUrl: $apiUrl
-    samplePayload: $samplePayload
   ) @client
 }

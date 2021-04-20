@@ -14,7 +14,7 @@
         .col-sm-10
           %p.text-success.gl-mt-3
             = s_('PrometheusService|GitLab manages Prometheus on your clusters.')
-          = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), class: 'btn'
+          = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), class: 'gl-button btn btn-default'
       - else
         .col-sm-2
           = image_tag 'illustrations/monitoring/loading.svg'

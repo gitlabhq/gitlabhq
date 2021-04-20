@@ -907,14 +907,14 @@
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@29.6.0":
-  version "29.6.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-29.6.0.tgz#5e8369d7aeab56edab570ef148dbc289b51901fc"
-  integrity sha512-bomMDBzS/S+ztFgAC23oDjMEK3cFZ3UcKJGs3iKXtCTKIxtzXKrL0LWYxkidywIwWm9L+1udgsx/GTKoVW0ItQ==
+"@gitlab/ui@29.7.3":
+  version "29.7.3"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-29.7.3.tgz#f7762cc6a20fc8f1c6403822f8cbef821f2438dd"
+  integrity sha512-2pU7t+kFB4ndq3ZW8PzZ26LEj+vAd8AaJLvBmBDba1hEx5KlH4B9U30lGl+UYzgjY3yoe68eObK26vJjJ1rb0g==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
-    bootstrap-vue "2.13.1"
+    bootstrap-vue "2.14.0"
     copy-to-clipboard "^3.0.8"
     dompurify "^2.2.7"
     echarts "^4.9.0"
@@ -2480,10 +2480,10 @@ bonjour@^3.5.0:
     multicast-dns "^6.0.1"
     multicast-dns-service-types "^1.1.0"
 
-bootstrap-vue@2.13.1:
-  version "2.13.1"
-  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.13.1.tgz#dcefca78f2b0345508fbb85adb0a9897cce65fa1"
-  integrity sha512-FF1GLRvvj+TgpLkMG/A8+tCMQfWnfKpsPqt7s097VTX2lZv2/YmyhehRC1qraPHYqT7qQVy48TCxSw1H8hNh3Q==
+bootstrap-vue@2.14.0:
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.14.0.tgz#de88b607627431980b707e6f069f13ef8cc897bd"
+  integrity sha512-sqbS7iHYCZEj/dDx4Yaze99HcX6bZjO4bSWZ0xSgJwtWQlbfB2VDJ9Qjzjp9XI8TT32wYNGAMpnXpYjQvv5qyQ==
   dependencies:
     "@nuxt/opencollective" "^0.3.0"
     bootstrap ">=4.4.1 <5.0.0"

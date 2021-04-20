@@ -3,7 +3,7 @@
 module LearnGitlabHelper
   def learn_gitlab_experiment_enabled?(project)
     return false unless current_user
-    return false unless experiment_enabled_for_user?
+    return false unless continous_onboarding_experiment_enabled_for_user?
 
     learn_gitlab_onboarding_available?(project)
   end
@@ -19,6 +19,11 @@ module LearnGitlabHelper
         svg: image_path("learn_gitlab/#{action}.svg")
       ]
     end
+  end
+
+  def continous_onboarding_experiment_enabled_for_user?
+    Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_a, subject: current_user) ||
+      Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_b, subject: current_user)
   end
 
   private
@@ -48,11 +53,6 @@ module LearnGitlabHelper
 
   def onboarding_progress(project)
     OnboardingProgress.find_by(namespace: project.namespace) # rubocop: disable CodeReuse/ActiveRecord
-  end
-
-  def experiment_enabled_for_user?
-    Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_a, subject: current_user) ||
-      Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_b, subject: current_user)
   end
 
   def learn_gitlab_onboarding_available?(project)

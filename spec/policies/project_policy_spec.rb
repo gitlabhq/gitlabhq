@@ -892,6 +892,8 @@ RSpec.describe ProjectPolicy do
   end
 
   describe 'design permissions' do
+    include DesignManagementTestHelpers
+
     let(:current_user) { guest }
 
     let(:design_permissions) do
@@ -899,12 +901,14 @@ RSpec.describe ProjectPolicy do
     end
 
     context 'when design management is not available' do
+      before do
+        enable_design_management(false)
+      end
+
       it { is_expected.not_to be_allowed(*design_permissions) }
     end
 
     context 'when design management is available' do
-      include DesignManagementTestHelpers
-
       before do
         enable_design_management
       end

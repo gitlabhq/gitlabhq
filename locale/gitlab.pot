@@ -11498,6 +11498,9 @@ msgstr ""
 msgid "Download %{name} artifact"
 msgstr ""
 
+msgid "Download (%{size})"
+msgstr ""
+
 msgid "Download CSV"
 msgstr ""
 
@@ -16161,6 +16164,9 @@ msgid "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be
 msgstr ""
 
 msgid "If you did not initiate this change, please contact your administrator immediately."
+msgstr ""
+
+msgid "If you did not perform this request, you can safely ignore this email."
 msgstr ""
 
 msgid "If you did not recently sign in, you should immediately %{password_link_start}change your password%{password_link_end}."
@@ -22469,6 +22475,9 @@ msgstr ""
 msgid "Other visibility settings have been disabled by the administrator."
 msgstr ""
 
+msgid "Otherwise, click the link below to complete the process."
+msgstr ""
+
 msgid "Our documentation includes an example DevOps Score report."
 msgstr ""
 
@@ -26018,6 +26027,9 @@ msgstr ""
 msgid "Read more about related issues"
 msgstr ""
 
+msgid "Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project."
+msgstr ""
+
 msgid "Real-time features"
 msgstr ""
 
@@ -29320,6 +29332,9 @@ msgid "Someone edited this merge request at the same time you did. Please refres
 msgstr ""
 
 msgid "Someone edited this test case at the same time you did. The description has been updated and you will need to make your changes again."
+msgstr ""
+
+msgid "Someone, hopefully you, has requested to reset the password for your GitLab account on %{link_to_gitlab}."
 msgstr ""
 
 msgid "Something went wrong"

@@ -23,6 +23,9 @@ gem 'grape-path-helpers', '~> 1.6.1'
 gem 'faraday', '~> 1.0'
 gem 'marginalia', '~> 1.10.0'
 
+# Authorization
+gem 'declarative_policy', '~> 1.0.0'
+
 # Authentication libraries
 gem 'devise', '~> 4.7.2'
 gem 'bcrypt', '~> 3.1', '>= 3.1.14'

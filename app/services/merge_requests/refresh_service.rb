@@ -162,12 +162,7 @@ module MergeRequests
     end
 
     def refresh_pipelines_on_merge_requests(merge_request)
-      if Feature.enabled?(:code_review_async_pipeline_creation, project, default_enabled: :yaml)
-        create_pipeline_for(merge_request, current_user, async: true)
-      else
-        create_pipeline_for(merge_request, current_user, async: false)
-        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
-      end
+      create_pipeline_for(merge_request, current_user, async: true)
     end
 
     def abort_auto_merges(merge_request)

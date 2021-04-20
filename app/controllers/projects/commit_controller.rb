@@ -49,7 +49,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def diff_files
-    render json: { html: view_to_html_string('projects/commit/diff_files', diffs: @diffs, environment: @environment) }
+    render template: 'projects/commit/diff_files', layout: false, locals: { diffs: @diffs, environment: @environment }
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

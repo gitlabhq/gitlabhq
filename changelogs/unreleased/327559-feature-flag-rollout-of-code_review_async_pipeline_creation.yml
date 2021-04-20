@@ -1,0 +1,5 @@
+---
+title: Create the merge request pipeline asynchronously on push
+merge_request: 59624
+author:
+type: performance
