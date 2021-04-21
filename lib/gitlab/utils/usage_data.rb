@@ -121,7 +121,7 @@ module Gitlab
         count_grouped = relation.group(column).select(Arel.star.count.as('count_grouped'))
         cte = Gitlab::SQL::CTE.new(:count_cte, count_grouped)
 
-        # For example, 9 segements gives 10 buckets
+        # For example, 9 segments gives 10 buckets
         bucket_segments = bucket_size - 1
 
         width_bucket = Arel::Nodes::NamedFunction

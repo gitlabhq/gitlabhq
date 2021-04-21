@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::PositionableList do
+RSpec.describe Sidebars::Concerns::PositionableList do
   subject do
     Class.new do
-      include Sidebars::PositionableList
+      include Sidebars::Concerns::PositionableList
     end.new
   end
 

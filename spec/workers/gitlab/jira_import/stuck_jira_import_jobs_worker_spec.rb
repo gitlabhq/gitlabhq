@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe ::Gitlab::JiraImport::StuckJiraImportJobsWorker do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
+
   let(:worker) { described_class.new }
 
   describe 'with scheduled Jira import' do

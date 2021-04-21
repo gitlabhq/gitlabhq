@@ -3,7 +3,7 @@
 module Sidebars
   class Panel
     extend ::Gitlab::Utils::Override
-    include ::Sidebars::PositionableList
+    include ::Sidebars::Concerns::PositionableList
 
     attr_reader :context, :scope_menu, :hidden_menu
 

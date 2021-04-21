@@ -41,7 +41,7 @@ RSpec.describe Mutations::MergeRequests::SetLocked do
         let(:locked) { false }
 
         it 'unlocks the discussion' do
-          merge_request.update(discussion_locked: true)
+          merge_request.update!(discussion_locked: true)
 
           expect(mutated_merge_request).not_to be_discussion_locked
         end

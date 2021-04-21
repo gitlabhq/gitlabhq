@@ -8,6 +8,7 @@ RSpec.describe Packages::Composer::CacheUpdateWorker, type: :worker do
     let_it_be(:json) { { 'name' => package_name } }
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json.to_json }, group: group) }
+
     let(:last_sha) { nil }
     let!(:package) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
     let(:job_args) { [project.id, package_name, last_sha] }

@@ -1,0 +1,5 @@
+---
+title: Update cached count for "done" todos when deleting todo targets
+merge_request: 58773
+author:
+type: fixed

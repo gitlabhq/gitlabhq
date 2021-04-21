@@ -424,6 +424,59 @@ This experiment is only enabled when the CI/CD variable `RSPEC_FAIL_FAST_ENABLED
 The test files related to the Merge Request are determined using the [`test_file_finder`](https://gitlab.com/gitlab-org/ci-cd/test_file_finder) gem.
 We are using a custom mapping between source file to test files, maintained in the `tests.yml` file.
 
+### RSpec minimal job experiment
+
+As part of the objective to improve overall pipeline duration, we are experimenting with a minimal set of RSpec tests.
+The purpose of this experiment is to verify if we are able to run a minimal set of RSpec tests in a Merge Request pipeline,
+without resulting in increased number of broken master.
+
+To identify the minimal set of tests needed, we use [Crystalball gem](https://github.com/toptal/crystalball) to create a test mapping.
+The test mapping contains a map of each source files to a list of test files which is dependent of the source file.
+This mapping is currently generated using a combination of test coverage tracing and a static mapping.
+In the `detect-tests` job, we use this mapping to identify the minimal tests needed for the current Merge Request.
+
+In this experiment, each `rspec` job is accompanied with a `minimal` version.
+For example, `rspec unit` job has a corresponding `rspec unit minimal` job. 
+During the experiment, each Merge Request pipeline will contain both versions of the job, running in parallel.
+
+To illustrate this:
+
+```mermaid
+graph LR
+    A --"artifact: list of test files"--> C1 & D1 & E1 & F1
+
+    subgraph "prepare stage";
+        A["detect-tests"];
+    end
+
+    subgraph "test stage";
+        C["rspec migration"];
+        C1["rspec migration minimal"];
+        D["rspec unit"];
+        D1["rspec unit minimal"];
+        E["rspec integration"];
+        E1["rspec integration minimal"];
+        F["rspec system"];
+        F1["rspec system minimal"];
+    end
+```
+
+The result of both set of jobs in the pipeline is then compared to identify any false positive.
+A list of such pipeline can be found in [Sisense](https://app.periscopedata.com/app/gitlab/496118/Engineering-Productivity-Sandbox?widget=10492739&udv=833427). 
+
+A false positive is defined as a pipeline where the `minimal` jobs passed, but the non-`minimal` jobs failed.
+This indicates that the changeset resulted in a test failure, which was not detected by the `minimal` jobs.
+Consequently, this signifies a gap in the test mapping used, which would need to be rectified.
+
+#### Findings
+
+After a round of the experiment done in December 2020,
+we discovered that it was challenging to achieve a mapping that gives high confidence at the moment,
+because of 2 reasons:
+
+- Each identified gap in the test mapping is unique, each needing its own investigation and improvement to the creation of the test mapping.
+- There is a large number of flaky tests which added a lot of noise in the data, slowing down the investigation process.
+
 ### PostgreSQL versions testing
 
 Even though [Omnibus defaults to PG12 for new installs and upgrades](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.html),

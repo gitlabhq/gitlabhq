@@ -376,7 +376,7 @@ class User < ApplicationRecord
   scope :by_name, -> (names) { iwhere(name: Array(names)) }
   scope :by_user_email, -> (emails) { iwhere(email: Array(emails)) }
   scope :by_emails, -> (emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
-  scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
+  scope :for_todos, -> (todos) { where(id: todos.select(:user_id).distinct) }
   scope :with_emails, -> { preload(:emails) }
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }

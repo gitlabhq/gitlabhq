@@ -6,12 +6,12 @@ module Sidebars
     include ::Gitlab::Routing
     include GitlabRoutingHelper
     include Gitlab::Allowable
-    include ::Sidebars::HasPill
-    include ::Sidebars::HasIcon
-    include ::Sidebars::PositionableList
-    include ::Sidebars::Renderable
-    include ::Sidebars::ContainerWithHtmlOptions
-    include ::Sidebars::HasActiveRoutes
+    include ::Sidebars::Concerns::HasPill
+    include ::Sidebars::Concerns::HasIcon
+    include ::Sidebars::Concerns::PositionableList
+    include ::Sidebars::Concerns::Renderable
+    include ::Sidebars::Concerns::ContainerWithHtmlOptions
+    include ::Sidebars::Concerns::HasActiveRoutes
 
     attr_reader :context
     delegate :current_user, :container, to: :@context

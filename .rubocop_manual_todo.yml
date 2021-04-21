@@ -153,9 +153,6 @@ Rails/SaveBang:
     - 'spec/controllers/sessions_controller_spec.rb'
     - 'spec/frontend/fixtures/issues.rb'
     - 'spec/frontend/fixtures/merge_requests.rb'
-    - 'spec/graphql/mutations/merge_requests/set_locked_spec.rb'
-    - 'spec/graphql/mutations/merge_requests/set_wip_spec.rb'
-    - 'spec/graphql/resolvers/boards_resolver_spec.rb'
     - 'spec/lib/after_commit_queue_spec.rb'
     - 'spec/lib/backup/manager_spec.rb'
     - 'spec/lib/gitlab/alerting/alert_spec.rb'
@@ -893,27 +890,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - spec/views/search/_results.html.haml_spec.rb
     - spec/views/shared/_label_row.html.haml_spec.rb
     - spec/views/shared/milestones/_top.html.haml_spec.rb
-    - spec/workers/ci/create_cross_project_pipeline_worker_spec.rb
-    - spec/workers/cluster_update_app_worker_spec.rb
-    - spec/workers/environments/canary_ingress/update_worker_spec.rb
-    - spec/workers/expire_job_cache_worker_spec.rb
-    - spec/workers/gitlab/jira_import/import_issue_worker_spec.rb
-    - spec/workers/gitlab/jira_import/stage/start_import_worker_spec.rb
-    - spec/workers/gitlab/jira_import/stuck_jira_import_jobs_worker_spec.rb
-    - spec/workers/import_issues_csv_worker_spec.rb
-    - spec/workers/incident_management/add_severity_system_note_worker_spec.rb
-    - spec/workers/incident_management/process_alert_worker_spec.rb
-    - spec/workers/incident_management/process_prometheus_alert_worker_spec.rb
-    - spec/workers/jira_connect/sync_project_worker_spec.rb
-    - spec/workers/namespaces/onboarding_issue_created_worker_spec.rb
-    - spec/workers/packages/composer/cache_update_worker_spec.rb
-    - spec/workers/pages_domain_ssl_renewal_cron_worker_spec.rb
-    - spec/workers/projects/git_garbage_collect_worker_spec.rb
-    - spec/workers/prometheus/create_default_alerts_worker_spec.rb
-    - spec/workers/propagate_integration_group_worker_spec.rb
-    - spec/workers/propagate_integration_project_worker_spec.rb
-    - spec/workers/run_pipeline_schedule_worker_spec.rb
-    - spec/workers/update_external_pull_requests_worker_spec.rb
 
 RSpec/TimecopFreeze:
   Exclude:

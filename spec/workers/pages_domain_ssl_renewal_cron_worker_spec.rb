@@ -13,6 +13,7 @@ RSpec.describe PagesDomainSslRenewalCronWorker do
 
   describe '#perform' do
     let_it_be(:project) { create :project }
+
     let!(:domain) { create(:pages_domain, project: project, auto_ssl_enabled: false) }
     let!(:domain_with_enabled_auto_ssl) { create(:pages_domain, project: project, auto_ssl_enabled: true) }
     let!(:domain_with_obtained_letsencrypt) do

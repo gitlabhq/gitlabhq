@@ -1300,7 +1300,7 @@ Count of groups with active integrations for HipChat
 
 Group: `group::ecosystem`
 
-Status: `data_available`
+Status: `removed`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -1516,7 +1516,7 @@ Count of active groups inheriting integrations for HipChat
 
 Group: `group::ecosystem`
 
-Status: `data_available`
+Status: `removed`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -2356,7 +2356,7 @@ Count of active instance-level integrations for HipChat
 
 Group: `group::ecosystem`
 
-Status: `data_available`
+Status: `removed`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -3952,7 +3952,7 @@ Count of projects with active integrations for HipChat
 
 Group: `group::ecosystem`
 
-Status: `data_available`
+Status: `removed`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -4180,7 +4180,7 @@ Count of active projects inheriting integrations for HipChat
 
 Group: `group::ecosystem`
 
-Status: `data_available`
+Status: `removed`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -5632,7 +5632,7 @@ Count of active service templates for HipChat
 
 Group: `group::ecosystem`
 
-Status: `data_available`
+Status: `removed`
 
 Tiers: `free`, `premium`, `ultimate`
 

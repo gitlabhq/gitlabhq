@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::ContainerWithHtmlOptions do
+RSpec.describe Sidebars::Concerns::ContainerWithHtmlOptions do
   subject do
     Class.new do
-      include Sidebars::ContainerWithHtmlOptions
+      include Sidebars::Concerns::ContainerWithHtmlOptions
 
       def title
         'Foo'

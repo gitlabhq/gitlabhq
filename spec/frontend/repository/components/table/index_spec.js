@@ -55,8 +55,8 @@ describe('Repository table component', () => {
 
   it.each`
     path            | ref
-    ${'/'}          | ${'master'}
-    ${'app/assets'} | ${'master'}
+    ${'/'}          | ${'main'}
+    ${'app/assets'} | ${'main'}
     ${'/'}          | ${'test'}
   `('renders table caption for $ref in $path', ({ path, ref }) => {
     factory({ path });

@@ -22,7 +22,7 @@ module Gitlab
       auth_download: 'You are not allowed to download code.',
       deploy_key_upload: 'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
-      project_not_found: 'The project you were looking for could not be found.',
+      project_not_found: "The project you were looking for could not be found or you don't have permission to view it.",
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',

@@ -554,19 +554,19 @@ RSpec.describe Gitlab::GitAccess do
             context 'when the repository is public' do
               let(:options) { %i[repository_enabled] }
 
-              it { expect { pull_access_check }.to raise_error('The project you were looking for could not be found.') }
+              it { expect { pull_access_check }.to raise_error("The project you were looking for could not be found or you don't have permission to view it.") }
             end
 
             context 'when the repository is private' do
               let(:options) { %i[repository_private] }
 
-              it { expect { pull_access_check }.to raise_error('The project you were looking for could not be found.') }
+              it { expect { pull_access_check }.to raise_error("The project you were looking for could not be found or you don't have permission to view it.") }
             end
 
             context 'when the repository is disabled' do
               let(:options) { %i[repository_disabled] }
 
-              it { expect { pull_access_check }.to raise_error('The project you were looking for could not be found.') }
+              it { expect { pull_access_check }.to raise_error("The project you were looking for could not be found or you don't have permission to view it.") }
             end
           end
         end
@@ -596,13 +596,13 @@ RSpec.describe Gitlab::GitAccess do
             context 'when the repository is private' do
               let(:options) { %i[repository_private] }
 
-              it { expect { pull_access_check }.to raise_error('The project you were looking for could not be found.') }
+              it { expect { pull_access_check }.to raise_error("The project you were looking for could not be found or you don't have permission to view it.") }
             end
 
             context 'when the repository is disabled' do
               let(:options) { %i[repository_disabled] }
 
-              it { expect { pull_access_check }.to raise_error('The project you were looking for could not be found.') }
+              it { expect { pull_access_check }.to raise_error("The project you were looking for could not be found or you don't have permission to view it.") }
             end
           end
         end

@@ -100,7 +100,7 @@
       .form-group
         = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
         = f.number_field :tab_width,
-                         class: 'form-control',
+                         class: 'form-control gl-form-input',
                          min: Gitlab::TabWidth::MIN,
                          max: Gitlab::TabWidth::MAX,
                          required: true

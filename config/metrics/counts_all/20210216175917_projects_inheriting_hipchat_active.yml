@@ -6,7 +6,8 @@ product_stage: create
 product_group: group::ecosystem
 product_category: integrations
 value_type: number
-status: data_available
+status: removed
+milestone_removed: '13.11'
 time_frame: all
 data_source: database
 distribution:

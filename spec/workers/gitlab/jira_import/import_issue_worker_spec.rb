@@ -7,6 +7,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker do
   let_it_be(:project) { create(:project) }
   let_it_be(:jira_issue_label_1) { create(:label, project: project) }
   let_it_be(:jira_issue_label_2) { create(:label, project: project) }
+
   let(:some_key) { 'some-key' }
 
   describe 'modules' do

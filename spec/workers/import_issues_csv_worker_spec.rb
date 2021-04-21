@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe ImportIssuesCsvWorker do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
+
   let(:upload) { create(:upload, :with_file) }
 
   let(:worker) { described_class.new }

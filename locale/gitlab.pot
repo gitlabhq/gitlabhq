@@ -11693,6 +11693,9 @@ msgstr ""
 msgid "Edit iteration"
 msgstr ""
 
+msgid "Edit iteration cadence"
+msgstr ""
+
 msgid "Edit public deploy key"
 msgstr ""
 
@@ -17941,6 +17944,9 @@ msgstr ""
 msgid "Iteration"
 msgstr ""
 
+msgid "Iteration cadences"
+msgstr ""
+
 msgid "Iteration changed to"
 msgstr ""
 
@@ -21344,6 +21350,9 @@ msgid "New issue title"
 msgstr ""
 
 msgid "New iteration"
+msgstr ""
+
+msgid "New iteration cadence"
 msgstr ""
 
 msgid "New iteration created"
@@ -30540,19 +30549,22 @@ msgstr ""
 msgid "SuperSonics|Subscription details"
 msgstr ""
 
-msgid "SuperSonics|Sync Subscription details"
+msgid "SuperSonics|Sync subscription details"
 msgstr ""
 
 msgid "SuperSonics|The subscription details synced successfully."
 msgstr ""
 
-msgid "SuperSonics|There is a connectivity issue. You can no longer sync your subscription details with GitLab. Get help for the most common connectivity issues by %{connectivityHelpLinkStart}troubleshooting the activation code%{connectivityHelpLinkEnd}."
+msgid "SuperSonics|There is a connectivity issue."
 msgstr ""
 
 msgid "SuperSonics|Type"
 msgstr ""
 
 msgid "SuperSonics|Valid From"
+msgstr ""
+
+msgid "SuperSonics|You can no longer sync your subscription details with GitLab. Get help for the most common connectivity issues by %{connectivityHelpLinkStart}troubleshooting the activation code%{connectivityHelpLinkEnd}."
 msgstr ""
 
 msgid "SuperSonics|You do not have an active subscription"

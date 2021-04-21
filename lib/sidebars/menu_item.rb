@@ -6,11 +6,11 @@ module Sidebars
     include ::Gitlab::Routing
     include GitlabRoutingHelper
     include Gitlab::Allowable
-    include ::Sidebars::HasIcon
-    include ::Sidebars::HasHint
-    include ::Sidebars::Renderable
-    include ::Sidebars::ContainerWithHtmlOptions
-    include ::Sidebars::HasActiveRoutes
+    include ::Sidebars::Concerns::HasIcon
+    include ::Sidebars::Concerns::HasHint
+    include ::Sidebars::Concerns::Renderable
+    include ::Sidebars::Concerns::ContainerWithHtmlOptions
+    include ::Sidebars::Concerns::HasActiveRoutes
 
     attr_reader :context
 

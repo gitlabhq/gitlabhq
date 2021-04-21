@@ -48,6 +48,7 @@ RSpec.describe ClusterUpdateAppWorker do
 
     context 'with exclusive lease' do
       let_it_be(:user) { create(:user) }
+
       let(:application) { create(:clusters_applications_prometheus, :installed) }
       let(:lease_key) { "#{described_class.name.underscore}-#{application.id}" }
 

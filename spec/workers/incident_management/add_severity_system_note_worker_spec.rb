@@ -40,6 +40,7 @@ RSpec.describe IncidentManagement::AddSeveritySystemNoteWorker do
 
     context 'when issue is not an incident' do
       let_it_be(:issue) { create(:issue, project: project) }
+
       let(:incident_id) { issue.id }
 
       it_behaves_like 'does not add a system note'

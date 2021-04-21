@@ -25,6 +25,10 @@ RSpec.describe 'Raw files', '(JavaScript fixtures)' do
     @blob = project.repository.blob_at('6d85bb69', 'files/ipython/basic.ipynb')
   end
 
+  it 'blob/notebook/markdown-table.json' do
+    @blob = project.repository.blob_at('f6b7a707', 'files/ipython/markdown-table.ipynb')
+  end
+
   it 'blob/notebook/worksheets.json' do
     @blob = project.repository.blob_at('6d85bb69', 'files/ipython/worksheets.ipynb')
   end

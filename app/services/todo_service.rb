@@ -43,7 +43,7 @@ class TodoService
   # updates the todo counts for those users.
   #
   def destroy_target(target)
-    todo_users = UsersWithPendingTodosFinder.new(target).execute.to_a
+    todo_users = User.for_todos(target.todos).to_a
 
     yield target
 

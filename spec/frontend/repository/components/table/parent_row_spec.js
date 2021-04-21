@@ -12,7 +12,7 @@ function factory(path, loadingPath) {
 
   vm = shallowMount(ParentRow, {
     propsData: {
-      commitRef: 'master',
+      commitRef: 'main',
       path,
       loadingPath,
     },
@@ -32,10 +32,10 @@ describe('Repository parent row component', () => {
 
   it.each`
     path                        | to
-    ${'app'}                    | ${'/-/tree/master/'}
-    ${'app/assets'}             | ${'/-/tree/master/app'}
-    ${'app/assets#/test'}       | ${'/-/tree/master/app/assets%23'}
-    ${'app/assets#/test/world'} | ${'/-/tree/master/app/assets%23/test'}
+    ${'app'}                    | ${'/-/tree/main/'}
+    ${'app/assets'}             | ${'/-/tree/main/app'}
+    ${'app/assets#/test'}       | ${'/-/tree/main/app/assets%23'}
+    ${'app/assets#/test/world'} | ${'/-/tree/main/app/assets%23/test'}
   `('renders link in $path to $to', ({ path, to }) => {
     factory(path);
 
@@ -50,7 +50,7 @@ describe('Repository parent row component', () => {
     vm.find('td').trigger('click');
 
     expect($router.push).toHaveBeenCalledWith({
-      path: '/-/tree/master/app',
+      path: '/-/tree/main/app',
     });
   });
 
@@ -62,7 +62,7 @@ describe('Repository parent row component', () => {
     vm.find('a').trigger('click');
 
     expect($router.push).not.toHaveBeenCalledWith({
-      path: '/-/tree/master/app',
+      path: '/-/tree/main/app',
     });
   });
 

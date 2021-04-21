@@ -20,8 +20,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
 const initialProps = {
   modalId: 'upload-blob',
   commitMessage: 'Upload New File',
-  targetBranch: 'master',
-  originalBranch: 'master',
+  targetBranch: 'main',
+  originalBranch: 'main',
   canPushCode: true,
   path: 'new_upload',
 };
@@ -111,7 +111,7 @@ describe('UploadBlobModal', () => {
       if (canPushCode) {
         describe('when changing the branch name', () => {
           it('displays the MR toggle', async () => {
-            wrapper.setData({ target: 'Not master' });
+            wrapper.setData({ target: 'Not main' });
 
             await wrapper.vm.$nextTick();
 

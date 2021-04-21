@@ -3,6 +3,7 @@
 import katex from 'katex';
 import marked from 'marked';
 import { sanitize } from '~/lib/dompurify';
+import { hasContent } from '~/lib/utils/text_utility';
 import Prompt from './prompt.vue';
 
 const renderer = new marked.Renderer();
@@ -88,6 +89,38 @@ renderer.listitem = (t) => {
   const [text, inline] = renderKatex(t);
   return `<li class="${inline ? 'inline-katex' : ''}">${text}</li>`;
 };
+renderer.originalImage = renderer.image;
+
+renderer.image = function image(href, title, text) {
+  const attachmentHeader = `attachment:`; // eslint-disable-line @gitlab/require-i18n-strings
+
+  if (!this.attachments || !href.startsWith(attachmentHeader)) {
+    return this.originalImage(href, title, text);
+  }
+
+  let img = ``;
+  const filename = href.substring(attachmentHeader.length);
+
+  if (hasContent(filename)) {
+    const attachment = this.attachments[filename];
+
+    if (attachment) {
+      const imageType = Object.keys(attachment)[0];
+
+      if (hasContent(imageType)) {
+        const data = attachment[imageType];
+        const inlined = `data:${imageType};base64,${data}"`; // eslint-disable-line @gitlab/require-i18n-strings
+        img = this.originalImage(inlined, title, text);
+      }
+    }
+  }
+
+  if (!hasContent(img)) {
+    return this.originalImage(href, title, text);
+  }
+
+  return sanitize(img);
+};
 
 marked.setOptions({
   renderer,
@@ -105,6 +138,8 @@ export default {
   },
   computed: {
     markdown() {
+      renderer.attachments = this.cell.attachments;
+
       return sanitize(marked(this.cell.source.join('').replace(/\\/g, '\\\\')), {
         // allowedTags from GitLab's inline HTML guidelines
         // https://docs.gitlab.com/ee/user/markdown.html#inline-html
