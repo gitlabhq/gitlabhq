@@ -7,9 +7,14 @@ type: reference
 
 # Configure Gitaly Cluster **(FREE SELF)**
 
-In addition to Gitaly Cluster configuration instructions available as part of
-[reference architectures](../reference_architectures/index.md) for installations for more than
-2000 users, advanced configuration instructions are available below.
+Configure Gitaly Cluster using either:
+
+- The Gitaly Cluster configuration instructions available as part of
+  [reference architectures](../reference_architectures/index.md) for installations for more than
+  2000 users.
+- The advanced configuration instructions that follow on this page.
+
+Smaller GitLab installations may need only [Gitaly itself](index.md).
 
 ## Requirements for configuring a Gitaly Cluster
 
@@ -1004,7 +1009,7 @@ replication factor offers better redundancy and distribution of read workload, b
 in a higher storage cost. By default, Praefect replicates repositories to every storage in a
 virtual storage.
 
-### Configure replication factors
+### Configure replication factor
 
 WARNING:
 The feature is not production ready yet. After you set a replication factor, you can't unset it
@@ -1298,6 +1303,25 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
 ## Migrate to Gitaly Cluster
 
+Whether migrating to Gitaly Cluster because of [NFS support deprecation](index.md#nfs-deprecation-notice)
+or to move from single Gitaly nodes, the basic process involves:
+
+1. Create the required storage.
+1. Create and configure Gitaly Cluster.
+1. [Move the repositories](#move-repositories).
+
+The size of the required storage can vary between instances and depends on the set
+[replication factor](#replication-factor). The migration to Gitaly Cluster might include
+implementing repository storage redundancy.
+
+For a replication factor:
+
+- Of `1`: NFS, Gitaly, and Gitaly Cluster have roughly the same storage requirements.
+- More than `1`: The amount of required storage is `used space * replication factor`. `used space`
+  should include any planned future growth.
+
+### Move Repositories
+
 To migrate to Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be
 moved. There is no automatic migration but the moves can be scheduled with the GitLab API.
 
@@ -1316,11 +1340,11 @@ After creating and configuring Gitaly Cluster:
    so that the Gitaly Cluster receives all new projects. This stops new projects being created
    on existing Gitaly nodes while the migration is in progress.
 1. Schedule repository moves for:
-   - [Projects](#bulk-schedule-projects).
-   - [Snippets](#bulk-schedule-snippets).
-   - [Groups](#bulk-schedule-groups). **(PREMIUM SELF)**
+   - [Projects](#bulk-schedule-project-moves).
+   - [Snippets](#bulk-schedule-snippet-moves).
+   - [Groups](#bulk-schedule-group-moves). **(PREMIUM SELF)**
 
-### Bulk schedule projects
+#### Bulk schedule project moves
 
 1. [Schedule repository storage moves for all projects on a storage shard](../../api/project_repository_storage_moves.md#schedule-repository-storage-moves-for-all-projects-on-a-storage-shard) using the API. For example:
 
@@ -1353,7 +1377,7 @@ After creating and configuring Gitaly Cluster:
 
 1. Repeat for each storage as required.
 
-### Bulk schedule snippets
+#### Bulk schedule snippet moves
 
 1. [Schedule repository storage moves for all snippets on a storage shard](../../api/snippet_repository_storage_moves.md#schedule-repository-storage-moves-for-all-snippets-on-a-storage-shard) using the API. For example:
 
@@ -1378,7 +1402,7 @@ After creating and configuring Gitaly Cluster:
 
 1. Repeat for each storage as required.
 
-### Bulk schedule groups **(PREMIUM SELF)**
+#### Bulk schedule group moves **(PREMIUM SELF)**
 
 1. [Schedule repository storage moves for all groups on a storage shard](../../api/group_repository_storage_moves.md#schedule-repository-storage-moves-for-all-groups-on-a-storage-shard) using the API.
 
