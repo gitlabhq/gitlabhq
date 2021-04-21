@@ -6,6 +6,7 @@ RSpec.describe 'User reverts a commit', :js do
   include RepoHelpers
 
   let_it_be(:user) { create(:user) }
+
   let!(:project) { create_default(:project, :repository, namespace: user.namespace) }
 
   before do

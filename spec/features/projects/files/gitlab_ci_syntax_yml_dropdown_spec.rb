@@ -6,6 +6,7 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file' do
   include Spec::Support::Helpers::Features::EditorLiteSpecHelpers
 
   let_it_be(:namespace) { create(:namespace) }
+
   let(:project) { create(:project, :repository, namespace: namespace) }
 
   before do

@@ -67,23 +67,25 @@ When you're creating a new issue, these are the fields you can fill in:
 - Milestone
 - Labels
 
-### New issue from the group-level Issue Tracker
+### New issue from the group-level issue tracker
 
-Go to the Group dashboard and click **Issues** in the sidebar to visit the Issue Tracker
-for all projects in your Group. Select the project you'd like to add an issue for
-using the dropdown button at the top-right of the page.
+To visit the issue tracker for all projects in your group:
 
-![Select project to create issue](img/select_project_from_group_level_issue_tracker.png)
+1. Go to the group dashboard.
+1. In the left sidebar, select **Issues**.
+1. In the top-right, select the **Select project to create issue** button.
+1. Select the project you'd like to create an issue for. The button now appears as **New issue in <selected project>**.
+1. Select **New issue in <selected project>**.
+
+![Select project to create issue](img/select_project_from_group_level_issue_tracker_v13_11.png)
 
 The project you selected most recently becomes the default for your next visit.
 This should save you a lot of time and clicks, if you mostly create issues for the same project.
 
-![Create issue from group-level issue tracker](img/create_issue_from_group_level_issue_tracker.png)
-
 ### New issue via Service Desk
 
 Enable [Service Desk](../service_desk.md) for your project and offer email support.
-By doing so, when your customer sends a new email, a new issue can be created in
+Now, when your customer sends a new email, a new issue can be created in
 the appropriate project and followed up from there.
 
 ### New issue via email
@@ -207,7 +209,7 @@ description, issues `#4` and `#6` are closed automatically when the MR is merged
 Using `Related to` flags `#5` as a [related issue](related_issues.md),
 but is not closed automatically.
 
-![merge request closing issue when merged](img/merge_request_closes_issue.png)
+![merge request closing issue when merged](img/merge_request_closes_issue_v13_11.png)
 
 If the issue is in a different repository than the MR, add the full URL for the issue(s):
 
@@ -278,12 +280,10 @@ of your installation.
 
 ## Deleting issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2982) in GitLab 8.6.
-
 Users with [project owner permission](../../permissions.md) can delete an issue by
-editing it and clicking on the delete button.
+editing it and selecting **Delete issue**.
 
-![delete issue - button](img/delete_issue.png)
+![delete issue - button](img/delete_issue_v13_11.png)
 
 ## Promote an issue to an epic **(PREMIUM)**
 

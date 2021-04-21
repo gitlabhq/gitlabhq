@@ -16,7 +16,7 @@ by bulk editing them, that is, editing them together.
 
 Only the items visible on the current page are selected for bulk editing (up to 20).
 
-![Bulk editing](img/bulk-editing_v13_2.png)
+![Bulk editing](img/bulk_editing_v13_11.png)
 
 ## Bulk edit issues at the project level
 

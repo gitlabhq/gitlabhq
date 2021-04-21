@@ -94,7 +94,6 @@
     "editorconfig": "^0.15.3",
     "emoji-regex": "^7.0.3",
     "emoji-unicode-version": "^0.2.1",
-    "exports-loader": "^0.7.0",
     "fast-mersenne-twister": "1.0.2",
     "file-loader": "^6.2.0",
     "fuzzaldrin-plus": "^0.6.0",

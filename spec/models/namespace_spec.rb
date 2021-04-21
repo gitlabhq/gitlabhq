@@ -880,7 +880,7 @@ RSpec.describe Namespace do
   end
 
   describe '#use_traversal_ids?' do
-    let_it_be(:namespace) { build(:namespace) }
+    let_it_be(:namespace, reload: true) { create(:namespace) }
 
     subject { namespace.use_traversal_ids? }
 
@@ -902,6 +902,8 @@ RSpec.describe Namespace do
   end
 
   context 'when use_traversal_ids feature flag is true' do
+    let_it_be(:namespace, reload: true) { create(:namespace) }
+
     it_behaves_like 'namespace traversal'
 
     describe '#self_and_descendants' do

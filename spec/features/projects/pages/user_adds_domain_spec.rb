@@ -5,6 +5,7 @@ RSpec.describe 'User adds pages domain', :js do
   include LetsEncryptHelpers
 
   let_it_be(:project) { create(:project, pages_https_only: false) }
+
   let(:user) { create(:user) }
 
   before do

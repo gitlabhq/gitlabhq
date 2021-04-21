@@ -51,6 +51,7 @@ RSpec.describe 'Projects > Labels > User sees links to issuables' do
 
   context 'with a group label' do
     let_it_be(:group) { create(:group) }
+
     let(:label) { create(:group_label, group: group, title: 'bug') }
 
     context 'when merge requests and issues are enabled for the project' do

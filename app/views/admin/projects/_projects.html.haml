@@ -1,7 +1,7 @@
 .js-projects-list-holder
   - if @projects.any?
     %ul.projects-list.content-list.admin-projects
-      - @projects.each_with_index do |project|
+      - @projects.each do |project|
         %li.project-row{ class: ('no-description' if project.description.blank?) }
           .controls
             = link_to _('Edit'), edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn gl-button btn-default"

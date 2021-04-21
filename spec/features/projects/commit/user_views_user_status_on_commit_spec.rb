@@ -7,6 +7,7 @@ RSpec.describe 'Project > Commit > View user status' do
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:commit_author) { create(:user, email: sample_commit.author_email) }
 
   before do

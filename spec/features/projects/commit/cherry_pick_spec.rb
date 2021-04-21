@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Cherry-pick Commits', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
+
   let!(:project) { create_default(:project, :repository, namespace: user.namespace) }
   let(:master_pickable_commit) { project.commit(sha) }
 

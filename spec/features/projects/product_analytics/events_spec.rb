@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Product Analytics > Events' do
   let_it_be(:project) { create(:project_empty_repo) }
   let_it_be(:user) { create(:user) }
+
   let(:event) { create(:product_analytics_event, project: project) }
 
   before do

@@ -118,7 +118,6 @@ linters:
       - Layout/TrailingEmptyLines
       - Lint/LiteralInInterpolation
       - Lint/ParenthesesAsGroupedExpression
-      - Lint/RedundantWithIndex
       - Lint/SafeNavigationConsistency
       - Metrics/BlockNesting
       - Naming/VariableName

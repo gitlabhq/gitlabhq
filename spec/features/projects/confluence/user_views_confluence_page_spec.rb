@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User views the Confluence page' do
   let_it_be(:user) { create(:user) }
+
   let(:project) { create(:project, :public) }
 
   before do

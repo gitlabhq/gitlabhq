@@ -247,8 +247,8 @@ You can customize the default scanning rules provided by our SAST analyzers.
 
 Ruleset customization supports two capabilities:
 
-1. Disabling predefined rules
-1. Modifying the default behavior of a given analyzer
+1. Disabling predefined rules (available for all analyzers).
+1. Modifying the default behavior of a given analyzer (only available for `nodejs-scan` and `gosec`).
 
 These capabilities can be used simultaneously.
 

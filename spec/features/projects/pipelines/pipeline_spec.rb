@@ -739,6 +739,7 @@ RSpec.describe 'Pipeline', :js do
 
   context 'when build requires resource', :sidekiq_inline do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:resource_group) { create(:ci_resource_group, project: project) }
 

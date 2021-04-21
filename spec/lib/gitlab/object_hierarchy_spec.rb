@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ObjectHierarchy do
-  let_it_be(:parent) { create(:group) }
+  let_it_be(:parent, reload: true) { create(:group) }
   let_it_be(:child1) { create(:group, parent: parent) }
   let_it_be(:child2) { create(:group, parent: child1) }
 

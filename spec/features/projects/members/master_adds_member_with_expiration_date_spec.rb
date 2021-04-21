@@ -9,6 +9,7 @@ RSpec.describe 'Projects > Members > Maintainer adds member with expiration date
 
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:project) { create(:project) }
+
   let(:new_member) { create(:user) }
 
   before do
