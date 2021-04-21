@@ -6668,6 +6668,12 @@ msgstr ""
 msgid "CloudLicense|Billable users"
 msgstr ""
 
+msgid "CloudLicense|Buy subscription"
+msgstr ""
+
+msgid "CloudLicense|Free trial"
+msgstr ""
+
 msgid "CloudLicense|I agree that my use of the GitLab Software is subject to the Subscription Agreement located at the %{linkStart}Terms of Service%{linkEnd}, unless otherwise agreed to in writing with GitLab."
 msgstr ""
 
@@ -6678,6 +6684,15 @@ msgid "CloudLicense|Maximum users"
 msgstr ""
 
 msgid "CloudLicense|Paste your activation code"
+msgstr ""
+
+msgid "CloudLicense|Ready to get started? A GitLab plan is ideal for scaling organizations and for multi team usage."
+msgstr ""
+
+msgid "CloudLicense|Start free trial"
+msgstr ""
+
+msgid "CloudLicense|Subscription"
 msgstr ""
 
 msgid "CloudLicense|This is the highest peak of users on your installation since the license started."
@@ -6693,6 +6708,9 @@ msgid "CloudLicense|Users over subscription"
 msgstr ""
 
 msgid "CloudLicense|Users with a Guest role or those who don't belong to a Project or Group will not use a seat from your license."
+msgstr ""
+
+msgid "CloudLicense|You can start a free trial of GitLab Ultimate without any obligation or payment details."
 msgstr ""
 
 msgid "CloudLicense|You'll be charged for %{trueUpLinkStart}users over license%{trueUpLinkEnd} on a quarterly or annual basis, depending on the terms of your agreement."
@@ -17866,6 +17884,12 @@ msgstr ""
 msgid "IssueTracker|Use Redmine as the issue tracker. %{docs_link}"
 msgstr ""
 
+msgid "IssueTracker|Use a custom issue tracker that is not in the integration list. %{docs_link}"
+msgstr ""
+
+msgid "IssueTracker|Use a custom issue tracker."
+msgstr ""
+
 msgid "IssueTracker|YouTrack issue tracker"
 msgstr ""
 
@@ -23676,6 +23700,9 @@ msgid "Plan:"
 msgstr ""
 
 msgid "PlantUML"
+msgstr ""
+
+msgid "PlantUML URL"
 msgstr ""
 
 msgid "Play"
@@ -31932,9 +31959,6 @@ msgstr ""
 msgid "There was an error when subscribing to this label."
 msgstr ""
 
-msgid "There was an error when trying to sync your license. Please verify that your instance is using an active license key."
-msgstr ""
-
 msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
@@ -36562,9 +36586,6 @@ msgid "Your license does not support on-call schedules"
 msgstr ""
 
 msgid "Your license is valid from"
-msgstr ""
-
-msgid "Your license was successfully synced."
 msgstr ""
 
 msgid "Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your %{code_open}.gitlab-license%{code_close} file."

@@ -21,33 +21,24 @@ module QA
       end
 
       let(:another_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'nuget-package-install-project'
-          project.template_name = 'dotnetcore'
+        Resource::Project.fabricate_via_api! do |another_project|
+          another_project.name = 'nuget-package-install-project'
+          another_project.template_name = 'dotnetcore'
+          another_project.group = project.group
         end
       end
 
       let!(:runner) do
         Resource::Runner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.name}"]
+          runner.tags = ["runner-for-#{project.group.sandbox.name}"]
           runner.executor = :docker
-          runner.project = project
-        end
-      end
-
-      let!(:another_runner) do
-        Resource::Runner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{another_project.name}"]
-          runner.executor = :docker
-          runner.project = another_project
+          runner.token = project.group.sandbox.runners_token
         end
       end
 
       after do
         runner.remove_via_api!
-        another_runner.remove_via_api!
         package.remove_via_api!
       end
 
@@ -78,7 +69,7 @@ module QA
                         only:
                           - "#{project.default_branch}"
                         tags:
-                          - "runner-for-#{project.name}"
+                          - "runner-for-#{project.group.sandbox.name}"
                     YAML
                 }
             ]
@@ -137,7 +128,7 @@ module QA
                           only:
                             - "#{another_project.default_branch}"
                           tags:
-                            - "runner-for-#{another_project.name}"
+                            - "runner-for-#{project.group.sandbox.name}"
                     YAML
                 }
             ]

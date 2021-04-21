@@ -1,0 +1,5 @@
+---
+title: Fix overflow in breadcrumbs list mainly on mobile
+merge_request: 59552
+author: Takuya Noguchi
+type: other

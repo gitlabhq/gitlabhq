@@ -7,7 +7,7 @@ function retrieve_tests_metadata() {
   local test_metadata_job_id
 
   # Ruby
-  test_metadata_job_id=$(scripts/api/get_job_id.rb --project "${project_path}" -q "status=success" -q "ref=master" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata")
+  test_metadata_job_id=$(scripts/api/get_job_id.rb --project "${project_path}" -q "status=success" -q "ref=${CI_DEFAULT_BRANCH}" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata")
 
   if [[ ! -f "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ]]; then
     scripts/api/download_job_artifact.rb --project "${project_path}" --job-id "${test_metadata_job_id}" --artifact-path "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" || echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
@@ -42,7 +42,7 @@ function retrieve_tests_mapping() {
   local project_path="gitlab-org/gitlab"
   local test_metadata_with_mapping_job_id
 
-  test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --project "${project_path}" -q "status=success" -q "ref=master" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz")
+  test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --project "${project_path}" -q "status=success" -q "ref=${CI_DEFAULT_BRANCH}" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz")
 
   if [[ ! -f "${RSPEC_PACKED_TESTS_MAPPING_PATH}" ]]; then
    (scripts/api/download_job_artifact.rb --project "${project_path}" --job-id "${test_metadata_with_mapping_job_id}" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" && gzip -d "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz") || echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"

@@ -194,7 +194,7 @@ class SchemaRegenerator
   # Get source ref from CI environment variable, or read the +TARGET+
   # environment+ variable, or default to +HEAD+.
   def target_branch
-    ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || ENV['TARGET'] || 'master'
+    ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || ENV['TARGET'] || ENV['CI_DEFAULT_BRANCH'] || 'master'
   end
 
   ##

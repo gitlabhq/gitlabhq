@@ -232,9 +232,7 @@ $well-inner-border: $gray-200;
 }
 
 // white-ish text for light labels
-// and for scoped label value (the right section)
-.gl-label-text-light.gl-label-text-light,
-.gl-label-text-dark + .gl-label-text-dark {
+.gl-label-text-light.gl-label-text-light {
   color: $gray-900;
 }
 

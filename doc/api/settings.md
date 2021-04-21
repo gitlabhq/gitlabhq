@@ -217,8 +217,8 @@ listed in the descriptions of the relevant settings.
 | Attribute                                | Type             | Required                             | Description |
 |------------------------------------------|------------------|:------------------------------------:|-------------|
 | `admin_mode`                             | boolean          | no                                   | Require admins to enable Admin Mode by re-authenticating for administrative tasks. |
-| `admin_notification_email`               | string           | no                                   | Deprecated: Use `abuse_notification_email` instead. If set, [abuse reports](../user/admin_area/abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area.  |
-| `abuse_notification_email`               | string           | no                                   | If set, [abuse reports](../user/admin_area/abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area. |
+| `admin_notification_email`               | string           | no                                   | Deprecated: Use `abuse_notification_email` instead. If set, [abuse reports](../user/admin_area/review_abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area.  |
+| `abuse_notification_email`               | string           | no                                   | If set, [abuse reports](../user/admin_area/review_abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area. |
 | `after_sign_out_path`                    | string           | no                                   | Where to redirect users after logout. |
 | `after_sign_up_text`                     | string           | no                                   | Text shown to the user after signing up |
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for Akismet spam protection. |

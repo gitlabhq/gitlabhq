@@ -72,7 +72,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | Option | Description |
 | ------ | ----------- |
 | [Spam and Anti-bot Protection](../../../integration/recaptcha.md) | Enable reCAPTCHA or Akismet and set IP limits. For reCAPTCHA, we currently only support [v2](https://developers.google.com/recaptcha/docs/versions). |
-| [Abuse reports](../abuse_reports.md) | Set notification email for abuse reports. |
+| [Abuse reports](../review_abuse_reports.md) | Set notification email for abuse reports. |
 
 ## Metrics and profiling
 

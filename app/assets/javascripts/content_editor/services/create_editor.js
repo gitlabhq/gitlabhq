@@ -12,6 +12,7 @@ import {
   BulletList,
   OrderedList,
   ListItem,
+  HardBreak,
 } from 'tiptap-extensions';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
@@ -36,6 +37,7 @@ const createEditor = async ({ content, renderMarkdown, serializer: customSeriali
       new ListItem(),
       new OrderedList(),
       new CodeBlockHighlight(),
+      new HardBreak(),
     ],
     editorProps: {
       attributes: {

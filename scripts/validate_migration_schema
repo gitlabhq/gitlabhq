@@ -72,7 +72,7 @@ class MigrationSchemaValidator
   end
 
   def target_branch
-    ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || ENV['TARGET'] || 'master'
+    ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || ENV['TARGET'] || ENV['CI_DEFAULT_BRANCH'] || 'master'
   end
 
   def source_ref

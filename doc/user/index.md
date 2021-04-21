@@ -119,7 +119,7 @@ to enjoy the best of GitLab.
   user type (guest, reporter, developer, maintainer, owner).
 - [Feature highlight](feature_highlight.md): Learn more about the little blue dots
   around the app that explain certain features.
-- [Abuse reports](abuse_reports.md): Report abuse from users to GitLab administrators.
+- [Abuse reports](report_abuse.md): Report abuse from users to GitLab administrators.
 
 ## Groups
 

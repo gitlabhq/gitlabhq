@@ -23,6 +23,8 @@ class EnvironmentSerializer < BaseSerializer
           latest: super(item.latest, opts) }
       end
     else
+      resource = @paginator.paginate(resource) if paginated?
+
       super(batch_load(resource), opts)
     end
   end
@@ -52,7 +54,7 @@ class EnvironmentSerializer < BaseSerializer
   def batch_load(resource)
     resource = resource.preload(environment_associations)
 
-    resource.all.tap do |environments|
+    resource.all.to_a.tap do |environments|
       environments.each do |environment|
         # Batch loading the commits of the deployments
         environment.last_deployment&.commit&.try(:lazy_author)

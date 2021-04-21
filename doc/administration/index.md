@@ -139,7 +139,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
-- [Abuse reports](../user/admin_area/abuse_reports.md): View and resolve abuse reports from your users.
+- [Abuse reports](../user/admin_area/review_abuse_reports.md): View and resolve abuse reports from your users.
 - [Credentials Inventory](../user/admin_area/credentials_inventory.md): With Credentials inventory, GitLab administrators can keep track of the credentials used by their users in their GitLab self-managed instance.
 
 ## Project settings

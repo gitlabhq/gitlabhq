@@ -3,12 +3,15 @@ import {
   createNodeDict,
   makeLinksFromNodes,
   filterByAncestors,
+  generateColumnsFromLayersListBare,
+  listByLayers,
   parseData,
   removeOrphanNodes,
   getMaxNodes,
 } from '~/pipelines/components/parsing_utils';
 
-import { mockParsedGraphQLNodes } from './mock_data';
+import { mockParsedGraphQLNodes } from './components/dag/mock_data';
+import { generateResponse, mockPipelineResponse } from './graph/mock_data';
 
 describe('DAG visualization parsing utilities', () => {
   const nodeDict = createNodeDict(mockParsedGraphQLNodes);
@@ -106,6 +109,47 @@ describe('DAG visualization parsing utilities', () => {
         { layer: 4 },
       ];
       expect(getMaxNodes(layerNodes)).toBe(3);
+    });
+  });
+
+  describe('generateColumnsFromLayersList', () => {
+    const pipeline = generateResponse(mockPipelineResponse, 'root/fungi-xoxo');
+    const layers = listByLayers(pipeline);
+    const columns = generateColumnsFromLayersListBare(pipeline, layers);
+
+    it('returns stage-like objects with default name, id, and status', () => {
+      columns.forEach((col, idx) => {
+        expect(col).toMatchObject({
+          name: '',
+          status: { action: null },
+          id: `layer-${idx}`,
+        });
+      });
+    });
+
+    it('creates groups that match the list created in listByLayers', () => {
+      columns.forEach((col, idx) => {
+        const groupNames = col.groups.map(({ name }) => name);
+        expect(groupNames).toEqual(layers[idx]);
+      });
+    });
+
+    it('looks up the correct group object', () => {
+      columns.forEach((col) => {
+        col.groups.forEach((group) => {
+          const groupStage = pipeline.stages.find((el) => el.name === group.stageName);
+          const groupObject = groupStage.groups.find((el) => el.name === group.name);
+          expect(group).toBe(groupObject);
+        });
+      });
+    });
+
+    /*
+      Just as a fallback in case multiple functions change, so tests pass
+      but the implementation moves away from case.
+    */
+    it('matches the snapshot', () => {
+      expect(columns).toMatchSnapshot();
     });
   });
 });

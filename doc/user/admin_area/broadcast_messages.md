@@ -66,9 +66,14 @@ To add a broadcast message:
 1. Navigate to the **Admin Area > Messages** page.
 1. Add the text for the message to the **Message** field. Markdown and emoji are supported.
 1. Select one of the suggested background colors, or add the hex code of a different color. The default color is orange.
-1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path. You can use the wildcard character `*` to match multiple URLs, for example `/users/*/issues`.
+1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path. You can use the wildcard character `*` to match multiple URLs, for example `mygroup/myproject*`.
 1. Select a date for the message to start and end.
 1. Click the **Add broadcast message** button.
+
+NOTE:
+When scoping messages, you can't use preceding or trailing slashes. For example,
+instead of `/mygroup/myproject/`, you must use `mygroup/myproject`. A fix is
+[planned for GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59482).
 
 NOTE:
 The **Background color** field expects the value to be a hexadecimal code because

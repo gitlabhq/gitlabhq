@@ -2,6 +2,7 @@
 import { reportToSentry } from '../../utils';
 import LinkedGraphWrapper from '../graph_shared/linked_graph_wrapper.vue';
 import LinksLayer from '../graph_shared/links_layer.vue';
+import { generateColumnsFromLayersListMemoized } from '../parsing_utils';
 import { DOWNSTREAM, MAIN, UPSTREAM, ONE_COL_WIDTH, STAGE_VIEW } from './constants';
 import LinkedPipelinesColumn from './linked_pipelines_column.vue';
 import StageColumnComponent from './stage_column_component.vue';
@@ -78,7 +79,9 @@ export default {
       return this.hasDownstreamPipelines ? this.pipeline.downstream : [];
     },
     layout() {
-      return this.isStageView ? this.pipeline.stages : this.generateColumnsFromLayersList();
+      return this.isStageView
+        ? this.pipeline.stages
+        : generateColumnsFromLayersListMemoized(this.pipeline, this.pipelineLayers);
     },
     hasDownstreamPipelines() {
       return Boolean(this.pipeline?.downstream?.length > 0);
@@ -124,26 +127,6 @@ export default {
     this.getMeasurements();
   },
   methods: {
-    generateColumnsFromLayersList() {
-      return this.pipelineLayers.map((layers, idx) => {
-        /*
-          look up the groups in each layer,
-          then add each set of layer groups to a stage-like object
-        */
-
-        const groups = layers.map((id) => {
-          const { stageIdx, groupIdx } = this.pipeline.stagesLookup[id];
-          return this.pipeline.stages?.[stageIdx]?.groups?.[groupIdx];
-        });
-
-        return {
-          name: '',
-          id: `layer-${idx}`,
-          status: { action: null },
-          groups: groups.filter(Boolean),
-        };
-      });
-    },
     getMeasurements() {
       this.measurements = {
         width: this.$refs[this.containerId].scrollWidth,

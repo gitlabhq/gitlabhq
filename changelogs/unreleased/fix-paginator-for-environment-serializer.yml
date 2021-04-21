@@ -1,0 +1,5 @@
+---
+title: Fix paginator of Environment Serializer
+merge_request: 59751
+author:
+type: fixed

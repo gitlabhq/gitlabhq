@@ -72,7 +72,7 @@ merge requests, notes/comments, and more. Consider
 [blocking a user](../../admin_area/blocking_unblocking_users.md)
 or using the **Delete user** option instead.
 
-When a user is deleted from an [abuse report](../../admin_area/abuse_reports.md)
+When a user is deleted from an [abuse report](../../admin_area/review_abuse_reports.md)
 or spam log, these associated
 records are not ghosted and will be removed, along with any groups the user
 is a sole owner of. Administrators can also request this behavior when

@@ -67,7 +67,7 @@ To access additional actions, select the vertical ellipsis
 
 - To create a new issue in the same project, select **New issue** in the dropdown menu.
 
-- If you are not the issue author, you can [submit an abuse report](../../abuse_reports.md).
+- If you are not the issue author, you can [submit an abuse report](../../report_abuse.md).
   Select **Report abuse** in the dropdown menu.
 
 ### To Do
