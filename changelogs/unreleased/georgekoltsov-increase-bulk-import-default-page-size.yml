@@ -1,6 +1,0 @@
----
-title: Update BulkImport default page size to 500 in order to process larger page
-  of data
-merge_request: 57594
-author:
-type: other

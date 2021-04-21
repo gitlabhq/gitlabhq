@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe Rubocop offenses for projects controller
-merge_request: 58176
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: other

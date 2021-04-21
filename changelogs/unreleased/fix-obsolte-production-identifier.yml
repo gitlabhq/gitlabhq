@@ -1,5 +1,0 @@
----
-title: Fix inconsistent production environment definition on VSA
-merge_request: 57557
-author:
-type: fixed

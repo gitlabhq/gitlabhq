@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang Rubocop offenses for commit models
-merge_request: 58069
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

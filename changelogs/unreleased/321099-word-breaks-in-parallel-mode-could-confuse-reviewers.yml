@@ -1,5 +1,0 @@
----
-title: Fix word wrapping in parallel diffs
-merge_request: 56713
-author:
-type: fixed

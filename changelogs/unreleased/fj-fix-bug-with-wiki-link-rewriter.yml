@@ -1,5 +1,0 @@
----
-title: Fix bug in wiki link rewriter filter
-merge_request: 56636
-author:
-type: fixed

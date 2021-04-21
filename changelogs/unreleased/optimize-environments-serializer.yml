@@ -1,5 +1,0 @@
----
-title: Optimize environment serializer to reduce N+1 problems
-merge_request: 58748
-author:
-type: performance

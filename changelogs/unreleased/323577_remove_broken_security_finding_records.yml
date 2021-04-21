@@ -1,5 +1,0 @@
----
-title: Delete records from security_findings table with missing UUID values
-merge_request: 56975
-author:
-type: added

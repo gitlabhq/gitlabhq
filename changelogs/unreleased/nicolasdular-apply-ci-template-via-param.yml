@@ -1,5 +1,0 @@
----
-title: Allow selecting a CI template by providing the template name as a URL param gitlab_ci_yml
-merge_request: 56861
-author:
-type: added

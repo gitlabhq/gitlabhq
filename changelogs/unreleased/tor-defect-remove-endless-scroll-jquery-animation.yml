@@ -1,6 +1,0 @@
----
-title: Remove calls to jQuery animations to fix infinite scrolling on the Repository
-  commits page
-merge_request: 57379
-author:
-type: fixed

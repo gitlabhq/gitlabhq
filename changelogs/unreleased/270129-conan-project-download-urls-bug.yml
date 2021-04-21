@@ -1,6 +1,0 @@
----
-title: Fix Conan project-level API to return correct download-urls and fix Conan project-level
-  functionality
-merge_request: 56899
-author:
-type: fixed

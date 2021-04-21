@@ -1,5 +1,0 @@
----
-title: Filter out pipelines that were excluded in the relation scope in Ci::Pipeline#latest_pipeline_per_commit
-merge_request: 55657
-author: Cong Chen @gentcys
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Move project hooks routes under /-/ scope
-merge_request: 57734
-author:
-type: performance

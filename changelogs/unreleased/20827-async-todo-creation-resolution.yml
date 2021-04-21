@@ -1,5 +1,0 @@
----
-title: Resolve merge request todos asynchronously on update
-merge_request: 58647
-author:
-type: performance

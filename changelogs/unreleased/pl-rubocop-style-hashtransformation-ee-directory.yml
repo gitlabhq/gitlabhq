@@ -1,5 +1,0 @@
----
-title: Fix cop offenses for Style/HashTransformation in ee directory
-merge_request: 56581
-author: Karthik Sivadas @karthik.sivadas
-type: other

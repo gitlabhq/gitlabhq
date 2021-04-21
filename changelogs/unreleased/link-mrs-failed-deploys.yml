@@ -1,5 +1,0 @@
----
-title: Only link merge requests to successful deployments
-merge_request: 58072
-author:
-type: fixed

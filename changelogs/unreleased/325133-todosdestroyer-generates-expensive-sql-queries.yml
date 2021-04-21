@@ -1,5 +1,0 @@
----
-title: Speed up destroying of group Todos when user leaves group
-merge_request: 56995
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Fix `#current_authenticated_job` when used with `.authenticate_with` in Grape APIs
-merge_request: 56564
-author:
-type: fixed

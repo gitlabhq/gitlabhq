@@ -1,5 +1,0 @@
----
-title: Returns deep stringified keys for merged_yaml in linting endpoint
-merge_request: 54336
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: IPython KaTeX rendering of comparison operators for markdown
-merge_request: 59132
-author: Reinhold Gschweicher <pyro4hell@gmail.com>
-type: fixed

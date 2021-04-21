@@ -1,5 +1,0 @@
----
-title: Skip Rack Attack rate limiting for container registry event API
-merge_request: 59085
-author:
-type: fixed

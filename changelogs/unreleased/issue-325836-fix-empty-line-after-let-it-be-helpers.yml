@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe Rubocop offenses for helpers
-merge_request: 58192
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

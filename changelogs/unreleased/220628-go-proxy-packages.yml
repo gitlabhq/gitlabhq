@@ -1,5 +1,0 @@
----
-title: Add Go Packages as a cache for the Go proxy
-merge_request: 34558
-author: Ethan Reesor (@firelizzard)
-type: added

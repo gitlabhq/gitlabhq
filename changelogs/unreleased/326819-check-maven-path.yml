@@ -1,5 +1,0 @@
----
-title: Add index for the path column on the packages_maven_metadata table
-merge_request: 59241
-author:
-type: performance

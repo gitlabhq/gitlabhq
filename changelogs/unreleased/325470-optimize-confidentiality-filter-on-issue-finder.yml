@@ -1,5 +1,0 @@
----
-title: Optimize database performance of loading assigned issue count on header bar
-merge_request: 57073
-author:
-type: performance

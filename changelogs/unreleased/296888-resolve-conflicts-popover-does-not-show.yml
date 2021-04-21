@@ -1,5 +1,0 @@
----
-title: Hide "Resolve conflicts" button when source branch is protected.
-merge_request: 51121
-author: Marcin Majkowski @marcinmajkowski
-type: added

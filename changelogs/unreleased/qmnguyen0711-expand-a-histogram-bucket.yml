@@ -1,5 +1,0 @@
----
-title: Adjust gitlab_database_transaction_seconds histogram bucket
-merge_request: 56952
-author:
-type: changed

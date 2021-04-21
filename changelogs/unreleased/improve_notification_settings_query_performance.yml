@@ -1,5 +1,0 @@
----
-title: Adjust indices to improve query performance for notification_settings
-merge_request: 58895
-author:
-type: performance

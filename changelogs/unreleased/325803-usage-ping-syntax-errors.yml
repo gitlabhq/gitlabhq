@@ -1,5 +1,0 @@
----
-title: Fix remote_mirrors usage ping metric
-merge_request: 57332
-author:
-type: fixed

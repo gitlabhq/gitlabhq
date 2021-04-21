@@ -1,5 +1,0 @@
----
-title: Display error message when dashboard activity fetch fails
-merge_request: 57935
-author:
-type: changed

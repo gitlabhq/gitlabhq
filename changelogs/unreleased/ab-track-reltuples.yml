@@ -1,5 +1,0 @@
----
-title: Track total_tuple_count for batched migrations
-merge_request: 58675
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Optimize group level Maven package finder query
-merge_request: 57692
-author:
-type: performance

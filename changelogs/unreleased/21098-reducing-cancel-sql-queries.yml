@@ -1,5 +1,0 @@
----
-title: Preload associations in Ci::Pipeline#cancel_running
-merge_request: 58484
-author:
-type: performance

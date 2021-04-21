@@ -1,6 +1,0 @@
----
-title: Fix rare race condition in GitLab-internal feature flags with database load
-  balancing enabled
-merge_request:
-author:
-type: fixed

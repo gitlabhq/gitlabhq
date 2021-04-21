@@ -1,6 +1,0 @@
----
-title: Deprecate but keep support for Klar up to version 3. A new analyzer based on
-  Trivy will be used from version 4 onwards
-merge_request: 57281
-author:
-type: changed

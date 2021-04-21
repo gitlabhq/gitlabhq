@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang Rubocop offenses for requests module
-merge_request: 57883
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

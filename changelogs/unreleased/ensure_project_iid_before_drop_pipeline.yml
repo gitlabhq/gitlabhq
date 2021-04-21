@@ -1,5 +1,0 @@
----
-title: Ensure a project iid is set before transitioning on pipeline error
-merge_request: 57783
-author:
-type: performance

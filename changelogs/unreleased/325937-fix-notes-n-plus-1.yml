@@ -1,5 +1,0 @@
----
-title: Fix N+1 for searching notes (comments) scope
-merge_request: 57460
-author:
-type: performance

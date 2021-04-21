@@ -1,5 +1,0 @@
----
-title: Support filtering by assignee wildcard in GraphQL board list issues query
-merge_request: 58996
-author:
-type: added

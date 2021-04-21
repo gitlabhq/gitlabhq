@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang Rubocop offenses for gitaly client models
-merge_request: 58089
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

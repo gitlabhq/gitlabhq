@@ -1,5 +1,0 @@
----
-title: Update auto-build-image to v0.6.0, updating the included docker to 20.10.6 and pack to 0.18.0
-merge_request: 59525
-author:
-type: changed

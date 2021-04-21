@@ -1,5 +1,0 @@
----
-title: Show password hint only if password_authentication_enabled_for_web? on new location logins
-merge_request: 56783
-author: Roger Meier
-type: changed

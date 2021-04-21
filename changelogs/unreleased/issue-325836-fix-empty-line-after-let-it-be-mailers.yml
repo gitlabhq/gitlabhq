@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe offenses in spec/mailers
-merge_request: 58319
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

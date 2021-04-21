@@ -1,5 +1,0 @@
----
-title: Add framework for using specialized services to improve performance of MergeRequests::UpdateService
-merge_request: 58836
-author:
-type: performance

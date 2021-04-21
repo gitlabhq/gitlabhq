@@ -1,5 +1,0 @@
----
-title: Add additional index to merge_requests table for project/status/created_at
-merge_request: 57267
-author:
-type: performance

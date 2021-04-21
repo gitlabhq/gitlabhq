@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe offenses for design management module
-merge_request: 58189
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

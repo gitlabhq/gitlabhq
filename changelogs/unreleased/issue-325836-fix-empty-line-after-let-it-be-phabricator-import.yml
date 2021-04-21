@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe in spec/lib/gitlab/phabricator_import
-merge_request: 58297
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

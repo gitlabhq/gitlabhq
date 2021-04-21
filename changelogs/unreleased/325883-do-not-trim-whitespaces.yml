@@ -1,5 +1,0 @@
----
-title: Do not trim input for sample & test payload on alerts integration form
-merge_request: 57617
-author:
-type: changed

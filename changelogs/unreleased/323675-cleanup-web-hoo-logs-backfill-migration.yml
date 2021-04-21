@@ -1,5 +1,0 @@
----
-title: Migration to cleanup after partitioned web_hook_logs backfill
-merge_request: 57580
-author:
-type: other

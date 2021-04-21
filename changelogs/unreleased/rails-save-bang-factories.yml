@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang rubocop offenses in spec/factories_spec.rb
-merge_request: 58102
-author: Abdul Wadood @abdulwd
-type: fixed

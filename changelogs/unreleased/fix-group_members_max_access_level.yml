@@ -1,5 +1,0 @@
----
-title: Fix derivation of effective permissions (access level) of group members
-merge_request: 56677
-author: Jonas Wälter @wwwjon
-type: fixed

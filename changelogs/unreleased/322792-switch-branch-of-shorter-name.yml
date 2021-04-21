@@ -1,5 +1,0 @@
----
-title: Fix branch switch to be exact instead of partial match
-merge_request: 57197
-author:
-type: fixed

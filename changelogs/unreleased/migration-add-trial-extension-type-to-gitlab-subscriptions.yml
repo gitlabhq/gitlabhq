@@ -1,5 +1,0 @@
----
-title: 'Migration: add trial extension type to gitlab_subscription'
-merge_request: 56460
-author:
-type: added

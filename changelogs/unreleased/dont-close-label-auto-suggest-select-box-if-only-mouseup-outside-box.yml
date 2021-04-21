@@ -1,5 +1,0 @@
----
-title: Don't close issue label select box on click if only mouseup outside
-merge_request: 56721
-author: Simon Stieger @sim0
-type: fixed

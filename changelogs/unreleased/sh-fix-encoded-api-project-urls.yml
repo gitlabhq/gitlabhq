@@ -1,5 +1,0 @@
----
-title: Fix Workhorse acceleration for encoded project IDs in API
-merge_request: 56731
-author:
-type: performance

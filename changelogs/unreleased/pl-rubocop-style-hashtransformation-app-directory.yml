@@ -1,5 +1,0 @@
----
-title: Fix cop offenses for Style/HashTransformation in app directory
-merge_request: 56579
-author: Karthik Sivadas @karthik.sivadas
-type: other

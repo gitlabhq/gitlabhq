@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang Rubocop offenses for markdown cache modules
-merge_request: 58063
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

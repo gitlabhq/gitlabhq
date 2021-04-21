@@ -1,5 +1,0 @@
----
-title: Reduce query count for ExpirePipelineCacheWorker
-merge_request: 57304
-author:
-type: performance

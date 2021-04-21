@@ -1,5 +1,0 @@
----
-title: Reduce queries on projects labels controller
-merge_request: 57864
-author:
-type: performance

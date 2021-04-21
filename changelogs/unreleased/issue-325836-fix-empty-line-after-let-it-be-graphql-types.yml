@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe offenses in spec/graphql/types
-merge_request: 58241
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

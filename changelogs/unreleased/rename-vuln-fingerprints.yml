@@ -1,5 +1,0 @@
----
-title: Rename table/model vulnerability_finding_fingerprints to *_signatures
-merge_request: 57840
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Reduce the number of SQL queries executed on Maven file API endpoints
-merge_request: 59136
-author:
-type: performance

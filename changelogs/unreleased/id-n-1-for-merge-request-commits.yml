@@ -1,5 +1,0 @@
----
-title: Remove N+1 for API commits/:sha/merge_requests
-merge_request: 57290
-author:
-type: performance
