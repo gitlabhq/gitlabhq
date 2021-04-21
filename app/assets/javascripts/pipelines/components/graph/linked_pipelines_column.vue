@@ -32,6 +32,10 @@ export default {
       type: Array,
       required: true,
     },
+    showLinks: {
+      type: Boolean,
+      required: true,
+    },
     type: {
       type: String,
       required: true,
@@ -217,6 +221,7 @@ export default {
               :config-paths="configPaths"
               :pipeline="currentPipeline"
               :pipeline-layers="getPipelineLayers(pipeline.id)"
+              :show-links="showLinks"
               :is-linked-pipeline="true"
               :view-type="viewType"
             />

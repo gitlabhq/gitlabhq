@@ -32,8 +32,8 @@ describe('Commit component', () => {
     createComponent({
       tag: false,
       commitRef: {
-        name: 'master',
-        ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
+        name: 'main',
+        ref_url: 'http://localhost/namespace2/gitlabhq/tree/main',
       },
       commitUrl:
         'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
@@ -55,8 +55,8 @@ describe('Commit component', () => {
       props = {
         tag: true,
         commitRef: {
-          name: 'master',
-          ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
+          name: 'main',
+          ref_url: 'http://localhost/namespace2/gitlabhq/tree/main',
         },
         commitUrl:
           'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
@@ -122,8 +122,8 @@ describe('Commit component', () => {
       props = {
         tag: false,
         commitRef: {
-          name: 'master',
-          ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
+          name: 'main',
+          ref_url: 'http://localhost/namespace2/gitlabhq/tree/main',
         },
         commitUrl:
           'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
@@ -145,8 +145,8 @@ describe('Commit component', () => {
       props = {
         tag: false,
         commitRef: {
-          name: 'master',
-          ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
+          name: 'main',
+          ref_url: 'http://localhost/namespace2/gitlabhq/tree/main',
         },
         commitUrl:
           'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
@@ -158,7 +158,7 @@ describe('Commit component', () => {
       createComponent(props);
       const refEl = wrapper.find('.ref-name');
 
-      expect(refEl.text()).toContain('master');
+      expect(refEl.text()).toContain('main');
 
       expect(refEl.attributes('href')).toBe(props.commitRef.ref_url);
 
@@ -173,8 +173,8 @@ describe('Commit component', () => {
       props = {
         tag: false,
         commitRef: {
-          name: 'master',
-          ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
+          name: 'main',
+          ref_url: 'http://localhost/namespace2/gitlabhq/tree/main',
         },
         commitUrl:
           'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
@@ -206,8 +206,8 @@ describe('Commit component', () => {
       props = {
         tag: false,
         commitRef: {
-          name: 'master',
-          ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
+          name: 'main',
+          ref_url: 'http://localhost/namespace2/gitlabhq/tree/main',
         },
         commitUrl:
           'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
@@ -232,8 +232,8 @@ describe('Commit component', () => {
     it('should render path as href attribute', () => {
       props = {
         commitRef: {
-          name: 'master',
-          path: 'http://localhost/namespace2/gitlabhq/tree/master',
+          name: 'main',
+          path: 'http://localhost/namespace2/gitlabhq/tree/main',
         },
       };
 

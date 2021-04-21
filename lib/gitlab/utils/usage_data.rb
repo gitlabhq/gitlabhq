@@ -210,18 +210,52 @@ module Gitlab
         Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name.to_s, values: values)
       end
 
-      def maximum_id(model)
-        key = :"#{model.name.downcase}_maximum_id"
+      def maximum_id(model, column = nil)
+        key = :"#{model.name.downcase.gsub('::', '_')}_maximum_id"
+        column_to_read = column || :id
+
         strong_memoize(key) do
-          model.maximum(:id)
+          model.maximum(column_to_read)
         end
       end
 
-      def minimum_id(model)
-        key = :"#{model.name.downcase}_minimum_id"
-        strong_memoize(key) do
-          model.minimum(:id)
+      # rubocop: disable UsageData/LargeTable:
+      def jira_service_data
+        data = {
+          projects_jira_server_active: 0,
+          projects_jira_cloud_active: 0
+        }
+
+        # rubocop: disable CodeReuse/ActiveRecord
+        JiraService.active.includes(:jira_tracker_data).find_in_batches(batch_size: 100) do |services|
+          counts = services.group_by do |service|
+            # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
+            service_url = service.data_fields&.url || (service.properties && service.properties['url'])
+            service_url&.include?('.atlassian.net') ? :cloud : :server
+          end
+
+          data[:projects_jira_server_active] += counts[:server].size if counts[:server]
+          data[:projects_jira_cloud_active] += counts[:cloud].size if counts[:cloud]
         end
+
+        data
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+      # rubocop: enable UsageData/LargeTable:
+
+      def minimum_id(model, column = nil)
+        key = :"#{model.name.downcase.gsub('::', '_')}_minimum_id"
+        column_to_read = column || :id
+
+        strong_memoize(key) do
+          model.minimum(column_to_read)
+        end
+      end
+
+      def epics_deepest_relationship_level
+        # rubocop: disable UsageData/LargeTable
+        { epics_deepest_relationship_level: ::Epic.deepest_relationship_level.to_i }
+        # rubocop: enable UsageData/LargeTable
       end
 
       private

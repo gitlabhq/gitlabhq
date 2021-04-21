@@ -15,6 +15,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
+    route_setting :authentication, job_token_allowed: true, job_token_scope: :project
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a project container repositories' do
         detail 'This feature was introduced in GitLab 11.8.'

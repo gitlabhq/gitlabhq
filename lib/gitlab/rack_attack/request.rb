@@ -58,6 +58,57 @@ module Gitlab
         path =~ protected_paths_regex
       end
 
+      def throttle_unauthenticated?
+        !should_be_skipped? &&
+        !throttle_unauthenticated_packages_api? &&
+        Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
+        unauthenticated?
+      end
+
+      def throttle_authenticated_api?
+        api_request? &&
+        !throttle_authenticated_packages_api? &&
+        Gitlab::Throttle.settings.throttle_authenticated_api_enabled
+      end
+
+      def throttle_authenticated_web?
+        web_request? &&
+        Gitlab::Throttle.settings.throttle_authenticated_web_enabled
+      end
+
+      def throttle_unauthenticated_protected_paths?
+        post? &&
+        !should_be_skipped? &&
+        protected_path? &&
+        Gitlab::Throttle.protected_paths_enabled? &&
+        unauthenticated?
+      end
+
+      def throttle_authenticated_protected_paths_api?
+        post? &&
+        api_request? &&
+        protected_path? &&
+        Gitlab::Throttle.protected_paths_enabled?
+      end
+
+      def throttle_authenticated_protected_paths_web?
+        post? &&
+        web_request? &&
+        protected_path? &&
+        Gitlab::Throttle.protected_paths_enabled?
+      end
+
+      def throttle_unauthenticated_packages_api?
+        packages_api_path? &&
+        Gitlab::Throttle.settings.throttle_unauthenticated_packages_api_enabled &&
+        unauthenticated?
+      end
+
+      def throttle_authenticated_packages_api?
+        packages_api_path? &&
+        Gitlab::Throttle.settings.throttle_authenticated_packages_api_enabled
+      end
+
       private
 
       def authenticated_user_id(request_formats)
@@ -74,6 +125,10 @@ module Gitlab
 
       def protected_paths_regex
         Regexp.union(protected_paths.map { |path| /\A#{Regexp.escape(path)}/ })
+      end
+
+      def packages_api_path?
+        path =~ ::Gitlab::Regex::Packages::API_PATH_REGEX
       end
     end
   end

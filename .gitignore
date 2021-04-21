@@ -105,3 +105,4 @@ ee/changelogs/unreleased-ee
 tags.lock
 tags.temp
 .stylelintcache
+.solargraph.yml

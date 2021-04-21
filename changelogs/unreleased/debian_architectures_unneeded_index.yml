@@ -1,0 +1,5 @@
+---
+title: Remove unneeded index on packages_debian_{project,group}_architectures.distribution_id
+merge_request: 59615
+author: Mathieu Parent
+type: removed

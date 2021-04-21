@@ -15,7 +15,7 @@ module API
         authorize_read_package!(user_group)
       end
 
-      namespace ':id/packages/debian' do
+      namespace ':id/-/packages/debian' do
         include DebianPackageEndpoints
       end
     end

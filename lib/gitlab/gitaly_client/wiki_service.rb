@@ -64,16 +64,6 @@ module Gitlab
         GitalyClient.call(@repository.storage, :wiki_service, :wiki_update_page, enum, timeout: GitalyClient.medium_timeout)
       end
 
-      def delete_page(page_path, commit_details)
-        request = Gitaly::WikiDeletePageRequest.new(
-          repository: @gitaly_repo,
-          page_path: encode_binary(page_path),
-          commit_details: gitaly_commit_details(commit_details)
-        )
-
-        GitalyClient.call(@repository.storage, :wiki_service, :wiki_delete_page, request, timeout: GitalyClient.medium_timeout)
-      end
-
       def find_page(title:, version: nil, dir: nil)
         request = Gitaly::WikiFindPageRequest.new(
           repository: @gitaly_repo,

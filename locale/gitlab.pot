@@ -416,9 +416,6 @@ msgstr ""
 msgid "%{board_target} not found"
 msgstr ""
 
-msgid "%{codeStart}needs:%{codeEnd} relationships"
-msgstr ""
-
 msgid "%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
 msgstr ""
 
@@ -1647,6 +1644,12 @@ msgid "Abuse Reports"
 msgstr ""
 
 msgid "Abuse reports"
+msgstr ""
+
+msgid "Abuse reports notification email"
+msgstr ""
+
+msgid "Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area."
 msgstr ""
 
 msgid "Accept invitation"
@@ -8305,6 +8308,9 @@ msgstr ""
 msgid "Configure repository mirroring."
 msgstr ""
 
+msgid "Configure specific limits for Packages API requests that supersede the general user and IP rate limits."
+msgstr ""
+
 msgid "Configure storage path settings."
 msgstr ""
 
@@ -8338,19 +8344,19 @@ msgstr ""
 msgid "Confluence"
 msgstr ""
 
+msgid "Confluence Cloud Workspace URL"
+msgstr ""
+
 msgid "ConfluenceService|Confluence Workspace"
 msgstr ""
 
-msgid "ConfluenceService|Connect a Confluence Cloud Workspace to GitLab"
+msgid "ConfluenceService|Link to a Confluence Workspace from the sidebar."
 msgstr ""
 
-msgid "ConfluenceService|Enabling the Confluence Workspace will disable the default GitLab Wiki. Your GitLab Wiki data will be saved and you can always re-enable it later by turning off this integration"
+msgid "ConfluenceService|Link to a Confluence Workspace from the sidebar. Enabling this integration replaces the \"Wiki\" sidebar link with a link to the Confluence Workspace. The GitLab wiki is still available at the original URL."
 msgstr ""
 
-msgid "ConfluenceService|The URL of the Confluence Workspace"
-msgstr ""
-
-msgid "ConfluenceService|Your GitLab Wiki can be accessed here: %{wiki_link}. To re-enable your GitLab Wiki, disable this integration"
+msgid "ConfluenceService|Your GitLab wiki is still available at %{wiki_link}. To re-enable the link to the GitLab wiki, disable this integration."
 msgstr ""
 
 msgid "Congratulations, your free trial is activated."
@@ -12041,6 +12047,9 @@ msgstr ""
 msgid "Enable two-factor authentication"
 msgstr ""
 
+msgid "Enable unauthenticated API request rate limit"
+msgstr ""
+
 msgid "Enable unauthenticated request rate limit"
 msgstr ""
 
@@ -15217,6 +15226,9 @@ msgstr ""
 msgid "Group is required when cluster_type is :group"
 msgstr ""
 
+msgid "Group jobs by"
+msgstr ""
+
 msgid "Group maintainers can register group runners in the %{link}"
 msgstr ""
 
@@ -18197,6 +18209,9 @@ msgid "Job artifact"
 msgstr ""
 
 msgid "Job artifacts"
+msgstr ""
+
+msgid "Job dependencies"
 msgstr ""
 
 msgid "Job has been erased"
@@ -21655,6 +21670,9 @@ msgstr ""
 msgid "No prioritized labels with such name or description"
 msgstr ""
 
+msgid "No profiles found"
+msgstr ""
+
 msgid "No projects found"
 msgstr ""
 
@@ -22502,9 +22520,6 @@ msgstr ""
 msgid "Or you can choose one of the suggested colors below"
 msgstr ""
 
-msgid "Order jobs by"
-msgstr ""
-
 msgid "Orphaned member"
 msgstr ""
 
@@ -22572,6 +22587,9 @@ msgid "Owner"
 msgstr ""
 
 msgid "Package Registry"
+msgstr ""
+
+msgid "Package Registry Rate Limits"
 msgstr ""
 
 msgid "Package already exists"
@@ -22983,6 +23001,9 @@ msgid "Participants"
 msgstr ""
 
 msgid "Pass job variables"
+msgstr ""
+
+msgid "Pass the header %{codeOpen} X-Profile-Token: %{profile_token} %{codeClose} to profile the request"
 msgstr ""
 
 msgid "Passed"
@@ -29048,6 +29069,9 @@ msgstr ""
 msgid "Show complete raw log"
 msgstr ""
 
+msgid "Show dependencies"
+msgstr ""
+
 msgid "Show details"
 msgstr ""
 
@@ -33582,6 +33606,9 @@ msgstr ""
 msgid "Unassigned"
 msgstr ""
 
+msgid "Unauthenticated API request rate limit"
+msgstr ""
+
 msgid "Unauthenticated rate limit period in seconds"
 msgstr ""
 
@@ -34816,9 +34843,6 @@ msgstr ""
 msgid "View the documentation"
 msgstr ""
 
-msgid "View the jobs grouped into stages"
-msgstr ""
-
 msgid "View the latest successful deployment to this environment"
 msgstr ""
 
@@ -34829,9 +34853,6 @@ msgid "View usage details"
 msgstr ""
 
 msgid "View users statistics"
-msgstr ""
-
-msgid "View what jobs are needed for a job to run"
 msgstr ""
 
 msgid "Viewed"

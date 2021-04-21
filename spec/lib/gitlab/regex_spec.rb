@@ -726,4 +726,134 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('v../../../../../1.2.3') }
     it { is_expected.not_to match('v%2e%2e%2f1.2.3') }
   end
+
+  describe 'Packages::API_PATH_REGEX' do
+    subject { described_class::Packages::API_PATH_REGEX }
+
+    it { is_expected.to match('/api/v4/group/12345/-/packages/composer/p/123456789') }
+    it { is_expected.to match('/api/v4/group/12345/-/packages/composer/p2/pkg_name') }
+    it { is_expected.to match('/api/v4/group/12345/-/packages/composer/packages') }
+    it { is_expected.to match('/api/v4/group/12345/-/packages/composer/pkg_name') }
+    it { is_expected.to match('/api/v4/groups/1234/-/packages/maven/a/path/file.jar') }
+    it { is_expected.to match('/api/v4/groups/1234/-/packages/nuget/index') }
+    it { is_expected.to match('/api/v4/groups/1234/-/packages/nuget/metadata/pkg_name/1.3.4') }
+    it { is_expected.to match('/api/v4/groups/1234/-/packages/nuget/metadata/pkg_name/index') }
+    it { is_expected.to match('/api/v4/groups/1234/-/packages/nuget/query') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/conans/pkg_name/1.2.3/username/stable') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/digest') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/download_urls') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/packages/pkg_ref') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/packages/pkg_ref/digest') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/packages/pkg_ref/download_urls') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/packages/pkg_ref/upload_urls') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/upload_urls') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/conans/search') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/files/pkg_name/1.2.3/username/stable/2.3/export/file.name') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/files/pkg_name/1.2.3/username/stable/2.3/export/file.name/authorize') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/files/pkg_name/1.2.3/username/stable/2.3/package/pkg_ref/pkg_revision/file.name') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/files/pkg_name/1.2.3/username/stable/2.3/package/pkg_ref/pkg_revision/file.name/authorize') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/ping') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/users/authenticate') }
+    it { is_expected.to match('/api/v4/packages/conan/v1/users/check_credentials') }
+    it { is_expected.to match('/api/v4/packages/maven/a/path/file.jar') }
+    it { is_expected.to match('/api/v4/packages/npm/-/package/pkg_name/dist-tags') }
+    it { is_expected.to match('/api/v4/packages/npm/-/package/pkg_name/dist-tags/tag') }
+    it { is_expected.to match('/api/v4/packages/npm/pkg_name') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/composer') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/composer/archives/pkg_name') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/conans/pkg_name/1.2.3/username/stable') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/digest') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/download_urls') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/packages/pkg_ref') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/packages/pkg_ref/digest') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/packages/pkg_ref/download_urls') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/packages/pkg_ref/upload_urls') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/conans/pkg_name/1.2.3/username/stable/upload_urls') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/conans/search') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/files/pkg_name/1.2.3/username/stable/2.3/export/file.name') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/files/pkg_name/1.2.3/username/stable/2.3/export/file.name/authorize') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/files/pkg_name/1.2.3/username/stable/2.3/package/pkg_ref/pkg_revision/file.name') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/files/pkg_name/1.2.3/username/stable/2.3/package/pkg_ref/pkg_revision/file.name/authorize') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/ping') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/users/authenticate') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/conan/v1/users/check_credentials') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/debian/dists/stable/compon/binary-x64/Packages') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/debian/dists/stable/InRelease') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/debian/dists/stable/Release') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/debian/dists/stable/Release.gpg') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/debian/file.name') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/debian/file.name/authorize') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/debian/pool/compon/e/pkg/file.name') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/generic/pkg_name/1.3.4/myfile.txt') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/generic/pkg_name/1.3.4/myfile.txt/authorize') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/go/my_module/@v/11.2.3.info') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/go/my_module/@v/11.2.3.mod') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/go/my_module/@v/11.2.3.zip') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/go/my_module/@v/list') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/maven/a/path/file.jar') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/maven/a/path/file.jar/authorize') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/npm/-/package/pkg_name/dist-tags') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/npm/-/package/pkg_name/dist-tags/tag') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/npm/pkg_name') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/npm/pkg_name/-/tarball.tgz') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/nuget') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/nuget/authorize') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/nuget/download/pkg_name/1.3.4/pkg.npkg') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/nuget/download/pkg_name/index') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/nuget/index') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/nuget/metadata/pkg_name/1.3.4') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/nuget/metadata/pkg_name/index') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/nuget/query') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/pypi') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/pypi/authorize') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/pypi/files/1234567890/file.identifier') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/pypi/simple/pkg_name') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/rubygems/api/v1/dependencies') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/rubygems/api/v1/gems') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/rubygems/api/v1/gems/authorize') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/rubygems/gems/pkg') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/rubygems/pkg') }
+    it { is_expected.to match('/api/v4/projects/1234/packages/rubygems/quick/Marshal.4.8/pkg') }
+    it { is_expected.not_to match('') }
+    it { is_expected.not_to match('foo') }
+    it { is_expected.not_to match('/api/v4') }
+    it { is_expected.not_to match('/api/v4/version') }
+    it { is_expected.not_to match('/api/v4/packages') }
+    it { is_expected.not_to match('/api/v4/packages/') }
+    it { is_expected.not_to match('/api/v4/group') }
+    it { is_expected.not_to match('/api/v4/group/12345') }
+    it { is_expected.not_to match('/api/v4/group/12345/-') }
+    it { is_expected.not_to match('/api/v4/group/12345/-/packages') }
+    it { is_expected.not_to match('/api/v4/group/12345/-/packages/') }
+    it { is_expected.not_to match('/api/v4/group/12345/-/packages/50') }
+    it { is_expected.not_to match('/api/v4/groups') }
+    it { is_expected.not_to match('/api/v4/groups/12345') }
+    it { is_expected.not_to match('/api/v4/groups/12345/-') }
+    it { is_expected.not_to match('/api/v4/groups/12345/-/packages') }
+    it { is_expected.not_to match('/api/v4/groups/12345/-/packages/') }
+    it { is_expected.not_to match('/api/v4/groups/12345/-/packages/50') }
+    it { is_expected.not_to match('/api/v4/groups/12345/packages') }
+    it { is_expected.not_to match('/api/v4/groups/12345/packages/') }
+    it { is_expected.not_to match('/api/v4/groups/12345/badges') }
+    it { is_expected.not_to match('/api/v4/groups/12345/issues') }
+    it { is_expected.not_to match('/api/v4/projects') }
+    it { is_expected.not_to match('/api/v4/projects/1234') }
+    it { is_expected.not_to match('/api/v4/projects/1234/packages') }
+    it { is_expected.not_to match('/api/v4/projects/1234/packages/') }
+    it { is_expected.not_to match('/api/v4/projects/1234/packages/50') }
+    it { is_expected.not_to match('/api/v4/projects/1234/packages/50/package_files') }
+    it { is_expected.not_to match('/api/v4/projects/1234/merge_requests') }
+    it { is_expected.not_to match('/api/v4/projects/1234/registry/repositories') }
+    it { is_expected.not_to match('/api/v4/projects/1234/issues') }
+    it { is_expected.not_to match('/api/v4/projects/1234/members') }
+    it { is_expected.not_to match('/api/v4/projects/1234/milestones') }
+
+    # Group level Debian API endpoints are not matched as it's not using the correct prefix (groups/:id/-/packages/)
+    # TODO: Update Debian group level endpoints urls and adjust this specs: https://gitlab.com/gitlab-org/gitlab/-/issues/326805
+    it { is_expected.not_to match('/api/v4/groups/1234/packages/debian/dists/stable/compon/binary-compo/Packages') }
+    it { is_expected.not_to match('/api/v4/groups/1234/packages/debian/dists/stable/InRelease') }
+    it { is_expected.not_to match('/api/v4/groups/1234/packages/debian/dists/stable/Release') }
+    it { is_expected.not_to match('/api/v4/groups/1234/packages/debian/dists/stable/Release.gpg') }
+    it { is_expected.not_to match('/api/v4/groups/1234/packages/debian/pool/compon/a/pkg/file.name') }
+  end
 end

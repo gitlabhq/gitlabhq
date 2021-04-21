@@ -1,0 +1,5 @@
+---
+title: Add specific rate limits for Package Registry (Package API)
+merge_request: 57029
+author: Jonas Wälter @wwwjon
+type: added

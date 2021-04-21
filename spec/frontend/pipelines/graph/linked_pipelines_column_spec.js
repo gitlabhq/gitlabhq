@@ -26,6 +26,7 @@ describe('Linked Pipelines Column', () => {
   const defaultProps = {
     columnTitle: 'Downstream',
     linkedPipelines: processedPipeline.downstream,
+    showLinks: false,
     type: DOWNSTREAM,
     viewType: STAGE_VIEW,
     configPaths: {

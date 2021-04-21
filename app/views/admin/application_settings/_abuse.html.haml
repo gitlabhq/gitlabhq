@@ -3,9 +3,9 @@
 
   %fieldset
     .form-group
-      = f.label :abuse_notification_email, 'Abuse reports notification email', class: 'label-bold'
+      = f.label :abuse_notification_email, _('Abuse reports notification email'), class: 'label-bold'
       = f.text_field :abuse_notification_email, class: 'form-control gl-form-input'
       .form-text.text-muted
-        Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.
+        = _('Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.')
 
-  = f.submit 'Save changes', class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

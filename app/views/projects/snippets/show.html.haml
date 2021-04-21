@@ -6,6 +6,6 @@
 #js-snippet-view{ data: {'qa-selector': 'snippet_view', 'snippet-gid': @snippet.to_global_id} }
 
 .row-content-block.top-block.content-component-block
-  = render 'award_emoji/awards_block', awardable: @snippet, inline: true
+  = render 'award_emoji/awards_block', awardable: @snippet, inline: true, api_awards_path: project_snippets_award_api_path(@snippet)
 
 #notes.limited-width-notes= render "shared/notes/notes_with_form", :autocomplete => true

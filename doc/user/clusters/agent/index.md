@@ -56,7 +56,7 @@ There are several components that work in concert for the Agent to accomplish Gi
 You can use the same GitLab project or separate projects for configuration and manifest files, as follows:
 
 - Single GitLab project (recommended): when you use a single repository to hold both the manifest and the configuration files, these projects can be either private or public, as you prefer.
-- Two GitLab projects: when you opt to use two different GitLab projects, one for manifest files, and another for configuration files, the manifests project must be private, while the configuration project can be either private or public. Our backlog contains issues for adding support for
+- Two GitLab projects: when you opt to use two different GitLab projects, one for manifest files, and another for configuration files, the manifests project must be public, while the configuration project can be either private or public. Our backlog contains issues for adding support for
 [private manifest repositories outside of the configuration project](https://gitlab.com/gitlab-org/gitlab/-/issues/220912) and
 [group level agents](https://gitlab.com/gitlab-org/gitlab/-/issues/283885) in the future.
 

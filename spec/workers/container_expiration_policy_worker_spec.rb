@@ -35,10 +35,16 @@ RSpec.describe ContainerExpirationPolicyWorker do
     end
 
     context 'With no container expiration policies' do
-      it 'does not execute any policies' do
-        expect(ContainerRepository).not_to receive(:for_project_id)
+      context 'with loopless disabled' do
+        before do
+          stub_feature_flags(container_registry_expiration_policies_loopless: false)
+        end
 
-        expect { subject }.not_to change { ContainerRepository.cleanup_scheduled.count }
+        it 'does not execute any policies' do
+          expect(ContainerRepository).not_to receive(:for_project_id)
+
+          expect { subject }.not_to change { ContainerRepository.cleanup_scheduled.count }
+        end
       end
     end
 

@@ -6,9 +6,29 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Container Registry API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55978) in GitLab 11.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55978) in GitLab 11.8.
+> - The use of `CI_JOB_TOKEN` scoped to the current project was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49750) in GitLab 13.12.
 
 This is the API documentation of the [GitLab Container Registry](../user/packages/container_registry/index.md).
+
+When the `ci_job_token_scope` feature flag is enabled (it is **disabled by default**), you can use the below endpoints
+from a CI/CD job, by passing the `$CI_JOB_TOKEN` variable as the `JOB-TOKEN` header.
+The job token will only have access to its own project.
+
+[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
+can opt to enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_job_token_scope)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_job_token_scope)
+```
 
 ## List registry repositories
 

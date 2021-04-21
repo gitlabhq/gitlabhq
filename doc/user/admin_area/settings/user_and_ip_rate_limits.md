@@ -133,6 +133,8 @@ The possible names are:
 - `throttle_unauthenticated_protected_paths`
 - `throttle_authenticated_protected_paths_api`
 - `throttle_authenticated_protected_paths_web`
+- `throttle_unauthenticated_packages_api`
+- `throttle_authenticated_packages_api`
 
 For example, to try out throttles for all authenticated requests to
 non-protected paths can be done by setting

@@ -49,6 +49,20 @@ module Gitlab
       { limit: limit_proc, period: period_proc }
     end
 
+    def self.unauthenticated_packages_api_options
+      limit_proc = proc { |req| settings.throttle_unauthenticated_packages_api_requests_per_period }
+      period_proc = proc { |req| settings.throttle_unauthenticated_packages_api_period_in_seconds.seconds }
+
+      { limit: limit_proc, period: period_proc }
+    end
+
+    def self.authenticated_packages_api_options
+      limit_proc = proc { |req| settings.throttle_authenticated_packages_api_requests_per_period }
+      period_proc = proc { |req| settings.throttle_authenticated_packages_api_period_in_seconds.seconds }
+
+      { limit: limit_proc, period: period_proc }
+    end
+
     def self.rate_limiting_response_text
       (settings.rate_limiting_response_text.presence || DEFAULT_RATE_LIMITING_RESPONSE_TEXT) + "\n"
     end

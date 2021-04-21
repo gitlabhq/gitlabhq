@@ -24,6 +24,17 @@
   .settings-content
     = render 'ip_limits'
 
+%section.settings.as-packages-limits.no-animate#js-packages-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'packages_limits_content' } }
+  .settings-header
+    %h4
+      = _('Package Registry Rate Limits')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure specific limits for Packages API requests that supersede the general user and IP rate limits.')
+  .settings-content
+    = render 'package_registry_limits'
+
 %section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'outbound_requests_content' } }
   .settings-header
     %h4

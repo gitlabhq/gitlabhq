@@ -1,7 +1,7 @@
 ---
 name: pipeline_graph_layers_view
-introduced_by_url:
-rollout_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56865
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/328538
 milestone: '13.11'
 type: development
 group: group::pipeline authoring

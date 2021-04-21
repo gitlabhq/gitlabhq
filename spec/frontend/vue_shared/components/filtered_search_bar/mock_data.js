@@ -37,7 +37,7 @@ export const mockAuthor3 = {
 
 export const mockAuthors = [mockAuthor1, mockAuthor2, mockAuthor3];
 
-export const mockBranches = [{ name: 'Master' }, { name: 'v1.x' }, { name: 'my-Branch' }];
+export const mockBranches = [{ name: 'Main' }, { name: 'v1.x' }, { name: 'my-Branch' }];
 
 export const mockRegularMilestone = {
   id: 1,

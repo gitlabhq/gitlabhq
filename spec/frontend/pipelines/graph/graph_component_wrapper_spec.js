@@ -15,6 +15,7 @@ import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
 import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.vue';
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
 import { mockPipelineResponse } from './mock_data';
 
@@ -31,7 +32,9 @@ describe('Pipeline graph wrapper', () => {
 
   let wrapper;
   const getAlert = () => wrapper.find(GlAlert);
+  const getDependenciesToggle = () => wrapper.find('[data-testid="show-links-toggle"]');
   const getLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const getLinksLayer = () => wrapper.findComponent(LinksLayer);
   const getGraph = () => wrapper.find(PipelineGraph);
   const getStageColumnTitle = () => wrapper.find('[data-testid="stage-column-title"]');
   const getAllStageColumnGroupsInColumn = () =>
@@ -59,6 +62,7 @@ describe('Pipeline graph wrapper', () => {
   };
 
   const createComponentWithApollo = ({
+    data = {},
     getPipelineDetailsHandler = jest.fn().mockResolvedValue(mockPipelineResponse),
     mountFn = shallowMount,
     provide = {},
@@ -66,12 +70,21 @@ describe('Pipeline graph wrapper', () => {
     const requestHandlers = [[getPipelineDetails, getPipelineDetailsHandler]];
 
     const apolloProvider = createMockApollo(requestHandlers);
-    createComponent({ apolloProvider, provide, mountFn });
+    createComponent({ apolloProvider, data, provide, mountFn });
   };
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+  });
+
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
   describe('when data is loading', () => {
@@ -282,6 +295,36 @@ describe('Pipeline graph wrapper', () => {
       });
     });
 
+    describe('when pipelineGraphLayersView feature flag is on and layers view is selected', () => {
+      beforeEach(async () => {
+        createComponentWithApollo({
+          provide: {
+            glFeatures: {
+              pipelineGraphLayersView: true,
+            },
+          },
+          data: {
+            currentViewType: LAYER_VIEW,
+          },
+          mountFn: mount,
+        });
+
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+      });
+
+      it('sets showLinks to true', async () => {
+        /* This spec uses .props for performance reasons. */
+        expect(getLinksLayer().exists()).toBe(true);
+        expect(getLinksLayer().props('showLinks')).toBe(false);
+        expect(getViewSelector().props('type')).toBe(LAYER_VIEW);
+        await getDependenciesToggle().trigger('click');
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+        expect(wrapper.findComponent(LinksLayer).props('showLinks')).toBe(true);
+      });
+    });
+
     describe('when feature flag is on and local storage is set', () => {
       beforeEach(async () => {
         localStorage.setItem(VIEW_TYPE_KEY, LAYER_VIEW);
@@ -299,10 +342,15 @@ describe('Pipeline graph wrapper', () => {
         await wrapper.vm.$nextTick();
       });
 
+      afterEach(() => {
+        localStorage.clear();
+      });
+
       it('reads the view type from localStorage when available', () => {
-        expect(wrapper.find('[data-testid="pipeline-view-selector"] code').text()).toContain(
-          'needs:',
-        );
+        const viewSelectorNeedsSegment = wrapper
+          .findAll('[data-testid="pipeline-view-selector"] > label')
+          .at(1);
+        expect(viewSelectorNeedsSegment.classes()).toContain('active');
       });
     });
 

@@ -436,18 +436,10 @@ module Gitlab
           projects_jira_dvcs_server_active: count(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false))
         }
 
-        # rubocop: disable UsageData/LargeTable:
-        JiraService.active.includes(:jira_tracker_data).find_in_batches(batch_size: 100) do |services|
-          counts = services.group_by do |service|
-            # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
-            service_url = service.data_fields&.url || (service.properties && service.properties['url'])
-            service_url&.include?('.atlassian.net') ? :cloud : :server
-          end
+        jira_service_data_hash = jira_service_data
+        results[:projects_jira_server_active] = jira_service_data_hash[:projects_jira_server_active]
+        results[:projects_jira_cloud_active] = jira_service_data_hash[:projects_jira_cloud_active]
 
-          results[:projects_jira_server_active] += counts[:server].size if counts[:server]
-          results[:projects_jira_cloud_active] += counts[:cloud].size if counts[:cloud]
-        end
-        # rubocop: enable UsageData/LargeTable:
         results
       rescue ActiveRecord::StatementInvalid
         { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK }

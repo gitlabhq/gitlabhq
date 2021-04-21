@@ -77,7 +77,7 @@ describe('BranchToken', () => {
 
     describe('currentValue', () => {
       it('returns lowercase string for `value.data`', () => {
-        expect(wrapper.vm.currentValue).toBe('master');
+        expect(wrapper.vm.currentValue).toBe('main');
       });
     });
 

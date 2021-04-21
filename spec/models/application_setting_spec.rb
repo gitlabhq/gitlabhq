@@ -785,6 +785,10 @@ RSpec.describe ApplicationSetting do
           throttle_authenticated_api_period_in_seconds
           throttle_authenticated_web_requests_per_period
           throttle_authenticated_web_period_in_seconds
+          throttle_unauthenticated_packages_api_requests_per_period
+          throttle_unauthenticated_packages_api_period_in_seconds
+          throttle_authenticated_packages_api_requests_per_period
+          throttle_authenticated_packages_api_period_in_seconds
         ]
       end
 

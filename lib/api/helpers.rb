@@ -124,10 +124,20 @@ module API
     def find_project!(id)
       project = find_project(id)
 
+      return forbidden! unless authorized_project_scope?(project)
+
       return project if can?(current_user, :read_project, project)
       return unauthorized! if authenticate_non_public?
 
       not_found!('Project')
+    end
+
+    def authorized_project_scope?(project)
+      return true unless job_token_authentication?
+      return true unless route_authentication_setting[:job_token_scope] == :project
+
+      ::Feature.enabled?(:ci_job_token_scope, project, default_enabled: :yaml) &&
+        current_authenticated_job.project == project
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

@@ -25,6 +25,10 @@ export default {
       type: Object,
       required: true,
     },
+    showLinks: {
+      type: Boolean,
+      required: true,
+    },
     viewType: {
       type: String,
       required: true,
@@ -91,8 +95,8 @@ export default {
         collectMetrics: true,
       };
     },
-    shouldHideLinks() {
-      return this.isStageView;
+    showJobLinks() {
+      return !this.isStageView && this.showLinks;
     },
     shouldShowStageName() {
       return !this.isStageView;
@@ -188,6 +192,7 @@ export default {
             :config-paths="configPaths"
             :linked-pipelines="upstreamPipelines"
             :column-title="__('Upstream')"
+            :show-links="showJobLinks"
             :type="$options.pipelineTypeConstants.UPSTREAM"
             :view-type="viewType"
             @error="onError"
@@ -202,9 +207,8 @@ export default {
               :container-measurements="measurements"
               :highlighted-job="hoveredJobName"
               :metrics-config="metricsConfig"
-              :never-show-links="shouldHideLinks"
+              :show-links="showJobLinks"
               :view-type="viewType"
-              default-link-color="gl-stroke-transparent"
               @error="onError"
               @highlightedJobsChange="updateHighlightedJobs"
             >
@@ -234,6 +238,7 @@ export default {
             :config-paths="configPaths"
             :linked-pipelines="downstreamPipelines"
             :column-title="__('Downstream')"
+            :show-links="showJobLinks"
             :type="$options.pipelineTypeConstants.DOWNSTREAM"
             :view-type="viewType"
             @downstreamHovered="setSourceJob"

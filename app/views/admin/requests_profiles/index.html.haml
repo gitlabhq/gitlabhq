@@ -4,9 +4,7 @@
   = page_title
 
 .bs-callout.clearfix
-  Pass the header
-  %code X-Profile-Token: #{@profile_token}
-  to profile the request
+  = html_escape(_('Pass the header %{codeOpen} X-Profile-Token: %{profile_token} %{codeClose} to profile the request')) % { profile_token: @profile_token, codeOpen: '<code>'.html_safe, codeClose: '</code>'.html_safe }
 
 - if @profiles.present?
   .gl-mt-3
@@ -21,4 +19,4 @@
                 admin_requests_profile_path(profile)
 - else
   %p
-    No profiles found
+    = _('No profiles found')

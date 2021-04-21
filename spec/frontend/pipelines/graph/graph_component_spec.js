@@ -22,6 +22,7 @@ describe('graph component', () => {
 
   const defaultProps = {
     pipeline: generateResponse(mockPipelineResponse, 'root/fungi-xoxo'),
+    showLinks: false,
     viewType: STAGE_VIEW,
     configPaths: {
       metricsPath: '',

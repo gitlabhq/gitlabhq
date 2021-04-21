@@ -1,5 +1,4 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { __ } from '~/locale';
 import {
@@ -19,10 +18,8 @@ import LinksInner from './links_inner.vue';
 export default {
   name: 'LinksLayer',
   components: {
-    GlAlert,
     LinksInner,
   },
-  MAX_GROUPS: 200,
   props: {
     containerMeasurements: {
       type: Object,
@@ -37,10 +34,10 @@ export default {
       required: false,
       default: () => ({}),
     },
-    neverShowLinks: {
+    showLinks: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
   },
   data() {
@@ -67,29 +64,8 @@ export default {
     shouldCollectMetrics() {
       return this.metricsConfig.collectMetrics && this.metricsConfig.path;
     },
-    showAlert() {
-      /*
-        This is a hard override that allows us to turn off the links without
-        needing to remove the component entirely for iteration or based on graph type.
-      */
-      if (this.neverShowLinks) {
-        return false;
-      }
-
-      return !this.containerZero && !this.showLinkedLayers && !this.alertDismissed;
-    },
     showLinkedLayers() {
-      /*
-        This is a hard override that allows us to turn off the links without
-        needing to remove the component entirely for iteration or based on graph type.
-      */
-      if (this.neverShowLinks) {
-        return false;
-      }
-
-      return (
-        !this.containerZero && (this.showLinksOverride || this.numGroups < this.$options.MAX_GROUPS)
-      );
+      return this.showLinks && !this.containerZero;
     },
   },
   errorCaptured(err, _vm, info) {
@@ -103,7 +79,7 @@ export default {
       is closed and functionality is enabled by default.
     */
 
-    if (this.neverShowLinks && !isEmpty(this.pipelineData)) {
+    if (!this.showLinks && !isEmpty(this.pipelineData)) {
       window.requestAnimationFrame(() => {
         this.prepareLinkData();
       });
@@ -151,13 +127,6 @@ export default {
         reportPerformance(this.metricsConfig.path, data);
       });
     },
-    dismissAlert() {
-      this.alertDismissed = true;
-    },
-    overrideShowLinks() {
-      this.dismissAlert();
-      this.showLinksOverride = true;
-    },
     prepareLinkData() {
       this.beginPerfMeasure();
       let numLinks;
@@ -185,15 +154,6 @@ export default {
     <slot></slot>
   </links-inner>
   <div v-else>
-    <gl-alert
-      v-if="showAlert"
-      class="gl-ml-4 gl-mb-4"
-      :primary-button-text="$options.i18n.showLinksAnyways"
-      @primaryAction="overrideShowLinks"
-      @dismiss="dismissAlert"
-    >
-      {{ $options.i18n.tooManyJobs }}
-    </gl-alert>
     <div class="gl-display-flex gl-relative">
       <slot></slot>
     </div>

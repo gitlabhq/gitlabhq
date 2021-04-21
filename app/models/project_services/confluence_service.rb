@@ -27,7 +27,7 @@ class ConfluenceService < Service
   end
 
   def description
-    s_('ConfluenceService|Connect a Confluence Cloud Workspace to GitLab')
+    s_('ConfluenceService|Link to a Confluence Workspace from the sidebar.')
   end
 
   def help
@@ -37,11 +37,11 @@ class ConfluenceService < Service
       wiki_url = project.wiki.web_url
 
       s_(
-        'ConfluenceService|Your GitLab Wiki can be accessed here: %{wiki_link}. To re-enable your GitLab Wiki, disable this integration' %
+        'ConfluenceService|Your GitLab wiki is still available at %{wiki_link}. To re-enable the link to the GitLab wiki, disable this integration.' %
         { wiki_link: link_to(wiki_url, wiki_url) }
       ).html_safe
     else
-      s_('ConfluenceService|Enabling the Confluence Workspace will disable the default GitLab Wiki. Your GitLab Wiki data will be saved and you can always re-enable it later by turning off this integration').html_safe
+      s_('ConfluenceService|Link to a Confluence Workspace from the sidebar. Enabling this integration replaces the "Wiki" sidebar link with a link to the Confluence Workspace. The GitLab wiki is still available at the original URL.').html_safe
     end
   end
 
@@ -50,8 +50,8 @@ class ConfluenceService < Service
       {
         type: 'text',
         name: 'confluence_url',
-        title: 'Confluence Cloud Workspace URL',
-        placeholder: s_('ConfluenceService|The URL of the Confluence Workspace'),
+        title: s_('Confluence Cloud Workspace URL'),
+        placeholder: 'https://example.atlassian.net/wiki',
         required: true
       }
     ]

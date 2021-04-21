@@ -9445,6 +9445,12 @@ CREATE TABLE application_settings (
     encrypted_external_pipeline_validation_service_token text,
     encrypted_external_pipeline_validation_service_token_iv text,
     external_pipeline_validation_service_url text,
+    throttle_unauthenticated_packages_api_requests_per_period integer DEFAULT 800 NOT NULL,
+    throttle_unauthenticated_packages_api_period_in_seconds integer DEFAULT 15 NOT NULL,
+    throttle_authenticated_packages_api_requests_per_period integer DEFAULT 1000 NOT NULL,
+    throttle_authenticated_packages_api_period_in_seconds integer DEFAULT 15 NOT NULL,
+    throttle_unauthenticated_packages_api_enabled boolean DEFAULT false NOT NULL,
+    throttle_authenticated_packages_api_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
@@ -21785,10 +21791,6 @@ CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON pac
 CREATE INDEX idx_packages_debian_project_component_files_on_architecture_id ON packages_debian_project_component_files USING btree (architecture_id);
 
 CREATE INDEX idx_packages_packages_on_project_id_name_version_package_type ON packages_packages USING btree (project_id, name, version, package_type);
-
-CREATE INDEX idx_pkgs_deb_grp_architectures_on_distribution_id ON packages_debian_group_architectures USING btree (distribution_id);
-
-CREATE INDEX idx_pkgs_deb_proj_architectures_on_distribution_id ON packages_debian_project_architectures USING btree (distribution_id);
 
 CREATE UNIQUE INDEX idx_pkgs_dep_links_on_pkg_id_dependency_id_dependency_type ON packages_dependency_links USING btree (package_id, dependency_id, dependency_type);
 

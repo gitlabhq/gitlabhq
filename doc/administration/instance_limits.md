@@ -69,6 +69,15 @@ Read more on [protected path rate limits](../user/admin_area/settings/protected_
 
 - **Default rate limit** - After 10 requests, the client must wait 60 seconds before trying again
 
+### Package Registry
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57029) in GitLab 13.12.
+
+This setting limits the request rate on the Packages API per user or IP. For more information, see
+[Package Registry Rate Limits](../user/admin_area/settings/package_registry_rate_limits.md).
+
+- **Default rate limit:** Disabled by default
+
 ### Import/Export
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35728) in GitLab 13.2.

@@ -1,17 +1,20 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlLoadingIcon, GlSegmentedControl, GlToggle } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { STAGE_VIEW, LAYER_VIEW } from './constants';
 
 export default {
   name: 'GraphViewSelector',
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlIcon,
-    GlSprintf,
+    GlLoadingIcon,
+    GlSegmentedControl,
+    GlToggle,
   },
   props: {
+    showLinks: {
+      type: Boolean,
+      required: true,
+    },
     type: {
       type: String,
       required: true,
@@ -19,67 +22,119 @@ export default {
   },
   data() {
     return {
-      currentViewType: STAGE_VIEW,
+      currentViewType: this.type,
+      showLinksActive: false,
+      isToggleLoading: false,
+      isSwitcherLoading: false,
     };
   },
   i18n: {
-    labelText: __('Order jobs by'),
+    viewLabelText: __('Group jobs by'),
+    linksLabelText: __('Show dependencies'),
   },
   views: {
     [STAGE_VIEW]: {
       type: STAGE_VIEW,
       text: {
         primary: __('Stage'),
-        secondary: __('View the jobs grouped into stages'),
       },
     },
     [LAYER_VIEW]: {
       type: LAYER_VIEW,
       text: {
-        primary: __('%{codeStart}needs:%{codeEnd} relationships'),
-        secondary: __('View what jobs are needed for a job to run'),
+        primary: __('Job dependencies'),
       },
     },
   },
   computed: {
-    currentDropdownText() {
-      return this.$options.views[this.type].text.primary;
+    showLinksToggle() {
+      return this.currentViewType === LAYER_VIEW;
+    },
+    viewTypesList() {
+      return Object.keys(this.$options.views).map((key) => {
+        return {
+          value: key,
+          text: this.$options.views[key].text.primary,
+        };
+      });
+    },
+  },
+  watch: {
+    /*
+      How does this reset the loading? As we note in the methods comment below,
+      the loader is set to on before the update work is undertaken (in the parent).
+      Once the work is complete, one of these values will change, since that's the
+      point of the work. When that happens, the related value will update and we are done.
+
+      The bonus for this approach is that it works the same whichever "direction"
+      the work goes in.
+    */
+    showLinks() {
+      this.isToggleLoading = false;
+    },
+    type() {
+      this.isSwitcherLoading = false;
     },
   },
   methods: {
-    itemClick(type) {
-      this.$emit('updateViewType', type);
+    /*
+      In both toggle methods, we use setTimeout so that the loading indicator displays,
+      then the work is done to update the DOM. The process is:
+        → user clicks
+        → call stack: set loading to true
+        → render: the loading icon appears on the screen
+        → callback queue: now do the work to calculate the new view / links
+          (note: this work is done in the parent after the event is emitted)
+
+      setTimeout is how we move the work to the callback queue.
+      We can't use nextTick because that is called before the render loop.
+
+     See https://www.hesselinkwebdesign.nl/2019/nexttick-vs-settimeout-in-vue/ for more details.
+    */
+    toggleView(type) {
+      this.isSwitcherLoading = true;
+      setTimeout(() => {
+        this.$emit('updateViewType', type);
+      });
+    },
+    toggleShowLinksActive(val) {
+      this.isToggleLoading = true;
+      setTimeout(() => {
+        this.$emit('updateShowLinksState', val);
+      });
     },
   },
 };
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center gl-my-4">
-    <span>{{ $options.i18n.labelText }}</span>
-    <gl-dropdown data-testid="pipeline-view-selector" class="gl-ml-4">
-      <template #button-content>
-        <gl-sprintf :message="currentDropdownText">
-          <template #code="{ content }">
-            <code> {{ content }} </code>
-          </template>
-        </gl-sprintf>
-        <gl-icon class="gl-px-2" name="angle-down" :size="16" />
-      </template>
-      <gl-dropdown-item
-        v-for="view in $options.views"
-        :key="view.type"
-        :secondary-text="view.text.secondary"
-        @click="itemClick(view.type)"
-      >
-        <b>
-          <gl-sprintf :message="view.text.primary">
-            <template #code="{ content }">
-              <code> {{ content }} </code>
-            </template>
-          </gl-sprintf>
-        </b>
-      </gl-dropdown-item>
-    </gl-dropdown>
+  <div class="gl-relative gl-display-flex gl-align-items-center gl-w-max-content gl-my-4">
+    <gl-loading-icon
+      v-if="isSwitcherLoading"
+      data-testid="switcher-loading-state"
+      class="gl-absolute gl-w-full gl-bg-white gl-opacity-5 gl-z-index-2"
+      size="lg"
+    />
+    <span class="gl-font-weight-bold">{{ $options.i18n.viewLabelText }}</span>
+    <gl-segmented-control
+      v-model="currentViewType"
+      :options="viewTypesList"
+      :disabled="isSwitcherLoading"
+      data-testid="pipeline-view-selector"
+      class="gl-mx-4"
+      @input="toggleView"
+    />
+
+    <div v-if="showLinksToggle">
+      <gl-toggle
+        v-model="showLinksActive"
+        data-testid="show-links-toggle"
+        class="gl-mx-4"
+        :label="$options.i18n.linksLabelText"
+        :is-loading="isToggleLoading"
+        label-position="left"
+        @change="toggleShowLinksActive"
+      />
+    </div>
   </div>
 </template>
