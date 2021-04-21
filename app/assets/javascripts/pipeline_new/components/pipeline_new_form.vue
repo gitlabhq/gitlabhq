@@ -393,6 +393,7 @@ export default {
             v-model="variable.variable_type"
             :class="$options.formElementClasses"
             :options="$options.typeOptions"
+            data-testid="pipeline-form-ci-variable-type"
           />
           <gl-form-input
             v-model="variable.key"

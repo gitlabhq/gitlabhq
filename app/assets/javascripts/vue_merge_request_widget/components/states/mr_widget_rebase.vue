@@ -175,7 +175,7 @@ export default {
         >
           <gl-button
             :loading="isMakingRequest"
-            variant="success"
+            variant="confirm"
             data-qa-selector="mr_rebase_button"
             @click="rebase"
           >

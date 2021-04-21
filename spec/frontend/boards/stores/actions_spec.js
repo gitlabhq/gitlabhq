@@ -66,20 +66,32 @@ describe('setInitialBoardData', () => {
 });
 
 describe('setFilters', () => {
-  it('should commit mutation SET_FILTERS', (done) => {
+  it.each([
+    [
+      'with correct filters as payload',
+      {
+        filters: { labelName: 'label' },
+        updatedFilters: { labelName: 'label', not: {} },
+      },
+    ],
+    [
+      'and updates assigneeWildcardId',
+      {
+        filters: { assigneeId: 'None' },
+        updatedFilters: { assigneeWildcardId: 'NONE', not: {} },
+      },
+    ],
+  ])('should commit mutation SET_FILTERS %s', (_, { filters, updatedFilters }) => {
     const state = {
       filters: {},
     };
-
-    const filters = { labelName: 'label' };
 
     testAction(
       actions.setFilters,
       filters,
       state,
-      [{ type: types.SET_FILTERS, payload: { ...filters, not: {} } }],
+      [{ type: types.SET_FILTERS, payload: updatedFilters }],
       [],
-      done,
     );
   });
 });

@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/browser';
-import { pick } from 'lodash';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
@@ -11,6 +10,7 @@ import {
   ISSUABLE,
   titleQueries,
   subscriptionQueries,
+  SupportedFilters,
 } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
@@ -27,6 +27,7 @@ import {
   transformNotFilters,
   moveItemListHelper,
   getMoveData,
+  getSupportedParams,
 } from '../boards_util';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
 import destroyBoardListMutation from '../graphql/board_list_destroy.mutation.graphql';
@@ -65,16 +66,11 @@ export default {
   },
 
   setFilters: ({ commit }, filters) => {
-    const filterParams = pick(filters, [
-      'assigneeUsername',
-      'authorUsername',
-      'labelName',
-      'milestoneTitle',
-      'releaseTag',
-      'search',
-      'myReactionEmoji',
-    ]);
-    filterParams.not = transformNotFilters(filters);
+    const filterParams = {
+      ...getSupportedParams(filters, SupportedFilters),
+      not: transformNotFilters(filters),
+    };
+
     commit(types.SET_FILTERS, filterParams);
   },
 

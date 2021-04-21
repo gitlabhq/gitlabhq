@@ -5,6 +5,20 @@ import boardBlockingIssuesQuery from './graphql/board_blocking_issues.query.grap
 import issueSetSubscriptionMutation from './graphql/issue_set_subscription.mutation.graphql';
 import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
 
+export const SupportedFilters = [
+  'assigneeUsername',
+  'authorUsername',
+  'labelName',
+  'milestoneTitle',
+  'releaseTag',
+  'search',
+  'myReactionEmoji',
+  'assigneeId',
+];
+
+/* eslint-disable-next-line @gitlab/require-i18n-strings */
+export const AssigneeIdParamValues = ['Any', 'None'];
+
 export const issuableTypes = {
   issue: 'issue',
   epic: 'epic',

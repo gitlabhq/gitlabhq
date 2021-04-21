@@ -141,7 +141,7 @@ RSpec.describe Namespace do
       end
 
       it 'allows updating other attributes for existing record' do
-        namespace = build(:namespace, path: 'j')
+        namespace = build(:namespace, path: 'j', owner: create(:user))
         namespace.save(validate: false)
         namespace.reload
 

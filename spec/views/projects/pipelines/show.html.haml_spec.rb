@@ -12,8 +12,6 @@ RSpec.describe 'projects/pipelines/show' do
   before do
     assign(:project, project)
     assign(:pipeline, presented_pipeline)
-
-    stub_feature_flags(new_pipeline_form: false)
   end
 
   context 'when pipeline has errors' do

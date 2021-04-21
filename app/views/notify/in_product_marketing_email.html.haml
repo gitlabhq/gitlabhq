@@ -166,6 +166,10 @@
                         = about_link('mailers/in_product_marketing', 'gitlab-logo-gray-rgb.png', 200)
                     %tr
                       %td{ "aria-hidden" => "true", height: "30", style: "font-size: 0; line-height: 0;" }
+                    %tr{ style: "background-color: #ffffff;" }
+                      %td{ style: "color: #424242; padding: 10px 30px; text-align: center; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;font-size: 16px; line-height: 22px; border: 1px solid #dddddd" }
+                        %p
+                          = in_product_marketing_progress(@track, @series, format: :html).html_safe
                     %tr
                       %td{ bgcolor: "#ffffff", height: "auto", style: "max-width: 600px; width: 100%; text-align: center; height: 200px; padding: 25px 15px; mso-line-height-rule: exactly; min-height: 40px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;", valign: "middle", width: "100%" }
                         = in_product_marketing_logo(@track, @series)
@@ -184,10 +188,6 @@
                       %td{ align: "center", style: "padding: 10px 20px 80px 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;" }
                         .cta_link= cta_link(@track, @series, @group, format: :html)
                     %tr{ style: "background-color: #ffffff;" }
-                      %td{ style: "color: #424242; padding: 10px 30px; text-align: center; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;font-size: 16px; line-height: 22px; border: 1px solid #dddddd" }
-                        %p
-                          = in_product_marketing_progress(@track, @series)
-                    %tr{ style: "background-color: #ffffff;" }
                       %td{ align: "center", style: "padding:75px 20px 25px;" }
                         = about_link('', 'gitlab_logo.png', 80)
                     %tr{ style: "background-color: #ffffff;" }
@@ -202,4 +202,4 @@
                     %tr{ style: "background-color: #ffffff;" }
                       %td{ align: "left", style: "padding:20px 30px 20px 30px;" }
                         %span.footernav{ style: "color: #6e49cb; font-size: 14px; line-height: 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif; color:#424242;" }
-                          = unsubscribe(format: :html).html_safe
+                          = unsubscribe(@track, @series, format: :html).html_safe

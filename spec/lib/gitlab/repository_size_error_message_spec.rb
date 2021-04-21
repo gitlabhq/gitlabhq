@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::RepositorySizeErrorMessage do
   let_it_be(:namespace) { build(:namespace) }
+
   let(:checker) do
     Gitlab::RepositorySizeChecker.new(
       current_size_proc: -> { 15.megabytes },

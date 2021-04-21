@@ -118,6 +118,9 @@ To create an issue:
 The issue is created. You can view it by going to **Issues > List**.
 ```
 
+If you have several tasks on a page that share prerequisites, you can make a
+reference topic with the title **Prerequisites**, and link to it.
+
 ## Reference
 
 A reference topic provides information in an easily-scannable format,
@@ -132,6 +135,9 @@ Introductory sentence.
 |---------|-------------|
 | **Name** | Descriptive sentence about the setting. |
 ```
+
+If a feature or concept has its own prerequisites, you can use the reference
+topic type to create a **Prerequisites** header for the information.
 
 ## Troubleshooting
 

@@ -1,6 +1,6 @@
 import { sortBy, cloneDeep } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ListType, NOT_FILTER } from './constants';
+import { ListType, NOT_FILTER, AssigneeIdParamValues } from './constants';
 
 export function getMilestone() {
   return null;
@@ -184,6 +184,35 @@ export function transformNotFilters(filters) {
         [key.substring(4, key.length - 1)]: filters[key],
       };
     }, {});
+}
+
+export function getSupportedParams(filters, supportedFilters) {
+  return supportedFilters.reduce((acc, f) => {
+    /**
+     * TODO the API endpoint for the classic boards
+     * accepts assignee wildcard value as 'assigneeId' param -
+     * while the GraphQL query accepts the value in 'assigneWildcardId' field.
+     * Once we deprecate the classics boards,
+     * we should change the filtered search bar to use 'asssigneeWildcardId' as a token name.
+     */
+    if (f === 'assigneeId' && filters[f]) {
+      return AssigneeIdParamValues.includes(filters[f])
+        ? {
+            ...acc,
+            assigneeWildcardId: filters[f].toUpperCase(),
+          }
+        : acc;
+    }
+
+    if (filters[f]) {
+      return {
+        ...acc,
+        [f]: filters[f],
+      };
+    }
+
+    return acc;
+  }, {});
 }
 
 // EE-specific feature. Find the implementation in the `ee/`-folder

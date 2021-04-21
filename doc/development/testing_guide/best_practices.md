@@ -176,9 +176,9 @@ it as `namespace: namespace`. In order to make it work along with `let_it_be`, `
 must be explicitly specified. That keeps the default factory for every example in a suite instead of
 recreating it for each example.
 
-Objects created inside a `factory_default: :keep`, and using
-`create_default` inside a `let_it_be` should be frozen to prevent accidental reliance
-between test examples.
+To prevent accidental reliance between test examples, objects created
+with `create_default` are
+[frozen](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/factory_default.rb).
 
 Maybe we don't need to create 208 different projects - we
 can create one and reuse it. In addition, we can see that only about 1/3 of the

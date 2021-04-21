@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe Gitlab::RepositoryHashCache, :clean_gitlab_redis_cache do
   let_it_be(:project) { create(:project) }
+
   let(:repository) { project.repository }
   let(:namespace) { "#{repository.full_path}:#{project.id}" }
   let(:cache) { described_class.new(repository) }

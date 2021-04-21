@@ -193,8 +193,12 @@ module InProductMarketingHelper
     end
   end
 
-  def in_product_marketing_progress(track, series)
-    s_('InProductMarketing|This is email %{series} of 3 in the %{track} series.') % { series: series + 1, track: track.to_s.humanize }
+  def in_product_marketing_progress(track, series, format: nil)
+    if Gitlab.com?
+      s_('InProductMarketing|This is email %{series} of 3 in the %{track} series.') % { series: series + 1, track: track.to_s.humanize }
+    else
+      s_('InProductMarketing|This is email %{series} of 3 in the %{track} series. To disable notification emails sent by your local GitLab instance, either contact your administrator or %{unsubscribe_link}.') % { series: series + 1, track: track.to_s.humanize, unsubscribe_link: unsubscribe_link(format) }
+    end
   end
 
   def footer_links(format: nil)
@@ -220,11 +224,9 @@ module InProductMarketingHelper
     s_('InProductMarketing|%{strong_start}GitLab Inc.%{strong_end} 268 Bush Street, #350, San Francisco, CA 94104, USA').html_safe % strong_options(format)
   end
 
-  def unsubscribe(format: nil)
-    parts = [
-      s_('InProductMarketing|If you no longer wish to receive marketing emails from us,'),
-      s_('InProductMarketing|you may %{unsubscribe_link} at any time.') % { unsubscribe_link: unsubscribe_link(format) }
-    ]
+  def unsubscribe(track, series, format: nil)
+    parts = Gitlab.com? ? unsubscribe_com(format) : unsubscribe_self_managed(track, series, format)
+
     case format
     when :html
       parts.join(' ')
@@ -234,6 +236,20 @@ module InProductMarketingHelper
   end
 
   private
+
+  def unsubscribe_com(format)
+    [
+      s_('InProductMarketing|If you no longer wish to receive marketing emails from us,'),
+      s_('InProductMarketing|you may %{unsubscribe_link} at any time.') % { unsubscribe_link: unsubscribe_link(format) }
+    ]
+  end
+
+  def unsubscribe_self_managed(track, series, format)
+    [
+      s_('InProductMarketing|To opt out of these onboarding emails, %{unsubscribe_link}.') % { unsubscribe_link: unsubscribe_link(format) },
+      s_("InProductMarketing|If you don't want to receive marketing emails directly from GitLab, %{marketing_preference_link}.") % { marketing_preference_link: marketing_preference_link(track, series, format) }
+    ]
+  end
 
   def in_product_marketing_cta_text(track, series)
     {
@@ -314,7 +330,21 @@ module InProductMarketingHelper
 
   def unsubscribe_link(format)
     unsubscribe_url = Gitlab.com? ? '%tag_unsubscribe_url%' : profile_notifications_url
+
     link(s_('InProductMarketing|unsubscribe'), unsubscribe_url, format)
+  end
+
+  def marketing_preference_link(track, series, format)
+    params = {
+      utm_source: 'SM',
+      utm_medium: 'email',
+      utm_campaign: 'onboarding',
+      utm_term: "#{track}_#{series}"
+    }
+
+    preference_link = "https://about.gitlab.com/company/preference-center/?#{params.to_query}"
+
+    link(s_('InProductMarketing|update your preferences'), preference_link, format)
   end
 
   def link(text, link, format)
