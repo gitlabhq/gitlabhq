@@ -1,5 +1,0 @@
----
-title: Add index to improve project deployments endpoint performance
-merge_request: 57554
-author:
-type: performance

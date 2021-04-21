@@ -1,5 +1,0 @@
----
-title: Add index on (created_at, web_hook_id) to the partitioned web_hook_logs
-merge_request: 59261
-author:
-type: other

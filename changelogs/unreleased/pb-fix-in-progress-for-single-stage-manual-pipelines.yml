@@ -1,5 +1,0 @@
----
-title: Adds skipped state to duration cell for single stage manual pipelines
-merge_request: 56669
-author:
-type: changed

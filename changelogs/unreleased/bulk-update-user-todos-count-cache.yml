@@ -1,5 +1,0 @@
----
-title: Avoid N+1 query when updating todo count cache
-merge_request: 57622
-author:
-type: performance

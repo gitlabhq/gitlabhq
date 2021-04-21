@@ -1,5 +1,0 @@
----
-title: Add database index for cancelable ci_pipelines on user and id
-merge_request: 56314
-author:
-type: performance

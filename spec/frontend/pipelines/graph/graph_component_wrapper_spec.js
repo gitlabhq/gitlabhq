@@ -354,6 +354,36 @@ describe('Pipeline graph wrapper', () => {
       });
     });
 
+    describe('when feature flag is on and local storage is set, but the graph does not use needs', () => {
+      beforeEach(async () => {
+        const nonNeedsResponse = { ...mockPipelineResponse };
+        nonNeedsResponse.data.project.pipeline.usesNeeds = false;
+
+        localStorage.setItem(VIEW_TYPE_KEY, LAYER_VIEW);
+
+        createComponentWithApollo({
+          provide: {
+            glFeatures: {
+              pipelineGraphLayersView: true,
+            },
+          },
+          mountFn: mount,
+          getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
+        });
+
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+      });
+
+      afterEach(() => {
+        localStorage.clear();
+      });
+
+      it('still passes stage type to graph', () => {
+        expect(getGraph().props('viewType')).toBe(STAGE_VIEW);
+      });
+    });
+
     describe('when feature flag is on but pipeline does not use needs', () => {
       beforeEach(async () => {
         const nonNeedsResponse = { ...mockPipelineResponse };

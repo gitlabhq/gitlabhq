@@ -1,5 +1,0 @@
----
-title: Eliminage N+1 database queries on the user notifications page
-merge_request: 58397
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Improve performance by moving TODO creation out of the jobs/request path
-merge_request: 59022
-author:
-type: performance

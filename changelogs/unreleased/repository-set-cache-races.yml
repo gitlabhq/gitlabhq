@@ -1,5 +1,0 @@
----
-title: Fix two data races in the branch names cache
-merge_request: 57607
-author:
-type: fixed

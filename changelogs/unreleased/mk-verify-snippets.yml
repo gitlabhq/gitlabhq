@@ -1,6 +1,0 @@
----
-title: 'Geo: Prepare snippet_repositories and snippet_repository_registry tables for
-  adding verification'
-merge_request: 56596
-author:
-type: added

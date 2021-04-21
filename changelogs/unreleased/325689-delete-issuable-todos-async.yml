@@ -1,5 +1,0 @@
----
-title: Delete all issuable todos asynchronously when issuable is destroyed
-merge_request: 57830
-author:
-type: performance

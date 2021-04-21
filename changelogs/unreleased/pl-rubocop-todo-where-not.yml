@@ -1,5 +1,0 @@
----
-title: Resolves rubocop offenses Rails/WhereNot
-merge_request: 58062
-author: Shubham Kumar (@imskr)
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Bump recommended Redis version from 4.0 to 5.0
-merge_request: 59072
-author: Takuya Noguchi
-type: deprecated

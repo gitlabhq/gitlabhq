@@ -1,5 +1,0 @@
----
-title: Use empty-query by default to check database connection
-merge_request: 54366
-author: Leandro Gomes @leandrogs
-type: performance

@@ -1,5 +1,0 @@
----
-title: Handle assignee changes side effects asynchronously
-merge_request: 58783
-author:
-type: performance

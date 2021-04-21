@@ -1,5 +1,0 @@
----
-title: Add new MergeRequests::SyncCodeOwnerApprovalRulesWorker
-merge_request: 58512
-author:
-type: performance

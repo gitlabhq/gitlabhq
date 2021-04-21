@@ -16,9 +16,11 @@ class MoveContainerRegistryEnabledToProjectFeatures2 < ActiveRecord::Migration[6
   end
 
   def up
-    delete_queued_jobs('MoveContainerRegistryEnabledToProjectFeature')
+    # Superceded by db/post_migrate/20210415155043_move_container_registry_enabled_to_project_features3.rb.
 
-    queue_background_migration_jobs_by_range_at_intervals(Project, MIGRATION, 2.minutes, batch_size: BATCH_SIZE, track_jobs: true)
+    # delete_queued_jobs('MoveContainerRegistryEnabledToProjectFeature')
+
+    # queue_background_migration_jobs_by_range_at_intervals(Project, MIGRATION, 2.minutes, batch_size: BATCH_SIZE, track_jobs: true)
   end
 
   def down

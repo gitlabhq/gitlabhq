@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe Rubocop offenses for api entities
-merge_request: 58193
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

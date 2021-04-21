@@ -1,6 +1,0 @@
----
-title: Allow users to mark pages projects as not deployed during migration to zip
-  storage
-merge_request: 55862
-author:
-type: added

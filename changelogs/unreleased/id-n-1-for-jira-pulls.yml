@@ -1,5 +1,0 @@
----
-title: Resolve N + 1 for JIRA pulls
-merge_request: 57482
-author:
-type: performance

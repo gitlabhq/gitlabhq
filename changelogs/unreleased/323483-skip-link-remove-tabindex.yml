@@ -1,6 +1,0 @@
----
-title: Remove tabindex on skip link that could negatively impact keyboard focus management
-  and order
-merge_request: 55756
-author:
-type: other

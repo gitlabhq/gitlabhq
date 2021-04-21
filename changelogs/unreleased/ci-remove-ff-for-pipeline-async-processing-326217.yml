@@ -1,5 +1,0 @@
----
-title: Move initial pipeline processing to Sidekiq
-merge_request: 58901
-author:
-type: changed

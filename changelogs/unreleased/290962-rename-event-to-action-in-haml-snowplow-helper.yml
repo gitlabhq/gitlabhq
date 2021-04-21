@@ -1,5 +1,0 @@
----
-title: Rename event to action in Snowplow helpers and FE event handlers
-merge_request: 55698
-author:
-type: deprecated

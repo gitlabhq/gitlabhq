@@ -2,8 +2,8 @@
 
 module Gitlab
   module BackgroundMigration
-    # Background migration that updates the value of a
-    # column using the value of another column in the same table.
+    # Background migration that updates the value of one or more
+    # columns using the value of other columns in the same table.
     #
     # - The {start_id, end_id} arguments are at the start so that it can be used
     #   with `queue_batched_background_migration`
@@ -25,17 +25,21 @@ module Gitlab
       # sub_batch_size - We don't want updates to take more than ~100ms
       #                  This allows us to run multiple smaller batches during
       #                  the minimum 2.minute interval that we can schedule jobs
-      # copy_from - The column containing the data to copy.
-      # copy_to - The column to copy the data to.
+      # copy_from - List of columns containing the data to copy.
+      # copy_to - List of columns to copy the data to. Order must match the order in `copy_from`.
       def perform(start_id, end_id, batch_table, batch_column, sub_batch_size, copy_from, copy_to)
-        quoted_copy_from = connection.quote_column_name(copy_from)
-        quoted_copy_to = connection.quote_column_name(copy_to)
+        copy_from = Array.wrap(copy_from)
+        copy_to = Array.wrap(copy_to)
+
+        raise ArgumentError, 'number of source and destination columns must match' unless copy_from.count == copy_to.count
+
+        assignment_clauses = column_assignment_clauses(copy_from, copy_to)
 
         parent_batch_relation = relation_scoped_to_range(batch_table, batch_column, start_id, end_id)
 
         parent_batch_relation.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|
           batch_metrics.time_operation(:update_all) do
-            sub_batch.update_all("#{quoted_copy_to}=#{quoted_copy_from}")
+            sub_batch.update_all(assignment_clauses)
           end
 
           sleep(PAUSE_SECONDS)
@@ -54,6 +58,17 @@ module Gitlab
 
       def relation_scoped_to_range(source_table, source_key_column, start_id, stop_id)
         define_batchable_model(source_table).where(source_key_column => start_id..stop_id)
+      end
+
+      def column_assignment_clauses(copy_from, copy_to)
+        assignments = copy_from.zip(copy_to).map do |from_column, to_column|
+          from_column = connection.quote_column_name(from_column)
+          to_column = connection.quote_column_name(to_column)
+
+          "#{to_column} = #{from_column}"
+        end
+
+        assignments.join(', ')
       end
     end
   end

@@ -1,5 +1,0 @@
----
-title: Remove records without group from webhooks table
-merge_request: 57863
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Support include_ancestors when querying group milestones via GraphQL
-merge_request: 56667
-author:
-type: added

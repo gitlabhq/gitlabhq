@@ -29,7 +29,7 @@ RSpec.describe 'profiles/keys/_form.html.haml' do
 
     it 'has the title field', :aggregate_failures do
       expect(rendered).to have_field('Title', type: 'text', placeholder: 'e.g. My MacBook key')
-      expect(rendered).to have_text('Give your individual key a title.')
+      expect(rendered).to have_text('Give your individual key a title. This will be publicly visible.')
     end
 
     it 'has the expires at field', :aggregate_failures do

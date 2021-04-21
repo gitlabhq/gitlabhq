@@ -1,6 +1,0 @@
----
-title: 'Remove group member: add option to also remove direct user membership from
-  subgroups and projects'
-merge_request: 55980
-author: Jonas Wälter @wwwjon
-type: changed

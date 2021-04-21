@@ -1,5 +1,0 @@
----
-title: "Add CI_COMMIT_AUTHOR predefined variable"
-merge_request: 56144
-author: Craig Andrews @candrews
-type: added

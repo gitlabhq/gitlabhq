@@ -1,5 +1,0 @@
----
-title: Add id and short_sha GraphQL fields to jobType in the CI namespace
-merge_request: 56714
-author:
-type: changed

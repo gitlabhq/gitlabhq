@@ -1,5 +1,0 @@
----
-title: Add count of unique users to receive on-call notification to usage ping
-merge_request: 58606
-author:
-type: changed

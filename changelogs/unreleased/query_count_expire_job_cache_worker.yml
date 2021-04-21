@@ -1,5 +1,0 @@
----
-title: Reduce query count for popular worker ExpireJobCacheWorker
-merge_request: 57773
-author:
-type: performance

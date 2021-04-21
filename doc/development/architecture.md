@@ -625,6 +625,8 @@ Redis is packaged to provide a place to store:
 - temporary cache information
 - background job queues
 
+See our [Redis guidelines](redis.md) for more information about how GitLab uses Redis.
+
 #### Redis Exporter
 
 - [Project page](https://github.com/oliver006/redis_exporter/blob/master/README.md)

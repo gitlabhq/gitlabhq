@@ -1,5 +1,0 @@
----
-title: Fix N+1 issue when loading merge request comments
-merge_request: 57374
-author:
-type: performance

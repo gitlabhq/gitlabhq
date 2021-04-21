@@ -1,5 +1,0 @@
----
-title: Close DropLab dropdowns on click instead of mousedown
-merge_request: 56847
-author: Simon Stieger @sim0
-type: fixed

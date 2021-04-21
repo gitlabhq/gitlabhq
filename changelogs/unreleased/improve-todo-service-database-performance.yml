@@ -1,5 +1,0 @@
----
-title: Reduce N+1 queries in creating todos after user mentions in a note
-merge_request: 57525
-author:
-type: performance

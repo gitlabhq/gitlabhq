@@ -138,6 +138,10 @@ export default {
         metricsPath: this.metricsPath,
       };
     },
+    graphViewType() {
+      /* This prevents reading view type off the localStorage value if it does not apply. */
+      return this.showGraphViewSelector ? this.currentViewType : STAGE_VIEW;
+    },
     showLoadingIcon() {
       /*
         Shows the icon only when the graph is empty, not when it is is
@@ -205,7 +209,7 @@ export default {
     >
       <graph-view-selector
         v-if="showGraphViewSelector"
-        :type="currentViewType"
+        :type="graphViewType"
         :show-links="showLinks"
         @updateViewType="updateViewType"
         @updateShowLinksState="updateShowLinksState"
@@ -218,7 +222,7 @@ export default {
       :pipeline="pipeline"
       :pipeline-layers="getPipelineLayers()"
       :show-links="showLinks"
-      :view-type="currentViewType"
+      :view-type="graphViewType"
       @error="reportFailure"
       @refreshPipelineGraph="refreshPipelineGraph"
     />

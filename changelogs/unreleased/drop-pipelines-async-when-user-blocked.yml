@@ -1,5 +1,0 @@
----
-title: Drop user pipelines async when user is blocked
-merge_request: 59129
-author:
-type: fixed

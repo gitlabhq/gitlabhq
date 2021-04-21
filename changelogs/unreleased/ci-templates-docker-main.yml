@@ -1,6 +1,0 @@
----
-title: Unify the Docker Image build CI template and use the default branch instead
-  of hardcoded 'master'
-merge_request: 51931
-author: dnsmichi
-type: changed

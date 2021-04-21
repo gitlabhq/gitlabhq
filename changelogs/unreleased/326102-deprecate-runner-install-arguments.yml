@@ -1,5 +1,0 @@
----
-title: Remove groupId and projectId arguments to Runner install instructions
-merge_request: 57720
-author:
-type: changed

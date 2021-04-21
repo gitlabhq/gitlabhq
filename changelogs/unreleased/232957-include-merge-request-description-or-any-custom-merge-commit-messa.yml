@@ -1,5 +1,0 @@
----
-title: Fix issue where merge description not showing when merged with merge train
-merge_request: 57787
-author:
-type: fixed

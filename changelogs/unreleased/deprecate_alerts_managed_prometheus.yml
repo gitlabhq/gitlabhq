@@ -1,5 +1,0 @@
----
-title: Deprecate Alerts for Managed Prometheus
-merge_request: 59433
-author:
-type: deprecated

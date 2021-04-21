@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe offenses in spec/serializers
-merge_request: 58406
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

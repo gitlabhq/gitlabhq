@@ -1,5 +1,0 @@
----
-title: Add support for SMTP connection pooling when sending emails
-merge_request: 57805
-author:
-type: added

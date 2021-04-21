@@ -1,6 +1,0 @@
----
-title: 'Improve UI of Runner Installation instructions: add a loading indicator, use
-  checkmark on selected options, reduce height of modal'
-merge_request: 58055
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Reduce SQL requests on building artifacts
-merge_request: 58339
-author:
-type: performance

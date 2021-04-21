@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang Rubocop offenses for legacy github import
-merge_request: 58054
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

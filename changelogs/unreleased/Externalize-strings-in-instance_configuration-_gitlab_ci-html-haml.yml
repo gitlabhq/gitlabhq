@@ -1,5 +1,0 @@
----
-title: Externalize strings in instance_configuration/_gitlab_ci.html.haml
-merge_request: 58435
-author: nuwe1
-type: other

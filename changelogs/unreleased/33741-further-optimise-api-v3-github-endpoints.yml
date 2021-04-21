@@ -1,5 +1,0 @@
----
-title: Resolve more N+1 issues in Jira pulls API
-merge_request: 57658
-author:
-type: performance

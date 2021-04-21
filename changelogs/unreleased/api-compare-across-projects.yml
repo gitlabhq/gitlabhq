@@ -1,6 +1,0 @@
----
-title: "'/projects/:id/repository/compare' supports comparing branches/commits on
-  different projects."
-merge_request: 57418
-author: Exchizz (@Exchizz)
-type: added

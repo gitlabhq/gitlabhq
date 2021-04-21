@@ -1,5 +1,0 @@
----
-title: Resolve group_member policy n+1
-merge_request: 58668
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Avoid N+1 queries in breadcrumbs
-merge_request: 57725
-author:
-type: performance

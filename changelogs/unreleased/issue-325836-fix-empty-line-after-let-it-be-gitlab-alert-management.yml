@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe in spec/lib/gitlab/alert_management
-merge_request: 58244
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

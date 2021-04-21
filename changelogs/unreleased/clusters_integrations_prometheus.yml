@@ -1,6 +1,0 @@
----
-title: Adds new clusters_integrations_prometheus table and model for Prometheus Cluster
-  Integration
-merge_request: 59091
-author:
-type: changed

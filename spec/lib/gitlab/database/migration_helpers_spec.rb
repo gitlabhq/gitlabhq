@@ -1730,12 +1730,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
     end
 
-    context 'when the column to convert does not exist' do
-      let(:column) { :foobar }
-
+    context 'when the column to migrate does not exist' do
       it 'raises an error' do
-        expect { model.initialize_conversion_of_integer_to_bigint(table, column) }
-          .to raise_error("Column #{column} does not exist on #{table}")
+        expect { model.initialize_conversion_of_integer_to_bigint(table, :this_column_is_not_real) }
+          .to raise_error(ArgumentError, "Column this_column_is_not_real does not exist on #{table}")
       end
     end
 
@@ -1743,7 +1741,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it 'creates a not-null bigint column and installs triggers' do
         expect(model).to receive(:add_column).with(table, tmp_column, :bigint, default: 0, null: false)
 
-        expect(model).to receive(:install_rename_triggers).with(table, column, tmp_column)
+        expect(model).to receive(:install_rename_triggers).with(table, [column], [tmp_column])
 
         model.initialize_conversion_of_integer_to_bigint(table, column)
       end
@@ -1755,7 +1753,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it 'creates a not-null bigint column and installs triggers' do
         expect(model).to receive(:add_column).with(table, tmp_column, :bigint, default: 0, null: false)
 
-        expect(model).to receive(:install_rename_triggers).with(table, column, tmp_column)
+        expect(model).to receive(:install_rename_triggers).with(table, [column], [tmp_column])
 
         model.initialize_conversion_of_integer_to_bigint(table, column)
       end
@@ -1767,9 +1765,28 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it 'creates a nullable bigint column and installs triggers' do
         expect(model).to receive(:add_column).with(table, tmp_column, :bigint, default: nil)
 
-        expect(model).to receive(:install_rename_triggers).with(table, column, tmp_column)
+        expect(model).to receive(:install_rename_triggers).with(table, [column], [tmp_column])
 
         model.initialize_conversion_of_integer_to_bigint(table, column)
+      end
+    end
+
+    context 'when multiple columns are given' do
+      it 'creates the correct columns and installs the trigger' do
+        columns_to_convert = %i[id non_nullable_column nullable_column]
+        temporary_columns = %w[
+          id_convert_to_bigint
+          non_nullable_column_convert_to_bigint
+          nullable_column_convert_to_bigint
+        ]
+
+        expect(model).to receive(:add_column).with(table, temporary_columns[0], :bigint, default: 0, null: false)
+        expect(model).to receive(:add_column).with(table, temporary_columns[1], :bigint, default: 0, null: false)
+        expect(model).to receive(:add_column).with(table, temporary_columns[2], :bigint, default: nil)
+
+        expect(model).to receive(:install_rename_triggers).with(table, columns_to_convert, temporary_columns)
+
+        model.initialize_conversion_of_integer_to_bigint(table, columns_to_convert)
       end
     end
   end
@@ -1783,6 +1800,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       model.create_table table, id: false do |t|
         t.integer :id, primary_key: true
         t.text :message, null: false
+        t.integer :other_id
         t.timestamps
       end
 
@@ -1808,14 +1826,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       it 'raises an error' do
         expect { model.backfill_conversion_of_integer_to_bigint(table, column) }
-          .to raise_error("Column #{column} does not exist on #{table}")
+          .to raise_error(ArgumentError, "Column #{column} does not exist on #{table}")
       end
     end
 
     context 'when the temporary column does not exist' do
       it 'raises an error' do
         expect { model.backfill_conversion_of_integer_to_bigint(table, column) }
-          .to raise_error('The temporary column does not exist, initialize it with `initialize_conversion_of_integer_to_bigint`')
+          .to raise_error(ArgumentError, "Column #{tmp_column} does not exist on #{table}")
       end
     end
 
@@ -1829,33 +1847,65 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       let(:migration_relation) { Gitlab::Database::BackgroundMigration::BatchedMigration.active }
 
       before do
-        model.initialize_conversion_of_integer_to_bigint(table, column)
+        model.initialize_conversion_of_integer_to_bigint(table, columns)
 
         model_class.create!(message: 'hello')
         model_class.create!(message: 'so long')
       end
 
-      it 'creates the batched migration tracking record' do
-        last_record = model_class.create!(message: 'goodbye')
+      context 'when a single column is being converted' do
+        let(:columns) { column }
 
-        expect do
-          model.backfill_conversion_of_integer_to_bigint(table, column, batch_size: 2, sub_batch_size: 1)
-        end.to change { migration_relation.count }.by(1)
+        it 'creates the batched migration tracking record' do
+          last_record = model_class.create!(message: 'goodbye')
 
-        expect(migration_relation.last).to have_attributes(
-          job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
-          table_name: table.to_s,
-          column_name: column.to_s,
-          min_value: 1,
-          max_value: last_record.id,
-          interval: 120,
-          batch_size: 2,
-          sub_batch_size: 1,
-          job_arguments: [column.to_s, "#{column}_convert_to_bigint"]
-        )
+          expect do
+            model.backfill_conversion_of_integer_to_bigint(table, column, batch_size: 2, sub_batch_size: 1)
+          end.to change { migration_relation.count }.by(1)
+
+          expect(migration_relation.last).to have_attributes(
+            job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
+            table_name: table.to_s,
+            column_name: column.to_s,
+            min_value: 1,
+            max_value: last_record.id,
+            interval: 120,
+            batch_size: 2,
+            sub_batch_size: 1,
+            job_arguments: [[column.to_s], ["#{column}_convert_to_bigint"]]
+          )
+        end
+      end
+
+      context 'when multiple columns are being converted' do
+        let(:other_column) { :other_id }
+        let(:other_tmp_column) { "#{other_column}_convert_to_bigint" }
+        let(:columns) { [column, other_column] }
+
+        it 'creates the batched migration tracking record' do
+          last_record = model_class.create!(message: 'goodbye', other_id: 50)
+
+          expect do
+            model.backfill_conversion_of_integer_to_bigint(table, columns, batch_size: 2, sub_batch_size: 1)
+          end.to change { migration_relation.count }.by(1)
+
+          expect(migration_relation.last).to have_attributes(
+            job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
+            table_name: table.to_s,
+            column_name: column.to_s,
+            min_value: 1,
+            max_value: last_record.id,
+            interval: 120,
+            batch_size: 2,
+            sub_batch_size: 1,
+            job_arguments: [[column.to_s, other_column.to_s], [tmp_column, other_tmp_column]]
+          )
+        end
       end
 
       context 'when the migration should be performed inline' do
+        let(:columns) { column }
+
         it 'calls the runner to run the entire migration' do
           expect(model).to receive(:perform_background_migration_inline?).and_return(true)
 

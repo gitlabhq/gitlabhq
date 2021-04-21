@@ -1,5 +1,0 @@
----
-title: Move CI related paths to cached MR widget
-merge_request: 58711
-author:
-type: performance

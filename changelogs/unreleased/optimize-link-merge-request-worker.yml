@@ -1,5 +1,0 @@
----
-title: Optimize searching cherry-picked merge requests for linking deployments
-merge_request: 58568
-author:
-type: performance

@@ -12,6 +12,7 @@ RSpec.describe Resolvers::Metrics::Dashboards::AnnotationResolver do
       let_it_be(:current_user) { create(:user) }
       let_it_be(:environment) { create(:environment) }
       let_it_be(:path) { 'config/prometheus/common_metrics.yml' }
+
       let(:dashboard) { PerformanceMonitoring::PrometheusDashboard.new(path: path, environment: environment) }
       let(:args) do
         {

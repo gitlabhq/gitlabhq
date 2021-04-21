@@ -1,5 +1,0 @@
----
-title: Remove the recursive_namespace_lookup_as_inner_join feature flag
-merge_request: 57131
-author:
-type: other

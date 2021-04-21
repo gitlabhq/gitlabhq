@@ -1,5 +1,0 @@
----
-title: Preload group parent to fix N+1 queries for project search
-merge_request: 57277
-author:
-type: performance

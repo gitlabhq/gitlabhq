@@ -92,7 +92,7 @@ RSpec.describe Packages::Rubygems::DependencyResolverService do
             ]
           }]
 
-          expect(subject.payload).to eq(expected_result)
+          expect(subject.payload).to match_array(expected_result)
         end
       end
     end

@@ -1,5 +1,0 @@
----
-title: Check access only for requesting user when checking if subscribed
-merge_request: 57201
-author:
-type: performance

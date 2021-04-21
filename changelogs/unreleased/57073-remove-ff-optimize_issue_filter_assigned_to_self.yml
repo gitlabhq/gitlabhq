@@ -1,5 +1,0 @@
----
-title: Remove feature flag optimize_issue_filter_assigned_to_self
-merge_request: 57775
-author:
-type: performance

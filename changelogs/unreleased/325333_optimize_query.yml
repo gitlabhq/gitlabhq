@@ -1,5 +1,0 @@
----
-title: Apply optimizations to JobsController#show.json
-merge_request: 57367
-author:
-type: performance

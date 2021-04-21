@@ -1,5 +1,0 @@
----
-title: Add support for the MATERIALIZED keyword when using WITH (CTE) queries in PostgreSQL 12
-merge_request: 56976
-author:
-type: other

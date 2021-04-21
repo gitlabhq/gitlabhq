@@ -1,5 +1,0 @@
----
-title: Avoid listing snippets through GraphQL when user profile is private
-merge_request: 58739
-author:
-type: fixed

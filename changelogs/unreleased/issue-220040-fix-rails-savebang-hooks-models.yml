@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang Rubocop offenses for hooks module
-merge_request: 57918
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

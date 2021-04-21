@@ -1,5 +1,0 @@
----
-title: Fix N+1 in projects REST endpoint with forked projects
-merge_request: 57798
-author:
-type: performance

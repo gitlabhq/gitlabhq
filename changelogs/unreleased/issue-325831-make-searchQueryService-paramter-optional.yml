@@ -1,5 +1,0 @@
----
-title: Make NuGet SearchQueryService q parameter optional
-merge_request: 57654
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

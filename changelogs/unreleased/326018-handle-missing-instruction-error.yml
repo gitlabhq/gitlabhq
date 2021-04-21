@@ -1,6 +1,0 @@
----
-title: Display error message when runner installation instructions modal cannot be
-  loaded correctly
-merge_request: 57588
-author:
-type: fixed

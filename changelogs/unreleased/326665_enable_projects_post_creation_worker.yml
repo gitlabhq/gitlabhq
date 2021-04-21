@@ -1,5 +1,0 @@
----
-title: Create prometheus service asynchronously by default when creating a project
-merge_request: 59273
-author:
-type: changed

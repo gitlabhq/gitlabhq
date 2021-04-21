@@ -1,5 +1,0 @@
----
-title: Add instance_url column to the jira_connect_installations table
-merge_request: 59148
-author:
-type: added

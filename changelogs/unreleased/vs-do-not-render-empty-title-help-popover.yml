@@ -1,5 +1,0 @@
----
-title: Do not render empty title in HelpPopover
-merge_request: 57025
-author:
-type: fixed

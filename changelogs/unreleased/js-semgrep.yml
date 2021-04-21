@@ -1,5 +1,0 @@
----
-title: Add JavaScript, TypeScript, and React support to the semgrep analyzer.
-merge_request: 55257
-author:
-type: added

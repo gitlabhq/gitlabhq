@@ -1,5 +1,0 @@
----
-title: Validate NOT NULL constraint on gitlab_subscriptions namespace_id
-merge_request: 57113
-author:
-type: other

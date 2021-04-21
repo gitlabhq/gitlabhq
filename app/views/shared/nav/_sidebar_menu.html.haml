@@ -1,7 +1,7 @@
 = nav_link(**sidebar_menu.all_active_routes, html_options: sidebar_menu.nav_link_html_options) do
   = link_to sidebar_menu.link, **sidebar_menu.container_html_options, data: { qa_selector: 'sidebar_menu_link', qa_menu_item: sidebar_menu.title } do
     - if sidebar_menu.icon_or_image?
-      .nav-icon-container
+      %span.nav-icon-container
         - if sidebar_menu.image_path
           = image_tag(sidebar_menu.image_path, **sidebar_menu.image_html_options)
         - elsif sidebar_menu.sprite_icon

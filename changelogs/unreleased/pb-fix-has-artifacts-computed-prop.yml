@@ -1,5 +1,0 @@
----
-title: Fix artifacts section from showing up when no artifacts are present
-merge_request: 56784
-author:
-type: fixed

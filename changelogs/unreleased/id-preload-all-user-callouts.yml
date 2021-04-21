@@ -1,5 +1,0 @@
----
-title: Preload all user callouts in a single request
-merge_request: 57679
-author:
-type: performance

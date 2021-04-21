@@ -31,6 +31,15 @@ RSpec.describe Gitlab::BackgroundMigration::MoveContainerRegistryEnabledToProjec
     end
 
     it 'copies values to project_features' do
+      table(:background_migration_jobs).create!(
+        class_name: 'MoveContainerRegistryEnabledToProjectFeature',
+        arguments: [project1.id, project4.id]
+      )
+      table(:background_migration_jobs).create!(
+        class_name: 'MoveContainerRegistryEnabledToProjectFeature',
+        arguments: [-1, -3]
+      )
+
       expect(project1.container_registry_enabled).to eq(true)
       expect(project2.container_registry_enabled).to eq(false)
       expect(project3.container_registry_enabled).to eq(nil)
@@ -57,6 +66,9 @@ RSpec.describe Gitlab::BackgroundMigration::MoveContainerRegistryEnabledToProjec
       expect(project_feature1.reload.container_registry_access_level).to eq(enabled)
       expect(project_feature2.reload.container_registry_access_level).to eq(disabled)
       expect(project_feature3.reload.container_registry_access_level).to eq(disabled)
+
+      expect(table(:background_migration_jobs).first.status).to eq(1) # succeeded
+      expect(table(:background_migration_jobs).second.status).to eq(0) # pending
     end
 
     context 'when no projects exist in range' do

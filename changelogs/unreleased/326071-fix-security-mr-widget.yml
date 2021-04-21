@@ -1,5 +1,0 @@
----
-title: Fix security report fetching in Merge Requests
-merge_request: 57574
-author:
-type: fixed

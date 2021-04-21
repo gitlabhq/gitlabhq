@@ -1,5 +1,0 @@
----
-title: 'BulkImports: Add `BulkImports::PipelineWorker` to process each BulkImport pipeline on its own background job'
-merge_request: 57153
-author:
-type: added

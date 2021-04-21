@@ -3,23 +3,15 @@
 exports[`NpmInstallation renders all the messages 1`] = `
 <div>
   <installation-title-stub
-    options="[object Object]"
+    options="[object Object],[object Object]"
     packagetype="npm"
   />
    
   <code-instruction-stub
     copytext="Copy npm command"
     instruction="npm i @Test/package"
-    label="npm command"
+    label=""
     trackingaction="copy_npm_install_command"
-    trackinglabel="code_instruction"
-  />
-   
-  <code-instruction-stub
-    copytext="Copy yarn command"
-    instruction="yarn add @Test/package"
-    label="yarn command"
-    trackingaction="copy_yarn_install_command"
     trackinglabel="code_instruction"
   />
    
@@ -32,16 +24,8 @@ exports[`NpmInstallation renders all the messages 1`] = `
   <code-instruction-stub
     copytext="Copy npm setup command"
     instruction="echo @Test:registry=undefined/ >> .npmrc"
-    label="npm command"
+    label=""
     trackingaction="copy_npm_setup_command"
-    trackinglabel="code_instruction"
-  />
-   
-  <code-instruction-stub
-    copytext="Copy yarn setup command"
-    instruction="echo \\\\\\"@Test:registry\\\\\\" \\\\\\"undefined/\\\\\\" >> .yarnrc"
-    label="yarn command"
-    trackingaction="copy_yarn_setup_command"
     trackinglabel="code_instruction"
   />
    

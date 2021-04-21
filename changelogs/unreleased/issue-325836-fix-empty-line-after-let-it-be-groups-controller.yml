@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe Rubocop offenses for groups controller
-merge_request: 58174
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

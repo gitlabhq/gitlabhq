@@ -1,5 +1,0 @@
----
-title: Add target_type column to dast_site_profiles database table
-merge_request: 58723
-author:
-type: added

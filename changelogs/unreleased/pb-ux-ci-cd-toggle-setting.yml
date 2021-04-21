@@ -1,5 +1,0 @@
----
-title: Rename pipelines setting to CI/CD and move out from under repository section
-merge_request: 56857
-author:
-type: changed

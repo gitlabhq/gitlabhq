@@ -1,5 +1,0 @@
----
-title: Remove graphql_individual_release_page feature flag
-merge_request: 56882
-author:
-type: removed

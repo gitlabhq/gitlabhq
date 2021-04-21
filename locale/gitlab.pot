@@ -10531,6 +10531,9 @@ msgstr ""
 msgid "DeleteProject|Failed to remove some tags in project container registry. Please try again or contact administrator."
 msgstr ""
 
+msgid "DeleteProject|Failed to remove webhooks. Please try again or contact administrator."
+msgstr ""
+
 msgid "DeleteProject|Failed to remove wiki repository. Please try again or contact administrator."
 msgstr ""
 
@@ -22874,6 +22877,9 @@ msgstr ""
 msgid "PackageRegistry|Show PyPi commands"
 msgstr ""
 
+msgid "PackageRegistry|Show Yarn commands"
+msgstr ""
+
 msgid "PackageRegistry|Sorry, your filter produced no results"
 msgstr ""
 
@@ -22916,13 +22922,7 @@ msgstr ""
 msgid "PackageRegistry|npm"
 msgstr ""
 
-msgid "PackageRegistry|npm command"
-msgstr ""
-
 msgid "PackageRegistry|published by %{author}"
-msgstr ""
-
-msgid "PackageRegistry|yarn command"
 msgstr ""
 
 msgid "Packages"
@@ -24356,7 +24356,7 @@ msgstr ""
 msgid "Profiles|GitLab is unable to verify your identity automatically. For security purposes, you must set a password by %{openingTag}resetting your password%{closingTag} to delete your account."
 msgstr ""
 
-msgid "Profiles|Give your individual key a title."
+msgid "Profiles|Give your individual key a title. This will be publicly visible."
 msgstr ""
 
 msgid "Profiles|If after setting a password, the option to delete your account is still not available, please email %{data_request} to begin the account deletion process."

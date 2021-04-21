@@ -1,5 +1,0 @@
----
-title: Preload additional data to fix N+1 queries for merge request search
-merge_request: 57284
-author:
-type: performance

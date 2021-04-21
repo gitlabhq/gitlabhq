@@ -1,5 +1,0 @@
----
-title: Fix EmptyLineAfterFinalLetItBe offenses in spec/lib/gitlab/graphql
-merge_request: 58261
-author: Huzaifa Iftikhar @huzaifaiftikhar
-type: fixed

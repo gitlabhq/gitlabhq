@@ -1,5 +1,0 @@
----
-title: Add index on ci_stages to speed up batch pipeline cancellation
-merge_request: 56126
-author:
-type: performance
