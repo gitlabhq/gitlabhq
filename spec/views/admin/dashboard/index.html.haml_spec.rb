@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'admin/dashboard/index.html.haml' do
   include Devise::Test::ControllerHelpers
+  include StubVersion
 
   before do
     counts = Admin::DashboardController::COUNTED_ITEMS.each_with_object({}) do |item, hash|
@@ -26,10 +27,21 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
     expect(rendered).to have_content Gitlab::Workhorse.version
   end
 
-  it "includes revision of GitLab" do
+  it "includes revision of GitLab for pre VERSION" do
+    stub_version('13.11.0-pre', 'abcdefg')
+
     render
 
-    expect(rendered).to have_content "#{Gitlab::VERSION} #{Gitlab.revision}"
+    expect(rendered).to have_content "13.11.0-pre abcdefg"
+  end
+
+  it 'shows the tag for GitLab version' do
+    stub_version('13.11.0', 'abcdefg')
+
+    render
+
+    expect(rendered).to have_content "13.11.0"
+    expect(rendered).not_to have_content "abcdefg"
   end
 
   it 'does not include license breakdown' do

@@ -3,9 +3,9 @@ import SecretValues from '~/behaviors/secret_values';
 import initSettingsPipelinesTriggers from '~/ci_settings_pipeline_triggers';
 import initVariableList from '~/ci_variable_list';
 import initDeployFreeze from '~/deploy_freeze';
+import registrySettingsApp from '~/packages_and_registries/settings/project/registry_settings_bundle';
 import { initInstallRunner } from '~/pages/shared/mount_runner_instructions';
 import initSharedRunnersToggle from '~/projects/settings/mount_shared_runners_toggle';
-import registrySettingsApp from '~/registry/settings/registry_settings_bundle';
 import initSettingsPanels from '~/settings_panels';
 
 document.addEventListener('DOMContentLoaded', () => {

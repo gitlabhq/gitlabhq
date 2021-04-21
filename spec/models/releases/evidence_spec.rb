@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Releases::Evidence do
   let_it_be(:project) { create(:project) }
+
   let(:release) { create(:release, project: project) }
 
   describe 'associations' do

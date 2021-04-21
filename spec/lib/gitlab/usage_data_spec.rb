@@ -1158,8 +1158,17 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
 
     describe ".system_usage_data_settings" do
+      let(:prometheus_client) { double(Gitlab::PrometheusClient) }
+
       before do
         allow(described_class).to receive(:operating_system).and_return('ubuntu-20.04')
+        expect(prometheus_client).to receive(:query).with(/gitlab_usage_ping:gitaly_apdex:ratio_avg_over_time_5m/).and_return([
+          {
+            'metric' => {},
+            'value' => [1616016381.473, '0.95']
+          }
+        ])
+        expect(described_class).to receive(:with_prometheus_client).and_yield(prometheus_client)
       end
 
       subject { described_class.system_usage_data_settings }
@@ -1170,6 +1179,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       it 'populates operating system information' do
         expect(subject[:settings][:operating_system]).to eq('ubuntu-20.04')
+      end
+
+      it 'gathers gitaly apdex', :aggregate_failures do
+        expect(subject[:settings][:gitaly_apdex]).to be_within(0.001).of(0.95)
       end
     end
   end

@@ -6,6 +6,7 @@ RSpec.describe Ci::ChangeVariablesService do
   let(:service) { described_class.new(container: group, current_user: user, params: params) }
 
   let_it_be(:user) { create(:user) }
+
   let(:group) { spy(:group, variables: []) }
   let(:params) { { variables_attributes: [{ key: 'new_variable', value: 'variable_value' }] } }
 

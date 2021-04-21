@@ -243,7 +243,8 @@ module Gitlab
         {
           settings: {
             ldap_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth::Ldap::Config.encrypted_secrets.active? },
-            operating_system: alt_usage_data(fallback: nil) { operating_system }
+            operating_system: alt_usage_data(fallback: nil) { operating_system },
+            gitaly_apdex: alt_usage_data { gitaly_apdex }
           }
         }
       end
@@ -766,6 +767,16 @@ module Gitlab
       end
 
       private
+
+      def gitaly_apdex
+        with_prometheus_client(verify: false, fallback: FALLBACK) do |client|
+          result = client.query('avg_over_time(gitlab_usage_ping:gitaly_apdex:ratio_avg_over_time_5m[1w])').first
+
+          break FALLBACK unless result
+
+          result['value'].last.to_f
+        end
+      end
 
       def aggregated_metrics
         @aggregated_metrics ||= ::Gitlab::Usage::Metrics::Aggregates::Aggregate.new(recorded_at)

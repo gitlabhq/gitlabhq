@@ -1,0 +1,20 @@
+---
+key_path: settings.gitaly_apdex
+description: Gitaly application performance
+product_section: dev
+product_stage: create
+product_group: group::gitaly
+product_category: gitaly
+value_type: number
+status: implemented
+milestone: "13.11"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47040
+time_frame: none
+data_source: prometheus
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

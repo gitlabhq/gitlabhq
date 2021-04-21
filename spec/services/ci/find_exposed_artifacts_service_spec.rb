@@ -15,6 +15,7 @@ RSpec.describe Ci::FindExposedArtifactsService do
   end
 
   let_it_be(:project) { create(:project) }
+
   let(:user) { nil }
 
   after do

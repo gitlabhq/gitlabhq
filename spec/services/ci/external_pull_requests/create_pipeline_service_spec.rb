@@ -6,6 +6,7 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
   describe '#execute' do
     let_it_be(:project) { create(:project, :auto_devops, :repository) }
     let_it_be(:user) { create(:user) }
+
     let(:pull_request) { create(:external_pull_request, project: project) }
 
     before do

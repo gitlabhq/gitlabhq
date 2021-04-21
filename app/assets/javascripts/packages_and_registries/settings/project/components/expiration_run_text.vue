@@ -1,6 +1,9 @@
 <script>
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
-import { NEXT_CLEANUP_LABEL, NOT_SCHEDULED_POLICY_TEXT } from '~/registry/settings/constants';
+import {
+  NEXT_CLEANUP_LABEL,
+  NOT_SCHEDULED_POLICY_TEXT,
+} from '~/packages_and_registries/settings/project/constants';
 
 export default {
   components: {

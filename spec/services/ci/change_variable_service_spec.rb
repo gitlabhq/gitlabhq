@@ -6,6 +6,7 @@ RSpec.describe Ci::ChangeVariableService do
   let(:service) { described_class.new(container: group, current_user: user, params: params) }
 
   let_it_be(:user) { create(:user) }
+
   let(:group) { create(:group) }
 
   describe '#execute' do

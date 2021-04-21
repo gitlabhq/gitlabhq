@@ -362,3 +362,7 @@ This uses GraphQL Ruby's built-in Rake tasks to generate files in both [IDL](htt
 ### Update documentation and schema definitions
 
 The following command combines the intent of [Update GraphQL documentation and schema definitions](#update-graphql-documentation-and-schema-definitions) and [Update machine-readable schema files](#update-machine-readable-schema-files):
+
+```shell
+bundle exec rake gitlab:graphql:update_all
+```

@@ -1,0 +1,1 @@
+export const DEFAULT_DAYS_TO_DISPLAY = 30;

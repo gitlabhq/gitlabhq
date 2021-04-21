@@ -13,6 +13,7 @@ RSpec.describe Ci::PipelineTriggerService do
 
   describe '#execute' do
     let_it_be(:user) { create(:user) }
+
     let(:result) { described_class.new(project, user, params).execute }
 
     before do

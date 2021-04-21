@@ -125,6 +125,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
     context 'with nuget_metadatum' do
       let_it_be(:package) { create(:nuget_package, project: project) }
       let_it_be(:nuget_metadatum) { create(:nuget_metadatum, package: package) }
+
       let(:expected_package_details) { super().merge(nuget_metadatum: nuget_metadatum) }
 
       it 'returns nuget_metadatum' do

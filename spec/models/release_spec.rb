@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Release do
   let_it_be(:user)    { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
+
   let(:release) { create(:release, project: project, author: user) }
 
   it { expect(release).to be_valid }

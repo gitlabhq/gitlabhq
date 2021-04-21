@@ -1,8 +1,11 @@
 import { GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { GlFormGroup } from 'jest/registry/shared/stubs';
-import component from '~/registry/settings/components/expiration_run_text.vue';
-import { NEXT_CLEANUP_LABEL, NOT_SCHEDULED_POLICY_TEXT } from '~/registry/settings/constants';
+import component from '~/packages_and_registries/settings/project/components/expiration_run_text.vue';
+import {
+  NEXT_CLEANUP_LABEL,
+  NOT_SCHEDULED_POLICY_TEXT,
+} from '~/packages_and_registries/settings/project/constants';
 
 describe('ExpirationToggle', () => {
   let wrapper;

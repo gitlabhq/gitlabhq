@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe UserPresenter do
   let_it_be(:user) { create(:user) }
+
   subject(:presenter) { described_class.new(user) }
 
   describe '#web_path' do

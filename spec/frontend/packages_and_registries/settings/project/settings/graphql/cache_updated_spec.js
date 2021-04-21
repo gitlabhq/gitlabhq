@@ -1,5 +1,5 @@
-import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.query.graphql';
-import { updateContainerExpirationPolicy } from '~/registry/settings/graphql/utils/cache_update';
+import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
+import { updateContainerExpirationPolicy } from '~/packages_and_registries/settings/project/graphql/utils/cache_update';
 
 describe('Registry settings cache update', () => {
   let client;

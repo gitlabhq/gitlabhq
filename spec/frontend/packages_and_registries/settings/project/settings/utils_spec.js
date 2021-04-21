@@ -2,7 +2,7 @@ import {
   formOptionsGenerator,
   optionLabelGenerator,
   olderThanTranslationGenerator,
-} from '~/registry/settings/utils';
+} from '~/packages_and_registries/settings/project/utils';
 
 describe('Utils', () => {
   describe('optionLabelGenerator', () => {

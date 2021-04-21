@@ -11,6 +11,7 @@ RSpec.describe Packages::Nuget::SearchResultsPresenter do
   let_it_be(:packages_c) { create_list(:nuget_package, 5, project: project, name: 'DummyPackageC') }
   let_it_be(:search_results) { OpenStruct.new(total_count: 3, results: [package_a, packages_b, packages_c].flatten) }
   let_it_be(:presenter) { described_class.new(search_results) }
+
   let(:total_count) { presenter.total_count }
   let(:data) { presenter.data }
 

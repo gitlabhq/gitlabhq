@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
+
   let(:prev_pipeline) { create(:ci_pipeline, project: project) }
   let(:new_commit) { create(:commit, project: project) }
   let(:pipeline) { create(:ci_pipeline, project: project, sha: new_commit.sha) }

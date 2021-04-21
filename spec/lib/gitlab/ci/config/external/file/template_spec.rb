@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::External::File::Template do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
+
   let(:context_params) { { project: project, sha: '12345', user: user } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:template) { 'Auto-DevOps.gitlab-ci.yml' }

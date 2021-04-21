@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlFormGroup, GlFormSelect } from 'jest/registry/shared/stubs';
-import component from '~/registry/settings/components/expiration_dropdown.vue';
+import component from '~/packages_and_registries/settings/project/components/expiration_dropdown.vue';
 
 describe('ExpirationDropdown', () => {
   let wrapper;

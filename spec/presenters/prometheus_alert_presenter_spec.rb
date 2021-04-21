@@ -12,6 +12,7 @@ RSpec.describe PrometheusAlertPresenter do
     subject { presenter.humanized_text }
 
     let_it_be(:prometheus_metric) { create(:prometheus_metric, project: project) }
+
     let(:prometheus_alert) { create(:prometheus_alert, operator: operator, project: project, environment: environment, prometheus_metric: prometheus_metric) }
     let(:operator) { :gt }
 

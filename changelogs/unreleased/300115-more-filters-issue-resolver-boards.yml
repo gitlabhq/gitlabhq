@@ -1,0 +1,5 @@
+---
+title: Support board issue filtering by iids in GraphQL
+merge_request: 59703
+author:
+type: added

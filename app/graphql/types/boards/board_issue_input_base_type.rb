@@ -4,6 +4,10 @@ module Types
   module Boards
     # rubocop: disable Graphql/AuthorizeTypes
     class BoardIssueInputBaseType < BoardIssuableInputBaseType
+      argument :iids, [GraphQL::STRING_TYPE],
+               required: false,
+               description: 'List of IIDs of issues. For example ["1", "2"].'
+
       argument :milestone_title, GraphQL::STRING_TYPE,
                required: false,
                description: 'Filter by milestone title.'

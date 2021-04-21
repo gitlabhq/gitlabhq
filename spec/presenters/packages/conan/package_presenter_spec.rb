@@ -7,6 +7,7 @@ RSpec.describe ::Packages::Conan::PackagePresenter do
   let_it_be(:package) { create(:conan_package) }
   let_it_be(:project) { package.project }
   let_it_be(:conan_package_reference) { '123456789'}
+
   let(:params) { { package_scope: :instance } }
 
   shared_examples 'no existing package' do

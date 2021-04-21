@@ -14360,6 +14360,18 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `settings.gitaly_apdex`
+
+Gitaly application performance
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210321224827_gitaly_apdex.yml)
+
+Group: `group::gitaly`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `settings.ldap_encrypted_secrets_enabled`
 
 Is encrypted LDAP secrets configured?

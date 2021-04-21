@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::CreateWebIdeTerminalService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:ref) { 'master' }
 
   describe '#execute' do

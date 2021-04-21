@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::JobArtifacts::CreateService do
   let_it_be(:project) { create(:project) }
+
   let(:service) { described_class.new(job) }
   let(:job) { create(:ci_build, project: project) }
   let(:artifacts_sha256) { '0' * 64 }

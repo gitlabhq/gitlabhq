@@ -2,15 +2,15 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import component from '~/registry/settings/components/settings_form.vue';
+import { GlCard, GlLoadingIcon } from 'jest/registry/shared/stubs';
+import component from '~/packages_and_registries/settings/project/components/settings_form.vue';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
-} from '~/registry/settings/constants';
-import updateContainerExpirationPolicyMutation from '~/registry/settings/graphql/mutations/update_container_expiration_policy.mutation.graphql';
-import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.query.graphql';
+} from '~/packages_and_registries/settings/project/constants';
+import updateContainerExpirationPolicyMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_expiration_policy.mutation.graphql';
+import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
 import Tracking from '~/tracking';
-import { GlCard, GlLoadingIcon } from '../../shared/stubs';
 import { expirationPolicyPayload, expirationPolicyMutationPayload } from '../mock_data';
 
 const localVue = createLocalVue();

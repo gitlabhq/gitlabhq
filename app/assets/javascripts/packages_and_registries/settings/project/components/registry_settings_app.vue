@@ -7,8 +7,8 @@ import {
   UNAVAILABLE_FEATURE_INTRO_TEXT,
   UNAVAILABLE_USER_FEATURE_TEXT,
   UNAVAILABLE_ADMIN_FEATURE_TEXT,
-} from '../constants';
-import expirationPolicyQuery from '../graphql/queries/get_expiration_policy.query.graphql';
+} from '~/packages_and_registries/settings/project/constants';
+import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
 
 import SettingsForm from './settings_form.vue';
 

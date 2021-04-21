@@ -18,6 +18,7 @@ RSpec.describe Ci::RetryBuildService do
   end
 
   let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline, stage_id: stage.id) }
+
   let(:user) { developer }
 
   let(:service) do

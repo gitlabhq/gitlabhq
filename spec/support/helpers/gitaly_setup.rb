@@ -10,7 +10,7 @@ require 'securerandom'
 require 'socket'
 require 'logger'
 
-module GitalyTest
+module GitalySetup
   LOGGER = begin
     default_name = ENV['CI'] ? 'DEBUG' : 'WARN'
     level_name = ENV['GITLAB_TESTING_LOG_LEVEL']&.upcase
@@ -19,15 +19,15 @@ module GitalyTest
   end
 
   def tmp_tests_gitaly_dir
-    File.expand_path('../tmp/tests/gitaly', __dir__)
+    File.expand_path('../../../tmp/tests/gitaly', __dir__)
   end
 
   def tmp_tests_gitlab_shell_dir
-    File.expand_path('../tmp/tests/gitlab-shell', __dir__)
+    File.expand_path('../../../tmp/tests/gitlab-shell', __dir__)
   end
 
   def rails_gitlab_shell_secret
-    File.expand_path('../.gitlab_shell_secret', __dir__)
+    File.expand_path('../../../.gitlab_shell_secret', __dir__)
   end
 
   def gemfile
@@ -62,7 +62,7 @@ module GitalyTest
     system('bundle config set --local retry 3', chdir: gemfile_dir)
 
     if ENV['CI']
-      bundle_path = File.expand_path('../vendor/gitaly-ruby', __dir__)
+      bundle_path = File.expand_path('../../../vendor/gitaly-ruby', __dir__)
       system('bundle', 'config', 'set', '--local', 'path', bundle_path, chdir: gemfile_dir)
     end
   end

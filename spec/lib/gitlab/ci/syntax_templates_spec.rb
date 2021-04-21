@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'ci/syntax_templates' do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:lint) { Gitlab::Ci::Lint.new(project: project, current_user: user) }
 
   before do

@@ -17,10 +17,10 @@ import {
   NAME_REGEX_DESCRIPTION,
   CADENCE_LABEL,
   EXPIRATION_POLICY_FOOTER_NOTE,
-} from '~/registry/settings/constants';
-import updateContainerExpirationPolicyMutation from '~/registry/settings/graphql/mutations/update_container_expiration_policy.mutation.graphql';
-import { updateContainerExpirationPolicy } from '~/registry/settings/graphql/utils/cache_update';
-import { formOptionsGenerator } from '~/registry/settings/utils';
+} from '~/packages_and_registries/settings/project/constants';
+import updateContainerExpirationPolicyMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_expiration_policy.mutation.graphql';
+import { updateContainerExpirationPolicy } from '~/packages_and_registries/settings/project/graphql/utils/cache_update';
+import { formOptionsGenerator } from '~/packages_and_registries/settings/project/utils';
 import Tracking from '~/tracking';
 import ExpirationDropdown from './expiration_dropdown.vue';
 import ExpirationInput from './expiration_input.vue';

@@ -1,7 +1,10 @@
 <script>
 import { GlFormGroup, GlToggle, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { ENABLED_TOGGLE_DESCRIPTION, DISABLED_TOGGLE_DESCRIPTION } from '../constants';
+import {
+  ENABLED_TOGGLE_DESCRIPTION,
+  DISABLED_TOGGLE_DESCRIPTION,
+} from '~/packages_and_registries/settings/project/constants';
 
 export default {
   i18n: {

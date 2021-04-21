@@ -1,6 +1,9 @@
 <script>
 import { GlFormGroup, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
-import { NAME_REGEX_LENGTH, TEXT_AREA_INVALID_FEEDBACK } from '../constants';
+import {
+  NAME_REGEX_LENGTH,
+  TEXT_AREA_INVALID_FEEDBACK,
+} from '~/packages_and_registries/settings/project/constants';
 
 export default {
   components: {

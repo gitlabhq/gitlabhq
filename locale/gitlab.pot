@@ -14368,6 +14368,9 @@ msgstr ""
 msgid "Geo|Geo sites"
 msgstr ""
 
+msgid "Geo|Geo supports replication of many data types."
+msgstr ""
+
 msgid "Geo|Go to the primary site"
 msgstr ""
 
@@ -14474,6 +14477,12 @@ msgid "Geo|Replicated data is verified with the secondary node(s) using checksum
 msgstr ""
 
 msgid "Geo|Replication Details"
+msgstr ""
+
+msgid "Geo|Replication Details Desktop"
+msgstr ""
+
+msgid "Geo|Replication Details Mobile"
 msgstr ""
 
 msgid "Geo|Replication details"
@@ -34591,6 +34600,9 @@ msgid "ValueStreamAnalytics|Median time from first commit to issue closed."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
+msgstr ""
+
+msgid "ValueStreamEvent|Stage time (median)"
 msgstr ""
 
 msgid "ValueStreamEvent|Start"

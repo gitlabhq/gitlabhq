@@ -47,6 +47,7 @@ RSpec.describe Packages::Package, type: :model do
   describe '.sort_by_attribute' do
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A') }
+
     let!(:package1) { create(:npm_package, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1") }
     let!(:package2) { create(:nuget_package, project: project, version: '2.0.4') }
     let(:package3) { create(:maven_package, project: project, version: '1.1.1', name: 'zzz') }
@@ -896,6 +897,7 @@ RSpec.describe Packages::Package, type: :model do
     let_it_be(:package_name) { 'composer-package-name' }
     let_it_be(:json) { { 'name' => package_name } }
     let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json.to_json } ) }
+
     let!(:package) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
 
     before do

@@ -8756,6 +8756,15 @@ The state of the vulnerability.
 | `DISMISSED` |  |
 | `RESOLVED` |  |
 
+### `WeightWildcardId`
+
+Weight ID wildcard values.
+
+| Value | Description |
+| ----- | ----------- |
+| `ANY` | Weight is assigned. |
+| `NONE` | No weight is assigned. |
+
 ## Scalar types
 
 Scalar values are atomic values, and do not have fields of their own.

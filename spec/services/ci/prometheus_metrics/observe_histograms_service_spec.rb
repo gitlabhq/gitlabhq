@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PrometheusMetrics::ObserveHistogramsService do
   let_it_be(:project) { create(:project) }
+
   let(:params) { {} }
 
   subject(:execute) { described_class.new(project, params).execute }

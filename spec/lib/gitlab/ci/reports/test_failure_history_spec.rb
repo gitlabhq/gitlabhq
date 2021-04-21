@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Ci::Reports::TestFailureHistory, :aggregate_failures do
 
   describe '#load!' do
     let_it_be(:project) { create(:project) }
+
     let(:failed_rspec) { create_test_case_rspec_failed }
     let(:failed_java) { create_test_case_java_failed }
 

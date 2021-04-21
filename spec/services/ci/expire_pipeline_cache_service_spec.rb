@@ -6,6 +6,7 @@ RSpec.describe Ci::ExpirePipelineCacheService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
   subject { described_class.new }
 
   describe '#execute' do

@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:another_project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:sha) { '12345' }
   let(:context_params) { { project: project, sha: sha, user: user } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }

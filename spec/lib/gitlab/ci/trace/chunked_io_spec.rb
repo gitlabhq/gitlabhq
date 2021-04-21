@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
   include ChunkedIOHelpers
 
   let_it_be(:build) { create(:ci_build, :running) }
+
   let(:chunked_io) { described_class.new(build) }
 
   before do

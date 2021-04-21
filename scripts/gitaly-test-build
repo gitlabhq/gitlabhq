@@ -3,14 +3,14 @@
 
 require 'fileutils'
 
-require_relative 'gitaly_test'
+require_relative '../spec/support/helpers/gitaly_setup'
 
 # This script assumes tmp/tests/gitaly already contains the correct
 # Gitaly version. We just have to compile it and run its 'bundle
 # install'. We have this separate script for that to avoid bundle
 # poisoning in CI. This script should only be run in CI.
 class GitalyTestBuild
-  include GitalyTest
+  include GitalySetup
 
   def run
     set_bundler_config

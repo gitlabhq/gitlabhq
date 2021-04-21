@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::ParseDotenvArtifactService do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
   let(:build) { create(:ci_build, pipeline: pipeline, project: project) }
   let(:service) { described_class.new(project, nil) }
 

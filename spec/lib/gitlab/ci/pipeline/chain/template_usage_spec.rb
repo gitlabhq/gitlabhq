@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Pipeline::Chain::TemplateUsage do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
+
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:command) do

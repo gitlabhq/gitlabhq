@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe ::Packages::Npm::PackagePresenter do
   let_it_be(:project) { create(:project) }
   let_it_be(:package_name) { "@#{project.root_namespace.path}/test" }
+
   let!(:package1) { create(:npm_package, version: '1.0.4', project: project, name: package_name) }
   let!(:package2) { create(:npm_package, version: '1.0.6', project: project, name: package_name) }
   let!(:latest_package) { create(:npm_package, version: '1.0.11', project: project, name: package_name) }
