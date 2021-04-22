@@ -684,8 +684,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - spec/models/terraform/state_spec.rb
     - spec/models/u2f_registration_spec.rb
     - spec/models/user_spec.rb
-    - spec/models/wiki_page/meta_spec.rb
-    - spec/models/wiki_page_spec.rb
     - spec/requests/api/api_spec.rb
     - spec/requests/api/award_emoji_spec.rb
     - spec/requests/api/branches_spec.rb

@@ -62,9 +62,16 @@ For this association to succeed, each GitHub author and assignee in the reposito
 must meet one of the following conditions prior to the import:
 
 - Have previously logged in to a GitLab account using the GitHub icon.
-- Have a GitHub account with a publicly visible
-  [primary email address](https://docs.github.com/en/rest/reference/users#get-a-user)
-  on their profile that matches their GitLab account's primary or secondary email address.
+- Have a GitHub account with a [public-facing email address](https://docs.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address)
+  that matches their GitLab account's email address.
+
+  NOTE:
+  GitLab content imports that use GitHub accounts require that the GitHub public-facing
+  email address is populated so that all comments and contributions are properly mapped
+  to the same user in GitLab. GitHub Enterprise (on premise) does not require this field
+  to be populated to use the product, so you may need to add it on existing GitHub Enterprise 
+  accounts for imported content to be properly mapped to the user in the new system.
+  Refer to GitHub documentation for instructions on how to add that address.
 
 If a user referenced in the project is not found in the GitLab database, the project creator (typically the user
 that initiated the import process) is set as the author/assignee, but a note on the issue mentioning the original

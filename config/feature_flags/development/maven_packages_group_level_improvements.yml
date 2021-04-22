@@ -1,8 +1,0 @@
----
-name: maven_packages_group_level_improvements
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57600
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326099
-milestone: '13.11'
-type: development
-group: group::package
-default_enabled: true

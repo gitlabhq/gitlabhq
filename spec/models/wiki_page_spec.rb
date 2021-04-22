@@ -640,6 +640,7 @@ RSpec.describe WikiPage do
     let_it_be(:existing_page) { create_wiki_page(title: 'test page') }
     let_it_be(:directory_page) { create_wiki_page(title: 'parent directory/child page') }
     let_it_be(:page_with_special_characters) { create_wiki_page(title: 'test+page') }
+
     let(:untitled_page) { described_class.new(wiki) }
 
     where(:page, :title, :changed) do

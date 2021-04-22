@@ -109,6 +109,20 @@ FactoryBot.define do
       end
     end
 
+    trait :cilium do
+      monitoring_tool { Gitlab::AlertManagement::Payload::MONITORING_TOOLS[:cilium] }
+      payload do
+        {
+          annotations: {
+            title: 'This is a cilium alert',
+            summary: 'Summary of the alert',
+            description: 'Description of the alert'
+          },
+          startsAt: started_at
+        }.with_indifferent_access
+      end
+    end
+
     trait :all_fields do
       with_issue
       with_assignee

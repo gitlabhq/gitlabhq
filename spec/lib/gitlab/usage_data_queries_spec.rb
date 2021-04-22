@@ -63,7 +63,7 @@ RSpec.describe Gitlab::UsageDataQueries do
     it 'returns the histogram sql' do
       expect(described_class.histogram(AlertManagement::HttpIntegration.active,
             :project_id, buckets: 1..2, bucket_size: 101))
-        .to eq('WITH "count_cte" AS (SELECT COUNT(*) AS count_grouped FROM "alert_management_http_integrations" WHERE "alert_management_http_integrations"."active" = TRUE GROUP BY "alert_management_http_integrations"."project_id") SELECT WIDTH_BUCKET("count_cte"."count_grouped", 1, 2, 100) AS buckets, "count_cte"."count" FROM "count_cte" GROUP BY buckets ORDER BY buckets')
+        .to match(/^WITH "count_cte" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
     end
   end
 

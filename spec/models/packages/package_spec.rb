@@ -114,18 +114,6 @@ RSpec.describe Packages::Package, type: :model do
 
       expect(subject).to match_array([package1, package2])
     end
-
-    context 'with maven_packages_group_level_improvements disabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: false)
-      end
-
-      it 'returns package1 and package2' do
-        expect(projects).to receive(:any?).and_call_original
-
-        expect(subject).to match_array([package1, package2])
-      end
-    end
   end
 
   describe 'validations' do

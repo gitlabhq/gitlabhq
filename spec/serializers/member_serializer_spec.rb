@@ -30,39 +30,6 @@ RSpec.describe MemberSerializer do
                                      .from(nil).to(true)
                                      .and change(group_member, :last_blocked_owner).from(nil).to(false)
     end
-
-    context "with LastGroupOwnerAssigner query improvements" do
-      it "avoids N+1 database queries for last group owner assignment in MembersPresenter" do
-        group_member = create(:group_member, group: group)
-        control_count = ActiveRecord::QueryRecorder.new { member_last_owner_with_preload([group_member]) }.count
-        group_members = create_list(:group_member, 3, group: group)
-
-        expect { member_last_owner_with_preload(group_members) }.not_to exceed_query_limit(control_count)
-      end
-
-      it "avoids N+1 database queries for last blocked owner assignment in MembersPresenter" do
-        group_member = create(:group_member, group: group)
-        control_count = ActiveRecord::QueryRecorder.new { member_last_blocked_owner_with_preload([group_member]) }.count
-        group_members = create_list(:group_member, 3, group: group)
-
-        expect { member_last_blocked_owner_with_preload(group_members) }.not_to exceed_query_limit(control_count)
-      end
-
-      def member_last_owner_with_preload(members)
-        assigner_with_preload(members)
-        members.map { |m| group.member_last_owner?(m) }
-      end
-
-      def member_last_blocked_owner_with_preload(members)
-        assigner_with_preload(members)
-        members.map { |m| group.member_last_blocked_owner?(m) }
-      end
-
-      def assigner_with_preload(members)
-        MembersPreloader.new(members).preload_all
-        Members::LastGroupOwnerAssigner.new(group, members).execute
-      end
-    end
   end
 
   context 'project member' do

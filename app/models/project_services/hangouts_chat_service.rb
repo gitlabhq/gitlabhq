@@ -3,12 +3,14 @@
 require 'hangouts_chat'
 
 class HangoutsChatService < ChatNotificationService
+  include ActionView::Helpers::UrlHelper
+
   def title
-    'Hangouts Chat'
+    'Google Chat'
   end
 
   def description
-    'Receive event notifications in Google Hangouts Chat'
+    'Send notifications from GitLab to a room in Google Chat.'
   end
 
   def self.to_param
@@ -16,13 +18,8 @@ class HangoutsChatService < ChatNotificationService
   end
 
   def help
-    'This service sends notifications about projects events to Google Hangouts Chat room.<br />
-    To set up this service:
-    <ol>
-      <li><a href="https://developers.google.com/hangouts/chat/how-tos/webhooks">Set up an incoming webhook for your room</a>. All notifications will come to this room.</li>
-      <li>Paste the <strong>Webhook URL</strong> into the field below.</li>
-      <li>Select events below to enable notifications.</li>
-    </ol>'
+    docs_link = link_to _('How do I set up a Google Chat webhook?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/hangouts_chat'), target: '_blank', rel: 'noopener noreferrer'
+    s_('Before enabling this integration, create a webhook for the room in Google Chat where you want to receive notifications from this project. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
   end
 
   def event_field(event)
@@ -42,7 +39,7 @@ class HangoutsChatService < ChatNotificationService
 
   def default_fields
     [
-      { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}" },
+      { type: 'text', name: 'webhook', placeholder: "#{webhook_placeholder}" },
       { type: 'checkbox', name: 'notify_only_broken_pipelines' },
       { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }
     ]

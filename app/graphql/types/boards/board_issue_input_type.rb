@@ -8,10 +8,7 @@ module Types
       argument :not, NegatedBoardIssueInputType,
                required: false,
                prepare: ->(negated_args, ctx) { negated_args.to_h },
-               description: <<~MD
-                 List of negated arguments.
-                 Warning: this argument is experimental and a subject to change in future.
-               MD
+               description: 'List of negated arguments.'
 
       argument :search, GraphQL::STRING_TYPE,
                required: false,

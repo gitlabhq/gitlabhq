@@ -143,6 +143,10 @@ But you have the option to [invite](members/share_project_with_groups.md)
 the Subgroup Y to the Project A so that their members also become eligible
 Code Owners:
 
+NOTE:
+If you do not invite Subgroup Y to Project A, but make them Code Owners, their approval
+of the merge request becomes optional.
+
 ![Invite subgroup members to become eligible Code Owners](img/code_owners_invite_members_v13_4.png)
 
 After being invited, any member (`@user`) of the group or subgroup can be set

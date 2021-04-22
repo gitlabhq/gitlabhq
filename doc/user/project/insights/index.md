@@ -20,9 +20,7 @@ This feature is [also available at the group level](../../group/insights/index.m
 ## View your project's Insights
 
 You can access your project's Insights by clicking the **Analytics > Insights**
-link in the left sidebar:
-
-![Insights sidebar link](img/insights_sidebar_link_v12_8.png)
+link in the left sidebar.
 
 ## Configure your Insights
 

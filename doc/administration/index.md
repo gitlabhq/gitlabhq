@@ -190,7 +190,6 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Git LFS configuration](lfs/index.md): Learn how to configure LFS for GitLab.
 - [Housekeeping](housekeeping.md): Keep your Git repositories tidy and fast.
 - [Configuring Git Protocol v2](git_protocol.md): Git protocol version 2 support.
-- [Manage large files with `git-annex` (Deprecated)](git_annex.md)
 
 ## Monitoring GitLab
 

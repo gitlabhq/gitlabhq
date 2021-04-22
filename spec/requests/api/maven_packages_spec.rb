@@ -299,22 +299,6 @@ RSpec.describe API::MavenPackages do
       end
     end
 
-    context 'with maven_packages_group_level_improvements enabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: true)
-      end
-
-      it_behaves_like 'handling all conditions'
-    end
-
-    context 'with maven_packages_group_level_improvements disabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: false)
-      end
-
-      it_behaves_like 'handling all conditions'
-    end
-
     context 'with check_maven_path_first enabled' do
       before do
         stub_feature_flags(check_maven_path_first: true)
@@ -345,22 +329,6 @@ RSpec.describe API::MavenPackages do
     let(:url) { "/packages/maven/#{path}/#{package_file.file_name}" }
 
     it_behaves_like 'processing HEAD requests', instance_level: true
-
-    context 'with maven_packages_group_level_improvements enabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: true)
-      end
-
-      it_behaves_like 'processing HEAD requests', instance_level: true
-    end
-
-    context 'with maven_packages_group_level_improvements disabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: false)
-      end
-
-      it_behaves_like 'processing HEAD requests', instance_level: true
-    end
 
     context 'with check_maven_path_first enabled' do
       before do
@@ -468,8 +436,7 @@ RSpec.describe API::MavenPackages do
 
           subject
 
-          status = Feature.enabled?(:maven_packages_group_level_improvements, default_enabled: :yaml) ? :not_found : :forbidden
-          expect(response).to have_gitlab_http_status(status)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
 
         it 'denies download when no private token' do
@@ -594,22 +561,6 @@ RSpec.describe API::MavenPackages do
       end
     end
 
-    context 'with maven_packages_group_level_improvements enabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: true)
-      end
-
-      it_behaves_like 'handling all conditions'
-    end
-
-    context 'with maven_packages_group_level_improvements disabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: false)
-      end
-
-      it_behaves_like 'handling all conditions'
-    end
-
     context 'with check_maven_path_first enabled' do
       before do
         stub_feature_flags(check_maven_path_first: true)
@@ -638,22 +589,6 @@ RSpec.describe API::MavenPackages do
   describe 'HEAD /api/v4/groups/:id/-/packages/maven/*path/:file_name' do
     let(:path) { package.maven_metadatum.path }
     let(:url) { "/groups/#{group.id}/-/packages/maven/#{path}/#{package_file.file_name}" }
-
-    context 'with maven_packages_group_level_improvements enabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: true)
-      end
-
-      it_behaves_like 'processing HEAD requests'
-    end
-
-    context 'with maven_packages_group_level_improvements disabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: false)
-      end
-
-      it_behaves_like 'processing HEAD requests'
-    end
 
     context 'with check_maven_path_first enabled' do
       before do
@@ -743,22 +678,6 @@ RSpec.describe API::MavenPackages do
       end
     end
 
-    context 'with maven_packages_group_level_improvements enabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: true)
-      end
-
-      it_behaves_like 'handling all conditions'
-    end
-
-    context 'with maven_packages_group_level_improvements disabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: false)
-      end
-
-      it_behaves_like 'handling all conditions'
-    end
-
     context 'with check_maven_path_first enabled' do
       before do
         stub_feature_flags(check_maven_path_first: true)
@@ -788,22 +707,6 @@ RSpec.describe API::MavenPackages do
   describe 'HEAD /api/v4/projects/:id/packages/maven/*path/:file_name' do
     let(:path) { package.maven_metadatum.path }
     let(:url) { "/projects/#{project.id}/packages/maven/#{path}/#{package_file.file_name}" }
-
-    context 'with maven_packages_group_level_improvements enabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: true)
-      end
-
-      it_behaves_like 'processing HEAD requests'
-    end
-
-    context 'with maven_packages_group_level_improvements disabled' do
-      before do
-        stub_feature_flags(maven_packages_group_level_improvements: false)
-      end
-
-      it_behaves_like 'processing HEAD requests'
-    end
 
     context 'with check_maven_path_first enabled' do
       before do

@@ -83,5 +83,7 @@
   #js-tab-tests.tab-pane
     #js-pipeline-tests-detail{ data: { summary_endpoint: summary_project_pipeline_tests_path(@project, @pipeline, format: :json),
       suite_endpoint: project_pipeline_test_path(@project, @pipeline, suite_name: 'suite', format: :json),
-      blob_path: project_blob_path(@project, @pipeline.sha) } }
+      blob_path: project_blob_path(@project, @pipeline.sha),
+      has_test_report: @pipeline.has_reports?(Ci::JobArtifact.test_reports).to_s,
+      empty_state_image_path: image_path('illustrations/empty-state/empty-test-cases-lg.svg') } }
   = render_if_exists "projects/pipelines/tabs_content", pipeline: @pipeline, project: @project

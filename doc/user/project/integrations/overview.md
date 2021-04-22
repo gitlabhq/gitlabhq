@@ -39,9 +39,9 @@ Click on the service links to see further configuration instructions and details
 | [Emails on push](emails_on_push.md)                       | Send commits and diff of each push by email.                                                 | **{dotted-circle}** No |
 | [EWM](ewm.md)                                             | Use IBM Engineering Workflow Management as the issue tracker.                                | **{dotted-circle}** No |
 | [External wiki](../wiki/index.md#link-an-external-wiki)   | Link an external wiki.                                          | **{dotted-circle}** No |
-| Flowdock                                                  | Use Flowdock with GitLab.                                                                    | **{dotted-circle}** No |
+| [Flowdock](../../../api/services.md#flowdock)             | Send notifications from GitLab to Flowdock flows. | **{dotted-circle}** No |
 | [GitHub](github.md)                                       | Obtain statuses for commits and pull requests.                                               | **{dotted-circle}** No |
-| [Hangouts Chat](hangouts_chat.md)                         | Receive events notifications.                                                                | **{dotted-circle}** No |
+| [Google Chat](hangouts_chat.md)                           | Send notifications from your GitLab project to a room in Google Chat.| **{dotted-circle}** No |
 | [Irker (IRC gateway)](irker.md)                           | Send IRC messages.                                                                           | **{dotted-circle}** No |
 | [Jenkins](../../../integration/jenkins.md)                | Run CI/CD pipelines with Jenkins.                                                            | **{check-circle}** Yes |
 | JetBrains TeamCity CI                                     | Run CI/CD pipelines with TeamCity.                                                           | **{check-circle}** Yes |

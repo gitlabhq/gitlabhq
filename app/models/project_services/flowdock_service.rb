@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class FlowdockService < Service
+  include ActionView::Helpers::UrlHelper
   prop_accessor :token
   validates :token, presence: true, if: :activated?
 
@@ -9,7 +10,12 @@ class FlowdockService < Service
   end
 
   def description
-    s_('FlowdockService|Flowdock is a collaboration web app for technical teams.')
+    s_('FlowdockService|Send event notifications from GitLab to Flowdock flows.')
+  end
+
+  def help
+    docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('api/services', anchor: 'flowdock'), target: '_blank', rel: 'noopener noreferrer'
+    s_('FlowdockService|Send event notifications from GitLab to Flowdock flows. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
   end
 
   def self.to_param
@@ -18,7 +24,7 @@ class FlowdockService < Service
 
   def fields
     [
-      { type: 'text', name: 'token', placeholder: s_('FlowdockService|Flowdock Git source token'), required: true }
+      { type: 'text', name: 'token', placeholder: s_('FlowdockService|1b609b52537...'), required: true, help: 'Enter your Flowdock token.' }
     ]
   end
 

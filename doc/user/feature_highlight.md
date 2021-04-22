@@ -6,14 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Feature highlight
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/16379) in GitLab 10.5
-
 Feature highlights are represented by a pulsing blue dot. Hovering over the dot
-displays more information.
-They are used to emphasize a certain feature and make something more visible to the user.
+displays more information. They're used to emphasize certain features and
+highlight helpful information to the user.
 
-You can dismiss any feature highlight permanently by clicking the "Got it" link
-at the bottom of the modal window. There isn't a way to restore the feature highlight
-after it has been dismissed.
-
-![Clusters feature highlight](img/feature_highlight_example.png)
+You can dismiss any feature highlight permanently by clicking the **Got it** link
+at the bottom of the information window. You cannot restore a feature highlight
+after you dismiss it.

@@ -572,7 +572,9 @@ GET /projects/:id/services/external-wiki
 
 ## Flowdock
 
-Flowdock is a collaboration web app for technical teams.
+Flowdock is a ChatOps application for collaboration in software engineering
+companies. You can send notifications from GitLab events to Flowdock flows.
+For integration instructions, see the [Flowdock documentation](https://www.flowdock.com/help/gitlab).
 
 ### Create/Edit Flowdock service
 

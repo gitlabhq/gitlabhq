@@ -74,6 +74,7 @@ class Packages::Package < ApplicationRecord
 
   enum status: { default: 0, hidden: 1, processing: 2, error: 3 }
 
+  scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
   scope :with_normalized_pypi_name, ->(name) { where("LOWER(regexp_replace(name, '[-_.]+', '-', 'g')) = ?", name.downcase) }
@@ -136,14 +137,6 @@ class Packages::Package < ApplicationRecord
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
 
   after_commit :update_composer_cache, on: :destroy, if: -> { composer? }
-
-  def self.for_projects(projects)
-    unless Feature.enabled?(:maven_packages_group_level_improvements, default_enabled: :yaml)
-      return none unless projects.any?
-    end
-
-    where(project_id: projects)
-  end
 
   def self.only_maven_packages_with_path(path, use_cte: false)
     if use_cte && Feature.enabled?(:maven_metadata_by_path_with_optimization_fence, default_enabled: :yaml)

@@ -47,23 +47,7 @@ RSpec.describe ::Packages::Maven::PackageFinder do
       context 'within a group' do
         let(:param_group) { group }
 
-        context 'with maven_packages_group_level_improvements enabled' do
-          before do
-            stub_feature_flags(maven_packages_group_level_improvements: true)
-            expect(finder).to receive(:packages_visible_to_user).with(user, within_group: group).and_call_original
-          end
-
-          it_behaves_like 'handling valid and invalid paths'
-        end
-
-        context 'with maven_packages_group_level_improvements disabled' do
-          before do
-            stub_feature_flags(maven_packages_group_level_improvements: false)
-            expect(finder).not_to receive(:packages_visible_to_user)
-          end
-
-          it_behaves_like 'handling valid and invalid paths'
-        end
+        it_behaves_like 'handling valid and invalid paths'
       end
 
       context 'across all projects' do
@@ -93,38 +77,14 @@ RSpec.describe ::Packages::Maven::PackageFinder do
           create(:package_file, :xml, package: package2)
         end
 
-        context 'with maven_packages_group_level_improvements enabled' do
-          before do
-            stub_feature_flags(maven_packages_group_level_improvements: true)
-            expect(finder).not_to receive(:versionless_package?)
-          end
-
-          context 'without order by package file' do
-            it { is_expected.to eq(package3) }
-          end
-
-          context 'with order by package file' do
-            let(:param_order_by_package_file) { true }
-
-            it { is_expected.to eq(package2) }
-          end
+        context 'without order by package file' do
+          it { is_expected.to eq(package3) }
         end
 
-        context 'with maven_packages_group_level_improvements disabled' do
-          before do
-            stub_feature_flags(maven_packages_group_level_improvements: false)
-            expect(finder).to receive(:versionless_package?).and_call_original
-          end
+        context 'with order by package file' do
+          let(:param_order_by_package_file) { true }
 
-          context 'without order by package file' do
-            it { is_expected.to eq(package2) }
-          end
-
-          context 'with order by package file' do
-            let(:param_order_by_package_file) { true }
-
-            it { is_expected.to eq(package2) }
-          end
+          it { is_expected.to eq(package2) }
         end
       end
     end

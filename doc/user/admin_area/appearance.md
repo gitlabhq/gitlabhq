@@ -16,9 +16,7 @@ section.
 
 By default, the navigation bar has the GitLab logo, but this can be customized with
 any image desired. It is optimized for images 28px high (any width), but any image can be
-used (less than 1MB) and it is automatically resized.
-
-![Navigation bar header logo screenshot](img/appearance_header_logo_v12_3.png)
+used (less than 1 MB) and it is automatically resized.
 
 After you select and upload an image, click **Update appearance settings** at the bottom
 of the page to activate it in the GitLab instance.
@@ -33,8 +31,6 @@ GitLab pipeline emails also display the custom logo.
 By default, the favicon (used by the browser as the tab icon, as well as the CI status icon)
 uses the GitLab logo, but this can be customized with any icon desired. It must be a
 32x32 `.png` or `.ico` image.
-
-![favicon screenshot](img/appearance_favicon_v12_3.png)
 
 After you select and upload an icon, click **Update appearance settings** at the bottom
 of the page to activate it in the GitLab instance.
@@ -52,8 +48,6 @@ Limited [Markdown](../markdown.md) is supported, such as bold, italics, and link
 example. Other Markdown features, including lists, images, and quotes are not supported
 as the header and footer messages can only be a single line.
 
-![header and footer screenshot](img/appearance_header_footer_v12_3.png)
-
 If desired, you can select **Enable header and footer in emails** to have the text of
 the header and footer added to all emails sent by the GitLab instance.
 
@@ -63,15 +57,11 @@ to activate it in the GitLab instance.
 ## Sign in / Sign up pages
 
 You can replace the default message on the sign in / sign up page with your own message
-and logo. You can make full use of [Markdown](../markdown.md) in the description:
-
-![sign in message screenshot](img/appearance_sign_in_v12_3.png)
+and logo. You can make full use of [Markdown](../markdown.md) in the description.
 
 The optimal size for the logo is 640x360px, but any image can be used (below 1MB)
 and it is resized automatically. The logo image appears between the title and
 the description, on the left of the sign-up page.
-
-![sign in message preview screenshot](img/appearance_sign_in_preview_v12_3.png)
 
 After you add a message, click **Update appearance settings** at the bottom of the page
 to activate it in the GitLab instance. You can also click on the **Sign-in page** button,
@@ -85,16 +75,12 @@ You can add also add a [customized help message](settings/help_page.md) below th
 You can add a new project guidelines message to the **New project page** within GitLab.
 You can make full use of [Markdown](../markdown.md) in the description:
 
-![new project message screenshot](img/appearance_new_project_v12_3.png)
-
 The message is displayed below the **New Project** message, on the left side
 of the **New project page**.
 
 After you add a message, click **Update appearance settings** at the bottom of the page
 to activate it in the GitLab instance. You can also click on the **New project page**
 button, which brings you to the new project page so you can review the change.
-
-![new project message preview screenshot](img/appearance_new_project_preview_v12_3.png)
 
 ## Libravatar
 
