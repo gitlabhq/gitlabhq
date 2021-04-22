@@ -197,7 +197,7 @@ class GroupsController < Groups::ApplicationController
   def unfoldered_environment_names
     respond_to do |format|
       format.json do
-        render json: EnvironmentNamesFinder.new(@group, current_user).execute
+        render json: Environments::EnvironmentNamesFinder.new(@group, current_user).execute
       end
     end
   end

@@ -1,0 +1,5 @@
+---
+title: Remove unnecessary validation avoiding N+1 queries when building integrations
+merge_request: 59635
+author:
+type: performance

@@ -283,25 +283,50 @@ RSpec.describe 'GraphQL' do
       )
     end
 
-    it 'paginates datetimes correctly when they have millisecond data' do
-      # let's make sure we're actually querying a timestamp, just in case
-      expect(Gitlab::Graphql::Pagination::Keyset::QueryBuilder)
-        .to receive(:new).with(anything, anything, hash_including('created_at'), anything).and_call_original
+    context 'when new_graphql_keyset_pagination feature flag is off' do
+      before do
+        stub_feature_flags(new_graphql_keyset_pagination: false)
+      end
 
-      execute_query
-      first_page = graphql_data
-      edges = first_page.dig(*issues_edges)
-      cursor = first_page.dig(*end_cursor)
+      it 'paginates datetimes correctly when they have millisecond data' do
+        # let's make sure we're actually querying a timestamp, just in case
+        expect(Gitlab::Graphql::Pagination::Keyset::QueryBuilder)
+          .to receive(:new).with(anything, anything, hash_including('created_at'), anything).and_call_original
 
-      expect(edges.count).to eq(6)
-      expect(edges.last['node']['iid']).to eq(issues[4].iid.to_s)
+        execute_query
+        first_page = graphql_data
+        edges = first_page.dig(*issues_edges)
+        cursor = first_page.dig(*end_cursor)
 
-      execute_query(after: cursor)
-      second_page = graphql_data
-      edges = second_page.dig(*issues_edges)
+        expect(edges.count).to eq(6)
+        expect(edges.last['node']['iid']).to eq(issues[4].iid.to_s)
 
-      expect(edges.count).to eq(4)
-      expect(edges.last['node']['iid']).to eq(issues[0].iid.to_s)
+        execute_query(after: cursor)
+        second_page = graphql_data
+        edges = second_page.dig(*issues_edges)
+
+        expect(edges.count).to eq(4)
+        expect(edges.last['node']['iid']).to eq(issues[0].iid.to_s)
+      end
+    end
+
+    context 'when new_graphql_keyset_pagination feature flag is on' do
+      it 'paginates datetimes correctly when they have millisecond data' do
+        execute_query
+        first_page = graphql_data
+        edges = first_page.dig(*issues_edges)
+        cursor = first_page.dig(*end_cursor)
+
+        expect(edges.count).to eq(6)
+        expect(edges.last['node']['iid']).to eq(issues[4].iid.to_s)
+
+        execute_query(after: cursor)
+        second_page = graphql_data
+        edges = second_page.dig(*issues_edges)
+
+        expect(edges.count).to eq(4)
+        expect(edges.last['node']['iid']).to eq(issues[0].iid.to_s)
+      end
     end
   end
 end

@@ -691,6 +691,9 @@ msgstr ""
 msgid "%{milliseconds}ms"
 msgstr ""
 
+msgid "%{model_name} not found"
+msgstr ""
+
 msgid "%{mrText}, this issue will be closed automatically."
 msgstr ""
 
@@ -5786,6 +5789,9 @@ msgstr ""
 msgid "Cannot create the abuse report. This user has been blocked."
 msgstr ""
 
+msgid "Cannot delete %{profile_name} referenced in security policy"
+msgstr ""
+
 msgid "Cannot enable shared runners because parent group does not allow it"
 msgstr ""
 
@@ -5805,6 +5811,9 @@ msgid "Cannot make the epic confidential if it contains non-confidential issues"
 msgstr ""
 
 msgid "Cannot merge"
+msgstr ""
+
+msgid "Cannot modify %{profile_name} referenced in security policy"
 msgstr ""
 
 msgid "Cannot modify managed Kubernetes cluster"
@@ -10115,6 +10124,9 @@ msgstr ""
 msgid "DastProfiles|Request headers"
 msgstr ""
 
+msgid "DastProfiles|Rest API"
+msgstr ""
+
 msgid "DastProfiles|Run scan"
 msgstr ""
 
@@ -10158,6 +10170,9 @@ msgid "DastProfiles|Site Profiles"
 msgstr ""
 
 msgid "DastProfiles|Site name"
+msgstr ""
+
+msgid "DastProfiles|Site type"
 msgstr ""
 
 msgid "DastProfiles|Spider timeout"
@@ -10206,6 +10221,9 @@ msgid "DastProfiles|Validated"
 msgstr ""
 
 msgid "DastProfiles|Validation status"
+msgstr ""
+
+msgid "DastProfiles|Website"
 msgstr ""
 
 msgid "DastSiteValidation|Copy HTTP header to clipboard"
@@ -17183,6 +17201,9 @@ msgid "Instance administrators group already exists"
 msgstr ""
 
 msgid "Instance overview"
+msgstr ""
+
+msgid "Insufficient permissions"
 msgstr ""
 
 msgid "Integration"
@@ -27661,6 +27682,12 @@ msgstr ""
 msgid "Scanner"
 msgstr ""
 
+msgid "Scanner profile failed to delete"
+msgstr ""
+
+msgid "Scanner profile not found for given parameters"
+msgstr ""
+
 msgid "Schedule a new pipeline"
 msgstr ""
 
@@ -29308,6 +29335,12 @@ msgid "Simulate a pipeline created for the default branch"
 msgstr ""
 
 msgid "Single or combined queries"
+msgstr ""
+
+msgid "Site profile failed to delete"
+msgstr ""
+
+msgid "Site profile not found for given parameters"
 msgstr ""
 
 msgid "Size"
@@ -36162,7 +36195,10 @@ msgstr ""
 msgid "You have been granted %{access_level} access to the %{source_name} %{source_type}."
 msgstr ""
 
-msgid "You have been granted %{member_human_access} access to %{title} %{name}."
+msgid "You have been granted %{member_human_access} access to group %{name}."
+msgstr ""
+
+msgid "You have been granted %{member_human_access} access to project %{name}."
 msgstr ""
 
 msgid "You have been invited"

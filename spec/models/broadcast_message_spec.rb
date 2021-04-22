@@ -120,6 +120,12 @@ RSpec.describe BroadcastMessage do
       expect(subject.call('/users/name/issues').length).to eq(1)
     end
 
+    it 'returns message if provided a path without a preceding slash' do
+      create(:broadcast_message, target_path: "/users/*/issues", broadcast_type: broadcast_type)
+
+      expect(subject.call('users/name/issues').length).to eq(1)
+    end
+
     it 'returns the message for empty target path' do
       create(:broadcast_message, target_path: "", broadcast_type: broadcast_type)
 

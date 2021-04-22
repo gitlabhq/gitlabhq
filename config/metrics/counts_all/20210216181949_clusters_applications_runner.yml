@@ -1,14 +1,14 @@
 ---
 key_path: usage_activity_by_stage.verify.clusters_applications_runner
-description: Total GitLab Managed clusters with Runner enabled
+description: Count of users creating managed clusters with Runner enabled
 product_section: ops
-product_stage: verify
-product_group: group::runner
-product_category: runner
+product_stage: configure
+product_group: group::configure
+product_category: kubernetes_management
 value_type: number
 status: data_available
 time_frame: all
-data_source:
+data_source: database
 distribution:
 - ce
 - ee
@@ -16,4 +16,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

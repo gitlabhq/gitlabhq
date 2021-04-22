@@ -170,6 +170,8 @@ module Gitlab
           self.class.build(column_definitions.map(&:reverse))
         end
 
+        alias_method :to_sql, :to_s
+
         private
 
         # Adds extra columns to the SELECT clause

@@ -20,7 +20,7 @@ class Projects::BlameController < Projects::ApplicationController
 
     environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
     environment_params[:find_latest] = true
-    @environment = EnvironmentsByDeploymentsFinder.new(@project, current_user, environment_params).execute.last
+    @environment = Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, environment_params).execute.last
 
     @blame = Gitlab::Blame.new(@blob, @commit)
     @blame = Gitlab::View::Presenter::Factory.new(@blame, project: @project, path: @path).fabricate!

@@ -1,16 +1,18 @@
 ---
 key_path: gitlab_shared_runners_enabled
 description: Whether shared runners is enabled
-product_section: growth
-product_stage: growth
-product_group: group::product intelligence
-product_category: collection
+product_section: ops
+product_stage: verify
+product_group: group::runner
+product_category: runner
 value_type: boolean
 status: data_available
 time_frame: none
-data_source:
+data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

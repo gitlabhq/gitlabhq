@@ -1367,11 +1367,11 @@ class MergeRequest < ApplicationRecord
   def environments_for(current_user, latest: false)
     return [] unless diff_head_commit
 
-    envs = EnvironmentsByDeploymentsFinder.new(target_project, current_user,
+    envs = Environments::EnvironmentsByDeploymentsFinder.new(target_project, current_user,
       ref: target_branch, commit: diff_head_commit, with_tags: true, find_latest: latest).execute
 
     if source_project
-      envs.concat EnvironmentsByDeploymentsFinder.new(source_project, current_user,
+      envs.concat Environments::EnvironmentsByDeploymentsFinder.new(source_project, current_user,
         ref: source_branch, commit: diff_head_commit, find_latest: latest).execute
     end
 

@@ -571,7 +571,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:projects_with_repositories_enabled]).to eq(3)
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
       expect(count_data[:projects_with_tracing_enabled]).to eq(1)
-      expect(count_data[:projects_with_alerts_service_enabled]).to eq(1)
+      expect(count_data[:projects_with_alerts_service_enabled]).to eq(Gitlab::UsageData::DEPRECATED_VALUE)
       expect(count_data[:projects_with_enabled_alert_integrations]).to eq(1)
       expect(count_data[:projects_with_prometheus_alerts]).to eq(2)
       expect(count_data[:projects_with_terraform_reports]).to eq(2)

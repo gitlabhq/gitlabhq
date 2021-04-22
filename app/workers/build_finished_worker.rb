@@ -34,7 +34,6 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
 
     # We execute these async as these are independent operations.
     BuildHooksWorker.perform_async(build.id)
-    ExpirePipelineCacheWorker.perform_async(build.pipeline_id)
     ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
 
     if build.failed?

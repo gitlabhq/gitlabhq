@@ -32,8 +32,6 @@ FactoryBot.define do
       create(:service, project: projects[2], type: 'CustomIssueTrackerService', active: true)
       create(:project_error_tracking_setting, project: projects[0])
       create(:project_error_tracking_setting, project: projects[1], enabled: false)
-      create(:service, project: projects[0], type: 'AlertsService', active: true)
-      create(:service, project: projects[1], type: 'AlertsService', active: false)
       alert_bot_issues = create_list(:incident, 2, project: projects[0], author: User.alert_bot)
       create_list(:incident, 2, project: projects[1], author: User.alert_bot)
       issues = create_list(:issue, 4, project: projects[0])

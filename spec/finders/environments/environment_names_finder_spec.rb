@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EnvironmentNamesFinder do
+RSpec.describe Environments::EnvironmentNamesFinder do
   describe '#execute' do
     let!(:group) { create(:group) }
     let!(:public_project) { create(:project, :public, namespace: group) }

@@ -4756,7 +4756,7 @@ Count of projects that have enabled the Alerts service
 
 Group: `group::health`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -6506,11 +6506,11 @@ Whether shared runners is enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210204124902_gitlab_shared_runners_enabled.yml)
 
-Group: `group::product intelligence`
+Group: `group::runner`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `gitpod_enabled`
 
@@ -16224,11 +16224,11 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.verify.clusters_applications_runner`
 
-Total GitLab Managed clusters with Runner enabled
+Count of users creating managed clusters with Runner enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181949_clusters_applications_runner.yml)
 
-Group: `group::runner`
+Group: `group::configure`
 
 Status: `data_available`
 

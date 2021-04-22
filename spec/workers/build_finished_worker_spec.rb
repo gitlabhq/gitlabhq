@@ -22,7 +22,6 @@ RSpec.describe BuildFinishedWorker do
         end
 
         expect(BuildHooksWorker).to receive(:perform_async)
-        expect(ExpirePipelineCacheWorker).to receive(:perform_async)
         expect(ChatNotificationWorker).not_to receive(:perform_async)
         expect(ArchiveTraceWorker).to receive(:perform_in)
 

@@ -1,0 +1,5 @@
+---
+title: Log exceptions in Lfs::PushService
+merge_request: 59960
+author:
+type: changed

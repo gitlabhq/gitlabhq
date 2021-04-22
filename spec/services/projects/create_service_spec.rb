@@ -273,16 +273,6 @@ RSpec.describe Projects::CreateService, '#execute' do
       opts[:default_branch] = 'master'
       expect(create_project(user, opts)).to eq(nil)
     end
-
-    it 'sets invalid service as inactive' do
-      create(:service, type: 'JiraService', project: nil, template: true, active: true)
-
-      project = create_project(user, opts)
-      service = project.services.first
-
-      expect(project).to be_persisted
-      expect(service.active).to be false
-    end
   end
 
   context 'wiki_enabled creates repository directory' do
@@ -631,17 +621,6 @@ RSpec.describe Projects::CreateService, '#execute' do
             end
           end
         end
-      end
-    end
-
-    context 'when there is an invalid integration' do
-      before do
-        create(:service, :template, type: 'DroneCiService', active: true)
-      end
-
-      it 'creates an inactive service' do
-        expect(project).to be_persisted
-        expect(project.services.first.active).to be false
       end
     end
   end

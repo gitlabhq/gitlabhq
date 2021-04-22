@@ -311,7 +311,7 @@ class ProjectsController < Projects::ApplicationController
   def unfoldered_environment_names
     respond_to do |format|
       format.json do
-        render json: EnvironmentNamesFinder.new(@project, current_user).execute
+        render json: Environments::EnvironmentNamesFinder.new(@project, current_user).execute
       end
     end
   end

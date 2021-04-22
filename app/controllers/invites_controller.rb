@@ -26,8 +26,7 @@ class InvitesController < ApplicationController
       experiment('members/invite_email', actor: member).track(:accepted) if initial_invite_email?
       session.delete(:invite_type)
 
-      redirect_to invite_details[:path], notice: _("You have been granted %{member_human_access} access to %{title} %{name}.") %
-        { member_human_access: member.human_access, title: invite_details[:title], name: invite_details[:name] }
+      redirect_to invite_details[:path], notice: helpers.invite_accepted_notice(member)
     else
       redirect_back_or_default(options: { alert: _("The invitation could not be accepted.") })
     end
@@ -91,7 +90,7 @@ class InvitesController < ApplicationController
   def authenticate_user!
     return if current_user
 
-    store_location_for :user, request.fullpath
+    store_location_for(:user, invite_landing_url) if member
 
     if user_sign_up?
       redirect_to new_user_registration_path(invite_email: member.invite_email), notice: _("To accept this invitation, create an account or sign in.")
@@ -116,6 +115,10 @@ class InvitesController < ApplicationController
     end
   end
 
+  def invite_landing_url
+    root_url + invite_details[:path]
+  end
+
   def invite_details
     @invite_details ||= case member.source
                         when Project
@@ -123,14 +126,14 @@ class InvitesController < ApplicationController
                             name: member.source.full_name,
                             url: project_url(member.source),
                             title: _("project"),
-                            path: project_path(member.source)
+                            path: activity_project_path(member.source)
                           }
                         when Group
                           {
                             name: member.source.name,
                             url: group_url(member.source),
                             title: _("group"),
-                            path: group_path(member.source)
+                            path: activity_group_path(member.source)
                           }
                         end
   end

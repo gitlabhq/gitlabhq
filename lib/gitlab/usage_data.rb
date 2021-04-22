@@ -164,7 +164,7 @@ module Gitlab
             projects_with_repositories_enabled: count(ProjectFeature.where('repository_access_level > ?', ProjectFeature::DISABLED)),
             projects_with_tracing_enabled: count(ProjectTracingSetting),
             projects_with_error_tracking_enabled: count(::ErrorTracking::ProjectErrorTrackingSetting.where(enabled: true)),
-            projects_with_alerts_service_enabled: count(Service.active.where(type: 'AlertsService')),
+            projects_with_alerts_service_enabled: DEPRECATED_VALUE,
             projects_with_alerts_created: distinct_count(::AlertManagement::Alert, :project_id),
             projects_with_enabled_alert_integrations: distinct_count(::AlertManagement::HttpIntegration.active, :project_id),
             projects_with_prometheus_alerts: distinct_count(PrometheusAlert, :project_id),

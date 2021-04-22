@@ -214,7 +214,7 @@ class Projects::BlobController < Projects::ApplicationController
   def show_html
     environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
     environment_params[:find_latest] = true
-    @environment = EnvironmentsByDeploymentsFinder.new(@project, current_user, environment_params).execute.last
+    @environment = Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, environment_params).execute.last
     @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path, literal_pathspec: true)
     @code_navigation_path = Gitlab::CodeNavigationPath.new(@project, @blob.commit_id).full_json_path_for(@blob.path)
 

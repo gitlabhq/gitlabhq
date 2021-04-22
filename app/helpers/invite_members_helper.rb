@@ -46,6 +46,17 @@ module InviteMembersHelper
     end
   end
 
+  def invite_accepted_notice(member)
+    case member.source
+    when Project
+      _("You have been granted %{member_human_access} access to project %{name}.") %
+        { member_human_access: member.human_access, name: member.source.name }
+    when Group
+      _("You have been granted %{member_human_access} access to group %{name}.") %
+        { member_human_access: member.human_access, name: member.source.name }
+    end
+  end
+
   private
 
   def invite_members_url(form_model)

@@ -241,7 +241,6 @@ class Service < ApplicationRecord
     service.project_id = project_id
     service.group_id = group_id
     service.inherit_from_id = integration.id if integration.instance? || integration.group
-    service.active = false if service.invalid?
     service
   end
 
