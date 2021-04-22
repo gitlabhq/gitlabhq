@@ -55,7 +55,7 @@ RSpec.describe Admin::GroupsController do
                              access_level: Gitlab::Access::GUEST
                            }
 
-      expect(response).to set_flash.to 'Users were successfully added.'
+      expect(controller).to set_flash.to 'Users were successfully added.'
       expect(response).to redirect_to(admin_group_path(group))
       expect(group.users).to include group_user
     end
@@ -67,7 +67,7 @@ RSpec.describe Admin::GroupsController do
                              access_level: Gitlab::Access::GUEST
                            }
 
-      expect(response).to set_flash.to 'Users were successfully added.'
+      expect(controller).to set_flash.to 'Users were successfully added.'
       expect(response).to redirect_to(admin_group_path(group))
     end
 
@@ -78,7 +78,7 @@ RSpec.describe Admin::GroupsController do
                              access_level: Gitlab::Access::GUEST
                            }
 
-      expect(response).to set_flash.to 'No users specified.'
+      expect(controller).to set_flash.to 'No users specified.'
       expect(response).to redirect_to(admin_group_path(group))
       expect(group.users).not_to include group_user
     end

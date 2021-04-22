@@ -19,10 +19,10 @@ module Gitlab
           execute_batch(batch_tracking_record)
 
           batch_tracking_record.status = :succeeded
-        rescue => e
+        rescue Exception # rubocop:disable Lint/RescueException
           batch_tracking_record.status = :failed
 
-          raise e
+          raise
         ensure
           finish_tracking_execution(batch_tracking_record)
           track_prometheus_metrics(batch_tracking_record)

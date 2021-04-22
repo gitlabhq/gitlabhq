@@ -17,21 +17,21 @@ class EncryptPlaintextAttributesOnApplicationSettings < ActiveRecord::Migration[
   class ApplicationSetting < ActiveRecord::Base
     self.table_name = 'application_settings'
 
-    def self.encryption_options_base_truncated_aes_256_gcm
+    def self.encryption_options_base_32_aes_256_gcm
       {
         mode: :per_attribute_iv,
-        key: Gitlab::Application.secrets.db_key_base[0..31],
+        key: Gitlab::Utils.ensure_utf8_size(Rails.application.secrets.db_key_base, bytes: 32.bytes),
         algorithm: 'aes-256-gcm',
         encode: true
       }
     end
 
-    attr_encrypted :akismet_api_key, encryption_options_base_truncated_aes_256_gcm
-    attr_encrypted :elasticsearch_aws_secret_access_key, encryption_options_base_truncated_aes_256_gcm
-    attr_encrypted :recaptcha_private_key, encryption_options_base_truncated_aes_256_gcm
-    attr_encrypted :recaptcha_site_key, encryption_options_base_truncated_aes_256_gcm
-    attr_encrypted :slack_app_secret, encryption_options_base_truncated_aes_256_gcm
-    attr_encrypted :slack_app_verification_token, encryption_options_base_truncated_aes_256_gcm
+    attr_encrypted :akismet_api_key, encryption_options_base_32_aes_256_gcm
+    attr_encrypted :elasticsearch_aws_secret_access_key, encryption_options_base_32_aes_256_gcm
+    attr_encrypted :recaptcha_private_key, encryption_options_base_32_aes_256_gcm
+    attr_encrypted :recaptcha_site_key, encryption_options_base_32_aes_256_gcm
+    attr_encrypted :slack_app_secret, encryption_options_base_32_aes_256_gcm
+    attr_encrypted :slack_app_verification_token, encryption_options_base_32_aes_256_gcm
 
     def akismet_api_key
       decrypt(:akismet_api_key, self[:encrypted_akismet_api_key]) || self[:akismet_api_key]

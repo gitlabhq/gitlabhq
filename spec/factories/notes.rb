@@ -2,8 +2,6 @@
 
 require_relative '../support/helpers/repo_helpers'
 
-include ActionDispatch::TestProcess
-
 FactoryBot.define do
   factory :note do
     project

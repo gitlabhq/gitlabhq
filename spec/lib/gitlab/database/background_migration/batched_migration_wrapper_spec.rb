@@ -112,19 +112,24 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   end
 
   context 'when the migration job raises an error' do
-    it 'marks the tracking record as failed before raising the error' do
-      expect(job_instance).to receive(:perform)
-        .with(1, 10, 'events', 'id', 1, 'id', 'other_id')
-        .and_raise(RuntimeError, 'Something broke!')
+    shared_examples 'an error is raised' do |error_class|
+      it 'marks the tracking record as failed' do
+        expect(job_instance).to receive(:perform)
+          .with(1, 10, 'events', 'id', 1, 'id', 'other_id')
+          .and_raise(error_class)
 
-      freeze_time do
-        expect { subject }.to raise_error(RuntimeError, 'Something broke!')
+        freeze_time do
+          expect { subject }.to raise_error(error_class)
 
-        reloaded_job_record = job_record.reload
+          reloaded_job_record = job_record.reload
 
-        expect(reloaded_job_record).to be_failed
-        expect(reloaded_job_record.finished_at).to eq(Time.current)
+          expect(reloaded_job_record).to be_failed
+          expect(reloaded_job_record.finished_at).to eq(Time.current)
+        end
       end
     end
+
+    it_behaves_like 'an error is raised', RuntimeError.new('Something broke!')
+    it_behaves_like 'an error is raised', SignalException.new('SIGTERM')
   end
 end

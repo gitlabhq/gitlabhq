@@ -88,6 +88,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.issues_csv_email(user, project, '1997,Ford,E350', { truncated: false, rows_expected: 3, rows_written: 3 }).message
   end
 
+  def new_issue_email
+    Notify.new_issue_email(user.id, issue.id).message
+  end
+
   def new_merge_request_email
     Notify.new_merge_request_email(user.id, merge_request.id).message
   end
@@ -200,7 +204,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def issue
-    @merge_request ||= project.issues.first
+    @issue ||= project.issues.first
   end
 
   def merge_request

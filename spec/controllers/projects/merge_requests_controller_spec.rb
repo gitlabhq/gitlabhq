@@ -2229,7 +2229,7 @@ RSpec.describe Projects::MergeRequestsController do
       subject
 
       expect(response).to redirect_to(project_merge_requests_path(project))
-      expect(response.flash[:notice]).to match(/\AYour CSV export has started/i)
+      expect(controller).to set_flash[:notice].to match(/\AYour CSV export has started/i)
     end
 
     it 'enqueues an IssuableExportCsvWorker worker' do

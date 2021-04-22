@@ -22,7 +22,7 @@ module Clusters
 
       attr_encrypted :alert_manager_token,
         mode: :per_attribute_iv,
-        key: Settings.attr_encrypted_db_key_base_truncated,
+        key: Settings.attr_encrypted_db_key_base_32,
         algorithm: 'aes-256-gcm'
 
       after_destroy do

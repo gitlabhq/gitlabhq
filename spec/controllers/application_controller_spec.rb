@@ -725,7 +725,7 @@ RSpec.describe ApplicationController do
           format.csv do
             stream_csv_headers('test.csv')
 
-            self.response_body = fixture_file_upload('spec/fixtures/csv_comma.csv')
+            self.response_body = Rack::Test::UploadedFile.new('spec/fixtures/csv_comma.csv')
           end
         end
       end

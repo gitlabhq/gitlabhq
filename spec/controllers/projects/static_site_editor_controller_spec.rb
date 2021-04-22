@@ -102,7 +102,7 @@ RSpec.describe Projects::StaticSiteEditorController do
 
           it 'redirects to project page and flashes error message' do
             expect(response).to redirect_to(project_path(project))
-            expect(response).to set_flash[:alert].to('invalid')
+            expect(controller).to set_flash[:alert].to('invalid')
           end
         end
 

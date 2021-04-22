@@ -271,7 +271,7 @@ RSpec.describe Projects::ServicesController do
           expect(response).to redirect_to(edit_project_service_path(project, service))
           expected_alert = "You can now manage your Prometheus settings on the <a href=\"#{project_settings_operations_path(project)}\">Operations</a> page. Fields on this page has been deprecated."
 
-          expect(response).to set_flash.now[:alert].to(expected_alert)
+          expect(controller).to set_flash.now[:alert].to(expected_alert)
         end
 
         it 'does not modify service' do
@@ -317,7 +317,7 @@ RSpec.describe Projects::ServicesController do
 
         it 'renders deprecation warning notice' do
           expected_alert = "You can now manage your Prometheus settings on the <a href=\"#{project_settings_operations_path(project)}\">Operations</a> page. Fields on this page has been deprecated."
-          expect(response).to set_flash.now[:alert].to(expected_alert)
+          expect(controller).to set_flash.now[:alert].to(expected_alert)
         end
       end
 
@@ -328,7 +328,7 @@ RSpec.describe Projects::ServicesController do
         end
 
         it 'does not render deprecation warning notice' do
-          expect(response).not_to set_flash.now[:alert]
+          expect(controller).not_to set_flash.now[:alert]
         end
       end
     end

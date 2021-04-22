@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-include ActionDispatch::TestProcess
-
 FactoryBot.define do
   factory :ci_build, class: 'Ci::Build', parent: :ci_processable do
     name { 'test' }

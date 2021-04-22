@@ -5,7 +5,7 @@ class RenameableUpload < SimpleDelegator
 
   # Get a fixture file with a new unique name, and the same extension
   def self.unique_file(name)
-    upload = new(fixture_file_upload("spec/fixtures/#{name}"))
+    upload = new(Rack::Test::UploadedFile.new("spec/fixtures/#{name}"))
     ext = File.extname(name)
     new_name = File.basename(FactoryBot.generate(:filename), '.*')
     upload.original_filename = new_name + ext

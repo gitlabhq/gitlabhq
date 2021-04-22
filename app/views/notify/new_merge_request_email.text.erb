@@ -1,7 +1,9 @@
-<%= sanitize_name(@merge_request.author_name) %> <%= 'created a merge request:' %> <%= url_for(project_merge_request_url(@merge_request.target_project, @merge_request)) %>
+<%= _('%{user} created a merge request: %{mr_link}') % { user: sanitize_name(@merge_request.author_name),
+                                                         mr_link: url_for(project_merge_request_url(@merge_request.target_project, @merge_request)) }
+%>
 
 <%= merge_path_description(@merge_request, 'to') %>
-<%= 'Author:' %>    <%= @merge_request.author_name %>
+<%= "#{_('Author')}:   #{sanitize_name(@merge_request.author_name)}" %>
 <%= assignees_label(@merge_request) if @merge_request.assignees.any? %>
 <%= reviewers_label(@merge_request) if @merge_request.reviewers.any? %>
 <%= render_if_exists 'notify/merge_request_approvers', presenter: @mr_presenter %>

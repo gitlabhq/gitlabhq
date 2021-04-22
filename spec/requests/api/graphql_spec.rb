@@ -101,7 +101,7 @@ RSpec.describe 'GraphQL' do
       login_as(user)
       get('/')
 
-      post '/api/graphql', params: { query: query }, headers: { 'X-CSRF-Token' => response.session['_csrf_token'] }
+      post '/api/graphql', params: { query: query }, headers: { 'X-CSRF-Token' => session['_csrf_token'] }
 
       expect(graphql_data['echo']).to eq("\"#{user.username}\" says: Hello world")
     end

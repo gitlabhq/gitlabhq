@@ -162,7 +162,9 @@ RSpec.describe Projects::Settings::CiCdController do
 
         context 'when the project repository is empty' do
           it 'sets a notice flash' do
-            expect(subject).to set_flash[:notice]
+            subject
+
+            expect(controller).to set_flash[:notice]
           end
 
           it 'does not queue a CreatePipelineWorker' do
@@ -178,7 +180,9 @@ RSpec.describe Projects::Settings::CiCdController do
           it 'displays a toast message' do
             allow(CreatePipelineWorker).to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
 
-            expect(subject).to set_flash[:toast]
+            subject
+
+            expect(controller).to set_flash[:toast]
           end
 
           it 'queues a CreatePipelineWorker' do
@@ -239,7 +243,9 @@ RSpec.describe Projects::Settings::CiCdController do
         let(:params) { { build_timeout_human_readable: '5m' } }
 
         it 'set specified timeout' do
-          expect(subject).to set_flash[:alert]
+          subject
+
+          expect(controller).to set_flash[:alert]
           expect(response).to redirect_to(namespace_project_settings_ci_cd_path)
         end
       end

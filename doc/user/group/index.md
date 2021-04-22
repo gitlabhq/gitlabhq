@@ -577,7 +577,8 @@ To disable group mentions:
 
 ## Enable delayed project removal **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+> - [Inheritance and enforcement added](https://gitlab.com/gitlab-org/gitlab/-/issues/321724) in GitLab 13.11.
 
 By default, projects in a group are deleted immediately.
 Optionally, on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
@@ -591,10 +592,11 @@ To enable delayed deletion of projects:
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
 1. Check **Enable delayed project removal**.
+1. Optional. To prevent subgroups from changing this setting, select **Enforce for all subgroups**.
 1. Select **Save changes**.
 
 NOTE:
-The group setting for delayed deletion is not inherited by subgroups and has to be individually defined for each group.
+In GitLab 13.11 and above the group setting for delayed project removal is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md) inheritance can be overridden, unless enforced by an ancestor.
 
 ## Prevent project forking outside group **(PREMIUM)**
 

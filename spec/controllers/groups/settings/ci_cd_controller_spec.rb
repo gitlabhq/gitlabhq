@@ -128,7 +128,7 @@ RSpec.describe Groups::Settings::CiCdController do
         end
 
         it 'returns a flash alert' do
-          expect(response).to set_flash[:alert]
+          expect(controller).to set_flash[:alert]
             .to eq("There was a problem updating Auto DevOps pipeline: [\"Error 1\"].")
         end
       end
@@ -137,7 +137,7 @@ RSpec.describe Groups::Settings::CiCdController do
         it 'returns a flash notice' do
           subject
 
-          expect(response).to set_flash[:notice]
+          expect(controller).to set_flash[:notice]
             .to eq('Auto DevOps pipeline was updated for the group')
         end
       end
@@ -209,7 +209,7 @@ RSpec.describe Groups::Settings::CiCdController do
           end
 
           it 'returns a flash alert' do
-            expect(response).to set_flash[:alert]
+            expect(controller).to set_flash[:alert]
               .to eq("There was a problem updating the pipeline settings: [\"Error 1\"].")
           end
         end
@@ -218,7 +218,7 @@ RSpec.describe Groups::Settings::CiCdController do
           it 'returns a flash notice' do
             subject
 
-            expect(response).to set_flash[:notice]
+            expect(controller).to set_flash[:notice]
               .to eq('Pipeline settings was updated for the group')
           end
         end

@@ -1,0 +1,5 @@
+---
+title: Set Web hook defaults to intended default values
+merge_request: 59814
+author:
+type: fixed

@@ -10,7 +10,7 @@ module Alerting
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_truncated,
+      key: Settings.attr_encrypted_db_key_base_32,
       algorithm: 'aes-256-gcm'
 
     before_validation :ensure_token

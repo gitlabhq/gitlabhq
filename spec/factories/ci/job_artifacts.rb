@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-include ActionDispatch::TestProcess
-
 FactoryBot.define do
   factory :ci_job_artifact, class: 'Ci::JobArtifact' do
     job factory: :ci_build
