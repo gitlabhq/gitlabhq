@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: concepts, howto
 ---
 
-# Default branch
+# Default branch **(FREE)**
 
 When you create a new [project](../../index.md), GitLab creates a default branch
 in the repository. A default branch has special configuration options not shared
@@ -74,7 +74,7 @@ Projects created on this instance after you change the setting use the
 custom branch name, unless a group-level or subgroup-level configuration
 overrides it.
 
-### Group-level custom initial branch name **(FREE)**
+### Group-level custom initial branch name
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221014) in GitLab 13.6.
 

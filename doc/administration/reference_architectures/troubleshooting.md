@@ -33,7 +33,7 @@ The dependency on disk storage also prevents Pages being deployed using the
 ### Incremental logging is required for CI to use object storage
 
 If you configure GitLab to use object storage for CI logs and artifacts,
-[you must also enable incremental logging](../job_logs.md#new-incremental-logging-architecture).
+[you must also enable incremental logging](../job_logs.md#incremental-logging-architecture).
 
 ### Proxy Download
 

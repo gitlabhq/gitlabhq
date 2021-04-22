@@ -78,7 +78,7 @@ RSpec.describe 'Projects > Members > Groups with access list', :js do
 
   context 'search in existing members' do
     it 'finds no results' do
-      fill_in_filtered_search 'Search groups', with: 'testing 123'
+      fill_in_filtered_search 'Search groups', with: 'non_existing_group_name'
 
       click_groups_tab
 
