@@ -76,8 +76,8 @@ const environment = {
     iid: 6,
     sha: '500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
     ref: {
-      name: 'master',
-      ref_url: 'root/ci-folders/tree/master',
+      name: 'main',
+      ref_url: 'root/ci-folders/tree/main',
     },
     tag: true,
     'last?': true,
@@ -130,8 +130,8 @@ const environment = {
     iid: 27,
     sha: '1132df044b73943943c949e7ac2c2f120a89bf59',
     ref: {
-      name: 'master',
-      ref_path: '/root/environment-test/-/tree/master',
+      name: 'main',
+      ref_path: '/root/environment-test/-/tree/main',
     },
     status: 'running',
     created_at: '2020-12-04T19:57:49.514Z',

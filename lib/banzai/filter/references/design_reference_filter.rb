@@ -33,6 +33,7 @@ module Banzai
         end
 
         self.reference_type = :design
+        self.object_class   = ::DesignManagement::Design
 
         def find_object(project, identifier)
           records_per_parent[project][identifier]
@@ -76,15 +77,11 @@ module Banzai
           super.merge(issue: design.issue_id)
         end
 
-        def self.object_class
-          ::DesignManagement::Design
-        end
-
-        def self.object_sym
+        def object_sym
           :design
         end
 
-        def self.parse_symbol(raw, match_data)
+        def parse_symbol(raw, match_data)
           filename = match_data[:url_filename]
           iid = match_data[:issue].to_i
           Identifier.new(filename: CGI.unescape(filename), issue_iid: iid)

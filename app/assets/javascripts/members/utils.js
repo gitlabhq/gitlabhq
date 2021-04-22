@@ -105,10 +105,14 @@ export const buildSortHref = ({
 export const canOverride = () => false;
 
 export const parseDataAttributes = (el) => {
-  const { members, sourceId, memberPath, canManageMembers } = el.dataset;
+  const { members, pagination, sourceId, memberPath, canManageMembers } = el.dataset;
 
   return {
     members: convertObjectPropsToCamelCase(JSON.parse(members), { deep: true }),
+    pagination: convertObjectPropsToCamelCase(JSON.parse(pagination || '{}'), {
+      deep: true,
+      ignoreKeyNames: ['params'],
+    }),
     sourceId: parseInt(sourceId, 10),
     memberPath,
     canManageMembers: parseBoolean(canManageMembers),

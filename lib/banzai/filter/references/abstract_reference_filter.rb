@@ -16,22 +16,9 @@ module Banzai
         REFERENCE_PLACEHOLDER = "_reference_#{SecureRandom.hex(16)}_"
         REFERENCE_PLACEHOLDER_PATTERN = %r{#{REFERENCE_PLACEHOLDER}(\d+)}.freeze
 
-        def self.object_class
-          # Implement in child class
-          # Example: MergeRequest
-        end
-
-        def self.object_name
-          @object_name ||= object_class.name.underscore
-        end
-
-        def self.object_sym
-          @object_sym ||= object_name.to_sym
-        end
-
         # Public: Find references in text (like `!123` for merge requests)
         #
-        #   AnyReferenceFilter.references_in(text) do |match, id, project_ref, matches|
+        #   references_in(text) do |match, id, project_ref, matches|
         #     object = find_object(project_ref, id)
         #     "<a href=...>#{object.to_reference}</a>"
         #   end
@@ -42,7 +29,7 @@ module Banzai
         # of the external project reference, and all of the matchdata.
         #
         # Returns a String replaced with the return of the block.
-        def self.references_in(text, pattern = object_class.reference_pattern)
+        def references_in(text, pattern = object_class.reference_pattern)
           text.gsub(pattern) do |match|
             if ident = identifier($~)
               yield match, ident, $~[:project], $~[:namespace], $~
@@ -52,17 +39,13 @@ module Banzai
           end
         end
 
-        def self.identifier(match_data)
+        def identifier(match_data)
           symbol = symbol_from_match(match_data)
 
           parse_symbol(symbol, match_data) if object_class.reference_valid?(symbol)
         end
 
-        def identifier(match_data)
-          self.class.identifier(match_data)
-        end
-
-        def self.symbol_from_match(match)
+        def symbol_from_match(match)
           key = object_sym
           match[key] if match.names.include?(key.to_s)
         end
@@ -72,7 +55,7 @@ module Banzai
         #
         # This method has the contract that if a string `ref` refers to a
         # record `record`, then `parse_symbol(ref) == record_identifier(record)`.
-        def self.parse_symbol(symbol, match_data)
+        def parse_symbol(symbol, match_data)
           symbol.to_i
         end
 
@@ -84,21 +67,10 @@ module Banzai
           record.id
         end
 
-        def object_class
-          self.class.object_class
-        end
-
-        def object_sym
-          self.class.object_sym
-        end
-
-        def references_in(*args, &block)
-          self.class.references_in(*args, &block)
-        end
-
         # Implement in child class
         # Example: project.merge_requests.find
         def find_object(parent_object, id)
+          raise NotImplementedError, "#{self.class} must implement method: #{__callee__}"
         end
 
         # Override if the link reference pattern produces a different ID (global
@@ -110,6 +82,7 @@ module Banzai
         # Implement in child class
         # Example: project_merge_request_url
         def url_for_object(object, parent_object)
+          raise NotImplementedError, "#{self.class} must implement method: #{__callee__}"
         end
 
         def find_object_cached(parent_object, id)
@@ -139,7 +112,7 @@ module Banzai
         def call
           return doc unless project || group || user
 
-          ref_pattern = object_class.reference_pattern
+          ref_pattern = object_reference_pattern
           link_pattern = object_class.link_reference_pattern
 
           # Compile often used regexps only once outside of the loop
@@ -423,14 +396,6 @@ module Banzai
           return current_parent_path unless group_ref
 
           group_ref
-        end
-
-        def unescape_html_entities(text)
-          CGI.unescapeHTML(text.to_s)
-        end
-
-        def escape_html_entities(text)
-          CGI.escapeHTML(text.to_s)
         end
 
         def escape_with_placeholders(text, placeholder_data)

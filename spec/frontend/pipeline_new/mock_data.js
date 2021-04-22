@@ -1,5 +1,5 @@
 export const mockRefs = {
-  Branches: ['master', 'branch-1', 'branch-2'],
+  Branches: ['main', 'branch-1', 'branch-2'],
   Tags: ['1.0.0', '1.1.0', '1.2.0'],
 };
 
@@ -40,6 +40,6 @@ export const mockError = {
   total_warnings: 7,
 };
 
-export const mockBranchRefs = ['master', 'dev', 'release'];
+export const mockBranchRefs = ['main', 'dev', 'release'];
 
 export const mockTagRefs = ['1.0.0', '1.1.0', '1.2.0'];

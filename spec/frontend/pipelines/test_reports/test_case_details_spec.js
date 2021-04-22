@@ -13,7 +13,7 @@ describe('Test case details', () => {
     formattedTime: '10.04ms',
     recent_failures: {
       count: 2,
-      base_branch: 'master',
+      base_branch: 'main',
     },
     system_output: 'Line 42 is broken',
   };

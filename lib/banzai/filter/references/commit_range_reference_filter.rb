@@ -8,12 +8,9 @@ module Banzai
       # This filter supports cross-project references.
       class CommitRangeReferenceFilter < AbstractReferenceFilter
         self.reference_type = :commit_range
+        self.object_class   = CommitRange
 
-        def self.object_class
-          CommitRange
-        end
-
-        def self.references_in(text, pattern = CommitRange.reference_pattern)
+        def references_in(text, pattern = object_reference_pattern)
           text.gsub(pattern) do |match|
             yield match, $~[:commit_range], $~[:project], $~[:namespace], $~
           end

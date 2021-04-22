@@ -5,7 +5,7 @@ import { mockBranchRefs, mockTagRefs } from '../mock_data';
 describe('Format refs util', () => {
   it('formats branch ref correctly', () => {
     expect(formatRefs(mockBranchRefs, BRANCH_REF_TYPE)).toEqual([
-      { fullName: 'refs/heads/master', shortName: 'master' },
+      { fullName: 'refs/heads/main', shortName: 'main' },
       { fullName: 'refs/heads/dev', shortName: 'dev' },
       { fullName: 'refs/heads/release', shortName: 'release' },
     ]);

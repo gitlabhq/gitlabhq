@@ -147,7 +147,7 @@ RSpec.describe Projects::ProjectMembersHelper do
   end
 
   describe 'project members' do
-    let_it_be(:project_members) { create_list(:project_member, 1, project: project) }
+    let_it_be(:project_members) { create_list(:project_member, 2, project: project) }
 
     describe '#project_members_data_json' do
       it 'matches json schema' do
@@ -169,6 +169,38 @@ RSpec.describe Projects::ProjectMembersHelper do
           source_id: project.id,
           can_manage_members: 'true'
         })
+      end
+
+      context 'when pagination is not available' do
+        it 'sets `pagination` attribute to expected json' do
+          expect(helper.project_members_list_data_attributes(project, present_members(project_members))[:pagination]).to match({
+            current_page: nil,
+            per_page: nil,
+            total_items: 2,
+            param_name: nil,
+            params: {}
+          }.to_json)
+        end
+      end
+
+      context 'when pagination is available' do
+        let(:collection) { Kaminari.paginate_array(project_members).page(1).per(1) }
+
+        it 'sets `pagination` attribute to expected json' do
+          expect(
+            helper.project_members_list_data_attributes(
+              project,
+              present_members(collection),
+              { param_name: :page, params: { search_groups: nil } }
+            )[:pagination]
+          ).to match({
+            current_page: 1,
+            per_page: 1,
+            total_items: 2,
+            param_name: :page,
+            params: { search_groups: nil }
+          }.to_json)
+        end
       end
     end
   end
@@ -193,6 +225,13 @@ RSpec.describe Projects::ProjectMembersHelper do
       it 'returns expected hash' do
         expect(helper.project_group_links_list_data_attributes(project, project_group_links)).to include({
           members: helper.project_group_links_data_json(project_group_links),
+          pagination: {
+            current_page: nil,
+            per_page: nil,
+            total_items: 1,
+            param_name: nil,
+            params: {}
+          }.to_json,
           member_path: '/foo-bar/-/group_links/:id',
           source_id: project.id,
           can_manage_members: 'true'

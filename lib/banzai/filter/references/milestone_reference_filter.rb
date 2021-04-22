@@ -8,10 +8,7 @@ module Banzai
         include Gitlab::Utils::StrongMemoize
 
         self.reference_type = :milestone
-
-        def self.object_class
-          Milestone
-        end
+        self.object_class   = Milestone
 
         # Links to project milestones contain the IID, but when we're handling
         # 'regular' references, we need to use the global ID to disambiguate

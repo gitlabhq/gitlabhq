@@ -70,7 +70,7 @@ RSpec.describe Groups::GroupMembersHelper do
   end
 
   describe '#group_members_list_data_attributes' do
-    let(:group_member) { create(:group_member, group: group, created_by: current_user) }
+    let_it_be(:group_members) { create_list(:group_member, 2, group: group, created_by: current_user) }
 
     before do
       allow(helper).to receive(:group_group_member_path).with(group, ':id').and_return('/groups/foo-bar/-/group_members/:id')
@@ -78,12 +78,44 @@ RSpec.describe Groups::GroupMembersHelper do
     end
 
     it 'returns expected hash' do
-      expect(helper.group_members_list_data_attributes(group, present_members([group_member]))).to include({
-        members: helper.members_data_json(group, present_members([group_member])),
+      expect(helper.group_members_list_data_attributes(group, present_members(group_members))).to include({
+        members: helper.members_data_json(group, present_members(group_members)),
         member_path: '/groups/foo-bar/-/group_members/:id',
         source_id: group.id,
         can_manage_members: 'true'
       })
+    end
+
+    context 'when pagination is not available' do
+      it 'sets `pagination` attribute to expected json' do
+        expect(helper.group_members_list_data_attributes(group, present_members(group_members))[:pagination]).to match({
+          current_page: nil,
+          per_page: nil,
+          total_items: 2,
+          param_name: nil,
+          params: {}
+        }.to_json)
+      end
+    end
+
+    context 'when pagination is available' do
+      let(:collection) { Kaminari.paginate_array(group_members).page(1).per(1) }
+
+      it 'sets `pagination` attribute to expected json' do
+        expect(
+          helper.group_members_list_data_attributes(
+            group,
+            present_members(collection),
+            { param_name: :page, params: { search_groups: nil } }
+          )[:pagination]
+        ).to match({
+          current_page: 1,
+          per_page: 1,
+          total_items: 2,
+          param_name: :page,
+          params: { search_groups: nil }
+        }.to_json)
+      end
     end
   end
 
@@ -96,6 +128,13 @@ RSpec.describe Groups::GroupMembersHelper do
 
     it 'returns expected hash' do
       expect(helper.group_group_links_list_data_attributes(shared_group)).to include({
+        pagination: {
+          current_page: nil,
+          per_page: nil,
+          total_items: 1,
+          param_name: nil,
+          params: {}
+        }.to_json,
         members: helper.group_group_links_data_json(shared_group.shared_with_group_links),
         member_path: '/groups/foo-bar/-/group_links/:id',
         source_id: shared_group.id

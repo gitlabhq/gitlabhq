@@ -10,12 +10,15 @@ class Admin::UsersController < Admin::ApplicationController
 
   feature_category :users
 
+  PAGINATION_WITH_COUNT_LIMIT = 1000
+
   def index
     @users = User.filter_items(params[:filter]).order_name_asc
     @users = @users.search_with_secondary_emails(params[:search_query]) if params[:search_query].present?
     @users = users_with_included_associations(@users)
     @users = @users.sort_by_attribute(@sort = params[:sort])
     @users = @users.page(params[:page])
+    @users = @users.without_count if paginate_without_count?
 
     @cohorts = load_cohorts
 
@@ -227,6 +230,12 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   protected
+
+  def paginate_without_count?
+    counts = Gitlab::Database::Count.approximate_counts([User])
+
+    counts[User] > PAGINATION_WITH_COUNT_LIMIT
+  end
 
   def users_with_included_associations(users)
     users.includes(:authorized_projects) # rubocop: disable CodeReuse/ActiveRecord

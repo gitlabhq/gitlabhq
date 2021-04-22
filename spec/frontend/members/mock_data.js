@@ -79,3 +79,19 @@ export const directMember = { ...member, isDirectMember: true };
 export const inheritedMember = { ...member, isDirectMember: false };
 
 export const member2faEnabled = { ...member, user: { ...member.user, twoFactorEnabled: true } };
+
+export const paginationJsonString = JSON.stringify({
+  current_page: 1,
+  per_page: 5,
+  total_items: 10,
+  param_name: 'page',
+  params: { search_groups: null },
+});
+
+export const pagination = {
+  currentPage: 1,
+  perPage: 5,
+  totalItems: 10,
+  paramName: 'page',
+  params: { search_groups: null },
+};

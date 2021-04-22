@@ -13,10 +13,7 @@ module Banzai
       # to reference issues from other GitLab projects.
       class IssueReferenceFilter < IssuableReferenceFilter
         self.reference_type = :issue
-
-        def self.object_class
-          Issue
-        end
+        self.object_class   = Issue
 
         def url_for_object(issue, project)
           return issue_path(issue, project) if only_path?

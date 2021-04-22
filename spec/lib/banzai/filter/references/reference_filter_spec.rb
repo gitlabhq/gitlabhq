@@ -155,7 +155,7 @@ RSpec.describe Banzai::Filter::References::ReferenceFilter do
       let(:nodes) { [node] }
 
       it 'skips node' do
-        expect { |b| filter.replace_text_when_pattern_matches(filter.nodes[0], 0, ref_pattern, &b) }.not_to yield_control
+        expect { |b| filter.send(:replace_text_when_pattern_matches, filter.nodes[0], 0, ref_pattern, &b) }.not_to yield_control
       end
     end
 
@@ -183,12 +183,12 @@ RSpec.describe Banzai::Filter::References::ReferenceFilter do
     end
   end
 
-  describe "#call_and_update_nodes" do
+  describe '#call_and_update_nodes' do
     include_context 'new nodes'
     let(:document) { Nokogiri::HTML.fragment('<a href="foo">foo</a>') }
     let(:filter) { described_class.new(document, project: project) }
 
-    it "updates all new nodes", :aggregate_failures do
+    it 'updates all new nodes', :aggregate_failures do
       filter.instance_variable_set('@nodes', nodes)
 
       expect(filter).to receive(:call) { filter.instance_variable_set('@new_nodes', new_nodes) }
@@ -201,14 +201,14 @@ RSpec.describe Banzai::Filter::References::ReferenceFilter do
     end
   end
 
-  describe ".call" do
+  describe '.call' do
     include_context 'new nodes'
 
     let(:document) { Nokogiri::HTML.fragment('<a href="foo">foo</a>') }
 
     let(:result) { { reference_filter_nodes: nodes } }
 
-    it "updates all nodes", :aggregate_failures do
+    it 'updates all nodes', :aggregate_failures do
       expect_next_instance_of(described_class) do |filter|
         expect(filter).to receive(:call_and_update_nodes).and_call_original
         expect(filter).to receive(:with_update_nodes).and_call_original
@@ -219,6 +219,23 @@ RSpec.describe Banzai::Filter::References::ReferenceFilter do
       described_class.call(document, { project: project }, result)
 
       expect(result[:reference_filter_nodes]).to eq(expected_nodes)
+    end
+  end
+
+  context 'abstract methods' do
+    let(:document) { Nokogiri::HTML.fragment('<a href="foo">foo</a>') }
+    let(:filter) { described_class.new(document, project: project) }
+
+    describe '#references_in' do
+      it 'raises NotImplementedError' do
+        expect { filter.references_in('foo', %r{(?<!\w)}) }.to raise_error(NotImplementedError)
+      end
+    end
+
+    describe '#object_link_filter' do
+      it 'raises NotImplementedError' do
+        expect { filter.send(:object_link_filter, 'foo', %r{(?<!\w)}) }.to raise_error(NotImplementedError)
+      end
     end
   end
 end

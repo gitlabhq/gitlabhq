@@ -29,24 +29,15 @@ RSpec.describe NewProjectReadmeExperiment, :experiment do
   context "when tracking initial writes" do
     let!(:project) { create(:project, :repository) }
 
-    def stub_gitaly_count(count = 1)
-      allow(Gitlab::GitalyClient).to receive(:call).and_call_original
-      allow(Gitlab::GitalyClient).to receive(:call).with(anything, :commit_service, :count_commits, anything, anything)
-        .and_return(double(count: count))
-    end
-
-    before do
-      stub_gitaly_count
-    end
-
     it "tracks an event for the first commit on a project with a repository" do
+      expect(subject).to receive(:commit_count_for).with(project, default_count: described_class::INITIAL_WRITE_LIMIT, max_count: described_class::INITIAL_WRITE_LIMIT, experiment: 'new_project_readme').and_return(1)
       expect(subject).to receive(:track).with(:write, property: project.created_at.to_s, value: 1).and_call_original
 
       subject.track_initial_writes(project)
     end
 
     it "tracks an event for the second commit on a project with a repository" do
-      stub_gitaly_count(2)
+      allow(subject).to receive(:commit_count_for).and_return(2)
 
       expect(subject).to receive(:track).with(:write, property: project.created_at.to_s, value: 2).and_call_original
 
@@ -54,7 +45,7 @@ RSpec.describe NewProjectReadmeExperiment, :experiment do
     end
 
     it "doesn't track if the repository has more then 2 commits" do
-      stub_gitaly_count(3)
+      allow(subject).to receive(:commit_count_for).and_return(3)
 
       expect(subject).not_to receive(:track)
 
@@ -73,15 +64,6 @@ RSpec.describe NewProjectReadmeExperiment, :experiment do
       expect(project).to receive(:created_at).and_return(described_class::EXPERIMENT_START_DATE - 1.minute)
 
       expect(subject).not_to receive(:track)
-
-      subject.track_initial_writes(project)
-    end
-
-    it "handles exceptions by logging them" do
-      allow(Gitlab::GitalyClient).to receive(:call).with(anything, :commit_service, :count_commits, anything, anything)
-        .and_raise(e = StandardError.new('_message_'))
-
-      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(e, experiment: 'new_project_readme')
 
       subject.track_initial_writes(project)
     end

@@ -189,7 +189,7 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter do
       filter = described_class.new(document, project: project)
       ns = user.namespace
 
-      expect(filter.namespaces).to eq({ ns.path => ns })
+      expect(filter.send(:namespaces)).to eq({ ns.path => ns })
     end
   end
 
@@ -198,7 +198,7 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter do
       document = Nokogiri::HTML.fragment("<p>#{get_reference(user)}</p>")
       filter = described_class.new(document, project: project)
 
-      expect(filter.usernames).to eq([user.username])
+      expect(filter.send(:usernames)).to eq([user.username])
     end
   end
 end

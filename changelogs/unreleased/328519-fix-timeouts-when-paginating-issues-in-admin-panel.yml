@@ -1,0 +1,5 @@
+---
+title: Improve pagination of users in the admin panel
+merge_request: 59884
+author:
+type: performance

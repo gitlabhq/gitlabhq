@@ -359,7 +359,7 @@ describe('Environment table', () => {
               },
             },
             {
-              name: 'review/master',
+              name: 'review/main',
               last_deployment: {
                 created_at: '2019-02-17T16:26:15.125Z',
               },
@@ -374,7 +374,7 @@ describe('Environment table', () => {
         },
       ];
       const [production, review, staging] = mockItems;
-      const [addcibuildstatus, master] = mockItems[1].children;
+      const [addcibuildstatus, main] = mockItems[1].children;
 
       factory({
         propsData: {
@@ -390,7 +390,7 @@ describe('Environment table', () => {
         production.name,
       ]);
 
-      expect(wrapper.vm.sortedEnvironments[0].children).toEqual([master, addcibuildstatus]);
+      expect(wrapper.vm.sortedEnvironments[0].children).toEqual([main, addcibuildstatus]);
     });
   });
 });

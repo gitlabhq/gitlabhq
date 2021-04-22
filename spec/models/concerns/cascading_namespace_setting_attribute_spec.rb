@@ -142,7 +142,7 @@ RSpec.describe NamespaceSetting, 'CascadingNamespaceSettingAttribute' do
       end
 
       it 'does not allow the local value to be saved' do
-        subgroup_settings.delayed_project_removal = nil
+        subgroup_settings.delayed_project_removal = false
 
         expect { subgroup_settings.save! }
           .to raise_error(ActiveRecord::RecordInvalid, /Delayed project removal cannot be changed because it is locked by an ancestor/)
@@ -161,6 +161,19 @@ RSpec.describe NamespaceSetting, 'CascadingNamespaceSettingAttribute' do
 
     it 'aliases the method when the attribute is a boolean' do
       expect(subgroup_settings.delayed_project_removal?).to eq(subgroup_settings.delayed_project_removal)
+    end
+  end
+
+  describe '#delayed_project_removal=' do
+    before do
+      subgroup_settings.update!(delayed_project_removal: nil)
+      group_settings.update!(delayed_project_removal: true)
+    end
+
+    it 'does not save the value locally when it matches the cascaded value' do
+      subgroup_settings.update!(delayed_project_removal: true)
+
+      expect(subgroup_settings.read_attribute(:delayed_project_removal)).to eq(nil)
     end
   end
 
@@ -276,6 +289,13 @@ RSpec.describe NamespaceSetting, 'CascadingNamespaceSettingAttribute' do
 
         expect { subgroup_settings.save! }
           .to raise_error(ActiveRecord::RecordInvalid, /Delayed project removal cannot be nil when locking the attribute/)
+      end
+
+      it 'copies the cascaded value when locking the attribute if the local value is nil', :aggregate_failures do
+        subgroup_settings.delayed_project_removal = nil
+        subgroup_settings.lock_delayed_project_removal = true
+
+        expect(subgroup_settings.read_attribute(:delayed_project_removal)).to eq(false)
       end
     end
 

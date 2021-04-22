@@ -1,7 +1,7 @@
 import {
   MarkdownSerializer as ProseMirrorMarkdownSerializer,
   defaultMarkdownSerializer,
-} from 'prosemirror-markdown';
+} from 'prosemirror-markdown/src/to_markdown';
 import { DOMParser as ProseMirrorDOMParser } from 'prosemirror-model';
 
 const wrapHtmlPayload = (payload) => `<div>${payload}</div>`;

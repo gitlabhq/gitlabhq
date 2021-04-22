@@ -1,0 +1,5 @@
+---
+title: Optimize CI Settings page to reduce N+1 queries
+merge_request: 59625
+author:
+type: performance

@@ -14,6 +14,10 @@ RSpec.describe Projects::Settings::CiCdController do
   end
 
   describe 'GET show' do
+    let_it_be(:parent_group) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent_group) }
+    let_it_be(:other_project) { create(:project, group: group) }
+
     it 'renders show with 200 status code' do
       get :show, params: { namespace_id: project.namespace, project_id: project }
 
@@ -22,12 +26,9 @@ RSpec.describe Projects::Settings::CiCdController do
     end
 
     context 'with group runners' do
-      let(:parent_group) { create(:group) }
-      let(:group) { create(:group, parent: parent_group) }
-      let(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-      let(:other_project) { create(:project, group: group) }
-      let!(:project_runner) { create(:ci_runner, :project, projects: [other_project]) }
-      let!(:shared_runner) { create(:ci_runner, :instance) }
+      let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [other_project]) }
+      let_it_be(:shared_runner) { create(:ci_runner, :instance) }
 
       it 'sets assignable project runners only' do
         group.add_maintainer(user)
@@ -35,6 +36,33 @@ RSpec.describe Projects::Settings::CiCdController do
         get :show, params: { namespace_id: project.namespace, project_id: project }
 
         expect(assigns(:assignable_runners)).to contain_exactly(project_runner)
+      end
+    end
+
+    context 'prevents N+1 queries for tags' do
+      render_views
+
+      def show
+        get :show, params: { namespace_id: project.namespace, project_id: project }
+      end
+
+      it 'has the same number of queries with one tag or with many tags', :request_store do
+        group.add_maintainer(user)
+
+        show # warmup
+
+        # with one tag
+        create(:ci_runner, :instance, tag_list: %w(shared_runner))
+        create(:ci_runner, :project, projects: [other_project], tag_list: %w(project_runner))
+        create(:ci_runner, :group, groups: [group], tag_list: %w(group_runner))
+        control = ActiveRecord::QueryRecorder.new { show }
+
+        # with several tags
+        create(:ci_runner, :instance, tag_list: %w(shared_runner tag2 tag3))
+        create(:ci_runner, :project, projects: [other_project], tag_list: %w(project_runner tag2 tag3))
+        create(:ci_runner, :group, groups: [group], tag_list: %w(group_runner tag2 tag3))
+
+        expect { show }.not_to exceed_query_limit(control)
       end
     end
   end

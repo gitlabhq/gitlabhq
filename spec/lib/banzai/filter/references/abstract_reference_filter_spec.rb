@@ -61,13 +61,13 @@ RSpec.describe Banzai::Filter::References::AbstractReferenceFilter do
           .to eq([project])
       end
 
-      context "when no project with that path exists" do
-        it "returns no value" do
+      context 'when no project with that path exists' do
+        it 'returns no value' do
           expect(filter.find_for_paths(['nonexistent/project']))
             .to eq([])
         end
 
-        it "adds the ref to the project refs cache" do
+        it 'adds the ref to the project refs cache' do
           project_refs_cache = {}
           allow(filter).to receive(:refs_cache).and_return(project_refs_cache)
 
@@ -97,6 +97,20 @@ RSpec.describe Banzai::Filter::References::AbstractReferenceFilter do
       filter = described_class.new(doc, project: project)
 
       expect(filter.current_parent_path).to eq(project.full_path)
+    end
+  end
+
+  context 'abstract methods' do
+    describe '#find_object' do
+      it 'raises NotImplementedError' do
+        expect { filter.find_object(nil, nil) }.to raise_error(NotImplementedError)
+      end
+    end
+
+    describe '#url_for_object' do
+      it 'raises NotImplementedError' do
+        expect { filter.url_for_object(nil, nil) }.to raise_error(NotImplementedError)
+      end
     end
   end
 end

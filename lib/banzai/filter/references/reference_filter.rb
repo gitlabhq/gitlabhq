@@ -16,7 +16,13 @@ module Banzai
         include OutputSafety
 
         class << self
+          # Implement in child class
+          # Example: self.reference_type = :merge_request
           attr_accessor :reference_type
+
+          # Implement in child class
+          # Example: self.object_class = MergeRequest
+          attr_accessor :object_class
 
           def call(doc, context = nil, result = nil)
             new(doc, context, result).call_and_update_nodes
@@ -33,6 +39,65 @@ module Banzai
         def call_and_update_nodes
           with_update_nodes { call }
         end
+
+        def call
+          ref_pattern_start = /\A#{object_reference_pattern}\z/
+
+          nodes.each_with_index do |node, index|
+            if text_node?(node)
+              replace_text_when_pattern_matches(node, index, object_reference_pattern) do |content|
+                object_link_filter(content, object_reference_pattern)
+              end
+            elsif element_node?(node)
+              yield_valid_link(node) do |link, inner_html|
+                if link =~ ref_pattern_start
+                  replace_link_node_with_href(node, index, link) do
+                    object_link_filter(link, object_reference_pattern, link_content: inner_html)
+                  end
+                end
+              end
+            end
+          end
+
+          doc
+        end
+
+        # Public: Find references in text (like `!123` for merge requests)
+        #
+        #   references_in(text) do |match, id, project_ref, matches|
+        #     object = find_object(project_ref, id)
+        #     "<a href=...>#{object.to_reference}</a>"
+        #   end
+        #
+        # text - String text to search.
+        #
+        # Yields the String match, the Integer referenced object ID, an optional String
+        # of the external project reference, and all of the matchdata.
+        #
+        # Returns a String replaced with the return of the block.
+        def references_in(text, pattern = object_reference_pattern)
+          raise NotImplementedError, "#{self.class} must implement method: #{__callee__}"
+        end
+
+        # Iterates over all <a> and text() nodes in a document.
+        #
+        # Nodes are skipped whenever their ancestor is one of the nodes returned
+        # by `ignore_ancestor_query`. Link tags are not processed if they have a
+        # "gfm" class or the "href" attribute is empty.
+        def each_node
+          return to_enum(__method__) unless block_given?
+
+          doc.xpath(query).each do |node|
+            yield node
+          end
+        end
+
+        # Returns an Array containing all HTML nodes.
+        def nodes
+          @nodes ||= each_node.to_a
+        end
+
+        private
 
         # Returns a data attribute String to attach to a reference link
         #
@@ -69,6 +134,13 @@ module Banzai
           end
         end
 
+        # Ensure that a :project key exists in context
+        #
+        # Note that while the key might exist, its value could be nil!
+        def validate
+          needs :project unless skip_project_check?
+        end
+
         def project
           context[:project]
         end
@@ -93,31 +165,6 @@ module Banzai
           "#{gfm_klass} has-tooltip"
         end
 
-        # Ensure that a :project key exists in context
-        #
-        # Note that while the key might exist, its value could be nil!
-        def validate
-          needs :project unless skip_project_check?
-        end
-
-        # Iterates over all <a> and text() nodes in a document.
-        #
-        # Nodes are skipped whenever their ancestor is one of the nodes returned
-        # by `ignore_ancestor_query`. Link tags are not processed if they have a
-        # "gfm" class or the "href" attribute is empty.
-        def each_node
-          return to_enum(__method__) unless block_given?
-
-          doc.xpath(query).each do |node|
-            yield node
-          end
-        end
-
-        # Returns an Array containing all HTML nodes.
-        def nodes
-          @nodes ||= each_node.to_a
-        end
-
         # Yields the link's URL and inner HTML whenever the node is a valid <a> tag.
         def yield_valid_link(node)
           link = unescape_link(node.attr('href').to_s)
@@ -130,6 +177,14 @@ module Banzai
 
         def unescape_link(href)
           CGI.unescape(href)
+        end
+
+        def unescape_html_entities(text)
+          CGI.unescapeHTML(text.to_s)
+        end
+
+        def escape_html_entities(text)
+          CGI.escapeHTML(text.to_s)
         end
 
         def replace_text_when_pattern_matches(node, index, pattern)
@@ -161,7 +216,25 @@ module Banzai
           node.is_a?(Nokogiri::XML::Element)
         end
 
-        private
+        def object_class
+          self.class.object_class
+        end
+
+        def object_reference_pattern
+          @object_reference_pattern ||= object_class.reference_pattern
+        end
+
+        def object_name
+          @object_name ||= object_class.name.underscore
+        end
+
+        def object_sym
+          @object_sym ||= object_name.to_sym
+        end
+
+        def object_link_filter(text, pattern, link_content: nil, link_reference: false)
+          raise NotImplementedError, "#{self.class} must implement method: #{__callee__}"
+        end
 
         def query
           @query ||= %Q{descendant-or-self::text()[not(#{ignore_ancestor_query})]

@@ -41,7 +41,7 @@ module Gitlab
         parts = [
           "#{deprecated_in(format: :markdown)}.",
           reason_text,
-          replacement.then { |r| "Use: `#{r}`." if r }
+          replacement.then { |r| "Use: [`#{r}`](##{r.downcase.tr('.', '')})." if r }
         ].compact
 
         case context

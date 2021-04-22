@@ -26,17 +26,81 @@
   The `Query` type contains the API's top-level entry points for all executable queries.
 \
 
-- sorted_by_name(queries).each do |query|
-  = render_name_and_description(query, owner: 'Query')
+- fields_of('Query').each do |field|
+  = render_full_field(field, heading_level: 3, owner: 'Query')
   \
-  = render_return_type(query)
-  - unless query[:arguments].empty?
-    ~ "#### Arguments\n"
-    ~ "| Name | Type | Description |"
-    ~ "| ---- | ---- | ----------- |"
-    - sorted_by_name(query[:arguments]).each do |argument|
-      = render_field(argument, query[:type][:name])
-    \
+
+:plain
+  ## `Mutation` type
+
+  The `Mutation` type contains all the mutations you can execute.
+
+  All mutations receive their arguments in a single input object named `input`, and all mutations
+  support at least a return field `errors` containing a list of error messages.
+
+  All input objects may have a `clientMutationId: String` field, identifying the mutation.
+
+  For example:
+
+  ```graphql
+  mutation($id: NoteableID!, $body: String!) {
+    createNote(input: { noteableId: $id, body: $body }) {
+      errors
+    }
+  }
+  ```
+\
+
+- mutations.each do |field|
+  = render_full_field(field, heading_level: 3, owner: 'Mutation')
+  \
+
+:plain
+  ## Connections
+
+  Some types in our schema are `Connection` types - they represent a paginated
+  collection of edges between two nodes in the graph. These follow the
+  [Relay cursor connections specification](https://relay.dev/graphql/connections.htm).
+
+  ### Pagination arguments {#connection-pagination-arguments}
+
+  All connection fields support the following pagination arguments:
+
+  | Name | Type | Description |
+  |------|------|-------------|
+  | `after` | [`String`](#string) | Returns the elements in the list that come after the specified cursor. |
+  | `before` | [`String`](#string) | Returns the elements in the list that come before the specified cursor. |
+  | `first` | [`Int`](#int) | Returns the first _n_ elements from the list. |
+  | `last` | [`Int`](#int) | Returns the last _n_ elements from the list. |
+
+  Since these arguments are common to all connection fields, they are not repeated for each connection.
+
+  ### Connection fields
+
+  All connections have at least the following fields:
+
+  | Name | Type | Description |
+  |------|------|-------------|
+  | `pageInfo` | [`PageInfo!`](#pageinfo) | Pagination information. |
+  | `edges` | `[edge!]` | The edges. |
+  | `nodes` | `[item!]` | The items in the current page. |
+
+  The precise type of `Edge` and `Item` depends on the kind of connection. A
+  [`UserConnection`](#userconnection) will have nodes that have the type
+  [`[User!]`](#user), and edges that have the type [`UserEdge`](#useredge).
+
+  ### Connection types
+
+  Some of the types in the schema exist solely to model connections. Each connection
+  has a distinct, named type, with a distinct named edge type. These are listed separately
+  below.
+\
+
+- connection_object_types.each do |type|
+  = render_name_and_description(type, level: 4)
+  \
+  = render_object_fields(type[:fields], owner: type, level_bump: 1)
+  \
 
 :plain
   ## Object types
@@ -44,22 +108,20 @@
   Object types represent the resources that the GitLab GraphQL API can return.
   They contain _fields_. Each field has its own type, which will either be one of the
   basic GraphQL [scalar types](https://graphql.org/learn/schema/#scalar-types)
-  (e.g.: `String` or `Boolean`) or other object types.
+  (e.g.: `String` or `Boolean`) or other object types. Fields may have arguments.
+  Fields with arguments are exactly like top-level queries, and are listed beneath
+  the table of fields for each object type.
 
   For more information, see
   [Object Types and Fields](https://graphql.org/learn/schema/#object-types-and-fields)
   on `graphql.org`.
 \
 
-- objects.each do |type|
-  - unless type[:fields].empty?
-    = render_name_and_description(type)
-    \
-    ~ "| Field | Type | Description |"
-    ~ "| ----- | ---- | ----------- |"
-    - sorted_by_name(type[:fields]).each do |field|
-      = render_field(field, type[:name])
-    \
+- object_types.each do |type|
+  = render_name_and_description(type)
+  \
+  = render_object_fields(type[:fields], owner: type)
+  \
 
 :plain
   ## Enumeration types
@@ -73,14 +135,13 @@
 \
 
 - enums.each do |enum|
-  - unless enum[:values].empty?
-    = render_name_and_description(enum)
-    \
-    ~ "| Value | Description |"
-    ~ "| ----- | ----------- |"
-    - sorted_by_name(enum[:values]).each do |value|
-      = render_enum_value(enum, value)
-    \
+  = render_name_and_description(enum)
+  \
+  ~ "| Value | Description |"
+  ~ "| ----- | ----------- |"
+  - enum[:values].each do |value|
+    = render_enum_value(enum, value)
+  \
 
 :plain
   ## Scalar types
@@ -133,7 +194,7 @@
   ### Interfaces
 \
 
-- graphql_interface_types.each do |type|
+- interfaces.each do |type|
   = render_name_and_description(type, level: 4)
   \
   Implementations:
@@ -141,8 +202,21 @@
   - type[:implemented_by].each do |type_name|
     ~ "- [`#{type_name}`](##{type_name.downcase})"
   \
-  ~ "| Field | Type | Description |"
-  ~ "| ----- | ---- | ----------- |"
-  - sorted_by_name(type[:fields] + type[:connections]).each do |field|
-    = render_field(field, type[:name])
+  = render_object_fields(type[:fields], owner: type, level_bump: 1)
+  \
+
+:plain
+  ## Input types
+
+  Types that may be used as arguments (all scalar types may also
+  be used as arguments).
+
+  Only general use input types are listed here. For mutation input types,
+  see the associated mutation type above.
+\
+
+- input_types.each do |type|
+  = render_name_and_description(type)
+  \
+  = render_argument_table(3, type[:input_fields], type[:name])
   \

@@ -22,6 +22,8 @@ import {
   invite,
   membersJsonString,
   members,
+  paginationJsonString,
+  pagination,
 } from './mock_data';
 
 const IS_CURRENT_USER_ID = 123;
@@ -259,6 +261,7 @@ describe('Members Utils', () => {
     beforeEach(() => {
       el = document.createElement('div');
       el.setAttribute('data-members', membersJsonString);
+      el.setAttribute('data-pagination', paginationJsonString);
       el.setAttribute('data-source-id', '234');
       el.setAttribute('data-can-manage-members', 'true');
     });
@@ -270,6 +273,7 @@ describe('Members Utils', () => {
     it('correctly parses the data attributes', () => {
       expect(parseDataAttributes(el)).toEqual({
         members,
+        pagination,
         sourceId: 234,
         canManageMembers: true,
       });

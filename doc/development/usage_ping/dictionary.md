@@ -1042,7 +1042,7 @@ Tiers: `premium`, `ultimate`
 
 ### `counts.grafana_integrated_projects`
 
-Missing description
+Total Grafana integrations attached to projects
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180927_grafana_integrated_projects.yml)
 

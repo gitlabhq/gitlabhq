@@ -78,6 +78,22 @@ RSpec.describe 'getting project members information' do
         .to include('path' => %w[query project projectMembers relations],
                     'message' => a_string_including('invalid value ([OBLIQUE])'))
     end
+
+    context 'when project is owned by a member' do
+      let_it_be(:project) { create(:project, namespace: user.namespace) }
+
+      before_all do
+        project.add_guest(child_user)
+        project.add_guest(invited_user)
+      end
+
+      it 'returns the owner in the response' do
+        fetch_members(project: project)
+
+        expect(graphql_errors).to be_nil
+        expect_array_response(user, child_user, invited_user)
+      end
+    end
   end
 
   context 'when unauthenticated' do

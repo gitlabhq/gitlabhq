@@ -15064,7 +15064,13 @@ msgstr ""
 msgid "Go to metrics"
 msgstr ""
 
+msgid "Go to next page"
+msgstr ""
+
 msgid "Go to parent"
+msgstr ""
+
+msgid "Go to previous page"
 msgstr ""
 
 msgid "Go to project"
@@ -32460,6 +32466,9 @@ msgstr ""
 msgid "This project is archived and cannot be commented on."
 msgstr ""
 
+msgid "This project is licensed under the %{strong_start}%{license_name}%{strong_end}."
+msgstr ""
+
 msgid "This project manages its dependencies using %{strong_start}%{manager_name}%{strong_end}"
 msgstr ""
 
@@ -37876,9 +37885,6 @@ msgid "new merge request"
 msgstr ""
 
 msgid "no approvers"
-msgstr ""
-
-msgid "no contributions"
 msgstr ""
 
 msgid "no expiration"

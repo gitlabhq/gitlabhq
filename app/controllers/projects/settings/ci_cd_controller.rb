@@ -119,12 +119,13 @@ module Projects
           .assignable_for(project)
           .ordered
           .page(params[:specific_page]).per(NUMBER_OF_RUNNERS_PER_PAGE)
+          .with_tags
 
-        @shared_runners = ::Ci::Runner.instance_type.active
+        @shared_runners = ::Ci::Runner.instance_type.active.with_tags
 
         @shared_runners_count = @shared_runners.count(:all)
 
-        @group_runners = ::Ci::Runner.belonging_to_parent_group_of_project(@project.id)
+        @group_runners = ::Ci::Runner.belonging_to_parent_group_of_project(@project.id).with_tags
       end
 
       def define_ci_variables

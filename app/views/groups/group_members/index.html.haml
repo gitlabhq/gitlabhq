@@ -62,10 +62,9 @@
             %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @requesters.count
     .tab-content
       #tab-members.tab-pane{ class: ('active' unless invited_active) }
-        .js-group-members-list{ data: group_members_list_data_attributes(@group, @members) }
+        .js-group-members-list{ data: group_members_list_data_attributes(@group, @members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }) }
           .loading
             .spinner.spinner-md
-        = paginate @members, theme: 'gitlab', params: { invited_members_page: nil, search_invited: nil }
       - if @group.shared_with_group_links.any?
         #tab-groups.tab-pane
           .js-group-group-links-list{ data: group_group_links_list_data_attributes(@group) }
@@ -73,10 +72,9 @@
               .spinner.spinner-md
       - if show_invited_members
         #tab-invited-members.tab-pane{ class: ('active' if invited_active) }
-          .js-group-invited-members-list{ data: group_members_list_data_attributes(@group, @invited_members) }
+          .js-group-invited-members-list{ data: group_members_list_data_attributes(@group, @invited_members, { param_name: :invited_members_page, params: { page: nil } }) }
             .loading
               .spinner.spinner-md
-          = paginate @invited_members, param_name: 'invited_members_page', theme: 'gitlab', params: { page: nil }
       - if show_access_requests
         #tab-access-requests.tab-pane
           .js-group-access-requests-list{ data: group_members_list_data_attributes(@group, @requesters) }

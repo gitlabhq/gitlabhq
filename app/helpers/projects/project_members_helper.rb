@@ -35,9 +35,10 @@ module Projects::ProjectMembersHelper
     MemberSerializer.new.represent(members, { current_user: current_user, group: project.group, source: project }).to_json
   end
 
-  def project_members_list_data_attributes(project, members)
+  def project_members_list_data_attributes(project, members, pagination = {})
     {
       members: project_members_data_json(project, members),
+      pagination: members_pagination_data_json(members, pagination),
       member_path: project_project_member_path(project, ':id'),
       source_id: project.id,
       can_manage_members: can_manage_project_members?(project).to_s
@@ -47,6 +48,7 @@ module Projects::ProjectMembersHelper
   def project_group_links_list_data_attributes(project, group_links)
     {
       members: project_group_links_data_json(group_links),
+      pagination: members_pagination_data_json(group_links),
       member_path: project_group_link_path(project, ':id'),
       source_id: project.id,
       can_manage_members: can_manage_project_members?(project).to_s

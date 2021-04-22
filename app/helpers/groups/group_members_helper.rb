@@ -22,9 +22,10 @@ module Groups::GroupMembersHelper
   end
 
   # Overridden in `ee/app/helpers/ee/groups/group_members_helper.rb`
-  def group_members_list_data_attributes(group, members)
+  def group_members_list_data_attributes(group, members, pagination = {})
     {
       members: members_data_json(group, members),
+      pagination: members_pagination_data_json(members, pagination),
       member_path: group_group_member_path(group, ':id'),
       source_id: group.id,
       can_manage_members: can?(current_user, :admin_group_member, group).to_s
@@ -32,8 +33,11 @@ module Groups::GroupMembersHelper
   end
 
   def group_group_links_list_data_attributes(group)
+    group_links = group.shared_with_group_links
+
     {
-      members: group_group_links_data_json(group.shared_with_group_links),
+      members: group_group_links_data_json(group_links),
+      pagination: members_pagination_data_json(group_links),
       member_path: group_group_link_path(group, ':id'),
       source_id: group.id
     }

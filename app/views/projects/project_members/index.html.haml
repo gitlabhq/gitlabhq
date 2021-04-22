@@ -75,10 +75,9 @@
             %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @requesters.count
     .tab-content
       #tab-members.tab-pane{ class: ('active' unless groups_tab_active?) }
-        .js-project-members-list{ data: project_members_list_data_attributes(@project, @project_members) }
+        .js-project-members-list{ data: project_members_list_data_attributes(@project, @project_members, { param_name: :page, params: { search_groups: nil } }) }
           .loading
             .spinner.spinner-md
-        = paginate @project_members, theme: "gitlab", params: { search_groups: nil }
       - if show_groups?(@group_links)
         #tab-groups.tab-pane{ class: ('active' if groups_tab_active?) }
           .js-project-group-links-list{ data: project_group_links_list_data_attributes(@project, @group_links) }

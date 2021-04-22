@@ -9,10 +9,7 @@ module Banzai
       # This filter supports cross-project references.
       class MergeRequestReferenceFilter < IssuableReferenceFilter
         self.reference_type = :merge_request
-
-        def self.object_class
-          MergeRequest
-        end
+        self.object_class   = MergeRequest
 
         def url_for_object(mr, project)
           h = Gitlab::Routing.url_helpers

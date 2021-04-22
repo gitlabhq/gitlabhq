@@ -387,7 +387,7 @@ export const tags = [
     protected: false,
   },
   {
-    name: 'master-tag',
+    name: 'main-tag',
     message: '',
     target: '66673b07efef254dab7d537f0433a40e61cf84fe',
     commit: {
@@ -413,10 +413,10 @@ export const tags = [
 
 export const mockSearch = [
   { type: 'username', value: { data: 'root', operator: '=' } },
-  { type: 'ref', value: { data: 'master', operator: '=' } },
+  { type: 'ref', value: { data: 'main', operator: '=' } },
   { type: 'status', value: { data: 'pending', operator: '=' } },
 ];
 
 export const mockBranchesAfterMap = ['branch-1', 'branch-10', 'branch-11'];
 
-export const mockTagsAfterMap = ['tag-3', 'tag-2', 'tag-1', 'master-tag'];
+export const mockTagsAfterMap = ['tag-3', 'tag-2', 'tag-1', 'main-tag'];

@@ -8,12 +8,9 @@ module Banzai
       # This filter supports cross-project references.
       class CommitReferenceFilter < AbstractReferenceFilter
         self.reference_type = :commit
+        self.object_class   = Commit
 
-        def self.object_class
-          Commit
-        end
-
-        def self.references_in(text, pattern = Commit.reference_pattern)
+        def references_in(text, pattern = object_reference_pattern)
           text.gsub(pattern) do |match|
             yield match, $~[:commit], $~[:project], $~[:namespace], $~
           end
@@ -39,7 +36,7 @@ module Banzai
         end
 
         # The default behaviour is `#to_i` - we just pass the hash through.
-        def self.parse_symbol(sha_hash, _match)
+        def parse_symbol(sha_hash, _match)
           sha_hash
         end
 

@@ -6,10 +6,7 @@ module Banzai
       # The actual filter is implemented in the EE mixin
       class IterationReferenceFilter < AbstractReferenceFilter
         self.reference_type = :iteration
-
-        def self.object_class
-          Iteration
-        end
+        self.object_class   = Iteration
       end
     end
   end

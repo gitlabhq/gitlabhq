@@ -17,7 +17,7 @@ const projectRefsEndpoint = '/root/project/refs';
 const pipelinesPath = '/root/project/-/pipelines';
 const configVariablesPath = '/root/project/-/pipelines/config_variables';
 const newPipelinePostResponse = { id: 1 };
-const defaultBranch = 'master';
+const defaultBranch = 'main';
 
 describe('Pipeline New Form', () => {
   let wrapper;
@@ -187,13 +187,13 @@ describe('Pipeline New Form', () => {
       await waitForPromises();
     });
     it('variables persist between ref changes', async () => {
-      selectBranch('master');
+      selectBranch('main');
 
       await waitForPromises();
 
-      const masterInput = findKeyInputs().at(0);
-      masterInput.element.value = 'build_var';
-      masterInput.trigger('change');
+      const mainInput = findKeyInputs().at(0);
+      mainInput.element.value = 'build_var';
+      mainInput.trigger('change');
 
       await wrapper.vm.$nextTick();
 
@@ -207,7 +207,7 @@ describe('Pipeline New Form', () => {
 
       await wrapper.vm.$nextTick();
 
-      selectBranch('master');
+      selectBranch('main');
 
       await waitForPromises();
 

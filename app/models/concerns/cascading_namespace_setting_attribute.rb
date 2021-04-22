@@ -55,6 +55,7 @@ module CascadingNamespaceSettingAttribute
         # public methods
         define_attr_reader(attribute)
         define_attr_writer(attribute)
+        define_lock_attr_writer(attribute)
         define_lock_methods(attribute)
         alias_boolean(attribute)
 
@@ -97,7 +98,17 @@ module CascadingNamespaceSettingAttribute
 
     def define_attr_writer(attribute)
       define_method("#{attribute}=") do |value|
+        return value if value == cascaded_ancestor_value(attribute)
+
         clear_memoization(attribute)
+        super(value)
+      end
+    end
+
+    def define_lock_attr_writer(attribute)
+      define_method("lock_#{attribute}=") do |value|
+        attr_value = public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend
+        write_attribute(attribute, attr_value) if self[attribute].nil?
 
         super(value)
       end

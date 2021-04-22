@@ -89,7 +89,7 @@ describe('Pipeline Branch Name Token', () => {
     });
 
     it('renders only the tag searched for', () => {
-      const mockTags = ['master-tag'];
+      const mockTags = ['main-tag'];
       createComponent({ stubs }, { tags: mockTags, loading: false });
 
       expect(findAllFilteredSearchSuggestions()).toHaveLength(mockTags.length);

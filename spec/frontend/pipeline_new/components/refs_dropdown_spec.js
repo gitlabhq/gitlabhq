@@ -10,8 +10,8 @@ import RefsDropdown from '~/pipeline_new/components/refs_dropdown.vue';
 import { mockRefs, mockFilteredRefs } from '../mock_data';
 
 const projectRefsEndpoint = '/root/project/refs';
-const refShortName = 'master';
-const refFullName = 'refs/heads/master';
+const refShortName = 'main';
+const refFullName = 'refs/heads/main';
 
 jest.mock('~/flash');
 

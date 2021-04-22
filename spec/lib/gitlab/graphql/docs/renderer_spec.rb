@@ -1,10 +1,20 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Graphql::Docs::Renderer do
   describe '#contents' do
+    shared_examples 'renders correctly as GraphQL documentation' do
+      it 'contains the expected section' do
+        # duplicative - but much better error messages!
+        section.lines.each { |line| expect(contents).to include(line) }
+        expect(contents).to include(section)
+      end
+    end
+
     let(:template) { Rails.root.join('lib/gitlab/graphql/docs/templates/default.md.haml') }
+    let(:field_description) { 'List of objects.' }
+    let(:type) { ::GraphQL::INT_TYPE }
 
     let(:query_type) do
       Class.new(Types::BaseObject) { graphql_name 'Query' }.tap do |t|
@@ -12,6 +22,13 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
         t.field :foo, type, null: true, description: field_description do
           argument :id, GraphQL::ID_TYPE, required: false, description: 'ID of the object.'
         end
+      end
+    end
+
+    let(:mutation_root) do
+      Class.new(::Types::BaseObject) do
+        include ::Gitlab::Graphql::MountMutation
+        graphql_name 'Mutation'
       end
     end
 
@@ -23,10 +40,9 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
       end
     end
 
-    let(:field_description) { 'List of objects.' }
-
     subject(:contents) do
       mock_schema.query(query_type)
+      mock_schema.mutation(mutation_root) if mutation_root.fields.any?
 
       described_class.new(
         mock_schema,
@@ -36,17 +52,18 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
     end
 
     describe 'headings' do
-      let(:type) { ::GraphQL::INT_TYPE }
-
       it 'contains the expected sections' do
         expect(contents.lines.map(&:chomp)).to include(
           '## `Query` type',
+          '## `Mutation` type',
+          '## Connections',
           '## Object types',
           '## Enumeration types',
           '## Scalar types',
           '## Abstract types',
           '### Unions',
-          '### Interfaces'
+          '### Interfaces',
+          '## Input types'
         )
       end
     end
@@ -66,9 +83,11 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
         expectation = <<~DOC
           ### `ArrayTest`
 
-          | Field | Type | Description |
-          | ----- | ---- | ----------- |
-          | `foo` | [`#{type_name}`](##{inner_type}) | A description. |
+          #### Fields
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="arraytestfoo"></a>`foo` | [`#{type_name}`](##{inner_type}) | A description. |
         DOC
 
         is_expected.to include(expectation)
@@ -77,7 +96,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
       describe 'a top level query field' do
         let(:expectation) do
           <<~DOC
-            ### `foo`
+            ### `Query.foo`
 
             List of objects.
 
@@ -87,7 +106,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
             | Name | Type | Description |
             | ---- | ---- | ----------- |
-            | `id` | [`ID`](#id) | ID of the object. |
+            | <a id="queryfooid"></a>`id` | [`ID`](#id) | ID of the object. |
           DOC
         end
 
@@ -119,20 +138,60 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
         expectation = <<~DOC
           ### `OrderingTest`
 
-          | Field | Type | Description |
-          | ----- | ---- | ----------- |
-          | `bar` | [`String!`](#string) | A description of bar field. |
-          | `foo` | [`String!`](#string) | A description of foo field. |
+          #### Fields
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="orderingtestbar"></a>`bar` | [`String!`](#string) | A description of bar field. |
+          | <a id="orderingtestfoo"></a>`foo` | [`String!`](#string) | A description of foo field. |
         DOC
 
         is_expected.to include(expectation)
       end
     end
 
+    context 'when an argument is deprecated' do
+      let(:type) do
+        Class.new(Types::BaseObject) do
+          graphql_name 'DeprecatedTest'
+          description 'A thing we used to use, but no longer support'
+
+          field :foo,
+                type: GraphQL::STRING_TYPE,
+                null: false,
+                description: 'A description.' do
+                  argument :foo_arg, GraphQL::STRING_TYPE,
+                           required: false,
+                           description: 'The argument.',
+                           deprecated: { reason: 'Bad argument', milestone: '101.2' }
+                end
+        end
+      end
+
+      let(:section) do
+        <<~DOC
+         ##### `DeprecatedTest.foo`
+
+         A description.
+
+         Returns [`String!`](#string).
+
+         ###### Arguments
+
+         | Name | Type | Description |
+         | ---- | ---- | ----------- |
+         | <a id="deprecatedtestfoofooarg"></a>`fooArg` **{warning-solid}** | [`String`](#string) | **Deprecated** in 101.2. Bad argument. |
+        DOC
+      end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
+    end
+
     context 'when a field is deprecated' do
       let(:type) do
         Class.new(Types::BaseObject) do
           graphql_name 'DeprecatedTest'
+          description 'A thing we used to use, but no longer support'
 
           field :foo,
                 type: GraphQL::STRING_TYPE,
@@ -142,9 +201,9 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
           field :foo_with_args,
                 type: GraphQL::STRING_TYPE,
                 null: false,
-                deprecated: { reason: 'Do not use', milestone: '1.10' },
+                deprecated: { reason: 'Do not use', milestone: '1.10', replacement: 'X.y' },
                 description: 'A description.' do
-                  argument :fooity, ::GraphQL::INT_TYPE, required: false, description: 'X'
+                  argument :arg, GraphQL::INT_TYPE, required: false, description: 'Argity'
                 end
           field :bar,
                 type: GraphQL::STRING_TYPE,
@@ -158,24 +217,44 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
         end
       end
 
-      it 'includes the deprecation' do
-        expectation = <<~DOC
+      let(:section) do
+        <<~DOC
           ### `DeprecatedTest`
 
-          | Field | Type | Description |
-          | ----- | ---- | ----------- |
-          | `bar` **{warning-solid}** | [`String!`](#string) | **Deprecated** in 1.10. This was renamed. Use: `Query.boom`. |
-          | `foo` **{warning-solid}** | [`String!`](#string) | **Deprecated** in 1.10. This is deprecated. |
-          | `fooWithArgs` **{warning-solid}** | [`String!`](#string) | **Deprecated** in 1.10. Do not use. |
-        DOC
+          A thing we used to use, but no longer support.
 
-        is_expected.to include(expectation)
+          #### Fields
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="deprecatedtestbar"></a>`bar` **{warning-solid}** | [`String!`](#string) | **Deprecated** in 1.10. This was renamed. Use: [`Query.boom`](#queryboom). |
+          | <a id="deprecatedtestfoo"></a>`foo` **{warning-solid}** | [`String!`](#string) | **Deprecated** in 1.10. This is deprecated. |
+
+          #### Fields with arguments
+
+          ##### `DeprecatedTest.fooWithArgs`
+
+          A description.
+
+          WARNING:
+          **Deprecated** in 1.10.
+          Do not use.
+          Use: [`X.y`](#xy).
+
+          Returns [`String!`](#string).
+
+          ###### Arguments
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="deprecatedtestfoowithargsarg"></a>`arg` | [`Int`](#int) | Argity. |
+        DOC
       end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
     end
 
     context 'when a Query.field is deprecated' do
-      let(:type) { ::GraphQL::INT_TYPE }
-
       before do
         query_type.field(
           name: :bar,
@@ -186,28 +265,30 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
         )
       end
 
-      it 'includes the deprecation' do
-        expectation = <<~DOC
-          ### `bar`
+      let(:type) { ::GraphQL::INT_TYPE }
+      let(:section) do
+        <<~DOC
+          ### `Query.bar`
 
           A bar.
 
           WARNING:
           **Deprecated** in 10.11.
           This was renamed.
-          Use: `Query.foo`.
+          Use: [`Query.foo`](#queryfoo).
 
           Returns [`Int`](#int).
         DOC
-
-        is_expected.to include(expectation)
       end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
     end
 
     context 'when a field has an Enumeration type' do
       let(:type) do
         enum_type = Class.new(Types::BaseEnum) do
           graphql_name 'MyEnum'
+          description 'A test of an enum.'
 
           value 'BAZ',
                 description: 'A description of BAZ.'
@@ -223,18 +304,20 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
         end
       end
 
-      it 'includes the description of the Enumeration' do
-        expectation = <<~DOC
+      let(:section) do
+        <<~DOC
           ### `MyEnum`
+
+          A test of an enum.
 
           | Value | Description |
           | ----- | ----------- |
-          | `BAR` **{warning-solid}** | **Deprecated:** This is deprecated. Deprecated in 1.10. |
-          | `BAZ` | A description of BAZ. |
+          | <a id="myenumbar"></a>`BAR` **{warning-solid}** | **Deprecated:** This is deprecated. Deprecated in 1.10. |
+          | <a id="myenumbaz"></a>`BAZ` | A description of BAZ. |
         DOC
-
-        is_expected.to include(expectation)
       end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
     end
 
     context 'when a field has a global ID type' do
@@ -247,27 +330,150 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
         end
       end
 
-      it 'includes the field and the description of the ID, so we can link to it' do
-        type_section = <<~DOC
-          ### `IDTest`
+      describe 'section for IDTest' do
+        let(:section) do
+          <<~DOC
+            ### `IDTest`
 
-          A test for rendering IDs.
+            A test for rendering IDs.
 
-          | Field | Type | Description |
-          | ----- | ---- | ----------- |
-          | `foo` | [`UserID`](#userid) | A user foo. |
-        DOC
+            #### Fields
 
-        id_section = <<~DOC
-          ### `UserID`
+            | Name | Type | Description |
+            | ---- | ---- | ----------- |
+            | <a id="idtestfoo"></a>`foo` | [`UserID`](#userid) | A user foo. |
+          DOC
+        end
 
-          A `UserID` is a global ID. It is encoded as a string.
-
-          An example `UserID` is: `"gid://gitlab/User/1"`.
-        DOC
-
-        is_expected.to include(type_section, id_section)
+        it_behaves_like 'renders correctly as GraphQL documentation'
       end
+
+      describe 'section for UserID' do
+        let(:section) do
+          <<~DOC
+            ### `UserID`
+
+            A `UserID` is a global ID. It is encoded as a string.
+
+            An example `UserID` is: `"gid://gitlab/User/1"`.
+          DOC
+        end
+
+        it_behaves_like 'renders correctly as GraphQL documentation'
+      end
+    end
+
+    context 'when there is a mutation' do
+      let(:mutation) do
+        mutation = Class.new(::Mutations::BaseMutation)
+
+        mutation.graphql_name 'MakeItPretty'
+        mutation.description 'Make everything very pretty.'
+
+        mutation.argument :prettiness_factor,
+                          type: GraphQL::FLOAT_TYPE,
+                          required: true,
+                          description: 'How much prettier?'
+
+        mutation.argument :pulchritude,
+                          type: GraphQL::FLOAT_TYPE,
+                          required: false,
+                          description: 'How much prettier?',
+                          deprecated: {
+                            reason: :renamed,
+                            replacement: 'prettinessFactor',
+                            milestone: '72.34'
+                          }
+
+        mutation.field :everything,
+                       type: GraphQL::STRING_TYPE,
+                       null: true,
+                       description: 'What we made prettier.'
+
+        mutation.field :omnis,
+                       type: GraphQL::STRING_TYPE,
+                       null: true,
+                       description: 'What we made prettier.',
+                       deprecated: {
+                         reason: :renamed,
+                         replacement: 'everything',
+                         milestone: '72.34'
+                       }
+
+        mutation
+      end
+
+      before do
+        mutation_root.mount_mutation mutation
+      end
+
+      it_behaves_like 'renders correctly as GraphQL documentation' do
+        let(:section) do
+          <<~DOC
+            ### `Mutation.makeItPretty`
+
+            Make everything very pretty.
+
+            Input type: `MakeItPrettyInput`
+
+            #### Arguments
+
+            | Name | Type | Description |
+            | ---- | ---- | ----------- |
+            | <a id="mutationmakeitprettyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+            | <a id="mutationmakeitprettyprettinessfactor"></a>`prettinessFactor` | [`Float!`](#float) | How much prettier?. |
+            | <a id="mutationmakeitprettypulchritude"></a>`pulchritude` **{warning-solid}** | [`Float`](#float) | **Deprecated:** This was renamed. Please use `prettinessFactor`. Deprecated in 72.34. |
+
+            #### Fields
+
+            | Name | Type | Description |
+            | ---- | ---- | ----------- |
+            | <a id="mutationmakeitprettyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+            | <a id="mutationmakeitprettyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+            | <a id="mutationmakeitprettyeverything"></a>`everything` | [`String`](#string) | What we made prettier. |
+            | <a id="mutationmakeitprettyomnis"></a>`omnis` **{warning-solid}** | [`String`](#string) | **Deprecated:** This was renamed. Please use `everything`. Deprecated in 72.34. |
+          DOC
+        end
+      end
+
+      it 'does not render the automatically generated payload type' do
+        expect(contents).not_to include('MakeItPrettyPayload')
+      end
+
+      it 'does not render the automatically generated input type as its own section' do
+        expect(contents).not_to include('# `MakeItPrettyInput`')
+      end
+    end
+
+    context 'when there is an input type' do
+      let(:type) do
+        Class.new(::Types::BaseObject) do
+          graphql_name 'Foo'
+          field :wibble, type: ::GraphQL::INT_TYPE, null: true do
+            argument :date_range,
+                     type: ::Types::TimeframeInputType,
+                     required: true,
+                     description: 'When the foo happened.'
+          end
+        end
+      end
+
+      let(:section) do
+        <<~DOC
+          ### `Timeframe`
+
+          A time-frame defined as a closed inclusive range of two dates.
+
+          #### Arguments
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="timeframeend"></a>`end` | [`Date!`](#date) | The end of the range. |
+          | <a id="timeframestart"></a>`start` | [`Date!`](#date) | The start of the range. |
+        DOC
+      end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
     end
 
     context 'when there is an interface and a union' do
@@ -297,7 +503,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
         interface.orphan_types african_swallow
 
         Class.new(::Types::BaseObject) do
-          graphql_name 'AbstactTypeTest'
+          graphql_name 'AbstractTypeTest'
           description 'A test for abstract types.'
 
           field :foo, union, null: true, description: 'The foo.'
@@ -307,14 +513,16 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
       it 'lists the fields correctly, and includes descriptions of all the types' do
         type_section = <<~DOC
-          ### `AbstactTypeTest`
+          ### `AbstractTypeTest`
 
           A test for abstract types.
 
-          | Field | Type | Description |
-          | ----- | ---- | ----------- |
-          | `flying` | [`Flying`](#flying) | A flying thing. |
-          | `foo` | [`UserOrGroup`](#userorgroup) | The foo. |
+          #### Fields
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="abstracttypetestflying"></a>`flying` | [`Flying`](#flying) | A flying thing. |
+          | <a id="abstracttypetestfoo"></a>`foo` | [`UserOrGroup`](#userorgroup) | The foo. |
         DOC
 
         union_section = <<~DOC
@@ -337,9 +545,11 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
           - [`AfricanSwallow`](#africanswallow)
 
-          | Field | Type | Description |
-          | ----- | ---- | ----------- |
-          | `flightSpeed` | [`Int`](#int) | Speed in mph. |
+          ##### Fields
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="flyingflightspeed"></a>`flightSpeed` | [`Int`](#int) | Speed in mph. |
         DOC
 
         implementation_section = <<~DOC
@@ -347,9 +557,11 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
           A swallow from Africa.
 
-          | Field | Type | Description |
-          | ----- | ---- | ----------- |
-          | `flightSpeed` | [`Int`](#int) | Speed in mph. |
+          #### Fields
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="africanswallowflightspeed"></a>`flightSpeed` | [`Int`](#int) | Speed in mph. |
         DOC
 
         is_expected.to include(

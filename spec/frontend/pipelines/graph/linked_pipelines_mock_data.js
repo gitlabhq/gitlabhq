@@ -3727,8 +3727,8 @@ export default {
             scheduled_actions: [],
           },
           ref: {
-            name: 'master',
-            path: '/h5bp/html5-boilerplate/commits/master',
+            name: 'main',
+            path: '/h5bp/html5-boilerplate/commits/main',
             tag: false,
             branch: true,
             merge_request: false,

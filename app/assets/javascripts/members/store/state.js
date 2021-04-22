@@ -1,5 +1,6 @@
 export default ({
   members,
+  pagination,
   tableFields,
   tableAttrs,
   tableSortableFields,
@@ -8,6 +9,7 @@ export default ({
   filteredSearchBar,
 }) => ({
   members,
+  pagination,
   tableFields,
   tableAttrs,
   tableSortableFields,

@@ -164,7 +164,7 @@ RSpec.describe ::Gitlab::Graphql::Deprecation do
 
       context 'when the context is :inline' do
         it 'renders on one line' do
-          expectation = '**Deprecated** in 10.10. This was renamed. Use: `X.y`.'
+          expectation = '**Deprecated** in 10.10. This was renamed. Use: [`X.y`](#xy).'
 
           expect(deprecation.markdown).to eq(expectation)
           expect(deprecation.markdown(context: :inline)).to eq(expectation)
@@ -177,7 +177,7 @@ RSpec.describe ::Gitlab::Graphql::Deprecation do
             WARNING:
             **Deprecated** in 10.10.
             This was renamed.
-            Use: `X.y`.
+            Use: [`X.y`](#xy).
           MD
 
           expect(deprecation.markdown(context: :block)).to eq(expectation)

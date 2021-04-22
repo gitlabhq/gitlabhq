@@ -1,8 +1,6 @@
 - license = viewer.license
 
 = sprite_icon('scale')
-This project is licensed under the
-= succeed '.' do
-  %strong= license.name
+= _("This project is licensed under the %{strong_start}%{license_name}%{strong_end}.").html_safe % { license_name: license.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
 
-= link_to 'Learn more', license.url, target: '_blank', rel: 'noopener noreferrer'
+= link_to _('Learn more'), license.url, target: '_blank', rel: 'noopener noreferrer'

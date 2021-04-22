@@ -23,7 +23,11 @@ module Mutations
       argument :color, GraphQL::STRING_TYPE,
                required: false,
                default_value: Label::DEFAULT_COLOR,
-               description: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the CSS color names in https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords."
+               description: <<~DESC
+                 The color of the label given in 6-digit hex notation with leading '#' sign
+                 (for example, `#FFAABB`) or one of the CSS color names
+                 <https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords>.
+               DESC
 
       authorize :admin_label
 

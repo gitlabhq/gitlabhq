@@ -289,7 +289,7 @@ describe('Pipelines', () => {
             page: '1',
             scope: 'all',
             username: 'root',
-            ref: 'master',
+            ref: 'main',
             status: 'pending',
           };
 
@@ -321,7 +321,7 @@ describe('Pipelines', () => {
           expect(window.history.pushState).toHaveBeenCalledWith(
             expect.anything(),
             expect.anything(),
-            `${window.location.pathname}?page=1&scope=all&username=root&ref=master&status=pending`,
+            `${window.location.pathname}?page=1&scope=all&username=root&ref=main&status=pending`,
           );
         });
       });

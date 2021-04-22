@@ -1,8 +1,9 @@
 <script>
-import { GlTable, GlBadge } from '@gitlab/ui';
+import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
 import { canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import initUserPopovers from '~/user_popovers';
 import { FIELDS } from '../../constants';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
@@ -19,6 +20,7 @@ export default {
   components: {
     GlTable,
     GlBadge,
+    GlPagination,
     MemberAvatar,
     CreatedAt,
     ExpiresAt,
@@ -43,6 +45,9 @@ export default {
       tableAttrs(state) {
         return state[this.namespace].tableAttrs;
       },
+      pagination(state) {
+        return state[this.namespace].pagination;
+      },
     }),
     filteredFields() {
       return FIELDS.filter(
@@ -58,6 +63,11 @@ export default {
     },
     userIsLoggedIn() {
       return this.currentUserId !== null;
+    },
+    showPagination() {
+      const { paramName, currentPage, perPage, totalItems } = this.pagination;
+
+      return paramName && currentPage && perPage && totalItems;
     },
   },
   mounted() {
@@ -98,6 +108,11 @@ export default {
         ...this.tableAttrs.tr,
         ...(member?.id && { 'data-testid': `members-table-row-${member.id}` }),
       };
+    },
+    paginationLinkGenerator(page) {
+      const { params = {}, paramName } = this.pagination;
+
+      return mergeUrlParams({ ...params, [paramName]: page }, window.location.href);
     },
   },
 };
@@ -179,6 +194,18 @@ export default {
         <span data-testid="col-actions" class="gl-sr-only">{{ label }}</span>
       </template>
     </gl-table>
+    <gl-pagination
+      v-if="showPagination"
+      :value="pagination.currentPage"
+      :per-page="pagination.perPage"
+      :total-items="pagination.totalItems"
+      :link-gen="paginationLinkGenerator"
+      :prev-text="__('Prev')"
+      :next-text="__('Next')"
+      :label-next-page="__('Go to next page')"
+      :label-prev-page="__('Go to previous page')"
+      align="center"
+    />
     <remove-group-link-modal />
     <ldap-override-confirmation-modal />
   </div>
