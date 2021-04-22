@@ -16550,6 +16550,9 @@ msgstr ""
 msgid "InProductMarketing|How to build and test faster"
 msgstr ""
 
+msgid "InProductMarketing|If you don't want to receive marketing emails directly from GitLab, %{marketing_preference_link}."
+msgstr ""
+
 msgid "InProductMarketing|If you no longer wish to receive marketing emails from us,"
 msgstr ""
 
@@ -16658,10 +16661,16 @@ msgstr ""
 msgid "InProductMarketing|This is email %{series} of 3 in the %{track} series."
 msgstr ""
 
+msgid "InProductMarketing|This is email %{series} of 3 in the %{track} series. To disable notification emails sent by your local GitLab instance, either contact your administrator or %{unsubscribe_link}."
+msgstr ""
+
 msgid "InProductMarketing|Ticketmaster decreased their CI build time by 15X"
 msgstr ""
 
 msgid "InProductMarketing|Tired of wrestling with disparate tool chains, information silos and inefficient processes? GitLab's CI/CD is built on a DevOps platform with source code management, planning, monitoring and more ready to go. Find out %{ci_link}."
+msgstr ""
+
+msgid "InProductMarketing|To opt out of these onboarding emails, %{unsubscribe_link}."
 msgstr ""
 
 msgid "InProductMarketing|To understand and get the most out of GitLab, start at the beginning and %{project_link}. In GitLab, repositories are part of a project, so after you've created your project you can go ahead and %{repo_link}."
@@ -16740,6 +16749,9 @@ msgid "InProductMarketing|testing browser performance"
 msgstr ""
 
 msgid "InProductMarketing|unsubscribe"
+msgstr ""
+
+msgid "InProductMarketing|update your preferences"
 msgstr ""
 
 msgid "InProductMarketing|using a CI/CD template"

@@ -33,19 +33,6 @@ describe('~/whats_new/utils/notification', () => {
       expect(notificationEl.classList).toContain('with-notifications');
     });
 
-    it('removes class and count element when legacy storage key is false', () => {
-      const notificationEl = findNotificationEl();
-      notificationEl.classList.add('with-notifications');
-      localStorage.setItem('display-whats-new-notification-13.10', 'false');
-
-      expect(findNotificationCountEl()).toExist();
-
-      subject();
-
-      expect(findNotificationCountEl()).not.toExist();
-      expect(notificationEl.classList).not.toContain('with-notifications');
-    });
-
     it('removes class and count element when storage key has current digest', () => {
       const notificationEl = findNotificationEl();
       notificationEl.classList.add('with-notifications');

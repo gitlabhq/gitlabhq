@@ -300,7 +300,7 @@ variables:
   DAST_SUBMIT_FIELD: login # the `id` or `name` of the element that when clicked will submit the login form or the password form of a multi-page login process
   DAST_FIRST_SUBMIT_FIELD: next # the `id` or `name` of the element that when clicked will submit the username form of a multi-page login process
   DAST_EXCLUDE_URLS: http://example.com/sign-out,http://example.com/sign-out-2  # optional, URLs to skip during the authenticated scan; comma-separated, no spaces in between
-  DAST_AUTH_VALIDATION_URL: http://example.com/loggedin_page  # optional, a URL only accessible to logged in users that DAST can use to confirm successful authentication
+  DAST_AUTH_VERIFICATION_URL: http://example.com/loggedin_page  # optional, a URL only accessible to logged in users that DAST can use to confirm successful authentication
 ```
 
 The results are saved as a
@@ -645,7 +645,7 @@ DAST can be [configured](#customizing-the-dast-settings) using CI/CD variables.
 | `DAST_API_SPECIFICATION`     | URL or string | The API specification to import. The specification can be hosted at a URL, or the name of a file present in the `/zap/wrk` directory. `DAST_WEBSITE` must be specified if this is omitted. |
 | `DAST_SPIDER_START_AT_HOST`  | boolean | Set to `false` to prevent DAST from resetting the target to its host before scanning. When `true`, non-host targets `http://test.site/some_path` is reset to `http://test.site` before scan. Default: `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258805) in GitLab 13.6. |
 | `DAST_AUTH_URL`              | URL     | The URL of the page containing the sign-in HTML form on the target website. `DAST_USERNAME` and `DAST_PASSWORD` are submitted with the login form to create an authenticated scan. Not supported for API scans. |
-| `DAST_AUTH_VALIDATION_URL`   | URL     | A URL only accessible to logged in users that DAST can use to confirm successful authentication. If provided, DAST will exit if it cannot access the URL. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207335) in GitLab 13.8.
+| `DAST_AUTH_VERIFICATION_URL`   | URL     | A URL only accessible to logged in users that DAST can use to confirm successful authentication. If provided, DAST will exit if it cannot access the URL. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207335) in GitLab 13.8.
 | `DAST_USERNAME`              | string  | The username to authenticate to in the website. |
 | `DAST_PASSWORD`              | string  | The password to authenticate to in the website. |
 | `DAST_USERNAME_FIELD`        | string  | The name of username field at the sign-in HTML form. |

@@ -7,12 +7,7 @@ export const setNotification = (appEl) => {
   const notificationEl = document.querySelector('.header-help');
   let notificationCountEl = notificationEl.querySelector('.js-whats-new-notification-count');
 
-  const legacyStorageKey = 'display-whats-new-notification-13.10';
-  const localStoragePairs = [
-    [legacyStorageKey, false],
-    [STORAGE_KEY, versionDigest],
-  ];
-  if (localStoragePairs.some((pair) => localStorage.getItem(pair[0]) === pair[1].toString())) {
+  if (localStorage.getItem(STORAGE_KEY) === versionDigest) {
     notificationEl.classList.remove('with-notifications');
     if (notificationCountEl) {
       notificationCountEl.parentElement.removeChild(notificationCountEl);

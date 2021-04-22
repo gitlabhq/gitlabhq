@@ -2016,6 +2016,41 @@ The returned `url` is relative to the project path. The returned `full_path` is
 the absolute path to the file. In Markdown contexts, the link is expanded when
 the format in `markdown` is used.
 
+### Max attachment size enforcement
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57250) in GitLab 13.11.
+
+GitLab 13.11 added enforcement of the [maximum attachment size limit](../user/admin_area/settings/account_and_limit_settings.md#max-attachment-size) behind the `enforce_max_attachment_size_upload_api` feature flag. GitLab 14.0 will enable this by default.
+
+**In Omnibus installations:**
+
+1. Enter the Rails console:
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+1. Enable the feature flag:
+
+   ```ruby
+   Feature.enable(:enforce_max_attachment_size_upload_api)
+   ```
+
+**In installations from source:**
+
+1. Enter the Rails console:
+
+   ```shell
+   cd /home/git/gitlab
+   sudo -u git -H bundle exec rails console -e production
+   ```
+
+1. Enable the feature flag to disable the validation:
+
+   ```ruby
+   Feature.enable(:enforce_max_attachment_size_upload_api)
+   ```
+
 ## Upload a project avatar
 
 Uploads an avatar to the specified project.
