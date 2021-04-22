@@ -6,6 +6,7 @@ RSpec.describe 'Merge request > User posts notes', :js do
   include NoteInteractionHelpers
 
   let_it_be(:project) { create(:project, :repository) }
+
   let(:user) { project.creator }
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project)

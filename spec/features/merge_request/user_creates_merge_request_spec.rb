@@ -7,6 +7,7 @@ RSpec.describe "User creates a merge request", :js do
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:title) { "Some feature" }
 
   before do

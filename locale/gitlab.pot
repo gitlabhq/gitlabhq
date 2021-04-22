@@ -1490,9 +1490,6 @@ msgstr ""
 msgid "API key"
 msgstr ""
 
-msgid "API version"
-msgstr ""
-
 msgid "API?"
 msgstr ""
 
@@ -16010,6 +16007,9 @@ msgstr ""
 msgid "HighlightBar|Time to SLA:"
 msgstr ""
 
+msgid "HipChat endpoint is deprecated and should not be created or modified."
+msgstr ""
+
 msgid "History"
 msgstr ""
 
@@ -22569,6 +22569,9 @@ msgid "Other visibility settings have been disabled by the administrator."
 msgstr ""
 
 msgid "Otherwise, click the link below to complete the process."
+msgstr ""
+
+msgid "Otherwise, click the link below to complete the process:"
 msgstr ""
 
 msgid "Our documentation includes an example DevOps Score report."

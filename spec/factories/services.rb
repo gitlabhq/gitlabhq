@@ -159,12 +159,6 @@ FactoryBot.define do
     password { 'my-secret-password' }
   end
 
-  factory :hipchat_service do
-    project
-    type { 'HipchatService' }
-    token { 'test_token' }
-  end
-
   factory :slack_service do
     project
     active { true }

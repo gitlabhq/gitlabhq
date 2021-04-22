@@ -1,0 +1,5 @@
+---
+title: Delete HipChat service database records
+merge_request: 59769
+author:
+type: removed

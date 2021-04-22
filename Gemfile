@@ -267,7 +267,7 @@ gem 'kubeclient', '~> 4.9.1'
 
 # Sanitize user input
 gem 'sanitize', '~> 5.2.1'
-gem 'babosa', '~> 1.0.2'
+gem 'babosa', '~> 1.0.4'
 
 # Sanitizes SVG input
 gem 'loofah', '~> 2.2'

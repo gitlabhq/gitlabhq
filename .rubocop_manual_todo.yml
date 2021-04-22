@@ -595,8 +595,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - spec/features/file_uploads/user_avatar_spec.rb
     - spec/features/issues/user_sees_breadcrumb_links_spec.rb
     - spec/features/markdown/metrics_spec.rb
-    - spec/features/merge_request/user_creates_merge_request_spec.rb
-    - spec/features/merge_request/user_posts_notes_spec.rb
     - spec/features/operations_sidebar_link_spec.rb
     - spec/features/participants_autocomplete_spec.rb
     - spec/features/snippets/embedded_snippet_spec.rb
