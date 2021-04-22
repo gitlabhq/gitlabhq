@@ -43,7 +43,7 @@ You can tune the notifications you receive by combining your notification settin
 
 To edit your notification settings:
 
-1. Click on your profile picture and select **Settings**.
+1. Click on your profile picture and select **Preferences**.
 1. Click **Notifications** in the left sidebar.
 1. Edit the desired notification settings. Edited settings are automatically saved and enabled.
 
@@ -85,7 +85,7 @@ You can select a notification level for each project to help you closely monitor
 
 To select a notification level for a project, use either of these methods:
 
-1. Click on your profile picture and select **Settings**.
+1. Click on your profile picture and select **Preferences**.
 1. Click **Notifications** in the left sidebar.
 1. Locate the project in the **Projects** section.
 1. Select the desired [notification level](#notification-levels).
@@ -109,7 +109,7 @@ You can select a notification level and email address for each group.
 
 To select a notification level for a group, use either of these methods:
 
-1. Click on your profile picture and select **Settings**.
+1. Click on your profile picture and select **Preferences**.
 1. Click **Notifications** in the left sidebar.
 1. Locate the project in the **Groups** section.
 1. Select the desired [notification level](#notification-levels).
@@ -126,7 +126,7 @@ To select a notification level for a group, use either of these methods:
 
 You can select an email address to receive notifications for each group you belong to. This could be useful, for example, if you work freelance, and want to keep email about clients' projects separate.
 
-1. Click on your profile picture and select **Settings**.
+1. Click on your profile picture and select **Preferences**.
 1. Click **Notifications** in the left sidebar.
 1. Locate the project in the **Groups** section.
 1. Select the desired email address.

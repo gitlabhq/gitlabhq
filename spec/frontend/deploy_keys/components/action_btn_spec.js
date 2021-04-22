@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import actionBtn from '~/deploy_keys/components/action_btn.vue';
 import eventHub from '~/deploy_keys/eventhub';
@@ -8,13 +8,16 @@ describe('Deploy keys action btn', () => {
   const deployKey = data.enabled_keys[0];
   let wrapper;
 
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findButton = () => wrapper.findComponent(GlButton);
 
   beforeEach(() => {
     wrapper = shallowMount(actionBtn, {
       propsData: {
         deployKey,
         type: 'enable',
+        category: 'primary',
+        variant: 'confirm',
+        icon: 'edit',
       },
       slots: {
         default: 'Enable',
@@ -26,10 +29,18 @@ describe('Deploy keys action btn', () => {
     expect(wrapper.text()).toBe('Enable');
   });
 
+  it('passes the button props on', () => {
+    expect(findButton().props()).toMatchObject({
+      category: 'primary',
+      variant: 'confirm',
+      icon: 'edit',
+    });
+  });
+
   it('sends eventHub event with btn type', () => {
     jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
 
-    wrapper.trigger('click');
+    findButton().vm.$emit('click');
 
     return wrapper.vm.$nextTick().then(() => {
       expect(eventHub.$emit).toHaveBeenCalledWith('enable.key', deployKey, expect.anything());
@@ -37,18 +48,10 @@ describe('Deploy keys action btn', () => {
   });
 
   it('shows loading spinner after click', () => {
-    wrapper.trigger('click');
+    findButton().vm.$emit('click');
 
     return wrapper.vm.$nextTick().then(() => {
-      expect(findLoadingIcon().exists()).toBe(true);
-    });
-  });
-
-  it('disables button after click', () => {
-    wrapper.trigger('click');
-
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.attributes('disabled')).toBe('disabled');
+      expect(findButton().props('loading')).toBe(true);
     });
   });
 });

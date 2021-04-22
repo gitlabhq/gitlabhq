@@ -18,11 +18,21 @@ export const fetchPolicies = {
 };
 
 export default (resolvers = {}, config = {}) => {
-  let uri = `${gon.relative_url_root || ''}/api/graphql`;
+  const {
+    assumeImmutableResults,
+    baseUrl,
+    batchMax = 10,
+    cacheConfig,
+    fetchPolicy = fetchPolicies.CACHE_FIRST,
+    typeDefs,
+    path = '/api/graphql',
+    useGet = false,
+  } = config;
+  let uri = `${gon.relative_url_root || ''}${path}`;
 
-  if (config.baseUrl) {
+  if (baseUrl) {
     // Prepend baseUrl and ensure that `///` are replaced with `/`
-    uri = `${config.baseUrl}${uri}`.replace(/\/{3,}/g, '/');
+    uri = `${baseUrl}${uri}`.replace(/\/{3,}/g, '/');
   }
 
   const httpOptions = {
@@ -34,7 +44,7 @@ export default (resolvers = {}, config = {}) => {
     // We set to `same-origin` which is default value in modern browsers.
     // See https://github.com/whatwg/fetch/pull/585 for more information.
     credentials: 'same-origin',
-    batchMax: config.batchMax || 10,
+    batchMax,
   };
 
   const requestCounterLink = new ApolloLink((operation, forward) => {
@@ -50,7 +60,7 @@ export default (resolvers = {}, config = {}) => {
   const uploadsLink = ApolloLink.split(
     (operation) => operation.getContext().hasUpload || operation.getContext().isSingleRequest,
     createUploadLink(httpOptions),
-    config.useGet ? createHttpLink(httpOptions) : new BatchHttpLink(httpOptions),
+    useGet ? createHttpLink(httpOptions) : new BatchHttpLink(httpOptions),
   );
 
   const performanceBarLink = new ApolloLink((operation, forward) => {
@@ -74,7 +84,7 @@ export default (resolvers = {}, config = {}) => {
   });
 
   return new ApolloClient({
-    typeDefs: config.typeDefs,
+    typeDefs,
     link: ApolloLink.from([
       requestCounterLink,
       performanceBarLink,
@@ -83,14 +93,14 @@ export default (resolvers = {}, config = {}) => {
       uploadsLink,
     ]),
     cache: new InMemoryCache({
-      ...config.cacheConfig,
-      freezeResults: config.assumeImmutableResults,
+      ...cacheConfig,
+      freezeResults: assumeImmutableResults,
     }),
     resolvers,
-    assumeImmutableResults: config.assumeImmutableResults,
+    assumeImmutableResults,
     defaultOptions: {
       query: {
-        fetchPolicy: config.fetchPolicy || fetchPolicies.CACHE_FIRST,
+        fetchPolicy,
       },
     },
   });

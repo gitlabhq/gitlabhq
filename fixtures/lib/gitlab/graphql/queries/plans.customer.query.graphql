@@ -1,0 +1,5 @@
+query getPlans($tags: [PlanTag!]) {
+  plans(planTags: $tags) {
+    name
+  }
+}

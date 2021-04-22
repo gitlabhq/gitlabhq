@@ -409,4 +409,33 @@ RSpec.describe AvatarsHelper do
       end
     end
   end
+
+  describe '#avatar_without_link' do
+    let(:options) { { size: 32 } }
+
+    subject { helper.avatar_without_link(resource, options) }
+
+    context 'with users' do
+      let(:resource) { user }
+
+      it 'displays user avatar' do
+        is_expected.to eq tag(
+          :img,
+          alt: "#{user.name}'s avatar",
+          src: avatar_icon_for_user(user, 32),
+          data: { container: 'body' },
+          class: 'avatar s32 has-tooltip',
+          title: user.name
+        )
+      end
+    end
+
+    context 'with groups' do
+      let(:resource) { build_stubbed(:group, name: 'foo') }
+
+      it 'displays group avatar' do
+        is_expected.to match(%r{<div class="avatar identicon bg\d+ s32">F</div>})
+      end
+    end
+  end
 end

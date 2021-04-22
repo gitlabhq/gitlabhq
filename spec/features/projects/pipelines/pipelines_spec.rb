@@ -457,20 +457,20 @@ RSpec.describe 'Pipelines', :js do
             visit_project_pipelines
           end
 
-          it 'has artifacts' do
-            expect(page).to have_selector('.build-artifacts')
+          it 'has artifacts dropdown' do
+            expect(page).to have_selector('[data-testid="pipeline-multi-actions-dropdown"]')
           end
 
           it 'has artifacts download dropdown' do
-            find('.js-pipeline-dropdown-download').click
+            find('[data-testid="pipeline-multi-actions-dropdown"]').click
 
             expect(page).to have_link(with_artifacts.file_type)
           end
 
           it 'has download attribute on download links' do
-            find('.js-pipeline-dropdown-download').click
+            find('[data-testid="pipeline-multi-actions-dropdown"]').click
             expect(page).to have_selector('a', text: 'Download')
-            page.all('.build-artifacts a', text: 'Download').each do |link|
+            page.all('[data-testid="artifact-item"]', text: 'Download').each do |link|
               expect(link[:download]).to eq ''
             end
           end
@@ -488,7 +488,7 @@ RSpec.describe 'Pipelines', :js do
             visit_project_pipelines
           end
 
-          it { expect(page).not_to have_selector('.build-artifacts') }
+          it { expect(page).not_to have_selector('[data-testid="artifact-item"]') }
         end
 
         context 'without artifacts' do
@@ -503,7 +503,7 @@ RSpec.describe 'Pipelines', :js do
             visit_project_pipelines
           end
 
-          it { expect(page).not_to have_selector('.build-artifacts') }
+          it { expect(page).not_to have_selector('[data-testid="artifact-item"]') }
         end
 
         context 'with trace artifact' do
@@ -514,7 +514,7 @@ RSpec.describe 'Pipelines', :js do
           end
 
           it 'does not show trace artifact as artifacts' do
-            expect(page).not_to have_selector('.build-artifacts')
+            expect(page).not_to have_selector('[data-testid="artifact-item"]')
           end
         end
       end

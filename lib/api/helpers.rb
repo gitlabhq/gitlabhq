@@ -592,18 +592,26 @@ module API
 
     def project_finder_params_ce
       finder_params = project_finder_params_visibility_ce
+
+      finder_params.merge!(
+        params
+          .slice(:search,
+                 :custom_attributes,
+                 :last_activity_after,
+                 :last_activity_before,
+                 :repository_storage)
+          .symbolize_keys
+          .compact
+      )
+
       finder_params[:with_issues_enabled] = true if params[:with_issues_enabled].present?
       finder_params[:with_merge_requests_enabled] = true if params[:with_merge_requests_enabled].present?
       finder_params[:without_deleted] = true
-      finder_params[:search] = params[:search] if params[:search]
       finder_params[:search_namespaces] = true if params[:search_namespaces].present?
       finder_params[:user] = params.delete(:user) if params[:user]
-      finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
       finder_params[:id_after] = sanitize_id_param(params[:id_after]) if params[:id_after]
       finder_params[:id_before] = sanitize_id_param(params[:id_before]) if params[:id_before]
-      finder_params[:last_activity_after] = params[:last_activity_after] if params[:last_activity_after]
-      finder_params[:last_activity_before] = params[:last_activity_before] if params[:last_activity_before]
-      finder_params[:repository_storage] = params[:repository_storage] if params[:repository_storage]
+      finder_params[:tag] = params[:topic] if params[:topic].present?
       finder_params
     end
 

@@ -4265,6 +4265,9 @@ msgstr ""
 msgid "Are you sure you want to remove the license?"
 msgstr ""
 
+msgid "Are you sure you want to remove this deploy key? If anything is still using this key, it will stop working."
+msgstr ""
+
 msgid "Are you sure you want to remove this identity?"
 msgstr ""
 
@@ -10816,9 +10819,6 @@ msgstr ""
 msgid "DeployKeys|Read access only"
 msgstr ""
 
-msgid "DeployKeys|You are going to remove this deploy key. Are you sure?"
-msgstr ""
-
 msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
 msgstr ""
 
@@ -11481,6 +11481,9 @@ msgid "Display source"
 msgstr ""
 
 msgid "Do not display offers from third parties within GitLab"
+msgstr ""
+
+msgid "Do you want to remove this deploy key?"
 msgstr ""
 
 msgid "Dockerfile"
@@ -26464,6 +26467,9 @@ msgid "Remove card"
 msgstr ""
 
 msgid "Remove child epic from an epic"
+msgstr ""
+
+msgid "Remove deploy key"
 msgstr ""
 
 msgid "Remove description history"

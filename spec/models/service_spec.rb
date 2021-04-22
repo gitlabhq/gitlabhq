@@ -212,6 +212,26 @@ RSpec.describe Service do
     end
   end
 
+  describe '#group_level?' do
+    it 'is true when service has a group' do
+      expect(build(:service, group: group)).to be_group_level
+    end
+
+    it 'is false when service has no group' do
+      expect(build(:service, group: nil)).not_to be_group_level
+    end
+  end
+
+  describe '#instance_level?' do
+    it 'is true when service has instance-level integration' do
+      expect(build(:service, :instance)).to be_instance_level
+    end
+
+    it 'is false when service does not have instance-level integration' do
+      expect(build(:service, instance: false)).not_to be_instance_level
+    end
+  end
+
   describe '.find_or_initialize_non_project_specific_integration' do
     let!(:service1) { create(:jira_service, project_id: nil, group_id: group.id) }
     let!(:service2) { create(:jira_service) }

@@ -7075,10 +7075,12 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobcommitpath"></a>`commitPath` | [`String`](#string) | Path to the commit that triggered the job. |
 | <a id="cijobcoverage"></a>`coverage` | [`Float`](#float) | Coverage level of the job. |
 | <a id="cijobcreatedat"></a>`createdAt` | [`Time!`](#time) | When the job was created. |
+| <a id="cijobcreatedbytag"></a>`createdByTag` | [`Boolean!`](#boolean) | Whether the job was created by a tag. |
 | <a id="cijobdetailedstatus"></a>`detailedStatus` | [`DetailedStatus`](#detailedstatus) | Detailed status of the job. |
 | <a id="cijobduration"></a>`duration` | [`Int`](#int) | Duration of the job in seconds. |
 | <a id="cijobfinishedat"></a>`finishedAt` | [`Time`](#time) | When a job has finished running. |
 | <a id="cijobid"></a>`id` | [`JobID`](#jobid) | ID of the job. |
+| <a id="cijobmanualjob"></a>`manualJob` | [`Boolean`](#boolean) | Whether the job has a manual action. |
 | <a id="cijobname"></a>`name` | [`String`](#string) | Name of the job. |
 | <a id="cijobneeds"></a>`needs` | [`CiBuildNeedConnection`](#cibuildneedconnection) | References to builds that must complete before the jobs run. |
 | <a id="cijobpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline the job belongs to. |
@@ -7094,6 +7096,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobstartedat"></a>`startedAt` | [`Time`](#time) | When the job was started. |
 | <a id="cijobstatus"></a>`status` | [`CiJobStatus`](#cijobstatus) | Status of the job. |
 | <a id="cijobtags"></a>`tags` | [`[String!]`](#string) | Tags for the current job. |
+| <a id="cijobtriggered"></a>`triggered` | [`Boolean`](#boolean) | Whether the job was triggered. |
 
 ### `CiJobArtifact`
 

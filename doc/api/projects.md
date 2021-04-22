@@ -59,6 +59,7 @@ GET /projects
 | `sort`                                     | string   | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                                  | boolean  | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. |
+| `topic`                                    | string   | **{dotted-circle}** No | Comma-separated topic names. Limit results to projects that match all of given topics. See `tag_list` attribute. |
 | `visibility`                               | string   | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `wiki_checksum_failed` **(PREMIUM)**       | boolean  | **{dotted-circle}** No | Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2). |
 | `with_custom_attributes`                   | boolean  | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(admins only)_ |

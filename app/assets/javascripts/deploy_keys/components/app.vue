@@ -6,10 +6,12 @@ import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import eventHub from '../eventhub';
 import DeployKeysService from '../service';
 import DeployKeysStore from '../store';
+import ConfirmModal from './confirm_modal.vue';
 import KeysPanel from './keys_panel.vue';
 
 export default {
   components: {
+    ConfirmModal,
     KeysPanel,
     NavigationTabs,
     GlLoadingIcon,
@@ -30,6 +32,9 @@ export default {
       currentTab: 'enabled_keys',
       isLoading: false,
       store: new DeployKeysStore(),
+      removeKey: () => {},
+      cancel: () => {},
+      confirmModalVisible: false,
     };
   },
   scopes: {
@@ -61,16 +66,16 @@ export default {
     this.service = new DeployKeysService(this.endpoint);
 
     eventHub.$on('enable.key', this.enableKey);
-    eventHub.$on('remove.key', this.disableKey);
-    eventHub.$on('disable.key', this.disableKey);
+    eventHub.$on('remove.key', this.confirmRemoveKey);
+    eventHub.$on('disable.key', this.confirmRemoveKey);
   },
   mounted() {
     this.fetchKeys();
   },
   beforeDestroy() {
     eventHub.$off('enable.key', this.enableKey);
-    eventHub.$off('remove.key', this.disableKey);
-    eventHub.$off('disable.key', this.disableKey);
+    eventHub.$off('remove.key', this.confirmRemoveKey);
+    eventHub.$off('disable.key', this.confirmRemoveKey);
   },
   methods: {
     onChangeTab(tab) {
@@ -97,19 +102,20 @@ export default {
         .then(this.fetchKeys)
         .catch(() => new Flash(s__('DeployKeys|Error enabling deploy key')));
     },
-    disableKey(deployKey, callback) {
-      if (
-        // eslint-disable-next-line no-alert
-        window.confirm(s__('DeployKeys|You are going to remove this deploy key. Are you sure?'))
-      ) {
+    confirmRemoveKey(deployKey, callback) {
+      const hideModal = () => {
+        this.confirmModalVisible = false;
+        callback?.();
+      };
+      this.removeKey = () => {
         this.service
           .disableKey(deployKey.id)
           .then(this.fetchKeys)
-          .then(callback)
+          .then(hideModal)
           .catch(() => new Flash(s__('DeployKeys|Error removing deploy key')));
-      } else {
-        callback();
-      }
+      };
+      this.cancel = hideModal;
+      this.confirmModalVisible = true;
     },
   },
 };
@@ -117,6 +123,7 @@ export default {
 
 <template>
   <div class="gl-mb-3 deploy-keys">
+    <confirm-modal :visible="confirmModalVisible" @remove="removeKey" @cancel="cancel" />
     <gl-loading-icon
       v-if="isLoading && !hasKeys"
       :label="s__('DeployKeys|Loading deploy keys')"
@@ -124,8 +131,12 @@ export default {
     />
     <template v-else-if="hasKeys">
       <div class="top-area scrolling-tabs-container inner-page-scroll-tabs">
-        <div class="fade-left"><gl-icon name="chevron-lg-left" :size="12" /></div>
-        <div class="fade-right"><gl-icon name="chevron-lg-right" :size="12" /></div>
+        <div class="fade-left">
+          <gl-icon name="chevron-lg-left" :size="12" />
+        </div>
+        <div class="fade-right">
+          <gl-icon name="chevron-lg-right" :size="12" />
+        </div>
 
         <navigation-tabs :tabs="tabs" scope="deployKeys" @onChangeTab="onChangeTab" />
       </div>

@@ -15,10 +15,12 @@ RSpec.describe Types::Ci::JobType do
       commitPath
       coverage
       created_at
+      created_by_tag
       detailedStatus
       duration
       finished_at
       id
+      manual_job
       name
       needs
       pipeline
@@ -34,6 +36,7 @@ RSpec.describe Types::Ci::JobType do
       started_at
       status
       tags
+      triggered
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

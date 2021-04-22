@@ -167,21 +167,18 @@ difficult to track who is investigating and working on it. Assigning alerts ease
 
 To assign an alert:
 
-1. To display the list of current alerts, navigate to **Operations > Alerts**:
+1. To display the list of current alerts, navigate to **Operations > Alerts**.
 
-   ![Alert List View Assignee(s)](img/alert_list_assignees_v13_1.png)
-
-1. Select your desired alert to display its **Alert Details View**:
+1. Select your desired alert to display its details.
 
    ![Alert Details View Assignee(s)](img/alert_details_assignees_v13_1.png)
 
 1. If the right sidebar is not expanded, select
    **{angle-double-right}** **Expand sidebar** to expand it.
+
 1. In the right sidebar, locate the **Assignee**, and then select **Edit**.
    From the dropdown menu, select each user you want to assign to the alert.
    GitLab creates a [to-do item](../../user/todos.md) for each user.
-
-   ![Alert Details View Assignee(s)](img/alert_todo_assignees_v13_1.png)
 
 After completing their portion of investigating or fixing the alert, users can
 unassign themselves from the alert. To remove an assignee, select **Edit** next to the **Assignee** dropdown menu
@@ -202,8 +199,6 @@ add a to-do item:
    ![Alert Details Add a to do](img/alert_detail_add_todo_v13_9.png)
 
 Select the **To-Do List** **{todo-done}** in the navigation bar to view your current to-do list.
-
-![Alert Details Added to do](img/alert_detail_added_todo_v13_1.png)
 
 ## Link runbooks to alerts
 

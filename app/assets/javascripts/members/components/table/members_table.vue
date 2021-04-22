@@ -134,6 +134,9 @@ export default {
       show-empty
       :tbody-tr-attr="tbodyTrAttr"
     >
+      <template #head()="{ label }">
+        {{ label }}
+      </template>
       <template #cell(account)="{ item: member }">
         <members-table-cell #default="{ memberType, isCurrentUser }" :member="member">
           <member-avatar

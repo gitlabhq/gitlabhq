@@ -118,6 +118,8 @@ To distinguish queries from mutations and fragments, the following naming conven
 - `add_user.mutation.graphql` for mutations;
 - `basic_user.fragment.graphql` for fragments.
 
+If you are using queries for the [CustomersDot GraphQL endpoint](https://gitlab.com/gitlab-org/gitlab/-/blob/be78ccd832fd40315c5e63bb48ee1596ae146f56/app/controllers/customers_dot/proxy_controller.rb), end the filename with `.customer.query.graphql`, `.customer.mutation.graphql`, or `.customer.fragment.graphql`.
+
 ### Fragments
 
 [Fragments](https://graphql.org/learn/queries/#fragments) are a way to make your complex GraphQL queries more readable and re-usable. Here is an example of GraphQL fragment:

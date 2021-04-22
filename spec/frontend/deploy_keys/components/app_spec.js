@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import deployKeysApp from '~/deploy_keys/components/app.vue';
+import ConfirmModal from '~/deploy_keys/components/confirm_modal.vue';
 import eventHub from '~/deploy_keys/eventhub';
 import axios from '~/lib/utils/axios_utils';
 
@@ -36,6 +37,7 @@ describe('Deploy keys app component', () => {
 
   const findLoadingIcon = () => wrapper.find('.gl-spinner');
   const findKeyPanels = () => wrapper.findAll('.deploy-keys .gl-tabs-nav li');
+  const findModal = () => wrapper.findComponent(ConfirmModal);
 
   it('renders loading icon while waiting for request', () => {
     mock.onGet(TEST_ENDPOINT).reply(() => new Promise());
@@ -94,11 +96,16 @@ describe('Deploy keys app component', () => {
     const key = data.public_keys[0];
     return mountComponent()
       .then(() => {
-        jest.spyOn(window, 'confirm').mockReturnValue(true);
         jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
         jest.spyOn(wrapper.vm.service, 'disableKey').mockImplementation(() => Promise.resolve());
 
-        eventHub.$emit('disable.key', key);
+        eventHub.$emit('disable.key', key, () => {});
+
+        return wrapper.vm.$nextTick();
+      })
+      .then(() => {
+        expect(findModal().props('visible')).toBe(true);
+        findModal().vm.$emit('remove');
 
         return wrapper.vm.$nextTick();
       })
@@ -112,11 +119,16 @@ describe('Deploy keys app component', () => {
     const key = data.public_keys[0];
     return mountComponent()
       .then(() => {
-        jest.spyOn(window, 'confirm').mockReturnValue(true);
         jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
         jest.spyOn(wrapper.vm.service, 'disableKey').mockImplementation(() => Promise.resolve());
 
-        eventHub.$emit('remove.key', key);
+        eventHub.$emit('remove.key', key, () => {});
+
+        return wrapper.vm.$nextTick();
+      })
+      .then(() => {
+        expect(findModal().props('visible')).toBe(true);
+        findModal().vm.$emit('remove');
 
         return wrapper.vm.$nextTick();
       })

@@ -74,8 +74,9 @@ To visit the issue tracker for all projects in your group:
 1. Go to the group dashboard.
 1. In the left sidebar, select **Issues**.
 1. In the top-right, select the **Select project to create issue** button.
-1. Select the project you'd like to create an issue for. The button now appears as **New issue in <selected project>**.
-1. Select **New issue in <selected project>**.
+1. Select the project you'd like to create an issue for. The button now reflects the selected
+   project.
+1. Select the button to create an issue in the selected project.
 
 ![Select project to create issue](img/select_project_from_group_level_issue_tracker_v13_11.png)
 

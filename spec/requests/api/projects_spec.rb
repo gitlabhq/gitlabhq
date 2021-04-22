@@ -223,6 +223,52 @@ RSpec.describe API::Projects do
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
       end
 
+      context 'filter by topic (column tag_list)' do
+        before do
+          project.update!(tag_list: %w(ruby javascript))
+        end
+
+        it 'returns no projects' do
+          get api('/projects', user), params: { topic: 'foo' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_empty
+        end
+
+        it 'returns matching project for a single topic' do
+          get api('/projects', user), params: { topic: 'ruby' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to contain_exactly a_hash_including('id' => project.id)
+        end
+
+        it 'returns matching project for multiple topics' do
+          get api('/projects', user), params: { topic: 'ruby, javascript' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to contain_exactly a_hash_including('id' => project.id)
+        end
+
+        it 'returns no projects if project match only some topic' do
+          get api('/projects', user), params: { topic: 'ruby, foo' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_empty
+        end
+
+        it 'ignores topic if it is empty' do
+          get api('/projects', user), params: { topic: '' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_present
+        end
+      end
+
       context 'and with_issues_enabled=true' do
         it 'only returns projects with issues enabled' do
           project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)

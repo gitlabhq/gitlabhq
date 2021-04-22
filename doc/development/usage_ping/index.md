@@ -913,9 +913,9 @@ On GitLab.com, the Product Intelligence team regularly monitors Usage Ping. They
 
 To set up Usage Ping locally, you must:
 
-1. [Set up local repositories]#(set-up-local-repositories)
-1. [Test local setup](#test-local-setup)
-1. (Optional) [Test Prometheus-based usage ping](#test-prometheus-based-usage-ping)
+1. [Set up local repositories](#set-up-local-repositories).
+1. [Test local setup](#test-local-setup).
+1. (Optional) [Test Prometheus-based usage ping](#test-prometheus-based-usage-ping).
 
 #### Set up local repositories
 

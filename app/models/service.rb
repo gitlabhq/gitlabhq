@@ -416,6 +416,14 @@ class Service < ApplicationRecord
     project_id.present?
   end
 
+  def group_level?
+    group_id.present?
+  end
+
+  def instance_level?
+    instance?
+  end
+
   def parent
     project || group
   end

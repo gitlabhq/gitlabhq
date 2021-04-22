@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import { GROUP_BADGE } from '../constants';
 import BadgeListRow from './badge_list_row.vue';
@@ -9,6 +9,7 @@ export default {
   components: {
     BadgeListRow,
     GlLoadingIcon,
+    GlBadge,
   },
   computed: {
     ...mapState(['badges', 'isLoading', 'kind']),
@@ -26,7 +27,7 @@ export default {
   <div class="card">
     <div class="card-header">
       {{ s__('Badges|Your badges') }}
-      <span v-show="!isLoading" class="badge badge-pill">{{ badges.length }}</span>
+      <gl-badge v-show="!isLoading" size="sm">{{ badges.length }}</gl-badge>
     </div>
     <gl-loading-icon v-show="isLoading" size="lg" class="card-body" />
     <div v-if="hasNoBadges" class="card-body">

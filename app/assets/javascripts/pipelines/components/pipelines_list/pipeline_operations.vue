@@ -2,7 +2,7 @@
 import { GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import eventHub from '../../event_hub';
-import PipelinesArtifactsComponent from './pipelines_artifacts.vue';
+import PipelineMultiActions from './pipeline_multi_actions.vue';
 import PipelinesManualActions from './pipelines_manual_actions.vue';
 
 export default {
@@ -16,8 +16,8 @@ export default {
   },
   components: {
     GlButton,
+    PipelineMultiActions,
     PipelinesManualActions,
-    PipelinesArtifactsComponent,
   },
   props: {
     pipeline: {
@@ -80,11 +80,6 @@ export default {
     <div class="btn-group">
       <pipelines-manual-actions v-if="actions.length > 0" :actions="actions" />
 
-      <pipelines-artifacts-component
-        v-if="pipeline.details.artifacts.length"
-        :artifacts="pipeline.details.artifacts"
-      />
-
       <gl-button
         v-if="pipeline.flags.retryable"
         v-gl-tooltip.hover
@@ -113,6 +108,11 @@ export default {
         category="primary"
         class="js-pipelines-cancel-button"
         @click="handleCancelClick"
+      />
+
+      <pipeline-multi-actions
+        v-if="pipeline.details.artifacts.length"
+        :artifacts="pipeline.details.artifacts"
       />
     </div>
   </div>

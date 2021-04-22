@@ -151,6 +151,24 @@ Adding a public deploy key does not immediately expose any repository to it. Pub
 deploy keys enable access from other systems, but access is not given to any project
 until a project maintainer chooses to make use of it.
 
+## How to disable deploy keys
+
+[Project maintainers and owners](../../permissions.md#project-members-permissions)
+can remove or disable a deploy key for a project repository:
+
+1. Navigate to the project's **Settings > Repository** page.
+1. Expand the **Deploy keys** section.
+1. Select the **{remove}** or **{cancel}** button.
+
+NOTE:
+If anything relies on the removed deploy key, it will stop working once removed.
+
+If the key is **publicly accessible**, it will be removed from the project, but still available under **Publicly accessible deploy keys**.
+
+If the key is **privately accessible** and only in use by this project, it will deleted.
+
+If the key is **privately accessible** and in use by other projects, it will be removed from the project, but still available under **Privately accesible deploy keys**.
+
 ## Troubleshooting
 
 ### Deploy key cannot push to a protected branch

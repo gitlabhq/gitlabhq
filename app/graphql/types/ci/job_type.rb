@@ -65,6 +65,12 @@ module Types
             description: 'Indicates the job is active.'
       field :coverage, GraphQL::FLOAT_TYPE, null: true,
             description: 'Coverage level of the job.'
+      field :created_by_tag, GraphQL::BOOLEAN_TYPE, null: false,
+            description: 'Whether the job was created by a tag.'
+      field :manual_job, GraphQL::BOOLEAN_TYPE, null: true,
+            description: 'Whether the job has a manual action.'
+      field :triggered, GraphQL::BOOLEAN_TYPE, null: true,
+            description: 'Whether the job was triggered.'
 
       def pipeline
         Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Pipeline, object.pipeline_id).find
@@ -122,6 +128,18 @@ module Types
 
       def coverage
         object&.coverage
+      end
+
+      def created_by_tag
+        object.tag?
+      end
+
+      def manual_job
+        object.try(:action?)
+      end
+
+      def triggered
+        object.try(:trigger_request)
       end
     end
   end

@@ -1,0 +1,5 @@
+---
+title: Add group_level? and instance_level? helpers to Service model
+merge_request: 59838
+author: Amit Patel @amit.savani
+type: other

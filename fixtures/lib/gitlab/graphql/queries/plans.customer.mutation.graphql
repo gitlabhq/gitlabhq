@@ -1,0 +1,5 @@
+mutation updatePlans($tags: [PlanTag!]) {
+  plans(planTags: $tags) {
+    name
+  }
+}
