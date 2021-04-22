@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# General LDAP Setup
+# General LDAP setup **(FREE SELF)**
 
 GitLab integrates with LDAP to support user authentication.
 
@@ -29,7 +29,7 @@ stands for **Lightweight Directory Access Protocol**, which is a standard
 application protocol for accessing and maintaining distributed directory
 information services over an Internet Protocol (IP) network.
 
-## Security **(FREE SELF)**
+## Security
 
 GitLab assumes that LDAP users:
 
@@ -44,7 +44,7 @@ We recommend against using LDAP integration if your LDAP users are
 allowed to change their 'mail', 'email' or 'userPrincipalName' attribute on
 the LDAP server or share email addresses.
 
-### User deletion **(FREE SELF)**
+### User deletion
 
 If a user is deleted from the LDAP server, they are also blocked in GitLab.
 Users are immediately blocked from logging in. However, there is an
@@ -56,13 +56,13 @@ immediately block all access.
 GitLab Enterprise Edition Premium supports a
 [configurable sync time](#adjusting-ldap-user-sync-schedule). **(PREMIUM)**
 
-## Git password authentication **(FREE SELF)**
+## Git password authentication
 
 LDAP-enabled users can always authenticate with Git using their GitLab username
 or email and LDAP password, even if password authentication for Git is disabled
 in the application settings.
 
-## Enabling LDAP sign-in for existing GitLab users **(FREE SELF)**
+## Enabling LDAP sign-in for existing GitLab users
 
 When a user signs in to GitLab with LDAP for the first time, and their LDAP
 email address is the primary email address of an existing GitLab user, then
@@ -73,7 +73,7 @@ In other words, if an existing GitLab user wants to enable LDAP sign-in for
 themselves, they should check that their GitLab email address matches their
 LDAP email address, and then sign into GitLab via their LDAP credentials.
 
-## Google Secure LDAP **(FREE SELF)**
+## Google Secure LDAP
 
 > Introduced in GitLab 11.9.
 
@@ -81,7 +81,7 @@ LDAP email address, and then sign into GitLab via their LDAP credentials.
 LDAP service that can be configured with GitLab for authentication and group sync.
 See [Google Secure LDAP](google_secure_ldap.md) for detailed configuration instructions.
 
-## Configuration **(FREE SELF)**
+## Configuration
 
 To enable LDAP integration you need to add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml` for Omnibus
@@ -100,7 +100,7 @@ would be on port 389. `plain` also operates on port 389. Removed values: `tls` w
 LDAP users must have a set email address, regardless of whether or not it's used
 to sign in.
 
-### Example Configurations **(FREE SELF)**
+### Example Configurations
 
 **Omnibus Configuration**
 
@@ -163,7 +163,7 @@ production:
         ...
 ```
 
-### Basic Configuration Settings **(FREE SELF)**
+### Basic Configuration Settings
 
 | Setting | Description | Required | Examples |
 | ------- | ----------- | -------- | -------- |
@@ -190,7 +190,7 @@ Some examples of the `user_filter` field syntax:
 - `'(employeeType=developer)'`
 - `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'`
 
-### SSL Configuration Settings **(FREE SELF)**
+### SSL Configuration Settings
 
 | Setting | Description | Required | Examples |
 | ------- | ----------- | -------- | -------- |
@@ -200,7 +200,7 @@ Some examples of the `user_filter` field syntax:
 | `cert` | Client certificate | no | `'-----BEGIN CERTIFICATE----- <REDACTED> -----END CERTIFICATE -----'` |
 | `key` | Client private key | no | `'-----BEGIN PRIVATE KEY----- <REDACTED> -----END PRIVATE KEY -----'` |
 
-### Attribute Configuration Settings **(FREE SELF)**
+### Attribute Configuration Settings
 
 LDAP attributes that GitLab uses to create an account for the LDAP user. The specified attribute can either be the attribute name as a string (for example, `'mail'`), or an array of attribute names to try in order (for example, `['mail', 'email']`). Note that the user's LDAP sign-in is the attribute specified as `uid` above.
 
@@ -221,7 +221,7 @@ LDAP attributes that GitLab uses to create an account for the LDAP user. The spe
 | `external_groups` | An array of CNs of groups containing users that should be considered external. Note: Not `cn=interns` or the full DN. | no | `['interns', 'contractors']` |
 | `sync_ssh_keys` | The LDAP attribute containing a user's public SSH key. | no | `'sshPublicKey'` or false if not set |
 
-### Set up LDAP user filter **(FREE SELF)**
+### Set up LDAP user filter
 
 If you want to limit all GitLab access to a subset of the LDAP users on your
 LDAP server, the first step should be to narrow the configured `base`. However,
@@ -266,7 +266,7 @@ Support for nested members in the user filter should not be confused with
 Please note that GitLab does not support the custom filter syntax used by
 OmniAuth LDAP.
 
-#### Escaping special characters **(FREE SELF)**
+#### Escaping special characters
 
 The `user_filter` DN can contain special characters. For example:
 
@@ -297,7 +297,7 @@ The `user_filter` DN can contain special characters. For example:
   OU=Gitlab \28Inc\29,DC=gitlab,DC=com
   ```
 
-### Enabling LDAP username lowercase **(FREE SELF)**
+### Enabling LDAP username lowercase
 
 Some LDAP servers, depending on their configurations, can return uppercase usernames.
 This can lead to several confusing issues such as creating links or namespaces with uppercase names.
@@ -335,7 +335,7 @@ the configuration option `lowercase_usernames`. By default, this configuration o
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-### Disable LDAP web sign in **(FREE SELF)**
+### Disable LDAP web sign in
 
 It can be useful to prevent using LDAP credentials through the web UI when
 an alternative such as SAML is preferred. This allows LDAP to be used for group
@@ -367,7 +367,7 @@ This does not disable [using LDAP credentials for Git access](#git-password-auth
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-### Using encrypted credentials **(FREE SELF)**
+### Using encrypted credentials
 
 Instead of having the LDAP integration credentials stored in plaintext in the configuration files, you can optionally
 use an encrypted file for the LDAP credentials. To use this feature, you first need to enable
@@ -454,7 +454,7 @@ If initially your LDAP configuration looked like:
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-## Encryption **(FREE SELF)**
+## Encryption
 
 ### TLS Server Authentication
 

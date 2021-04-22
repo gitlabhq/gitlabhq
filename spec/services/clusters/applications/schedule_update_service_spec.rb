@@ -10,6 +10,32 @@ RSpec.describe Clusters::Applications::ScheduleUpdateService do
       freeze_time { example.run }
     end
 
+    context 'when the application is a Clusters::Integrations::Prometheus' do
+      let(:application) { create(:clusters_integrations_prometheus) }
+
+      it 'does nothing' do
+        service = described_class.new(application, project)
+
+        expect(::ClusterUpdateAppWorker).not_to receive(:perform_in)
+        expect(::ClusterUpdateAppWorker).not_to receive(:perform_async)
+
+        service.execute
+      end
+    end
+
+    context 'when the application is externally installed' do
+      let(:application) { create(:clusters_applications_prometheus, :externally_installed) }
+
+      it 'does nothing' do
+        service = described_class.new(application, project)
+
+        expect(::ClusterUpdateAppWorker).not_to receive(:perform_in)
+        expect(::ClusterUpdateAppWorker).not_to receive(:perform_async)
+
+        service.execute
+      end
+    end
+
     context 'when application is able to be updated' do
       context 'when the application was recently scheduled' do
         it 'schedules worker with a backoff delay' do

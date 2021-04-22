@@ -49,6 +49,10 @@ as soon as the alert fires:
 
 ![Linked Runbook in charts](img/linked_runbooks_on_charts.png)
 
+## Prometheus cluster integrations
+
+Alerts are not currently supported for [Prometheus cluster integrations](../../user/clusters/integrations.md).
+
 ## External Prometheus instances
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9258) in GitLab Ultimate 11.8.

@@ -44,6 +44,10 @@ module Clusters
         end
       end
 
+      def managed_prometheus?
+        !externally_installed? && !uninstalled?
+      end
+
       def updated_since?(timestamp)
         last_update_started_at &&
           last_update_started_at > timestamp &&
@@ -70,6 +74,7 @@ module Clusters
         )
       end
 
+      # Deprecated, to be removed in %14.0 as part of https://gitlab.com/groups/gitlab-org/-/epics/4280
       def patch_command(values)
         helm_command_module::PatchCommand.new(
           name: name,

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Deprecated, to be removed in %14.0 as part of https://gitlab.com/groups/gitlab-org/-/epics/4280
 class ClusterUpdateAppWorker # rubocop:disable Scalability/IdempotentWorker
   UpdateAlreadyInProgressError = Class.new(StandardError)
 
@@ -35,6 +36,7 @@ class ClusterUpdateAppWorker # rubocop:disable Scalability/IdempotentWorker
   # rubocop: enable CodeReuse/ActiveRecord
 
   def update_prometheus(app, scheduled_time, project)
+    return unless app.managed_prometheus?
     return if app.updated_since?(scheduled_time)
     return if app.update_in_progress?
 

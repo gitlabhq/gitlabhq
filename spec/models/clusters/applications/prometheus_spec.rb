@@ -65,6 +65,26 @@ RSpec.describe Clusters::Applications::Prometheus do
     end
   end
 
+  describe '#managed_prometheus?' do
+    subject { prometheus.managed_prometheus? }
+
+    let(:prometheus) { build(:clusters_applications_prometheus) }
+
+    it { is_expected.to be_truthy }
+
+    context 'externally installed' do
+      let(:prometheus) { build(:clusters_applications_prometheus, :externally_installed) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'uninstalled' do
+      let(:prometheus) { build(:clusters_applications_prometheus, :uninstalled) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#can_uninstall?' do
     let(:prometheus) { create(:clusters_applications_prometheus) }
 

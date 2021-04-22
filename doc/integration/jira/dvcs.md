@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Jira DVCS connector
+# Jira DVCS connector **(FREE)**
 
 Use the Jira DVCS (distributed version control system) connector if you self-host
 either your Jira instance or your GitLab instance, and you want to sync information

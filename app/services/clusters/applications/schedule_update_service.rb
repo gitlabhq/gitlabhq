@@ -14,6 +14,7 @@ module Clusters
 
       def execute
         return unless application
+        return unless application.managed_prometheus?
 
         if recently_scheduled?
           worker_class.perform_in(BACKOFF_DELAY, application.name, application.id, project.id, Time.current)

@@ -26,6 +26,11 @@ module PrometheusAdapter
       }
     end
 
+    # Overridden in app/models/clusters/applications/prometheus.rb
+    def managed_prometheus?
+      false
+    end
+
     # This is a light-weight check if a prometheus client is properly configured.
     def configured?
       raise NotImplemented
