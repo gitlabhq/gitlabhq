@@ -156,7 +156,7 @@ Example response:
 
 Get details of a runner.
 
-[Maintainer access or higher](../user/permissions.md) is required to get runner details at the project and group level. 
+[Maintainer access or higher](../user/permissions.md) is required to get runner details at the project and group level.
 
 Instance-level runner details via this endpoint are available to all signed in users.
 

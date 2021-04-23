@@ -69,7 +69,7 @@ must meet one of the following conditions prior to the import:
   GitLab content imports that use GitHub accounts require that the GitHub public-facing
   email address is populated so that all comments and contributions are properly mapped
   to the same user in GitLab. GitHub Enterprise (on premise) does not require this field
-  to be populated to use the product, so you may need to add it on existing GitHub Enterprise 
+  to be populated to use the product, so you may need to add it on existing GitHub Enterprise
   accounts for imported content to be properly mapped to the user in the new system.
   Refer to GitHub documentation for instructions on how to add that address.
 

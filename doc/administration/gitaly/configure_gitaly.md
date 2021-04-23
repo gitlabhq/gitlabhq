@@ -979,7 +979,7 @@ identical fetches. It:
 The pack-objects cache is a local cache. It:
 
 - Stores its metadata in the memory of the Gitaly process it is enabled in.
-- Stores the actual Git data it is caching in files on local storage. 
+- Stores the actual Git data it is caching in files on local storage.
 
 Using local files has the benefit that the operating system may
 automatically keep parts of the pack-objects cache files in RAM,

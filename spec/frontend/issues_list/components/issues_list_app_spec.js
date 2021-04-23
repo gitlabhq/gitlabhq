@@ -3,12 +3,12 @@ import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
+import { filteredTokens, locationSearch } from 'jest/issues_list/mock_data';
 import createFlash from '~/flash';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
-
 import {
   CREATED_DESC,
   PAGE_SIZE,
@@ -29,17 +29,19 @@ describe('IssuesListApp component', () => {
   let wrapper;
 
   const defaultProvide = {
+    autocompleteUsersPath: 'autocomplete/users/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
     emptyStateSvgPath: 'empty-state.svg',
     endpoint: 'api/endpoint',
     exportCsvPath: 'export/csv/path',
-    fullPath: 'path/to/project',
     hasIssues: true,
     isSignedIn: false,
     issuesPath: 'path/to/issues',
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
+    projectLabelsPath: 'project/labels/path',
+    projectPath: 'path/to/project',
     rssPath: 'rss/path',
     showImportButton: true,
     showNewIssueLink: true,
@@ -99,7 +101,7 @@ describe('IssuesListApp component', () => {
 
     it('renders', () => {
       expect(findIssuableList().props()).toMatchObject({
-        namespace: defaultProvide.fullPath,
+        namespace: defaultProvide.projectPath,
         recentSearchesStorageKey: 'issues',
         searchInputPlaceholder: 'Search or filter results…',
         sortOptions,
@@ -213,6 +215,19 @@ describe('IssuesListApp component', () => {
       });
     });
 
+    describe('search', () => {
+      it('is set from the url params', () => {
+        Object.defineProperty(window, 'location', {
+          writable: true,
+          value: { search: locationSearch },
+        });
+
+        wrapper = mountComponent();
+
+        expect(findIssuableList().props('urlParams')).toMatchObject({ search: 'find issues' });
+      });
+    });
+
     describe('sort', () => {
       it.each(Object.keys(sortParams))('is set as %s from the url params', (sortKey) => {
         Object.defineProperty(window, 'location', {
@@ -243,6 +258,19 @@ describe('IssuesListApp component', () => {
         expect(findIssuableList().props('currentTab')).toBe(initialState);
       });
     });
+
+    describe('filter tokens', () => {
+      it('is set from the url params', () => {
+        Object.defineProperty(window, 'location', {
+          writable: true,
+          value: { search: locationSearch },
+        });
+
+        wrapper = mountComponent();
+
+        expect(findIssuableList().props('initialFilterValue')).toEqual(filteredTokens);
+      });
+    });
   });
 
   describe('bulk edit', () => {
@@ -265,15 +293,13 @@ describe('IssuesListApp component', () => {
   describe('empty states', () => {
     describe('when there are issues', () => {
       describe('when search returns no results', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           Object.defineProperty(window, 'location', {
             writable: true,
-            value: { href: setUrlParams({ search: 'no results' }, TEST_HOST) },
+            value: { search: '?search=no+results' },
           });
 
           wrapper = mountComponent({ provide: { hasIssues: true } });
-
-          await waitForPromises();
         });
 
         it('shows empty state', () => {
@@ -418,7 +444,7 @@ describe('IssuesListApp component', () => {
       });
 
       it('fetches issues with expected params', () => {
-        expect(axiosMock.history.get[1].params).toEqual({
+        expect(axiosMock.history.get[1].params).toMatchObject({
           page,
           per_page: PAGE_SIZE,
           state,
@@ -525,21 +551,32 @@ describe('IssuesListApp component', () => {
     });
 
     describe('when "filter" event is emitted by IssuableList', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         wrapper = mountComponent();
 
-        const payload = [
-          { type: 'filtered-search-term', value: { data: 'no' } },
-          { type: 'filtered-search-term', value: { data: 'issues' } },
-        ];
-
-        findIssuableList().vm.$emit('filter', payload);
-
-        await waitForPromises();
+        findIssuableList().vm.$emit('filter', filteredTokens);
       });
 
       it('makes an API call to search for issues with the search term', () => {
-        expect(axiosMock.history.get[1].params).toMatchObject({ search: 'no issues' });
+        expect(axiosMock.history.get[1].params).toMatchObject({
+          author_username: 'homer',
+          'not[author_username]': 'marge',
+          assignee_username: 'bart',
+          'not[assignee_username]': 'lisa',
+          labels: 'cartoon,tv',
+          'not[labels]': 'live action,drama',
+        });
+      });
+
+      it('updates IssuableList with url params', () => {
+        expect(findIssuableList().props('urlParams')).toMatchObject({
+          author_username: ['homer'],
+          'not[author_username]': ['marge'],
+          'assignee_username[]': ['bart'],
+          'not[assignee_username][]': ['lisa'],
+          'label_name[]': ['cartoon', 'tv'],
+          'not[label_name][]': ['live action', 'drama'],
+        });
       });
     });
   });

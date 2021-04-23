@@ -148,7 +148,7 @@ end
 ```
 
 In this example, we use field authorization (such as
-`Ability.allowed?(current_user, :read_transactions, bank_account)`) to avoid 
+`Ability.allowed?(current_user, :read_transactions, bank_account)`) to avoid
 a more expensive query:
 
 ```ruby

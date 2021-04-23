@@ -2363,7 +2363,7 @@ considered and customer technical support will be considered out of scope.
 As an alternative approach, you can also run select components of GitLab as Cloud Native
 in Kubernetes via our official [Helm Charts](https://docs.gitlab.com/charts/).
 In this setup, we support running the equivalent of GitLab Rails and Sidekiq nodes
-in a Kubernetes cluster, named Webservice and Sidekiq respectively. In addition, 
+in a Kubernetes cluster, named Webservice and Sidekiq respectively. In addition,
 the following other supporting services are supported: NGINX, Task Runner, Migrations,
 Prometheus and Grafana.
 

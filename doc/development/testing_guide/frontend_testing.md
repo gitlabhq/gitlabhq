@@ -1151,8 +1151,8 @@ Both functions run `callback` on the next tick after the requests finish (using 
 
 ### `shallowMountExtended` and `mountExtended`
 
-The `shallowMountExtended` and `mountExtended` utilities provide you with the ability to perform 
-any of the available [DOM Testing Library queries](https://testing-library.com/docs/queries/about) 
+The `shallowMountExtended` and `mountExtended` utilities provide you with the ability to perform
+any of the available [DOM Testing Library queries](https://testing-library.com/docs/queries/about)
 by prefixing them with `find` or `findAll`.
 
 ```javascript

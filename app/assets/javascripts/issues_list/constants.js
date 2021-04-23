@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 // Maps sort order as it appears in the URL query to API `order_by` and `sort` params.
 const PRIORITY = 'priority';
@@ -52,6 +52,34 @@ export const availableSortOptionsJira = [
     },
   },
 ];
+
+export const i18n = {
+  calendarLabel: __('Subscribe to calendar'),
+  jiraIntegrationMessage: s__(
+    'JiraService|%{jiraDocsLinkStart}Enable the Jira integration%{jiraDocsLinkEnd} to view your Jira issues in GitLab.',
+  ),
+  jiraIntegrationSecondaryMessage: s__('JiraService|This feature requires a Premium plan.'),
+  jiraIntegrationTitle: s__('JiraService|Using Jira for issue tracking?'),
+  newIssueLabel: __('New issue'),
+  noClosedIssuesTitle: __('There are no closed issues'),
+  noOpenIssuesDescription: __('To keep this project going, create a new issue'),
+  noOpenIssuesTitle: __('There are no open issues'),
+  noIssuesSignedInDescription: __(
+    'Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable.',
+  ),
+  noIssuesSignedInTitle: __(
+    'The Issue Tracker is the place to add things that need to be improved or solved in a project',
+  ),
+  noIssuesSignedOutButtonText: __('Register / Sign In'),
+  noIssuesSignedOutDescription: __(
+    'The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project.',
+  ),
+  noIssuesSignedOutTitle: __('There are no issues to show'),
+  noSearchResultsDescription: __('To widen your search, change or remove filters above'),
+  noSearchResultsTitle: __('Sorry, your filter produced no results'),
+  reorderError: __('An error occurred while reordering issues.'),
+  rssLabel: __('Subscribe to RSS feed'),
+};
 
 export const JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY = 'jira-import-success-alert-hide-map';
 
@@ -242,3 +270,42 @@ export const sortOptions = [
     },
   },
 ];
+
+export const MAX_LIST_SIZE = 10;
+
+export const FILTERED_SEARCH_TERM = 'filtered-search-term';
+export const OPERATOR_IS = '=';
+export const OPERATOR_IS_NOT = '!=';
+
+export const filters = {
+  author_username: {
+    apiParam: {
+      [OPERATOR_IS]: 'author_username',
+      [OPERATOR_IS_NOT]: 'not[author_username]',
+    },
+    urlParam: {
+      [OPERATOR_IS]: 'author_username',
+      [OPERATOR_IS_NOT]: 'not[author_username]',
+    },
+  },
+  assignee_username: {
+    apiParam: {
+      [OPERATOR_IS]: 'assignee_username',
+      [OPERATOR_IS_NOT]: 'not[assignee_username]',
+    },
+    urlParam: {
+      [OPERATOR_IS]: 'assignee_username[]',
+      [OPERATOR_IS_NOT]: 'not[assignee_username][]',
+    },
+  },
+  labels: {
+    apiParam: {
+      [OPERATOR_IS]: 'labels',
+      [OPERATOR_IS_NOT]: 'not[labels]',
+    },
+    urlParam: {
+      [OPERATOR_IS]: 'label_name[]',
+      [OPERATOR_IS_NOT]: 'not[label_name][]',
+    },
+  },
+};

@@ -6,31 +6,49 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # IBM Engineering Workflow Management (EWM) Integration **(FREE)**
 
-This service allows you to navigate from GitLab to EWM work items mentioned in merge request descriptions and commit messages. Each work item reference is automatically converted to a link back to the work item.
+This service allows you to go from GitLab to EWM work items mentioned in merge request
+descriptions and commit messages.
+Each work item reference is automatically converted to a link to the work item.
 
-NOTE:
-This IBM product was [formerly named Rational Team Concert](https://jazz.net/blog/index.php/2019/04/23/renaming-the-ibm-continuous-engineering-portfolio/)(RTC). This integration is also compatible with all versions of RTC and EWM.
+This IBM product was [formerly named Rational Team Concert](https://jazz.net/blog/index.php/2019/04/23/renaming-the-ibm-continuous-engineering-portfolio/)(RTC). This integration is compatible with all versions of RTC and EWM.
 
-1. From a GitLab project, navigate to **Settings > Integrations**, and then click **EWM**.
-1. Enter the information listed below.
+To enable the EWM integration, in a project:
 
-   | Field | Description |
-   | ----- | ----------- |
-   | `project_url` | URL of the EWM project area to link to the GitLab project. To obtain your project area URL, navigate to the path `/ccm/web/projects` and copy the listed project's URL. For example, `https://example.com/ccm/web/Example%20Project` |
-   | `issues_url` | URL to the work item editor in the EWM project area. The format is `<your-server-url>/resource/itemName/com.ibm.team.workitem.WorkItem/:id`. For example, `https://example.com/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/:id` |
-   | `new_issue_url` | URL to create a new work item in the EWM project area. Append the following fragment to your project area URL: `#action=com.ibm.team.workitem.newWorkItem`. For example, `https://example.com/ccm/web/projects/JKE%20Banking#action=com.ibm.team.workitem.newWorkItem` |
+1. Go to the [Integrations page](overview.md#accessing-integrations).
+1. Select **EWM**.
+1. Select the checkbox under **Enable integration**.
+1. Fill in the required fields:
+
+   - **Project URL**: The URL to the EWM project area.
+
+     To obtain your project area URL, navigate to the
+     path `/ccm/web/projects` and copy the listed project's URL. For example, `https://example.com/ccm/web/Example%20Project`.
+   - **Issue URL**: The URL to the work item editor in the EWM project area.
+
+     The format is `<your-server-url>/resource/itemName/com.ibm.team.workitem.WorkItem/:id`.
+     GitLab replaces `:id` with the issue number
+     (for example, `https://example.com/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/:id`,
+     which becomes `https://example.com/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/123`).
+   - **New issue URL**: URL to create a new work item in the EWM project area.
+
+     Append the following fragment to your project area URL: `#action=com.ibm.team.workitem.newWorkItem`.
+     For example, `https://example.com/ccm/web/projects/JKE%20Banking#action=com.ibm.team.workitem.newWorkItem`.
+
+1. Select **Save changes** or optionally select **Test settings**.
 
 ## Reference EWM work items in commit messages
 
-You can use any of the keywords supported by the EWM Git Integration Toolkit to refer to work items. Work items can be referenced using the format: `<keyword> <id>`.
+To refer to work items, you can use any keywords supported by the EWM Git Integration Toolkit.
+Use the format: `<keyword> <id>`.
 
 You can use the following keywords:
 
 - `bug`
-- `task`
 - `defect`
 - `rtcwi`
-- `workitem`
+- `task`
 - `work item`
+- `workitem`
 
-For more details, see the EWM documentation page [Creating links from commit comments](https://www.ibm.com/support/knowledgecenter/SSYMRC_7.0.0/com.ibm.team.connector.cq.doc/topics/t_creating_links_through_comments.html), which recommends against using the additionally-supported keyword `#` because of incompatibility with GitLab.
+Avoid using the keyword `#`. Learn more in the EWM documentation page
+[Creating links from commit comments](https://www.ibm.com/docs/en/elm/7.0.0?topic=commits-creating-links-from-commit-comments).

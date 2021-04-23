@@ -56,7 +56,7 @@ To remove an estimation entirely, use `/remove_estimate`.
 
 ### Time spent
 
-To enter time spent, write `/spend`, followed by the time. For example, if you need 
+To enter time spent, write `/spend`, followed by the time. For example, if you need
 to log 1 month, 2 weeks, 3 days, 4 hours and 5 minutes, you would write `/spend 1mo 2w 3d 4h 5m`.
 Time units that we support are listed at the bottom of this help page.
 
@@ -68,7 +68,7 @@ days from the total time spent. You can't go below 0 minutes of time spent,
 so GitLab automatically resets the time spent if you remove a larger amount
 of time compared to the time that was entered already.
 
-You can log time in the past by providing a date after the time. 
+You can log time in the past by providing a date after the time.
 For example, if you want to log 1 hour of time spent on the 31 January 2021,
 you would write `/spend 1h 2021-01-31`. If you supply a date in the future, the
 command fails and no time is logged.

@@ -45,7 +45,7 @@ GitLab, but users can also integrate their own **custom images**.
 
 ## SAST analyzer features
 
-For an analyzer to be considered Generally Available, it is expected to minimally 
+For an analyzer to be considered Generally Available, it is expected to minimally
 support the following features:
 
 - [Customizable configuration](index.md#available-variables)

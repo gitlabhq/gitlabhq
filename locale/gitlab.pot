@@ -17959,7 +17959,10 @@ msgstr ""
 msgid "IssueTracker|Custom issue tracker"
 msgstr ""
 
-msgid "IssueTracker|EWM work items tracker"
+msgid "IssueTracker|Use IBM Engineering Workflow Management as this project's issue tracker."
+msgstr ""
+
+msgid "IssueTracker|Use IBM Engineering Workflow Management as this project's issue tracker. %{docs_link}"
 msgstr ""
 
 msgid "IssueTracker|Use Redmine as the issue tracker."

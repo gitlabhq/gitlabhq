@@ -436,7 +436,7 @@ This mapping is currently generated using a combination of test coverage tracing
 In the `detect-tests` job, we use this mapping to identify the minimal tests needed for the current Merge Request.
 
 In this experiment, each `rspec` job is accompanied with a `minimal` version.
-For example, `rspec unit` job has a corresponding `rspec unit minimal` job. 
+For example, `rspec unit` job has a corresponding `rspec unit minimal` job.
 During the experiment, each Merge Request pipeline will contain both versions of the job, running in parallel.
 
 To illustrate this:
@@ -462,7 +462,7 @@ graph LR
 ```
 
 The result of both set of jobs in the pipeline is then compared to identify any false positive.
-A list of such pipeline can be found in [Sisense](https://app.periscopedata.com/app/gitlab/496118/Engineering-Productivity-Sandbox?widget=10492739&udv=833427). 
+A list of such pipeline can be found in [Sisense](https://app.periscopedata.com/app/gitlab/496118/Engineering-Productivity-Sandbox?widget=10492739&udv=833427).
 
 A false positive is defined as a pipeline where the `minimal` jobs passed, but the non-`minimal` jobs failed.
 This indicates that the changeset resulted in a test failure, which was not detected by the `minimal` jobs.
