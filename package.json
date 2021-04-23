@@ -76,7 +76,7 @@
     "codemirror": "^5.48.4",
     "codesandbox-api": "0.0.23",
     "compression-webpack-plugin": "^5.0.2",
-    "copy-webpack-plugin": "^5.1.2",
+    "copy-webpack-plugin": "^6.4.1",
     "core-js": "^3.11.0",
     "cron-validator": "^1.1.1",
     "cropper": "^2.3.0",

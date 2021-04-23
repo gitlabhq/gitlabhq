@@ -79,7 +79,7 @@ module ObjectStorage
           Provider: 'AWS',
           S3Config: {
             Bucket: bucket_name,
-            Region: credentials[:region],
+            Region: credentials[:region] || ::Fog::AWS::Storage::DEFAULT_REGION,
             Endpoint: credentials[:endpoint],
             PathStyle: config.use_path_style?,
             UseIamProfile: config.use_iam_profile?,

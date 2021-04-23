@@ -8,5 +8,6 @@ FactoryBot.define do
     max_value { 10 }
     batch_size { 5 }
     sub_batch_size { 1 }
+    pause_ms { 100 }
   end
 end

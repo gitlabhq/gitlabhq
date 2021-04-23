@@ -6,25 +6,25 @@
       .form-check
         = f.check_box :recaptcha_enabled, class: 'form-check-input'
         = f.label :recaptcha_enabled, class: 'form-check-label' do
-          Enable reCAPTCHA
+          = _("Enable reCAPTCHA")
         %span.form-text.text-muted#recaptcha_help_block
           = _('Helps prevent bots from creating accounts.')
     .form-group
       .form-check
         = f.check_box :login_recaptcha_protection_enabled, class: 'form-check-input'
         = f.label :login_recaptcha_protection_enabled, class: 'form-check-label' do
-          Enable reCAPTCHA for login
+          = _("Enable reCAPTCHA for login")
         %span.form-text.text-muted#recaptcha_help_block
           = _('Helps prevent bots from brute-force attacks.')
     .form-group
-      = f.label :recaptcha_site_key, 'reCAPTCHA Site Key', class: 'label-bold'
+      = f.label :recaptcha_site_key, _('reCAPTCHA Site Key'), class: 'label-bold'
       = f.text_field :recaptcha_site_key, class: 'form-control gl-form-input'
       .form-text.text-muted
-        Generate site and private keys at
+        = _("Generate site and private keys at")
         %a{ href: 'http://www.google.com/recaptcha', target: 'blank' } http://www.google.com/recaptcha
 
     .form-group
-      = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'label-bold'
+      = f.label :recaptcha_private_key, _('reCAPTCHA Private Key'), class: 'label-bold'
     .form-group
       = f.text_field :recaptcha_private_key, class: 'form-control gl-form-input'
 
@@ -41,10 +41,10 @@
         = f.check_box :akismet_enabled, class: 'form-check-input'
         = f.label :akismet_enabled, class: 'form-check-label' do
           Enable Akismet
-        %span.form-text.text-muted#akismet_help_block Helps prevent bots from creating issues
+        %span.form-text.text-muted#akismet_help_block= _("Helps prevent bots from creating issues")
 
     .form-group
-      = f.label :akismet_api_key, 'Akismet API Key', class: 'label-bold'
+      = f.label :akismet_api_key, _('Akismet API Key'), class: 'label-bold'
       = f.text_field :akismet_api_key, class: 'form-control gl-form-input'
       .form-text.text-muted
         Generate API key at
@@ -54,21 +54,21 @@
       .form-check
         = f.check_box :unique_ips_limit_enabled, class: 'form-check-input'
         = f.label :unique_ips_limit_enabled, class: 'form-check-label' do
-          Limit sign in from multiple ips
+          = _("Limit sign in from multiple ips")
         %span.form-text.text-muted#unique_ip_help_block
-          Helps prevent malicious users hide their activity
+          = _("Helps prevent malicious users hide their activity")
 
     .form-group
-      = f.label :unique_ips_limit_per_user, 'IPs per user', class: 'label-bold'
+      = f.label :unique_ips_limit_per_user, _('IPs per user'), class: 'label-bold'
       = f.number_field :unique_ips_limit_per_user, class: 'form-control gl-form-input'
       .form-text.text-muted
-        Maximum number of unique IPs per user
+        = _("Maximum number of unique IPs per user")
 
     .form-group
-      = f.label :unique_ips_limit_time_window, 'IP expiration time', class: 'label-bold'
+      = f.label :unique_ips_limit_time_window, _('IP expiration time'), class: 'label-bold'
       = f.number_field :unique_ips_limit_time_window, class: 'form-control gl-form-input'
       .form-text.text-muted
-        How many seconds an IP will be counted towards the limit
+        = _("How many seconds an IP will be counted towards the limit")
 
     .form-group
       .form-check
@@ -79,4 +79,4 @@
       = f.label :spam_check_endpoint_url, _('URL of the external Spam Check endpoint'), class: 'label-bold'
       = f.text_field :spam_check_endpoint_url, class: 'form-control gl-form-input'
 
-  = f.submit 'Save changes', class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

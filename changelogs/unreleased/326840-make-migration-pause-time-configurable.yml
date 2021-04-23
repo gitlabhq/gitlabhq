@@ -1,0 +1,5 @@
+---
+title: Add pause_ms column to batched_background_migrations and batched_background_migration_jobs
+merge_request: 58583
+author:
+type: changed

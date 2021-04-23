@@ -115,6 +115,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_8485e97c00e3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."source_job_id_convert_to_bigint" := NEW."source_job_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_be1804f21693() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -9824,7 +9833,8 @@ CREATE TABLE batched_background_migration_jobs (
     sub_batch_size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     attempts smallint DEFAULT 0 NOT NULL,
-    metrics jsonb DEFAULT '{}'::jsonb NOT NULL
+    metrics jsonb DEFAULT '{}'::jsonb NOT NULL,
+    pause_ms integer DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE batched_background_migration_jobs_id_seq
@@ -9852,6 +9862,7 @@ CREATE TABLE batched_background_migrations (
     column_name text NOT NULL,
     job_arguments jsonb DEFAULT '"[]"'::jsonb NOT NULL,
     total_tuple_count bigint,
+    pause_ms integer DEFAULT 100 NOT NULL,
     CONSTRAINT check_5bb0382d6f CHECK ((char_length(column_name) <= 63)),
     CONSTRAINT check_6b6a06254a CHECK ((char_length(table_name) <= 63)),
     CONSTRAINT check_batch_size_in_range CHECK ((batch_size >= sub_batch_size)),
@@ -10977,7 +10988,8 @@ CREATE TABLE ci_sources_pipelines (
     pipeline_id integer,
     source_project_id integer,
     source_job_id integer,
-    source_pipeline_id integer
+    source_pipeline_id integer,
+    source_job_id_convert_to_bigint bigint
 );
 
 CREATE SEQUENCE ci_sources_pipelines_id_seq
@@ -18559,6 +18571,26 @@ CREATE SEQUENCE vulnerability_feedback_id_seq
 
 ALTER SEQUENCE vulnerability_feedback_id_seq OWNED BY vulnerability_feedback.id;
 
+CREATE TABLE vulnerability_finding_evidence_requests (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    vulnerability_finding_evidence_id bigint NOT NULL,
+    method text,
+    url text,
+    CONSTRAINT check_8152fbb236 CHECK ((char_length(url) <= 2048)),
+    CONSTRAINT check_d9d11300f4 CHECK ((char_length(method) <= 32))
+);
+
+CREATE SEQUENCE vulnerability_finding_evidence_requests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_finding_evidence_requests_id_seq OWNED BY vulnerability_finding_evidence_requests.id;
+
 CREATE TABLE vulnerability_finding_evidences (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -19863,6 +19895,8 @@ ALTER TABLE ONLY vulnerability_exports ALTER COLUMN id SET DEFAULT nextval('vuln
 ALTER TABLE ONLY vulnerability_external_issue_links ALTER COLUMN id SET DEFAULT nextval('vulnerability_external_issue_links_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_feedback ALTER COLUMN id SET DEFAULT nextval('vulnerability_feedback_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_finding_evidence_requests ALTER COLUMN id SET DEFAULT nextval('vulnerability_finding_evidence_requests_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_finding_evidences ALTER COLUMN id SET DEFAULT nextval('vulnerability_finding_evidences_id_seq'::regclass);
 
@@ -21494,6 +21528,9 @@ ALTER TABLE ONLY vulnerability_external_issue_links
 ALTER TABLE ONLY vulnerability_feedback
     ADD CONSTRAINT vulnerability_feedback_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY vulnerability_finding_evidence_requests
+    ADD CONSTRAINT vulnerability_finding_evidence_requests_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY vulnerability_finding_evidences
     ADD CONSTRAINT vulnerability_finding_evidences_pkey PRIMARY KEY (id);
 
@@ -21729,6 +21766,8 @@ CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_and_note_id_index ON epic_user
 CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_index ON epic_user_mentions USING btree (epic_id) WHERE (note_id IS NULL);
 
 CREATE INDEX expired_artifacts_temp_index ON ci_job_artifacts USING btree (id, created_at) WHERE ((expire_at IS NULL) AND (date(timezone('UTC'::text, created_at)) < '2020-06-22'::date));
+
+CREATE INDEX finding_evidence_requests_on_finding_evidence_id ON vulnerability_finding_evidence_requests USING btree (vulnerability_finding_evidence_id);
 
 CREATE INDEX finding_evidences_on_vulnerability_occurrence_id ON vulnerability_finding_evidences USING btree (vulnerability_occurrence_id);
 
@@ -24676,6 +24715,8 @@ CREATE TRIGGER trigger_07c94931164e BEFORE INSERT OR UPDATE ON push_event_payloa
 
 CREATE TRIGGER trigger_69523443cc10 BEFORE INSERT OR UPDATE ON events FOR EACH ROW EXECUTE PROCEDURE trigger_69523443cc10();
 
+CREATE TRIGGER trigger_8485e97c00e3 BEFORE INSERT OR UPDATE ON ci_sources_pipelines FOR EACH ROW EXECUTE PROCEDURE trigger_8485e97c00e3();
+
 CREATE TRIGGER trigger_be1804f21693 BEFORE INSERT OR UPDATE ON ci_job_artifacts FOR EACH ROW EXECUTE PROCEDURE trigger_be1804f21693();
 
 CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON services FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE PROCEDURE set_has_external_issue_tracker();
@@ -24853,7 +24894,7 @@ ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_3a9eaa254d FOREIGN KEY (stage_id) REFERENCES ci_stages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
-    ADD CONSTRAINT fk_3b8c72ea56 FOREIGN KEY (sprint_id) REFERENCES sprints(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_3b8c72ea56 FOREIGN KEY (sprint_id) REFERENCES sprints(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_3c1fd1cccc FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
@@ -24997,7 +25038,7 @@ ALTER TABLE ONLY labels
     ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests
-    ADD CONSTRAINT fk_7e85395a64 FOREIGN KEY (sprint_id) REFERENCES sprints(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_7e85395a64 FOREIGN KEY (sprint_id) REFERENCES sprints(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_7f28d925f3 FOREIGN KEY (merged_by_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -26117,6 +26158,9 @@ ALTER TABLE ONLY dast_scanner_profiles
 
 ALTER TABLE ONLY vulnerability_historical_statistics
     ADD CONSTRAINT fk_rails_72b73ed023 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_finding_evidence_requests
+    ADD CONSTRAINT fk_rails_72c87c8eb6 FOREIGN KEY (vulnerability_finding_evidence_id) REFERENCES vulnerability_finding_evidences(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY slack_integrations
     ADD CONSTRAINT fk_rails_73db19721a FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE;

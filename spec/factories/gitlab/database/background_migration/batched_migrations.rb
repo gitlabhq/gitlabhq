@@ -10,5 +10,6 @@ FactoryBot.define do
     table_name { :events }
     column_name { :id }
     total_tuple_count { 10_000 }
+    pause_ms { 100 }
   end
 end

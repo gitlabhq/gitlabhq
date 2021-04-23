@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.11.1 (2021-04-22)
+
+### Changed (1 change)
+
+- Change unsubscribe language for email campaign on self managed. !59121
+
+### Added (1 change)
+
+- Add documentation about Pages deployment migration. !59475
+
+
 ## 13.11.0 (2021-04-22)
 
 ### Security (3 changes)

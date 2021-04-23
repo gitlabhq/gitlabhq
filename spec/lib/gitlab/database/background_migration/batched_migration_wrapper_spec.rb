@@ -7,9 +7,16 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
   let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
+  let_it_be(:pause_ms) { 250 }
   let_it_be(:active_migration) { create(:batched_background_migration, :active, job_arguments: [:id, :other_id]) }
 
-  let!(:job_record) { create(:batched_background_migration_job, batched_migration: active_migration) }
+  let!(:job_record) do
+    create(:batched_background_migration_job,
+           batched_migration: active_migration,
+           pause_ms: pause_ms
+          )
+  end
+
   let(:job_instance) { double('job instance', batch_metrics: {}) }
 
   before do
@@ -17,7 +24,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   end
 
   it 'runs the migration job' do
-    expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, 'id', 'other_id')
+    expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
 
     subject
   end
@@ -98,7 +105,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
   context 'when the migration job does not raise an error' do
     it 'marks the tracking record as succeeded' do
-      expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, 'id', 'other_id')
+      expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
 
       freeze_time do
         subject
@@ -115,7 +122,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
     shared_examples 'an error is raised' do |error_class|
       it 'marks the tracking record as failed' do
         expect(job_instance).to receive(:perform)
-          .with(1, 10, 'events', 'id', 1, 'id', 'other_id')
+          .with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
           .and_raise(error_class)
 
         freeze_time do

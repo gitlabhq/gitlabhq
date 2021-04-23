@@ -451,12 +451,14 @@ module.exports = {
       }),
 
     dll &&
-      new CopyWebpackPlugin([
-        {
-          from: dll.cacheFrom,
-          to: dll.cacheTo,
-        },
-      ]),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: dll.cacheFrom,
+            to: dll.cacheTo,
+          },
+        ],
+      }),
 
     !IS_EE &&
       new webpack.NormalModuleReplacementPlugin(/^ee_component\/(.*)\.vue/, (resource) => {
@@ -467,24 +469,28 @@ module.exports = {
         );
       }),
 
-    new CopyWebpackPlugin([
-      {
-        from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
-        to: path.join(WEBPACK_OUTPUT_PATH, 'cmaps/'),
-      },
-      {
-        from: path.join(ROOT_PATH, 'node_modules', SOURCEGRAPH_PACKAGE, '/'),
-        to: SOURCEGRAPH_OUTPUT_PATH,
-        ignore: ['package.json'],
-      },
-      {
-        from: path.join(
-          ROOT_PATH,
-          'node_modules/@gitlab/visual-review-tools/dist/visual_review_toolbar.js',
-        ),
-        to: WEBPACK_OUTPUT_PATH,
-      },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
+          to: path.join(WEBPACK_OUTPUT_PATH, 'cmaps/'),
+        },
+        {
+          from: path.join(ROOT_PATH, 'node_modules', SOURCEGRAPH_PACKAGE, '/'),
+          to: SOURCEGRAPH_OUTPUT_PATH,
+          globOptions: {
+            ignore: ['package.json'],
+          },
+        },
+        {
+          from: path.join(
+            ROOT_PATH,
+            'node_modules/@gitlab/visual-review-tools/dist/visual_review_toolbar.js',
+          ),
+          to: WEBPACK_OUTPUT_PATH,
+        },
+      ],
+    }),
 
     // compression can require a lot of compute time and is disabled in CI
     IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin(),

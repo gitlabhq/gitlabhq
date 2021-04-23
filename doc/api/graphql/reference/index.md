@@ -2437,6 +2437,25 @@ Input type: `IterationCadenceCreateInput`
 | <a id="mutationiterationcadencecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationiterationcadencecreateiterationcadence"></a>`iterationCadence` | [`IterationCadence`](#iterationcadence) | The created iteration cadence. |
 
+### `Mutation.iterationCadenceDestroy`
+
+Input type: `IterationCadenceDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationiterationcadencedestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationiterationcadencedestroyid"></a>`id` | [`IterationsCadenceID!`](#iterationscadenceid) | Global ID of the iteration cadence. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationiterationcadencedestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationiterationcadencedestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationiterationcadencedestroygroup"></a>`group` | [`Group!`](#group) | Group the iteration cadence belongs to. |
+
 ### `Mutation.iterationCadenceUpdate`
 
 Input type: `IterationCadenceUpdateInput`

@@ -669,3 +669,22 @@ export const pipelineWithUpstreamDownstream = (base) => {
 
   return generateResponse(pip, 'root/abcd-dag');
 };
+
+export const mapCallouts = (callouts) =>
+  callouts.map((callout) => {
+    return { featureName: callout, __typename: 'UserCallout' };
+  });
+
+export const mockCalloutsResponse = (mappedCallouts) => ({
+  data: {
+    currentUser: {
+      id: 45,
+      __typename: 'User',
+      callouts: {
+        id: 5,
+        __typename: 'UserCalloutConnection',
+        nodes: mappedCallouts,
+      },
+    },
+  },
+});

@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlSegmentedControl } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlSegmentedControl } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import { LAYER_VIEW, STAGE_VIEW } from '~/pipelines/components/graph/constants';
 import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.vue';
@@ -12,16 +12,19 @@ describe('the graph view selector component', () => {
   const findLayersViewLabel = () => findViewTypeSelector().findAll('label').at(1);
   const findSwitcherLoader = () => wrapper.find('[data-testid="switcher-loading-state"]');
   const findToggleLoader = () => findDependenciesToggle().find(GlLoadingIcon);
+  const findHoverTip = () => wrapper.findComponent(GlAlert);
 
   const defaultProps = {
     showLinks: false,
+    tipPreviouslyDismissed: false,
     type: STAGE_VIEW,
   };
 
   const defaultData = {
-    showLinksActive: false,
+    hoverTipDismissed: false,
     isToggleLoading: false,
     isSwitcherLoading: false,
+    showLinksActive: false,
   };
 
   const createComponent = ({ data = {}, mountFn = shallowMount, props = {} } = {}) => {
@@ -119,6 +122,68 @@ describe('the graph view selector component', () => {
 
       expect(wrapper.emitted().updateShowLinksState).toHaveLength(1);
       expect(wrapper.emitted().updateShowLinksState).toEqual([[true]]);
+    });
+  });
+
+  describe('hover tip callout', () => {
+    describe('when links are live and it has not been previously dismissed', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            showLinks: true,
+          },
+          data: {
+            showLinksActive: true,
+          },
+          mountFn: mount,
+        });
+      });
+
+      it('is displayed', () => {
+        expect(findHoverTip().exists()).toBe(true);
+        expect(findHoverTip().text()).toBe(wrapper.vm.$options.i18n.hoverTipText);
+      });
+
+      it('emits dismissHoverTip event when the tip is dismissed', async () => {
+        expect(wrapper.emitted().dismissHoverTip).toBeUndefined();
+        await findHoverTip().find('button').trigger('click');
+        expect(wrapper.emitted().dismissHoverTip).toHaveLength(1);
+      });
+    });
+
+    describe('when links are live and it has been previously dismissed', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            showLinks: true,
+            tipPreviouslyDismissed: true,
+          },
+          data: {
+            showLinksActive: true,
+          },
+        });
+      });
+
+      it('is not displayed', () => {
+        expect(findHoverTip().exists()).toBe(false);
+      });
+    });
+
+    describe('when links are not live', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            showLinks: true,
+          },
+          data: {
+            showLinksActive: false,
+          },
+        });
+      });
+
+      it('is not displayed', () => {
+        expect(findHoverTip().exists()).toBe(false);
+      });
     });
   });
 });

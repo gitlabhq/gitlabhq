@@ -126,6 +126,16 @@ RSpec.describe ObjectStorage::DirectUpload do
         expect(s3_config.keys).not_to include(%i(ServerSideEncryption SSEKMSKeyID))
       end
 
+      context 'when no region is specified' do
+        before do
+          raw_config.delete(:region)
+        end
+
+        it 'defaults to us-east-1' do
+          expect(subject[:ObjectStorage][:S3Config][:Region]).to eq('us-east-1')
+        end
+      end
+
       context 'when feature flag is disabled' do
         before do
           stub_feature_flags(use_workhorse_s3_client: false)

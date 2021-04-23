@@ -165,7 +165,7 @@ export default {
   <div class="js-pipeline-graph">
     <div
       ref="mainPipelineContainer"
-      class="gl-display-flex gl-position-relative gl-bg-gray-10 gl-white-space-nowrap"
+      class="gl-display-flex gl-position-relative gl-bg-gray-10 gl-white-space-nowrap gl-border-t-solid gl-border-t-1 gl-border-gray-100"
       :class="{ 'gl-pipeline-min-h gl-py-5 gl-overflow-auto': !isLinkedPipeline }"
     >
       <linked-graph-wrapper>

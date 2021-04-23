@@ -2783,6 +2783,9 @@ msgstr ""
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
 msgstr ""
 
+msgid "Akismet API Key"
+msgstr ""
+
 msgid "Alert"
 msgid_plural "Alerts"
 msgstr[0] ""
@@ -12071,6 +12074,12 @@ msgstr ""
 msgid "Enable proxy"
 msgstr ""
 
+msgid "Enable reCAPTCHA"
+msgstr ""
+
+msgid "Enable reCAPTCHA for login"
+msgstr ""
+
 msgid "Enable reCAPTCHA, Invisible Captcha, Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
 msgstr ""
 
@@ -14188,6 +14197,9 @@ msgstr ""
 msgid "Generate new token"
 msgstr ""
 
+msgid "Generate site and private keys at"
+msgstr ""
+
 msgid "Generic package file size in bytes"
 msgstr ""
 
@@ -15970,6 +15982,12 @@ msgstr ""
 msgid "Helps prevent bots from creating accounts."
 msgstr ""
 
+msgid "Helps prevent bots from creating issues"
+msgstr ""
+
+msgid "Helps prevent malicious users hide their activity"
+msgstr ""
+
 msgid "Helps reduce alert volume (e.g. if creating too many issues)"
 msgstr ""
 
@@ -16121,6 +16139,9 @@ msgstr ""
 msgid "How many replicas each Elasticsearch shard has."
 msgstr ""
 
+msgid "How many seconds an IP will be counted towards the limit"
+msgstr ""
+
 msgid "How many shards to split the Elasticsearch index over."
 msgstr ""
 
@@ -16205,7 +16226,13 @@ msgstr ""
 msgid "IP Address"
 msgstr ""
 
+msgid "IP expiration time"
+msgstr ""
+
 msgid "IP subnet restriction only allowed for top-level groups"
+msgstr ""
+
+msgid "IPs per user"
 msgstr ""
 
 msgid "Identifier"
@@ -19173,6 +19200,9 @@ msgstr ""
 msgid "Limit namespaces and projects that can be indexed"
 msgstr ""
 
+msgid "Limit sign in from multiple ips"
+msgstr ""
+
 msgid "Limit the number of concurrent operations this secondary node can run in the background."
 msgstr ""
 
@@ -19758,6 +19788,9 @@ msgid "Maximum number of mirrors that can be synchronizing at the same time."
 msgstr ""
 
 msgid "Maximum number of projects."
+msgstr ""
+
+msgid "Maximum number of unique IPs per user"
 msgstr ""
 
 msgid "Maximum page reached"
@@ -23892,6 +23925,9 @@ msgid "Please provide a valid email address."
 msgstr ""
 
 msgid "Please provide attributes to update"
+msgstr ""
+
+msgid "Please provide your username or email address."
 msgstr ""
 
 msgid "Please reach out if you have any questions and we'll be happy to assist."
@@ -29304,6 +29340,9 @@ msgstr ""
 msgid "Sign in / Register"
 msgstr ""
 
+msgid "Sign in preview"
+msgstr ""
+
 msgid "Sign in to \"%{group_name}\""
 msgstr ""
 
@@ -32981,6 +33020,9 @@ msgid "Time|s"
 msgstr ""
 
 msgid "Tip:"
+msgstr ""
+
+msgid "Tip: Hover over a job to see the jobs it depends on to run."
 msgstr ""
 
 msgid "Tip: add a"
@@ -38079,6 +38121,12 @@ msgid "projects"
 msgstr ""
 
 msgid "quick actions"
+msgstr ""
+
+msgid "reCAPTCHA Private Key"
+msgstr ""
+
+msgid "reCAPTCHA Site Key"
 msgstr ""
 
 msgid "recent activity"

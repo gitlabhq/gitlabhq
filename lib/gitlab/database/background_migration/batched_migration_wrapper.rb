@@ -43,6 +43,7 @@ module Gitlab
             tracking_record.migration_table_name,
             tracking_record.migration_column_name,
             tracking_record.sub_batch_size,
+            tracking_record.pause_ms,
             *tracking_record.migration_job_arguments)
 
           if job_instance.respond_to?(:batch_metrics)

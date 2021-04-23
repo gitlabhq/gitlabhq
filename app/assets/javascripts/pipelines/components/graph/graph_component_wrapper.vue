@@ -5,6 +5,8 @@ import { __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
+import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
+import getUserCallouts from '../../graphql/queries/get_user_callouts.query.graphql';
 import { reportToSentry } from '../../utils';
 import { listByLayers } from '../parsing_utils';
 import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';
@@ -16,6 +18,9 @@ import {
   toggleQueryPollingByVisibility,
   unwrapPipelineData,
 } from './utils';
+
+const featureName = 'pipeline_needs_hover_tip';
+const enumFeatureName = featureName.toUpperCase();
 
 export default {
   name: 'PipelineGraphWrapper',
@@ -44,6 +49,7 @@ export default {
   data() {
     return {
       alertType: null,
+      callouts: [],
       currentViewType: STAGE_VIEW,
       pipeline: null,
       pipelineLayers: null,
@@ -60,6 +66,18 @@ export default {
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
   },
   apollo: {
+    callouts: {
+      query: getUserCallouts,
+      update(data) {
+        return data?.currentUser?.callouts?.nodes.map((callout) => callout.featureName);
+      },
+      error(err) {
+        reportToSentry(
+          this.$options.name,
+          `type: callout_load_failure, info: ${serializeLoadErrors(err)}`,
+        );
+      },
+    },
     pipeline: {
       context() {
         return getQueryHeaders(this.graphqlResourceEtag);
@@ -142,6 +160,9 @@ export default {
       /* This prevents reading view type off the localStorage value if it does not apply. */
       return this.showGraphViewSelector ? this.currentViewType : STAGE_VIEW;
     },
+    hoverTipPreviouslyDismissed() {
+      return this.callouts.includes(enumFeatureName);
+    },
     showLoadingIcon() {
       /*
         Shows the icon only when the graph is empty, not when it is is
@@ -170,6 +191,18 @@ export default {
       }
 
       return this.pipelineLayers;
+    },
+    handleTipDismissal() {
+      try {
+        this.$apollo.mutate({
+          mutation: DismissPipelineGraphCallout,
+          variables: {
+            featureName,
+          },
+        });
+      } catch (err) {
+        reportToSentry(this.$options.name, `type: callout_dismiss_failure, info: ${err}`);
+      }
     },
     hideAlert() {
       this.showAlert = false;
@@ -211,6 +244,8 @@ export default {
         v-if="showGraphViewSelector"
         :type="graphViewType"
         :show-links="showLinks"
+        :tip-previously-dismissed="hoverTipPreviouslyDismissed"
+        @dismissHoverTip="handleTipDismissal"
         @updateViewType="updateViewType"
         @updateShowLinksState="updateShowLinksState"
       />

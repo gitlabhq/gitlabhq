@@ -35,7 +35,13 @@ module Gitlab
         end
 
         def create_batched_job!(min, max)
-          batched_jobs.create!(min_value: min, max_value: max, batch_size: batch_size, sub_batch_size: sub_batch_size)
+          batched_jobs.create!(
+            min_value: min,
+            max_value: max,
+            batch_size: batch_size,
+            sub_batch_size: sub_batch_size,
+            pause_ms: pause_ms
+          )
         end
 
         def next_min_value

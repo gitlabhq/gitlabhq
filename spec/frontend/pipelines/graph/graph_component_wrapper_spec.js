@@ -17,7 +17,8 @@ import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
-import { mockPipelineResponse } from './mock_data';
+import getUserCallouts from '~/pipelines/graphql/queries/get_user_callouts.query.graphql';
+import { mapCallouts, mockCalloutsResponse, mockPipelineResponse } from './mock_data';
 
 const defaultProvide = {
   graphqlResourceEtag: 'frog/amphibirama/etag/',
@@ -31,15 +32,16 @@ describe('Pipeline graph wrapper', () => {
   useLocalStorageSpy();
 
   let wrapper;
-  const getAlert = () => wrapper.find(GlAlert);
+  const getAlert = () => wrapper.findComponent(GlAlert);
   const getDependenciesToggle = () => wrapper.find('[data-testid="show-links-toggle"]');
-  const getLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const getLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const getLinksLayer = () => wrapper.findComponent(LinksLayer);
   const getGraph = () => wrapper.find(PipelineGraph);
   const getStageColumnTitle = () => wrapper.find('[data-testid="stage-column-title"]');
   const getAllStageColumnGroupsInColumn = () =>
     wrapper.find(StageColumnComponent).findAll('[data-testid="stage-column-group"]');
   const getViewSelector = () => wrapper.find(GraphViewSelector);
+  const getViewSelectorTrip = () => getViewSelector().findComponent(GlAlert);
 
   const createComponent = ({
     apolloProvider,
@@ -62,12 +64,19 @@ describe('Pipeline graph wrapper', () => {
   };
 
   const createComponentWithApollo = ({
+    calloutsList = [],
     data = {},
     getPipelineDetailsHandler = jest.fn().mockResolvedValue(mockPipelineResponse),
     mountFn = shallowMount,
     provide = {},
   } = {}) => {
-    const requestHandlers = [[getPipelineDetails, getPipelineDetailsHandler]];
+    const callouts = mapCallouts(calloutsList);
+    const getUserCalloutsHandler = jest.fn().mockResolvedValue(mockCalloutsResponse(callouts));
+
+    const requestHandlers = [
+      [getPipelineDetails, getPipelineDetailsHandler],
+      [getUserCallouts, getUserCalloutsHandler],
+    ];
 
     const apolloProvider = createMockApollo(requestHandlers);
     createComponent({ apolloProvider, data, provide, mountFn });
@@ -322,6 +331,57 @@ describe('Pipeline graph wrapper', () => {
         jest.runOnlyPendingTimers();
         await wrapper.vm.$nextTick();
         expect(wrapper.findComponent(LinksLayer).props('showLinks')).toBe(true);
+      });
+    });
+
+    describe('when pipelineGraphLayersView feature flag is on, layers view is selected, and links are active', () => {
+      beforeEach(async () => {
+        createComponentWithApollo({
+          provide: {
+            glFeatures: {
+              pipelineGraphLayersView: true,
+            },
+          },
+          data: {
+            currentViewType: LAYER_VIEW,
+            showLinks: true,
+          },
+          mountFn: mount,
+        });
+
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+      });
+
+      it('shows the hover tip in the view selector', async () => {
+        await getViewSelector().setData({ showLinksActive: true });
+        expect(getViewSelectorTrip().exists()).toBe(true);
+      });
+    });
+
+    describe('when hover tip would otherwise show, but it has been previously dismissed', () => {
+      beforeEach(async () => {
+        createComponentWithApollo({
+          provide: {
+            glFeatures: {
+              pipelineGraphLayersView: true,
+            },
+          },
+          data: {
+            currentViewType: LAYER_VIEW,
+            showLinks: true,
+          },
+          mountFn: mount,
+          calloutsList: ['pipeline_needs_hover_tip'.toUpperCase()],
+        });
+
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+      });
+
+      it('does not show the hover tip', async () => {
+        await getViewSelector().setData({ showLinksActive: true });
+        expect(getViewSelectorTrip().exists()).toBe(false);
       });
     });
 
