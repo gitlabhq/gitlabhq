@@ -6226,15 +6226,15 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_monthly.projects_with_alerts_created`
 
-Missing description
+Monthly count of unique projects with HTTP alerting enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183159_projects_with_alerts_created.yml)
 
-Group: ``
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_monthly.snippets`
 
@@ -16472,7 +16472,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.action_monthly_active_users_design_management`
 

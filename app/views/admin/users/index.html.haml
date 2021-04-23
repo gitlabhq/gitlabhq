@@ -1,17 +1,7 @@
 - page_title _("Users")
 
-%ul.nav-links.nav-tabs.nav.js-users-tabs{ role: 'tablist' }
-  %li.nav-item.js-users-tab-item{ role: 'presentation' }
-    %a.nav-link{ href: '#users', class: active_when(params[:tab] != 'cohorts'), data: { toggle: 'tab' }, role: 'tab' }
-      = s_('AdminUsers|Users')
-  %li.nav-item.js-users-tab-item{ role: 'presentation' }
-    %a.nav-link{ href: '#cohorts', class: active_when(params[:tab] == 'cohorts'), data: { toggle: 'tab' }, role: 'tab' }
-      = s_('AdminUsers|Cohorts')
+= render 'tabs'
 
 .tab-content
-  .tab-pane{ id: 'users', class: ('active' if params[:tab] != 'cohorts') }
+  .tab-pane.active
     = render 'users'
-  .tab-pane{ id: 'cohorts', class: ('active' if params[:tab] == 'cohorts') }
-    = render 'cohorts'
-
-

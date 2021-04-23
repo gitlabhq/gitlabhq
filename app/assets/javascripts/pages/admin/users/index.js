@@ -1,7 +1,6 @@
 import Vue from 'vue';
 
 import { initAdminUsersApp } from '~/admin/users';
-import initTabs from '~/admin/users/tabs';
 import initConfirmModal from '~/confirm_modal';
 import csrf from '~/lib/utils/csrf';
 import Translate from '~/vue_shared/translate';
@@ -62,5 +61,4 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   initConfirmModal();
-  initTabs();
 });

@@ -132,7 +132,6 @@ linters:
       - Style/IdenticalConditionalBranches
       - Style/NegatedIf
       - Style/NestedTernaryOperator
-      - Style/ParenthesesAroundCondition
       - Style/SelfAssignment
       - Style/TernaryParentheses
       - Style/TrailingCommaInHashLiteral

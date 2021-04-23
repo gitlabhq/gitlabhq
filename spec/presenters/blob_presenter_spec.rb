@@ -2,52 +2,59 @@
 
 require 'spec_helper'
 
-RSpec.describe BlobPresenter, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
+RSpec.describe BlobPresenter do
+  let_it_be(:project) { create(:project, :repository) }
 
-  let(:git_blob) do
-    Gitlab::Git::Blob.find(
-      repository,
-      'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6',
-      'files/ruby/regex.rb'
-    )
-  end
+  let(:repository) { project.repository }
+  let(:blob) { repository.blob_at('HEAD', 'files/ruby/regex.rb') }
 
-  let(:blob) { Blob.new(git_blob) }
+  subject(:presenter) { described_class.new(blob) }
 
-  describe '.web_url' do
-    let(:project) { create(:project, :repository) }
-    let(:repository) { project.repository }
-    let(:blob) { Gitlab::Graphql::Representation::TreeEntry.new(repository.tree.blobs.first, repository) }
-
-    subject { described_class.new(blob) }
-
-    it { expect(subject.web_url).to eq("http://localhost/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}") }
+  describe '#web_url' do
+    it { expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}") }
   end
 
   describe '#web_path' do
-    let(:project) { create(:project, :repository) }
-    let(:repository) { project.repository }
-    let(:blob) { Gitlab::Graphql::Representation::TreeEntry.new(repository.tree.blobs.first, repository) }
+    it { expect(presenter.web_path).to eq("/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}") }
+  end
 
-    subject { described_class.new(blob) }
+  describe '#edit_blob_path' do
+    it { expect(presenter.edit_blob_path).to eq("/#{project.full_path}/-/edit/#{blob.commit_id}/#{blob.path}") }
+  end
 
-    it { expect(subject.web_path).to eq("/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}") }
+  describe '#raw_path' do
+    it { expect(presenter.raw_path).to eq("/#{project.full_path}/-/raw/#{blob.commit_id}/#{blob.path}") }
+  end
+
+  describe '#replace_path' do
+    it { expect(presenter.replace_path).to eq("/#{project.full_path}/-/create/#{blob.commit_id}/#{blob.path}") }
+  end
+
+  context 'given a Gitlab::Graphql::Representation::TreeEntry' do
+    let(:blob) { Gitlab::Graphql::Representation::TreeEntry.new(super(), repository) }
+
+    describe '#web_url' do
+      it { expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}") }
+    end
+
+    describe '#web_path' do
+      it { expect(presenter.web_path).to eq("/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}") }
+    end
   end
 
   describe '#highlight' do
-    subject { described_class.new(blob) }
+    let(:git_blob) { blob.__getobj__ }
 
     it 'returns highlighted content' do
       expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: nil)
 
-      subject.highlight
+      presenter.highlight
     end
 
     it 'returns plain content when :plain is true' do
       expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: nil)
 
-      subject.highlight(plain: true)
+      presenter.highlight(plain: true)
     end
 
     context '"to" param is present' do
@@ -60,7 +67,7 @@ RSpec.describe BlobPresenter, :seed_helper do
       it 'returns limited highlighted content' do
         expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "line one\n", plain: nil, language: nil)
 
-        subject.highlight(to: 1)
+        presenter.highlight(to: 1)
       end
     end
 
@@ -72,7 +79,7 @@ RSpec.describe BlobPresenter, :seed_helper do
       it 'passes language to inner call' do
         expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby')
 
-        subject.highlight
+        presenter.highlight
       end
     end
   end

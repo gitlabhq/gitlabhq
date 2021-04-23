@@ -32,6 +32,45 @@ module Types
       field :web_path, GraphQL::STRING_TYPE, null: true,
             description: 'Web path of the blob.'
 
+      field :size, GraphQL::INT_TYPE, null: true,
+            description: 'Size (in bytes) of the blob.'
+
+      field :raw_size, GraphQL::INT_TYPE, null: true,
+            description: 'Size (in bytes) of the blob, or the blob target if stored externally.'
+
+      field :raw_blob, GraphQL::STRING_TYPE, null: true, method: :data,
+            description: 'The raw content of the blob.'
+
+      field :raw_text_blob, GraphQL::STRING_TYPE, null: true, method: :text_only_data,
+            description: 'The raw content of the blob, if the blob is text data.'
+
+      field :stored_externally, GraphQL::BOOLEAN_TYPE, null: true, method: :stored_externally?,
+            description: "Whether the blob's content is stored externally (for instance, in LFS)."
+
+      field :edit_blob_path, GraphQL::STRING_TYPE, null: true,
+            description: 'Web path to edit the blob in the old-style editor.'
+
+      field :raw_path, GraphQL::STRING_TYPE, null: true,
+            description: 'Web path to download the raw blob.'
+
+      field :replace_path, GraphQL::STRING_TYPE, null: true,
+            description: 'Web path to replace the blob content.'
+
+      field :file_type, GraphQL::STRING_TYPE, null: true,
+            description: 'The expected format of the blob based on the extension.'
+
+      field :simple_viewer, type: Types::BlobViewerType,
+            description: 'Blob content simple viewer.',
+            null: false
+
+      field :rich_viewer, type: Types::BlobViewerType,
+            description: 'Blob content rich viewer.',
+            null: true
+
+      def raw_text_blob
+        object.data unless object.binary?
+      end
+
       def lfs_oid
         Gitlab::Graphql::Loaders::BatchLfsOidLoader.new(object.repository, object.id).find
       end

@@ -164,7 +164,7 @@ Models that use [CarrierWave's](https://github.com/carrierwaveuploader/carrierwa
 
 Each file is expected to have its own primary ID and model. Geo strongly recommends treating *every single file* as a first-class citizen, because in our experience this greatly simplifies tracking replication and verification state.
 
-To implement Geo replication of a new blob-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%3A%20Replicate%20a%20new%20blob%20type).
+To implement Geo replication of a new blob-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%20Replicate%20a%20new%20blob%20type).
 
 ### Repository Replicator Strategy
 
@@ -172,4 +172,4 @@ Models that refer to any Git repository on disk are supported by Geo with the `G
 
 Each Git repository is expected to have its own primary ID and model.
 
-To implement Geo replication of a new Git repository-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%3A%20Replicate%20a%20new%20Git%20repository%20type).
+To implement Geo replication of a new Git repository-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%20Replicate%20a%20new%20Git%20repository%20type).

@@ -6742,6 +6742,22 @@ An emoji awarded by a user.
 | <a id="blobwebpath"></a>`webPath` | [`String`](#string) | Web path of the blob. |
 | <a id="blobweburl"></a>`webUrl` | [`String`](#string) | Web URL of the blob. |
 
+### `BlobViewer`
+
+Represents how the blob content should be displayed.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="blobviewercollapsed"></a>`collapsed` | [`Boolean!`](#boolean) | Shows whether the blob should be displayed collapsed. |
+| <a id="blobviewerfiletype"></a>`fileType` | [`String!`](#string) | Content file type. |
+| <a id="blobviewerloadasync"></a>`loadAsync` | [`Boolean!`](#boolean) | Shows whether the blob content is loaded asynchronously. |
+| <a id="blobviewerloadingpartialname"></a>`loadingPartialName` | [`String!`](#string) | Loading partial name. |
+| <a id="blobviewerrendererror"></a>`renderError` | [`String`](#string) | Error rendering the blob content. |
+| <a id="blobviewertoolarge"></a>`tooLarge` | [`Boolean!`](#boolean) | Shows whether the blob is too large to be displayed. |
+| <a id="blobviewertype"></a>`type` | [`BlobViewersType!`](#blobviewerstype) | Type of blob viewer. |
+
 ### `Board`
 
 Represents a project or group issue board.
@@ -11257,12 +11273,23 @@ Returns [`Tree`](#tree).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="repositoryblobeditblobpath"></a>`editBlobPath` | [`String`](#string) | Web path to edit the blob in the old-style editor. |
+| <a id="repositoryblobfiletype"></a>`fileType` | [`String`](#string) | The expected format of the blob based on the extension. |
 | <a id="repositoryblobid"></a>`id` | [`ID!`](#id) | ID of the blob. |
 | <a id="repositorybloblfsoid"></a>`lfsOid` | [`String`](#string) | LFS OID of the blob. |
 | <a id="repositoryblobmode"></a>`mode` | [`String`](#string) | Blob mode. |
 | <a id="repositoryblobname"></a>`name` | [`String`](#string) | Blob name. |
 | <a id="repositorybloboid"></a>`oid` | [`String!`](#string) | OID of the blob. |
 | <a id="repositoryblobpath"></a>`path` | [`String!`](#string) | Path of the blob. |
+| <a id="repositoryblobrawblob"></a>`rawBlob` | [`String`](#string) | The raw content of the blob. |
+| <a id="repositoryblobrawpath"></a>`rawPath` | [`String`](#string) | Web path to download the raw blob. |
+| <a id="repositoryblobrawsize"></a>`rawSize` | [`Int`](#int) | Size (in bytes) of the blob, or the blob target if stored externally. |
+| <a id="repositoryblobrawtextblob"></a>`rawTextBlob` | [`String`](#string) | The raw content of the blob, if the blob is text data. |
+| <a id="repositoryblobreplacepath"></a>`replacePath` | [`String`](#string) | Web path to replace the blob content. |
+| <a id="repositoryblobrichviewer"></a>`richViewer` | [`BlobViewer`](#blobviewer) | Blob content rich viewer. |
+| <a id="repositoryblobsimpleviewer"></a>`simpleViewer` | [`BlobViewer!`](#blobviewer) | Blob content simple viewer. |
+| <a id="repositoryblobsize"></a>`size` | [`Int`](#int) | Size (in bytes) of the blob. |
+| <a id="repositoryblobstoredexternally"></a>`storedExternally` | [`Boolean`](#boolean) | Whether the blob's content is stored externally (for instance, in LFS). |
 | <a id="repositoryblobwebpath"></a>`webPath` | [`String`](#string) | Web path of the blob. |
 
 ### `Requirement`
@@ -11757,7 +11784,7 @@ Represents how the blob content should be displayed.
 | <a id="snippetblobviewerloadasync"></a>`loadAsync` | [`Boolean!`](#boolean) | Shows whether the blob content is loaded asynchronously. |
 | <a id="snippetblobviewerloadingpartialname"></a>`loadingPartialName` | [`String!`](#string) | Loading partial name. |
 | <a id="snippetblobviewerrendererror"></a>`renderError` | [`String`](#string) | Error rendering the blob content. |
-| <a id="snippetblobviewertoolarge"></a>`tooLarge` | [`Boolean!`](#boolean) | Shows whether the blob too large to be displayed. |
+| <a id="snippetblobviewertoolarge"></a>`tooLarge` | [`Boolean!`](#boolean) | Shows whether the blob is too large to be displayed. |
 | <a id="snippetblobviewertype"></a>`type` | [`BlobViewersType!`](#blobviewerstype) | Type of blob viewer. |
 
 ### `SnippetPermissions`

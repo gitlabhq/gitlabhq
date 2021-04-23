@@ -6,6 +6,7 @@ RSpec.describe Mutations::AlertManagement::CreateAlertIssue do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:alert) { create(:alert_management_alert, project: project, status: 'triggered') }
+
   let(:args) { { project_path: project.full_path, iid: alert.iid } }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_alert_management_alert) }

@@ -9334,6 +9334,9 @@ msgstr ""
 msgid "Create tag %{tagName}"
 msgstr ""
 
+msgid "Create user"
+msgstr ""
+
 msgid "Create wildcard: %{searchTerm}"
 msgstr ""
 
@@ -11655,6 +11658,9 @@ msgid "During this process, you’ll be asked for URLs from GitLab’s side. Use
 msgstr ""
 
 msgid "Dynamic Application Security Testing (DAST)"
+msgstr ""
+
+msgid "E-mail:"
 msgstr ""
 
 msgid "Each project can also have an issue tracker and a wiki."
@@ -19259,6 +19265,9 @@ msgstr ""
 msgid "LinkedIn"
 msgstr ""
 
+msgid "LinkedIn:"
+msgstr ""
+
 msgid "LinkedPipelines|%{counterLabel} more downstream pipelines"
 msgstr ""
 
@@ -19344,6 +19353,9 @@ msgid "Localization"
 msgstr ""
 
 msgid "Location"
+msgstr ""
+
+msgid "Location:"
 msgstr ""
 
 msgid "Lock"
@@ -19851,6 +19863,9 @@ msgid "Medium vulnerabilities present"
 msgstr ""
 
 msgid "Member lock"
+msgstr ""
+
+msgid "Member since"
 msgstr ""
 
 msgid "Member since %{date}"
@@ -27222,6 +27237,9 @@ msgstr ""
 msgid "Reset key"
 msgstr ""
 
+msgid "Reset link will be generated and sent to the user. %{break} User will be forced to set the password on first sign in."
+msgstr ""
+
 msgid "Reset password"
 msgstr ""
 
@@ -28148,9 +28166,6 @@ msgstr ""
 msgid "SecurityConfiguration|Configure via Merge Request"
 msgstr ""
 
-msgid "SecurityConfiguration|Configure via merge request"
-msgstr ""
-
 msgid "SecurityConfiguration|Could not retrieve configuration data. Please refresh the page, or try again later."
 msgstr ""
 
@@ -28185,9 +28200,6 @@ msgid "SecurityConfiguration|SAST Analyzers"
 msgstr ""
 
 msgid "SecurityConfiguration|SAST Configuration"
-msgstr ""
-
-msgid "SecurityConfiguration|SAST merge request creation mutation failed"
 msgstr ""
 
 msgid "SecurityConfiguration|Security Control"
@@ -29458,6 +29470,9 @@ msgid "Skipped"
 msgstr ""
 
 msgid "Skipped deployment to"
+msgstr ""
+
+msgid "Skype:"
 msgstr ""
 
 msgid "Slack application"
@@ -33100,6 +33115,9 @@ msgstr ""
 msgid "To ensure no loss of personal content, this account should only be used for matters related to %{group_name}."
 msgstr ""
 
+msgid "To find the state of this project's repository at the time of any of these versions, check out %{link_start}the tags%{link_end}."
+msgstr ""
+
 msgid "To further protect your account, consider configuring a %{mfa_link_start}two-factor authentication%{mfa_link_end} method."
 msgstr ""
 
@@ -33131,6 +33149,9 @@ msgid "To keep this project going, create a new issue"
 msgstr ""
 
 msgid "To keep this project going, create a new merge request"
+msgstr ""
+
+msgid "To learn more about this project, read %{link_to_wiki}."
 msgstr ""
 
 msgid "To link Sentry to GitLab, enter your Sentry URL and Auth Token."
@@ -33589,6 +33610,9 @@ msgid "Turn on usage ping to review instance-level analytics."
 msgstr ""
 
 msgid "Twitter"
+msgstr ""
+
+msgid "Twitter:"
 msgstr ""
 
 msgid "Two-Factor Authentication"
@@ -35597,6 +35621,9 @@ msgid "Webhooks|Use this token to validate received payloads. It is sent with th
 msgstr ""
 
 msgid "Webhooks|Wiki page events"
+msgstr ""
+
+msgid "Website:"
 msgstr ""
 
 msgid "Wednesday"
@@ -38170,6 +38197,9 @@ msgstr[1] ""
 msgid "repository:"
 msgstr ""
 
+msgid "required"
+msgstr ""
+
 msgid "reset it."
 msgstr ""
 
@@ -38294,6 +38324,9 @@ msgid "the correct format."
 msgstr ""
 
 msgid "the following issue(s)"
+msgstr ""
+
+msgid "the wiki"
 msgstr ""
 
 msgid "this document"

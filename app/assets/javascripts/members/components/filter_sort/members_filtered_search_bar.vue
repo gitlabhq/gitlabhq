@@ -1,8 +1,8 @@
 <script>
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { mapState } from 'vuex';
-import { getParameterByName } from '~/lib/utils/common_utils';
-import { setUrlParams, queryToObject } from '~/lib/utils/url_utility';
+import { getParameterByName, urlParamsToObject } from '~/lib/utils/common_utils';
+import { setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { SEARCH_TOKEN_TYPE, SORT_PARAM } from '~/members/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
@@ -63,7 +63,7 @@ export default {
     },
   },
   created() {
-    const query = queryToObject(window.location.search);
+    const query = urlParamsToObject(window.location.search);
 
     const tokens = this.tokens
       .filter((token) => query[token.type])
@@ -97,9 +97,12 @@ export default {
 
         if (type === SEARCH_TOKEN_TYPE) {
           if (value.data !== '') {
+            const { searchParam } = this.filteredSearchBar;
+            const { [searchParam]: searchParamValue } = accumulator;
+
             return {
               ...accumulator,
-              [this.filteredSearchBar.searchParam]: value.data,
+              [searchParam]: searchParamValue ? `${searchParamValue} ${value.data}` : value.data,
             };
           }
         } else {

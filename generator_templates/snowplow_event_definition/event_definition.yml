@@ -1,0 +1,28 @@
+---
+description:
+category: <%= event_category %>
+action: <%= event_action %>
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+#- project
+#- user
+#- namespace
+product_section:
+product_stage:
+product_group:
+product_category:
+milestone: "<%= milestone %>"
+introduced_by_url:
+distributions:
+<%= distributions %>
+tiers: <% if ee? %>
+#- premium
+- ultimate
+<% else %>
+- free
+- premium
+- ultimate
+<% end %>

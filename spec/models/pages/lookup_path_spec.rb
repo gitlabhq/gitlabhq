@@ -47,14 +47,10 @@ RSpec.describe Pages::LookupPath do
   describe '#source' do
     let(:source) { lookup_path.source }
 
-    shared_examples 'uses disk storage' do
-      it 'uses disk storage', :aggregate_failures do
-        expect(source[:type]).to eq('file')
-        expect(source[:path]).to eq(project.full_path + "/public/")
-      end
+    it 'uses disk storage', :aggregate_failures do
+      expect(source[:type]).to eq('file')
+      expect(source[:path]).to eq(project.full_path + "/public/")
     end
-
-    include_examples 'uses disk storage'
 
     it 'return nil when legacy storage is disabled and there is no deployment' do
       stub_feature_flags(pages_serve_from_legacy_storage: false)
@@ -106,14 +102,6 @@ RSpec.describe Pages::LookupPath do
                  })
             )
           end
-        end
-
-        context 'when pages_serve_with_zip_file_protocol feature flag is disabled' do
-          before do
-            stub_feature_flags(pages_serve_with_zip_file_protocol: false)
-          end
-
-          include_examples 'uses disk storage'
         end
       end
 

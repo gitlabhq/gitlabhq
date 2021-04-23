@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::AlertManagement::HttpIntegration::Create do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
+
   let(:args) { { project_path: project.full_path, active: true, name: 'HTTP Integration' } }
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_operations) }

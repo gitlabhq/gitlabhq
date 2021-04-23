@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'shared/nav/_sidebar.html.haml' do
   let(:project) { build(:project, id: non_existing_record_id) }
-  let(:context) { Sidebars::Projects::Context.new(current_user: nil, container: project)}
+  let(:context) { Sidebars::Projects::Context.new(current_user: nil, container: project) }
   let(:sidebar) { Sidebars::Projects::Panel.new(context) }
 
   before do

@@ -18,7 +18,8 @@
         { "$ref": "deployment.json" }
       ]
     },
-    "state": { "type": "string" }
+    "state": { "type": "string" },
+    "enable_advanced_logs_querying": { "type": "boolean" }
   },
   "additionalProperties": false
 }

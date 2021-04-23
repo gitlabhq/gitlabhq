@@ -14,6 +14,22 @@ working on the GitLab codebase.
 This documentation does not yet include the internal API used by
 GitLab Pages.
 
+## Adding new endpoints
+
+API endpoints should be externally accessible by default, with proper authentication and authorization.
+Before adding a new internal endpoint, consider if the API would potentially be
+useful to the wider GitLab community and can be made externally accessible.
+
+One reason we might favor internal API endpoints sometimes is when using such an endpoint requires
+internal data that external actors can not have. For example, in the internal Pages API we might use
+a secret token that identifies a request as internal or sign a request with a public key that is
+not available to a wider community.
+
+Another reason to separate something into an internal API is when request to such API endpoint
+should never go through an edge (public) load balancer. This way we can configure different rate
+limiting rules and policies around how the endpoint is being accessed, because we know that only
+internal requests can be made to that endpoint going through an internal load balancer.
+
 ## Authentication
 
 These methods are all authenticated using a shared secret. This secret

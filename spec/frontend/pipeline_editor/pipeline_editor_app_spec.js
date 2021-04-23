@@ -92,6 +92,11 @@ describe('Pipeline editor app component', () => {
 
     const options = {
       localVue,
+      data() {
+        return {
+          currentBranch: mockDefaultBranch,
+        };
+      },
       mocks: {},
       apolloProvider: mockApollo,
     };
@@ -116,9 +121,6 @@ describe('Pipeline editor app component', () => {
   });
 
   afterEach(() => {
-    mockBlobContentData.mockReset();
-    mockCiConfigData.mockReset();
-
     wrapper.destroy();
   });
 
@@ -335,6 +337,24 @@ describe('Pipeline editor app component', () => {
           expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
         });
       });
+    });
+  });
+
+  describe('when refetching content', () => {
+    beforeEach(async () => {
+      await createComponentWithApollo();
+
+      jest
+        .spyOn(wrapper.vm.$apollo.queries.initialCiFileContent, 'refetch')
+        .mockImplementation(jest.fn());
+    });
+
+    it('refetches blob content', async () => {
+      expect(wrapper.vm.$apollo.queries.initialCiFileContent.refetch).toHaveBeenCalledTimes(0);
+
+      await wrapper.vm.refetchContent();
+
+      expect(wrapper.vm.$apollo.queries.initialCiFileContent.refetch).toHaveBeenCalledTimes(1);
     });
   });
 });

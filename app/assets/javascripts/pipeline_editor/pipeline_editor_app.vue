@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { fetchPolicies } from '~/lib/graphql';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { getParameterValues, removeParams } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -51,8 +52,8 @@ export default {
       failureType: null,
       failureReasons: [],
       showStartScreen: false,
-      isNewCiConfigFile: false,
       initialCiFileContent: '',
+      isNewCiConfigFile: false,
       lastCommittedContent: '',
       currentCiFileContent: '',
       showFailureAlert: false,
@@ -64,6 +65,7 @@ export default {
 
   apollo: {
     initialCiFileContent: {
+      fetchPolicy: fetchPolicies.NETWORK,
       query: getBlobContent,
       // If it's a brand new file, we don't want to fetch the content.
       // Then when the user commits the first time, the query would run
@@ -90,6 +92,11 @@ export default {
       },
       error(error) {
         this.handleBlobContentError(error);
+      },
+      watchLoading(isLoading) {
+        if (isLoading) {
+          this.setAppStatus(EDITOR_APP_STATUS_LOADING);
+        }
       },
     },
     ciConfigData: {
@@ -223,6 +230,10 @@ export default {
     dismissSuccess() {
       this.showSuccessAlert = false;
     },
+    async refetchContent() {
+      this.$apollo.queries.initialCiFileContent.skip = false;
+      await this.$apollo.queries.initialCiFileContent.refetch();
+    },
     reportFailure(type, reasons = []) {
       this.setAppStatus(EDITOR_APP_STATUS_ERROR);
 
@@ -324,6 +335,7 @@ export default {
         @commit="updateOnCommit"
         @resetContent="resetContent"
         @showError="showErrorAlert"
+        @refetchContent="refetchContent"
         @updateCiConfig="updateCiConfig"
       />
       <confirm-unsaved-changes-dialog :has-unsaved-changes="hasUnsavedChanges" />

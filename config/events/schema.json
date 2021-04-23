@@ -1,0 +1,70 @@
+{
+  "type": "object",
+  "required": [],
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "label_description": {
+      "type": ["string", "null"]
+    },
+    "property_description": {
+      "type": ["string", "null"]
+    },
+    "value_description": {
+      "type": ["string", "null"]
+    },
+    "extra_properties": {
+      "type": ["object", "null"]
+    },
+    "identifiers": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "string",
+        "enum": ["project", "user", "namespace"]
+      }
+    },
+    "iglu_schema_url": {
+      "type": ["string", "null"]
+    },
+    "product_section": {
+      "type": "string"
+    },
+    "product_stage": {
+      "type": ["string", "null"]
+    },
+    "product_group": {
+      "type": "string"
+    },
+    "product_category": {
+      "type": ["string", "null"]
+    },
+    "introduced_by_url": {
+      "type": ["uri", "null"]
+    },
+    "milestone": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "distributions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["ee", "ce"]
+      }
+    },
+    "tiers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["free", "premium", "ultimate"]
+      }
+    }
+  }
+}

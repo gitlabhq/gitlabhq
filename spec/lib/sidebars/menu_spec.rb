@@ -8,59 +8,82 @@ RSpec.describe Sidebars::Menu do
 
   describe '#all_active_routes' do
     it 'gathers all active routes of items and the current menu' do
-      menu_item1 = Sidebars::MenuItem.new(context)
-      menu_item2 = Sidebars::MenuItem.new(context)
-      menu_item3 = Sidebars::MenuItem.new(context)
-      menu.add_item(menu_item1)
-      menu.add_item(menu_item2)
-      menu.add_item(menu_item3)
+      menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: { path: %w(bar test) }))
+      menu.add_item(Sidebars::MenuItem.new(title: 'foo2', link: 'foo2', active_routes: { controller: 'fooc' }))
+      menu.add_item(Sidebars::MenuItem.new(title: 'foo3', link: 'foo3', active_routes: { controller: 'barc' }))
 
       allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
-      allow(menu_item1).to receive(:active_routes).and_return({ path: %w(bar test) })
-      allow(menu_item2).to receive(:active_routes).and_return({ controller: 'fooc' })
-      allow(menu_item3).to receive(:active_routes).and_return({ controller: 'barc' })
 
       expect(menu.all_active_routes).to eq({ path: %w(foo bar test), controller: %w(fooc barc) })
-    end
-
-    it 'does not include routes for non renderable items' do
-      menu_item = Sidebars::MenuItem.new(context)
-      menu.add_item(menu_item)
-
-      allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
-      allow(menu_item).to receive(:render?).and_return(false)
-      allow(menu_item).to receive(:active_routes).and_return({ controller: 'bar' })
-
-      expect(menu.all_active_routes).to eq({ path: ['foo'] })
     end
   end
 
   describe '#render?' do
     context 'when the menus has no items' do
-      it 'returns true' do
-        expect(menu.render?).to be true
+      it 'returns false' do
+        expect(menu.render?).to be false
       end
     end
 
     context 'when the menu has items' do
-      let(:menu_item) { Sidebars::MenuItem.new(context) }
+      it 'returns true' do
+        menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: {}))
 
-      before do
-        menu.add_item(menu_item)
+        expect(menu.render?).to be true
       end
+    end
+  end
 
-      context 'when items are not renderable' do
-        it 'returns false' do
-          allow(menu_item).to receive(:render?).and_return(false)
+  describe '#insert_element_before' do
+    let(:item1) { Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: {}, item_id: :foo1) }
+    let(:item2) { Sidebars::MenuItem.new(title: 'foo2', link: 'foo2', active_routes: {}, item_id: :foo2) }
+    let(:item3) { Sidebars::MenuItem.new(title: 'foo3', link: 'foo3', active_routes: {}, item_id: :foo3) }
+    let(:list) { [item1, item2] }
 
-          expect(menu.render?).to be false
-        end
+    it 'adds element before the specific element class' do
+      menu.insert_element_before(list, :foo2, item3)
+
+      expect(list).to eq [item1, item3, item2]
+    end
+
+    it 'does not add nil elements' do
+      menu.insert_element_before(list, :foo2, nil)
+
+      expect(list).to eq [item1, item2]
+    end
+
+    context 'when reference element does not exist' do
+      it 'adds the element to the top of the list' do
+        menu.insert_element_before(list, :non_existent, item3)
+
+        expect(list).to eq [item3, item1, item2]
       end
+    end
+  end
 
-      context 'when there are renderable items' do
-        it 'returns true' do
-          expect(menu.render?).to be true
-        end
+  describe '#insert_element_after' do
+    let(:item1) { Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: {}, item_id: :foo1) }
+    let(:item2) { Sidebars::MenuItem.new(title: 'foo2', link: 'foo2', active_routes: {}, item_id: :foo2) }
+    let(:item3) { Sidebars::MenuItem.new(title: 'foo3', link: 'foo3', active_routes: {}, item_id: :foo3) }
+    let(:list) { [item1, item2] }
+
+    it 'adds element after the specific element class' do
+      menu.insert_element_after(list, :foo1, item3)
+
+      expect(list).to eq [item1, item3, item2]
+    end
+
+    it 'does not add nil elements' do
+      menu.insert_element_after(list, :foo1, nil)
+
+      expect(list).to eq [item1, item2]
+    end
+
+    context 'when reference element does not exist' do
+      it 'adds the element to the end of the list' do
+        menu.insert_element_after(list, :non_existent, item3)
+
+        expect(list).to eq [item1, item2, item3]
       end
     end
   end

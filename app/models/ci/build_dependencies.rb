@@ -17,6 +17,7 @@ module Ci
     # Dependencies local to the given pipeline
     def local
       return [] if no_local_dependencies_specified?
+      return [] unless processable.pipeline_id # we don't have any dependency when creating the pipeline
 
       deps = model_class.where(pipeline_id: processable.pipeline_id).latest
       deps = from_previous_stages(deps)

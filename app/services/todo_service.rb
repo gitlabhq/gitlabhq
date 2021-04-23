@@ -43,11 +43,11 @@ class TodoService
   # updates the todo counts for those users.
   #
   def destroy_target(target)
-    todo_users = User.for_todos(target.todos).to_a
+    todo_user_ids = target.todos.distinct_user_ids
 
     yield target
 
-    Users::UpdateTodoCountCacheService.new(todo_users).execute if todo_users.present?
+    Users::UpdateTodoCountCacheService.new(todo_user_ids).execute if todo_user_ids.present?
   end
 
   # When we reassign an assignable object (issuable, alert) we should:
@@ -224,7 +224,7 @@ class TodoService
 
     return if users.empty?
 
-    users_with_pending_todos = pending_todos(users, attributes).pluck_user_id
+    users_with_pending_todos = pending_todos(users, attributes).distinct_user_ids
     users.reject! { |user| users_with_pending_todos.include?(user.id) && Feature.disabled?(:multiple_todos, user) }
 
     todos = users.map do |user|
@@ -234,7 +234,7 @@ class TodoService
       Todo.create(attributes.merge(user_id: user.id))
     end
 
-    Users::UpdateTodoCountCacheService.new(users).execute
+    Users::UpdateTodoCountCacheService.new(users.map(&:id)).execute
 
     todos
   end

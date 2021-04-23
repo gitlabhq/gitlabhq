@@ -62,11 +62,10 @@ module Gitlab
 
           metric_for(:gauge_batch_size).set(base_labels, tracking_record.batch_size)
           metric_for(:gauge_sub_batch_size).set(base_labels, tracking_record.sub_batch_size)
+          metric_for(:gauge_interval).set(base_labels, tracking_record.batched_migration.interval)
+          metric_for(:gauge_job_duration).set(base_labels, (tracking_record.finished_at - tracking_record.started_at).to_i)
           metric_for(:counter_updated_tuples).increment(base_labels, tracking_record.batch_size)
-
-          # Time efficiency: Ratio of duration to interval (ideal: less than, but close to 1)
-          efficiency = (tracking_record.finished_at - tracking_record.started_at).to_i / migration.interval.to_f
-          metric_for(:histogram_time_efficiency).observe(base_labels, efficiency)
+          metric_for(:gauge_total_tuple_count).set(base_labels, tracking_record.batched_migration.total_tuple_count)
 
           if metrics = tracking_record.metrics
             metrics['timings']&.each do |key, timings|
@@ -95,21 +94,27 @@ module Gitlab
                 :batched_migration_job_sub_batch_size,
                 'Sub-batch size for a batched migration job'
               ),
+              gauge_interval: Gitlab::Metrics.gauge(
+                :batched_migration_job_interval_seconds,
+                'Interval for a batched migration job'
+              ),
+              gauge_job_duration: Gitlab::Metrics.gauge(
+                :batched_migration_job_duration_seconds,
+                'Duration for a batched migration job'
+              ),
               counter_updated_tuples: Gitlab::Metrics.counter(
                 :batched_migration_job_updated_tuples_total,
                 'Number of tuples updated by batched migration job'
               ),
               histogram_timings: Gitlab::Metrics.histogram(
-                :batched_migration_job_duration_seconds,
-                'Timings for a batched migration job',
+                :batched_migration_job_query_duration_seconds,
+                'Query timings for a batched migration job',
                 {},
                 [0.1, 0.25, 0.5, 1, 5].freeze
               ),
-              histogram_time_efficiency: Gitlab::Metrics.histogram(
-                :batched_migration_job_time_efficiency,
-                'Ratio of job duration to interval',
-                {},
-                [0.5, 0.9, 1, 1.5, 2].freeze
+              gauge_total_tuple_count: Gitlab::Metrics.gauge(
+                :batched_migration_total_tuple_count,
+                'Total tuple count the migration needs to touch'
               )
             }
           end

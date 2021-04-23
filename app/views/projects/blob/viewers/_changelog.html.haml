@@ -1,4 +1,3 @@
 = sprite_icon('history', css_class: 'gl-mr-1 gl-vertical-align-text-bottom')
 = succeed '.' do
-  To find the state of this project's repository at the time of any of these versions, check out
-  = link_to "the tags", project_tags_path(viewer.project)
+  = _("To find the state of this project's repository at the time of any of these versions, check out %{link_start}the tags%{link_end}.").html_safe % { link_start: "<a href='#{project_tags_path(viewer.project)}'>".html_safe, link_end: "</a>".html_safe }

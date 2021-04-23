@@ -44,7 +44,7 @@ Feature.enable(:rubygem_packages, Project.find(1))
 Feature.disable(:rubygem_packages, Project.find(2))
 ```
 
-## Create a Ruby Gem
+## Create a Ruby gem
 
 If you need help creating a Ruby gem, see the [RubyGems documentation](https://guides.rubygems.org/make-your-own-gem/).
 

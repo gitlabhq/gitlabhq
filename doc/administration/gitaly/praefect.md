@@ -1329,7 +1329,7 @@ GitLab repositories can be associated with projects, groups, and snippets. Each 
 have a separate API to schedule the respective repositories to move. To move all repositories
 on a GitLab instance, each of these types must be scheduled to move for each storage.
 
-Each repository is made read only when the move is scheduled. The repository is not writable
+Each repository is made read only for the duration of the move. The repository is not writable
 until the move has completed.
 
 After creating and configuring Gitaly Cluster:

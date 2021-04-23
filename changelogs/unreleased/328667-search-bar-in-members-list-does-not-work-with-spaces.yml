@@ -1,0 +1,5 @@
+---
+title: Fix bug that prevented searching for group/project members with multiple words
+merge_request: 60051
+author:
+type: fixed

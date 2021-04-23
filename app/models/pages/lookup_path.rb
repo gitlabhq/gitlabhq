@@ -50,8 +50,6 @@ module Pages
     def zip_source
       return unless deployment&.file
 
-      return if deployment.file.file_storage? && !Feature.enabled?(:pages_serve_with_zip_file_protocol, project, default_enabled: :yaml)
-
       global_id = ::Gitlab::GlobalId.build(deployment, id: deployment.id).to_s
 
       {

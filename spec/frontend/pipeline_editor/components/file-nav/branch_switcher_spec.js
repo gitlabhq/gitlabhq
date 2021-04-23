@@ -120,4 +120,35 @@ describe('Pipeline editor branch switcher', () => {
       ]);
     });
   });
+
+  describe('when switching branches', () => {
+    beforeEach(async () => {
+      mockAvailableBranchQuery.mockResolvedValue(mockProjectBranches);
+      createComponentWithApollo();
+      await waitForPromises();
+    });
+
+    it('emits the refetchContent event when selecting a different branch', async () => {
+      const branch = findDropdownItems().at(1);
+
+      expect(branch.text()).not.toBe(mockDefaultBranch);
+      expect(wrapper.emitted('refetchContent')).toBeUndefined();
+
+      await branch.vm.$emit('click');
+
+      expect(wrapper.emitted('refetchContent')).toBeDefined();
+      expect(wrapper.emitted('refetchContent')).toHaveLength(1);
+    });
+
+    it('does not emit the refetchContent event when selecting the current branch', async () => {
+      const branch = findDropdownItems().at(0);
+
+      expect(branch.text()).toBe(mockDefaultBranch);
+      expect(wrapper.emitted('refetchContent')).toBeUndefined();
+
+      await branch.vm.$emit('click');
+
+      expect(wrapper.emitted('refetchContent')).toBeUndefined();
+    });
+  });
 });

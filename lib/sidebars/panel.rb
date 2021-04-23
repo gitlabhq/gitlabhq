@@ -71,5 +71,12 @@ module Sidebars
     def render_raw_menus_partial
       # No-op
     end
+
+    private
+
+    override :index_of
+    def index_of(list, element)
+      list.index { |e| e.is_a?(element) }
+    end
   end
 end

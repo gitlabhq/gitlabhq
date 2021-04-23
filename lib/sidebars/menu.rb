@@ -13,7 +13,7 @@ module Sidebars
     include ::Sidebars::Concerns::ContainerWithHtmlOptions
     include ::Sidebars::Concerns::HasActiveRoutes
 
-    attr_reader :context
+    attr_reader :context, :items
     delegate :current_user, :container, to: :@context
 
     def initialize(context)
@@ -24,12 +24,12 @@ module Sidebars
     end
 
     def configure_menu_items
-      # No-op
+      true
     end
 
     override :render?
     def render?
-      @items.empty? || renderable_items.any?
+      has_items?
     end
 
     # Menus might have or not a link
@@ -43,7 +43,7 @@ module Sidebars
     # This method filters the information and returns: { path: ['foo', 'bar'], controller: :foo }
     def all_active_routes
       @all_active_routes ||= begin
-        ([active_routes] + renderable_items.map(&:active_routes)).flatten.each_with_object({}) do |pairs, hash|
+        ([active_routes] + items.map(&:active_routes)).flatten.each_with_object({}) do |pairs, hash|
           pairs.each do |k, v|
             hash[k] ||= []
             hash[k] += Array(v)
@@ -71,12 +71,11 @@ module Sidebars
       insert_element_after(@items, after_item, new_item)
     end
 
-    def has_renderable_items?
-      renderable_items.any?
-    end
+    private
 
-    def renderable_items
-      @renderable_items ||= @items.select(&:render?)
+    override :index_of
+    def index_of(list, element)
+      list.index { |e| e.item_id == element }
     end
   end
 end

@@ -9,6 +9,6 @@ RSpec.describe Sidebars::Projects::Panel do
   subject { described_class.new(context) }
 
   it 'has a scope menu' do
-    expect(subject.scope_menu).to be_a(Sidebars::Projects::Menus::Scope::Menu)
+    expect(subject.scope_menu).to be_a(Sidebars::Projects::Menus::ScopeMenu)
   end
 end

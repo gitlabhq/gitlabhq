@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
-# This module handles elements in a list. All elements
-# must have a different class
+# This module handles element positions in a list.
 module Sidebars
   module Concerns
     module PositionableList
       def add_element(list, element)
+        return unless element
+
         list << element
       end
 
       def insert_element_before(list, before_element, new_element)
+        return unless new_element
+
         index = index_of(list, before_element)
 
         if index
@@ -20,6 +23,8 @@ module Sidebars
       end
 
       def insert_element_after(list, after_element, new_element)
+        return unless new_element
+
         index = index_of(list, after_element)
 
         if index
@@ -31,8 +36,10 @@ module Sidebars
 
       private
 
+      # Classes including this method will have to define
+      # the way to identify elements through this method
       def index_of(list, element)
-        list.index { |e| e.is_a?(element) }
+        raise NotImplementedError
       end
     end
   end

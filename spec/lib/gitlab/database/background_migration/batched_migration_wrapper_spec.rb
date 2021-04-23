@@ -68,6 +68,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
       subject
     end
 
+    it 'reports interval' do
+      expect(described_class.metrics[:gauge_interval]).to receive(:set).with(labels, job_record.batched_migration.interval)
+
+      subject
+    end
+
     it 'reports updated tuples (currently based on batch_size)' do
       expect(described_class.metrics[:counter_updated_tuples]).to receive(:increment).with(labels, job_record.batch_size)
 
@@ -89,17 +95,21 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
       subject
     end
 
-    it 'reports time efficiency' do
+    it 'reports job duration' do
       freeze_time do
         expect(Time).to receive(:current).and_return(Time.zone.now - 5.seconds).ordered
         expect(Time).to receive(:current).and_return(Time.zone.now).ordered
 
-        ratio = 5 / job_record.batched_migration.interval.to_f
-
-        expect(described_class.metrics[:histogram_time_efficiency]).to receive(:observe).with(labels, ratio)
+        expect(described_class.metrics[:gauge_job_duration]).to receive(:set).with(labels, 5.seconds)
 
         subject
       end
+    end
+
+    it 'reports the total tuple count for the migration' do
+      expect(described_class.metrics[:gauge_total_tuple_count]).to receive(:set).with(labels, job_record.batched_migration.total_tuple_count)
+
+      subject
     end
   end
 

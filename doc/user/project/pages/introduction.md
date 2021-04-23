@@ -297,3 +297,24 @@ Files listed under the public directory can be accessed through the Pages URL fo
 A 404 can also be related to incorrect permissions. If [Pages Access Control](pages_access_control.md) is enabled, and a user
 navigates to the Pages URL and receives a 404 response, it is possible that the user does not have permission to view the site.
 To fix this, verify that the user is a member of the project.
+
+### Cannot play media content on Safari
+
+Safari requires the web server to support the [Range request header](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/CreatingVideoforSafarioniPhone/CreatingVideoforSafarioniPhone.html#//apple_ref/doc/uid/TP40006514-SW6)
+in order to play your media content. For GitLab Pages to serve
+HTTP Range requests, you should use the following two variables in your `.gitlab-ci.yaml` file:
+
+```yaml
+pages:
+  stage: deploy
+  variables:
+    FF_USE_FASTZIP: "true"
+    ARTIFACT_COMPRESSION_LEVEL: "fastest"
+  script:
+    - echo "Deploying pages"
+  artifacts:
+    paths:
+      - public
+```
+
+The `FF_USE_FASTZIP` variable enables the [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) which is needed for [`ARTIFACT_COMPRESSION_LEVEL`](../../../ci/runners/README.md#artifact-and-cache-settings).

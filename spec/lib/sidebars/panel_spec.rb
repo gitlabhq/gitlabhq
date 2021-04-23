@@ -26,9 +26,79 @@ RSpec.describe Sidebars::Panel do
     end
 
     it 'returns true when no renderable menus' do
+      allow(menu1).to receive(:render?).and_return(true)
+
       panel.add_menu(menu1)
 
       expect(panel.has_renderable_menus?).to be true
+    end
+  end
+
+  describe '#add_element' do
+    it 'adds the element to the last position of the list' do
+      list = [1, 2]
+
+      panel.add_element(list, 3)
+
+      expect(list).to eq([1, 2, 3])
+    end
+
+    it 'does not add nil elements' do
+      list = []
+
+      panel.add_element(list, nil)
+
+      expect(list).to be_empty
+    end
+  end
+
+  describe '#insert_element_before' do
+    let(:user) { build(:user) }
+    let(:list) { [1, user] }
+
+    it 'adds element before the specific element class' do
+      panel.insert_element_before(list, User, 2)
+
+      expect(list).to eq [1, 2, user]
+    end
+
+    it 'does not add nil elements' do
+      panel.insert_element_before(list, User, nil)
+
+      expect(list).to eq [1, user]
+    end
+
+    context 'when reference element does not exist' do
+      it 'adds the element to the top of the list' do
+        panel.insert_element_before(list, Project, 2)
+
+        expect(list).to eq [2, 1, user]
+      end
+    end
+  end
+
+  describe '#insert_element_after' do
+    let(:user) { build(:user) }
+    let(:list) { [1, user] }
+
+    it 'adds element after the specific element class' do
+      panel.insert_element_after(list, Integer, 2)
+
+      expect(list).to eq [1, 2, user]
+    end
+
+    it 'does not add nil elements' do
+      panel.insert_element_after(list, Integer, nil)
+
+      expect(list).to eq [1, user]
+    end
+
+    context 'when reference element does not exist' do
+      it 'adds the element to the end of the list' do
+        panel.insert_element_after(list, Project, 2)
+
+        expect(list).to eq [1, user, 2]
+      end
     end
   end
 end

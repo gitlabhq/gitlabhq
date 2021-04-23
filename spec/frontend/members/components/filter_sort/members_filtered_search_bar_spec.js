@@ -146,6 +146,21 @@ describe('MembersFilteredSearchBar', () => {
         },
       ]);
     });
+
+    it('parses and passes search param with multiple words to `FilteredSearchBar` component as `initialFilterValue` prop', () => {
+      window.location.search = '?search=foo+bar+baz';
+
+      createComponent();
+
+      expect(findFilteredSearchBar().props('initialFilterValue')).toEqual([
+        {
+          type: 'filtered-search-term',
+          value: {
+            data: 'foo bar baz',
+          },
+        },
+      ]);
+    });
   });
 
   describe('when filter bar is submitted', () => {
@@ -173,6 +188,17 @@ describe('MembersFilteredSearchBar', () => {
       ]);
 
       expect(window.location.href).toBe('https://localhost/?two_factor=enabled&search=foobar');
+    });
+
+    it('adds search query param with multiple words', () => {
+      createComponent();
+
+      findFilteredSearchBar().vm.$emit('onFilter', [
+        { type: 'two_factor', value: { data: 'enabled', operator: '=' } },
+        { type: 'filtered-search-term', value: { data: 'foo bar baz' } },
+      ]);
+
+      expect(window.location.href).toBe('https://localhost/?two_factor=enabled&search=foo+bar+baz');
     });
 
     it('adds sort query param', () => {

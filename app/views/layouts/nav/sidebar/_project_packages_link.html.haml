@@ -1,6 +1,6 @@
 - packages_link = project_nav_tab?(:packages) ? project_packages_path(@project) : project_container_registry_index_path(@project)
 
-- if (project_nav_tab?(:packages) || project_nav_tab?(:container_registry))
+- if project_nav_tab?(:packages) || project_nav_tab?(:container_registry)
   = nav_link controller: [:packages, :repositories, :infrastructure_registry] do
     = link_to packages_link, data: { qa_selector: 'packages_link' } do
       .nav-icon-container

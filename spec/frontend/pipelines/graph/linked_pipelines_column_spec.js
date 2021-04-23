@@ -121,6 +121,26 @@ describe('Linked Pipelines Column', () => {
       });
     });
 
+    describe('when graph does not use needs', () => {
+      beforeEach(() => {
+        const nonNeedsResponse = { ...wrappedPipelineReturn };
+        nonNeedsResponse.data.project.pipeline.usesNeeds = false;
+
+        createComponentWithApollo({
+          props: {
+            viewType: LAYER_VIEW,
+          },
+          getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
+          mountFn: mount,
+        });
+      });
+
+      it('shows the stage view, even when the main graph view type is layers', async () => {
+        await clickExpandButtonAndAwaitTimers();
+        expect(findPipelineGraph().props('viewType')).toBe(STAGE_VIEW);
+      });
+    });
+
     describe('downstream', () => {
       describe('when successful', () => {
         beforeEach(() => {

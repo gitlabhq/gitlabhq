@@ -1,16 +1,18 @@
 ---
 key_path: counts_monthly.projects_with_alerts_created
-description: ''
-product_section: ''
-product_stage: ''
-product_group: ''
-product_category: ''
+description: Monthly count of unique projects with HTTP alerting enabled
+product_section: ops
+product_stage:
+product_group: group::monitor
+product_category: metrics
 value_type: number
 status: data_available
 time_frame: 28d
 data_source: database
 distribution:
-- ce
+  - ce
+  - ee
 tier:
-- free
-skip_validation: true
+  - free
+  - premium
+  - ultimate

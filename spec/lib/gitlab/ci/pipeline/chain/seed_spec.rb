@@ -259,15 +259,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
 
       def expected_extra_queries
         extra_jobs = 2
-        non_handled_sql_queries = 3
+        non_handled_sql_queries = 2
 
-        # 1. Ci::Build Load () SELECT "ci_builds".* FROM "ci_builds"
-        #                      WHERE "ci_builds"."type" = 'Ci::Build'
-        #                        AND "ci_builds"."commit_id" IS NULL
-        #                        AND ("ci_builds"."retried" = FALSE OR "ci_builds"."retried" IS NULL)
-        #                        AND (stage_idx < 1)
-        # 2. Ci::InstanceVariable Load => `Ci::InstanceVariable#cached_data` => already cached with `fetch_memory_cache`
-        # 3. Ci::Variable Load => `Project#ci_variables_for` => already cached with `Gitlab::SafeRequestStore`
+        # 1. Ci::InstanceVariable Load => `Ci::InstanceVariable#cached_data` => already cached with `fetch_memory_cache`
+        # 2. Ci::Variable Load => `Project#ci_variables_for` => already cached with `Gitlab::SafeRequestStore`
 
         extra_jobs * non_handled_sql_queries
       end

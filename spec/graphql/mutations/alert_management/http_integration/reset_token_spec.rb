@@ -6,6 +6,7 @@ RSpec.describe Mutations::AlertManagement::HttpIntegration::ResetToken do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
+
   let(:args) { { id: GitlabSchema.id_from_object(integration) } }
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_operations) }

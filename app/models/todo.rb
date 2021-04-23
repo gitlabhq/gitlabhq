@@ -149,8 +149,8 @@ class Todo < ApplicationRecord
         .order('todos.created_at')
     end
 
-    def pluck_user_id
-      pluck(:user_id)
+    def distinct_user_ids
+      distinct.pluck(:user_id)
     end
 
     # Count todos grouped by user_id and state, using an UNION query

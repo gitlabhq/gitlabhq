@@ -20,6 +20,10 @@ RSpec.describe User do
     it { is_expected.to include_module(AsyncDeviseEmail) }
   end
 
+  describe 'constants' do
+    it { expect(described_class::COUNT_CACHE_VALIDITY_PERIOD).to be_a(Integer) }
+  end
+
   describe 'delegations' do
     it { is_expected.to delegate_method(:path).to(:namespace).with_prefix }
 

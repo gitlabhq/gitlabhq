@@ -6,6 +6,6 @@ class Admin::CohortsController < Admin::ApplicationController
   # Backwards compatibility. Remove it and routing in 14.0
   # @see https://gitlab.com/gitlab-org/gitlab/-/issues/299303
   def index
-    redirect_to admin_users_path(tab: 'cohorts')
+    redirect_to cohorts_admin_users_path
   end
 end

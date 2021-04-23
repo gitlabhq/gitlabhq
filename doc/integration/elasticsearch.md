@@ -950,3 +950,18 @@ Advanced Search will store all the projects in the same Elasticsearch indexes,
 however searches will only surface results that can be viewed by the user.
 Advanced Search will honor all permission checks in the application by
 filtering out projects that a user does not have access to at search time.
+
+### Access requirements for the self-managed AWS Elasticsearch Service
+
+To use the self-managed AWS Elasticsearch Service with GitLab, configure your instance's domain access policies
+to contain the actions below.
+See [Identity and Access Management in Amazon Elasticsearch Service](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-ac.html) for details.
+
+```plaintext
+es:ESHttpDelete
+es:ESHttpGet
+es:ESHttpHead
+es:ESHttpPost
+es:ESHttpPut
+es:ESHttpPatch
+```

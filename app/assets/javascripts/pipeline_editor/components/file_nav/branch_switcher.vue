@@ -44,6 +44,20 @@ export default {
       return this.branches?.length > 0;
     },
   },
+  methods: {
+    async selectBranch(newBranch) {
+      if (newBranch === this.currentBranch) {
+        return;
+      }
+
+      await this.$apollo.getClient().writeQuery({
+        query: getCurrentBranch,
+        data: { currentBranch: newBranch },
+      });
+
+      this.$emit('refetchContent');
+    },
+  },
 };
 </script>
 
@@ -57,6 +71,7 @@ export default {
       :key="branch.name"
       :is-checked="currentBranch === branch.name"
       :is-check-item="true"
+      @click="selectBranch(branch.name)"
     >
       <gl-icon name="check" class="gl-visibility-hidden" />
       {{ branch.name }}
