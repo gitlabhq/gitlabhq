@@ -473,9 +473,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/lib/gitlab/analytics/cycle_analytics/summary/group/stage_time_summary_spec.rb
     - ee/spec/lib/gitlab/checks/diff_check_spec.rb
     - ee/spec/lib/gitlab/code_owners/loader_spec.rb
-    - ee/spec/lib/gitlab/elastic/document_reference_spec.rb
-    - ee/spec/lib/gitlab/elastic/group_search_results_spec.rb
-    - ee/spec/lib/gitlab/elastic/project_search_results_spec.rb
     - ee/spec/lib/gitlab/git_access_spec.rb
     - ee/spec/lib/gitlab/git_access_wiki_spec.rb
     - ee/spec/lib/gitlab/graphql/aggregations/vulnerability_statistics/lazy_aggregate_spec.rb

@@ -9832,6 +9832,9 @@ msgstr ""
 msgid "CycleAnalytics|All stages"
 msgstr ""
 
+msgid "CycleAnalytics|Average days to completion"
+msgstr ""
+
 msgid "CycleAnalytics|Date"
 msgstr ""
 
@@ -9878,13 +9881,10 @@ msgstr ""
 msgid "CycleAnalytics|Tasks by type"
 msgstr ""
 
+msgid "CycleAnalytics|The average time spent in the selected stage for the items that were completed on each date. Data limited to the last 500 items."
+msgstr ""
+
 msgid "CycleAnalytics|The given date range is larger than 180 days"
-msgstr ""
-
-msgid "CycleAnalytics|The total time spent in the selected stage for the items that were completed on each date. Data limited to the last 500 items."
-msgstr ""
-
-msgid "CycleAnalytics|Total days to completion"
 msgstr ""
 
 msgid "CycleAnalytics|Type of work"
@@ -33311,9 +33311,6 @@ msgid "Total artifacts size: %{total_size}"
 msgstr ""
 
 msgid "Total cores (CPUs)"
-msgstr ""
-
-msgid "Total days to completion"
 msgstr ""
 
 msgid "Total issues"

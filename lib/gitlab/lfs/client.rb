@@ -97,7 +97,10 @@ module Gitlab
       end
 
       def basic_auth
-        return unless credentials[:auth_method] == "password"
+        # Some legacy credentials have a nil auth_method, which means password
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/328674
+        return unless credentials.fetch(:auth_method, 'password') == 'password'
+        return if credentials.empty?
 
         { username: credentials[:user], password: credentials[:password] }
       end

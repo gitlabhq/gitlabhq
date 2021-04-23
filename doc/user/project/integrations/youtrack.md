@@ -4,40 +4,38 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# YouTrack Service **(FREE)**
+# YouTrack service **(FREE)**
 
-JetBrains [YouTrack](https://www.jetbrains.com/help/youtrack/standalone/YouTrack-Documentation.html) is a web-based issue tracking and project management platform.
+JetBrains [YouTrack](https://www.jetbrains.com/youtrack/) is a web-based issue tracking and project
+management platform.
 
-You can configure YouTrack as an [External Issue Tracker](../../../integration/external-issue-tracker.md) in GitLab.
+You can configure YouTrack as an
+[external issue tracker](../../../integration/external-issue-tracker.md) in GitLab.
 
-## Enable the YouTrack integration
+To enable the YouTrack integration in a project:
 
-To enable YouTrack integration in a project:
+1. Go to the [Integrations page](overview.md#accessing-integrations).
+1. Select **YouTrack**.
+1. Select the checkbox under **Enable integration**.
+1. Fill in the required fields:
+   - **Project URL**: The URL to the project in YouTrack.
+   - **Issue URL**: The URL to view an issue in the YouTrack project.
+     The URL must contain `:id`. GitLab replaces `:id` with the issue number.
+1. Select **Save changes** or optionally select **Test settings**.
 
-1. Navigate to the project's **Settings > [Integrations](overview.md#accessing-integrations)** page.
-1. Click the **YouTrack** service, ensure it's active, and enter the required details on the page as described in the table below.
+After you configure and enable YouTrack, a link appears on the GitLab
+project pages. This link takes you to the appropriate YouTrack project.
 
-   | Field           | Description                                                                                                                                                                                                 |
-   |:----------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-   | **Project URL** | URL to the project in YouTrack which is being linked to this GitLab project.                                                                                                                                |
-   | **Issues URL**  | URL to the issue in YouTrack project that is linked to this GitLab project. Note that the **Issues URL** requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. |
+You can also disable [GitLab internal issue tracking](../issues/index.md) in this project.
+Learn more about the steps and consequences of disabling GitLab issues in
+[Sharing and permissions](../settings/index.md#sharing-and-permissions).
 
-1. Click the **Save changes** button.
+## Reference YouTrack issues in GitLab
 
-Once you have configured and enabled YouTrack, you see the YouTrack link on the GitLab project pages that takes you to the appropriate YouTrack project.
+You can reference issues in YouTrack using `<PROJECT>-<ID>` (for example `YT-101`, `Api_32-143` or `gl-030`) where:
 
-## Disable the internal issue tracker
+- `<PROJECT>` starts with a letter and is followed by letters, numbers, or underscores.
+- `<ID>` is a number.
 
-To disable the internal issue tracker in a project:
-
-1. Navigate to the project's **Settings > General** page.
-1. Expand the [permissions section](../settings/index.md#sharing-and-permissions) and switch the **Issues** toggle to disabled.
-
-## Referencing YouTrack issues in GitLab
-
-Issues in YouTrack can be referenced as `<PROJECT>-<ID>`. `<PROJECT>`
-must start with a letter and is followed by letters, numbers, or underscores.
-`<ID>` is a number. An example reference is `YT-101`, `Api_32-143` or `gl-030`.
-
-References to `<PROJECT>-<ID>` in merge requests, commits, or comments are automatically linked to the YouTrack issue URL.
-For more information, see the [External Issue Tracker](../../../integration/external-issue-tracker.md) documentation.
+References to `<PROJECT>-<ID>` in merge requests, commits, or comments are automatically linked
+to the YouTrack issue URL.

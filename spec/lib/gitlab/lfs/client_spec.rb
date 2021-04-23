@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Lfs::Client do
   let(:base_url) { "https://example.com" }
   let(:username) { 'user' }
   let(:password) { 'password' }
-  let(:credentials) { { user: username, password: password, auth_method: 'password' } }
+  let(:credentials) { { user: username, password: password } }
   let(:git_lfs_content_type) { 'application/vnd.git-lfs+json' }
   let(:git_lfs_user_agent) { "GitLab #{Gitlab::VERSION} LFS client" }
 

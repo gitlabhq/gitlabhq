@@ -92,7 +92,7 @@ message <<~MSG
 
   For more information, take a look at the following resources:
 
-  - https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/1564
+  - `https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/1564`
   - https://docs.gitlab.com/ee/api/repositories.html#generate-changelog-data
 
   If you'd like to see the new approach in action, take a look at the commits in [the Omnibus repository](https://gitlab.com/gitlab-org/omnibus-gitlab/-/commits/master).
