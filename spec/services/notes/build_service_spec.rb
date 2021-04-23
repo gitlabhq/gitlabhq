@@ -173,7 +173,7 @@ RSpec.describe Notes::BuildService do
           let(:user) { create(:user) }
 
           it 'returns `Discussion to reply to cannot be found` error' do
-            expect(new_note.errors.first).to include("Discussion to reply to cannot be found")
+            expect(new_note.errors.added?(:base, "Discussion to reply to cannot be found")).to be true
           end
         end
       end

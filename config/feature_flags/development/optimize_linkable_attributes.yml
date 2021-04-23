@@ -1,0 +1,8 @@
+---
+name: optimize_linkable_attributes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59983
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/328696
+milestone: '13.12'
+type: development
+group: group::source code
+default_enabled: false

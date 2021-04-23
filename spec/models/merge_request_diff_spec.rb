@@ -23,7 +23,7 @@ RSpec.describe MergeRequestDiff do
 
       expect(subject.valid?).to be false
       expect(subject.errors.count).to eq 3
-      expect(subject.errors).to all(include('is not a valid SHA'))
+      expect(subject.errors.full_messages).to all(include('is not a valid SHA'))
     end
 
     it 'does not validate uniqueness by default' do

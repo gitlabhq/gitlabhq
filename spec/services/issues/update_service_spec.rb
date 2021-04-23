@@ -1014,13 +1014,15 @@ RSpec.describe Issues::UpdateService, :mailer do
 
       with_them do
         it 'broadcasts to the issues channel based on ActionCable and feature flag values' do
-          expect(Gitlab::ActionCable::Config).to receive(:in_app?).and_return(action_cable_in_app_enabled)
+          allow(Gitlab::ActionCable::Config).to receive(:in_app?).and_return(action_cable_in_app_enabled)
           stub_feature_flags(broadcast_issue_updates: feature_flag_enabled)
 
           if should_broadcast
             expect(IssuesChannel).to receive(:broadcast_to).with(issue, event: 'updated')
+            expect(GraphqlTriggers).to receive(:issuable_assignees_updated).with(issue)
           else
             expect(IssuesChannel).not_to receive(:broadcast_to)
+            expect(GraphqlTriggers).not_to receive(:issuable_assignees_updated).with(issue)
           end
 
           update_issue(update_params)

@@ -11817,6 +11817,22 @@ Represents the Geo sync and verification state of a snippet repository.
 | <a id="submoduletype"></a>`type` | [`EntryType!`](#entrytype) | Type of tree entry. |
 | <a id="submoduleweburl"></a>`webUrl` | [`String`](#string) | Web URL for the sub-module. |
 
+### `Subscription`
+
+#### Fields with arguments
+
+##### `Subscription.issuableAssigneesUpdated`
+
+Triggered when the assignees of an issuable are updated.
+
+Returns [`Issuable`](#issuable).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="subscriptionissuableassigneesupdatedissuableid"></a>`issuableId` | [`IssuableID!`](#issuableid) | ID of the issuable. |
+
 ### `TaskCompletionStatus`
 
 Completion status of tasks.
@@ -14181,6 +14197,12 @@ An example `IncidentManagementOncallRotationID` is: `"gid://gitlab/IncidentManag
 
 Represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
 
+### `IssuableID`
+
+A `IssuableID` is a global ID. It is encoded as a string.
+
+An example `IssuableID` is: `"gid://gitlab/Issuable/1"`.
+
 ### `IssueID`
 
 A `IssueID` is a global ID. It is encoded as a string.
@@ -14389,6 +14411,16 @@ See the [GraphQL documentation](https://graphql.org/learn/) for more information
 abstract types.
 
 ### Unions
+
+#### `Issuable`
+
+Represents an issuable.
+
+One of:
+
+- [`Epic`](#epic)
+- [`Issue`](#issue)
+- [`MergeRequest`](#mergerequest)
 
 #### `PackageMetadata`
 

@@ -74,7 +74,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Deployments do
       it 'adds an informative error to the pipeline' do
         perform
 
-        expect(pipeline.errors.messages).to include(base: ['Pipeline has too many deployments! Requested 2, but the limit is 1.'])
+        expect(pipeline.errors.added?(:base, 'Pipeline has too many deployments! Requested 2, but the limit is 1.')).to be true
       end
 
       it 'increments the error metric' do

@@ -142,9 +142,9 @@ module GraphqlHelpers
     Class.new(::Types::BaseObject) { graphql_name name }
   end
 
-  def resolver_instance(resolver_class, obj: nil, ctx: {}, field: nil, schema: GitlabSchema)
+  def resolver_instance(resolver_class, obj: nil, ctx: {}, field: nil, schema: GitlabSchema, subscription_update: false)
     if ctx.is_a?(Hash)
-      q = double('Query', schema: schema)
+      q = double('Query', schema: schema, subscription_update?: subscription_update)
       ctx = GraphQL::Query::Context.new(query: q, object: obj, values: ctx)
     end
 

@@ -56,8 +56,7 @@ RSpec.shared_examples 'ChronicDurationAttribute writer' do
       subject.send("#{virtual_field}=", '-10m')
 
       expect(subject.valid?).to be_falsey
-      expect(subject.errors&.messages)
-        .to include(base: ['Maximum job timeout has a value which could not be accepted'])
+      expect(subject.errors.added?(:base, 'Maximum job timeout has a value which could not be accepted')).to be true
     end
   end
 

@@ -6,7 +6,7 @@ RSpec.describe 'Project fork' do
   include ProjectForksHelper
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public, :repository) }
+  let(:project) { create(:project, :public, :repository, description: 'some description') }
 
   before do
     sign_in(user)

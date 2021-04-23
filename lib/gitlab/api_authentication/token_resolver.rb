@@ -15,8 +15,13 @@ module Gitlab
           personal_access_token
           job_token
           deploy_token
+          personal_access_token_from_jwt
+          deploy_token_from_jwt
+          job_token_from_jwt
         ]
       }
+
+      UsernameAndPassword = ::Gitlab::APIAuthentication::TokenLocator::UsernameAndPassword
 
       def initialize(token_type)
         @token_type = token_type
@@ -56,6 +61,15 @@ module Gitlab
 
         when :deploy_token_with_username
           resolve_deploy_token_with_username raw
+
+        when :personal_access_token_from_jwt
+          resolve_personal_access_token_from_jwt raw
+
+        when :deploy_token_from_jwt
+          resolve_deploy_token_from_jwt raw
+
+        when :job_token_from_jwt
+          resolve_job_token_from_jwt raw
         end
       end
 
@@ -116,6 +130,33 @@ module Gitlab
         end
       end
 
+      def resolve_personal_access_token_from_jwt(raw)
+        with_jwt_token(raw) do |jwt_token|
+          break unless jwt_token['token'].is_a?(Integer)
+
+          pat = ::PersonalAccessToken.find(jwt_token['token'])
+          break unless pat
+
+          pat
+        end
+      end
+
+      def resolve_deploy_token_from_jwt(raw)
+        with_jwt_token(raw) do |jwt_token|
+          break unless jwt_token['token'].is_a?(String)
+
+          resolve_deploy_token(UsernameAndPassword.new(nil, jwt_token['token']))
+        end
+      end
+
+      def resolve_job_token_from_jwt(raw)
+        with_jwt_token(raw) do |jwt_token|
+          break unless jwt_token['token'].is_a?(String)
+
+          resolve_job_token(UsernameAndPassword.new(nil, jwt_token['token']))
+        end
+      end
+
       def with_personal_access_token(raw, &block)
         pat = ::PersonalAccessToken.find_by_token(raw.password)
         return unless pat
@@ -135,6 +176,13 @@ module Gitlab
         raise ::Gitlab::Auth::UnauthorizedError unless job
 
         yield(job)
+      end
+
+      def with_jwt_token(raw, &block)
+        jwt_token = ::Gitlab::JWTToken.decode(raw.password)
+        raise ::Gitlab::Auth::UnauthorizedError unless jwt_token
+
+        yield(jwt_token)
       end
     end
   end

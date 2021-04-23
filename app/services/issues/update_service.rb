@@ -61,12 +61,7 @@ module Issues
         todo_service.update_issue(issue, current_user, old_mentioned_users)
       end
 
-      if issue.assignees != old_assignees
-        create_assignee_note(issue, old_assignees)
-        notification_service.async.reassigned_issue(issue, current_user, old_assignees)
-        todo_service.reassigned_assignable(issue, current_user, old_assignees)
-        track_incident_action(current_user, issue, :incident_assigned)
-      end
+      handle_assignee_changes(issue, old_assignees)
 
       if issue.previous_changes.include?('confidential')
         # don't enqueue immediately to prevent todos removal in case of a mistake
@@ -87,6 +82,19 @@ module Issues
 
       if added_mentions.present?
         notification_service.async.new_mentions_in_issue(issue, added_mentions, current_user)
+      end
+    end
+
+    def handle_assignee_changes(issue, old_assignees)
+      return if issue.assignees == old_assignees
+
+      create_assignee_note(issue, old_assignees)
+      notification_service.async.reassigned_issue(issue, current_user, old_assignees)
+      todo_service.reassigned_assignable(issue, current_user, old_assignees)
+      track_incident_action(current_user, issue, :incident_assigned)
+
+      if Gitlab::ActionCable::Config.in_app? || Feature.enabled?(:broadcast_issue_updates, issue.project)
+        GraphqlTriggers.issuable_assignees_updated(issue)
       end
     end
 

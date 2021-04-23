@@ -23,7 +23,7 @@ RSpec.describe DeviseEmailValidator do
         subject
 
         expect(user.errors).to be_present
-        expect(user.errors.first[1]).to eq 'is invalid'
+        expect(user.errors.added?(:public_email)).to be true
       end
 
       it 'returns error when email is nil' do
@@ -40,7 +40,7 @@ RSpec.describe DeviseEmailValidator do
         subject
 
         expect(user.errors).to be_present
-        expect(user.errors.first[1]).to eq 'is invalid'
+        expect(user.errors.added?(:public_email)).to be true
       end
     end
   end

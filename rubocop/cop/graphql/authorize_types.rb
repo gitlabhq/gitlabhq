@@ -8,7 +8,7 @@ module RuboCop
               'https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#type-authorization'
 
         # We want to exclude our own basetypes and scalars
-        ALLOWED_TYPES = %w[BaseEnum BaseScalar BasePermissionType MutationType
+        ALLOWED_TYPES = %w[BaseEnum BaseScalar BasePermissionType MutationType SubscriptionType
                            QueryType GraphQL::Schema BaseUnion BaseInputObject].freeze
 
         def_node_search :authorize?, <<~PATTERN

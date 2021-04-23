@@ -10,6 +10,7 @@ class GitlabSchema < GraphQL::Schema
   DEFAULT_MAX_DEPTH = 15
   AUTHENTICATED_MAX_DEPTH = 20
 
+  use GraphQL::Subscriptions::ActionCableSubscriptions
   use GraphQL::Pagination::Connections
   use BatchLoader::GraphQL
   use Gitlab::Graphql::Pagination::Connections
@@ -24,6 +25,7 @@ class GitlabSchema < GraphQL::Schema
 
   query Types::QueryType
   mutation Types::MutationType
+  subscription Types::SubscriptionType
 
   default_max_page_size 100
 

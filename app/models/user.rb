@@ -1414,7 +1414,9 @@ class User < ApplicationRecord
     if namespace_path_errors.include?('has already been taken') && !User.exists?(username: username)
       self.errors.add(:base, :username_exists_as_a_different_namespace)
     else
-      self.errors[:username].concat(namespace_path_errors)
+      namespace_path_errors.each do |msg|
+        self.errors.add(:username, msg)
+      end
     end
   end
 
