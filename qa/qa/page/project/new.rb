@@ -4,8 +4,9 @@ module QA
   module Page
     module Project
       class New < Page::Base
-        include Page::Component::Select2
         include Page::Component::Project::Templates
+        include Page::Component::Select2
+        include Page::Component::VisibilitySetting
 
         view 'app/views/projects/new.html.haml' do
           element :project_create_from_template_tab
@@ -57,10 +58,6 @@ module QA
 
         def click_create_from_template_tab
           click_element(:project_create_from_template_tab)
-        end
-
-        def set_visibility(visibility)
-          choose visibility.capitalize
         end
 
         def click_github_link

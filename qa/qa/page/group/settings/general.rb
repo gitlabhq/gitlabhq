@@ -6,6 +6,7 @@ module QA
       module Settings
         class General < QA::Page::Base
           include ::QA::Page::Settings::Common
+          include Page::Component::VisibilitySetting
 
           view 'app/views/groups/edit.html.haml' do
             element :permission_lfs_2fa_content
@@ -19,10 +20,6 @@ module QA
           view 'app/views/groups/settings/_general.html.haml' do
             element :group_name_field
             element :save_name_visibility_settings_button
-          end
-
-          view 'app/views/shared/_visibility_radios.html.haml' do
-            element :internal_radio, 'qa_selector: "#{visibility_level_label(level).downcase}_radio"' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
           end
 
           view 'app/views/groups/settings/_lfs.html.haml' do
@@ -54,10 +51,6 @@ module QA
           def set_group_name(name)
             find_element(:group_name_field).send_keys([:command, 'a'], :backspace)
             find_element(:group_name_field).set name
-          end
-
-          def set_group_visibility(visibility)
-            find_element("#{visibility.downcase}_radio").click
           end
 
           def click_save_name_visibility_settings_button

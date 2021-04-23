@@ -505,6 +505,7 @@ module QA
       autoload :WikiPageForm, 'qa/page/component/wiki_page_form'
       autoload :AccessTokens, 'qa/page/component/access_tokens'
       autoload :CommitModal, 'qa/page/component/commit_modal'
+      autoload :VisibilitySetting, 'qa/page/component/visibility_setting'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'

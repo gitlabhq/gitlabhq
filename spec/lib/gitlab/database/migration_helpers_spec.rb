@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::MigrationHelpers do
   include Database::TableSchemaHelpers
+  include Database::TriggerHelpers
 
   let(:model) do
     ActiveRecord::Migration.new.extend(described_class)
@@ -1702,10 +1703,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#convert_to_bigint_column' do
+    it 'returns the name of the temporary column used to convert to bigint' do
+      expect(model.convert_to_bigint_column(:id)).to eq('id_convert_to_bigint')
+    end
+  end
+
   describe '#initialize_conversion_of_integer_to_bigint' do
     let(:table) { :test_table }
     let(:column) { :id }
-    let(:tmp_column) { "#{column}_convert_to_bigint" }
+    let(:tmp_column) { model.convert_to_bigint_column(column) }
 
     before do
       model.create_table table, id: false do |t|
@@ -1774,11 +1781,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     context 'when multiple columns are given' do
       it 'creates the correct columns and installs the trigger' do
         columns_to_convert = %i[id non_nullable_column nullable_column]
-        temporary_columns = %w[
-          id_convert_to_bigint
-          non_nullable_column_convert_to_bigint
-          nullable_column_convert_to_bigint
-        ]
+        temporary_columns = columns_to_convert.map { |column| model.convert_to_bigint_column(column) }
 
         expect(model).to receive(:add_column).with(table, temporary_columns[0], :bigint, default: 0, null: false)
         expect(model).to receive(:add_column).with(table, temporary_columns[1], :bigint, default: 0, null: false)
@@ -1791,10 +1794,55 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#revert_initialize_conversion_of_integer_to_bigint' do
+    let(:table) { :test_table }
+
+    before do
+      model.create_table table, id: false do |t|
+        t.integer :id, primary_key: true
+        t.integer :other_id
+      end
+
+      model.initialize_conversion_of_integer_to_bigint(table, columns)
+    end
+
+    context 'when single column is given' do
+      let(:columns) { :id }
+
+      it 'removes column, trigger, and function' do
+        temporary_column = model.convert_to_bigint_column(:id)
+        trigger_name = model.rename_trigger_name(table, :id, temporary_column)
+
+        model.revert_initialize_conversion_of_integer_to_bigint(table, columns)
+
+        expect(model.column_exists?(table, temporary_column)).to eq(false)
+        expect_trigger_not_to_exist(table, trigger_name)
+        expect_function_not_to_exist(trigger_name)
+      end
+    end
+
+    context 'when multiple columns are given' do
+      let(:columns) { [:id, :other_id] }
+
+      it 'removes column, trigger, and function' do
+        temporary_columns = columns.map { |column| model.convert_to_bigint_column(column) }
+        trigger_name = model.rename_trigger_name(table, columns, temporary_columns)
+
+        model.revert_initialize_conversion_of_integer_to_bigint(table, columns)
+
+        temporary_columns.each do |column|
+          expect(model.column_exists?(table, column)).to eq(false)
+        end
+        expect_trigger_not_to_exist(table, trigger_name)
+        expect_function_not_to_exist(trigger_name)
+      end
+    end
+  end
+
   describe '#backfill_conversion_of_integer_to_bigint' do
     let(:table) { :_test_backfill_table }
     let(:column) { :id }
-    let(:tmp_column) { "#{column}_convert_to_bigint" }
+    let(:tmp_column) { model.convert_to_bigint_column(column) }
 
     before do
       model.create_table table, id: false do |t|
@@ -1872,14 +1920,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             interval: 120,
             batch_size: 2,
             sub_batch_size: 1,
-            job_arguments: [[column.to_s], ["#{column}_convert_to_bigint"]]
+            job_arguments: [[column.to_s], [model.convert_to_bigint_column(column)]]
           )
         end
       end
 
       context 'when multiple columns are being converted' do
         let(:other_column) { :other_id }
-        let(:other_tmp_column) { "#{other_column}_convert_to_bigint" }
+        let(:other_tmp_column) { model.convert_to_bigint_column(other_column) }
         let(:columns) { [column, other_column] }
 
         it 'creates the batched migration tracking record' do
@@ -1901,6 +1949,54 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             job_arguments: [[column.to_s, other_column.to_s], [tmp_column, other_tmp_column]]
           )
         end
+      end
+    end
+  end
+
+  describe '#revert_backfill_conversion_of_integer_to_bigint' do
+    let(:table) { :_test_backfill_table }
+    let(:primary_key) { :id }
+
+    before do
+      model.create_table table, id: false do |t|
+        t.integer primary_key, primary_key: true
+        t.text :message, null: false
+        t.integer :other_id
+        t.timestamps
+      end
+
+      model.initialize_conversion_of_integer_to_bigint(table, columns, primary_key: primary_key)
+      model.backfill_conversion_of_integer_to_bigint(table, columns, primary_key: primary_key)
+    end
+
+    context 'when a single column is being converted' do
+      let(:columns) { :id }
+
+      it 'deletes the batched migration tracking record' do
+        expect do
+          model.revert_backfill_conversion_of_integer_to_bigint(table, columns)
+        end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(-1)
+      end
+    end
+
+    context 'when a multiple columns are being converted' do
+      let(:columns) { [:id, :other_id] }
+
+      it 'deletes the batched migration tracking record' do
+        expect do
+          model.revert_backfill_conversion_of_integer_to_bigint(table, columns)
+        end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(-1)
+      end
+    end
+
+    context 'when primary key column has custom name' do
+      let(:primary_key) { :other_pk }
+      let(:columns) { :other_id }
+
+      it 'deletes the batched migration tracking record' do
+        expect do
+          model.revert_backfill_conversion_of_integer_to_bigint(table, columns, primary_key: primary_key)
+        end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(-1)
       end
     end
   end

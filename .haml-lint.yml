@@ -110,7 +110,6 @@ linters:
       - Layout/EmptyLineAfterGuardClause
       - Layout/LeadingCommentSpace
       - Layout/SpaceAroundOperators
-      - Layout/SpaceBeforeBlockBraces
       - Layout/SpaceBeforeComma
       - Layout/SpaceBeforeFirstArg
       - Layout/SpaceInsideHashLiteralBraces

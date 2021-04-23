@@ -36,12 +36,16 @@ module QA
           end
 
           view 'app/assets/javascripts/ide/components/commit_sidebar/actions.vue' do
-            element :commit_to_current_branch_radio
+            element :commit_to_current_branch_radio_container
           end
 
           view 'app/assets/javascripts/ide/components/commit_sidebar/form.vue' do
             element :begin_commit_button
             element :commit_button
+          end
+
+          view 'app/assets/javascripts/ide/components/commit_sidebar/radio_group.vue' do
+            element :commit_type_radio
           end
 
           view 'app/assets/javascripts/ide/components/repo_editor.vue' do
@@ -216,7 +220,9 @@ module QA
               # animation is still in process even when the buttons have the
               # expected visibility.
               commit_success = retry_until(sleep_interval: 5) do
-                click_element(:commit_to_current_branch_radio) if has_element?(:commit_to_current_branch_radio)
+                within_element(:commit_to_current_branch_radio_container) do
+                  choose_element(:commit_type_radio)
+                end
                 click_element(:commit_button) if has_element?(:commit_button)
 
                 # If this is the first commit, the commit SHA only appears after reloading

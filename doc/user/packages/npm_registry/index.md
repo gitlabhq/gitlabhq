@@ -43,7 +43,7 @@ The npm version is shown in the output:
 ### Install Yarn
 
 As an alternative to npm, you can install Yarn in your local environment by following the
-instructions at [yarnpkg.com](https://classic.yarnpkg.com/en/docs/install).
+instructions at [classic.yarnpkg.com](https://classic.yarnpkg.com/en/docs/install).
 
 When installation is complete, verify you can use Yarn in your terminal by
 running:
@@ -304,6 +304,46 @@ deploy:
 See the
 [Publish npm packages to the GitLab Package Registry using semantic-release](../../../ci/examples/semantic-release.md)
 step-by-step guide and demo project for a complete example.
+
+## Configure the GitLab npm registry with Yarn 2
+
+You can get started with Yarn 2 by following the documentation at
+[https://yarnpkg.com/getting-started/install](https://yarnpkg.com/getting-started/install).
+
+To publish and install with the project-level npm endpoint, set the following configuration in
+`.yarnrc.yml`:
+
+```yaml
+npmScopes:
+  foo:
+    npmRegistryServer: "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/"
+    npmPublishRegistry: "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/"
+      
+npmRegistries:
+  //gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:
+    npmAlwaysAuth: true
+    npmAuthToken: "<your_token>"
+```
+
+For the instance-level npm endpoint, use this Yarn 2 configuration in `.yarnrc.yml`:
+
+```yaml
+npmScopes:
+  foo:
+    npmRegistryServer: "https://gitlab.example.com/api/v4/packages/npm/"
+
+npmRegistries:
+  //gitlab.example.com/api/v4/packages/npm/:
+    npmAlwaysAuth: true
+    npmAuthToken: "<your_token>"
+```
+
+In this configuration:
+
+- Replace `<your_token>` with your personal access token or deploy token.
+- Replace `<your_project_id>` with your project's ID, which you can find on the project's home page.
+- Replace `gitlab.example.com` with your domain name.
+- Your scope is `foo`, without `@`.
 
 ## Publishing packages with the same name or version
 

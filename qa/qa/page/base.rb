@@ -132,16 +132,16 @@ module QA
         all(element_selector_css(name), **kwargs)
       end
 
-      def check_element(name, click_by_js = false)
-        if find_element(name, visible: false).checked?
+      def check_element(name, click_by_js = false, visibility = false)
+        if find_element(name, visible: visibility).checked?
           QA::Runtime::Logger.debug("#{name} is already checked")
 
           return
         end
 
         retry_until(sleep_interval: 1) do
-          click_checkbox_or_radio(name, click_by_js)
-          checked = find_element(name, visible: false).checked?
+          click_checkbox_or_radio(name, click_by_js, visibility)
+          checked = find_element(name, visible: visibility).checked?
 
           QA::Runtime::Logger.debug(checked ? "#{name} was checked" : "#{name} was not checked")
 
@@ -149,16 +149,16 @@ module QA
         end
       end
 
-      def uncheck_element(name, click_by_js = false)
-        unless find_element(name, visible: false).checked?
+      def uncheck_element(name, click_by_js = false, visibility = false)
+        unless find_element(name, visible: visibility).checked?
           QA::Runtime::Logger.debug("#{name} is already unchecked")
 
           return
         end
 
         retry_until(sleep_interval: 1) do
-          click_checkbox_or_radio(name, click_by_js)
-          unchecked = !find_element(name, visible: false).checked?
+          click_checkbox_or_radio(name, click_by_js, visibility)
+          unchecked = !find_element(name, visible: visibility).checked?
 
           QA::Runtime::Logger.debug(unchecked ? "#{name} was unchecked" : "#{name} was not unchecked")
 
@@ -167,21 +167,22 @@ module QA
       end
 
       # Method for selecting radios
-      def choose_element(name, click_by_js = false)
-        if find_element(name, visible: false).checked?
+      def choose_element(name, click_by_js = false, visibility = false)
+        if find_element(name, visible: visibility).checked?
           QA::Runtime::Logger.debug("#{name} is already selected")
 
           return
         end
 
         retry_until(sleep_interval: 1) do
-          click_checkbox_or_radio(name, click_by_js)
-          selected = find_element(name, visible: false).checked?
+          click_checkbox_or_radio(name, click_by_js, visibility)
+          selected = find_element(name, visible: visibility).checked?
 
           QA::Runtime::Logger.debug(selected ? "#{name} was selected" : "#{name} was not selected")
 
           selected
         end
+        wait_for_requests
       end
 
       # Use this to simulate moving the pointer to an element's coordinate
@@ -424,8 +425,8 @@ module QA
 
       private
 
-      def click_checkbox_or_radio(name, click_by_js)
-        box = find_element(name, visible: false)
+      def click_checkbox_or_radio(name, click_by_js, visibility)
+        box = find_element(name, visible: visibility)
         # Some checkboxes and radio buttons are hidden by their labels and cannot be clicked directly
         click_by_js ? page.execute_script("arguments[0].click();", box) : box.click
       end

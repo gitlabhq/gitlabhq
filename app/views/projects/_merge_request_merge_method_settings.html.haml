@@ -22,7 +22,7 @@
         = s_('ProjectSettings|When there is a merge conflict, the user is given the option to rebase.')
 
   .form-check.mb-2
-    = form.radio_button :merge_method, :ff, class: "js-merge-method-radio form-check-input", data: { qa_selector: 'merge_ff_radio_button' }
+    = form.radio_button :merge_method, :ff, class: "js-merge-method-radio form-check-input", data: { qa_selector: 'merge_ff_radio' }
     = label_tag :project_merge_method_ff, class: 'form-check-label' do
       = s_('ProjectSettings|Fast-forward merge')
       .text-secondary

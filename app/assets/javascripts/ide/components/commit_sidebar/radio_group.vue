@@ -64,6 +64,7 @@ export default {
         :disabled="disabled"
         type="radio"
         name="commit-action"
+        data-qa-selector="commit_type_radio"
         @change="updateCommitAction($event.target.value)"
       />
       <span class="gl-ml-3">

@@ -5239,6 +5239,29 @@ The edge type for [`Label`](#label).
 | <a id="labeledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="labeledgenode"></a>`node` | [`Label`](#label) | The item at the end of the edge. |
 
+#### `LfsObjectRegistryConnection`
+
+The connection type for [`LfsObjectRegistry`](#lfsobjectregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="lfsobjectregistryconnectionedges"></a>`edges` | [`[LfsObjectRegistryEdge]`](#lfsobjectregistryedge) | A list of edges. |
+| <a id="lfsobjectregistryconnectionnodes"></a>`nodes` | [`[LfsObjectRegistry]`](#lfsobjectregistry) | A list of nodes. |
+| <a id="lfsobjectregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `LfsObjectRegistryEdge`
+
+The edge type for [`LfsObjectRegistry`](#lfsobjectregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="lfsobjectregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="lfsobjectregistryedgenode"></a>`node` | [`LfsObjectRegistry`](#lfsobjectregistry) | The item at the end of the edge. |
+
 #### `LicenseHistoryEntryConnection`
 
 The connection type for [`LicenseHistoryEntry`](#licensehistoryentry).
@@ -8317,6 +8340,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="geonodegroupwikirepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
 
+##### `GeoNode.lfsObjectRegistries`
+
+Find LFS object registries on this Geo node. Available only when feature flag `geo_lfs_object_replication` is enabled.
+
+Returns [`LfsObjectRegistryConnection`](#lfsobjectregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodelfsobjectregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+
 ##### `GeoNode.mergeRequestDiffRegistries`
 
 Find merge request diff registries on this Geo node.
@@ -9326,6 +9365,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="labeltextcolor"></a>`textColor` | [`String!`](#string) | Text color of the label. |
 | <a id="labeltitle"></a>`title` | [`String!`](#string) | Content of the label. |
 | <a id="labelupdatedat"></a>`updatedAt` | [`Time!`](#time) | When this label was last updated. |
+
+### `LfsObjectRegistry`
+
+Represents the Geo sync and verification state of an LFS object.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="lfsobjectregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the LfsObjectRegistry was created. |
+| <a id="lfsobjectregistryid"></a>`id` | [`ID!`](#id) | ID of the LfsObjectRegistry. |
+| <a id="lfsobjectregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the LfsObjectRegistry. |
+| <a id="lfsobjectregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the LfsObjectRegistry. |
+| <a id="lfsobjectregistrylfsobjectid"></a>`lfsObjectId` | [`ID!`](#id) | ID of the LFS object. |
+| <a id="lfsobjectregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the LfsObjectRegistry should be resynced. |
+| <a id="lfsobjectregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the LfsObjectRegistry. |
+| <a id="lfsobjectregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the LfsObjectRegistry. |
 
 ### `LicenseHistoryEntry`
 

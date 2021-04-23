@@ -8,6 +8,10 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
   let(:sub_batch_size) { 1000 }
   let(:pause_ms) { 0 }
 
+  let(:helpers) do
+    ActiveRecord::Migration.new.extend(Gitlab::Database::MigrationHelpers)
+  end
+
   before do
     ActiveRecord::Base.connection.execute(<<~SQL)
       CREATE TABLE #{table_name}
@@ -15,8 +19,8 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
        id integer NOT NULL,
        name character varying,
        fk integer NOT NULL,
-       id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
-       fk_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+       #{helpers.convert_to_bigint_column(:id)} bigint DEFAULT 0 NOT NULL,
+       #{helpers.convert_to_bigint_column(:fk)} bigint DEFAULT 0 NOT NULL,
        name_convert_to_text text DEFAULT 'no name'
       );
     SQL
@@ -41,18 +45,20 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
     let(:migration_class) { described_class.name }
 
     it 'copies all primary keys in range' do
-      copy_columns.perform(12, 15, table_name, 'id', sub_batch_size, pause_ms, 'id', 'id_convert_to_bigint')
+      temporary_column = helpers.convert_to_bigint_column(:id)
+      copy_columns.perform(12, 15, table_name, 'id', sub_batch_size, pause_ms, 'id', temporary_column)
 
-      expect(test_table.where('id = id_convert_to_bigint').pluck(:id)).to contain_exactly(12, 15)
-      expect(test_table.where(id_convert_to_bigint: 0).pluck(:id)).to contain_exactly(11, 19)
+      expect(test_table.where("id = #{temporary_column}").pluck(:id)).to contain_exactly(12, 15)
+      expect(test_table.where(temporary_column => 0).pluck(:id)).to contain_exactly(11, 19)
       expect(test_table.all.count).to eq(4)
     end
 
     it 'copies all foreign keys in range' do
-      copy_columns.perform(10, 14, table_name, 'id', sub_batch_size, pause_ms, 'fk', 'fk_convert_to_bigint')
+      temporary_column = helpers.convert_to_bigint_column(:fk)
+      copy_columns.perform(10, 14, table_name, 'id', sub_batch_size, pause_ms, 'fk', temporary_column)
 
-      expect(test_table.where('fk = fk_convert_to_bigint').pluck(:id)).to contain_exactly(11, 12)
-      expect(test_table.where(fk_convert_to_bigint: 0).pluck(:id)).to contain_exactly(15, 19)
+      expect(test_table.where("fk = #{temporary_column}").pluck(:id)).to contain_exactly(11, 12)
+      expect(test_table.where(temporary_column => 0).pluck(:id)).to contain_exactly(15, 19)
       expect(test_table.all.count).to eq(4)
     end
 
@@ -68,18 +74,20 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
 
     it 'copies multiple columns when given' do
       columns_to_copy_from = %w[id fk]
-      columns_to_copy_to = %w[id_convert_to_bigint fk_convert_to_bigint]
+      id_tmp_column = helpers.convert_to_bigint_column('id')
+      fk_tmp_column = helpers.convert_to_bigint_column('fk')
+      columns_to_copy_to = [id_tmp_column, fk_tmp_column]
 
       subject.perform(10, 15, table_name, 'id', sub_batch_size, pause_ms, columns_to_copy_from, columns_to_copy_to)
 
-      expect(test_table.where('id = id_convert_to_bigint AND fk = fk_convert_to_bigint').pluck(:id)).to contain_exactly(11, 12, 15)
-      expect(test_table.where(id_convert_to_bigint: 0).where(fk_convert_to_bigint: 0).pluck(:id)).to contain_exactly(19)
+      expect(test_table.where("id = #{id_tmp_column} AND fk = #{fk_tmp_column}").pluck(:id)).to contain_exactly(11, 12, 15)
+      expect(test_table.where(id_tmp_column => 0).where(fk_tmp_column => 0).pluck(:id)).to contain_exactly(19)
       expect(test_table.all.count).to eq(4)
     end
 
     it 'raises error when number of source and target columns does not match' do
       columns_to_copy_from = %w[id fk]
-      columns_to_copy_to = %w[id_convert_to_bigint]
+      columns_to_copy_to = [helpers.convert_to_bigint_column(:id)]
 
       expect do
         subject.perform(10, 15, table_name, 'id', sub_batch_size, pause_ms, columns_to_copy_from, columns_to_copy_to)

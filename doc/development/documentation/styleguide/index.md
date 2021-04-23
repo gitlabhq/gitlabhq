@@ -1112,13 +1112,9 @@ document to ensure it links to the most recent version of the file.
 When documenting navigation through the user interface:
 
 - Use the exact wording as shown in the UI, including any capital letters as-is.
-- Use bold text for navigation items and the char "greater than" (`>`) as a
-  separator. For example: `From your project, go to **Settings > CI/CD**`.
-- If there are any expandable menus, make sure to mention that the user needs to
-  expand the tab to find the settings you're referring to. For example:
-  `From your group, go to **Settings > CI/CD** and expand **General pipelines**`.
+- Use bold text for navigation items.
 
-### Navigational elements
+### What to call the menus
 
 Use these terms when referring to the main GitLab user interface
 elements:
@@ -1129,6 +1125,19 @@ elements:
   interface, specific to the project or group.
 - **Right sidebar**: This is the navigation sidebar on the right of the user
   interface, specific to the open issue, merge request, or epic.
+
+### How to document the left sidebar
+
+To be consistent, use this format when you refer to the left sidebar.
+
+- Go to your project and select **Settings > CI/CD**.
+- Go to your group and select **Settings > CI/CD**.
+- Go to the Admin Area (**{admin}**) and select **Overview > Projects**.
+
+For expandable menus, use this format:
+
+1. Go to your group and select **Settings > CI/CD**.
+1. Expand **General pipelines**.
 
 ## Images
 

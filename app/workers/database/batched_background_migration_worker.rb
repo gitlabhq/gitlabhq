@@ -38,16 +38,12 @@ module Database
     end
 
     def with_exclusive_lease(interval)
-      timeout = max(interval * LEASE_TIMEOUT_MULTIPLIER, MINIMUM_LEASE_TIMEOUT)
+      timeout = [interval * LEASE_TIMEOUT_MULTIPLIER, MINIMUM_LEASE_TIMEOUT].max
       lease = Gitlab::ExclusiveLease.new(lease_key, timeout: timeout)
 
       yield if lease.try_obtain
     ensure
       lease&.cancel
-    end
-
-    def max(left, right)
-      left >= right ? left : right
     end
 
     def lease_key

@@ -14434,6 +14434,9 @@ msgstr ""
 msgid "Geo|Connection timeout should be between 1-120"
 msgstr ""
 
+msgid "Geo|Consult Geo troubleshooting information"
+msgstr ""
+
 msgid "Geo|Could not remove tracking entry for an existing project."
 msgstr ""
 
@@ -14506,6 +14509,9 @@ msgstr ""
 msgid "Geo|Learn more about Geo"
 msgstr ""
 
+msgid "Geo|Learn more about Geo node statuses"
+msgstr ""
+
 msgid "Geo|Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
@@ -14519,6 +14525,9 @@ msgid "Geo|Node name can't be blank"
 msgstr ""
 
 msgid "Geo|Node name should be between 1 and 255 characters"
+msgstr ""
+
+msgid "Geo|Node's status was updated %{timeAgo}."
 msgstr ""
 
 msgid "Geo|Not synced yet"
@@ -14659,6 +14668,9 @@ msgstr ""
 msgid "Geo|There are no %{replicable_type} to show"
 msgstr ""
 
+msgid "Geo|There was an error fetching the Geo Nodes"
+msgstr ""
+
 msgid "Geo|Tracking database entry will be removed. Are you sure?"
 msgstr ""
 
@@ -14678,6 +14690,9 @@ msgid "Geo|Undefined"
 msgstr ""
 
 msgid "Geo|Unknown state"
+msgstr ""
+
+msgid "Geo|Updated %{timeAgo}"
 msgstr ""
 
 msgid "Geo|Verification"
@@ -32083,9 +32098,6 @@ msgid "There was an error fetching projects"
 msgstr ""
 
 msgid "There was an error fetching the %{replicableType}"
-msgstr ""
-
-msgid "There was an error fetching the Geo Nodes"
 msgstr ""
 
 msgid "There was an error fetching the Geo Settings"

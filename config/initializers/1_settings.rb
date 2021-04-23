@@ -569,6 +569,9 @@ Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['job_class']
 Settings.cron_jobs['ssh_keys_expiring_soon_notification_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ssh_keys_expiring_soon_notification_worker']['cron'] ||= '0 1 * * *'
 Settings.cron_jobs['ssh_keys_expiring_soon_notification_worker']['job_class'] = 'SshKeys::ExpiringSoonNotificationWorker'
+Settings.cron_jobs['users_deactivate_dormant_users_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['users_deactivate_dormant_users_worker']['cron'] ||= '21,42 0-4 * * *'
+Settings.cron_jobs['users_deactivate_dormant_users_worker']['job_class'] = 'Users::DeactivateDormantUsersWorker'
 
 Gitlab.com do
   Settings.cron_jobs['batched_background_migrations_worker'] ||= Settingslogic.new({})
