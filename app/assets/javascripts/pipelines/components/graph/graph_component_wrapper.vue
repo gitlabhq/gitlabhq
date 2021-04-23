@@ -69,7 +69,7 @@ export default {
     callouts: {
       query: getUserCallouts,
       update(data) {
-        return data?.currentUser?.callouts?.nodes.map((callout) => callout.featureName);
+        return data?.currentUser?.callouts?.nodes.map((callout) => callout.featureName) || [];
       },
       error(err) {
         reportToSentry(

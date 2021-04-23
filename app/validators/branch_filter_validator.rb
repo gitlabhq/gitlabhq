@@ -20,11 +20,11 @@ class BranchFilterValidator < ActiveModel::EachValidator
       value_without_wildcards = value.tr('*', 'x')
 
       unless Gitlab::GitRefValidator.validate(value_without_wildcards)
-        record.errors[attribute] << "is not a valid branch name"
+        record.errors.add(attribute, "is not a valid branch name")
       end
 
       unless value.length <= 4000
-        record.errors[attribute] << "is longer than the allowed length of 4000 characters."
+        record.errors.add(attribute, "is longer than the allowed length of 4000 characters.")
       end
     end
   end

@@ -4,18 +4,23 @@
 # This class was already nested this way before moving to a separate file
 class Feature
   class ActiveSupportCacheStoreAdapter < Flipper::Adapters::ActiveSupportCacheStore
+    extend ::Gitlab::Utils::Override
+
+    override :enable
     def enable(feature, gate, thing)
       result = @adapter.enable(feature, gate, thing)
       @cache.write(key_for(feature.key), @adapter.get(feature), @write_options)
       result
     end
 
+    override :disable
     def disable(feature, gate, thing)
       result = @adapter.disable(feature, gate, thing)
       @cache.write(key_for(feature.key), @adapter.get(feature), @write_options)
       result
     end
 
+    override :remove
     def remove(feature)
       result = @adapter.remove(feature)
       @cache.delete(FeaturesKey)

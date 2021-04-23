@@ -1634,7 +1634,6 @@ RSpec.describe API::Projects do
     end
 
     it "does not leave the temporary file in place after uploading, even when the tempfile reaper does not run" do
-      stub_env('GITLAB_TEMPFILE_IMMEDIATE_UNLINK', '1')
       tempfile = Tempfile.new('foo')
       path = tempfile.path
 

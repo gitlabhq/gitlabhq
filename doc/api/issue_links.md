@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -30,7 +30,7 @@ Parameters:
   {
     "id" : 84,
     "iid" : 14,
-    "issue_link_id": 1
+    "issue_link_id": 1,
     "project_id" : 4,
     "created_at" : "2016-01-07T12:44:33.959Z",
     "title" : "Issues with auth",

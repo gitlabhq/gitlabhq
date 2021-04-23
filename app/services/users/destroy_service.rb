@@ -31,7 +31,7 @@ module Users
       end
 
       if !delete_solo_owned_groups && user.solo_owned_groups.present?
-        user.errors[:base] << 'You must transfer ownership or delete groups before you can remove user'
+        user.errors.add(:base, 'You must transfer ownership or delete groups before you can remove user')
         return user
       end
 

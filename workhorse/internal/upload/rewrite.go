@@ -116,11 +116,7 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, pr
 func (rew *rewriter) handleFilePart(ctx context.Context, name string, p *multipart.Part, opts *filestore.SaveFileOpts) error {
 	multipartFiles.WithLabelValues(rew.filter.Name()).Inc()
 
-	filename := p.FileName()
-
-	if opts.FeatureFlagExtractBase {
-		filename = filepath.Base(filename)
-	}
+	filename := filepath.Base(p.FileName())
 
 	if strings.Contains(filename, "/") || filename == "." || filename == ".." {
 		return fmt.Errorf("illegal filename: %q", filename)

@@ -6680,6 +6680,9 @@ msgstr ""
 msgid "Closes this %{quick_action_target}."
 msgstr ""
 
+msgid "Cloud licenses can not be removed."
+msgstr ""
+
 msgid "CloudLicense|Activate"
 msgstr ""
 

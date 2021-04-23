@@ -1,0 +1,5 @@
+---
+title: Remove workhorse_extract_filename_base feature flag
+merge_request: 60070
+author:
+type: changed

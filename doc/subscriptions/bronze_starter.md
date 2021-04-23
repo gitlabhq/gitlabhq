@@ -69,7 +69,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Approval Rule information for Reviewers](../user/project/merge_requests/getting_started.md#approval-rule-information-for-reviewers) **(PREMIUM)**
   - [Required Approvals](../user/project/merge_requests/merge_request_approvals.md#required-approvals)
   - [Code Owners as eligible approvers](../user/project/merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers)
-  - All [Approval rules](../user/project/merge_requests/merge_request_approvals.md#approval-rules) features
+  - [Approval rules](../user/project/merge_requests/merge_request_approvals.md#approval-rules) features
   - [Restricting push and merge access to certain users](../user/project/protected_branches.md#restricting-push-and-merge-access-to-certain-users)
   - [Visual Reviews](../ci/review_apps/index.md#visual-reviews)
 - Metrics and analytics:

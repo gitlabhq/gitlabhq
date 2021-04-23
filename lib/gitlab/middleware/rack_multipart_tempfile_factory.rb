@@ -14,9 +14,7 @@ module Gitlab
       end
 
       def call(env)
-        if ENV['GITLAB_TEMPFILE_IMMEDIATE_UNLINK'] == '1'
-          env[Rack::RACK_MULTIPART_TEMPFILE_FACTORY] = FACTORY
-        end
+        env[Rack::RACK_MULTIPART_TEMPFILE_FACTORY] = FACTORY
 
         @app.call(env)
       end

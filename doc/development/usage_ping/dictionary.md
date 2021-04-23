@@ -2890,7 +2890,7 @@ Tiers: `ultimate`
 
 ### `counts.merge_request_comment`
 
-Missing description
+Count of the number of merge request comments
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175041_merge_request_comment.yml)
 
@@ -2898,11 +2898,11 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.merge_request_create`
 
-Missing description
+Count of the number of merge requests created
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175043_merge_request_create.yml)
 
@@ -2910,11 +2910,11 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.merge_requests`
 
-Missing description
+Count of the number of merge requests
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175039_merge_requests.yml)
 
@@ -2922,7 +2922,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.merged_merge_requests_using_approval_rules`
 
@@ -3018,7 +3018,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.operations_dashboard_users_with_projects_added`
 
@@ -3030,7 +3030,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.package_events_i_package_composer_delete_package`
 
@@ -5398,7 +5398,7 @@ Tiers: `free`
 
 ### `counts.suggestions`
 
-Missing description
+Count of all comments that contain suggested changes
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175037_suggestions.yml)
 
@@ -5406,7 +5406,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.template_repositories`
 
@@ -8002,79 +8002,79 @@ Tiers:
 
 ### `redis_hll_counters.code_review.code_review_total_unique_counts_monthly`
 
-Missing description
+Count of unique users per month who interact with a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184454_code_review_total_unique_counts_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.code_review_total_unique_counts_weekly`
 
-Missing description
+Count of unique users per week who interact with a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184452_code_review_total_unique_counts_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184452_code_review_total_unique_counts_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_edit_mr_desc_monthly`
 
-Missing description
+Count of unique users per month who edit the description of a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184342_i_code_review_edit_mr_desc_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_edit_mr_desc_weekly`
 
-Missing description
+Count of unique users per week who edit the description of a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184340_i_code_review_edit_mr_desc_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184340_i_code_review_edit_mr_desc_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_edit_mr_title_monthly`
 
-Missing description
+Count of unique users per month who edit the title of a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184338_i_code_review_edit_mr_title_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_edit_mr_title_weekly`
 
-Missing description
+Count of unique users per week who edit the title of a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184336_i_code_review_edit_mr_title_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184336_i_code_review_edit_mr_title_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_mr_diffs_monthly`
 
-Count of unique merge requests per week|month with diffs viewed
+Count of unique merge requests per month with diffs viewed
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175120_i_code_review_mr_diffs_monthly.yml)
 
@@ -8082,23 +8082,23 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_mr_diffs_weekly`
 
-Count of unique merge requests per week|month with diffs viewed
+Count of unique merge requests per week with diffs viewed
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175118_i_code_review_mr_diffs_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175118_i_code_review_mr_diffs_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_monthly`
 
-Count of unique merge requests per week|month with diffs viewed file by file
+Count of unique merge requests per month with diffs viewed file by file
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175128_i_code_review_mr_single_file_diffs_monthly.yml)
 
@@ -8106,19 +8106,19 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_mr_single_file_diffs_weekly`
 
-Count of unique merge requests per week|month with diffs viewed file by file
+Count of unique merge requests per week with diffs viewed file by file
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175126_i_code_review_mr_single_file_diffs_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175126_i_code_review_mr_single_file_diffs_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_add_suggestion_monthly`
 
@@ -8130,19 +8130,19 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_add_suggestion_weekly`
 
 Count of unique users per week who added a suggestion
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175158_i_code_review_user_add_suggestion_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175158_i_code_review_user_add_suggestion_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_apply_suggestion_monthly`
 
@@ -8154,139 +8154,139 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_apply_suggestion_weekly`
 
 Count of unique users per week who applied a suggestion
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175201_i_code_review_user_apply_suggestion_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175201_i_code_review_user_apply_suggestion_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_approval_rule_added_monthly`
 
-Missing description
+Count of unique users per month who add an approval rule to a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184434_i_code_review_user_approval_rule_added_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_approval_rule_added_weekly`
 
-Missing description
+Count of unique users per week who add an approval rule to a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184432_i_code_review_user_approval_rule_added_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184432_i_code_review_user_approval_rule_added_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_approval_rule_deleted_monthly`
 
-Missing description
+Count of unique users per month who delete an approval rule to a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184438_i_code_review_user_approval_rule_deleted_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_approval_rule_deleted_weekly`
 
-Missing description
+Count of unique users per week who delete an approval rule to a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184436_i_code_review_user_approval_rule_deleted_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184436_i_code_review_user_approval_rule_deleted_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_approval_rule_edited_monthly`
 
-Missing description
+Count of unique users per month who delete an approval rule to a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184442_i_code_review_user_approval_rule_edited_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_approval_rule_edited_weekly`
 
-Missing description
+Count of unique users per week who edit an approval rule to a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184440_i_code_review_user_approval_rule_edited_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184440_i_code_review_user_approval_rule_edited_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_approve_mr_monthly`
 
-Missing description
+Count of unique users per month who approve a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184322_i_code_review_user_approve_mr_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_approve_mr_weekly`
 
-Missing description
+Count of unique users per week who approve a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184320_i_code_review_user_approve_mr_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184320_i_code_review_user_approve_mr_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_assigned_monthly`
 
-Missing description
+Count of unique users per month who are assigned to a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184418_i_code_review_user_assigned_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_assigned_weekly`
 
-Missing description
+Count of unique users per week who are assigned to a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184416_i_code_review_user_assigned_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184416_i_code_review_user_assigned_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_assignees_changed_monthly`
 
@@ -8314,7 +8314,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_close_mr_monthly`
 
-Count of unique users per week|month who closed a MR
+Count of unique users per month who closed a MR
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175136_i_code_review_user_close_mr_monthly.yml)
 
@@ -8322,23 +8322,23 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_close_mr_weekly`
 
-Count of unique users per week|month who closed a MR
+Count of unique users per week who closed a MR
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175134_i_code_review_user_close_mr_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175134_i_code_review_user_close_mr_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_mr_comment_monthly`
 
-Count of unique users per week|month who commented on a MR
+Count of unique users per month who commented on a MR
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175148_i_code_review_user_create_mr_comment_monthly.yml)
 
@@ -8346,47 +8346,47 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_mr_comment_weekly`
 
-Count of unique users per week|month who commented on a MR
+Count of unique users per week who commented on a MR
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175146_i_code_review_user_create_mr_comment_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175146_i_code_review_user_create_mr_comment_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_mr_from_issue_monthly`
 
-Missing description
+Count of unique users per month who create a merge request from an issue
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184450_i_code_review_user_create_mr_from_issue_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_mr_from_issue_weekly`
 
-Missing description
+Count of unique users per week who create a merge request from an issue
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184448_i_code_review_user_create_mr_from_issue_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184448_i_code_review_user_create_mr_from_issue_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_mr_monthly`
 
-Count of unique users per week|month who created a MR
+Count of unique users per month who created a MR
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175132_i_code_review_user_create_mr_monthly.yml)
 
@@ -8394,71 +8394,71 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_mr_weekly`
 
-Count of unique users per week|month who created a MR
+Count of unique users per week who created a MR
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175130_i_code_review_user_create_mr_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175130_i_code_review_user_create_mr_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_multiline_mr_comment_monthly`
 
-Missing description
+Count of unique users per month who create a multiline comment in a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184401_i_code_review_user_create_multiline_mr_comment_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_multiline_mr_comment_weekly`
 
-Missing description
+Count of unique users per week who create a multiline comment in a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184359_i_code_review_user_create_multiline_mr_comment_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184359_i_code_review_user_create_multiline_mr_comment_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_review_note_monthly`
 
-Missing description
+Count of unique users per month who create a note as part of a merge request review
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184353_i_code_review_user_create_review_note_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_create_review_note_weekly`
 
-Missing description
+Count of unique users per week who create a note as part of a merge request review
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184351_i_code_review_user_create_review_note_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184351_i_code_review_user_create_review_note_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_monthly`
 
-Count of unique users per week|month who edited a comment on a MR
+Count of unique users per month who edited a comment on a MR
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175152_i_code_review_user_edit_mr_comment_monthly.yml)
 
@@ -8466,43 +8466,43 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_weekly`
 
-Count of unique users per week|month who edited a comment on a MR
+Count of unique users per week who edited a comment on a MR
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175150_i_code_review_user_edit_mr_comment_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175150_i_code_review_user_edit_mr_comment_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_monthly`
 
-Missing description
+Count of unique users per week who edit a multiline comment in a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184405_i_code_review_user_edit_multiline_mr_comment_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_weekly`
 
-Missing description
+Count of unique users per week who edit a multiline comment in a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184403_i_code_review_user_edit_multiline_mr_comment_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184403_i_code_review_user_edit_multiline_mr_comment_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_labels_changed_monthly`
 
@@ -8530,31 +8530,31 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_marked_as_draft_monthly`
 
-Missing description
+Count of unique users per month who mark a merge request as a draft
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184422_i_code_review_user_marked_as_draft_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_marked_as_draft_weekly`
 
-Missing description
+Count of unique users per week who mark a merge request as a draft
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184420_i_code_review_user_marked_as_draft_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184420_i_code_review_user_marked_as_draft_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_merge_mr_monthly`
 
-Count of unique users per week|month who merged a MR
+Count of unique users per month who merged a MR
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175144_i_code_review_user_merge_mr_monthly.yml)
 
@@ -8562,19 +8562,19 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_merge_mr_weekly`
 
-Count of unique users per week|month who merged a MR
+Count of unique users per week who merged a MR
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175142_i_code_review_user_merge_mr_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175142_i_code_review_user_merge_mr_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_milestone_changed_monthly`
 
@@ -8650,31 +8650,31 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_publish_review_monthly`
 
-Missing description
+Count of unique users per month who publish their review as part of a merge request review
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184357_i_code_review_user_publish_review_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_publish_review_weekly`
 
-Missing description
+Count of unique users per week who publish their review as part of a merge request review
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184355_i_code_review_user_publish_review_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184355_i_code_review_user_publish_review_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_remove_mr_comment_monthly`
 
-Count of unique users per week|month who removed a comment on a MR
+Count of unique users per month who removed a comment on a MR
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175156_i_code_review_user_remove_mr_comment_monthly.yml)
 
@@ -8682,47 +8682,47 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_remove_mr_comment_weekly`
 
-Count of unique users per week|month who removed a comment on a MR
+Count of unique users per month who removed a comment on a MR
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175154_i_code_review_user_remove_mr_comment_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175154_i_code_review_user_remove_mr_comment_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_remove_multiline_mr_comment_monthly`
 
-Missing description
+Count of unique users per month who remove a multiline comment in a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184409_i_code_review_user_remove_multiline_mr_comment_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_remove_multiline_mr_comment_weekly`
 
-Missing description
+Count of unique users per week who remove a multiline comment in a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184407_i_code_review_user_remove_multiline_mr_comment_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184407_i_code_review_user_remove_multiline_mr_comment_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_reopen_mr_monthly`
 
-Count of unique users per week|month who reopened a MR
+Count of unique users per month who reopened a MR
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175140_i_code_review_user_reopen_mr_monthly.yml)
 
@@ -8730,67 +8730,67 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_reopen_mr_weekly`
 
-Count of unique users per week|month who reopened a MR
+Count of unique users per week who reopened a MR
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175138_i_code_review_user_reopen_mr_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175138_i_code_review_user_reopen_mr_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_resolve_thread_monthly`
 
-Missing description
+Count of unique users per month who resolve a thread in a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184330_i_code_review_user_resolve_thread_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_resolve_thread_weekly`
 
-Missing description
+Count of unique users per week who resolve a thread in a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184328_i_code_review_user_resolve_thread_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184328_i_code_review_user_resolve_thread_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_review_requested_monthly`
 
-Missing description
+Count of unique users per month who request a review of a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184430_i_code_review_user_review_requested_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_review_requested_weekly`
 
-Missing description
+Count of unique users per week who request a review of a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184428_i_code_review_user_review_requested_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184428_i_code_review_user_review_requested_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_reviewers_changed_monthly`
 
@@ -8818,7 +8818,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_single_file_diffs_monthly`
 
-Count of unique users per week|month with diffs viewed file by file
+Count of unique users per month with diffs viewed file by file
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175124_i_code_review_user_single_file_diffs_monthly.yml)
 
@@ -8826,19 +8826,19 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_single_file_diffs_weekly`
 
-Count of unique users per week|month with diffs viewed file by file
+Count of unique users per week with diffs viewed file by file
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175122_i_code_review_user_single_file_diffs_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175122_i_code_review_user_single_file_diffs_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_time_estimate_changed_monthly`
 
@@ -8890,123 +8890,123 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_toggled_task_item_status_monthly`
 
-Missing description
+Count of unique users per month who toggled a task item in a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184312_i_code_review_user_toggled_task_item_status_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_toggled_task_item_status_weekly`
 
-Missing description
+Count of unique users per week who toggled a task item in a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184310_i_code_review_user_toggled_task_item_status_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184310_i_code_review_user_toggled_task_item_status_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_unapprove_mr_monthly`
 
-Missing description
+Count of unique users per month who unapprove a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184326_i_code_review_user_unapprove_mr_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_unapprove_mr_weekly`
 
-Missing description
+Count of unique users per week who unapprove a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184324_i_code_review_user_unapprove_mr_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184324_i_code_review_user_unapprove_mr_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_unmarked_as_draft_monthly`
 
-Missing description
+Count of unique users per month who unmark a merge request as a draft
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184426_i_code_review_user_unmarked_as_draft_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_unmarked_as_draft_weekly`
 
-Missing description
+Count of unique users per week who unmark a merge request as a draft
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184424_i_code_review_user_unmarked_as_draft_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184424_i_code_review_user_unmarked_as_draft_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_unresolve_thread_monthly`
 
-Missing description
+Count of unique users per month who unresolve a thread in a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184334_i_code_review_user_unresolve_thread_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_unresolve_thread_weekly`
 
-Missing description
+Count of unique users per week who unresolve a thread in a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184332_i_code_review_user_unresolve_thread_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184332_i_code_review_user_unresolve_thread_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_vs_code_api_request_monthly`
 
-Missing description
+Count of unique users per month who use GitLab Workflow for VS Code
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184446_i_code_review_user_vs_code_api_request_monthly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.code_review.i_code_review_user_vs_code_api_request_weekly`
 
-Missing description
+Count of unique users per week who use GitLab Workflow for VS Code
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184444_i_code_review_user_vs_code_api_request_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184444_i_code_review_user_vs_code_api_request_weekly.yml)
 
-Group: ``
+Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.compliance.a_compliance_audit_events_api_monthly`
 
@@ -13570,31 +13570,31 @@ Tiers:
 
 ### `redis_hll_counters.source_code.i_source_code_code_intelligence_monthly`
 
-Missing description
+Count of unique users who use code intelligence
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175117_i_source_code_code_intelligence_monthly.yml)
 
-Group: `group::code review`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.source_code.i_source_code_code_intelligence_weekly`
 
-Missing description
+Count of unique users who use code intelligence
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175114_i_source_code_code_intelligence_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175114_i_source_code_code_intelligence_weekly.yml)
 
-Group: `group::code review`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.source_code.merge_request_action_monthly`
 
-Missing description
+Count of unique users who perform an action on a merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175113_merge_request_action_monthly.yml)
 
@@ -13602,19 +13602,19 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.source_code.merge_request_action_weekly`
 
-Missing description
+Count of unique users who perform an action on a merge request
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175111_merge_request_action_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175111_merge_request_action_weekly.yml)
 
 Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.source_code.project_action_monthly`
 
@@ -14736,7 +14736,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.create.merge_requests`
 
-Missing description
+Count of the number of users creating merge requests
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175045_merge_requests.yml)
 
@@ -14744,7 +14744,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.create.merge_requests_with_added_rules`
 
@@ -14756,19 +14756,19 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.create.merge_requests_with_optional_codeowners`
 
-Missing description
+Count of merge requests with optional codeowner approval rules
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175049_merge_requests_with_optional_codeowners.yml)
 
-Group: `group::code review`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.create.merge_requests_with_overridden_project_rules`
 
@@ -14784,15 +14784,15 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.create.merge_requests_with_required_codeowners`
 
-Missing description
+Count of merge requests with required codeowner approval rules
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175051_merge_requests_with_required_codeowners.yml)
 
-Group: `group::code review`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage.create.projects_enforcing_code_owner_approval`
 
@@ -14904,7 +14904,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.create.suggestions`
 
-Missing description
+Count of unique users who create suggestions in merge request comments
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175053_suggestions.yml)
 
@@ -14912,7 +14912,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.create.total_number_of_locked_files`
 
@@ -15564,7 +15564,7 @@ Tiers:
 
 ### `usage_activity_by_stage.monitor.clusters`
 
-Total GitLab Managed clusters both enabled and disabled
+Users creating clusters.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180945_clusters.yml)
 
@@ -15572,11 +15572,11 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.monitor.clusters_applications_prometheus`
 
-Total GitLab Managed clusters with Prometheus enabled
+Users creating clusters with Prometheus enabled.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216180947_clusters_applications_prometheus.yml)
 
@@ -15584,7 +15584,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.monitor.operations_dashboard_default_dashboard`
 
@@ -15596,7 +15596,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`
 
 ### `usage_activity_by_stage.monitor.operations_dashboard_users_with_projects_added`
 
@@ -15608,7 +15608,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.monitor.projects_incident_sla_enabled`
 
@@ -16668,7 +16668,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.create.merge_requests`
 
-Missing description
+Count of the number of users creating merge requests
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175055_merge_requests.yml)
 
@@ -16676,11 +16676,11 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.merge_requests_users`
 
-Missing description
+Monthly count of the number of merge request users
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175101_merge_requests_users.yml)
 
@@ -16688,7 +16688,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.merge_requests_with_added_rules`
 
@@ -16700,19 +16700,19 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.merge_requests_with_optional_codeowners`
 
-Missing description
+Count of merge requests with optional codeowner approval rules
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175105_merge_requests_with_optional_codeowners.yml)
 
-Group: `group::code review`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.merge_requests_with_overridden_project_rules`
 
@@ -16728,15 +16728,15 @@ Tiers:
 
 ### `usage_activity_by_stage_monthly.create.merge_requests_with_required_codeowners`
 
-Missing description
+Count of merge requests with required codeowner approval rules
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175107_merge_requests_with_required_codeowners.yml)
 
-Group: `group::code review`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.projects_enforcing_code_owner_approval`
 
@@ -16764,15 +16764,15 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.create.projects_with_disable_overriding_approvers_per_merge_request`
 
-Missing description
+Count of the number of projects with setting to disable overriding approvers per merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175057_projects_with_disable_overriding_approvers_per_merge_request.yml)
 
-Group: `group::code review`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.projects_with_repositories_enabled`
 
@@ -16800,15 +16800,15 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.create.projects_without_disable_overriding_approvers_per_merge_request`
 
-Missing description
+Count of the number of projects without setting to disable overriding approvers per merge request
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175059_projects_without_disable_overriding_approvers_per_merge_request.yml)
 
-Group: `group::code review`
+Group: `group::source code`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.protected_branches`
 
@@ -16848,7 +16848,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.suggestions`
 
-Missing description
+Count of unique users per month who create suggestions in merge request comments
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175109_suggestions.yml)
 
@@ -16856,7 +16856,7 @@ Group: `group::code review`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.create.total_number_of_locked_files`
 
@@ -17496,7 +17496,7 @@ Tiers:
 
 ### `usage_activity_by_stage_monthly.monitor.clusters`
 
-Total GitLab Managed clusters both enabled and disabled
+Count users creating clusters in last 28 days.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180956_clusters.yml)
 
@@ -17504,11 +17504,11 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.monitor.clusters_applications_prometheus`
 
-Total GitLab Managed clusters with Prometheus enabled
+Users creating clusters with Prometheus enabled in last 28 days.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180958_clusters_applications_prometheus.yml)
 
@@ -17516,7 +17516,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.monitor.operations_dashboard_default_dashboard`
 
@@ -17528,7 +17528,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.monitor.operations_dashboard_users_with_projects_added`
 
@@ -17540,7 +17540,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.monitor.projects_incident_sla_enabled`
 

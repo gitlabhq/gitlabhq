@@ -427,21 +427,16 @@ RSpec.describe GroupsHelper do
     before do
       allow(helper).to receive(:current_user) { current_user }
       allow(helper).to receive(:can?).with(current_user, :admin_group, group).and_return(can_admin_group)
-      stub_feature_flags(invite_your_teammates_banner_a: feature_enabled_flag)
       users.take(group_members_count).each { |user| group.add_guest(user) }
     end
 
     using RSpec::Parameterized::TableSyntax
 
-    where(:feature_enabled_flag, :can_admin_group, :group_members_count, :expected_result) do
-      true  | true  | 1 | true
-      true  | false | 1 | false
-      false | true  | 1 | false
-      false | false | 1 | false
-      true  | true  | 2 | false
-      true  | false | 2 | false
-      false | true  | 2 | false
-      false | false | 2 | false
+    where(:can_admin_group, :group_members_count, :expected_result) do
+      true  | 1 | true
+      false | 1 | false
+      true  | 2 | false
+      false | 2 | false
     end
 
     with_them do

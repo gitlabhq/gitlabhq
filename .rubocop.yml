@@ -307,6 +307,9 @@ Cop/ActiveRecordAssociationReload:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Cop/ActiveModelErrorsDirectManipulation:
+  Enabled: true
+
 Gitlab/AvoidFeatureGet:
   Enabled: true
 

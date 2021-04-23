@@ -206,10 +206,9 @@ module GroupsHelper
   end
 
   def show_invite_banner?(group)
-    Feature.enabled?(:invite_your_teammates_banner_a, group) &&
-      can?(current_user, :admin_group, group) &&
-      !just_created? &&
-      !multiple_members?(group)
+    can?(current_user, :admin_group, group) &&
+    !just_created? &&
+    !multiple_members?(group)
   end
 
   def render_setting_to_allow_project_access_token_creation?(group)
