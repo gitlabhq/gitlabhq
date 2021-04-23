@@ -248,5 +248,19 @@ namespace :gitlab do
       ActiveRecord::Base.clear_cache!
       ActiveRecord::Migration.verbose = verbose_was
     end
+
+    desc 'Run all pending batched migrations'
+    task execute_batched_migrations: :environment do
+      Gitlab::Database::BackgroundMigration::BatchedMigration.active.queue_order.each do |migration|
+        Gitlab::AppLogger.info("Executing batched migration #{migration.id} inline")
+        Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new.run_entire_migration(migration)
+      end
+    end
+
+    # Only for development environments,
+    # we execute pending data migrations inline for convenience.
+    Rake::Task['db:migrate'].enhance do
+      Rake::Task['gitlab:db:execute_batched_migrations'].invoke if Rails.env.development?
+    end
   end
 end

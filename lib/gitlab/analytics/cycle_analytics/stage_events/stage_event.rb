@@ -34,14 +34,16 @@ module Gitlab
           # Each StageEvent must expose a timestamp or a timestamp like expression in order to build a range query.
           # Example: get me all the Issue records between start event end end event
           def timestamp_projection
-            raise NotImplementedError
+            columns = column_list
+
+            columns.one? ? columns.first : Arel::Nodes::NamedFunction.new('COALESCE', columns)
           end
 
           # List of columns that are referenced in the `timestamp_projection` expression
           # Example timestamp projection: COALESCE(issue_metrics.created_at, issue_metrics.updated_at)
           # Expected column list: issue_metrics.created_at, issue_metrics.updated_at
           def column_list
-            []
+            raise NotImplementedError
           end
 
           # Optionally a StageEvent may apply additional filtering or join other tables on the base query.

@@ -348,6 +348,26 @@ RSpec.describe 'gitlab:db namespace rake task' do
     end
   end
 
+  describe '#execute_batched_migrations' do
+    subject { run_rake_task('gitlab:db:execute_batched_migrations') }
+
+    let(:migrations) { create_list(:batched_background_migration, 2) }
+    let(:runner) { instance_double('Gitlab::Database::BackgroundMigration::BatchedMigrationRunner') }
+
+    before do
+      allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive_message_chain(:active, :queue_order).and_return(migrations)
+      allow(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner).to receive(:new).and_return(runner)
+    end
+
+    it 'executes all migrations' do
+      migrations.each do |migration|
+        expect(runner).to receive(:run_entire_migration).with(migration)
+      end
+
+      subject
+    end
+  end
+
   def run_rake_task(task_name, arguments = '')
     Rake::Task[task_name].reenable
     Rake.application.invoke_task("#{task_name}#{arguments}")

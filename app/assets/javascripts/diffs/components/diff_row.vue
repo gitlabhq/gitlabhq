@@ -204,27 +204,32 @@ export default {
       <template v-if="line.left && line.left.type !== $options.CONFLICT_MARKER">
         <div
           :class="classNameMapCellLeft"
-          data-testid="leftLineNumber"
+          data-testid="left-line-number"
           class="diff-td diff-line-num"
         >
           <template v-if="!isLeftConflictMarker">
             <span
               v-if="shouldRenderCommentButton && !line.hasDiscussionsLeft"
               v-gl-tooltip
-              data-testid="leftCommentButton"
               class="add-diff-note tooltip-wrapper"
               :title="addCommentTooltipLeft"
             >
-              <button
-                :draggable="glFeatures.dragCommentSelection"
+              <div
+                data-testid="left-comment-button"
+                role="button"
+                tabindex="0"
+                :draggable="!line.left.commentsDisabled && glFeatures.dragCommentSelection"
                 type="button"
                 class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button qa-diff-comment"
                 data-qa-selector="diff_comment_button"
                 :class="{ 'gl-cursor-grab': dragging }"
                 :disabled="line.left.commentsDisabled"
-                @click="handleCommentButton(line.left)"
-                @dragstart="onDragStart({ ...line.left, index })"
-              ></button>
+                :aria-disabled="line.left.commentsDisabled"
+                @click="!line.left.commentsDisabled && handleCommentButton(line.left)"
+                @keydown.enter="!line.left.commentsDisabled && handleCommentButton(line.left)"
+                @keydown.space="!line.left.commentsDisabled && handleCommentButton(line.left)"
+                @dragstart="!line.left.commentsDisabled && onDragStart({ ...line.left, index })"
+              ></div>
             </span>
           </template>
           <a
@@ -238,7 +243,7 @@ export default {
             v-if="line.hasDiscussionsLeft"
             :discussions="line.left.discussions"
             :discussions-expanded="line.left.discussionsExpanded"
-            data-testid="leftDiscussions"
+            data-testid="left-discussions"
             @toggleLineDiscussions="
               toggleLineDiscussions({
                 lineCode: line.left.line_code,
@@ -268,7 +273,7 @@ export default {
           :key="line.left.line_code"
           :class="[parallelViewLeftLineType, { parallel: !inline }]"
           class="diff-td line_content with-coverage left-side"
-          data-testid="leftContent"
+          data-testid="left-content"
           @mousedown="handleParallelLineMouseDown"
         >
           <strong v-if="isLeftConflictMarker">{{ conflictText(line.left) }}</strong>
@@ -277,7 +282,7 @@ export default {
       </template>
       <template v-else-if="!inline || (line.left && line.left.type === $options.CONFLICT_MARKER)">
         <div
-          data-testid="leftEmptyCell"
+          data-testid="left-empty-cell"
           class="diff-td diff-line-num old_line empty-cell"
           :class="emptyCellLeftClassMap"
         >
@@ -313,19 +318,24 @@ export default {
             <span
               v-if="shouldRenderCommentButton && !line.hasDiscussionsRight"
               v-gl-tooltip
-              data-testid="rightCommentButton"
               class="add-diff-note tooltip-wrapper"
               :title="addCommentTooltipRight"
             >
-              <button
-                :draggable="glFeatures.dragCommentSelection"
+              <div
+                data-testid="right-comment-button"
+                role="button"
+                tabindex="0"
+                :draggable="!line.right.commentsDisabled && glFeatures.dragCommentSelection"
                 type="button"
                 class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button qa-diff-comment"
                 :class="{ 'gl-cursor-grab': dragging }"
                 :disabled="line.right.commentsDisabled"
-                @click="handleCommentButton(line.right)"
-                @dragstart="onDragStart({ ...line.right, index })"
-              ></button>
+                :aria-disabled="line.right.commentsDisabled"
+                @click="!line.right.commentsDisabled && handleCommentButton(line.right)"
+                @keydown.enter="!line.right.commentsDisabled && handleCommentButton(line.right)"
+                @keydown.space="!line.right.commentsDisabled && handleCommentButton(line.right)"
+                @dragstart="!line.right.commentsDisabled && onDragStart({ ...line.right, index })"
+              ></div>
             </span>
           </template>
           <a
@@ -339,7 +349,7 @@ export default {
             v-if="line.hasDiscussionsRight"
             :discussions="line.right.discussions"
             :discussions-expanded="line.right.discussionsExpanded"
-            data-testid="rightDiscussions"
+            data-testid="right-discussions"
             @toggleLineDiscussions="
               toggleLineDiscussions({
                 lineCode: line.right.line_code,
@@ -381,7 +391,7 @@ export default {
       </template>
       <template v-else>
         <div
-          data-testid="rightEmptyCell"
+          data-testid="right-empty-cell"
           class="diff-td diff-line-num old_line empty-cell"
           :class="emptyCellRightClassMap"
         ></div>

@@ -82,7 +82,9 @@ cascading_attr :delayed_project_removal
 - `delayed_project_removal_locked_by_ancestor?`
 - `delayed_project_removal_locked_by_application_setting?`
 - `delayed_project_removal?` (Boolean attributes only)
-- `delayed_project_removal_locked_ancestor` - (Returns locked namespace settings object [namespace_id])
+- `delayed_project_removal_locked_ancestor` (Returns locked namespace settings object [namespace_id])
+
+### Attribute reader method (`delayed_project_removal`)
 
 The attribute reader method (`delayed_project_removal`) returns the correct
 cascaded value using the following criteria:
@@ -94,3 +96,12 @@ cascaded value using the following criteria:
 1. Return this namespace's attribute, if not nil.
 1. Return value from nearest ancestor where value is not nil.
 1. Return instance-level application setting.
+
+### `_locked?` method
+
+By default, the `_locked?` method (`delayed_project_removal_locked?`) returns
+`true` if an ancestor of the group or application setting locks the attribute. 
+It returns `false` when called from the group that locked the attribute.
+
+When `include_self: true` is specified, it returns `true` when called from the group that locked the attribute.
+This would be relevant, for example, when checking if an attribute is locked from a project.

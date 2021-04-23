@@ -1031,7 +1031,7 @@ module Gitlab
           [column, temporary_name]
         end
 
-        batched_migration = queue_batched_background_migration(
+        queue_batched_background_migration(
           'CopyColumnUsingBackgroundMigrationJob',
           table,
           primary_key,
@@ -1040,12 +1040,6 @@ module Gitlab
           job_interval: interval,
           batch_size: batch_size,
           sub_batch_size: sub_batch_size)
-
-        if perform_background_migration_inline?
-          # To ensure the schema is up to date immediately we perform the
-          # migration inline in dev / test environments.
-          Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new.run_entire_migration(batched_migration)
-        end
       end
 
       # Performs a concurrent column rename when using PostgreSQL.

@@ -202,6 +202,20 @@ RSpec.describe NamespaceSetting, 'CascadingNamespaceSettingAttribute' do
       it_behaves_like 'not locked'
     end
 
+    context 'when attribute is locked by self' do
+      before do
+        subgroup_settings.update!(lock_delayed_project_removal: true)
+      end
+
+      it 'is not locked by default' do
+        expect(subgroup_settings.delayed_project_removal_locked?).to eq(false)
+      end
+
+      it 'is locked when including self' do
+        expect(subgroup_settings.delayed_project_removal_locked?(include_self: true)).to eq(true)
+      end
+    end
+
     context 'when parent does not lock the attribute' do
       it_behaves_like 'not locked'
     end

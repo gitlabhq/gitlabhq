@@ -8,13 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Import groups from another instance of GitLab **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's enabled on GitLab.com.
-
-## Overview
+> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - Enabled on GitLab.com.
 
 WARNING:
-This feature is [under construction](https://gitlab.com/groups/gitlab-org/-/epics/2771) and currently migrates only some of the Group data. Please see below for the full list of what is included in the migration at this time.
+This feature is [under construction](https://gitlab.com/groups/gitlab-org/-/epics/2771), and migrates only some of the group data. Refer to the following information for the list of what's included in the migration.
 
 Using GitLab Group Migration, you can migrate existing top-level groups from GitLab.com or a self-managed instance. Groups can be migrated to a target instance, as a top-level group, or as a subgroup of any existing top-level group.
 

@@ -5,7 +5,7 @@ require 'set'
 module Gitlab
   module ErrorTracking
     module Processor
-      class SidekiqProcessor < ::Raven::Processor
+      module SidekiqProcessor
         FILTERED_STRING = '[FILTERED]'
 
         class << self
@@ -42,8 +42,6 @@ module Gitlab
           end
 
           def call(event)
-            return event unless ::Feature.enabled?(:sentry_processors_before_send, default_enabled: :yaml)
-
             sidekiq = event&.extra&.dig(:sidekiq)
 
             return event unless sidekiq
@@ -63,29 +61,6 @@ module Gitlab
 
             event
           end
-        end
-
-        def process(value, key = nil)
-          return value if ::Feature.enabled?(:sentry_processors_before_send, default_enabled: :yaml)
-
-          sidekiq = value.dig(:extra, :sidekiq)
-
-          return value unless sidekiq
-
-          sidekiq = sidekiq.deep_dup
-          sidekiq.delete(:jobstr)
-
-          # 'args' in this hash => from Gitlab::ErrorTracking.track_*
-          # 'args' in :job => from default error handler
-          job_holder = sidekiq.key?('args') ? sidekiq : sidekiq[:job]
-
-          if job_holder['args']
-            job_holder['args'] = self.class.filter_arguments(job_holder['args'], job_holder['class']).to_a
-          end
-
-          value[:extra][:sidekiq] = sidekiq
-
-          value
         end
       end
     end

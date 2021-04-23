@@ -217,7 +217,7 @@ RSpec.describe Gitlab::ErrorTracking do
     end
   end
 
-  shared_examples 'event processors' do
+  context 'event processors' do
     subject(:track_exception) { described_class.track_exception(exception, extra) }
 
     before do
@@ -311,21 +311,5 @@ RSpec.describe Gitlab::ErrorTracking do
         end
       end
     end
-  end
-
-  context 'with sentry_processors_before_send enabled' do
-    before do
-      stub_feature_flags(sentry_processors_before_send: true)
-    end
-
-    include_examples 'event processors'
-  end
-
-  context 'with sentry_processors_before_send disabled' do
-    before do
-      stub_feature_flags(sentry_processors_before_send: false)
-    end
-
-    include_examples 'event processors'
   end
 end

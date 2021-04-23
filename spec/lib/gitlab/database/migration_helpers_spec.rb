@@ -1902,22 +1902,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           )
         end
       end
-
-      context 'when the migration should be performed inline' do
-        let(:columns) { column }
-
-        it 'calls the runner to run the entire migration' do
-          expect(model).to receive(:perform_background_migration_inline?).and_return(true)
-
-          expect_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |scheduler|
-            expect(scheduler).to receive(:run_entire_migration) do |batched_migration|
-              expect(batched_migration).to eq(migration_relation.last)
-            end
-          end
-
-          model.backfill_conversion_of_integer_to_bigint(table, column, batch_size: 2, sub_batch_size: 1)
-        end
-      end
     end
   end
 

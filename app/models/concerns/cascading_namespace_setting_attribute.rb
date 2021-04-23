@@ -85,7 +85,7 @@ module CascadingNamespaceSettingAttribute
           next self[attribute] unless self.class.cascading_settings_feature_enabled?
 
           next self[attribute] if will_save_change_to_attribute?(attribute)
-          next locked_value(attribute) if cascading_attribute_locked?(attribute)
+          next locked_value(attribute) if cascading_attribute_locked?(attribute, include_self: false)
           next self[attribute] unless self[attribute].nil?
 
           cascaded_value = cascaded_ancestor_value(attribute)
@@ -115,8 +115,8 @@ module CascadingNamespaceSettingAttribute
     end
 
     def define_lock_methods(attribute)
-      define_method("#{attribute}_locked?") do
-        cascading_attribute_locked?(attribute)
+      define_method("#{attribute}_locked?") do |include_self: false|
+        cascading_attribute_locked?(attribute, include_self: include_self)
       end
 
       define_method("#{attribute}_locked_by_ancestor?") do
@@ -144,7 +144,7 @@ module CascadingNamespaceSettingAttribute
     def define_validator_methods(attribute)
       define_method("#{attribute}_changeable?") do
         return unless cascading_attribute_changed?(attribute)
-        return unless cascading_attribute_locked?(attribute)
+        return unless cascading_attribute_locked?(attribute, include_self: false)
 
         errors.add(attribute, s_('CascadingSettings|cannot be changed because it is locked by an ancestor'))
       end
@@ -152,7 +152,7 @@ module CascadingNamespaceSettingAttribute
       define_method("lock_#{attribute}_changeable?") do
         return unless cascading_attribute_changed?("lock_#{attribute}")
 
-        if cascading_attribute_locked?(attribute)
+        if cascading_attribute_locked?(attribute, include_self: false)
           return errors.add(:"lock_#{attribute}", s_('CascadingSettings|cannot be changed because it is locked by an ancestor'))
         end
 
@@ -213,8 +213,9 @@ module CascadingNamespaceSettingAttribute
     Gitlab::CurrentSettings.public_send("lock_#{attribute}") # rubocop:disable GitlabSecurity/PublicSend
   end
 
-  def cascading_attribute_locked?(attribute)
-    locked_by_ancestor?(attribute) || locked_by_application_setting?(attribute)
+  def cascading_attribute_locked?(attribute, include_self:)
+    locked_by_self = include_self ? public_send("lock_#{attribute}?") : false # rubocop:disable GitlabSecurity/PublicSend
+    locked_by_self || locked_by_ancestor?(attribute) || locked_by_application_setting?(attribute)
   end
 
   def cascading_attribute_changed?(attribute)
