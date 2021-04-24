@@ -142,7 +142,7 @@ module Gitlab
       def fetch_config
         return false unless self.class._raw_config
 
-        yaml = YAML.load(self.class._raw_config)
+        yaml = YAML.safe_load(self.class._raw_config)
 
         # If the file has content but it's invalid YAML, `load` returns false
         if yaml

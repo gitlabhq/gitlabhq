@@ -638,16 +638,6 @@ Rails/WhereEquals:
 Rails/WhereExists:
   Enabled: false
 
-# Offense count: 8
-# Cop supports --auto-correct.
-Security/YAMLLoad:
-  Exclude:
-    - 'lib/gitlab/redis/wrapper.rb'
-    - 'lib/system_check/incoming_email/imap_authentication_check.rb'
-    - 'spec/config/mail_room_spec.rb'
-    - 'spec/initializers/secret_token_spec.rb'
-    - 'spec/lib/gitlab/prometheus/additional_metrics_parser_spec.rb'
-
 # Offense count: 240
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

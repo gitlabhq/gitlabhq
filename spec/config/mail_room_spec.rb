@@ -21,7 +21,7 @@ RSpec.describe 'mail_room.yml' do
     status = result.status
     raise "Error interpreting #{mailroom_config_path}: #{output}" unless status == 0
 
-    YAML.load(output)
+    YAML.safe_load(output, permitted_classes: [Symbol])
   end
 
   before do
