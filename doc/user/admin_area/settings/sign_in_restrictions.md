@@ -26,8 +26,6 @@ You can restrict the password authentication for web interface and Git over HTTP
 ## Admin Mode
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2158) in GitLab 13.10.
-> - It's [deployed behind the feature flag](../../../user/feature_flags.md) `:user_mode_in_session`, disabled by default.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to enable it.
 
 When this feature is enabled, instance administrators are limited as regular users. During that period,
 they do not have access to all projects, groups, or the **Admin Area** menu.
@@ -81,25 +79,6 @@ If necessary, you can disable **Admin Mode** as an administrator by using one of
   ::Gitlab::CurrentSettings.update_attributes!(admin_mode: false)
   ```
   
-## Enable or disable Admin Mode
-
-Admin Mode is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:user_mode_in_session)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:user_mode_in_session)
-```
-
 ## Two-factor authentication
 
 When this feature is enabled, all users must use the [two-factor authentication](../../profile/account/two_factor_authentication.md).
