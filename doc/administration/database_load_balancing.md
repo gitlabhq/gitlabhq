@@ -161,11 +161,11 @@ records, eventually dropping this hostname from rotation if it can't resolve its
 The `interval` value specifies the _minimum_ time between checks. If the A
 record has a TTL greater than this value, then service discovery will honor said
 TTL. For example, if the TTL of the A record is 90 seconds, then service
-discovery will wait at least 90 seconds before checking the A record again.
+discovery waits at least 90 seconds before checking the A record again.
 
 When the list of hosts is updated, it might take a while for the old connections
 to be terminated. The `disconnect_timeout` setting can be used to enforce an
-upper limit on the time it will take to terminate all old database connections.
+upper limit on the time it takes to terminate all old database connections.
 
 Some nameservers (like [Consul](https://www.consul.io/docs/discovery/dns#udp-based-dns-queries)) can return a truncated list of hosts when
 queried over UDP. To overcome this issue, you can use TCP for querying by setting
@@ -179,7 +179,7 @@ all-in-one package based installations as well as GitLab Helm chart deployments.
 
 If you use an application server that forks, such as Unicorn, you _have to_
 update your Unicorn configuration to start service discovery _after_ a fork.
-Failure to do so will lead to service discovery only running in the parent
+Failure to do so leads to service discovery only running in the parent
 process. If you are using Unicorn, then you can add the following to your
 Unicorn configuration file:
 
@@ -190,13 +190,13 @@ after_fork do |server, worker|
 end
 ```
 
-This will ensure that service discovery is started in both the parent and all
+This ensures that service discovery is started in both the parent and all
 child processes.
 
 ## Balancing queries
 
-Read-only `SELECT` queries will be balanced among all the secondary hosts.
-Everything else (including transactions) will be executed on the primary.
+Read-only `SELECT` queries balance among all the secondary hosts.
+Everything else (including transactions) executes on the primary.
 Queries such as `SELECT ... FOR UPDATE` are also executed on the primary.
 
 ## Prepared statements
@@ -207,19 +207,19 @@ response timings.
 
 ## Primary sticking
 
-After a write has been performed, GitLab will stick to using the primary for a
-certain period of time, scoped to the user that performed the write. GitLab will
-revert back to using secondaries when they have either caught up, or after 30
+After a write has been performed, GitLab sticks to using the primary for a
+certain period of time, scoped to the user that performed the write. GitLab 
+reverts back to using secondaries when they have either caught up, or after 30
 seconds.
 
 ## Failover handling
 
-In the event of a failover or an unresponsive database, the load balancer will
-try to use the next available host. If no secondaries are available the
+In the event of a failover or an unresponsive database, the load balancer
+tries to use the next available host. If no secondaries are available the
 operation is performed on the primary instead.
 
-In the event of a connection error being produced when writing data, the
-operation will be retried up to 3 times using an exponential back-off.
+If a connection error occurs while writing data, the
+operation is retried up to 3 times using an exponential back-off.
 
 When using load balancing, you should be able to safely restart a database server
 without it immediately leading to errors being presented to the users.
@@ -251,9 +251,9 @@ For example:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3526) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
 
-To prevent reading from an outdated secondary the load balancer will check if it
+To prevent reading from an outdated secondary the load balancer checks if it
 is in sync with the primary. If the data is determined to be recent enough the
-secondary can be used, otherwise it will be ignored. To reduce the overhead of
+secondary is used, otherwise it is ignored. To reduce the overhead of
 these checks we only perform these checks at certain intervals.
 
 There are three configuration options that influence this behavior:

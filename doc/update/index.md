@@ -198,7 +198,7 @@ Backward-incompatible changes and migrations are reserved for major versions.
 We cannot guarantee that upgrading between major versions will be seamless.
 It is suggested to upgrade to the latest available *minor* version within
 your major version before proceeding to the next major version.
-Doing this will address any backward-incompatible changes or deprecations
+Doing this addresses any backward-incompatible changes or deprecations
 to help ensure a successful upgrade to the next major release.
 Identify a [supported upgrade path](#upgrade-paths).
 
@@ -212,7 +212,7 @@ before upgrading to a new major version. To see the current size of the `backgro
 [Check for background migrations before upgrading](#checking-for-background-migrations-before-upgrading).
 
 If you have enabled the [Elasticsearch
-integration](../integration/elasticsearch.md), then you will also need to ensure
+integration](../integration/elasticsearch.md), then ensure
 all Advanced Search migrations are completed in the last minor version within
 your current version. Be sure to [check for pending Advanced Search
 migrations](#checking-for-pending-advanced-search-migrations) before proceeding
@@ -250,8 +250,8 @@ migrations are performed in the background by Sidekiq and are often used for
 migrating data. Background migrations are only added in the monthly releases.
 
 Certain major/minor releases may require a set of background migrations to be
-finished. To guarantee this such a release will process any remaining jobs
-before continuing the upgrading procedure. While this won't require downtime
+finished. To guarantee this, such a release processes any remaining jobs
+before continuing the upgrading procedure. While this doesn't require downtime
 (if the above conditions are met) we recommend users to keep at least 1 week
 between upgrading major/minor releases, allowing the background migrations to
 finish. The time necessary to complete these migrations can be reduced by
@@ -259,7 +259,7 @@ increasing the number of Sidekiq workers that can process jobs in the
 `background_migration` queue. To see the size of this queue,
 [Check for background migrations before upgrading](#checking-for-background-migrations-before-upgrading).
 
-As a rule of thumb, any database smaller than 10 GB won't take too much time to
+As a rule of thumb, any database smaller than 10 GB doesn't take too much time to
 upgrade; perhaps an hour at most per minor release. Larger databases however may
 require more time, but this is highly dependent on the size of the database and
 the migrations that are being performed.
@@ -277,17 +277,17 @@ _have_ to first upgrade to a 9.5.Z release.
 
 **Example 2:** You are running a large GitLab installation using version 9.4.2,
 which is the latest patch release of 9.4. GitLab 9.5 includes some background
-migrations, and 10.0 will require these to be completed (processing any
+migrations, and 10.0 requires these to be completed (processing any
 remaining jobs for you). Skipping 9.5 is not possible without downtime, and due
 to the background migrations would require potentially hours of downtime
 depending on how long it takes for the background migrations to complete. To
-work around this you will have to upgrade to 9.5.Z first, then wait at least a
+work around this you have to upgrade to 9.5.Z first, then wait at least a
 week before upgrading to 10.0.
 
 **Example 3:** You use MySQL as the database for GitLab. Any upgrade to a new
-major/minor release will require downtime. If a release includes any background
+major/minor release requires downtime. If a release includes any background
 migrations this could potentially lead to hours of downtime, depending on the
-size of your database. To work around this you will have to use PostgreSQL and
+size of your database. To work around this you must use PostgreSQL and
 meet the other online upgrade requirements mentioned above.
 
 ### Steps
@@ -334,7 +334,7 @@ At the end of those release posts, there are three sections to look for:
 - Removals
 - Important notes on upgrading
 
-These will include:
+These include:
 
 - Steps you need to perform as part of an upgrade.
   For example [8.12](https://about.gitlab.com/releases/2016/09/22/gitlab-8-12-released/#upgrade-barometer)
@@ -359,7 +359,7 @@ Git 2.31.x and later is required. We recommend you use the
 
 ### 13.6.0
 
-Ruby 2.7.2 is required. GitLab will not start with Ruby 2.6.6 or older versions.
+Ruby 2.7.2 is required. GitLab does not start with Ruby 2.6.6 or older versions.
 
 The required Git version is Git v2.29 or higher.
 
@@ -374,7 +374,7 @@ v2.24 remains the same.
 
 ### 13.2.0
 
-GitLab installations that have multiple web nodes will need to be
+GitLab installations that have multiple web nodes must be
 [upgraded to 13.1](#1310) before upgrading to 13.2 (and later) due to a
 breaking change in Rails that can result in authorization issues.
 
@@ -396,14 +396,14 @@ In 13.1.0, you must upgrade to either:
 - At least Git v2.24 (previously, the minimum required version was Git v2.22).
 - The recommended Git v2.26.
 
-Failure to do so will result in internal errors in the Gitaly service in some RPCs due
+Failure to do so results in internal errors in the Gitaly service in some RPCs due
 to the use of the new `--end-of-options` Git flag.
 
 Additionally, in GitLab 13.1.0, the version of [Rails was upgraded from 6.0.3 to
 6.0.3.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33454).
 The Rails upgrade included a change to CSRF token generation which is
 not backwards-compatible - GitLab servers with the new Rails version
-will generate CSRF tokens that are not recognizable by GitLab servers
+generate CSRF tokens that are not recognizable by GitLab servers
 with the older Rails version - which could cause non-GET requests to
 fail for [multi-node GitLab installations](https://docs.gitlab.com/omnibus/update/#multi-node--ha-deployment).
 

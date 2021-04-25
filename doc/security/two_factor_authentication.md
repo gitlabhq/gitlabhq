@@ -23,8 +23,8 @@ want to enforce everyone to set up 2FA, you can choose from two different ways:
 - Enforce on next login.
 - Suggest on next login, but allow a grace period before enforcing.
 
-After the configured grace period has elapsed, users will be able to sign in but
-won't be able to leave the 2FA configuration area at `/profile/two_factor_auth`.
+After the configured grace period has elapsed, users can sign in but
+cannot leave the 2FA configuration area at `/profile/two_factor_auth`.
 
 To enable 2FA for all users:
 
@@ -66,21 +66,21 @@ The following are important notes about 2FA:
 - If you add additional members to a project within a group or subgroup that has
   2FA enabled, 2FA is **not** required for those individually added members.
 - If there are multiple 2FA requirements (for example, group + all users, or multiple
-  groups) the shortest grace period will be used.
+  groups) the shortest grace period is used.
 - It is possible to disallow subgroups from setting up their own 2FA requirements.
-  Navigate to the top-level group's **Settings > General > Permissions, LFS, 2FA > Two-factor authentication** and uncheck the **Allow subgroups to set up their own two-factor authentication rule** field. This action will cause all subgroups with 2FA requirements to stop requiring that from their members.
+  Navigate to the top-level group's **Settings > General > Permissions, LFS, 2FA > Two-factor authentication** and uncheck the **Allow subgroups to set up their own two-factor authentication rule** field. This action causes all subgroups with 2FA requirements to stop requiring that from their members.
 
 ## Disabling 2FA for everyone
 
 WARNING:
 Disabling 2FA for everyone does not disable the [enforce 2FA for all users](#enforcing-2fa-for-all-users)
 or [enforce 2FA for all users in a group](#enforcing-2fa-for-all-users-in-a-group)
-settings. In addition to the steps in this section, you will need to disable any enforced 2FA
+settings. In addition to the steps in this section, you must disable any enforced 2FA
 settings so users aren't asked to set up 2FA again, the next time the user signs in to GitLab.
 Disabling 2FA for everyone does not disable the [enforce 2FA for all users](#enforcing-2fa-for-all-users)
 or [enforce 2FA for all users in a group](#enforcing-2fa-for-all-users-in-a-group)
 settings if they have been configured. In addition to the steps in this section,
-you will need to disable any enforced 2FA settings so users aren't asked to setup
+you must disable any enforced 2FA settings so users aren't asked to setup
 2FA again when the next login to GitLab.
 
 There may be some special situations where you want to disable 2FA for everyone
@@ -95,7 +95,7 @@ sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_EN
 ```
 
 WARNING:
-This is a permanent and irreversible action. Users will have to
+This is a permanent and irreversible action. Users have to
 reactivate 2FA from scratch if they want to use it again.
 
 <!-- ## Troubleshooting

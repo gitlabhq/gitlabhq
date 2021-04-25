@@ -37,22 +37,22 @@ Note the following:
   for how you can export a project through the UI.
 - Imports from a newer version of GitLab are not supported.
   The Importing GitLab version must be greater than or equal to the Exporting GitLab version.
-- Imports will fail unless the import and export GitLab instances are
+- Imports fail unless the import and export GitLab instances are
   compatible as described in the [Version history](#version-history).
 - Exports are generated in your configured `shared_path`, a temporary [shared directory](../../../development/shared_files.md)
   and are moved to your configured `uploads_directory`. Every 24 hours, a specific worker deletes these export files.
 - Group members are exported as project members, as long as the user has
   maintainer or administrator access to the group where the exported project lives.
-- Project members with owner access will be imported as maintainers.
+- Project members with owner access are imported as maintainers.
 - Imported users can be mapped by their primary email on self-managed instances, if an administrative user (not an owner) does the import.
   Otherwise, a supplementary comment is left to mention that the original author and
-  the MRs, notes, or issues will be owned by the importer.
+  the MRs, notes, or issues are owned by the importer.
 - If an imported project contains merge requests originating from forks,
-  then new branches associated with such merge requests will be created
+  then new branches associated with such merge requests are created
   within a project during the import/export. Thus, the number of branches
   in the exported project could be bigger than in the original project.
 - Deploy keys allowed to push to protected branches are not exported. Therefore,
-  you will need to recreate this association by first enabling these deploy keys in your
+  you need to recreate this association by first enabling these deploy keys in your
   imported project and then updating your protected branches accordingly.
 
 ## Version history
@@ -95,7 +95,7 @@ Prior to 13.0 this was a defined compatibility table:
 Projects can be exported and imported only between versions of GitLab with matching Import/Export versions.
 
 For example, 8.10.3 and 8.11 have the same Import/Export version (0.1.3)
-and the exports between them will be compatible.
+and the exports between them are compatible.
 
 ## Between CE and EE
 
@@ -106,7 +106,7 @@ If you're exporting a project from the Enterprise Edition to the Community Editi
 
 ## Exported contents
 
-The following items will be exported:
+The following items are exported:
 
 - Project and wiki repositories
 - Project uploads
@@ -120,7 +120,7 @@ The following items will be exported:
 - Push Rules
 - Awards
 
-The following items will **not** be exported:
+The following items are **not** exported:
 
 - Build traces and artifacts
 - Container registry images
@@ -171,7 +171,7 @@ To export a project and its data, follow these steps:
    ![Select file](img/import_export_select_file.png)
 
 1. Click on **Import project** to begin importing. Your newly imported project
-   page will appear soon.
+   page appears shortly.
 
 NOTE:
 If use of the `Internal` visibility level

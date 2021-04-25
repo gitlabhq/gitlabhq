@@ -251,13 +251,13 @@ can be made. If the indices:
 - Can be made, Escalate this to GitLab support.
 
 If the issue is not with creating an empty index, the next step is to check for errors
-during the indexing of projects. If errors do occur, they will either stem from the indexing:
+during the indexing of projects. If errors do occur, they stem from either the indexing:
 
 - On the GitLab side. You need to rectify those. If they are not
   something you are familiar with, contact GitLab support for guidance.
 - Within the Elasticsearch instance itself. See if the error is [documented and has a fix](../../integration/elasticsearch.md#troubleshooting). If not, speak with your Elasticsearch administrator.
 
-If the indexing process does not present errors, you will want to check the status of the indexed projects. You can do this via the following Rake tasks:
+If the indexing process does not present errors, check the status of the indexed projects. You can do this via the following Rake tasks:
 
 - [`sudo gitlab-rake gitlab:elastic:index_projects_status`](../../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks) (shows the overall status)
 - [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](../../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks) (shows specific projects that are not indexed)
@@ -290,11 +290,11 @@ If the issue is:
   regarding the error(s) you are seeing. If you are unsure here, it never hurts to reach
   out to GitLab support.
 
-Beyond that, you will want to review the error. If it is:
+Beyond that, review the error. If it is:
 
 - Specifically from the indexer, this could be a bug/issue and should be escalated to
   GitLab support.
-- An OS issue, you will want to reach out to your systems administrator.
+- An OS issue, you should reach out to your systems administrator.
 - A `Faraday::TimeoutError (execution expired)` error **and** you're using a proxy,
   [set a custom `gitlab_rails['env']` environment variable, called `no_proxy`](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
   with the IP address of your Elasticsearch host.
@@ -365,7 +365,7 @@ require contacting an Elasticsearch administrator or GitLab Support.
 
 The best place to start while debugging issues with an Advanced Search
 migration is the [`elasticsearch.log` file](../logs.md#elasticsearchlog).
-Migrations will log information while a migration is in progress and any
+Migrations log information while a migration is in progress and any
 errors encountered. Apply fixes for any errors found in the log and retry
 the migration.
 

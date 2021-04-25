@@ -87,7 +87,7 @@ For source installations, make sure the `kerberos` gem group
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-GitLab will now offer the `negotiate` authentication method for signing in and
+GitLab now offers the `negotiate` authentication method for signing in and
 HTTP Git access, enabling Git clients that support this authentication protocol
 to authenticate with Kerberos tokens.
 
@@ -159,7 +159,7 @@ knowledge can be a security risk.
 ## Link Kerberos and LDAP accounts together
 
 If your users sign in with Kerberos, but you also have [LDAP integration](../administration/auth/ldap/index.md)
-enabled, your users will be linked to their LDAP accounts on their first sign-in.
+enabled, your users are linked to their LDAP accounts on their first sign-in.
 For this to work, some prerequisites must be met:
 
 The Kerberos username must match the LDAP user's UID. You can choose which LDAP
@@ -170,7 +170,7 @@ The Kerberos realm must match the domain part of the LDAP user's Distinguished
 Name. For instance, if the Kerberos realm is `AD.EXAMPLE.COM`, then the LDAP
 user's Distinguished Name should end in `dc=ad,dc=example,dc=com`.
 
-Taken together, these rules mean that linking will only work if your users'
+Taken together, these rules mean that linking only works if your users'
 Kerberos usernames are of the form `foo@AD.EXAMPLE.COM` and their
 LDAP Distinguished Names look like `sAMAccountName=foo,dc=ad,dc=example,dc=com`.
 
@@ -180,7 +180,7 @@ LDAP Distinguished Names look like `sAMAccountName=foo,dc=ad,dc=example,dc=com`.
 
 You can configure custom allowed realms when the user's Kerberos realm doesn't
 match the domain from the user's LDAP DN. The configuration value must specify
-all domains that users may be expected to have. Any other domains will be
+all domains that users may be expected to have. Any other domains are
 ignored and an LDAP identity won't be linked.
 
 **For Omnibus installations**
@@ -236,8 +236,8 @@ authentication fails.
 
 For GitLab users to be able to use either `basic` or `negotiate` authentication
 with older Git versions, it is possible to offer Kerberos ticket-based
-authentication on a different port (e.g. 8443) while the standard port will
-keep offering only `basic` authentication.
+authentication on a different port (e.g. 8443) while the standard port offers
+only `basic` authentication.
 
 **For source installations with HTTPS**
 
@@ -280,14 +280,14 @@ keep offering only `basic` authentication.
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-After this change, all Git remote URLs will have to be updated to
+After this change, Git remote URLs have to be updated to
 `https://gitlab.example.com:8443/mygroup/myproject.git` in order to use
 Kerberos ticket-based authentication.
 
 ## Upgrading from password-based to ticket-based Kerberos sign-ins
 
 Prior to GitLab 8.10 Enterprise Edition, users had to submit their
-Kerberos username and password to GitLab when signing in. We will
+Kerberos username and password to GitLab when signing in. We plan to
 remove support for password-based Kerberos sign-ins in a future
 release, so we recommend that you upgrade to ticket-based sign-ins.
 
@@ -343,14 +343,14 @@ to a larger value in [the NGINX configuration](http://nginx.org/en/docs/http/ngx
 
 With Kerberos SPNEGO authentication, the browser is expected to send a list of
 mechanisms it supports to GitLab. If it doesn't support any of the mechanisms
-GitLab supports, authentication will fail with a message like this in the log:
+GitLab supports, authentication fails with a message like this in the log:
 
 ```plaintext
 OmniauthKerberosSpnegoController: failed to process Negotiate/Kerberos authentication: gss_accept_sec_context did not return GSS_S_COMPLETE: An unsupported mechanism was requested Unknown error
 ```
 
 This is usually seen when the browser is unable to contact the Kerberos server
-directly. It will fall back to an unsupported mechanism known as
+directly. It falls back to an unsupported mechanism known as
 [`IAKERB`](https://k5wiki.kerberos.org/wiki/Projects/IAKERB), which tries to use
 the GitLab server as an intermediary to the Kerberos server.
 
@@ -359,10 +359,10 @@ client machine and the Kerberos server - this is a prerequisite! Traffic may be
 blocked by a firewall, or the DNS records may be incorrect.
 
 Another failure mode occurs when the forward and reverse DNS records for the
-GitLab server do not match. Often, Windows clients will work in this case, while
-Linux clients will fail. They use reverse DNS while detecting the Kerberos
-realm. If they get the wrong realm, then ordinary Kerberos mechanisms will fail,
-so the client will fall back to attempting to negotiate `IAKERB`, leading to the
+GitLab server do not match. Often, Windows clients work in this case while
+Linux clients fail. They use reverse DNS while detecting the Kerberos
+realm. If they get the wrong realm then ordinary Kerberos mechanisms fail,
+so the client falls back to attempting to negotiate `IAKERB`, leading to the
 above error message.
 
 To fix this, ensure that the forward and reverse DNS for your GitLab server

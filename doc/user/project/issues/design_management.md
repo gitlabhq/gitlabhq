@@ -31,7 +31,7 @@ to be enabled:
 - For self-managed instances, a GitLab administrator must have
   [enabled LFS globally](../../../administration/lfs/index.md).
 - For both GitLab.com and self-managed instances: LFS must be enabled for the project itself.
-  If enabled globally, LFS will be enabled by default to all projects. To enable LFS on the
+  If enabled globally, LFS is enabled by default to all projects. To enable LFS on the
   project level, navigate to your project's **Settings > General**, expand **Visibility, project features, permissions**
   and enable **Git Large File Storage**.
 
@@ -56,7 +56,7 @@ Support for [PDF](https://gitlab.com/gitlab-org/gitlab/issues/32811) is planned 
 - From GitLab 13.1, Design filenames are limited to 255 characters.
 - Design Management data
   [isn't deleted when a project is destroyed](https://gitlab.com/gitlab-org/gitlab/-/issues/13429) yet.
-- Design Management data [won't be deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/13427)
+- Design Management data [isn't deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/13427)
   when an issue is deleted.
 - From GitLab 12.7, Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#limitations-on-replicationverification)
   by Geo but [not verified](https://gitlab.com/gitlab-org/gitlab/-/issues/32467).
@@ -102,19 +102,19 @@ the clipboard by simultaneously clicking <kbd>Control</kbd> + <kbd>Command</kbd>
 
 Copy-and-pasting has some limitations:
 
-- You can paste only one image at a time. When copy/pasting multiple files, only the first one will be uploaded.
-- All images will be converted to `png` format under the hood, so when you want to copy/paste `gif` file, it will result in broken animation.
-- If you are pasting a screenshot from the clipboard, it will be renamed to `design_<timestamp>.png`
+- You can paste only one image at a time. When copy/pasting multiple files, only the first one is uploaded.
+- All images are converted to `png` format under the hood, so when you want to copy/paste `gif` file, it results in broken animation.
+- If you are pasting a screenshot from the clipboard, it is renamed to `design_<timestamp>.png`
 - Copy/pasting designs is not supported on Internet Explorer.
 
-Designs with the same filename as an existing uploaded design will create a new version
-of the design, and will replace the previous version. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9, dropping a design on an existing uploaded design will also create a new version,
+Designs with the same filename as an existing uploaded design create a new version
+of the design, and replaces the previous version. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9, dropping a design on an existing uploaded design also creates a new version,
 provided the filenames are the same.
 
 ### Skipped designs
 
-Designs with the same filename as an existing uploaded design _and_ whose content has not changed will be skipped.
-This means that no new version of the design will be created. When designs are skipped, you will be made aware via a warning
+Designs with the same filename as an existing uploaded design _and_ whose content has not changed are skipped.
+This means that no new version of the design is created. When designs are skipped, you are made aware via a warning
 message on the Issue.
 
 ## Viewing designs
@@ -198,7 +198,7 @@ Different discussions have different pin numbers:
 
 ![Discussions on designs](img/adding_note_to_design_2.png)
 
-From GitLab 12.5 on, new discussions will be outputted to the issue activity,
+From GitLab 12.5 on, new discussions are outputted to the issue activity,
 so that everyone involved can participate in the discussion.
 
 ## Resolve Design threads
@@ -214,13 +214,13 @@ There are two ways to resolve/unresolve a Design thread:
   ![Resolve thread icon](img/resolve_design-discussion_icon_v13_1.png)
 
 1. Design threads can also be resolved or unresolved in their threads by using a checkbox.
-  When replying to a comment, you will see a checkbox that you can click in order to resolve or unresolve
+  When replying to a comment, there is a checkbox that you can click in order to resolve or unresolve
   the thread once published:
 
   ![Resolve checkbox](img/resolve_design-discussion_checkbox_v13_1.png)
 
-Note that your resolved comment pins will disappear from the Design to free up space for new discussions.
-However, if you need to revisit or find a resolved discussion, all of your resolved threads will be
+Note that your resolved comment pins disappear from the Design to free up space for new discussions.
+However, if you need to revisit or find a resolved discussion, all of your resolved threads are
 available in the **Resolved Comment** area at the bottom of the right sidebar.
 
 ## Add to dos for designs
@@ -247,7 +247,7 @@ somewhere with:
 See https://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png
 ```
 
-This will be rendered as:
+This is rendered as:
 
 > See [#123[homescreen.png]](https://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png)
 

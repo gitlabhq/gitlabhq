@@ -259,7 +259,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `log_directory`                         | Absolute path to a log directory. |
 | `log_format`                            | The log output format: `text` or `json`. |
 | `log_verbose`                           | Verbose logging, true/false. |
-| `propagate_correlation_id`              | Set to true (false by default) to re-use existing Correlation ID from the incoming request header `X-Request-ID` if present. If a reverse proxy sets this header, the value will be propagated in the request chain. |
+| `propagate_correlation_id`              | Set to true (false by default) to re-use existing Correlation ID from the incoming request header `X-Request-ID` if present. If a reverse proxy sets this header, the value is propagated in the request chain. |
 | `max_connections`                       | Limit on the number of concurrent connections to the HTTP, HTTPS or proxy listeners. |
 | `metrics_address`                       | The address to listen on for metrics requests. |
 | `redirect_http`                         | Redirect pages from HTTP to HTTPS, true/false. |
@@ -355,7 +355,7 @@ world. Custom domains and TLS are supported.
    listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. If you haven't named your certificate and key `example.io.crt` and `example.io.key` respectively,
-then you'll need to also add the full paths as shown below:
+then you need to also add the full paths as shown below:
 
    ```ruby
    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
@@ -468,7 +468,7 @@ To do that:
 
 WARNING:
 For self-managed installations, all public websites remain private until they are
-redeployed. This issue will be resolved by
+redeployed. Resolve this issue by
 [sourcing domain configuration from the GitLab API](https://gitlab.com/gitlab-org/gitlab/-/issues/218357).
 
 ### Running behind a proxy
@@ -555,9 +555,9 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/438) in GitLab 13.10.
 
-Setting the `propagate_correlation_id` to true will allow installations behind a reverse proxy generate
+Setting the `propagate_correlation_id` to true allows installations behind a reverse proxy to generate
 and set a correlation ID to requests sent to GitLab Pages. When a reverse proxy sets the header value `X-Request-ID`,
-the value will be propagated in the request chain.
+the value propagates in the request chain.
 Users [can find the correlation ID in the logs](../troubleshooting/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
 
 To enable the propagation of the correlation ID:
@@ -648,7 +648,7 @@ The default is 100MB.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16610) in GitLab 12.7.
 
 NOTE:
-Only GitLab admin users will be able to view and override the **Maximum size of Pages** setting.
+Only GitLab admin users are able to view and override the **Maximum size of Pages** setting.
 
 To override the global maximum pages size for a specific project:
 
@@ -771,7 +771,7 @@ The default value for Omnibus installations is `nil`.
 If left unchanged, GitLab Pages tries to use any available source (either `gitlab` or `disk`). The
 preferred source is `gitlab`, which uses [API-based configuration](#gitlab-api-based-configuration).
 
-On large GitLab instances, using the API-based configuration will significantly improve the pages daemon startup time, as there is no need to load all custom domains configuration into memory.
+On large GitLab instances, using the API-based configuration significantly improves the pages daemon startup time, as there is no need to load all custom domains configuration into memory.
 
 For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/).
 
@@ -839,25 +839,25 @@ Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
 
 Examples:
 
-- Increasing `gitlab_cache_expiry` will allow items to exist in the cache longer.
+- Increasing `gitlab_cache_expiry` allows items to exist in the cache longer.
 This setting might be useful if the communication between GitLab Pages and GitLab Rails
 is not stable.
 
-- Increasing `gitlab_cache_refresh` will reduce the frequency at which GitLab Pages
+- Increasing `gitlab_cache_refresh` reduces the frequency at which GitLab Pages
 requests a domain's configuration from GitLab Rails. This setting might be useful
 GitLab Pages generates too many requests to GitLab API and content does not change frequently.
 
-- Decreasing `gitlab_cache_cleanup` will remove expired items from the cache more frequently,
+- Decreasing `gitlab_cache_cleanup` removes expired items from the cache more frequently,
 reducing the memory usage of your Pages node.
 
 - Decreasing `gitlab_retrieval_timeout` allows you to stop the request to GitLab Rails
-more quickly. Increasing it will allow more time to receive a response from the API,
+more quickly. Increasing it allows more time to receive a response from the API,
 useful in slow networking environments.
 
-- Decreasing `gitlab_retrieval_interval` will make requests to the API more frequently,
+- Decreasing `gitlab_retrieval_interval` makes requests to the API more frequently,
 only when there is an error response from the API, for example a connection timeout.
 
-- Decreasing `gitlab_retrieval_retries` will reduce the number of times a domain's
+- Decreasing `gitlab_retrieval_retries` reduces the number of times a domain's
 configuration is tried to be resolved automatically before reporting an error.
 
 ## Using object storage
@@ -951,7 +951,9 @@ These ZIP archives can be stored either locally on disk storage or on the [objec
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59003) in GitLab 13.11.
 
-GitLab will [try to automatically migrate](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54578) the old storage format to the new ZIP-based one when you upgrade to GitLab 13.11 or further.
+GitLab tries to
+[automatically migrate](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54578)
+the old storage format to the new ZIP-based one when you upgrade to GitLab 13.11 or further.
 However, some projects may fail to be migrated for different reasons.
 To verify that all projects have been migrated successfully, you can manually run the migration:
 
@@ -996,7 +998,7 @@ If you find that migrated data is invalid, you can remove all migrated data by r
 sudo gitlab-rake gitlab:pages:clean_migrated_zip_storage
 ```
 
-This will not remove any data from the legacy disk storage and the GitLab Pages daemon will automatically fallback
+This does not remove any data from the legacy disk storage and the GitLab Pages daemon automatically falls back
 to using that.
 
 ### Migrate Pages deployments to object storage
@@ -1199,7 +1201,7 @@ If the wildcard DNS [prerequisite](#prerequisites) can't be met, you can still u
    all projects you need to use Pages with into a single group namespace, for example `pages`.
 1. Configure a [DNS entry](#dns-configuration) without the `*.`-wildcard, for example `pages.example.io`.
 1. Configure `pages_external_url http://example.io/` in your `gitlab.rb` file.
-   Omit the group namespace here, because it will automatically be prepended by GitLab.
+   Omit the group namespace here, because it automatically is prepended by GitLab.
 
 ### Pages daemon fails with permission denied errors
 

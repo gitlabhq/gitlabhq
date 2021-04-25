@@ -28,12 +28,12 @@ Import your projects from Bitbucket Server to GitLab with minimal effort.
 ## Limitations
 
 1. Currently GitLab doesn't allow comments on arbitrary lines of code, so any
-   Bitbucket comments out of bounds will be inserted as comments in the merge
+   Bitbucket comments out of bounds are inserted as comments in the merge
    request.
 1. Bitbucket Server allows multiple levels of threading. GitLab import
-   will collapse this into one thread and quote part of the original comment.
+   collapses this into one thread and quote part of the original comment.
 1. Declined pull requests have unreachable commits, which prevents the GitLab
-   importer from generating a proper diff. These pull requests will show up as
+   importer from generating a proper diff. These pull requests show up as
    empty changes.
 1. Attachments in Markdown are currently not imported.
 1. Task lists are not imported.
@@ -45,21 +45,21 @@ Import your projects from Bitbucket Server to GitLab with minimal effort.
 
 The Bitbucket Server importer works as follows:
 
-1. The user will be prompted to enter the URL, username, and password (or personal access token) to log in to Bitbucket.
+1. The user is prompted to enter the URL, username, and password (or personal access token) to log in to Bitbucket.
    These credentials are preserved only as long as the importer is running.
-1. The importer will attempt to list all the current repositories on the Bitbucket Server.
-1. Upon selection, the importer will clone the repository and import pull requests and comments.
+1. The importer attempts to list all the current repositories on the Bitbucket Server.
+1. Upon selection, the importer clones the repository and import pull requests and comments.
 
 ### User assignment
 
 When issues/pull requests are being imported, the Bitbucket importer tries to
 find the author's e-mail address with a confirmed e-mail address in the GitLab
 user database. If no such user is available, the project creator is set as
-the author. The importer will append a note in the comment to mark the original
+the author. The importer appends a note in the comment to mark the original
 creator.
 
-The importer will create any new namespaces (groups) if they don't exist or in
-the case the namespace is taken, the repository will be imported under the user's
+The importer creates any new namespaces (groups) if they don't exist or in
+the case the namespace is taken, the repository is imported under the user's
 namespace that started the import process.
 
 #### User assignment by username
@@ -118,7 +118,7 @@ Feature.disable(:bitbucket_server_user_mapping_by_username)
    ![Grant access](img/bitbucket_server_import_credentials.png)
 
 1. Click on the projects that you'd like to import or **Import all projects**.
-   You can also filter projects by name and select the namespace under which each project will be
+   You can also filter projects by name and select the namespace under which each project is
    imported.
 
    ![Import projects](img/bitbucket_server_import_select_project_v12_3.png)

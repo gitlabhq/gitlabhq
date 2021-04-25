@@ -22,8 +22,8 @@ file system performance, see
 ## Gitaly and NFS deprecation
 
 WARNING:
-From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
-considered and customer technical support will be considered out of scope.
+From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories are no longer 
+considered and customer technical support is considered out of scope.
 [Read more about Gitaly and NFS](gitaly/index.md#nfs-deprecation-notice) and
 [the correct mount options to use](#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
@@ -81,8 +81,8 @@ When you define your NFS exports, we recommend you also add the following
 options:
 
 - `no_root_squash` - NFS normally changes the `root` user to `nobody`. This is
-  a good security measure when NFS shares will be accessed by many different
-  users. However, in this case only GitLab will use the NFS share so it
+  a good security measure when NFS shares are accessed by many different
+  users. However, in this case only GitLab uses the NFS share so it
   is safe. GitLab recommends the `no_root_squash` setting because we need to
   manage file permissions automatically. Without the setting you may receive
   errors when the Omnibus package tries to alter permissions. Note that GitLab
@@ -137,15 +137,15 @@ NFS performance with GitLab can in some cases be improved with
 [Rugged](https://github.com/libgit2/rugged).
 
 NOTE:
-From GitLab 12.1, it will automatically be detected if Rugged can and should be used per storage.
+From GitLab 12.1, it automatically detects if Rugged can and should be used per storage.
 
-If you previously enabled Rugged using the feature flag, you will need to unset the feature flag by using:
+If you previously enabled Rugged using the feature flag, you need to unset the feature flag by using:
 
 ```shell
 sudo gitlab-rake gitlab:features:unset_rugged
 ```
 
-If the Rugged feature flag is explicitly set to either `true` or `false`, GitLab will use the value explicitly set.
+If the Rugged feature flag is explicitly set to either `true` or `false`, GitLab uses the value explicitly set.
 
 #### Improving NFS performance with Puma
 
@@ -190,7 +190,7 @@ Note there are several options that you should consider using:
 | `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously.
 | `hard` | Instead of `soft`. [Further details](#soft-mount-option).
 | `cto` | `cto` is the default option, which you should use. Do not use `nocto`. [Further details](#nocto-mount-option).
-| `_netdev` | Wait to mount filesystem until network is online. See also the [`high_availability['mountpoint']`](https://docs.gitlab.com/omnibus/settings/configuration.html#only-start-omnibus-gitlab-services-after-a-given-file-system-is-mounted) option.
+| `_netdev` | Wait to mount file system until network is online. See also the [`high_availability['mountpoint']`](https://docs.gitlab.com/omnibus/settings/configuration.html#only-start-omnibus-gitlab-services-after-a-given-file-system-is-mounted) option.
 
 #### `soft` mount option
 
@@ -222,7 +222,7 @@ they highlight that if the NFS client driver caches data, `soft` means there is 
 writes by GitLab are actually on disk.
 
 Mount points set with the option `hard` may not perform as well, and if the
-NFS server goes down, `hard` will cause processes to hang when interacting with
+NFS server goes down, `hard` causes processes to hang when interacting with
 the mount point. Use `SIGKILL` (`kill -9`) to deal with hung processes.
 The `intr` option
 [stopped working in the 2.6 kernel](https://access.redhat.com/solutions/157873).
@@ -260,7 +260,7 @@ mountpoint
     └── uploads
 ```
 
-To do so, we'll need to configure Omnibus with the paths to each directory nested
+To do so, configure Omnibus with the paths to each directory nested
 in the mount point as follows:
 
 Mount `/gitlab-nfs` then use the following Omnibus
@@ -274,7 +274,7 @@ gitlab_ci['builds_directory'] = '/gitlab-nfs/gitlab-data/builds'
 ```
 
 Run `sudo gitlab-ctl reconfigure` to start using the central location. Be aware
-that if you had existing data, you'll need to manually copy or rsync it to
+that if you had existing data, you need to manually copy or rsync it to
 these new locations, and then restart GitLab.
 
 ### Bind mounts
@@ -296,21 +296,21 @@ NFS mount point is `/gitlab-nfs`. Then, add the following bind mounts in
 /gitlab-nfs/gitlab-data/builds /var/opt/gitlab/gitlab-ci/builds none bind 0 0
 ```
 
-Using bind mounts will require manually making sure the data directories
+Using bind mounts requires you to manually make sure the data directories
 are empty before attempting a restore. Read more about the
 [restore prerequisites](../raketasks/backup_restore.md).
 
 ### Multiple NFS mounts
 
-When using default Omnibus configuration you will need to share 4 data locations
+When using default Omnibus configuration you need to share 4 data locations
 between all GitLab cluster nodes. No other locations should be shared. The
 following are the 4 locations need to be shared:
 
 | Location | Description | Default configuration |
 | -------- | ----------- | --------------------- |
-| `/var/opt/gitlab/git-data` | Git repository data. This will account for a large portion of your data | `git_data_dirs({"default" => { "path" => "/var/opt/gitlab/git-data"} })`
+| `/var/opt/gitlab/git-data` | Git repository data. This accounts for a large portion of your data | `git_data_dirs({"default" => { "path" => "/var/opt/gitlab/git-data"} })`
 | `/var/opt/gitlab/gitlab-rails/uploads` | User uploaded attachments | `gitlab_rails['uploads_directory'] = '/var/opt/gitlab/gitlab-rails/uploads'`
-| `/var/opt/gitlab/gitlab-rails/shared` | Build artifacts, GitLab Pages, LFS objects, temp files, etc. If you're using LFS this may also account for a large portion of your data | `gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'`
+| `/var/opt/gitlab/gitlab-rails/shared` | Build artifacts, GitLab Pages, LFS objects, temp files, and so on. If you're using LFS this may also account for a large portion of your data | `gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'`
 | `/var/opt/gitlab/gitlab-ci/builds` | GitLab CI/CD build traces | `gitlab_ci['builds_directory'] = '/var/opt/gitlab/gitlab-ci/builds'`
 
 Other GitLab directories should not be shared between nodes. They contain
@@ -318,7 +318,7 @@ node-specific files and GitLab code that does not need to be shared. To ship
 logs to a central location consider using remote syslog. Omnibus GitLab packages
 provide configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
 
-Having multiple NFS mounts will require manually making sure the data directories
+Having multiple NFS mounts requires you to manually make sure the data directories
 are empty before attempting a restore. Read more about the
 [restore prerequisites](../raketasks/backup_restore.md).
 
@@ -348,7 +348,7 @@ Any `Operation not permitted` errors means you should investigate your NFS serve
 ## NFS in a Firewalled Environment
 
 If the traffic between your NFS server and NFS client(s) is subject to port filtering
-by a firewall, then you will need to reconfigure that firewall to allow NFS communication.
+by a firewall, then you need to reconfigure that firewall to allow NFS communication.
 
 [This guide from TDLP](https://tldp.org/HOWTO/NFS-HOWTO/security.html#FIREWALLS)
 covers the basics of using NFS in a firewalled environment. Additionally, we encourage you to
@@ -370,7 +370,7 @@ sudo ufw allow from <client_ip_address> to any port nfs
 
 WARNING:
 From GitLab 13.0, using NFS for Git repositories is deprecated.
-As of GitLab 14.0, NFS-related issues with Gitaly will no longer be addressed. Read
+As of GitLab 14.0, NFS-related issues with Gitaly are no longer addressed. Read
 more about [Gitaly and NFS deprecation](gitaly/index.md#nfs-deprecation-notice).
 
 Customers and users have reported data loss on high-traffic repositories when using NFS for Git repositories.
@@ -391,7 +391,7 @@ The problem may be partially mitigated by adjusting caching using the following 
 WARNING:
 The `actimeo=0` and `noac` options both result in a significant reduction in performance, possibly leading to timeouts.
 You may be able to avoid timeouts and data loss using `actimeo=0` and `lookupcache=positive` _without_ `noac`, however
-we expect the performance reduction will still be significant. Upgrade to
+we expect the performance reduction is still significant. Upgrade to
 [Gitaly Cluster](gitaly/praefect.md) as soon as possible.
 
 ### Avoid using cloud-based file systems

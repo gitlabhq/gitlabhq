@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This document will take you through the steps of setting up a basic Postfix mail
 server with IMAP authentication on Ubuntu, to be used with [incoming email](incoming_email.md).
 
-The instructions make the assumption that you will be using the email address `incoming@gitlab.example.com`, that is, username `incoming` on host `gitlab.example.com`. Don't forget to change it to your actual host when executing the example code snippets.
+The instructions make the assumption that you are using the email address `incoming@gitlab.example.com`, that is, username `incoming` on host `gitlab.example.com`. Don't forget to change it to your actual host when executing the example code snippets.
 
 ## Configure your server firewall
 
@@ -127,7 +127,7 @@ The instructions make the assumption that you will be using the email address `i
 
 ## Configure Postfix to use Maildir-style mailboxes
 
-Courier, which we will install later to add IMAP authentication, requires mailboxes to have the Maildir format, rather than mbox.
+Courier, which we install later to add IMAP authentication, requires mailboxes to have the Maildir format, rather than mbox.
 
 1. Configure Postfix to use Maildir-style mailboxes:
 
@@ -191,7 +191,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
    imapd start
    ```
 
-1. The `courier-authdaemon` isn't started after installation. Without it, IMAP authentication will fail:
+1. The `courier-authdaemon` isn't started after installation. Without it, IMAP authentication fails:
 
    ```shell
    sudo service courier-authdaemon start
@@ -213,7 +213,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
 1. Let Postfix know about the IPs that it should consider part of the LAN:
 
-   We'll assume `192.168.1.0/24` is your local LAN. You can safely skip this step if you don't have other machines in the same local network.
+   Let's assume `192.168.1.0/24` is your local LAN. You can safely skip this step if you don't have other machines in the same local network.
 
    ```shell
    sudo postconf -e "mynetworks = 127.0.0.0/8, 192.168.1.0/24"
