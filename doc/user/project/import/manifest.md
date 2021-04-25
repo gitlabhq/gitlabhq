@@ -29,7 +29,7 @@ A manifest must be an XML file. There must be one `remote` tag with a `review`
 attribute that contains a URL to a Git server, and each `project` tag must have
 a `name` and `path` attribute. GitLab will then build the URL to the repository
 by combining the URL from the `remote` tag with a project name.
-A path attribute will be used to represent the project path in GitLab.
+A path attribute is used to represent the project path in GitLab.
 
 Below is a valid example of a manifest file:
 
@@ -42,7 +42,7 @@ Below is a valid example of a manifest file:
 </manifest>
 ```
 
-As a result, the following projects will be created:
+As a result, the following projects are created:
 
 | GitLab                                          | Import URL                                                  |
 |:------------------------------------------------|:------------------------------------------------------------|
@@ -58,7 +58,7 @@ You can start the import with:
 1. Click on the **Manifest file** button
 1. Provide GitLab with a manifest XML file
 1. Select a group you want to import to (you need to create a group first if you don't have one)
-1. Click **List available repositories**. At this point, you will be redirected
+1. Click **List available repositories**. At this point, you are redirected
    to the import status page with projects list based on the manifest file.
 1. Check the list and click **Import all repositories** to start the import.
 

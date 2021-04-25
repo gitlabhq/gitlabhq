@@ -20,8 +20,8 @@ which can be invoked by the following command:
 sudo gitlab-rake "gitlab:password:reset"
 ```
 
-You will be asked for username, password, and password confirmation. Upon giving
-proper values for them, the password of the specified user will be updated.
+GitLab asks for a username, a password, and a password confirmation. Upon giving
+proper values for them, the password of the specified user is updated.
 
 The Rake task also takes the username as an argument, as shown in the example
 below:
@@ -91,7 +91,7 @@ Try fixing this on the rails console. For example, if your new `root` password i
 
 1. [Start a Rails console](../administration/operations/rails_console.md).
 
-1. Find the user and skip reconfirmation. Any of the methods to find the user, above, will work:
+1. Find the user and skip reconfirmation, using any of the methods above:
 
     ```ruby
     user = User.find(1)
@@ -110,7 +110,7 @@ password.
 
 If the username was changed to something else and has been forgotten, one
 possible way is to reset the password using Rails console with user ID `1` (in
-almost all the cases, the first user will be the default admin account).
+almost all the cases, the first user is the default admin account).
 
 <!-- ## Troubleshooting
 
