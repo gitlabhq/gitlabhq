@@ -23,7 +23,7 @@ MR is merged.
 Collecting the coverage information is done via GitLab CI/CD's
 [artifacts reports feature](../../../ci/yaml/README.md#artifactsreports).
 You can specify one or more coverage reports to collect, including wildcard paths.
-GitLab will then take the coverage information in all the files and combine it
+GitLab then takes the coverage information in all the files and combines it
 together.
 
 For the coverage analysis to work, you have to provide a properly formatted
@@ -41,14 +41,14 @@ Other coverage analysis frameworks support the format out of the box, for exampl
 - [Coverage.py](https://coverage.readthedocs.io/en/coverage-5.0.4/cmd.html#xml-reporting) (Python)
 
 Once configured, if you create a merge request that triggers a pipeline which collects
-coverage reports, the coverage will be shown in the diff view. This includes reports
-from any job in any stage in the pipeline. The coverage will be displayed for each line:
+coverage reports, the coverage is shown in the diff view. This includes reports
+from any job in any stage in the pipeline. The coverage displays for each line:
 
 - `covered` (green): lines which have been checked at least once by tests
 - `no test coverage` (orange): lines which are loaded but never executed
 - no coverage information: lines which are non-instrumented or not loaded
 
-Hovering over the coverage bar will provide further information, such as the number
+Hovering over the coverage bar provides further information, such as the number
 of times the line was checked by tests.
 
 NOTE:
@@ -69,8 +69,8 @@ For the coverage report to properly match the files displayed on a merge request
 must contain the full path relative to the project root. But in some coverage analysis frameworks, the generated
 Cobertura XML has the `filename` path relative to the class package directory instead.
 
-To make an intelligent guess on the project root relative `class` path, the Cobertura XML parser will attempt to build the
-full path by doing following:
+To make an intelligent guess on the project root relative `class` path, the Cobertura XML parser attempts to build the
+full path by doing the following:
 
 1. Extract a portion of the `source` paths from the `sources` element and combine them with the class `filename` path.
 1. Check if the candidate path exists in the project.
@@ -93,16 +93,16 @@ And the `sources` from Cobertura XML with paths in the format of `<CI_BUILDS_DIR
 </sources>
 ```
 
-The parser will extract `Auth` and `Lib/Utils` from the sources and use these as basis to determine the class path relative to
+The parser extracts `Auth` and `Lib/Utils` from the sources and use these as basis to determine the class path relative to
 the project root, combining these extracted sources and the class filename.
 
-If for example there is a `class` element with the `filename` value of `User.cs`, the parser will take the first candidate path
-that matches which is `Auth/User.cs`.
+If for example there is a `class` element with the `filename` value of `User.cs`, the parser takes the first candidate path
+that matches, which is `Auth/User.cs`.
 
-For each `class` element, the parser will attempt to look for a match for each extracted `source` path up to `100` iterations. If it reaches this limit without finding a matching path in the file tree, the class will not be included in the final coverage report.
+For each `class` element, the parser attempts to look for a match for each extracted `source` path up to `100` iterations. If it reaches this limit without finding a matching path in the file tree, the class will not be included in the final coverage report.
 
 NOTE:
-The automatic class path correction only works on `source` paths in the format of `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`. If `source` will be ignored if the path does not follow this pattern. The parser will assume that
+The automatic class path correction only works on `source` paths in the format of `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`. If `source` will be ignored if the path does not follow this pattern. The parser assumes that
 the `filename` of a `class` element contains the full path relative to the project root.
 
 ## Example test coverage configurations

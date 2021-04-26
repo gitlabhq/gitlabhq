@@ -113,7 +113,7 @@ If you want to be flexible about growing your hard drive space in the future con
 
 Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
 
-If you have enough RAM and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
+If you have enough RAM and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) improves the responsiveness of GitLab.
 
 NOTE:
 Since file system performance may affect the overall performance of GitLab,
@@ -141,7 +141,7 @@ The following is the recommended minimum Memory hardware guidance for a handful 
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
 In addition to the above, we generally recommend having at least 2GB of swap on your server,
-even if you currently have enough available RAM. Having swap will help reduce the chance of errors occurring
+even if you currently have enough available RAM. Having swap helps to reduce the chance of errors occurring
 if your available memory changes. We also recommend configuring the kernel's swappiness setting
 to a low value like `10` to make the most of your RAM while still having the swap
 available when needed.
@@ -204,7 +204,7 @@ The recommended number of workers is calculated as the highest of the following:
 For example a node with 4 cores should be configured with 3 Puma workers.
 
 You can increase the number of Puma workers, providing enough CPU and memory capacity is available.
-A higher number of Puma workers will usually help to reduce the response time of the application
+A higher number of Puma workers usually helps to reduce the response time of the application
 and increase the ability to handle parallel requests. You must perform testing to verify the
 optimal settings for your infrastructure.
 
@@ -214,7 +214,7 @@ The recommended number of threads is dependent on several factors, including tot
 of [legacy Rugged code](../administration/gitaly/index.md#direct-access-to-git-in-gitlab).
 
 - If the operating system has a maximum 2 GB of memory, the recommended number of threads is `1`.
-  A higher value will result in excess swapping, and decrease performance.
+  A higher value results in excess swapping, and decrease performance.
 - If legacy Rugged code is in use, the recommended number of threads is `1`.
 - In all other cases, the recommended number of threads is `4`. We don't recommend setting this
 higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
@@ -230,7 +230,7 @@ If you have a 1GB machine we recommend to configure only two Unicorn workers to 
 swapping.
 
 As long as you have enough available CPU and memory capacity, it's okay to increase the number of
-Unicorn workers and this will usually help to reduce the response time of the applications and
+Unicorn workers and this usually helps to reduce the response time of the applications and
 increase the ability to handle parallel requests.
 
 To change the Unicorn workers when you have the Omnibus package (which defaults to the
@@ -248,8 +248,7 @@ On a very active server (10,000 billable users) the Sidekiq process can use 1GB+
 
 As of Omnibus GitLab 9.0, [Prometheus](https://prometheus.io) and its related
 exporters are enabled by default, to enable easy and in depth monitoring of
-GitLab. Approximately 200MB of memory will be consumed by these processes, with
-default settings.
+GitLab. With default settings, these processes consume approximately 200MB of memory.
 
 If you would like to disable Prometheus and it's exporters or read more information
 about it, check the [Prometheus documentation](../administration/monitoring/prometheus/index.md).
@@ -277,9 +276,9 @@ The GitLab Runner server requirements depend on:
 - Resources required to run build jobs.
 - Job concurrency settings.
 
-Since the nature of the jobs varies for each use case, you will need to experiment by adjusting the job concurrency to get the optimum setting.
+Since the nature of the jobs varies for each use case, you need to experiment by adjusting the job concurrency to get the optimum setting.
 
-For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/index.md#shared-runners) is configured so that a **single job** will run in a **single instance** with:
+For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/index.md#shared-runners) is configured so that a **single job** runs in a **single instance** with:
 
 - 1vCPU.
 - 3.75GB of RAM.
