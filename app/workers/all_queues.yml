@@ -1890,7 +1890,7 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 5
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: merge_request_cleanup_refs
   :feature_category: :code_review

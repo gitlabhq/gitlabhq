@@ -33,6 +33,38 @@ RSpec.describe Gitlab::Graphql::Present::FieldExtension do
     end
   end
 
+  context 'when the field is declared on an interface, and implemented by a presenter' do
+    let(:interface) do
+      Module.new do
+        include ::Types::BaseInterface
+
+        field :interface_field, GraphQL::STRING_TYPE, null: true
+      end
+    end
+
+    let(:implementation) do
+      type = fresh_object_type('Concrete')
+      type.present_using(concrete_impl)
+      type.implements(interface)
+      type
+    end
+
+    def concrete_impl
+      Class.new(base_presenter) do
+        def interface_field
+          'made of concrete'
+        end
+      end
+    end
+
+    it 'resolves the interface field using the implementation from the presenter' do
+      field = ::Types::BaseField.new(name: :interface_field, type: GraphQL::STRING_TYPE, null: true, owner: interface)
+      value = resolve_field(field, object, object_type: implementation)
+
+      expect(value).to eq 'made of concrete'
+    end
+  end
+
   describe 'interactions with inheritance' do
     def parent
       type = fresh_object_type('Parent')

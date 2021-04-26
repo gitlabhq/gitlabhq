@@ -1,9 +1,11 @@
 <script>
-import { GlForm, GlIcon, GlLink, GlButton, GlSprintf } from '@gitlab/ui';
+import { GlForm, GlIcon, GlLink, GlButton, GlSprintf, GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
-import { __, s__, sprintf } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const MARKDOWN_LINK_TEXT = {
   markdown: '[Link Title](page-slug)',
@@ -14,20 +16,31 @@ const MARKDOWN_LINK_TEXT = {
 
 export default {
   components: {
+    GlAlert,
     GlForm,
     GlSprintf,
     GlIcon,
     GlLink,
     GlButton,
     MarkdownField,
+    GlLoadingIcon,
+    ContentEditor: () =>
+      import(
+        /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
+      ),
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['formatOptions', 'pageInfo'],
   data() {
     return {
       title: this.pageInfo.title?.trim() || '',
       format: this.pageInfo.format || 'markdown',
       content: this.pageInfo.content?.trim() || '',
+      isContentEditorLoading: true,
+      useContentEditor: false,
       commitMessage: '',
+      editor: null,
+      isDirty: false,
     };
   },
   computed: {
@@ -52,7 +65,7 @@ export default {
       return MARKDOWN_LINK_TEXT[this.format];
     },
     submitButtonText() {
-      if (this.pageInfo.persisted) return __('Save changes');
+      if (this.pageInfo.persisted) return s__('WikiPage|Save changes');
       return s__('WikiPage|Create page');
     },
     cancelFormPath() {
@@ -62,20 +75,50 @@ export default {
     wikiSpecificMarkdownHelpPath() {
       return setUrlFragment(this.pageInfo.markdownHelpPath, 'wiki-specific-markdown');
     },
+    isMarkdownFormat() {
+      return this.format === 'markdown';
+    },
+    showContentEditorButton() {
+      return this.isMarkdownFormat && !this.useContentEditor && this.glFeatures.wikiContentEditor;
+    },
+    isContentEditorActive() {
+      return this.isMarkdownFormat && this.useContentEditor;
+    },
   },
   mounted() {
     this.updateCommitMessage();
+
+    window.addEventListener('beforeunload', this.onPageUnload);
+  },
+  destroyed() {
+    window.removeEventListener('beforeunload', this.onPageUnload);
   },
   methods: {
+    getContentHTML(content) {
+      return axios
+        .post(this.pageInfo.markdownPreviewPath, { text: content })
+        .then(({ data }) => data.body);
+    },
+
     handleFormSubmit() {
-      window.removeEventListener('beforeunload', this.onBeforeUnload);
+      if (this.useContentEditor) {
+        this.content = this.editor.getSerializedContent();
+      }
+
+      this.isDirty = false;
     },
 
     handleContentChange() {
-      window.addEventListener('beforeunload', this.onBeforeUnload);
+      this.isDirty = true;
     },
 
-    onBeforeUnload() {
+    onPageUnload(event) {
+      if (!this.isDirty) return undefined;
+
+      event.preventDefault();
+
+      // eslint-disable-next-line no-param-reassign
+      event.returnValue = '';
       return '';
     },
 
@@ -88,6 +131,28 @@ export default {
       const newCommitMessage = sprintf(this.commitMessageI18n, { pageTitle: newTitle }, false);
       this.commitMessage = newCommitMessage;
     },
+
+    async initContentEditor() {
+      this.isContentEditorLoading = true;
+      this.useContentEditor = true;
+
+      const createEditor = await import(
+        /* webpackChunkName: 'content_editor' */ '~/content_editor/services/create_editor'
+      );
+      this.editor =
+        this.editor ||
+        (await createEditor.default({
+          renderMarkdown: (markdown) => this.getContentHTML(markdown),
+          onUpdate: () => this.handleContentChange(),
+        }));
+      await this.editor.setSerializedContent(this.content);
+
+      this.isContentEditorLoading = false;
+    },
+
+    switchToOldEditor() {
+      this.useContentEditor = false;
+    },
   },
 };
 </script>
@@ -99,6 +164,30 @@ export default {
     class="wiki-form common-note-form gl-mt-3 js-quick-submit"
     @submit="handleFormSubmit"
   >
+    <gl-alert
+      v-if="isContentEditorActive"
+      class="gl-mb-6"
+      :dismissible="false"
+      variant="danger"
+      :primary-button-text="s__('WikiPage|Switch to old editor')"
+      @primaryAction="switchToOldEditor()"
+    >
+      <p>
+        {{
+          s__(
+            "WikiPage|You are editing this page with Content Editor. This editor is in beta and may not display the page's contents properly.",
+          )
+        }}
+      </p>
+      <p>
+        {{
+          s__(
+            "WikiPage|Switching to the old editor will discard any changes you've made in the new editor.",
+          )
+        }}
+      </p>
+    </gl-alert>
+
     <input :value="csrfToken" type="hidden" name="authenticity_token" />
     <input v-if="pageInfo.persisted" type="hidden" name="_method" value="put" />
     <input
@@ -135,8 +224,8 @@ export default {
                   'WikiPage|Tip: You can specify the full path for the new file. We will automatically create any missing directories.',
                 )
           }}
-          <gl-link :href="helpPath" target="_blank" data-testid="wiki-title-help-link"
-            ><gl-icon name="question-o" /> {{ __('More Information.') }}</gl-link
+          <gl-link :href="helpPath" target="_blank"
+            ><gl-icon name="question-o" /> {{ s__('WikiPage|More Information.') }}</gl-link
           >
         </span>
       </div>
@@ -147,12 +236,26 @@ export default {
           s__('WikiPage|Format')
         }}</label>
       </div>
-      <div class="col-sm-10">
-        <select id="wiki_format" v-model="format" class="form-control" name="wiki[format]">
+      <div class="col-sm-10 gl-display-flex gl-flex-wrap">
+        <select
+          id="wiki_format"
+          v-model="format"
+          class="form-control"
+          name="wiki[format]"
+          :disabled="isContentEditorActive"
+        >
           <option v-for="(key, label) of formatOptions" :key="key" :value="key">
             {{ label }}
           </option>
         </select>
+        <gl-button
+          v-if="showContentEditorButton"
+          category="secondary"
+          variant="confirm"
+          class="gl-mt-4"
+          @click="initContentEditor"
+          >{{ s__('WikiPage|Use new editor') }}</gl-button
+        >
       </div>
     </div>
     <div class="form-group row">
@@ -163,6 +266,7 @@ export default {
       </div>
       <div class="col-sm-10">
         <markdown-field
+          v-if="!isContentEditorActive"
           :markdown-preview-path="pageInfo.markdownPreviewPath"
           :can-attach-file="true"
           :enable-autocomplete="true"
@@ -189,10 +293,17 @@ export default {
             </textarea>
           </template>
         </markdown-field>
+
+        <div v-if="isContentEditorActive">
+          <gl-loading-icon v-if="isContentEditorLoading" class="bordered-box gl-w-full gl-py-6" />
+          <content-editor v-else :editor="editor" />
+          <input id="wiki_content" v-model.trim="content" type="hidden" name="wiki[content]" />
+        </div>
+
         <div class="clearfix"></div>
         <div class="error-alert"></div>
 
-        <div class="form-text gl-text-gray-600">
+        <div v-if="!isContentEditorActive" class="form-text gl-text-gray-600">
           <gl-sprintf
             :message="
               s__(
@@ -245,9 +356,7 @@ export default {
         :disabled="!content || !title"
         >{{ submitButtonText }}</gl-button
       >
-      <gl-button :href="cancelFormPath" class="float-right" data-testid="wiki-cancel-button">{{
-        __('Cancel')
-      }}</gl-button>
+      <gl-button :href="cancelFormPath" class="float-right">{{ s__('WikiPage|Cancel') }}</gl-button>
     </div>
   </gl-form>
 </template>

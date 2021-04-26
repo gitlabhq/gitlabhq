@@ -4047,11 +4047,6 @@ msgid_plural "ApprovalRuleRemove|%d members"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ApprovalRuleRemove|Approvals from this member are not revoked."
-msgid_plural "ApprovalRuleRemove|Approvals from these members are not revoked."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "ApprovalRuleRemove|Remove approval gate"
 msgstr ""
 
@@ -4061,8 +4056,10 @@ msgstr ""
 msgid "ApprovalRuleRemove|You are about to remove the %{name} approval gate. Approval from this service is not revoked."
 msgstr ""
 
-msgid "ApprovalRuleRemove|You are about to remove the %{name} approver group which has %{nMembers}."
-msgstr ""
+msgid "ApprovalRuleRemove|You are about to remove the %{name} approver group which has %{strongStart}%{count} member%{strongEnd}. Approvals from this member are not revoked."
+msgid_plural "ApprovalRuleRemove|You are about to remove the %{name} approver group which has %{strongStart}%{count} members%{strongEnd}. Approvals from these members are not revoked."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ApprovalRuleSummary|%d member"
 msgid_plural "ApprovalRuleSummary|%d members"
@@ -21041,9 +21038,6 @@ msgstr ""
 msgid "More Information"
 msgstr ""
 
-msgid "More Information."
-msgstr ""
-
 msgid "More Slack commands"
 msgstr ""
 
@@ -36086,6 +36080,9 @@ msgstr ""
 msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{wikiLinkStart}the page%{wikiLinkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
+msgid "WikiPage|Cancel"
+msgstr ""
+
 msgid "WikiPage|Commit message"
 msgstr ""
 
@@ -36101,7 +36098,19 @@ msgstr ""
 msgid "WikiPage|Format"
 msgstr ""
 
+msgid "WikiPage|More Information."
+msgstr ""
+
 msgid "WikiPage|Page title"
+msgstr ""
+
+msgid "WikiPage|Save changes"
+msgstr ""
+
+msgid "WikiPage|Switch to old editor"
+msgstr ""
+
+msgid "WikiPage|Switching to the old editor will discard any changes you've made in the new editor."
 msgstr ""
 
 msgid "WikiPage|Tip: You can move this page by adding the path to the beginning of the title."
@@ -36119,7 +36128,13 @@ msgstr ""
 msgid "WikiPage|Update %{pageTitle}"
 msgstr ""
 
+msgid "WikiPage|Use new editor"
+msgstr ""
+
 msgid "WikiPage|Write your content or drag files here…"
+msgstr ""
+
+msgid "WikiPage|You are editing this page with Content Editor. This editor is in beta and may not display the page's contents properly."
 msgstr ""
 
 msgid "Wikis"

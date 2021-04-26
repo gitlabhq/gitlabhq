@@ -122,14 +122,14 @@ class Packages::Package < ApplicationRecord
   scope :select_distinct_name, -> { select(:name).distinct }
 
   # Sorting
-  scope :order_created, -> { reorder('created_at ASC') }
-  scope :order_created_desc, -> { reorder('created_at DESC') }
-  scope :order_name, -> { reorder('name ASC') }
-  scope :order_name_desc, -> { reorder('name DESC') }
-  scope :order_version, -> { reorder('version ASC') }
-  scope :order_version_desc, -> { reorder('version DESC') }
-  scope :order_type, -> { reorder('package_type ASC') }
-  scope :order_type_desc, -> { reorder('package_type DESC') }
+  scope :order_created, -> { reorder(created_at: :asc) }
+  scope :order_created_desc, -> { reorder(created_at: :desc) }
+  scope :order_name, -> { reorder(name: :asc) }
+  scope :order_name_desc, -> { reorder(name: :desc) }
+  scope :order_version, -> { reorder(version: :asc) }
+  scope :order_version_desc, -> { reorder(version: :desc) }
+  scope :order_type, -> { reorder(package_type: :asc) }
+  scope :order_type_desc, -> { reorder(package_type: :desc) }
   scope :order_project_name, -> { joins(:project).reorder('projects.name ASC') }
   scope :order_project_name_desc, -> { joins(:project).reorder('projects.name DESC') }
   scope :order_project_path, -> { joins(:project).reorder('projects.path ASC, id ASC') }

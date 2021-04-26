@@ -13,7 +13,8 @@ module Gitlab
           # inner Schema::Object#object. This depends on whether the field
           # has a @resolver_proc or not.
           if object.is_a?(::Types::BaseObject)
-            object.present(field.owner, attrs)
+            type = field.owner.kind.abstract? ? object.class : field.owner
+            object.present(type, attrs)
             yield(object, arguments)
           else
             # This is the legacy code-path, hit if the field has a @resolver_proc

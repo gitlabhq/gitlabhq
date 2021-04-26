@@ -1,6 +1,6 @@
 ---
 key_path: usage_activity_by_stage.verify.ci_builds
-description: Unique builds in project
+description: Unique count of builds in project
 product_section: ops
 product_stage: verify
 product_group: group::continuous integration
@@ -8,9 +8,11 @@ product_category: continuous_integration
 value_type: number
 status: data_available
 time_frame: all
-data_source:
+data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

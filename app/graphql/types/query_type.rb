@@ -79,8 +79,14 @@ module Types
 
     field :issue, Types::IssueType,
           null: true,
-          description: 'Find an Issue.' do
-            argument :id, ::Types::GlobalIDType[::Issue], required: true, description: 'The global ID of the Issue.'
+          description: 'Find an issue.' do
+            argument :id, ::Types::GlobalIDType[::Issue], required: true, description: 'The global ID of the issue.'
+          end
+
+    field :merge_request, Types::MergeRequestType,
+          null: true,
+          description: 'Find a merge request.' do
+            argument :id, ::Types::GlobalIDType[::MergeRequest], required: true, description: 'The global ID of the merge request.'
           end
 
     field :instance_statistics_measurements,
@@ -116,6 +122,13 @@ module Types
       # TODO: remove this line when the compatibility layer is removed
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
       id = ::Types::GlobalIDType[::Issue].coerce_isolated_input(id)
+      GitlabSchema.find_by_gid(id)
+    end
+
+    def merge_request(id:)
+      # TODO: remove this line when the compatibility layer is removed
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+      id = ::Types::GlobalIDType[::MergeRequest].coerce_isolated_input(id)
       GitlabSchema.find_by_gid(id)
     end
 

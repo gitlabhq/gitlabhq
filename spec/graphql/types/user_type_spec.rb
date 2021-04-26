@@ -5,7 +5,11 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['User'] do
   specify { expect(described_class.graphql_name).to eq('User') }
 
-  specify { expect(described_class).to require_graphql_authorizations(:read_user) }
+  specify do
+    runtime_type = described_class.resolve_type(build(:user), {})
+
+    expect(runtime_type).to require_graphql_authorizations(:read_user)
+  end
 
   it 'has the expected fields' do
     expected_fields = %w[

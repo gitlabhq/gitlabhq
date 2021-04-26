@@ -2,15 +2,17 @@
 key_path: counts.ci_pipeline_config_auto_devops
 description: Total pipelines from an Auto DevOps template
 product_section: ops
-product_stage: verify
-product_group: group::continuous integration
-product_category: continuous_integration
+product_stage: configure
+product_group: group::configure
+product_category: auto_devops
 value_type: number
 status: data_available
 time_frame: all
 data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

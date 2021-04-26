@@ -11,12 +11,12 @@ describe('content_editor/services/create_editor', () => {
     deserialize: jest.fn(),
   });
 
-  it('sets gl-py-4 gl-px-5 class selectors to editor attributes', async () => {
+  it('sets gl-outline-0! class selector to editor attributes', async () => {
     const editor = await createEditor({ renderMarkdown });
 
     expect(editor.options.editorProps).toMatchObject({
       attributes: {
-        class: 'gl-py-4 gl-px-5',
+        class: 'gl-outline-0!',
       },
     });
   });

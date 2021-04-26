@@ -31,20 +31,20 @@ Because GitLab is already installed in a pre-configured image, all you have to d
 create a new VM:
 
 1. [Visit the GitLab offering in the marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/gitlabinc1586447921813.gitlabee?tab=Overview)
-1. Select **Get it now** and you will be presented with the **Create this app in Azure** window.
+1. Select **Get it now** and the **Create this app in Azure** window opens.
    Select **Continue**.
 1. Select one of the following options from the Azure portal:
    - Select **Create** to create a VM from scratch.
    - Select **Start with a pre-set configuration** to get started with some
      pre-configured options. You can modify these configurations at any time.
 
-For the sake of this guide, we'll create the VM from scratch, so
+For the sake of this guide, let's create the VM from scratch, so
 select **Create**.
 
 NOTE:
-Be aware that while your VM is active (known as "allocated"), it incurs
-compute charges for which you'll be billed. Even if you're using the
-free trial credits, you'll want to know
+Be aware that Azure incurs compute charges whenever your VM is
+active (known as "allocated"), even if you're using free trial
+credits.
 [how to properly shutdown an Azure VM to save money](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/).
 See the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
 to learn how much resources can cost.
@@ -68,7 +68,7 @@ The first items you need to configure are the basic settings of the underlying v
    is covered by the `D4s_v3` size, select that option.
 1. Set the authentication type to **SSH public key**.
 1. Enter a user name or leave the one that is automatically created. This is
-   the user you'll use to connect to the VM through SSH. By default, the user
+   the user Azure uses to connect to the VM through SSH. By default, the user
    has root access.
 1. Determine if you want to provide your own SSH key or let Azure create one for you.
    Read the [SSH documentation](../../ssh/README.md) to learn more about how to set up SSH
@@ -103,7 +103,7 @@ The GitLab image in the marketplace has the following ports open by default:
 | 22   | Enable our VM to respond to SSH connection requests, allowing public access (with authentication) to remote terminal sessions. |
 
 If you want to change the ports or add any rules, you can do it
-after the VM is created by going to the Networking settings in the left sidebar,
+after the VM is created by selecting Networking settings in the left sidebar,
 while in the VM dashboard.
 
 ### Configure the Management tab
@@ -126,13 +126,13 @@ resources. You don't need to change the default settings.
 
 The final tab presents you with all of your selected options,
 where you can review and modify your choices from the
-previous steps. Azure will run validation tests in the background,
+previous steps. Azure runs validation tests in the background,
 and if you provided all of the required settings, you can
 create the VM.
 
 After you select **Create**, if you had opted for Azure to create an SSH key pair
-for you, you'll be asked to download the private SSH key. Download the key, as you'll
-need it to SSH into the VM.
+for you, a prompt appears to download the private SSH key. Download the key, as it's
+needed to SSH into the VM.
 
 After you download the key, the deployment begins.
 
@@ -153,11 +153,11 @@ to assign a descriptive DNS name to the VM:
 
 1. From the VM dashboard, select **Configure** under **DNS name**.
 1. Enter a descriptive DNS name for your instance in the **DNS name label** field,
-   for example `gitlab-prod`. This will make the VM accessible at
+   for example `gitlab-prod`. This makes the VM accessible at
    `gitlab-prod.eastus.cloudapp.azure.com`.
 1. Select **Save** for the changes to take effect.
 
-Eventually, you'll want to use your own domain name. To do this, you need to add a DNS `A` record
+Eventually, most users want to use their own domain name. For you to do this, you need to add a DNS `A` record
 with your domain registrar that points to the public IP address of your Azure VM.
 You can use [Azure's DNS](https://docs.microsoft.com/en-us/azure/dns/dns-delegate-domain-azure-dns)
 or some [other registrar](https://docs.gitlab.com/omnibus/settings/dns.html).
@@ -165,15 +165,15 @@ or some [other registrar](https://docs.gitlab.com/omnibus/settings/dns.html).
 ### Change the GitLab external URL
 
 GitLab uses `external_url` in its configuration file to set up the domain name.
-If you don't set this up, when you visit the Azure friendly name, you'll
-instead be redirected to the public IP.
+If you don't set this up, when you visit the Azure friendly name, the browser will
+redirect you to the public IP.
 
 To set up the GitLab external URL:
 
 1. Connect to GitLab through SSH by going to **Settings > Connect** from the VM
    dashboard, and follow the instructions. Remember to sign in with the username
    and SSH key you specified when you [created the VM](#configure-the-basics-tab).
-   The Azure VM domain name will be the one you
+   The Azure VM domain name is the one you
    [set up previously](#set-up-a-domain-name). If you didn't set up a domain name for
    your VM, you can use the IP address in its place.
 
@@ -189,10 +189,10 @@ To set up the GitLab external URL:
 
 1. Open `/etc/gitlab/gitlab.rb` with your editor.
 1. Find `external_url` and replace it with your own domain name. For the sake
-   of this example, we'll use the friendly domain name that Azure set up.
-   If you use `https` in the URL, Let's Encrypt will be
-   [automatically enabled](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration),
-   and you'll have HTTPS by default:
+   of this example, use the default domain name Azure sets up.
+   Using `https` in the URL 
+   [automatically enables](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration),
+   Let's Encrypt, and sets HTTPS by default:
 
    ```ruby
    external_url 'https://gitlab-prod.eastus.cloudapp.azure.com'
@@ -221,7 +221,7 @@ You can now visit GitLab with your browser at the new external URL.
 Use the domain name you set up earlier to visit your new GitLab instance
 in your browser. In this example, it's `https://gitlab-prod.eastus.cloudapp.azure.com`.
 
-The first thing you'll see is the sign-in page. GitLab creates an admin user by default.
+The first thing that appears is the sign-in page. GitLab creates an admin user by default.
 The credentials are:
 
 - Username: `root`
@@ -239,7 +239,7 @@ in this section whenever you need to update GitLab.
 ### Check the current version
 
 To determine the version of GitLab you're currently running,
-go to the **{admin}** **Admin Area**, and you will find the version
+go to the **{admin}** **Admin Area**, and find the version
 under the **Components** table.
 
 If there's a newer available version of GitLab that contains one or more
@@ -259,7 +259,7 @@ To update GitLab to the latest version:
    ```
 
    This command updates GitLab and its associated components to the latest versions,
-   and can take time to complete. You'll see various update tasks being
+   and can take time to complete. During this time, the terminal shows various update tasks being
    completed in your terminal.
 
    NOTE:
@@ -267,8 +267,8 @@ To update GitLab to the latest version:
    `E: The repository 'https://packages.gitlab.com/gitlab/gitlab-ee/debian buster InRelease' is not signed.`,
    see the [troubleshooting section](#update-the-gpg-key-for-the-gitlab-repositories).
 
-1. After the update process is complete, you'll see a message like the
-   following:
+1. After the update process is complete, a message like the
+   following appears:
 
    ```plaintext
    Upgrade complete! If your GitLab server is misbehaving try running
@@ -300,7 +300,7 @@ GPG key.
 The pre-configured GitLab image in Azure (provided by Bitnami) uses
 a GPG key [deprecated in April 2020](https://about.gitlab.com/blog/2020/03/30/gpg-key-for-gitlab-package-repositories-metadata-changing/).
 
-If you try to update the repositories, you'll get the following error:
+If you try to update the repositories, the system returns the following error:
 
 <!-- vale gitlab.ReferenceLinks = NO -->
 

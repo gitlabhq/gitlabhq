@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 if Gitlab::Runtime.puma?
+  # This patch represents https://github.com/puma/puma/pull/2613. If
+  # this PR is accepted in the next Puma release, we can remove this
+  # entire file.
+  #
+  # The patch itself is quite large because the tempfile creation in
+  # Puma is inside these fairly long methods. The actual changes are
+  # just two lines, commented with 'GitLab' to make them easier to find.
   raise "Remove this monkey patch: #{__FILE__}" unless Puma::Const::VERSION == '5.1.1'
 
-  # This is copied from https://github.com/puma/puma/blob/v5.1.1/lib/puma/client.rb,
-  # with two additions: both times we create a temporary file, we immediately
-  # call `#unlink`. This means that if the process gets terminated without being
-  # able to clean up itself, the temporary file will not linger on the file
-  # system. We will try to get this patch accepted upstream if it works for us
-  # (we just need to check if the temporary file responds to `#unlink` as that
-  # won't work on Windows, for instance).
   module Puma
     class Client
       private
@@ -65,7 +65,7 @@ if Gitlab::Runtime.puma?
         if remain > MAX_BODY
           @body = Tempfile.new(Const::PUMA_TMP_BASE)
           @body.binmode
-          @body.unlink # This is the changed part
+          @body.unlink # GitLab: this is the changed part
           @tempfile = @body
         else
           # The body[0,0] trick is to get an empty string in the same
@@ -87,7 +87,7 @@ if Gitlab::Runtime.puma?
 
         @body = Tempfile.new(Const::PUMA_TMP_BASE)
         @body.binmode
-        @body.unlink # This is the changed part
+        @body.unlink # GitLab: this is the changed part
         @tempfile = @body
         @chunked_content_length = 0
 

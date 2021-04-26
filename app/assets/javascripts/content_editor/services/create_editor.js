@@ -18,7 +18,12 @@ import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
 import createMarkdownSerializer from './markdown_serializer';
 
-const createEditor = async ({ content, renderMarkdown, serializer: customSerializer } = {}) => {
+const createEditor = async ({
+  content,
+  renderMarkdown,
+  serializer: customSerializer,
+  ...options
+} = {}) => {
   if (!customSerializer && !isFunction(renderMarkdown)) {
     throw new Error(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
   }
@@ -41,14 +46,10 @@ const createEditor = async ({ content, renderMarkdown, serializer: customSeriali
     ],
     editorProps: {
       attributes: {
-        /*
-         * Adds some padding to the contenteditable element where the user types.
-         * Otherwise, the text cursor is not visible when its position is at the
-         * beginning of a line.
-         */
-        class: 'gl-py-4 gl-px-5',
+        class: 'gl-outline-0!',
       },
     },
+    ...options,
   });
   const serializer = customSerializer || createMarkdownSerializer({ render: renderMarkdown });
 

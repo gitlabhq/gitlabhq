@@ -130,7 +130,10 @@ module Types
 
     field :milestone, Types::MilestoneType, null: true,
           description: 'The milestone of the merge request.'
-    field :assignees, Types::UserType.connection_type, null: true, complexity: 5,
+    field :assignees,
+          type: Types::MergeRequests::AssigneeType.connection_type,
+          null: true,
+          complexity: 5,
           description: 'Assignees of the merge request.'
     field :reviewers,
           type: Types::MergeRequests::ReviewerType.connection_type,

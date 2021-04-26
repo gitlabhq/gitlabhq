@@ -21,6 +21,7 @@ RSpec.describe GitlabSchema.types['Query'] do
       user
       users
       issue
+      merge_request
       usage_trends_measurements
       runner_platforms
     ]
@@ -60,8 +61,18 @@ RSpec.describe GitlabSchema.types['Query'] do
   describe 'issue field' do
     subject { described_class.fields['issue'] }
 
-    it 'returns issue' do
+    it "finds an issue by it's gid" do
+      is_expected.to have_graphql_arguments(:id)
       is_expected.to have_graphql_type(Types::IssueType)
+    end
+  end
+
+  describe 'merge_request field' do
+    subject { described_class.fields['mergeRequest'] }
+
+    it "finds a merge_request by it's gid" do
+      is_expected.to have_graphql_arguments(:id)
+      is_expected.to have_graphql_type(Types::MergeRequestType)
     end
   end
 

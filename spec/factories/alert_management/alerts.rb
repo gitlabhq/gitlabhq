@@ -95,6 +95,10 @@ FactoryBot.define do
       severity { 'unknown' }
     end
 
+    trait :threat_monitoring do
+      domain { :threat_monitoring }
+    end
+
     trait :prometheus do
       monitoring_tool { Gitlab::AlertManagement::Payload::MONITORING_TOOLS[:prometheus] }
       payload do

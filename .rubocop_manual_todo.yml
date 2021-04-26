@@ -126,12 +126,6 @@ Rails/SaveBang:
     - 'ee/spec/services/status_page/trigger_publish_service_spec.rb'
     - 'ee/spec/services/todo_service_spec.rb'
     - 'ee/spec/services/vulnerability_feedback/create_service_spec.rb'
-    - 'ee/spec/support/protected_tags/access_control_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/features/protected_branches_access_control_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/finders/geo/framework_registry_finder_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/graphql/geo/geo_registries_resolver_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/lib/analytics/common_merge_request_metrics_refresh_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/policies/protected_environments_shared_examples.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/repository/push_mirroring_over_http_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/repository/push_mirroring_lfs_over_http_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/pull_mirroring_over_http_spec.rb'
@@ -392,15 +386,7 @@ Rails/TimeZone:
 # WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/325836
 RSpec/EmptyLineAfterFinalLetItBe:
   Exclude:
-    - ee/spec/controllers/groups/analytics/cycle_analytics/stages_controller_spec.rb
-    - ee/spec/controllers/groups/analytics/cycle_analytics/summary_controller_spec.rb
-    - ee/spec/controllers/groups/analytics/cycle_analytics/value_streams_controller_spec.rb
-    - ee/spec/controllers/groups/analytics/tasks_by_type_controller_spec.rb
-    - ee/spec/controllers/groups/autocomplete_sources_controller_spec.rb
-    - ee/spec/controllers/groups/insights_controller_spec.rb
-    - ee/spec/controllers/groups/todos_controller_spec.rb
     - ee/spec/controllers/subscriptions_controller_spec.rb
-    - ee/spec/features/boards/group_boards/multiple_boards_spec.rb
     - ee/spec/features/ci_shared_runner_warnings_spec.rb
     - ee/spec/features/groups/groups_security_credentials_spec.rb
     - ee/spec/features/groups/hooks/user_edits_hooks_spec.rb

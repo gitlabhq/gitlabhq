@@ -486,7 +486,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.ci_external_pipelines`
 
@@ -510,7 +510,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.ci_pipeline_config_auto_devops`
 
@@ -518,11 +518,11 @@ Total pipelines from an Auto DevOps template
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175516_ci_pipeline_config_auto_devops.yml)
 
-Group: `group::continuous integration`
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.ci_pipeline_config_repository`
 
@@ -534,7 +534,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.ci_pipeline_schedules`
 
@@ -546,7 +546,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.ci_runners`
 
@@ -558,7 +558,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.ci_triggers`
 
@@ -570,7 +570,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.clusters`
 
@@ -16128,7 +16128,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage.verify.ci_builds`
 
-Unique builds in project
+Unique count of builds in project
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175525_ci_builds.yml)
 
@@ -16136,7 +16136,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.verify.ci_external_pipelines`
 
@@ -16148,7 +16148,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.verify.ci_internal_pipelines`
 
@@ -16160,7 +16160,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.verify.ci_pipeline_config_auto_devops`
 
@@ -16168,11 +16168,11 @@ Total pipelines from an Auto DevOps template
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175531_ci_pipeline_config_auto_devops.yml)
 
-Group: `group::continuous integration`
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.verify.ci_pipeline_config_repository`
 
@@ -16184,7 +16184,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.verify.ci_pipeline_schedules`
 
@@ -16196,7 +16196,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.verify.ci_pipelines`
 
@@ -16208,7 +16208,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.verify.ci_triggers`
 
@@ -16220,7 +16220,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.verify.clusters_applications_runner`
 
@@ -18132,7 +18132,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.verify.ci_builds`
 
-Unique builds in project
+Unique monthly builds in project
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175542_ci_builds.yml)
 
@@ -18140,11 +18140,11 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.verify.ci_external_pipelines`
 
-Total pipelines in external repositories
+Total pipelines in external repositories in a month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175544_ci_external_pipelines.yml)
 
@@ -18152,11 +18152,11 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.verify.ci_internal_pipelines`
 
-Total pipelines in GitLab repositories
+Total pipelines in GitLab repositories in a month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175546_ci_internal_pipelines.yml)
 
@@ -18164,7 +18164,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.verify.ci_pipeline_config_auto_devops`
 
@@ -18172,15 +18172,15 @@ Total pipelines from an Auto DevOps template
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175548_ci_pipeline_config_auto_devops.yml)
 
-Group: `group::continuous integration`
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.verify.ci_pipeline_config_repository`
 
-Total Pipelines from templates in repository
+Total Monthly Pipelines from templates in repository
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175550_ci_pipeline_config_repository.yml)
 
@@ -18188,11 +18188,11 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.verify.ci_pipeline_schedules`
 
-Pipeline schedules in GitLab
+Total monthly Pipeline schedules in GitLab
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175552_ci_pipeline_schedules.yml)
 
@@ -18200,11 +18200,11 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.verify.ci_pipelines`
 
- Distinct users triggering pipelines in a month
+Distinct users triggering pipelines in a month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175554_ci_pipelines.yml)
 
@@ -18212,7 +18212,7 @@ Group: `group::continuous integration`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`, `free`
 
 ### `usage_activity_by_stage_monthly.verify.ci_triggers`
 
@@ -18240,7 +18240,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.verify.projects_reporting_ci_cd_back_to_github`
 
-Projects with a GitHub service pipeline enabled
+Projects with a GitHub repository mirror pipeline enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175558_projects_reporting_ci_cd_back_to_github.yml)
 

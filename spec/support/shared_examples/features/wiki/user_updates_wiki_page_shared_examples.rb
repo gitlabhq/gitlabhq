@@ -93,8 +93,8 @@ RSpec.shared_examples 'User updates wiki page' do
     it 'shows a validation error message if the form is force submitted', :js do
       fill_in(:wiki_content, with: '')
 
-      page.execute_script("window.onbeforeunload = null")
       page.execute_script("document.querySelector('.wiki-form').submit()")
+      page.accept_alert # manually force form submit
 
       expect(page).to have_selector('.wiki-form')
       expect(page).to have_content('Edit Page')

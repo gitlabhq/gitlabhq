@@ -311,23 +311,23 @@ RSpec.describe 'getting merge request information nested in a project' do
     end
   end
 
-  context 'when requesting information about MR interactions' do
+  shared_examples 'when requesting information about MR interactions' do
     let_it_be(:user) { create(:user) }
 
     let(:selected_fields) { all_graphql_fields_for('UserMergeRequestInteraction') }
 
     let(:mr_fields) do
       query_nodes(
-        :reviewers,
+        field,
         query_graphql_field(:merge_request_interaction, nil, selected_fields)
       )
     end
 
     def interaction_data
-      graphql_data_at(:project, :merge_request, :reviewers, :nodes, :merge_request_interaction)
+      graphql_data_at(:project, :merge_request, field, :nodes, :merge_request_interaction)
     end
 
-    context 'when the user does not have interactions' do
+    context 'when the user is not assigned' do
       it 'returns null data' do
         post_graphql(query)
 
@@ -338,7 +338,7 @@ RSpec.describe 'getting merge request information nested in a project' do
     context 'when the user is a reviewer, but has not reviewed' do
       before do
         project.add_guest(user)
-        merge_request.merge_request_reviewers.create!(reviewer: user)
+        assign_user(user)
       end
 
       it 'returns falsey values' do
@@ -346,8 +346,8 @@ RSpec.describe 'getting merge request information nested in a project' do
 
         expect(interaction_data).to contain_exactly a_hash_including(
           'canMerge' => false,
-          'canUpdate' => false,
-          'reviewState' => 'UNREVIEWED',
+          'canUpdate' => can_update,
+          'reviewState' => unreviewed,
           'reviewed' => false,
           'approved' => false
         )
@@ -357,7 +357,9 @@ RSpec.describe 'getting merge request information nested in a project' do
     context 'when the user has interacted' do
       before do
         project.add_maintainer(user)
-        merge_request.merge_request_reviewers.create!(reviewer: user, state: 'reviewed')
+        assign_user(user)
+        r = merge_request.merge_request_reviewers.find_or_create_by!(reviewer: user)
+        r.update!(state: 'reviewed')
         merge_request.approved_by_users << user
       end
 
@@ -392,7 +394,10 @@ RSpec.describe 'getting merge request information nested in a project' do
         end
 
         it 'does not suffer from N+1' do
-          merge_request.merge_request_reviewers.create!(reviewer: user, state: 'reviewed')
+          assign_user(user)
+          merge_request.merge_request_reviewers
+            .find_or_create_by!(reviewer: user)
+            .update!(state: 'reviewed')
 
           baseline = ActiveRecord::QueryRecorder.new do
             post_graphql(query)
@@ -401,7 +406,8 @@ RSpec.describe 'getting merge request information nested in a project' do
           expect(interaction_data).to contain_exactly(include(reviewed))
 
           other_users.each do |user|
-            merge_request.merge_request_reviewers.create!(reviewer: user)
+            assign_user(user)
+            merge_request.merge_request_reviewers.find_or_create_by!(reviewer: user)
           end
 
           expect { post_graphql(query) }.not_to exceed_query_limit(baseline)
@@ -433,6 +439,26 @@ RSpec.describe 'getting merge request information nested in a project' do
 
         it_behaves_like 'scalable query for interaction fields'
       end
+    end
+  end
+
+  it_behaves_like 'when requesting information about MR interactions' do
+    let(:field) { :reviewers }
+    let(:unreviewed) { 'UNREVIEWED' }
+    let(:can_update) { false }
+
+    def assign_user(user)
+      merge_request.merge_request_reviewers.create!(reviewer: user)
+    end
+  end
+
+  it_behaves_like 'when requesting information about MR interactions' do
+    let(:field) { :assignees }
+    let(:unreviewed) { nil }
+    let(:can_update) { true } # assignees can update MRs
+
+    def assign_user(user)
+      merge_request.assignees << user
     end
   end
 end

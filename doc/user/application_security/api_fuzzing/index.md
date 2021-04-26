@@ -599,7 +599,6 @@ repository's root as `.gitlab-api-fuzzing.yml`.
 | `FUZZAPI_TARGET_URL`                                 | Base URL of API testing target. |
 |[`FUZZAPI_CONFIG`](#configuration-files)              | API Fuzzing configuration file. Defaults to `.gitlab-apifuzzer.yml`. |
 |[`FUZZAPI_PROFILE`](#configuration-files)             | Configuration profile to use during testing. Defaults to `Quick`. |
-| `FUZZAPI_REPORT`                                     | Scan report filename. Defaults to `gl-api_fuzzing-report.xml`. |
 |[`FUZZAPI_OPENAPI`](#openapi-specification)           | OpenAPI specification file or URL. |
 |[`FUZZAPI_HAR`](#http-archive-har)                    | HTTP Archive (HAR) file. |
 |[`FUZZAPI_POSTMAN_COLLECTION`](#postman-collection)   | Postman Collection file. |
@@ -610,18 +609,6 @@ repository's root as `.gitlab-api-fuzzing.yml`.
 |[`FUZZAPI_OVERRIDES_INTERVAL`](#overrides)            | How often to run overrides command in seconds. Defaults to `0` (once). |
 |[`FUZZAPI_HTTP_USERNAME`](#http-basic-authentication) | Username for HTTP authentication. |
 |[`FUZZAPI_HTTP_PASSWORD`](#http-basic-authentication) | Password for HTTP authentication. |
-
-<!--|[`FUZZAPI_D_TARGET_IMAGE`](#target-container) |API target docker image |
-|[`FUZZAPI_D_TARGET_ENV`](#target-container)   |Docker environment options |
-|[`FUZZAPI_D_TARGET_VOLUME`](#target-container) | Docker volume options |
-|[`FUZZAPI_D_TARGET_PORTS`](#target-container) |Docker port options |
-| `FUZZAPI_D_WORKER_IMAGE`    |Custom worker docker image |
-| `FUZZAPI_D_WORKER_ENV`      |Custom worker docker environment options |
-| `FUZZAPI_D_WORKER_VOLUME`   |Custom worker docker volume options |
-| `FUZZAPI_D_WORKER_PORTS`    |Custom worker docker port options |
-| `FUZZAPI_D_NETWORK`         |Name of docker network, defaults to "testing-net"|
-| `FUZZAPI_D_PRE_SCRIPT`      |Pre script runs after docker login and docker network create, but before starting the scanning image container.|
-| `FUZZAPI_D_POST_SCRIPT`     |Post script runs after scanning image container is started. This is the place to start your target(s) and kick off scanning when using an advanced configuration.| -->
 
 ### Overrides
 
