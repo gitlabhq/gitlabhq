@@ -123,7 +123,7 @@ The general flow of contributing to GitLab is:
 1. [Create a fork](../../user/project/repository/forking_workflow.md#creating-a-fork)
    of GitLab. In some cases, you will want to set up the
    [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) to
-   [develop against your fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/index.md#develop-in-your-own-gitlab-fork).
+   [develop against your fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#develop-in-your-own-gitlab-fork).
 1. Make your changes in your fork.
 1. When you're ready, [create a new merge request](../../user/project/merge_requests/creating_merge_requests.md).
 1. In the merge request's description:

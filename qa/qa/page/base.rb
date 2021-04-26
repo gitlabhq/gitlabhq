@@ -227,10 +227,12 @@ module QA
         wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
         text = kwargs.delete(:text)
         klass = kwargs.delete(:class)
+        visible = kwargs.delete(:visible)
+        visible = visible.nil? && true
 
         try_find_element = ->(wait) do
           if disabled.nil?
-            has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass)
+            has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass, visible: visible)
           else
             find_element(name, original_kwargs).disabled? == disabled
           end

@@ -141,9 +141,9 @@ module GroupsHelper
   def projects_lfs_status(group)
     lfs_status =
       if group.lfs_enabled?
-        group.projects.select(&:lfs_enabled?).size
+        group.projects.count(&:lfs_enabled?)
       else
-        group.projects.reject(&:lfs_enabled?).size
+        group.projects.count { |project| !project.lfs_enabled? }
       end
 
     size = group.projects.size

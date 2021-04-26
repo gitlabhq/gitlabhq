@@ -163,7 +163,8 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         click_on('Save changes')
       end
 
-      find('.flash-notice')
+      wait_for_requests
+
       radio = find_field('project_project_setting_attributes_squash_option_default_on')
 
       expect(radio).to be_checked
@@ -178,7 +179,8 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         click_on('Save changes')
       end
 
-      find('.flash-notice')
+      wait_for_requests
+
       radio = find_field('project_project_setting_attributes_squash_option_always')
 
       expect(radio).to be_checked
@@ -193,7 +195,8 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         click_on('Save changes')
       end
 
-      find('.flash-notice')
+      wait_for_requests
+
       radio = find_field('project_project_setting_attributes_squash_option_never')
 
       expect(radio).to be_checked
@@ -220,7 +223,8 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
           click_on('Save changes')
         end
 
-        find('.flash-notice')
+        wait_for_requests
+
         radio = find_field('project_project_setting_attributes_mr_default_target_self_true')
 
         expect(radio).to be_checked

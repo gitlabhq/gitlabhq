@@ -363,7 +363,7 @@ This patch is available by default for
 [CNG](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/591),
 [GitLab CI](https://gitlab.com/gitlab-org/gitlab-build-images/-/merge_requests/355),
 [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/merge_requests/149)
-and can additionally be enabled for [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/advanced.md#apply-custom-patches-for-ruby).
+and can additionally be enabled for [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/advanced.md#apply-custom-patches-for-ruby).
 
 This patch provides a set of 3 metrics that makes it easier to understand efficiency of memory usage for a given codepath:
 

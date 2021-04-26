@@ -24,6 +24,9 @@ RSpec.describe ::Ci::DestroyPipelineService do
 
       subject
 
+      # We need to reset lazy_latest_pipeline cache to simulate a new request
+      BatchLoader::Executor.clear_current
+
       # Need to use find to avoid memoization
       expect(Project.find(project.id).pipeline_status.has_status?).to be_falsey
     end

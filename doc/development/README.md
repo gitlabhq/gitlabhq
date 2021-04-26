@@ -26,7 +26,7 @@ GitLab instance, see the [administration documentation](../administration/index.
 ## Get started
 
 - Set up the GitLab development environment with the
-  [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/README.md)
+  [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/README.md)
 - [GitLab contributing guide](contributing/index.md)
   - [Issues workflow](contributing/issue_workflow.md) for more information about:
     - Issue tracker guidelines.
@@ -302,6 +302,6 @@ See [database guidelines](database/index.md).
 
 ## Other GitLab Development Kit (GDK) guides
 
-- [Run full Auto DevOps cycle in a GDK instance](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/auto_devops.md)
-- [Using GitLab Runner with the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/runner.md)
-- [Using the Web IDE terminal with the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/web_ide_terminal_gdk_setup.md)
+- [Run full Auto DevOps cycle in a GDK instance](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/auto_devops.md)
+- [Using GitLab Runner with the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/runner.md)
+- [Using the Web IDE terminal with the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/web_ide_terminal_gdk_setup.md)

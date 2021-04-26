@@ -24,7 +24,7 @@ This issue is for implementing Geo replication and verification of Cool Widgets.
 
 For more background, see [Geo self-service framework](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/geo/framework.md).
 
-In order to implement and test this feature, you need to first [set up Geo locally](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/geo.md).
+In order to implement and test this feature, you need to first [set up Geo locally](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/geo.md).
 
 There are three main sections below. It is a good idea to structure your merge requests this way as well:
 

@@ -301,6 +301,16 @@ the Container Registry by themselves, follow the steps below.
 
 ## Configure storage for the Container Registry
 
+NOTE:
+For storage backends that support it, you can use object versioning to preserve, retrieve, and
+restore the non-current versions of every object stored in your buckets. However, this may result in
+higher storage usage and costs. Due to how the registry operates, image uploads are first stored in
+a temporary path and then transferred to a final location. For object storage backends, including S3
+and GCS, this transfer is achieved with a copy followed by a delete. With object versioning enabled,
+these deleted temporary upload artifacts are kept as non-current versions, therefore increasing the
+storage bucket size. To ensure that non-current versions are deleted after a given amount of time,
+you should configure an object lifecycle policy with your storage provider.
+   
 You can configure the Container Registry to use various storage backends by
 configuring a storage driver. By default the GitLab Container Registry
 is configured to use the [file system driver](#use-file-system)

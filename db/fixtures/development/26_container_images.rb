@@ -57,7 +57,7 @@ Gitlab::Seeder.quiet do
       seeder.seed!
     rescue => e
       puts "\nSeeding container images failed with #{e.message}."
-      puts "Make sure that the registry is running (https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/registry.md) and that Docker CLI (https://www.docker.com/products/docker-desktop) is installed."
+      puts "Make sure that the registry is running (https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/registry.md) and that Docker CLI (https://www.docker.com/products/docker-desktop) is installed."
     end
   else
     puts "Skipped. Use the `#{flag}` environment variable to seed container images to the registry."

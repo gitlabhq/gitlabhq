@@ -411,7 +411,7 @@ on how the left-side navigation menu is built and updated.
 
 NOTE:
 To preview your changes to documentation locally, follow this
-[development guide](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
+[development guide](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/gitlab_docs.md).
 
 The live preview is currently enabled for the following projects:
 
@@ -502,7 +502,7 @@ help of a configuration file known as **screenshot generator**.
 
 To run the tool on an existing screenshot generator, take the following steps:
 
-1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
+1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/gitlab_docs.md).
 1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
 1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
 1. Install `pngquant`, see the tool website for more information: [`pngquant`](https://pngquant.org/)

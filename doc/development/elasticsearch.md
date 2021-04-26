@@ -25,7 +25,7 @@ Developers making significant changes to Elasticsearch queries should test their
 
 ## Setting up development environment
 
-See the [Elasticsearch GDK setup instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/elasticsearch.md)
+See the [Elasticsearch GDK setup instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/elasticsearch.md)
 
 ## Helpful Rake tasks
 

@@ -343,8 +343,6 @@ To create a value stream with stages:
      ![Custom stage actions](img/vsa_custom_stage_v13_10.png "Custom stage actions")
 1. Select the **Create Value Stream** button to save the value stream.
 
-![Extended create value stream form](img/extended_value_stream_form_v13_10.png "Extended create value stream form")
-
 ### Deleting a value stream
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221205) in GitLab 13.4.

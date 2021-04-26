@@ -15555,13 +15555,10 @@ msgstr ""
 msgid "GroupSAML|Before enforcing SSO, enable SAML authentication."
 msgstr ""
 
-msgid "GroupSAML|Before enforcing SSO-access for Git, enable SSO-only authentication for web activity."
+msgid "GroupSAML|Before enforcing SSO-only authentication for Git activity, enable SSO-only authentication for web activity."
 msgstr ""
 
 msgid "GroupSAML|Certificate fingerprint"
-msgstr ""
-
-msgid "GroupSAML|Check SSO on git activity"
 msgstr ""
 
 msgid "GroupSAML|Configuration"
@@ -15576,19 +15573,16 @@ msgstr ""
 msgid "GroupSAML|Default membership role"
 msgstr ""
 
-msgid "GroupSAML|Enable SAML authentication for this group."
+msgid "GroupSAML|Enable SAML authentication for this group"
 msgstr ""
 
-msgid "GroupSAML|Enforce SSO-access for Git in this group."
+msgid "GroupSAML|Enforce SSO-only authentication for Git activity for this group"
 msgstr ""
 
-msgid "GroupSAML|Enforce SSO-only authentication for web activity for this group."
+msgid "GroupSAML|Enforce SSO-only authentication for web activity for this group"
 msgstr ""
 
-msgid "GroupSAML|Enforce users to have dedicated group managed accounts for this group."
-msgstr ""
-
-msgid "GroupSAML|Enforced SSO"
+msgid "GroupSAML|Enforce users to have dedicated group-managed accounts for this group"
 msgstr ""
 
 msgid "GroupSAML|Generate a SCIM token"
@@ -15627,10 +15621,7 @@ msgstr ""
 msgid "GroupSAML|No active SAML group links"
 msgstr ""
 
-msgid "GroupSAML|Prohibit outer forks"
-msgstr ""
-
-msgid "GroupSAML|Prohibit outer forks for this group."
+msgid "GroupSAML|Prohibit outer forks for this group"
 msgstr ""
 
 msgid "GroupSAML|Role to assign members of this SAML group."
@@ -15678,13 +15669,10 @@ msgstr ""
 msgid "GroupSAML|This will be set as the access level of users added to the group."
 msgstr ""
 
-msgid "GroupSAML|To be able to enable group managed accounts, you first need to enable enforced SSO."
+msgid "GroupSAML|To be able to enable group-managed accounts, you first need to enable enforced SSO."
 msgstr ""
 
 msgid "GroupSAML|To be able to prohibit outer forks, you first need to enforce dedicate group managed accounts."
-msgstr ""
-
-msgid "GroupSAML|Toggle SAML authentication"
 msgstr ""
 
 msgid "GroupSAML|Valid SAML Response"

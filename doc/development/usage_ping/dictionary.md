@@ -46,11 +46,11 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `analytics_unique_visits.analytics_unique_visits_for_any_target`
 
-Visits to any of the pages listed above per week
+Unique visitors to any analytics feature by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174908_analytics_unique_visits_for_any_target.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -58,11 +58,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.analytics_unique_visits_for_any_target_monthly`
 
-Visits to any of the pages listed above per month
+Unique visitors to any analytics feature by month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174910_analytics_unique_visits_for_any_target_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -70,11 +70,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.g_analytics_contribution`
 
-Visits to /groups/:group/-/contribution_analytics
+Unique visitors to /groups/:group/-/contribution_analytics
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174836_g_analytics_contribution.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174836_g_analytics_contribution.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -82,11 +82,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.g_analytics_insights`
 
-Visits to /groups/:group/-/insights
+Unique visitors to /groups/:group/-/insights
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174838_g_analytics_insights.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174838_g_analytics_insights.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -94,11 +94,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.g_analytics_issues`
 
-Visits to /groups/:group/-/issues_analytics
+Unique visitors to /groups/:group/-/issues_analytics
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174840_g_analytics_issues.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174840_g_analytics_issues.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -106,11 +106,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.g_analytics_merge_request`
 
-Visits to /groups/:group/-/analytics/merge_request_analytics
+Unique visitors to /groups/:group/-/analytics/merge_request_analytics
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174902_g_analytics_merge_request.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -118,11 +118,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.g_analytics_productivity`
 
-Visits to /groups/:group/-/analytics/productivity_analytics
+Unique visitors to /groups/:group/-/analytics/productivity_analytics
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174842_g_analytics_productivity.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174842_g_analytics_productivity.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -130,11 +130,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.g_analytics_valuestream`
 
-Visits to /groups/:group/-/analytics/value_stream_analytics
+Unique visitors to /groups/:group/-/analytics/value_stream_analytics
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174844_g_analytics_valuestream.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174844_g_analytics_valuestream.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -142,11 +142,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.i_analytics_cohorts`
 
-Visits to /-/instance_statistics/cohorts
+Unique visitors to /-/instance_statistics/cohorts
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174858_i_analytics_cohorts.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -154,11 +154,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.i_analytics_dev_ops_score`
 
-Visits to /-/instance_statistics/dev_ops_score
+Unique visitors to /-/instance_statistics/dev_ops_score
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174900_i_analytics_dev_ops_score.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -166,11 +166,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.i_analytics_instance_statistics`
 
-Visit to /admin/instance_statistics
+Unique visitors to/admin/usage_trends
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174906_i_analytics_instance_statistics.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -178,11 +178,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.p_analytics_code_reviews`
 
-Visits to /:group/:project/-/analytics/code_reviews
+Unique visitors to /:group/:project/-/analytics/code_reviews
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174848_p_analytics_code_reviews.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174848_p_analytics_code_reviews.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -190,11 +190,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.p_analytics_insights`
 
-Visits to /:group/:project/insights
+Unique visitors to /:group/:project/insights
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174852_p_analytics_insights.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174852_p_analytics_insights.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -202,11 +202,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.p_analytics_issues`
 
-Visits to /:group/:project/-/analytics/issues_analytics
+Unique visitors to /:group/:project/-/analytics/issues_analytics
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174854_p_analytics_issues.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174854_p_analytics_issues.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -214,11 +214,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.p_analytics_merge_request`
 
-Visits to /:group/:project/-/analytics/merge_request_analytics
+Unique visitors to /:group/:project/-/analytics/merge_request_analytics
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174904_p_analytics_merge_request.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174904_p_analytics_merge_request.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -226,11 +226,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.p_analytics_pipelines`
 
-Visits to /:group/:project/pipelines/charts
+Unique visitors to /:group/:project/pipelines/charts
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174846_p_analytics_pipelines.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -238,11 +238,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.p_analytics_repo`
 
-Visits to /:group/:project/-/graphs/master/charts
+Unique visitors to /:group/:project/-/graphs/master/charts
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174856_p_analytics_repo.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -250,11 +250,11 @@ Tiers: `free`
 
 ### `analytics_unique_visits.p_analytics_valuestream`
 
-Visits to /:group/:project/-/value_stream_analytics
+Unique visitors to /:group/:project/-/value_stream_analytics
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174850_p_analytics_valuestream.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -830,7 +830,7 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174832_cycle_analytics_views.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -3672,9 +3672,9 @@ Tiers: `free`, `premium`, `ultimate`
 
 Missing description
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216174834_productivity_analytics_views.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216174834_productivity_analytics_views.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7162,11 +7162,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.analytics_total_unique_counts_monthly`
 
-Missing description
+The number of unique users who visited any analytics feature by month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175016_analytics_total_unique_counts_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7174,11 +7174,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.analytics_total_unique_counts_weekly`
 
-Missing description
+The number of unique users who visited any analytics feature by week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175014_analytics_total_unique_counts_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175014_analytics_total_unique_counts_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7186,11 +7186,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_contribution_monthly`
 
-Missing description
+Unique visitors to /groups/:group/-/contribution_analytics by month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174914_g_analytics_contribution_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216174914_g_analytics_contribution_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7198,11 +7198,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.g_analytics_contribution_weekly`
 
-Missing description
+Unique visitors to /groups/:group/-/contribution_analytics by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174912_g_analytics_contribution_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7210,11 +7210,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_insights_monthly`
 
-Missing description
+Unique visitors to /groups/:group/-/insights/ by month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174918_g_analytics_insights_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216174918_g_analytics_insights_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7222,11 +7222,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.g_analytics_insights_weekly`
 
-Missing description
+Unique visitors to /groups/:group/-/insights/ by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174916_g_analytics_insights_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7234,11 +7234,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_issues_monthly`
 
-Missing description
+Unique visitors to /groups/:group/-/issues_analytics by month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174921_g_analytics_issues_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216174921_g_analytics_issues_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7246,11 +7246,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.g_analytics_issues_weekly`
 
-Missing description
+Unique visitors to /groups/:group/-/issues_analytics by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174919_g_analytics_issues_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7262,7 +7262,7 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175004_g_analytics_merge_request_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7274,7 +7274,7 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175002_g_analytics_merge_request_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7282,11 +7282,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_productivity_monthly`
 
-Missing description
+Unique visitors to /groups/:group/-/analytics/productivity_analytics by month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174926_g_analytics_productivity_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216174926_g_analytics_productivity_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7294,11 +7294,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.g_analytics_productivity_weekly`
 
-Missing description
+Unique visitors to /groups/:group/-/analytics/productivity_analytics by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174923_g_analytics_productivity_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7306,11 +7306,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.g_analytics_valuestream_monthly`
 
-Missing description
+Unique visitors to /groups/:group/-/analytics/value_stream_analytics by month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174929_g_analytics_valuestream_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216174929_g_analytics_valuestream_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7318,11 +7318,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.g_analytics_valuestream_weekly`
 
-Missing description
+Unique visitors to /groups/:group/-/analytics/value_stream_analytics by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174927_g_analytics_valuestream_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7334,7 +7334,7 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174956_i_analytics_cohorts_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7346,7 +7346,7 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174955_i_analytics_cohorts_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7378,11 +7378,11 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.analytics.i_analytics_dev_ops_score_monthly`
 
-Missing description
+Unique visitors to /admin/dev_ops_report by month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175000_i_analytics_dev_ops_score_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7390,11 +7390,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.i_analytics_dev_ops_score_weekly`
 
-Missing description
+Unique visitors to /admin/dev_ops_report by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174958_i_analytics_dev_ops_score_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7402,11 +7402,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.i_analytics_instance_statistics_monthly`
 
-Missing description
+Unique visitors to /admin/usage_trends by month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175012_i_analytics_instance_statistics_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7414,11 +7414,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.i_analytics_instance_statistics_weekly`
 
-Missing description
+Unique visitors to /admin/usage_trends by week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175010_i_analytics_instance_statistics_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216175010_i_analytics_instance_statistics_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7426,11 +7426,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_code_reviews_monthly`
 
-Missing description
+Unique visitors to /:group/:project/-/analytics/code_reviews by month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174937_p_analytics_code_reviews_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216174937_p_analytics_code_reviews_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7438,11 +7438,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.p_analytics_code_reviews_weekly`
 
-Missing description
+Unique visitors to /:group/:project/-/analytics/code_reviews by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174935_p_analytics_code_reviews_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7450,11 +7450,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_insights_monthly`
 
-Missing description
+Unique visitors to /:group/:project/insights/ by month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174945_p_analytics_insights_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216174945_p_analytics_insights_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7462,11 +7462,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.p_analytics_insights_weekly`
 
-Missing description
+Unique visitors to /:group/:project/insights/ by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174943_p_analytics_insights_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7474,11 +7474,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_issues_monthly`
 
-Missing description
+Unique visitors to /:group/:project/-/analytics/issues_analytics by week
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174949_p_analytics_issues_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216174949_p_analytics_issues_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7486,11 +7486,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.p_analytics_issues_weekly`
 
-Missing description
+Unique visitors to /:group/:project/-/analytics/issues_analytics by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174947_p_analytics_issues_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7498,11 +7498,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_merge_request_monthly`
 
-Missing description
+Unique visitors to /:group/:project/-/analytics/merge_request_analytics by month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175008_p_analytics_merge_request_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175008_p_analytics_merge_request_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7510,11 +7510,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.p_analytics_merge_request_weekly`
 
-Missing description
+Unique visitors to /:group/:project/-/analytics/merge_request_analytics by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216175006_p_analytics_merge_request_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7522,11 +7522,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_pipelines_monthly`
 
-Missing description
+Unique visitors to /groups/:group/-/analytics/ci_cd by month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174933_p_analytics_pipelines_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7534,11 +7534,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.p_analytics_pipelines_weekly`
 
-Missing description
+Unique visitors to /groups/:group/-/analytics/ci_cd by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174931_p_analytics_pipelines_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7546,11 +7546,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_repo_monthly`
 
-Missing description
+Unique visitors to /:group/:project/-/graphs/master/charts by month
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174953_p_analytics_repo_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216174953_p_analytics_repo_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7558,11 +7558,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.p_analytics_repo_weekly`
 
-Missing description
+Unique visitors to /:group/:project/-/graphs/master/charts by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174951_p_analytics_repo_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7570,11 +7570,11 @@ Tiers:
 
 ### `redis_hll_counters.analytics.p_analytics_valuestream_monthly`
 
-Missing description
+Unique visitors to /:group/:project/-/value_stream_analytics by month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174941_p_analytics_valuestream_monthly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 
@@ -7582,11 +7582,11 @@ Tiers: `free`
 
 ### `redis_hll_counters.analytics.p_analytics_valuestream_weekly`
 
-Missing description
+Unique visitors to /:group/:project/-/value_stream_analytics by week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174939_p_analytics_valuestream_weekly.yml)
 
-Group: `group::analytics`
+Group: `group::optimize`
 
 Status: `data_available`
 

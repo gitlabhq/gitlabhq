@@ -224,7 +224,7 @@ of the additional endpoint added for Maven. The `/authorize` endpoint verifies a
 then the normal upload endpoint is implemented below, consuming the metadata that workhorse provides in order to
 create the package record. Workhorse provides a variety of file metadata such as type, size, and different checksum formats.
 
-For testing purposes, you may want to [enable object storage](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/object_storage.md)
+For testing purposes, you may want to [enable object storage](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/object_storage.md)
 in your local development environment.
 
 #### File size limits

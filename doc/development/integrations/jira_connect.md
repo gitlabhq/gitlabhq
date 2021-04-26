@@ -16,7 +16,7 @@ The following are required to install and test the app:
 
   - [GDK in Gitpod](https://www.loom.com/share/9c9711d4876a40869b9294eecb24c54d)
     video.
-  - [GDK with Gitpod](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/gitpod.md)
+  - [GDK with Gitpod](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitpod.md)
     documentation.
 
   You **must not** use tunneling tools such as
@@ -61,7 +61,7 @@ To install the app in Jira:
 
 If the app install failed, you might need to delete `jira_connect_installations` from your database.
 
-1. Open the [database console](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/postgresql.md#access-postgresql).
+1. Open the [database console](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md#access-postgresql).
 1. Run `TRUNCATE TABLE jira_connect_installations CASCADE;`.
 
 ## Add a namespace

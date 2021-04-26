@@ -10,9 +10,9 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
 
     it { expect(tree).to be_kind_of Array }
     it { expect(tree.empty?).to be_falsey }
-    it { expect(tree.select(&:dir?).size).to eq(2) }
-    it { expect(tree.select(&:file?).size).to eq(10) }
-    it { expect(tree.select(&:submodule?).size).to eq(2) }
+    it { expect(tree.count(&:dir?)).to eq(2) }
+    it { expect(tree.count(&:file?)).to eq(10) }
+    it { expect(tree.count(&:submodule?)).to eq(2) }
 
     it 'returns an empty array when called with an invalid ref' do
       expect(described_class.where(repository, 'foobar-does-not-exist')).to eq([])

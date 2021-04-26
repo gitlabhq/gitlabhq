@@ -39,4 +39,4 @@ in the categories shown in [Total counts](#total-counts).
 
 These charts help you visualize how rapidly these records are being created on your instance.
 
-![Instance Activity Pipelines chart](img/instance_activity_pipelines_chart_v13_6.png)
+![Instance Activity Pipelines chart](img/instance_activity_pipelines_chart_v13_6_a.png)

@@ -302,7 +302,7 @@ GitLab can be considered to have two layers from a process perspective:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl.html)
   - [Charts](https://docs.gitlab.com/charts/installation/tls.html)
   - [Source](../install/installation.md#using-https)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/https.md)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/https.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [Secrets Management](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#secrets-management)
 
@@ -332,7 +332,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
   - [Omnibus](../integration/elasticsearch.md)
   - [Charts](../integration/elasticsearch.md)
   - [Source](../integration/elasticsearch.md)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/elasticsearch.md)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/elasticsearch.md)
 - Layer: Core Service (Data)
 - GitLab.com: [Get Advanced Search working on GitLab.com (Closed)](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.
 
@@ -369,7 +369,7 @@ repository updates to secondary nodes.
 - Configuration:
   - [Omnibus](../administration/geo/setup/index.md)
   - [Charts](https://docs.gitlab.com/charts/advanced/geo/)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/geo.md)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/geo.md)
 - Layer: Core Service (Processor)
 
 #### GitLab Exporter
@@ -403,7 +403,7 @@ You can use it to sync deployments onto your Kubernetes cluster.
   - [Omnibus](../administration/pages/index.md)
   - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/37)
   - [Source](../install/installation.md#install-gitlab-pages)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/pages.md)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/pages.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [GitLab Pages](../user/gitlab_com/index.md#gitlab-pages)
 
@@ -418,7 +418,7 @@ You can use it either for personal or business websites, such as portfolios, doc
   - [Omnibus](https://docs.gitlab.com/runner/)
   - [Charts](https://docs.gitlab.com/runner/install/kubernetes.html)
   - [Source](https://docs.gitlab.com/runner/)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/runner.md)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/runner.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [Runner](../user/gitlab_com/index.md#shared-runners)
 
@@ -507,7 +507,7 @@ Mattermost is an open source, private cloud, Slack-alternative from <https://mat
 - Configuration:
   - [Omnibus](https://min.io/download)
   - [Charts](https://docs.gitlab.com/charts/charts/minio/)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/object_storage.md)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/object_storage.md)
 - Layer: Core Service (Data)
 - GitLab.com: [Storage Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#storage-architecture)
 
@@ -646,7 +646,7 @@ See our [Redis guidelines](redis.md) for more information about how GitLab uses 
   - [Omnibus](../update/upgrading_from_source.md#10-install-libraries-migrations-etc)
   - [Charts](https://docs.gitlab.com/charts/charts/registry/)
   - [Source](../administration/packages/container_registry.md#enable-the-container-registry)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/registry.md)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/registry.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [GitLab Container Registry](../user/packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd)
 
@@ -731,7 +731,7 @@ disabled by default.
   - [Omnibus](../administration/auth/ldap/index.md)
   - [Charts](https://docs.gitlab.com/charts/charts/globals.html#ldap)
   - [Source](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/ldap.md)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/ldap.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [Product Tiers](https://about.gitlab.com/pricing/#gitlab-com)
 

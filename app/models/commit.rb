@@ -142,6 +142,7 @@ class Commit
   delegate \
     :pipelines,
     :last_pipeline,
+    :lazy_latest_pipeline,
     :latest_pipeline,
     :latest_pipeline_for_project,
     :set_latest_pipeline_for_ref,

@@ -60,6 +60,9 @@ RSpec.describe Ci::ExpirePipelineCacheService do
 
         pipeline_with_commit.destroy!
 
+        # We need to reset lazy_latest_pipeline cache to simulate a new request
+        BatchLoader::Executor.clear_current
+
         # Need to use find to avoid memoization
         expect(Project.find(project_with_repo.id).pipeline_status.has_status?).to be_falsey
       end

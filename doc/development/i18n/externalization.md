@@ -19,7 +19,7 @@ All `rake` commands described on this page must be run on a GitLab instance, usu
 ## Setting up GitLab Development Kit (GDK)
 
 In order to be able to work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss)
-project you must download and configure it through [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/set-up-gdk.md).
+project you must download and configure it through [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/set-up-gdk.md).
 
 After you have the GitLab project ready, you can start working on the translation.
 

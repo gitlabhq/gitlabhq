@@ -119,8 +119,8 @@ Any error or warning is logged in Sidekiq's log file.
 If [Geo](../geo/index.md) is enabled, each project that is successfully migrated
 generates an event to replicate the changes on any **secondary** nodes.
 
-You only need the `gitlab:storage:migrate_to_hashed` Rake task to migrate your repositories, but we have additional
-commands below that helps you inspect projects and attachments in both legacy and hashed storage.
+You only need the `gitlab:storage:migrate_to_hashed` Rake task to migrate your repositories, but there are
+[additional commands(#list-projects-and-attachments) to help you inspect projects and attachments in both legacy and hashed storage.
 
 ## Rollback from hashed storage to legacy storage
 

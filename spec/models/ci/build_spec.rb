@@ -1132,7 +1132,7 @@ RSpec.describe Ci::Build do
       it "executes UPDATE query" do
         recorded = ActiveRecord::QueryRecorder.new { subject }
 
-        expect(recorded.log.select { |l| l.match?(/UPDATE.*ci_builds/) }.count).to eq(1)
+        expect(recorded.log.count { |l| l.match?(/UPDATE.*ci_builds/) }).to eq(1)
       end
     end
 
@@ -1140,7 +1140,7 @@ RSpec.describe Ci::Build do
       it 'does not execute UPDATE query' do
         recorded = ActiveRecord::QueryRecorder.new { subject }
 
-        expect(recorded.log.select { |l| l.match?(/UPDATE.*ci_builds/) }.count).to eq(0)
+        expect(recorded.log.count { |l| l.match?(/UPDATE.*ci_builds/) }).to eq(0)
       end
     end
   end
