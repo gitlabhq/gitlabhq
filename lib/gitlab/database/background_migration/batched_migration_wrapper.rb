@@ -65,6 +65,7 @@ module Gitlab
           metric_for(:gauge_interval).set(base_labels, tracking_record.batched_migration.interval)
           metric_for(:gauge_job_duration).set(base_labels, (tracking_record.finished_at - tracking_record.started_at).to_i)
           metric_for(:counter_updated_tuples).increment(base_labels, tracking_record.batch_size)
+          metric_for(:gauge_migrated_tuples).set(base_labels, tracking_record.batched_migration.migrated_tuple_count)
           metric_for(:gauge_total_tuple_count).set(base_labels, tracking_record.batched_migration.total_tuple_count)
 
           if metrics = tracking_record.metrics
@@ -105,6 +106,10 @@ module Gitlab
               counter_updated_tuples: Gitlab::Metrics.counter(
                 :batched_migration_job_updated_tuples_total,
                 'Number of tuples updated by batched migration job'
+              ),
+              gauge_migrated_tuples: Gitlab::Metrics.gauge(
+                :batched_migration_migrated_tuples_total,
+                'Total number of tuples migrated by a batched migration'
               ),
               histogram_timings: Gitlab::Metrics.histogram(
                 :batched_migration_job_query_duration_seconds,

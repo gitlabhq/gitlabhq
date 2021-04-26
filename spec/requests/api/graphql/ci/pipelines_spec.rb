@@ -8,6 +8,49 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:user) { create(:user) }
 
+  around do |example|
+    travel_to(Time.current) { example.run }
+  end
+
+  describe 'duration fields' do
+    let_it_be(:pipeline) do
+      create(:ci_pipeline, project: project)
+    end
+
+    let(:query_path) do
+      [
+        [:project, { full_path: project.full_path }],
+        [:pipelines],
+        [:nodes]
+      ]
+    end
+
+    let(:query) do
+      wrap_fields(query_graphql_path(query_path, 'queuedDuration duration'))
+    end
+
+    before do
+      pipeline.update!(
+        created_at: 1.minute.ago,
+        started_at: 55.seconds.ago
+      )
+      create(:ci_build, :success,
+             pipeline: pipeline,
+             started_at: 55.seconds.ago,
+             finished_at: 10.seconds.ago)
+      pipeline.update_duration
+      pipeline.save!
+
+      post_graphql(query, current_user: user)
+    end
+
+    it 'includes the duration fields' do
+      path = query_path.map(&:first)
+      expect(graphql_data_at(*path, :queued_duration)).to eq [5.0]
+      expect(graphql_data_at(*path, :duration)).to eq [45]
+    end
+  end
+
   describe '.jobs' do
     let(:first_n) { var('Int') }
     let(:query_path) do

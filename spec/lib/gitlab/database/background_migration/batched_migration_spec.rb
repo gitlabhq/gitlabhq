@@ -204,6 +204,22 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     it_behaves_like 'an attr_writer that demodulizes assigned class names', :batch_class_name
   end
 
+  describe '#migrated_tuple_count' do
+    subject { batched_migration.migrated_tuple_count }
+
+    let(:batched_migration) { create(:batched_background_migration) }
+
+    before do
+      create_list(:batched_background_migration_job, 5, status: :succeeded, batch_size: 1_000, batched_migration: batched_migration)
+      create_list(:batched_background_migration_job, 1, status: :running, batch_size: 1_000, batched_migration: batched_migration)
+      create_list(:batched_background_migration_job, 1, status: :failed, batch_size: 1_000, batched_migration: batched_migration)
+    end
+
+    it 'sums the batch_size of succeeded jobs' do
+      expect(subject).to eq(5_000)
+    end
+  end
+
   describe '#prometheus_labels' do
     let(:batched_migration) { create(:batched_background_migration, job_class_name: 'TestMigration', table_name: 'foo', column_name: 'bar') }
 

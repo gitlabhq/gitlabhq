@@ -64,6 +64,10 @@ module Gitlab
           write_attribute(:batch_class_name, class_name.demodulize)
         end
 
+        def migrated_tuple_count
+          batched_jobs.succeeded.sum(:batch_size)
+        end
+
         def prometheus_labels
           @prometheus_labels ||= {
             migration_id: id,

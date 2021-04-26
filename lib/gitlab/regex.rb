@@ -237,7 +237,7 @@ module Gitlab
     # used as a routing constraint.
     #
     def container_registry_tag_regex
-      @container_registry_tag_regex ||= /[\w][\w.-]{0,127}/
+      @container_registry_tag_regex ||= /\w[\w.-]{0,127}/
     end
 
     def environment_name_regex_chars

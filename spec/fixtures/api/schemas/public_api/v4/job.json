@@ -12,6 +12,7 @@
     "started_at",
     "finished_at",
     "duration",
+    "queued_duration",
     "user",
     "commit",
     "pipeline",
@@ -34,6 +35,7 @@
     "started_at": { "type": ["null", "string"] },
     "finished_at": { "type": ["null", "string"] },
     "duration": { "type": ["null", "number"] },
+    "queued_duration": { "type": ["null", "number"] },
     "user": { "$ref": "user/basic.json" },
     "commit": {
       "oneOf": [

@@ -39,6 +39,9 @@ module Types
       field :duration, GraphQL::INT_TYPE, null: true,
             description: 'Duration of the pipeline in seconds.'
 
+      field :queued_duration, Types::DurationType, null: true,
+            description: 'How long the pipeline was queued before starting.'
+
       field :coverage, GraphQL::FLOAT_TYPE, null: true,
             description: 'Coverage percentage.'
 

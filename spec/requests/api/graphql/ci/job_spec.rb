@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Query.project(fullPath).pipelines.job(id)' do
   include GraphqlHelpers
 
+  around do |example|
+    travel_to(Time.current) { example.run }
+  end
+
   let_it_be(:user) { create_default(:user) }
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
@@ -35,13 +39,20 @@ RSpec.describe 'Query.project(fullPath).pipelines.job(id)' do
     let(:terminal_type) { 'CiJob' }
 
     it 'retrieves scalar fields' do
+      job_2.update!(
+        created_at: 40.seconds.ago,
+        queued_at: 32.seconds.ago,
+        started_at: 30.seconds.ago,
+        finished_at: 5.seconds.ago
+      )
       post_graphql(query, current_user: user)
 
       expect(graphql_data_at(*path)).to match a_hash_including(
         'id' => global_id_of(job_2),
         'name' => job_2.name,
         'allowFailure' => job_2.allow_failure,
-        'duration' => job_2.duration,
+        'duration' => 25,
+        'queuedDuration' => 2.0,
         'status' => job_2.status.upcase
       )
     end

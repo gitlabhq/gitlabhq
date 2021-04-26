@@ -214,8 +214,14 @@ class CommitStatus < ApplicationRecord
     allow_failure? && (failed? || canceled?)
   end
 
+  # Time spent running.
   def duration
-    calculate_duration
+    calculate_duration(started_at, finished_at)
+  end
+
+  # Time spent in the pending state.
+  def queued_duration
+    calculate_duration(queued_at, started_at)
   end
 
   def latest?

@@ -166,6 +166,8 @@ Each file is expected to have its own primary ID and model. Geo strongly recomme
 
 To implement Geo replication of a new blob-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%20Replicate%20a%20new%20blob%20type).
 
+To view the implementation steps without opening an issue, [view the issue template file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Geo%20Replicate%20a%20new%20blob%20type.md).
+
 ### Repository Replicator Strategy
 
 Models that refer to any Git repository on disk are supported by Geo with the `Geo::RepositoryReplicatorStrategy` module. For example, see how [Geo replication was implemented for Group-level Wikis](https://gitlab.com/gitlab-org/gitlab/-/issues/208147). Note that this issue does not implement verification, since verification of Git repositories was not yet added to the Geo self-service framework. An example implementing verification can be found in the merge request to [Add Snippet repository verification](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56596).
@@ -173,3 +175,5 @@ Models that refer to any Git repository on disk are supported by Geo with the `G
 Each Git repository is expected to have its own primary ID and model.
 
 To implement Geo replication of a new Git repository-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%20Replicate%20a%20new%20Git%20repository%20type).
+
+To view the implementation steps without opening an issue, [view the issue template file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Geo%20Replicate%20a%20new%20Git%20repository%20type.md).

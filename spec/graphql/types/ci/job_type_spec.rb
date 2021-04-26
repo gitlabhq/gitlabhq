@@ -26,6 +26,7 @@ RSpec.describe Types::Ci::JobType do
       pipeline
       playable
       queued_at
+      queued_duration
       refName
       refPath
       retryable

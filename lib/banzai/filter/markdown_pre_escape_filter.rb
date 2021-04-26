@@ -26,7 +26,7 @@ module Banzai
     class MarkdownPreEscapeFilter < HTML::Pipeline::TextFilter
       # We just need to target those that are special GitLab references
       REFERENCE_CHARACTERS = '@#!$&~%^'
-      ASCII_PUNCTUATION    = %r{([\\][#{REFERENCE_CHARACTERS}])}.freeze
+      ASCII_PUNCTUATION    = %r{(\\[#{REFERENCE_CHARACTERS}])}.freeze
       LITERAL_KEYWORD      = 'cmliteral'
 
       def call

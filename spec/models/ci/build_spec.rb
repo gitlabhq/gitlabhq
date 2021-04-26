@@ -4679,25 +4679,30 @@ RSpec.describe Ci::Build do
   end
 
   describe '#execute_hooks' do
+    before do
+      build.clear_memoization(:build_data)
+    end
+
     context 'with project hooks' do
+      let(:build_data) { double(:BuildData, dup: double(:DupedData)) }
+
       before do
         create(:project_hook, project: project, job_events: true)
       end
 
-      it 'execute hooks' do
-        expect_any_instance_of(ProjectHook).to receive(:async_execute)
+      it 'calls project.execute_hooks(build_data, :job_hooks)' do
+        expect(::Gitlab::DataBuilder::Build)
+          .to receive(:build).with(build).and_return(build_data)
+        expect(build.project)
+          .to receive(:execute_hooks).with(build_data.dup, :job_hooks)
 
         build.execute_hooks
       end
     end
 
-    context 'without relevant project hooks' do
-      before do
-        create(:project_hook, project: project, job_events: false)
-      end
-
-      it 'does not execute a hook' do
-        expect_any_instance_of(ProjectHook).not_to receive(:async_execute)
+    context 'without project hooks' do
+      it 'does not call project.execute_hooks' do
+        expect(build.project).not_to receive(:execute_hooks)
 
         build.execute_hooks
       end
@@ -4708,8 +4713,10 @@ RSpec.describe Ci::Build do
         create(:service, active: true, job_events: true, project: project)
       end
 
-      it 'execute services' do
-        expect_any_instance_of(Service).to receive(:async_execute)
+      it 'executes services' do
+        allow_next_found_instance_of(Service) do |service|
+          expect(service).to receive(:async_execute)
+        end
 
         build.execute_hooks
       end
@@ -4720,8 +4727,10 @@ RSpec.describe Ci::Build do
         create(:service, active: true, job_events: false, project: project)
       end
 
-      it 'execute services' do
-        expect_any_instance_of(Service).not_to receive(:async_execute)
+      it 'does not execute services' do
+        allow_next_found_instance_of(Service) do |service|
+          expect(service).not_to receive(:async_execute)
+        end
 
         build.execute_hooks
       end

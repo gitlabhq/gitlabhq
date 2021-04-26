@@ -98,7 +98,6 @@ module UsageDataHelpers
       projects_prometheus_active
       projects_with_repositories_enabled
       projects_with_error_tracking_enabled
-      projects_with_alerts_service_enabled
       projects_with_enabled_alert_integrations
       projects_with_prometheus_alerts
       projects_with_tracing_enabled

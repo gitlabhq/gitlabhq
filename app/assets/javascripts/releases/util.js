@@ -52,24 +52,37 @@ const convertScalarProperties = (graphQLRelease) =>
     'name',
     'tagName',
     'tagPath',
+    'description',
     'descriptionHtml',
     'releasedAt',
     'upcomingRelease',
   ]);
 
-const convertAssets = (graphQLRelease) => ({
-  assets: {
-    count: graphQLRelease.assets.count,
-    sources: [...graphQLRelease.assets.sources.nodes],
-    links: graphQLRelease.assets.links.nodes.map((l) => ({
+const convertAssets = (graphQLRelease) => {
+  let sources = [];
+  if (graphQLRelease.assets.sources?.nodes) {
+    sources = [...graphQLRelease.assets.sources.nodes];
+  }
+
+  let links = [];
+  if (graphQLRelease.assets.links?.nodes) {
+    links = graphQLRelease.assets.links.nodes.map((l) => ({
       ...l,
       linkType: l.linkType?.toLowerCase(),
-    })),
-  },
-});
+    }));
+  }
+
+  return {
+    assets: {
+      count: graphQLRelease.assets.count,
+      sources,
+      links,
+    },
+  };
+};
 
 const convertEvidences = (graphQLRelease) => ({
-  evidences: graphQLRelease.evidences.nodes.map((e) => e),
+  evidences: (graphQLRelease.evidences?.nodes ?? []).map((e) => ({ ...e })),
 });
 
 const convertLinks = (graphQLRelease) => ({
@@ -100,10 +113,12 @@ const convertMilestones = (graphQLRelease) => ({
     ...m,
     webUrl: m.webPath,
     webPath: undefined,
-    issueStats: {
-      total: m.stats.totalIssuesCount,
-      closed: m.stats.closedIssuesCount,
-    },
+    issueStats: m.stats
+      ? {
+          total: m.stats.totalIssuesCount,
+          closed: m.stats.closedIssuesCount,
+        }
+      : {},
     stats: undefined,
   })),
 });

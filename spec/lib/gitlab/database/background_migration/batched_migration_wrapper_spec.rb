@@ -80,6 +80,14 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
       subject
     end
 
+    it 'reports migrated tuples' do
+      count = double
+      expect(job_record.batched_migration).to receive(:migrated_tuple_count).and_return(count)
+      expect(described_class.metrics[:gauge_migrated_tuples]).to receive(:set).with(labels, count)
+
+      subject
+    end
+
     it 'reports summary of query timings' do
       metrics = { 'timings' => { 'update_all' => [1, 2, 3, 4, 5] } }
 

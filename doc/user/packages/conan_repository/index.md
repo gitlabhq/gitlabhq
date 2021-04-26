@@ -186,6 +186,10 @@ To authenticate to the Package Registry, you need one of the following:
   scope set to `read_package_registry`, `write_package_registry`, or both.
 - A [CI job token](#publish-a-conan-package-by-using-cicd).
 
+NOTE:
+Packages from private and internal projects are hidden if you are not
+authenticated. If you try to search or download a package from a private or internal project without authenticating, you will receive the error `unable to find the package in remote` in the Conan client.
+
 ### Add your credentials to the GitLab remote
 
 Associate your token with the GitLab remote, so that you don't have to

@@ -9,6 +9,10 @@ RSpec.describe Gitlab::DataBuilder::Build do
   let(:build) { create(:ci_build, :running, runner: runner, user: user) }
 
   describe '.build' do
+    around do |example|
+      travel_to(Time.current) { example.run }
+    end
+
     let(:data) do
       described_class.build(build)
     end
@@ -22,6 +26,8 @@ RSpec.describe Gitlab::DataBuilder::Build do
     it { expect(data[:build_created_at]).to eq(build.created_at) }
     it { expect(data[:build_started_at]).to eq(build.started_at) }
     it { expect(data[:build_finished_at]).to eq(build.finished_at) }
+    it { expect(data[:build_duration]).to eq(build.duration) }
+    it { expect(data[:build_queued_duration]).to eq(build.queued_duration) }
     it { expect(data[:build_allow_failure]).to eq(false) }
     it { expect(data[:build_failure_reason]).to eq(build.failure_reason) }
     it { expect(data[:project_id]).to eq(build.project.id) }

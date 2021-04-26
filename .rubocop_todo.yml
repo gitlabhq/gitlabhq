@@ -859,20 +859,6 @@ Style/RedundantFetchBlock:
 Style/RedundantInterpolation:
   Enabled: false
 
-# Offense count: 10
-# Cop supports --auto-correct.
-Style/RedundantRegexpCharacterClass:
-  Exclude:
-    - 'app/models/concerns/taskable.rb'
-    - 'ee/app/models/saml_provider.rb'
-    - 'lib/banzai/filter/markdown_pre_escape_filter.rb'
-    - 'lib/gitlab/authorized_keys.rb'
-    - 'lib/gitlab/fogbugz_import/repository.rb'
-    - 'lib/gitlab/quick_actions/substitution_definition.rb'
-    - 'lib/gitlab/regex.rb'
-    - 'spec/features/merge_request/user_views_open_merge_request_spec.rb'
-    - 'spec/tasks/gitlab/usage_data_rake_spec.rb'
-
 # Offense count: 279
 # Cop supports --auto-correct.
 Style/RedundantRegexpEscape:

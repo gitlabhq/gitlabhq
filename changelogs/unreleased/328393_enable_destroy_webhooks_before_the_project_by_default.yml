@@ -1,0 +1,5 @@
+---
+title: Explicitly destroy webhooks and logs before the project deletion
+merge_request: 60122
+author:
+type: fixed

@@ -259,6 +259,40 @@ RSpec.describe CommitStatus do
     end
   end
 
+  describe '#queued_duration' do
+    subject { commit_status.queued_duration }
+
+    around do |example|
+      travel_to(Time.current) { example.run }
+    end
+
+    context 'when created, then enqueued, then started' do
+      before do
+        commit_status.queued_at = 30.seconds.ago
+        commit_status.started_at = 25.seconds.ago
+      end
+
+      it { is_expected.to eq(5.0) }
+    end
+
+    context 'when created but not yet enqueued' do
+      before do
+        commit_status.queued_at = nil
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when enqueued, but not started' do
+      before do
+        commit_status.queued_at = Time.current - 1.minute
+        commit_status.started_at = nil
+      end
+
+      it { is_expected.to eq(1.minute) }
+    end
+  end
+
   describe '.latest' do
     subject { described_class.latest.order(:id) }
 

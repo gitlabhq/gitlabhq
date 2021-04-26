@@ -362,6 +362,25 @@ RSpec.describe API::Ci::Pipelines do
         it do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
+
+          expect(json_response).to all match a_hash_including(
+            'duration' => be_nil,
+            'queued_duration' => (be >= 0.0)
+          )
+        end
+      end
+
+      context 'when filtering to only running jobs' do
+        let(:query) { { 'scope' => 'running' } }
+
+        it do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an Array
+
+          expect(json_response).to all match a_hash_including(
+            'duration' => (be >= 0.0),
+            'queued_duration' => (be >= 0.0)
+          )
         end
       end
 

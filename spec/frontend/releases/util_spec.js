@@ -14,6 +14,9 @@ const originalAllReleasesQueryResponse = getJSONFixture(
 const originalOneReleaseQueryResponse = getJSONFixture(
   'graphql/releases/queries/one_release.query.graphql.json',
 );
+const originalOneReleaseForEditingQueryResponse = getJSONFixture(
+  'graphql/releases/queries/one_release_for_editing.query.graphql.json',
+);
 
 describe('releases/util.js', () => {
   describe('releaseToApiJson', () => {
@@ -135,6 +138,26 @@ describe('releases/util.js', () => {
 
         expect(convertedRelease.assets.links[0].linkType).toBeUndefined();
       });
+
+      it('handles assets that have no links', () => {
+        expect(convertedRelease.assets.links[0]).not.toBeUndefined();
+
+        delete releaseFromResponse.assets.links;
+
+        convertedRelease = convertGraphQLRelease(releaseFromResponse);
+
+        expect(convertedRelease.assets.links).toEqual([]);
+      });
+
+      it('handles assets that have no sources', () => {
+        expect(convertedRelease.assets.sources[0]).not.toBeUndefined();
+
+        delete releaseFromResponse.assets.sources;
+
+        convertedRelease = convertGraphQLRelease(releaseFromResponse);
+
+        expect(convertedRelease.assets.sources).toEqual([]);
+      });
     });
 
     describe('_links', () => {
@@ -160,6 +183,33 @@ describe('releases/util.js', () => {
         expect(convertedRelease.commit).toBeUndefined();
       });
     });
+
+    describe('milestones', () => {
+      it("handles releases that don't have any milestone stats", () => {
+        expect(convertedRelease.milestones[0].issueStats).not.toBeUndefined();
+
+        releaseFromResponse.milestones.nodes = releaseFromResponse.milestones.nodes.map((n) => ({
+          ...n,
+          stats: undefined,
+        }));
+
+        convertedRelease = convertGraphQLRelease(releaseFromResponse);
+
+        expect(convertedRelease.milestones[0].issueStats).toEqual({});
+      });
+    });
+
+    describe('evidences', () => {
+      it("handles releases that don't have any evidences", () => {
+        expect(convertedRelease.evidences).not.toBeUndefined();
+
+        delete releaseFromResponse.evidences;
+
+        convertedRelease = convertGraphQLRelease(releaseFromResponse);
+
+        expect(convertedRelease.evidences).toEqual([]);
+      });
+    });
   });
 
   describe('convertAllReleasesGraphQLResponse', () => {
@@ -171,6 +221,14 @@ describe('releases/util.js', () => {
   describe('convertOneReleaseGraphQLResponse', () => {
     it('matches snapshot', () => {
       expect(convertOneReleaseGraphQLResponse(originalOneReleaseQueryResponse)).toMatchSnapshot();
+    });
+  });
+
+  describe('convertOneReleaseForEditingGraphQLResponse', () => {
+    it('matches snapshot', () => {
+      expect(
+        convertOneReleaseGraphQLResponse(originalOneReleaseForEditingQueryResponse),
+      ).toMatchSnapshot();
     });
   });
 });

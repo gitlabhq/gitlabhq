@@ -1,0 +1,23 @@
+fragment ReleaseForEditing on Release {
+  name
+  tagName
+  description
+  assets {
+    links {
+      nodes {
+        id
+        name
+        url
+        linkType
+      }
+    }
+  }
+  links {
+    selfUrl
+  }
+  milestones {
+    nodes {
+      title
+    }
+  }
+}

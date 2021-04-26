@@ -26,7 +26,7 @@ module Gitlab
       end
 
       def path
-        safe_name.gsub(/[\s]/, '_')
+        safe_name.gsub(/\s/, '_')
       end
     end
   end
