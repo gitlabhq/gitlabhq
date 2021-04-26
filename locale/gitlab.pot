@@ -1370,6 +1370,9 @@ msgstr ""
 msgid "A basic template for developing Linux programs using Kotlin Native"
 msgstr ""
 
+msgid "A blocked user cannot:"
+msgstr ""
+
 msgid "A complete DevOps platform"
 msgstr ""
 
@@ -1667,6 +1670,9 @@ msgstr ""
 msgid "Acceptable for use in this project"
 msgstr ""
 
+msgid "Access Git repositories"
+msgstr ""
+
 msgid "Access Tokens"
 msgstr ""
 
@@ -1791,6 +1797,9 @@ msgid "Account ID"
 msgstr ""
 
 msgid "Account and limit"
+msgstr ""
+
+msgid "Account:"
 msgstr ""
 
 msgid "Account: %{account}"
@@ -4268,6 +4277,9 @@ msgstr ""
 msgid "Are you sure you want to reindex?"
 msgstr ""
 
+msgid "Are you sure you want to remove %{email}?"
+msgstr ""
+
 msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
 
@@ -5694,6 +5706,9 @@ msgid "Callback URL"
 msgstr ""
 
 msgid "Can be manually deployed to"
+msgstr ""
+
+msgid "Can create groups:"
 msgstr ""
 
 msgid "Can't apply as the source branch was deleted."
@@ -8374,6 +8389,9 @@ msgstr ""
 msgid "Confirm new password"
 msgstr ""
 
+msgid "Confirm user"
+msgstr ""
+
 msgid "Confirm your account"
 msgstr ""
 
@@ -8384,6 +8402,12 @@ msgid "Confirmation email sent to %{email}"
 msgstr ""
 
 msgid "Confirmation required"
+msgstr ""
+
+msgid "Confirmed at:"
+msgstr ""
+
+msgid "Confirmed:"
 msgstr ""
 
 msgid "Confluence"
@@ -9619,6 +9643,12 @@ msgstr ""
 msgid "Current password"
 msgstr ""
 
+msgid "Current sign-in IP:"
+msgstr ""
+
+msgid "Current sign-in at:"
+msgstr ""
+
 msgid "Current vulnerabilities count"
 msgstr ""
 
@@ -10375,6 +10405,9 @@ msgstr ""
 msgid "Days to merge"
 msgstr ""
 
+msgid "Deactivate this user"
+msgstr ""
+
 msgid "Dear Administrator,"
 msgstr ""
 
@@ -10613,6 +10646,9 @@ msgid "Deleting"
 msgstr ""
 
 msgid "Deleting a project places it into a read-only state until %{date}, at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"
+msgstr ""
+
+msgid "Deleting a user has the following effects:"
 msgstr ""
 
 msgid "Deleting the project will delete its repository and all related resources including issues, merge requests, etc."
@@ -11361,6 +11397,9 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
+msgid "Disable Two-factor Authentication"
+msgstr ""
+
 msgid "Disable for this project"
 msgstr ""
 
@@ -11877,6 +11916,9 @@ msgid "Email the pipeline status to a list of recipients."
 msgstr ""
 
 msgid "Email updates (optional)"
+msgstr ""
+
+msgid "Email:"
 msgstr ""
 
 msgid "Email: %{email}"
@@ -13169,6 +13211,9 @@ msgstr ""
 msgid "External URL"
 msgstr ""
 
+msgid "External User:"
+msgstr ""
+
 msgid "External authentication"
 msgstr ""
 
@@ -14216,6 +14261,9 @@ msgid "Generate new export"
 msgstr ""
 
 msgid "Generate new token"
+msgstr ""
+
+msgid "Generate project access tokens scoped to this project for your applications that need access to the GitLab API."
 msgstr ""
 
 msgid "Generate site and private keys at"
@@ -18625,6 +18673,9 @@ msgstr ""
 msgid "LDAP synchronizations"
 msgstr ""
 
+msgid "LDAP uid:"
+msgstr ""
+
 msgid "LFS"
 msgstr ""
 
@@ -18778,6 +18829,12 @@ msgid "Last seen"
 msgstr ""
 
 msgid "Last sign-in"
+msgstr ""
+
+msgid "Last sign-in IP:"
+msgstr ""
+
+msgid "Last sign-in at:"
 msgstr ""
 
 msgid "Last successful sync"
@@ -19439,6 +19496,9 @@ msgstr ""
 msgid "Locks the discussion."
 msgstr ""
 
+msgid "Log in"
+msgstr ""
+
 msgid "Login with smartcard"
 msgstr ""
 
@@ -19920,6 +19980,9 @@ msgid "Member since"
 msgstr ""
 
 msgid "Member since %{date}"
+msgstr ""
+
+msgid "Member since:"
 msgstr ""
 
 msgid "MemberInviteEmail|%{member_name} invited you to join GitLab"
@@ -23390,6 +23453,9 @@ msgstr ""
 msgid "Personal projects"
 msgstr ""
 
+msgid "Personal projects limit:"
+msgstr ""
+
 msgid "Phabricator Server Import"
 msgstr ""
 
@@ -24407,6 +24473,9 @@ msgstr ""
 msgid "Profile image guideline"
 msgstr ""
 
+msgid "Profile page:"
+msgstr ""
+
 msgid "ProfileSession|on"
 msgstr ""
 
@@ -24827,7 +24896,7 @@ msgstr ""
 msgid "Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group."
 msgstr ""
 
-msgid "Project access token creation is disabled in this group. You can still use and manage existing tokens."
+msgid "Project access token creation is disabled in this group. You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Project already deleted"
@@ -26291,6 +26360,9 @@ msgstr ""
 msgid "Re-verification interval"
 msgstr ""
 
+msgid "Reactivate this user"
+msgstr ""
+
 msgid "Read documentation"
 msgstr ""
 
@@ -26698,6 +26770,9 @@ msgid "Remove reviewer"
 msgstr ""
 
 msgid "Remove runner"
+msgstr ""
+
+msgid "Remove secondary email"
 msgstr ""
 
 msgid "Remove secondary node"
@@ -28169,6 +28244,9 @@ msgstr ""
 msgid "Secondary"
 msgstr ""
 
+msgid "Secondary email:"
+msgstr ""
+
 msgid "Seconds"
 msgstr ""
 
@@ -29476,6 +29554,9 @@ msgid "Sign up"
 msgstr ""
 
 msgid "Sign up was successful! Please confirm your email to sign in."
+msgstr ""
+
+msgid "Sign-in count:"
 msgstr ""
 
 msgid "Sign-in page"
@@ -32289,6 +32370,9 @@ msgstr ""
 msgid "This URL is already used for another link; duplicate URLs are not allowed"
 msgstr ""
 
+msgid "This account has been locked"
+msgstr ""
+
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
 msgstr ""
 
@@ -32631,6 +32715,9 @@ msgstr ""
 msgid "This only applies to repository indexing operations."
 msgstr ""
 
+msgid "This option deletes the user and any contributions that would usually be moved to the %{link_to_ghost_user}. As well as the user's personal projects, groups owned solely by the user, and projects in them, will also be removed. Commits to other projects are unaffected."
+msgstr ""
+
 msgid "This option is only available on GitLab.com"
 msgstr ""
 
@@ -32724,6 +32811,12 @@ msgstr ""
 msgid "This user does not have a pending request"
 msgstr ""
 
+msgid "This user has an unconfirmed email address %{email}. You may force a confirmation."
+msgstr ""
+
+msgid "This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account."
+msgstr ""
+
 msgid "This user has no active %{type}."
 msgstr ""
 
@@ -32737,6 +32830,12 @@ msgid "This user has previously committed to the %{name} project."
 msgstr ""
 
 msgid "This user has the %{access} role in the %{name} project."
+msgstr ""
+
+msgid "This user is blocked"
+msgstr ""
+
+msgid "This user is currently an owner in these groups:"
 msgstr ""
 
 msgid "This user is the author of this %{noteable}."
@@ -33711,6 +33810,9 @@ msgstr ""
 msgid "Two-factor Authentication Recovery codes"
 msgstr ""
 
+msgid "Two-factor Authentication:"
+msgstr ""
+
 msgid "Two-factor authentication"
 msgstr ""
 
@@ -33970,6 +34072,9 @@ msgid "Unlock the discussion"
 msgstr ""
 
 msgid "Unlock this %{issuableDisplayName}? %{strongStart}Everyone%{strongEnd} will be able to comment."
+msgstr ""
+
+msgid "Unlock user"
 msgstr ""
 
 msgid "Unlocked"
@@ -34822,6 +34927,9 @@ msgid "Username is available."
 msgstr ""
 
 msgid "Username or email"
+msgstr ""
+
+msgid "Username:"
 msgstr ""
 
 msgid "Username: %{username}"
@@ -36195,6 +36303,9 @@ msgstr ""
 msgid "You can also upload existing files from your computer using the instructions below."
 msgstr ""
 
+msgid "You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "You can always edit this later"
 msgstr ""
 
@@ -36238,9 +36349,6 @@ msgid "You can filter by 'days to merge' by clicking on the columns in the chart
 msgstr ""
 
 msgid "You can find more information about GitLab subscriptions in %{subscriptions_doc_link}."
-msgstr ""
-
-msgid "You can generate an access token scoped to this project for each application to use the GitLab API."
 msgstr ""
 
 msgid "You can get started by cloning the repository or start adding files to it with one of the following options."
@@ -36376,6 +36484,9 @@ msgid "You do not have permission to update the environment."
 msgstr ""
 
 msgid "You do not have permissions to run the import."
+msgstr ""
+
+msgid "You don't have access to delete this user."
 msgstr ""
 
 msgid "You don't have any U2F devices registered yet."
@@ -36526,6 +36637,9 @@ msgid "You must select a stack for configuring your cloud provider. Learn more a
 msgstr ""
 
 msgid "You must solve the CAPTCHA in order to submit"
+msgstr ""
+
+msgid "You must transfer ownership or delete these groups before you can delete this user."
 msgstr ""
 
 msgid "You must upload a file with the same file name when dropping onto an existing design."
@@ -36769,6 +36883,9 @@ msgid "Your account is locked."
 msgstr ""
 
 msgid "Your account uses dedicated credentials for the \"%{group_name}\" group and can only be updated through SSO."
+msgstr ""
+
+msgid "Your action succeeded."
 msgstr ""
 
 msgid "Your applications (%{size})"
@@ -38402,6 +38519,9 @@ msgid "suggestPipeline|The template is ready! You can now commit it to create yo
 msgstr ""
 
 msgid "suggestPipeline|We’re adding a GitLab CI configuration file to add a pipeline to the project. You could create it manually, but we recommend that you start with a GitLab template that works out of the box."
+msgstr ""
+
+msgid "system ghost user"
 msgstr ""
 
 msgid "tag name"

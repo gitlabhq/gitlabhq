@@ -5082,7 +5082,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.projects_youtrack_active`
 
@@ -15680,7 +15680,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.package.projects_with_packages`
 
@@ -17600,7 +17600,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.package.projects_with_packages`
 

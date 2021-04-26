@@ -12,7 +12,7 @@
         %li
           = image_tag avatar_icon_for_user(@user, 60), class: "avatar s60"
         %li
-          %span.light Profile page:
+          %span.light= _('Profile page:')
           %strong
             = link_to user_path(@user) do
               = @user.username
@@ -20,25 +20,25 @@
 
     .card
       .card-header
-        Account:
+        = _('Account:')
       %ul.content-list
         %li
-          %span.light Name:
+          %span.light= _('Name:')
           %strong= @user.name
         %li
-          %span.light Username:
+          %span.light= _('Username:')
           %strong
             = @user.username
         %li
-          %span.light Email:
+          %span.light= _('Email:')
           %strong
             = render partial: 'shared/email_with_badge', locals: { email: mail_to(@user.email), verified: @user.confirmed? }
         - @user.emails.each do |email|
           %li
-            %span.light Secondary email:
+            %span.light= _('Secondary email:')
             %strong
               = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
-            = link_to remove_email_admin_user_path(@user, email), data: { confirm: "Are you sure you want to remove #{email.email}?" }, method: :delete, class: "btn btn-sm btn-danger gl-button btn-icon float-right", title: 'Remove secondary email', id: "remove_email_#{email.id}" do
+            = link_to remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email } }, method: :delete, class: "btn btn-sm btn-danger gl-button btn-icon float-right", title: _('Remove secondary email'), id: "remove_email_#{email.id}" do
               = sprite_icon('close', size: 16, css_class: 'gl-icon')
         %li
           %span.light ID:
@@ -50,65 +50,65 @@
             = @user.namespace_id
 
         %li.two-factor-status
-          %span.light Two-factor Authentication:
+          %span.light= _('Two-factor Authentication:')
           %strong{ class: @user.two_factor_enabled? ? 'cgreen' : 'cred' }
             - if @user.two_factor_enabled?
-              Enabled
-              = link_to 'Disable', disable_two_factor_admin_user_path(@user), data: {confirm: 'Are you sure?'}, method: :patch, class: 'btn gl-button btn-sm btn-danger float-right', title: 'Disable Two-factor Authentication'
+              = _('Enabled')
+              = link_to _('Disable'), disable_two_factor_admin_user_path(@user), data: { confirm: _('Are you sure?') }, method: :patch, class: 'btn gl-button btn-sm btn-danger float-right', title: _('Disable Two-factor Authentication')
             - else
-              Disabled
+              = _('Disabled')
 
         = render_if_exists 'admin/namespace_plan_info', namespace: @user.namespace
 
         %li
-          %span.light External User:
+          %span.light= _('External User:')
           %strong
-            = @user.external? ? "Yes" : "No"
+            = @user.external? ? _('Yes') : _('No')
         %li
-          %span.light Can create groups:
+          %span.light= _('Can create groups:')
           %strong
-            = @user.can_create_group ? "Yes" : "No"
+            = @user.can_create_group ? _('Yes') : _('No')
         %li
-          %span.light Personal projects limit:
+          %span.light= _('Personal projects limit:')
           %strong
             = @user.projects_limit
         %li
-          %span.light Member since:
+          %span.light= _('Member since:')
           %strong
             = @user.created_at.to_s(:medium)
         - if @user.confirmed_at
           %li
-            %span.light Confirmed at:
+            %span.light= _('Confirmed at:')
             %strong
               = @user.confirmed_at.to_s(:medium)
         - else
           %li
-            %span.light Confirmed:
+            %span.ligh= _('Confirmed:')
             %strong.cred
-              No
+              = _('No')
 
         %li
-          %span.light Current sign-in IP:
+          %span.light= _('Current sign-in IP:')
           %strong
             = @user.current_sign_in_ip || _('never')
 
         %li
-          %span.light Current sign-in at:
+          %span.light= _('Current sign-in at:')
           %strong
             = @user.current_sign_in_at&.to_s(:medium) || _('never')
 
         %li
-          %span.light Last sign-in IP:
+          %span.light= _('Last sign-in IP:')
           %strong
             = @user.last_sign_in_ip || _('never')
 
         %li
-          %span.light Last sign-in at:
+          %span.light= _('Last sign-in at:')
           %strong
             = @user.last_sign_in_at&.to_s(:medium) || _('never')
 
         %li
-          %span.light Sign-in count:
+          %span.light= _('Sign-in count:')
           %strong
             = @user.sign_in_count
 
@@ -121,13 +121,13 @@
 
         - if @user.ldap_user?
           %li
-            %span.light LDAP uid:
+            %span.light= _('LDAP uid:')
             %strong
               = @user.ldap_identity.extern_uid
 
         - if @user.created_by
           %li
-            %span.light Created by:
+            %span.light= _('Created by:')
             %strong
               = link_to @user.created_by.name, [:admin, @user.created_by]
 
@@ -140,13 +140,13 @@
       - if can_force_email_confirmation?(@user)
         .gl-card.border-info.gl-mb-5
           .gl-card-header.bg-info.text-white
-            Confirm user
+            = _('Confirm user')
           .gl-card-body
             - if @user.unconfirmed_email.present?
               - email = " (#{@user.unconfirmed_email})"
-            %p This user has an unconfirmed email address#{email}. You may force a confirmation.
+            %p= _('This user has an unconfirmed email address %{email}. You may force a confirmation.') % { email: email }
             %br
-            = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: 'Are you sure?', qa_selector: 'confirm_user_button' }
+            = link_to _('Confirm user'), confirm_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: _('Are you sure?'), qa_selector: 'confirm_user_button' }
 
       = render 'admin/users/user_detail_note'
 
@@ -154,7 +154,7 @@
         - if @user.deactivated?
           .gl-card.border-info.gl-mb-5
             .gl-card-header.bg-info.text-white
-              Reactivate this user
+              = _('Reactivate this user')
             .gl-card-body
               = render partial: 'admin/users/user_activation_effects'
               %br
@@ -163,7 +163,7 @@
         - elsif @user.can_be_deactivated?
           .gl-card.border-warning.gl-mb-5
             .gl-card-header.bg-warning.text-white
-              Deactivate this user
+              = _('Deactivate this user')
             .gl-card-body
               = user_deactivation_effects
               %br
@@ -176,12 +176,12 @@
         - else
           .gl-card.border-info.gl-mb-5
             .gl-card-header.gl-bg-blue-500.gl-text-white
-              This user is blocked
+              = _('This user is blocked')
             .gl-card-body
-              %p A blocked user cannot:
+              %p= _('A blocked user cannot:')
               %ul
-                %li Log in
-                %li Access Git repositories
+                %li= _('Log in')
+                %li= _('Access Git repositories')
               %br
               %button.btn.gl-button.btn-info.js-confirm-modal-button{ data: user_unblock_data(@user) }
                 = s_('AdminUsers|Unblock user')
@@ -191,18 +191,18 @@
       - if @user.access_locked?
         .card.border-info.gl-mb-5
           .card-header.bg-info.text-white
-            This account has been locked
+            = _('This account has been locked')
           .card-body
-            %p This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account.
+            %p= _('This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account.')
             %br
-            = link_to 'Unlock user', unlock_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: 'Are you sure?' }
+            = link_to _('Unlock user'), unlock_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: _('Are you sure?') }
       - if !@user.blocked_pending_approval?
         .gl-card.border-danger.gl-mb-5
           .gl-card-header.bg-danger.text-white
             = s_('AdminUsers|Delete user')
           .gl-card-body
             - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
-              %p Deleting a user has the following effects:
+              %p= _('Deleting a user has the following effects:')
               = render 'users/deletion_guidance', user: @user
               %br
               %button.js-delete-user-modal-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete',
@@ -213,13 +213,13 @@
             - else
               - if @user.solo_owned_groups.present?
                 %p
-                  This user is currently an owner in these groups:
+                  = _('This user is currently an owner in these groups:')
                   %strong= @user.solo_owned_groups.map(&:name).join(', ')
                 %p
-                  You must transfer ownership or delete these groups before you can delete this user.
+                  = _('You must transfer ownership or delete these groups before you can delete this user.')
               - else
                 %p
-                  You don't have access to delete this user.
+                  = _("You don't have access to delete this user.")
 
         .gl-card.border-danger
           .gl-card-header.bg-danger.text-white
@@ -227,13 +227,8 @@
           .gl-card-body
             - if can?(current_user, :destroy_user, @user)
               %p
-                This option deletes the user and any contributions that
-                would usually be moved to the
-                = succeed "." do
-                  = link_to "system ghost user", help_page_path("user/profile/account/delete_account")
-                As well as the user's personal projects, groups owned solely by
-                the user, and projects in them, will also be removed. Commits
-                to other projects are unaffected.
+                - link_to_ghost_user = link_to(_("system ghost user"), help_page_path("user/profile/account/delete_account"))
+                = _("This option deletes the user and any contributions that would usually be moved to the %{link_to_ghost_user}. As well as the user's personal projects, groups owned solely by the user, and projects in them, will also be removed. Commits to other projects are unaffected.").html_safe % { link_to_ghost_user: link_to_ghost_user }
               %br
                 %button.js-delete-user-modal-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
                   delete_user_url: admin_user_path(@user, hard_delete: true),
@@ -242,6 +237,6 @@
                   = s_('AdminUsers|Delete user and contributions')
             - else
               %p
-                You don't have access to delete this user.
+                = _("You don't have access to delete this user.")
 
 = render partial: 'admin/users/modals'

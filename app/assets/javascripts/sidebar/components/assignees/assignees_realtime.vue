@@ -1,6 +1,7 @@
 <script>
-import actionCable from '~/actioncable_consumer';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import produce from 'immer';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { IssuableType } from '~/issue_show/constants';
 import { assigneesQueries } from '~/sidebar/constants';
 
 export default {
@@ -12,60 +13,62 @@ export default {
       required: false,
       default: null,
     },
-    issuableIid: {
-      type: String,
-      required: true,
-    },
-    projectPath: {
-      type: String,
-      required: true,
-    },
     issuableType: {
       type: String,
       required: true,
     },
+    issuableId: {
+      type: Number,
+      required: true,
+    },
+    queryVariables: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    issuableClass() {
+      return Object.keys(IssuableType).find((key) => IssuableType[key] === this.issuableType);
+    },
   },
   apollo: {
-    workspace: {
+    issuable: {
       query() {
         return assigneesQueries[this.issuableType].query;
       },
       variables() {
-        return {
-          iid: this.issuableIid,
-          fullPath: this.projectPath,
-        };
+        return this.queryVariables;
       },
-      result(data) {
-        if (this.mediator) {
-          this.handleFetchResult(data);
-        }
+      update(data) {
+        return data.workspace?.issuable;
+      },
+      subscribeToMore: {
+        document() {
+          return assigneesQueries[this.issuableType].subscription;
+        },
+        variables() {
+          return {
+            issuableId: convertToGraphQLId(this.issuableClass, this.issuableId),
+          };
+        },
+        updateQuery(prev, { subscriptionData }) {
+          if (prev && subscriptionData?.data?.issuableAssigneesUpdated) {
+            const data = produce(prev, (draftData) => {
+              draftData.workspace.issuable.assignees.nodes =
+                subscriptionData.data.issuableAssigneesUpdated.assignees.nodes;
+            });
+            if (this.mediator) {
+              this.handleFetchResult(data);
+            }
+            return data;
+          }
+          return prev;
+        },
       },
     },
-  },
-  mounted() {
-    this.initActionCablePolling();
-  },
-  beforeDestroy() {
-    this.$options.subscription.unsubscribe();
   },
   methods: {
-    received(data) {
-      if (data.event === 'updated') {
-        this.$apollo.queries.workspace.refetch();
-      }
-    },
-    initActionCablePolling() {
-      this.$options.subscription = actionCable.subscriptions.create(
-        {
-          channel: 'IssuesChannel',
-          project_path: this.projectPath,
-          iid: this.issuableIid,
-        },
-        { received: this.received },
-      );
-    },
-    handleFetchResult({ data }) {
+    handleFetchResult(data) {
       const { nodes } = data.workspace.issuable.assignees;
 
       const assignees = nodes.map((n) => ({

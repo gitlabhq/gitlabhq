@@ -17,7 +17,6 @@ All training material is open to public contribution.
 
 This section contains the following topics:
 
-- [Agile and Git](topics/agile_git.md).
 - [Bisect](topics/bisect.md).
 - [Cherry pick](topics/cherry_picking.md).
 - [Code review and collaboration with Merge Requests](topics/merge_requests.md).

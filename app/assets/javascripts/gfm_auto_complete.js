@@ -238,10 +238,13 @@ class GfmAutoComplete {
     const MEMBER_COMMAND = {
       ASSIGN: '/assign',
       UNASSIGN: '/unassign',
+      ASSIGN_REVIEWER: '/assign_reviewer',
+      UNASSIGN_REVIEWER: '/unassign_reviewer',
       REASSIGN: '/reassign',
       CC: '/cc',
     };
     let assignees = [];
+    let reviewers = [];
     let command = '';
 
     // Team Members
@@ -286,9 +289,11 @@ class GfmAutoComplete {
             return null;
           });
 
-          // Cache assignees list for easier filtering later
+          // Cache assignees & reviewers list for easier filtering later
           assignees =
             SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
+          reviewers =
+            SidebarMediator.singleton?.store?.reviewers?.map(createMemberSearchString) || [];
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;
@@ -309,6 +314,12 @@ class GfmAutoComplete {
           } else if (command === MEMBER_COMMAND.UNASSIGN) {
             // Only include members which are assigned to Issuable currently
             return data.filter((member) => assignees.includes(member.search));
+          } else if (command === MEMBER_COMMAND.ASSIGN_REVIEWER) {
+            // Only include members which are not assigned as a reviewer to Issuable currently
+            return data.filter((member) => !reviewers.includes(member.search));
+          } else if (command === MEMBER_COMMAND.UNASSIGN_REVIEWER) {
+            // Only include members which are not assigned as a reviewer to Issuable currently
+            return data.filter((member) => reviewers.includes(member.search));
           }
 
           return data;

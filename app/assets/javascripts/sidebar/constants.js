@@ -1,5 +1,6 @@
 import { IssuableType } from '~/issue_show/constants';
 import epicConfidentialQuery from '~/sidebar/queries/epic_confidential.query.graphql';
+import issuableAssigneesSubscription from '~/sidebar/queries/issuable_assignees.subscription.graphql';
 import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.graphql';
 import issueDueDateQuery from '~/sidebar/queries/issue_due_date.query.graphql';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
@@ -17,6 +18,7 @@ export const ASSIGNEES_DEBOUNCE_DELAY = 250;
 export const assigneesQueries = {
   [IssuableType.Issue]: {
     query: getIssueParticipants,
+    subscription: issuableAssigneesSubscription,
     mutation: updateAssigneesMutation,
   },
   [IssuableType.MergeRequest]: {

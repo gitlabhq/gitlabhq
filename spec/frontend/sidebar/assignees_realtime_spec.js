@@ -1,41 +1,44 @@
-import ActionCable from '@rails/actioncable';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import AssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
-import { assigneesQueries } from '~/sidebar/constants';
+import issuableAssigneesSubscription from '~/sidebar/queries/issuable_assignees.subscription.graphql';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
-import Mock from './mock_data';
+import getIssueParticipantsQuery from '~/vue_shared/components/sidebar/queries/get_issue_participants.query.graphql';
+import Mock, { issuableQueryResponse, subscriptionNullResponse } from './mock_data';
 
-jest.mock('@rails/actioncable', () => {
-  const mockConsumer = {
-    subscriptions: { create: jest.fn().mockReturnValue({ unsubscribe: jest.fn() }) },
-  };
-  return {
-    createConsumer: jest.fn().mockReturnValue(mockConsumer),
-  };
-});
+const localVue = createLocalVue();
+localVue.use(VueApollo);
 
 describe('Assignees Realtime', () => {
   let wrapper;
   let mediator;
+  let fakeApollo;
 
-  const createComponent = (issuableType = 'issue') => {
+  const issuableQueryHandler = jest.fn().mockResolvedValue(issuableQueryResponse);
+  const subscriptionInitialHandler = jest.fn().mockResolvedValue(subscriptionNullResponse);
+
+  const createComponent = ({
+    issuableType = 'issue',
+    issuableId = 1,
+    subscriptionHandler = subscriptionInitialHandler,
+  } = {}) => {
+    fakeApollo = createMockApollo([
+      [getIssueParticipantsQuery, issuableQueryHandler],
+      [issuableAssigneesSubscription, subscriptionHandler],
+    ]);
     wrapper = shallowMount(AssigneesRealtime, {
       propsData: {
-        issuableIid: '1',
-        mediator,
-        projectPath: 'path/to/project',
         issuableType,
-      },
-      mocks: {
-        $apollo: {
-          query: assigneesQueries[issuableType].query,
-          queries: {
-            workspace: {
-              refetch: jest.fn(),
-            },
-          },
+        issuableId,
+        queryVariables: {
+          issuableIid: '1',
+          projectPath: 'path/to/project',
         },
+        mediator,
       },
+      apolloProvider: fakeApollo,
+      localVue,
     });
   };
 
@@ -45,59 +48,24 @@ describe('Assignees Realtime', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
+    fakeApollo = null;
     SidebarMediator.singleton = null;
   });
 
-  describe('when handleFetchResult is called from smart query', () => {
-    it('sets assignees to the store', () => {
-      const data = {
-        workspace: {
-          issuable: {
-            assignees: {
-              nodes: [{ id: 'gid://gitlab/Environments/123', avatarUrl: 'url' }],
-            },
-          },
-        },
-      };
-      const expected = [{ id: 123, avatar_url: 'url', avatarUrl: 'url' }];
-      createComponent();
+  it('calls the query with correct variables', () => {
+    createComponent();
 
-      wrapper.vm.handleFetchResult({ data });
-
-      expect(mediator.store.assignees).toEqual(expected);
+    expect(issuableQueryHandler).toHaveBeenCalledWith({
+      issuableIid: '1',
+      projectPath: 'path/to/project',
     });
   });
 
-  describe('when mounted', () => {
-    it('calls create subscription', () => {
-      const cable = ActionCable.createConsumer();
+  it('calls the subscription with correct variable for issue', () => {
+    createComponent();
 
-      createComponent();
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(cable.subscriptions.create).toHaveBeenCalledTimes(1);
-        expect(cable.subscriptions.create).toHaveBeenCalledWith(
-          {
-            channel: 'IssuesChannel',
-            iid: wrapper.props('issuableIid'),
-            project_path: wrapper.props('projectPath'),
-          },
-          { received: wrapper.vm.received },
-        );
-      });
-    });
-  });
-
-  describe('when subscription is recieved', () => {
-    it('refetches the GraphQL project query', () => {
-      createComponent();
-
-      wrapper.vm.received({ event: 'updated' });
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.$apollo.queries.workspace.refetch).toHaveBeenCalledTimes(1);
-      });
+    expect(subscriptionInitialHandler).toHaveBeenCalledWith({
+      issuableId: 'gid://gitlab/Issue/1',
     });
   });
 });

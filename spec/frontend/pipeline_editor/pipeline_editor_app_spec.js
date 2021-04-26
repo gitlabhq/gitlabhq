@@ -2,17 +2,15 @@ import { GlAlert, GlButton, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import httpStatusCodes from '~/lib/utils/http_status';
-import CodeSnippetAlert from '~/pipeline_editor/components/code_snippet_alert/code_snippet_alert.vue';
-import { CODE_SNIPPET_SOURCES } from '~/pipeline_editor/components/code_snippet_alert/constants';
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 import TextEditor from '~/pipeline_editor/components/editor/text_editor.vue';
 
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import PipelineEditorEmptyState from '~/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
-import { COMMIT_SUCCESS, COMMIT_FAILURE, LOAD_FAILURE_UNKNOWN } from '~/pipeline_editor/constants';
+import PipelineEditorMessages from '~/pipeline_editor/components/ui/pipeline_editor_messages.vue';
+import { COMMIT_SUCCESS, COMMIT_FAILURE } from '~/pipeline_editor/constants';
 import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
 import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
 import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
@@ -56,6 +54,7 @@ describe('Pipeline editor app component', () => {
         CommitForm,
         PipelineEditorHome,
         PipelineEditorTabs,
+        PipelineEditorMessages,
         EditorLite: MockEditorLite,
         PipelineEditorEmptyState,
       },
@@ -113,7 +112,6 @@ describe('Pipeline editor app component', () => {
   const findEmptyState = () => wrapper.findComponent(PipelineEditorEmptyState);
   const findEmptyStateButton = () =>
     wrapper.findComponent(PipelineEditorEmptyState).findComponent(GlButton);
-  const findCodeSnippetAlert = () => wrapper.findComponent(CodeSnippetAlert);
 
   beforeEach(() => {
     mockBlobContentData = jest.fn();
@@ -130,48 +128,6 @@ describe('Pipeline editor app component', () => {
 
       expect(findLoadingIcon().exists()).toBe(true);
       expect(findTextEditor().exists()).toBe(false);
-    });
-  });
-
-  describe('code snippet alert', () => {
-    const setCodeSnippetUrlParam = (value) => {
-      global.jsdom.reconfigure({
-        url: `${TEST_HOST}/?code_snippet_copied_from=${value}`,
-      });
-    };
-
-    it('does not show by default', () => {
-      createComponent();
-
-      expect(findCodeSnippetAlert().exists()).toBe(false);
-    });
-
-    it.each(CODE_SNIPPET_SOURCES)('shows if URL param is %s, and cleans up URL', (source) => {
-      jest.spyOn(window.history, 'replaceState');
-      setCodeSnippetUrlParam(source);
-      createComponent();
-
-      expect(findCodeSnippetAlert().exists()).toBe(true);
-      expect(window.history.replaceState).toHaveBeenCalledWith({}, document.title, `${TEST_HOST}/`);
-    });
-
-    it('does not show if URL param is invalid', () => {
-      setCodeSnippetUrlParam('foo_bar');
-      createComponent();
-
-      expect(findCodeSnippetAlert().exists()).toBe(false);
-    });
-
-    it('disappears on dismiss', async () => {
-      setCodeSnippetUrlParam('api_fuzzing');
-      createComponent();
-      const alert = findCodeSnippetAlert();
-
-      expect(alert.exists()).toBe(true);
-
-      await alert.vm.$emit('dismiss');
-
-      expect(alert.exists()).toBe(false);
     });
   });
 
@@ -235,11 +191,14 @@ describe('Pipeline editor app component', () => {
 
       describe('because of a fetching error', () => {
         it('shows a unkown error message', async () => {
+          const loadUnknownFailureText = 'The CI configuration was not loaded, please try again.';
+
           mockBlobContentData.mockRejectedValueOnce(new Error('My error!'));
           await createComponentWithApollo();
 
           expect(findEmptyState().exists()).toBe(false);
-          expect(findAlert().text()).toBe(wrapper.vm.$options.errorTexts[LOAD_FAILURE_UNKNOWN]);
+
+          expect(findAlert().text()).toBe(loadUnknownFailureText);
           expect(findEditorHome().exists()).toBe(true);
         });
       });
@@ -273,6 +232,7 @@ describe('Pipeline editor app component', () => {
 
     describe('when the user commits', () => {
       const updateFailureMessage = 'The GitLab CI configuration could not be updated.';
+      const updateSuccessMessage = 'Your changes have been successfully committed.';
 
       describe('and the commit mutation succeeds', () => {
         beforeEach(() => {
@@ -283,7 +243,7 @@ describe('Pipeline editor app component', () => {
         });
 
         it('shows a confirmation message', () => {
-          expect(findAlert().text()).toBe(wrapper.vm.$options.successTexts[COMMIT_SUCCESS]);
+          expect(findAlert().text()).toBe(updateSuccessMessage);
         });
 
         it('scrolls to the top of the page to bring attention to the confirmation message', () => {

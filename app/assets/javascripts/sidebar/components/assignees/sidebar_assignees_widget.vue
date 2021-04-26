@@ -73,6 +73,11 @@ export default {
         return [IssuableType.Issue, IssuableType.MergeRequest].includes(value);
       },
     },
+    issuableId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     multipleAssignees: {
       type: Boolean,
       required: false,
@@ -340,9 +345,9 @@ export default {
   <div data-testid="assignees-widget">
     <sidebar-assignees-realtime
       v-if="shouldEnableRealtime"
-      :project-path="fullPath"
-      :issuable-iid="iid"
       :issuable-type="issuableType"
+      :issuable-id="issuableId"
+      :query-variables="queryVariables"
     />
     <sidebar-editable-item
       ref="toggle"

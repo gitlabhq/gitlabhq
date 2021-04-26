@@ -119,6 +119,59 @@ RSpec.describe 'File blob', :js do
       end
     end
 
+    context 'when ref switch' do
+      def switch_ref_to(ref_name)
+        first('.qa-branches-select').click
+
+        page.within '.project-refs-form' do
+          click_link ref_name
+        end
+      end
+
+      it 'displays single highlighted line number of different ref' do
+        visit_blob('files/js/application.js', anchor: 'L1')
+
+        switch_ref_to('feature')
+
+        page.within '.blob-content' do
+          expect(find_by_id('LC1')[:class]).to include("hll")
+        end
+      end
+
+      it 'displays multiple highlighted line numbers of different ref' do
+        visit_blob('files/js/application.js', anchor: 'L1-3')
+
+        switch_ref_to('feature')
+
+        page.within '.blob-content' do
+          expect(find_by_id('LC1')[:class]).to include("hll")
+          expect(find_by_id('LC2')[:class]).to include("hll")
+          expect(find_by_id('LC3')[:class]).to include("hll")
+        end
+      end
+
+      it 'displays no highlighted number of different ref' do
+        Files::UpdateService.new(
+          project,
+          project.owner,
+          commit_message: 'Update',
+          start_branch: 'feature',
+          branch_name: 'feature',
+          file_path: 'files/js/application.js',
+          file_content: 'new content'
+        ).execute
+
+        project.commit('feature').diffs.diff_files.first
+
+        visit_blob('files/js/application.js', anchor: 'L3')
+        switch_ref_to('feature')
+
+        page.within '.blob-content' do
+          expect(page).not_to have_css('.hll')
+        end
+      end
+    end
+
     context 'visiting with a line number anchor' do
       before do
         visit_blob('files/markdown/ruby-style-guide.md', anchor: 'L1')

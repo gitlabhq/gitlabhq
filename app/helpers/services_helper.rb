@@ -153,9 +153,9 @@ module ServicesHelper
   private
 
   def integration_level(integration)
-    if integration.instance
+    if integration.instance_level?
       'instance'
-    elsif integration.group_id
+    elsif integration.group_level?
       'group'
     else
       'project'

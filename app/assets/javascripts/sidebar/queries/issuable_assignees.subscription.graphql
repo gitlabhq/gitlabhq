@@ -1,0 +1,16 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+subscription issuableAssigneesUpdated($issuableId: IssuableID!) {
+  issuableAssigneesUpdated(issuableId: $issuableId) {
+    ... on Issue {
+      assignees {
+        nodes {
+          ...User
+          status {
+            availability
+          }
+        }
+      }
+    }
+  }
+}

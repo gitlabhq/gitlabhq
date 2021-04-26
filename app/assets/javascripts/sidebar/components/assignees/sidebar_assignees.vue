@@ -44,6 +44,10 @@ export default {
       type: String,
       required: true,
     },
+    issuableId: {
+      type: Number,
+      required: true,
+    },
     assigneeAvailabilityStatus: {
       type: Object,
       required: false,
@@ -60,6 +64,12 @@ export default {
     shouldEnableRealtime() {
       // Note: Realtime is only available on issues right now, future support for MR wil be built later.
       return this.glFeatures.realTimeIssueSidebar && this.issuableType === 'issue';
+    },
+    queryVariables() {
+      return {
+        iid: this.issuableIid,
+        fullPath: this.projectPath,
+      };
     },
     relativeUrlRoot() {
       return gon.relative_url_root ?? '';
@@ -121,9 +131,9 @@ export default {
   <div>
     <assignees-realtime
       v-if="shouldEnableRealtime"
-      :issuable-iid="issuableIid"
-      :project-path="projectPath"
       :issuable-type="issuableType"
+      :issuable-id="issuableId"
+      :query-variables="queryVariables"
       :mediator="mediator"
     />
     <assignee-title

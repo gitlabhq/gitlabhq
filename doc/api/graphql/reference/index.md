@@ -11900,22 +11900,6 @@ Represents the Geo sync and verification state of a snippet repository.
 | <a id="submoduletype"></a>`type` | [`EntryType!`](#entrytype) | Type of tree entry. |
 | <a id="submoduleweburl"></a>`webUrl` | [`String`](#string) | Web URL for the sub-module. |
 
-### `Subscription`
-
-#### Fields with arguments
-
-##### `Subscription.issuableAssigneesUpdated`
-
-Triggered when the assignees of an issuable are updated.
-
-Returns [`Issuable`](#issuable).
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="subscriptionissuableassigneesupdatedissuableid"></a>`issuableId` | [`IssuableID!`](#issuableid) | ID of the issuable. |
-
 ### `TaskCompletionStatus`
 
 Completion status of tasks.

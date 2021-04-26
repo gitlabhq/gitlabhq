@@ -1,33 +1,8 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-comments: false
+redirect_to: '../../../user/project/issue_board.md'
 ---
 
-# Agile and Git
+Information about using Agile concepts in GitLab can be found in [another location](../../../user/project/issue_board.md).
 
-## Agile
-
-Lean software development methods focused on collaboration and interaction
-with fast and smaller deployment cycles.
-
-## Where Git comes in
-
-Git is an excellent tool for an Agile team considering that it allows
-decentralized and simultaneous development.
-
-### Branching And Workflows
-
-Branching in an Agile environment usually happens around user stories with one
-or more developers working on it.
-
-If more than one developer then another branch for each developer is also used
-with their initials, and US ID.
-
-After its tested merge into master and remove the branch.
-
-## What about GitLab
-
-Tools like GitLab enhance collaboration by adding dialog around code mainly
-through issues and merge requests.
+<!-- This redirect file can be deleted after <2021-07-23>. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->

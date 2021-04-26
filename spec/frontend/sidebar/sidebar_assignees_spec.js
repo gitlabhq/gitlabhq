@@ -17,6 +17,7 @@ describe('sidebar assignees', () => {
     wrapper = shallowMount(SidebarAssignees, {
       propsData: {
         issuableIid: '1',
+        issuableId: 1,
         mediator,
         field: '',
         projectPath: 'projectPath',

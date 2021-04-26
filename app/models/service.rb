@@ -51,14 +51,14 @@ class Service < ApplicationRecord
   belongs_to :group, inverse_of: :services
   has_one :service_hook
 
-  validates :project_id, presence: true, unless: -> { template? || instance? || group_id }
-  validates :group_id, presence: true, unless: -> { template? || instance? || project_id }
-  validates :project_id, :group_id, absence: true, if: -> { template? || instance? }
+  validates :project_id, presence: true, unless: -> { template? || instance_level? || group_level? }
+  validates :group_id, presence: true, unless: -> { template? || instance_level? || project_level? }
+  validates :project_id, :group_id, absence: true, if: -> { template? || instance_level? }
   validates :type, presence: true
   validates :type, uniqueness: { scope: :template }, if: :template?
-  validates :type, uniqueness: { scope: :instance }, if: :instance?
-  validates :type, uniqueness: { scope: :project_id }, if: :project_id?
-  validates :type, uniqueness: { scope: :group_id }, if: :group_id?
+  validates :type, uniqueness: { scope: :instance }, if: :instance_level?
+  validates :type, uniqueness: { scope: :project_id }, if: :project_level?
+  validates :type, uniqueness: { scope: :group_id }, if: :group_level?
   validate :validate_is_instance_or_template
   validate :validate_belongs_to_project_or_group
 
@@ -240,7 +240,7 @@ class Service < ApplicationRecord
     service.instance = false
     service.project_id = project_id
     service.group_id = group_id
-    service.inherit_from_id = integration.id if integration.instance? || integration.group
+    service.inherit_from_id = integration.id if integration.instance_level? || integration.group_level?
     service
   end
 
@@ -409,7 +409,7 @@ class Service < ApplicationRecord
   # Disable test for instance-level and group-level services.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/213138
   def can_test?
-    !instance? && !group_id
+    !(instance_level? || group_level?)
   end
 
   def project_level?
@@ -460,11 +460,11 @@ class Service < ApplicationRecord
   private
 
   def validate_is_instance_or_template
-    errors.add(:template, 'The service should be a service template or instance-level integration') if template? && instance?
+    errors.add(:template, 'The service should be a service template or instance-level integration') if template? && instance_level?
   end
 
   def validate_belongs_to_project_or_group
-    errors.add(:project_id, 'The service cannot belong to both a project and a group') if project_id && group_id
+    errors.add(:project_id, 'The service cannot belong to both a project and a group') if project_level? && group_level?
   end
 
   def validate_recipients?

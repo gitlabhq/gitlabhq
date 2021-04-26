@@ -401,4 +401,10 @@ export const updateIssueAssigneesMutationResponse = {
   },
 };
 
+export const subscriptionNullResponse = {
+  data: {
+    issuableAssigneesUpdated: null,
+  },
+};
+
 export default mockData;

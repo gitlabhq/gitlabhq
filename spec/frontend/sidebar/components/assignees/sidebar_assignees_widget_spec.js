@@ -487,6 +487,9 @@ describe('Sidebar assignees widget', () => {
 
   it('when realtime feature flag is enabled', async () => {
     createComponent({
+      props: {
+        issuableId: 1,
+      },
       provide: {
         glFeatures: {
           realTimeIssueSidebar: true,

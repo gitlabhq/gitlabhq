@@ -347,7 +347,7 @@ module Gitlab
             mutations = schema.mutation&.fields&.keys&.to_set || []
 
             graphql_object_types
-              .reject { |object_type| object_type[:name]["__"] } # We ignore introspection types.
+              .reject { |object_type| object_type[:name]["__"] || object_type[:name] == 'Subscription' } # We ignore introspection and subscription types.
               .map do |type|
                 name = type[:name]
                 type.merge(

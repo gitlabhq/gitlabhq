@@ -53,7 +53,7 @@ function mountAssigneesComponentDeprecated(mediator) {
 
   if (!el) return;
 
-  const { iid, fullPath } = getSidebarOptions();
+  const { id, iid, fullPath } = getSidebarOptions();
   const assigneeAvailabilityStatus = getSidebarAssigneeAvailabilityData();
   // eslint-disable-next-line no-new
   new Vue({
@@ -74,6 +74,7 @@ function mountAssigneesComponentDeprecated(mediator) {
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? IssuableType.Issue
               : IssuableType.MergeRequest,
+          issuableId: id,
           assigneeAvailabilityStatus,
         },
       }),
@@ -85,7 +86,7 @@ function mountAssigneesComponent() {
 
   if (!el) return;
 
-  const { iid, fullPath, editable, projectMembersPath } = getSidebarOptions();
+  const { id, iid, fullPath, editable, projectMembersPath } = getSidebarOptions();
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -108,6 +109,7 @@ function mountAssigneesComponent() {
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? IssuableType.Issue
               : IssuableType.MergeRequest,
+          issuableId: id,
           multipleAssignees: !el.dataset.maxAssignees,
         },
         scopedSlots: {

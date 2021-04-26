@@ -11,7 +11,7 @@ class PropagateIntegrationGroupWorker
     integration = Service.find_by_id(integration_id)
     return unless integration
 
-    batch = if integration.instance?
+    batch = if integration.instance_level?
               Group.where(id: min_id..max_id).without_integration(integration)
             else
               integration.group.descendants.where(id: min_id..max_id).without_integration(integration)
