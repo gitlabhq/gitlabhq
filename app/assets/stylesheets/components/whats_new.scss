@@ -59,13 +59,3 @@
 .whats-new-modal-backdrop {
   z-index: 699;
 }
-
-.whats-new-notification-count {
-  @include gl-bg-gray-900;
-  @include gl-font-sm;
-  @include gl-line-height-normal;
-  @include gl-text-white;
-  @include gl-vertical-align-top;
-  border-radius: 20px;
-  padding: 3px 10px;
-}
