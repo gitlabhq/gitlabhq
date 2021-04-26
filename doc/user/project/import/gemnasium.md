@@ -33,7 +33,7 @@ subscription at that time, your card will be refunded on a
 <!-- vale gitlab.Spelling = NO --> pro rata temporis <!-- vale gitlab.Spelling = YES --> basis.
 You may contact `gemnasium@gitlab.com` regarding your closed account.
 
-## Will my account/data be transferred to GitLab Inc.?
+## Are my account/data transferred to GitLab Inc.?
 
 All accounts and data have been deleted on May 15th, 2018. GitLab Inc.
 doesn't know anything about your private data, nor your projects, and therefore
@@ -41,7 +41,7 @@ if they were vulnerable or not. GitLab Inc. takes personal information very seri
 
 ## What happened to my badge?
 
-To avoid broken 404 images, all badges pointing to Gemnasium.com will be a
+To avoid broken 404 images, all badges pointing to Gemnasium.com are a
 placeholder, inviting you to migrate to GitLab (and pointing to this page).
 
 ## Migrating to GitLab
@@ -69,7 +69,7 @@ back to both GitLab and GitHub when completed.
 
 <!-- vale gitlab.Spelling = NO -->
 
-1. Create a new project, and select **CI/CD for external repo**:
+1. Create a new project, and select **CI/CD for external repository**:
 
    ![Create new Project](img/gemnasium/create_project_v13_5.png)
    <!-- vale gitlab.Spelling = YES -->
@@ -87,7 +87,7 @@ back to both GitLab and GitHub when completed.
 
    ![click on connected project](img/gemnasium/project_connected.png)
 
-   Your project is now mirrored on GitLab, where the runners will be able to access
+   Your project is now mirrored on GitLab, where the runners are able to access
    your source code and run your tests.
 
    Optional step: If you set this up on GitLab.com, make sure the project is
@@ -102,12 +102,12 @@ back to both GitLab and GitHub when completed.
 
    ![Edit YAML file](img/gemnasium/edit_gitlab-ci.png)
 
-1. Once your file has been committed, a new pipeline will be automatically
-   triggered if your file is valid:
+1. Once your file has been committed, a new pipeline automatically
+   triggers if your file is valid:
 
    ![pipeline](img/gemnasium/pipeline.png)
 
-1. The result of the job will be visible directly from the pipeline view:
+1. The result of the job is visible directly from the pipeline view:
 
    ![Security Dashboard](../../application_security/security_dashboard/img/pipeline_security_dashboard_v13_3.png)
 

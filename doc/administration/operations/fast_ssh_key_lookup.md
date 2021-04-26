@@ -16,7 +16,7 @@ Regular SSH operations become slow as the number of users grows because OpenSSH
 searches for a key to authorize a user via a linear search. In the worst case,
 such as when the user is not authorized to access GitLab, OpenSSH will scan the
 entire file to search for a key. This can take significant time and disk I/O,
-which will delay users attempting to push or pull to a repository. Making
+which delays users attempting to push or pull to a repository. Making
 matters worse, if users add or remove keys frequently, the operating system may
 not be able to cache the `authorized_keys` file, which causes the disk to be
 accessed repeatedly.
@@ -28,7 +28,7 @@ lookup of authorized SSH keys.
 WARNING:
 OpenSSH version 6.9+ is required because
 `AuthorizedKeysCommand` must be able to accept a fingerprint. These
-instructions will break installations using older versions of OpenSSH, such as
+instructions break installations that use older versions of OpenSSH, such as
 those included with CentOS 6 as of September 2017. If you want to use this
 feature for CentOS 6, follow [the instructions on how to build and install a custom OpenSSH package](#compiling-a-custom-version-of-openssh-for-centos-6) before continuing.
 
@@ -40,9 +40,9 @@ single source of truth, [Geo](../geo/index.md) needs to be configured to perform
 lookups via database lookup.
 
 As part of [setting up Geo](../geo/index.md#setup-instructions),
-you will be required to follow the steps outlined below for both the primary and
+you are required to follow the steps outlined below for both the primary and
 secondary nodes, but note that the `Write to "authorized keys" file` checkbox
-only needs to be unchecked on the primary node since it will be reflected
+only needs to be unchecked on the primary node since it is reflected
 automatically on the secondary if database replication is working.
 
 ## Setting up fast lookup via GitLab Shell
@@ -91,10 +91,10 @@ as required, but that might require temporary ownership changes during `gitlab-s
 
 WARNING:
 Do not disable writes until SSH is confirmed to be working
-perfectly, because the file will quickly become out-of-date.
+perfectly; otherwise, the file quickly becomes out-of-date.
 
 In the case of lookup failures (which are common), the `authorized_keys`
-file will still be scanned. So Git SSH performance will still be slow for many
+file is still scanned. So Git SSH performance would still be slow for many
 users as long as a large file exists.
 
 You can disable any more writes to the `authorized_keys` file by unchecking
@@ -183,8 +183,8 @@ the database. The following instructions can be used to build OpenSSH 7.5:
    -rw-r--r--. 1 root root 367516 Jun 20 19:37 openssh-server-7.5p1-1.x86_64.rpm
    ```
 
-1. Install the packages. OpenSSH packages will replace `/etc/pam.d/sshd`
-   with its own version, which may prevent users from logging in, so be sure
+1. Install the packages. OpenSSH packages replace `/etc/pam.d/sshd`
+   with their own versions, which may prevent users from logging in, so be sure
    that the file is backed up and restored after installation:
 
    ```shell

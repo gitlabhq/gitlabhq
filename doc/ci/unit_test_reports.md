@@ -11,12 +11,12 @@ type: reference
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39737) from JUnit test reports to Unit test reports in GitLab 13.4.
 
 It is very common that a [CI/CD pipeline](pipelines/index.md) contains a
-test job that will verify your code.
+test job that verifies your code.
 If the tests fail, the pipeline fails and users get notified. The person that
-works on the merge request will have to check the job logs and see where the
+works on the merge request has to check the job logs and see where the
 tests failed so that they can fix them.
 
-You can configure your job to use Unit test reports, and GitLab will display a
+You can configure your job to use Unit test reports, and GitLab displays a
 report on the merge request so that it's easier and faster to identify the
 failure without having to check the entire log. Unit test reports currently
 only support test reports in the JUnit report format.
@@ -49,7 +49,7 @@ comparing the head and base branch's JUnit report format XML files, where:
 
 The reports panel has a summary showing how many tests failed, how many had errors
 and how many were fixed. If no comparison can be done because data for the base branch
-is not available, the panel will just show the list of failed tests for head.
+is not available, the panel just shows the list of failed tests for head.
 
 There are four types of results:
 
@@ -59,8 +59,8 @@ There are four types of results:
 1. **Existing failures:**  Test cases which failed on base branch and failed on head branch
 1. **Resolved failures:**  Test cases which failed on base branch and passed on head branch
 
-Each entry in the panel will show the test name and its type from the list
-above. Clicking on the test name will open a modal window with details of its
+Each entry in the panel shows the test name and its type from the list
+above. Clicking on the test name opens a modal window with details of its
 execution time and the error output.
 
 ![Test Reports Widget](img/junit_test_report.png)
@@ -115,7 +115,7 @@ ruby:
 ### Go example
 
 Use the following job in `.gitlab-ci.yml`, and ensure you use `-set-exit-code`,
-otherwise the pipeline will be marked successful, even if the tests fail:
+otherwise the pipeline is marked successful, even if the tests fail:
 
 ```yaml
 ## Use https://github.com/jstemmer/go-junit-report to generate a JUnit report format XML file with go
@@ -137,7 +137,7 @@ There are a few tools that can produce JUnit report format XML file in Java.
 #### Gradle
 
 In the following example, `gradle` is used to generate the test reports.
-If there are multiple test tasks defined, `gradle` will generate multiple
+If there are multiple test tasks defined, `gradle` generates multiple
 directories under `build/test-results/`. In that case, you can leverage glob
 matching by defining the following path: `build/test-results/test/**/TEST-*.xml`:
 
@@ -198,8 +198,8 @@ There are a few tools that can produce JUnit report format XML files in C/C++.
 
 In the following example, `gtest` is used to generate the test reports.
 If there are multiple `gtest` executables created for different architectures (`x86`, `x64` or `arm`),
-you will be required to run each test providing a unique filename. The results
-will then be aggregated together.
+you are required to run each test providing a unique filename. The results
+are then be aggregated together.
 
 ```yaml
 cpp:
@@ -313,8 +313,8 @@ test:
 > - The feature flag was removed and the feature was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/216478) in GitLab 13.3.
 
 If JUnit report format XML files are generated and uploaded as part of a pipeline, these reports
-can be viewed inside the pipelines details page. The **Tests** tab on this page will
-display a list of test suites and cases reported from the XML file.
+can be viewed inside the pipelines details page. The **Tests** tab on this page
+displays a list of test suites and cases reported from the XML file.
 
 ![Test Reports Widget](img/pipelines_junit_test_report_v13_10.png)
 
@@ -340,7 +340,7 @@ If parsing JUnit report XML results in an error, an indicator is shown next to t
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-When [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/6061) is complete, the attached file will be visible on the pipeline details page.
+When [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/6061) is complete, the attached file is visible on the pipeline details page.
 
 If JUnit report format XML files contain an `attachment` tag, GitLab parses the attachment.
 

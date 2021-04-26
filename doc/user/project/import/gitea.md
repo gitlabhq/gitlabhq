@@ -31,8 +31,8 @@ to users in your GitLab instance. This means that the project creator (most of
 the times the current user that started the import process) is set as the author,
 but a reference on the issue about the original Gitea author is kept.
 
-The importer will create any new namespaces (groups) if they don't exist or in
-the case the namespace is taken, the repository will be imported under the user's
+The importer creates any new namespaces (groups) if they don't exist or in
+the case the namespace is taken, the repository is imported under the user's
 namespace that started the import process.
 
 ## Importing your Gitea repositories
@@ -41,13 +41,13 @@ The importer page is visible when you create a new project.
 
 ![New project page on GitLab](img/import_projects_from_new_project_page.png)
 
-Click on the **Gitea** link and the import authorization process will start.
+Click on the **Gitea** link and the import authorization process starts.
 
 ![New Gitea project import](img/import_projects_from_gitea_new_import.png)
 
 ### Authorize access to your repositories using a personal access token
 
-With this method, you will perform a one-off authorization with Gitea to grant
+With this method, you perform a one-off authorization with Gitea to grant
 GitLab access your repositories:
 
 1. Go to `https://your-gitea-instance/user/settings/applications` (replace
@@ -58,19 +58,19 @@ GitLab access your repositories:
 1. Copy the token hash.
 1. Go back to GitLab and provide the token to the Gitea importer.
 1. Hit the **List Your Gitea Repositories** button and wait while GitLab reads
-   your repositories' information. Once done, you'll be taken to the importer
+   your repositories' information. Once done, you are taken to the importer
    page to select the repositories to import.
 
 ### Select which repositories to import
 
-After you've authorized access to your Gitea repositories, you will be
+After you've authorized access to your Gitea repositories, you are
 redirected to the Gitea importer page.
 
 From there, you can see the import statuses of your Gitea repositories.
 
-- Those that are being imported will show a _started_ status,
-- those already successfully imported will be green with a _done_ status,
-- whereas those that are not yet imported will have an **Import** button on the
+- Those that are being imported show a _started_ status,
+- those already successfully imported are green with a _done_ status,
+- whereas those that are not yet imported have an **Import** button on the
   right side of the table.
 
 You also can:
@@ -78,7 +78,7 @@ You also can:
 - Import all your Gitea projects in one go by hitting **Import all projects** in
   the upper left corner
 - Filter projects by name. If filter is applied, hitting **Import all projects**
-  will only import matched projects
+  only imports matched projects
 
 ![Gitea importer page](img/import_projects_from_gitea_importer_v12_3.png)
 

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab can use [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) as an OmniAuth provider.
 
 To enable the OpenID Connect OmniAuth provider, you must register your application with an OpenID Connect provider.
-The OpenID Connect will provide you with a client details and secret for you to use.
+The OpenID Connect provides you with a client's details and secret for you to use.
 
 1. On your GitLab server, open the configuration file.
 
@@ -86,21 +86,21 @@ The OpenID Connect will provide you with a client details and secret for you to 
    and the [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
 
 1. For the configuration above, change the values for the provider to match your OpenID Connect client setup. Use the following as a guide:
-   - `<your_oidc_label>` is the label that will be displayed on the login page.
-   - `<custom_provider_icon>` (optional) is the icon that will be displayed on the login page. Icons for the major social login platforms are built-in into GitLab,
+   - `<your_oidc_label>` is the label that appears on the login page.
+   - `<custom_provider_icon>` (optional) is the icon that appears on the login page. Icons for the major social login platforms are built-in into GitLab,
      but can be overridden by specifying this parameter. Both local paths and absolute URLs are accepted.
    - `<your_oidc_url>` (optional) is the URL that points to the OpenID Connect provider. For example, `https://example.com/auth/realms/your-realm`.
      If this value is not provided, the URL is constructed from the `client_options` in the following format: `<client_options.scheme>://<client_options.host>:<client_options.port>`.
-   - If `discovery` is set to `true`, the OpenID Connect provider will try to auto discover the client options using `<your_oidc_url>/.well-known/openid-configuration`. Defaults to `false`.
+   - If `discovery` is set to `true`, the OpenID Connect provider attempts to auto discover the client options using `<your_oidc_url>/.well-known/openid-configuration`. Defaults to `false`.
    - `client_auth_method` (optional) specifies the method used for authenticating the client with the OpenID Connect provider.
      - Supported values are:
        - `basic` - HTTP Basic Authentication
        - `jwt_bearer` - JWT based authentication (private key and client secret signing)
        - `mtls` - Mutual TLS or X.509 certificate validation
-       - Any other value will POST the client ID and secret in the request body
+       - Any other value POSTs the client ID and secret in the request body
      - If not specified, defaults to `basic`.
-   - `<uid_field>` (optional) is the field name from the `user_info.raw_attributes` details that will be used as `uid` value. For example, `preferred_username`.
-     If this value is not provided or the field with the configured value is missing from the `user_info.raw_attributes` details, the `uid` will use the `sub` field.
+   - `<uid_field>` (optional) is the field name from the `user_info.raw_attributes` that defines the value for `uid`. For example, `preferred_username`.
+     If this value is not provided or the field with the configured value is missing from the `user_info.raw_attributes` details, the `uid` uses the `sub` field.
    - `send_scope_to_token_endpoint` is `true` by default. In other words, the `scope` parameter is normally included in requests to the token endpoint.
      However, if your OpenID Connect provider does not accept the `scope` parameter in such requests, set this to `false`.
    - `client_options` are the OpenID Connect client-specific options. Specifically:
@@ -119,9 +119,9 @@ The OpenID Connect will provide you with a client details and secret for you to 
    for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
 
 On the sign in page, there should now be an OpenID Connect icon below the regular sign in form.
-Click the icon to begin the authentication process. The OpenID Connect provider will ask the user to
+Click the icon to begin the authentication process. The OpenID Connect provider asks the user to
 sign in and authorize the GitLab application (if confirmation required by the client). If everything goes well, the user
-will be redirected to GitLab and will be signed in.
+is redirected to GitLab and signed in.
 
 ## Example configurations
 

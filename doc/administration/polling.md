@@ -18,14 +18,14 @@ seconds; these are _not_ the actual values.
 
 - 1 is the default, and recommended for most installations. (Issue notes poll
   every 2 seconds, and issue titles poll every 5 seconds.)
-- 0 will disable UI polling completely. (On the next poll, clients will stop
+- 0 disables UI polling completely. (On the next poll, clients stop
   polling for updates.)
-- A value greater than 1 will slow polling down. If you see issues with
+- A value greater than 1 slows polling down. If you see issues with
   database load from lots of clients polling for updates, increasing the
   multiplier from 1 can be a good compromise, rather than disabling polling
   completely. (For example: If this is set to 2, then issue notes poll every 4
   seconds, and issue titles poll every 10 seconds.)
-- A value between 0 and 1 will make the UI poll more frequently (so updates
-  will show in other sessions faster), but is **not recommended**. 1 should be
+- A value between 0 and 1 makes the UI poll more frequently (so updates
+  show in other sessions faster), but is **not recommended**. 1 should be
   fast enough. (For example, if this is set to 0.5, then issue notes poll every
   1 second, and issue titles poll every 2.5 seconds.)

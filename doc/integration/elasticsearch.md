@@ -31,7 +31,7 @@ and the advantage of the [special searches](../user/search/advanced_search.md).
 Elasticsearch requires additional resources in excess of those documented in the
 [GitLab system requirements](../install/requirements.md).
 
-The amount of resources (memory, CPU, storage) will vary greatly, based on the
+The amount of resources (memory, CPU, storage) varies greatly, based on the
 amount of data being indexed into the Elasticsearch cluster. According to
 [Elasticsearch official guidelines](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_memory),
 each node should have:
@@ -44,8 +44,8 @@ A few notes on CPU and storage:
 
 - CPU requirements for Elasticsearch tend to be minimal. There are specific
   scenarios where this isn't true, but GitLab.com isn't using Elasticsearch in
-  an exceptionally CPU-heavy way. More cores will be more performant than faster
-  CPUs. Extra concurrency from multiple cores will far outweigh a slightly
+  an exceptionally CPU-heavy way. More cores are more performant than faster
+  CPUs. Extra concurrency from multiple cores far outweighs a slightly
   faster clock speed in Elasticsearch.
 
 - Storage requirements for Elasticsearch are important, especially for
@@ -60,7 +60,7 @@ A few notes on CPU and storage:
   for the calculation. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221177) in GitLab 13.10.
 
 Keep in mind, these are **minimum requirements** for Elasticsearch.
-Heavily-used Elasticsearch clusters will likely require considerably more
+Heavily-used Elasticsearch clusters likely require considerably more
 resources.
 
 ## Installing Elasticsearch
@@ -77,26 +77,26 @@ service. Running Elasticsearch on the same server as GitLab is not recommended
 and can cause a degradation in GitLab instance performance.
 
 **For a single node Elasticsearch cluster the functional cluster health status
-will be yellow** (will never be green) because the primary shard is allocated but
+is yellow** (will never be green) because the primary shard is allocated but
 replicas can not be as there is no other node to which Elasticsearch can assign a
 replica.
 
 After the data is added to the database or repository and [Elasticsearch is
-enabled in the Admin Area](#enabling-advanced-search) the search index will be
+enabled in the Admin Area](#enabling-advanced-search) the search index is
 updated automatically.
 
 ## Upgrading to a new Elasticsearch major version
 
 Since Elasticsearch can read and use indices created in the previous major version, you don't need to change anything in the GitLab configuration when upgrading Elasticsearch.
 
-The only thing worth noting is that if you have created your current index before GitLab 13.0, you might want to reindex from scratch (which will implicitly create an alias) in order to use some features, for example [Zero downtime reindexing](#zero-downtime-reindexing). Once you do that, you'll be able to perform zero-downtime reindexing and will benefit from any future features that make use of the alias.
+The only thing worth noting is that if you have created your current index before GitLab 13.0, you might want to reindex from scratch (which implicitly creates an alias) in order to use some features, for example [Zero downtime reindexing](#zero-downtime-reindexing). Once you do that, you are able to perform zero-downtime reindexing and will benefit from any future features that make use of the alias.
 
 If you are unsure when your current index was created,
 you can check whether it was created after GitLab 13.0 by using the
 [Elasticsearch cat aliases API](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/cat-alias.html).
 If the list of aliases returned contains an entry for `gitlab-production` that points to an index
 named `gitlab-production-<numerical timestamp>`, your index was created after GitLab 13.0.
-If the `gitlab-production` alias is missing, you'll need to reindex from scratch to use
+If the `gitlab-production` alias is missing, you need to reindex from scratch to use
 features such as Zero-downtime reindexing.
 
 ## Elasticsearch repository indexer
@@ -116,7 +116,7 @@ The former Ruby-based indexer was removed in [GitLab 12.3](https://gitlab.com/gi
 
 ### From source
 
-First, we need to install some dependencies, then we'll build and install
+First, we need to install some dependencies, then we build and install
 the indexer itself.
 
 This project relies on [ICU](http://site.icu-project.org/) for text encoding,

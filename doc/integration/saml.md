@@ -86,7 +86,7 @@ in your SAML IdP:
    ```
 
 1. Ensure that the SAML [`NameID`](../user/group/saml_sso/index.md#nameid) and email address are fixed for each user,
-as described in the section on [Security](#security). Otherwise, your users will be able to sign in as other authorized users.
+as described in the section on [Security](#security). Otherwise, your users are able to sign in as other authorized users.
 
 1. Add the provider configuration:
 
@@ -137,7 +137,7 @@ as described in the section on [Security](#security). Otherwise, your users will
    for more details on these options.
    See the [notes on configuring your identity provider](#notes-on-configuring-your-identity-provider) for more information.
 
-1. Change the value of `issuer` to a unique name, which will identify the application
+1. Change the value of `issuer` to a unique name, which identifies the application
    to the IdP.
 
 1. For the changes to take effect, you must [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab if you installed via Omnibus or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) if you installed from source.
@@ -158,7 +158,7 @@ See [the assertions list](#assertions) for other available claims.
 
 On the sign in page there should now be a SAML button below the regular sign in form.
 Click the icon to begin the authentication process. If everything goes well the user
-will be returned to GitLab and will be signed in.
+is returned to GitLab and signed in.
 
 ### Notes on configuring your identity provider
 
@@ -250,7 +250,7 @@ Your IdP passes Group Information to the SP (GitLab) in the SAML Response. You n
 - Which group membership is requisite to sign in via the `required_groups` setting
 
 When `required_groups` is not set or it is empty, anyone with proper authentication
-will be able to use the service.
+is able to use the service.
 
 Example:
 
@@ -424,8 +424,8 @@ omniauth:
   auto_sign_in_with_provider: saml
 ```
 
-Keep in mind that every sign in attempt will be redirected to the SAML server;
-you won't be able to sign in using local credentials. Ensure at least one of the
+Keep in mind that every sign in attempt redirects to the SAML server;
+you cannot sign in using local credentials. Ensure at least one of the
 SAML users has admin permissions.
 
 You may also bypass the auto sign-in feature by browsing to
@@ -442,7 +442,7 @@ in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Has
 
 For example, if your SAMLResponse contains an Attribute called `EmailAddress`,
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the
-corresponding key in the `info` hash. URI-named Attributes are also supported, e.g.
+corresponding key in the `info` hash. URI-named Attributes are also supported, for example, 
 `{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`.
 
 This setting allows you tell GitLab where to look for certain attributes required
@@ -463,7 +463,7 @@ args: {
 
 #### Setting a username
 
-By default, the email in the SAML response will be used to automatically generate the user's GitLab username. If you'd like to set another attribute as the username, assign it to the `nickname` OmniAuth `info` hash attribute. For example, if you wanted to set the `username` attribute in your SAML Response to the username in GitLab, use the following setting:
+By default, the email in the SAML response is used to automatically generate the user's GitLab username. If you'd like to set another attribute as the username, assign it to the `nickname` OmniAuth `info` hash attribute. For example, if you wanted to set the `username` attribute in your SAML Response to the username in GitLab, use the following setting:
 
 ```yaml
 args: {
@@ -587,7 +587,7 @@ args: {
 }
 ```
 
-Your Identity Provider will encrypt the assertion with the public certificate of GitLab. GitLab will decrypt the EncryptedAssertion with its private key.
+Your Identity Provider encrypts the assertion with the public certificate of GitLab. GitLab decrypts the EncryptedAssertion with its private key.
 
 NOTE:
 This integration uses the `certificate` and `private_key` settings for both assertion encryption and request signing.
@@ -629,7 +629,7 @@ args: {
 }
 ```
 
-GitLab will sign the request with the provided private key. GitLab will include the configured public x500 certificate in the metadata for your Identity Provider to validate the signature of the received request with. For more information on this option, see the [Ruby SAML gem documentation](https://github.com/onelogin/ruby-saml/tree/v1.7.0). The Ruby SAML gem is used by the [OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml) to implement the client side of the SAML authentication.
+GitLab signs the request with the provided private key. GitLab includes the configured public x500 certificate in the metadata for your Identity Provider to validate the signature of the received request with. For more information on this option, see the [Ruby SAML gem documentation](https://github.com/onelogin/ruby-saml/tree/v1.7.0). The Ruby SAML gem is used by the [OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml) to implement the client side of the SAML authentication.
 
 ## Security
 
@@ -652,7 +652,7 @@ For information on the GitLab.com implementation, please see the [SAML SSO for G
 
 Group SAML SSO helps if you need to allow access via multiple SAML identity providers, but as a multi-tenant solution is less suited to cases where you administer your own GitLab instance.
 
-To proceed with configuring Group SAML SSO instead, you'll need to enable the `group_saml` OmniAuth provider. This can be done from:
+To proceed with configuring Group SAML SSO instead, enable the `group_saml` OmniAuth provider. This can be done from:
 
 - `gitlab.rb` for [Omnibus GitLab installations](#omnibus-installations).
 - `gitlab/config/gitlab.yml` for [source installations](#source-installations).
@@ -715,17 +715,17 @@ The following guidance is based on this Okta article, on adding a [SAML Applicat
 1. When the app screen comes up you see another button to **Create an App** and
    choose SAML 2.0 on the next screen.
 1. Optionally, you can add a logo
-   (you can choose it from <https://about.gitlab.com/press/>). You'll have to
+   (you can choose it from <https://about.gitlab.com/press/>). You must
    crop and resize it.
-1. Next, you'll need the to fill in the SAML general configuration with
+1. Next, fill in the SAML general configuration with
    the assertion consumer service URL as "Single sign-on URL" and
    the issuer as "Audience URI" along with the [NameID](../user/group/saml_sso/index.md#nameid) and [assertions](#assertions).
 1. The last part of the configuration is the feedback section where you can
    just say you're a customer and creating an app for internal use.
-1. When you have your app you'll have a few tabs on the top of the app's
+1. When you have your app you can see a few tabs on the top of the app's
    profile. Click on the SAML 2.0 configuration instructions button.
 1. On the screen that comes up take note of the
-   **Identity Provider Single Sign-On URL** which you'll use for the
+   **Identity Provider Single Sign-On URL** which you can use for the
    `idp_sso_target_url` on your GitLab configuration file.
 1. **Before you leave Okta, make sure you add your user and groups if any.**
 
@@ -734,14 +734,14 @@ The following guidance is based on this Okta article, on adding a [SAML Applicat
 The following guidance is based on this Google Workspace article, on how to [Set up your own custom SAML application](https://support.google.com/a/answer/6087519?hl=en):
 
 Make sure you have access to a Google Workspace [Super Admin](https://support.google.com/a/answer/2405986#super_admin) account.
-   Follow the instructions in the linked Google Workspace article, where you'll need the following information:
+   Use the information below and follow the instructions in the linked Google Workspace article.
 
 |                  | Typical value                                    | Description                                              |
 |------------------|--------------------------------------------------|----------------------------------------------------------|
 | Name of SAML App | GitLab                                           | Other names OK.                                          |
 | ACS URL          | `https://<GITLAB_DOMAIN>/users/auth/saml/callback` | ACS is short for Assertion Consumer Service.             |
 | GITLAB_DOMAIN    | `gitlab.example.com`                             | Set to the domain of your GitLab instance.               |
-| Entity ID        | `https://gitlab.example.com`                     | A value unique to your SAML app, you'll set it to the `issuer` in your GitLab configuration.                         |
+| Entity ID        | `https://gitlab.example.com`                     | A value unique to your SAML app, set it to the `issuer` in your GitLab configuration.                         |
 | Name ID format   | EMAIL                                            | Required value. Also known as `name_identifier_format`                    |
 | Name ID          | Primary email address                            | Make sure someone receives content sent to that address                |
 | First name       | `first_name`                                     | Required value to communicate with GitLab.               |
@@ -806,7 +806,7 @@ section for further troubleshooting steps.
 ### Redirect back to the login screen with no evident error
 
 If after signing in into your SAML server you are redirected back to the sign in page and
-no error is displayed, check your `production.log` file. It will most likely contain the
+no error is displayed, check your `production.log` file. It most likely contains the
 message `Can't verify CSRF token authenticity`. This means that there is an error during
 the SAML request, but in GitLab 11.7 and earlier this error never reaches GitLab due to
 the CSRF check.
@@ -814,7 +814,7 @@ the CSRF check.
 To bypass this you can add `skip_before_action :verify_authenticity_token` to the
 `omniauth_callbacks_controller.rb` file immediately after the `class` line and
 comment out the `protect_from_forgery` line using a `#`. Restart Unicorn for this
-change to take effect. This will allow the error to hit GitLab, where it can then
+change to take effect. This allows the error to hit GitLab, where it can then
 be seen in the usual logs, or as a flash message on the login screen.
 
 That file is located in `/opt/gitlab/embedded/service/gitlab-rails/app/controllers`
@@ -838,11 +838,11 @@ audiences of the IdP server.
 The IdP server needs to pass certain information in order for GitLab to either
 create an account, or match the login information to an existing account. `email`
 is the minimum amount of information that needs to be passed. If the IdP server
-is not providing this information, all SAML requests will fail.
+is not providing this information, all SAML requests fail.
 
 Make sure this information is provided.
 
-Another issue that can result in this error is when the correct information is being sent by the IdP, but the attributes don't match the names in the OmniAuth `info` hash. In this case, you'll need to set `attribute_statements` in the SAML configuration to [map the attribute names in your SAML Response to the corresponding OmniAuth `info` hash names](#attribute_statements).
+Another issue that can result in this error is when the correct information is being sent by the IdP, but the attributes don't match the names in the OmniAuth `info` hash. In this case, you need to set `attribute_statements` in the SAML configuration to [map the attribute names in your SAML Response to the corresponding OmniAuth `info` hash names](#attribute_statements).
 
 ### Key validation error, Digest mismatch or Fingerprint mismatch
 
@@ -859,8 +859,8 @@ For this you need take the following into account:
   the request to contain one. In this case the fingerprint or fingerprint
   validators are optional
 
-Make sure that one of the above described scenarios is valid, or the requests will
-fail with one of the mentioned errors.
+If none of the above described scenarios is valid, the request 
+fails with one of the mentioned errors.
 
 ### User is blocked when signing in through SAML
 
