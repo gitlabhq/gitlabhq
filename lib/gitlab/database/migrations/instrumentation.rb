@@ -21,7 +21,7 @@ module Gitlab
 
           observation.walltime = Benchmark.realtime do
             yield
-          rescue => e
+          rescue StandardError => e
             exception = e
             observation.success = false
           end
@@ -47,7 +47,7 @@ module Gitlab
         def on_each_observer(&block)
           observers.each do |observer|
             yield observer
-          rescue => e
+          rescue StandardError => e
             Gitlab::AppLogger.error("Migration observer #{observer.class} failed with: #{e}")
           end
         end

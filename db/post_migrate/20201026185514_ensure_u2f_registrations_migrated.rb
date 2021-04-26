@@ -21,11 +21,11 @@ class EnsureU2fRegistrationsMigrated < ActiveRecord::Migration[6.0]
     # Do a manual update in case we lost BG jobs. The expected record count should be 0 or very low.
     U2fRegistration
         .joins("LEFT JOIN webauthn_registrations ON webauthn_registrations.u2f_registration_id = u2f_registrations.id")
-        .where("webauthn_registrations.u2f_registration_id IS NULL")
+        .where(webauthn_registrations: { u2f_registration_id: nil })
         .each_batch(of: BATCH_SIZE) do |batch, index|
       batch.each do |record|
         Gitlab::BackgroundMigration::MigrateU2fWebauthn.new.perform(record.id, record.id)
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, u2f_registration_id: record.id)
       end
     end

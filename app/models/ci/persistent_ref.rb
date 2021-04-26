@@ -15,13 +15,13 @@ module Ci
 
     def exist?
       ref_exists?(path)
-    rescue
+    rescue StandardError
       false
     end
 
     def create
       create_ref(sha, path)
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking
         .track_exception(e, pipeline_id: pipeline.id)
     end
@@ -30,7 +30,7 @@ module Ci
       delete_refs(path)
     rescue Gitlab::Git::Repository::NoRepository
       # no-op
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking
         .track_exception(e, pipeline_id: pipeline.id)
     end

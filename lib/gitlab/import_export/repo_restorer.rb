@@ -22,7 +22,7 @@ module Gitlab
         update_importable_repository_info
 
         true
-      rescue => e
+      rescue StandardError => e
         shared.error(e)
         false
       end

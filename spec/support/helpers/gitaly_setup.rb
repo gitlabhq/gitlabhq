@@ -52,7 +52,8 @@ module GitalySetup
       'RUBYOPT' => nil,
 
       # Git hooks can't run during tests as the internal API is not running.
-      'GITALY_TESTING_NO_GIT_HOOKS' => "1"
+      'GITALY_TESTING_NO_GIT_HOOKS' => "1",
+      'GITALY_TESTING_ENABLE_ALL_FEATURE_FLAGS' => "true"
     }
   end
 
@@ -116,7 +117,7 @@ module GitalySetup
 
     begin
       try_connect!(service)
-    rescue
+    rescue StandardError
       Process.kill('TERM', pid)
       raise
     end

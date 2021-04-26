@@ -27,7 +27,7 @@ module Ci
 
       stop_actions.each do |stop_action|
         stop_action.play(stop_action.user)
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, deployable_id: stop_action.id)
       end
     end

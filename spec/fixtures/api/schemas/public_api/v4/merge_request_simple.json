@@ -8,8 +8,8 @@
       "title": { "type": "string" },
       "description": { "type": ["string", "null"] },
       "state": { "type": "string" },
-      "created_at": { "type": "date" },
-      "updated_at": { "type": "date" },
+      "created_at": { "type": "string", "format": "date-time" },
+      "updated_at": { "type": "string", "format": "date-time" },
       "web_url": { "type": "uri" }
     },
     "required": [

@@ -129,4 +129,9 @@ RSpec.describe IssuePlacementWorker do
       it_behaves_like 'running the issue placement worker'
     end
   end
+
+  it 'has the `until_executed` deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+    expect(described_class.get_deduplication_options).to include({ including_scheduled: true })
+  end
 end

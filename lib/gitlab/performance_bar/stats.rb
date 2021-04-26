@@ -20,7 +20,7 @@ module Gitlab
         return unless data
 
         log_sql_queries(id, data)
-      rescue => err
+      rescue StandardError => err
         logger.error(message: "failed to process request id #{id}: #{err.message}")
       end
 

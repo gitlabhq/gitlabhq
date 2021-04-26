@@ -118,7 +118,7 @@ class Snippet < ApplicationRecord
   def self.only_include_projects_visible_to(current_user = nil)
     levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
 
-    joins(:project).where('projects.visibility_level IN (?)', levels)
+    joins(:project).where(projects: { visibility_level: levels })
   end
 
   def self.only_include_projects_with_snippets_enabled(include_private: false)

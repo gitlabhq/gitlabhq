@@ -14,7 +14,7 @@
       "type": "boolean"
     },
     "jobs": {
-      "type": ["array", null],
+      "type": ["array", "null"],
       "items": {
         "type": "object",
         "$ref": "lint_job_entity.json"

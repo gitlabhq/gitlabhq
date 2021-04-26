@@ -19,7 +19,7 @@ module ContainerExpirationPolicies
         service_result = Projects::ContainerRepository::CleanupTagsService
                            .new(project, nil, policy_params.merge('container_expiration_policy' => true))
                            .execute(repository)
-      rescue
+      rescue StandardError
         repository.cleanup_unfinished!
 
         raise

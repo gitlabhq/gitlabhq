@@ -1,5 +1,5 @@
 - page_title _("Edit"), @user.name, _("Users")
 %h3.page-title
-  Edit user: #{@user.name}
+  = _("Edit user: %{user_name}") % { user_name: @user.name }
 %hr
 = render 'form'

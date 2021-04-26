@@ -1097,7 +1097,7 @@ class Project < ApplicationRecord
     else
       super
     end
-  rescue
+  rescue StandardError
     super
   end
 
@@ -1559,7 +1559,7 @@ class Project < ApplicationRecord
     repository.after_create
 
     true
-  rescue => err
+  rescue StandardError => err
     Gitlab::ErrorTracking.track_exception(err, project: { id: id, full_path: full_path, disk_path: disk_path })
     errors.add(:base, _('Failed to create repository'))
     false

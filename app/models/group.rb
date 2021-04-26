@@ -109,13 +109,13 @@ class Group < Namespace
 
   scope :for_authorized_group_members, -> (user_ids) do
     joins(:group_members)
-      .where("members.user_id IN (?)", user_ids)
+      .where(members: { user_id: user_ids })
       .where("access_level >= ?", Gitlab::Access::GUEST)
   end
 
   scope :for_authorized_project_members, -> (user_ids) do
     joins(projects: :project_authorizations)
-      .where("project_authorizations.user_id IN (?)", user_ids)
+      .where(project_authorizations: { user_id: user_ids })
   end
 
   class << self
@@ -153,7 +153,7 @@ class Group < Namespace
     def select_for_project_authorization
       if current_scope.joins_values.include?(:shared_projects)
         joins('INNER JOIN namespaces project_namespace ON project_namespace.id = projects.namespace_id')
-          .where('project_namespace.share_with_group_lock = ?', false)
+          .where(project_namespace: { share_with_group_lock: false })
           .select("projects.id AS project_id, LEAST(project_group_links.group_access, members.access_level) AS access_level")
       else
         super

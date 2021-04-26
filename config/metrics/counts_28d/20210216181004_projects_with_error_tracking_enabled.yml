@@ -1,16 +1,18 @@
 ---
 key_path: usage_activity_by_stage_monthly.monitor.projects_with_error_tracking_enabled
-description:
+description: Count of users creating projects with error tracking enabled.
 product_section: ops
 product_stage:
 product_group: group::monitor
-product_category:
+product_category: metrics
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: database
 distribution:
-- ce
+  - ce
+  - ee
 tier:
-- free
-skip_validation: true
+  - free
+  - premium
+  - ultimate

@@ -6,7 +6,7 @@
     "author_id": { "type": "integer" },
     "project_id": { "type": "integer" },
     "discussion_locked": { "type": ["boolean", "null"] },
-    "due_date": { "type": "date" },
+    "due_date": { "type": ["string", "null"], "format": "date-time" },
     "confidential": { "type": "boolean" },
     "reference": { "type": "string" },
     "current_user": {

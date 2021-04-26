@@ -90,7 +90,7 @@ class VerifyPagesDomainService < BaseService
     records.any? do |record|
       record == domain.keyed_verification_code || record == domain.verification_code
     end
-  rescue => err
+  rescue StandardError => err
     log_error("Failed to check TXT records on #{domain_name} for #{domain.domain}: #{err}")
     false
   end

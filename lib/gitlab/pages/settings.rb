@@ -25,7 +25,7 @@ module Gitlab
 
       def report_denied_disk_access
         raise DiskAccessDenied if disk_access_denied?
-      rescue => e
+      rescue StandardError => e
         ::Gitlab::ErrorTracking.track_exception(e)
       end
     end

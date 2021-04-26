@@ -45,7 +45,7 @@ module Packages
         ::Packages::UpdateTagsService
           .new(package, package_tags)
           .execute
-      rescue => e
+      rescue StandardError => e
         raise InvalidMetadataError, e.message
       end
 

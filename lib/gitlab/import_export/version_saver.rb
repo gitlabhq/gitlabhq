@@ -15,7 +15,7 @@ module Gitlab
         File.write(version_file, Gitlab::ImportExport.version, mode: 'w')
         File.write(gitlab_version_file, Gitlab::VERSION, mode: 'w')
         File.write(gitlab_revision_file, Gitlab.revision, mode: 'w')
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       end

@@ -28,21 +28,9 @@
     "merged": {
       "type": "boolean"
     },
-    "merged_at": {
-      "type": [
-        "date",
-        "null"
-      ]
-    },
-    "closed_at": {
-      "type": [
-        "date",
-        "null"
-      ]
-    },
-    "updated_at": {
-      "type": "date"
-    },
+    "merged_at": { "type": [ "string", "null" ], "format": "date-time" },
+    "closed_at": { "type": [ "string", "null" ], "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
     "assignee": {
       "$ref": "user.json"
     },

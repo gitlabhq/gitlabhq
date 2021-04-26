@@ -33,7 +33,7 @@ module Gitlab
           validate_decompressed_archive_size if Feature.enabled?(:validate_import_decompressed_archive_size)
           decompress_archive
         end
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       ensure

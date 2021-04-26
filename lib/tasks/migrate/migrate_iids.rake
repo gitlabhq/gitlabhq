@@ -11,7 +11,7 @@ task migrate_iids: :environment do
     else
       print 'F'
     end
-  rescue
+  rescue StandardError
     print 'F'
   end
 
@@ -25,7 +25,7 @@ task migrate_iids: :environment do
     else
       print 'F'
     end
-  rescue
+  rescue StandardError
     print 'F'
   end
 
@@ -39,7 +39,7 @@ task migrate_iids: :environment do
     else
       print 'F'
     end
-  rescue
+  rescue StandardError
     print 'F'
   end
 

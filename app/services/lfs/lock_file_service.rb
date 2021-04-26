@@ -12,7 +12,7 @@ module Lfs
       error('already locked', 409, current_lock)
     rescue Gitlab::GitAccess::ForbiddenError => ex
       error(ex.message, 403)
-    rescue => ex
+    rescue StandardError => ex
       error(ex.message, 500)
     end
 

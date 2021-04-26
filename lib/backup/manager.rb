@@ -94,7 +94,7 @@ module Backup
               begin
                 FileUtils.rm(file)
                 removed += 1
-              rescue => e
+              rescue StandardError => e
                 progress.puts "Deleting #{file} failed: #{e.message}".color(:red)
               end
             end

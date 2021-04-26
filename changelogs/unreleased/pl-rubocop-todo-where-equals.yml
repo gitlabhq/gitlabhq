@@ -1,0 +1,5 @@
+---
+title: Resolves rubocop offenses Rails/WhereEquals
+merge_request: 58067
+author: Shubham Kumar (@imskr)
+type: fixed

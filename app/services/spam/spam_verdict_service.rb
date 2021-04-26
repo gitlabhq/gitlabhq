@@ -58,7 +58,7 @@ module Spam
         # @TODO: log error via try_post https://gitlab.com/gitlab-org/gitlab/-/issues/219223
         Gitlab::ErrorTracking.log_exception(e)
         nil
-      rescue
+      rescue StandardError
         # @TODO log
         ALLOW
       end

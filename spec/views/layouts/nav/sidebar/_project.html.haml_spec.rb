@@ -127,11 +127,57 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
-  describe 'issue boards' do
-    it 'has board tab' do
+  describe 'Issues' do
+    it 'has a link to the issue list path' do
       render
 
-      expect(rendered).to have_css('a[title="Boards"]')
+      expect(rendered).to have_link('Issues', href: project_issues_path(project))
+    end
+
+    it 'shows pill with the number of open issues' do
+      render
+
+      expect(rendered).to have_css('span.badge.badge-pill.issue_counter')
+    end
+
+    describe 'Issue List' do
+      it 'has a link to the issue list path' do
+        render
+
+        expect(rendered).to have_link('List', href: project_issues_path(project))
+      end
+    end
+
+    describe 'Issue Boards' do
+      it 'has a link to the issue boards path' do
+        render
+
+        expect(rendered).to have_link('Boards', href: project_boards_path(project))
+      end
+    end
+
+    describe 'Labels' do
+      it 'has a link to the labels path' do
+        render
+
+        expect(rendered).to have_link('Labels', href: project_labels_path(project))
+      end
+    end
+
+    describe 'Service Desk' do
+      it 'has a link to the service desk path' do
+        render
+
+        expect(rendered).to have_link('Service Desk', href: service_desk_project_issues_path(project))
+      end
+    end
+
+    describe 'Milestones' do
+      it 'has a link to the milestones path' do
+        render
+
+        expect(rendered).to have_link('Milestones', href: project_milestones_path(project))
+      end
     end
   end
 

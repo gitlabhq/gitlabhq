@@ -10,7 +10,7 @@ class PagesDomainRemovalCronWorker # rubocop:disable Scalability/IdempotentWorke
   def perform
     PagesDomain.for_removal.with_logging_info.find_each do |domain|
       with_context(project: domain.project) { domain.destroy! }
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e)
     end
   end

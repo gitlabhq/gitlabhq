@@ -191,7 +191,7 @@ namespace :gitlab do
       ActiveRecord::Base.logger = Logger.new(STDOUT) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
 
       Gitlab::Database::Reindexing.perform(indexes)
-    rescue => e
+    rescue StandardError => e
       Gitlab::AppLogger.error(e)
       raise
     end

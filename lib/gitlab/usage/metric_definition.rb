@@ -87,7 +87,7 @@ module Gitlab
           definition.deep_symbolize_keys!
 
           self.new(path, definition).tap(&:validate!)
-        rescue => e
+        rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Gitlab::Usage::Metric::InvalidMetricError.new(e.message))
         end
 

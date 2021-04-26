@@ -106,7 +106,7 @@ module Packages
         Packages::PackageFile.find(package_file.id).file.use_file do |file_path|
           Gem::Package.new(File.open(file_path))
         end
-      rescue
+      rescue StandardError
         raise ExtractionError.new('Unable to read gem file')
       end
 

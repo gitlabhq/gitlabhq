@@ -35,7 +35,7 @@ module SystemCheck
           imap.login(mailbox[:email], mailbox[:password])
         end
         true
-      rescue => error
+      rescue StandardError => error
         @error = error
         false
       end

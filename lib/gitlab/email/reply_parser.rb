@@ -68,7 +68,7 @@ module Gitlab
         else
           object.body.to_s
         end
-      rescue
+      rescue StandardError
         nil
       end
     end

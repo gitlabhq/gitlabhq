@@ -23,7 +23,7 @@ module Gitlab
 
       def signature_text
         @raw_tag.message.slice(@raw_tag.message.index("-----BEGIN SIGNED MESSAGE-----")..-1)
-      rescue
+      rescue StandardError
         nil
       end
 

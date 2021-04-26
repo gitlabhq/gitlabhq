@@ -213,7 +213,7 @@ module MergeRequests
           # If the a commit no longer exists in this repo, gitlab_git throws
           # a Rugged::OdbError. This is fixed in https://gitlab.com/gitlab-org/gitlab_git/merge_requests/52
           @commits = @project.repository.commits_between(common_ref, @push.newrev) if common_ref
-        rescue
+        rescue StandardError
         end
       elsif @push.branch_removed?
         # No commits for a deleted branch.

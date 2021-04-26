@@ -20,7 +20,7 @@
         },
         "additionalProperties": false
       },
-      "merged_at": { "type": ["date", "null"] },
+      "merged_at": { "type": ["string", "null"] },
       "closed_by": {
         "type": ["object", "null"],
         "properties": {
@@ -33,9 +33,9 @@
         },
         "additionalProperties": false
       },
-      "closed_at": { "type": ["date", "null"] },
-      "created_at": { "type": "date" },
-      "updated_at": { "type": "date" },
+      "closed_at": { "type": ["string", "null"], "format": "date-time" },
+      "created_at": { "type": "string", "format": "date-time" },
+      "updated_at": { "type": "string", "format": "date-time" },
       "target_branch": { "type": "string" },
       "source_branch": { "type": "string" },
       "upvotes": { "type": "integer" },
@@ -88,10 +88,10 @@
           "title": { "type": "string" },
           "description": { "type": ["string", "null"] },
           "state": { "type": "string" },
-          "created_at": { "type": "date" },
-          "updated_at": { "type": "date" },
-          "due_date": { "type": "date" },
-          "start_date": { "type": "date" }
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" },
+          "due_date": { "type": "string", "format": "date-time" },
+          "start_date": { "type": "string", "format": "date-time" }
         },
         "additionalProperties": false
       },

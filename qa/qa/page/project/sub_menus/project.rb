@@ -12,10 +12,6 @@ module QA
 
             base.class_eval do
               include QA::Page::Project::SubMenus::Common
-
-              view 'app/views/shared/nav/_sidebar_menu.html.haml' do
-                element :sidebar_menu_link
-              end
             end
           end
 

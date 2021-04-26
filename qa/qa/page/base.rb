@@ -338,8 +338,10 @@ module QA
         end
       end
 
-      def scroll_to_element(name, *args)
-        scroll_to(element_selector_css(name), *args)
+      def scroll_to_element(name, *kwargs)
+        text = kwargs.delete(:text)
+
+        scroll_to(element_selector_css(name, kwargs), text: text)
       end
 
       def element_selector_css(name, *attributes)

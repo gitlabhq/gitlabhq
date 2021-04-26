@@ -117,7 +117,7 @@ module API
           else
             render_api_error!('Failed to promote project label to group label', 400)
           end
-        rescue => error
+        rescue StandardError => error
           render_api_error!(error.to_s, 400)
         end
       end

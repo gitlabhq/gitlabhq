@@ -33,7 +33,7 @@ module Gitlab
 
       def update_namespace_statistics(namespace)
         Namespaces::StatisticsRefresherService.new.execute(namespace)
-      rescue => e
+      rescue StandardError => e
         error_message("Error updating statistics for namespace #{namespace.id}: #{e.message}")
       end
 

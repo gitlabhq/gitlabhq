@@ -13,7 +13,7 @@ module Ci
         key: key(base_pipeline, head_pipeline),
         data: head_pipeline.terraform_reports.plans
       }
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
       {
         status: :error,

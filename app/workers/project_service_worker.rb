@@ -11,7 +11,7 @@ class ProjectServiceWorker # rubocop:disable Scalability/IdempotentWorker
     data = data.with_indifferent_access
     service = Service.find(hook_id)
     service.execute(data)
-  rescue => error
+  rescue StandardError => error
     service_class = service&.class&.name || "Not Found"
     logger.error class: self.class.name, service_class: service_class, message: error.message
   end

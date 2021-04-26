@@ -72,7 +72,7 @@ module Projects
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.inspect}: #{e.record.errors.full_messages.join(", ")}"
       fail(error: message)
-    rescue => e
+    rescue StandardError => e
       @project.errors.add(:base, e.message) if @project
       fail(error: e.message)
     end

@@ -6,17 +6,21 @@
     "ref": { "type": "string" },
     "cron": { "type": "string" },
     "cron_timezone": { "type": "string" },
-    "next_run_at": { "type": "date" },
+    "next_run_at": { "type": "string" },
     "active": { "type": "boolean" },
-    "created_at": { "type": "date" },
-    "updated_at": { "type": "date" },
-    "last_pipeline": { 
+    "created_at": { "type": ["string", "null"], "format": "date-time" },
+    "updated_at": { "type": ["string", "null"], "format": "date-time" },
+    "last_pipeline": {
       "type": ["object", "null"],
       "properties": {
         "id": { "type": "integer" },
+        "project_id": { "type": "integer" },
         "sha": { "type": "string" },
         "ref": { "type": "string" },
-        "status": { "type": "string" }
+        "status": { "type": "string" },
+        "web_url": { "type": ["string", "null"] },
+        "created_at": { "type": ["string", "null"], "format": "date-time" },
+        "updated_at": { "type": ["string", "null"], "format": "date-time" }
       },
       "additionalProperties": false
     },
@@ -40,7 +44,7 @@
     }
   },
   "required": [
-    "id", "description", "ref", "cron", "cron_timezone", "next_run_at", 
+    "id", "description", "ref", "cron", "cron_timezone", "next_run_at",
     "active", "created_at", "updated_at", "owner"
   ],
   "additionalProperties": false

@@ -73,7 +73,7 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
     Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
       b.drop(reason)
     end
-  rescue => ex
+  rescue StandardError => ex
     build.doom!
 
     track_exception_for_build(ex, build)

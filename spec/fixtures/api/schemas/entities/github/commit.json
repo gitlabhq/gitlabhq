@@ -37,7 +37,7 @@
                     "properties" : {
                         "name": { "type": "string" },
                         "email": { "type": "string" },
-                        "date": { "type": "date" },
+                        "date": { "type": "string", "format": "date-time" },
                         "type": { "type": "string" }
                     },
                     "additionalProperties": false
@@ -48,7 +48,7 @@
                     "properties" : {
                         "name": { "type": "string" },
                         "email": { "type": "string" },
-                        "date": { "type": "date" },
+                        "date": { "type": "string", "format": "date-time" },
                         "type": { "type": "string" }
                     },
                     "additionalProperties": false

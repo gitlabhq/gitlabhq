@@ -11,12 +11,12 @@ module Gitlab
           namespace_snippets.group_by(&:project).each do |project, snippets|
             upsert_snippet_statistics(snippets)
             update_project_statistics(project)
-          rescue
+          rescue StandardError
             error_message("Error updating statistics for project #{project.id}")
           end
 
           update_namespace_statistics(namespace_snippets.first.project.root_namespace)
-        rescue => e
+        rescue StandardError => e
           error_message("Error updating statistics for namespace #{namespace_id}: #{e.message}")
         end
       end

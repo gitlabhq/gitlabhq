@@ -9,7 +9,7 @@ module Sidebars
       @link = link
       @active_routes = active_routes
       @item_id = item_id
-      @container_html_options = container_html_options
+      @container_html_options = { aria: { label: title } }.merge(container_html_options)
       @sprite_icon = sprite_icon
       @sprite_icon_html_options = sprite_icon_html_options
       @hint_html_options = hint_html_options

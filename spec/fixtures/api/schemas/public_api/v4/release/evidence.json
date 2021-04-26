@@ -8,7 +8,7 @@
   "properties" : {
     "sha": { "type": "string" },
     "filepath": { "type": "string" },
-    "collected_at": { "type": "date" }
+    "collected_at": { "type": "string", "format": "date-time" }
   },
   "additionalProperties": false
 }

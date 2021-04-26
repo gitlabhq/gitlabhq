@@ -19,7 +19,7 @@ module Gitlab
           tree_saver.save(group_tree, @shared.export_path, ImportExport.group_filename)
 
           true
-        rescue => e
+        rescue StandardError => e
           @shared.error(e)
           false
         end
@@ -35,7 +35,7 @@ module Gitlab
           end
 
           group_tree
-        rescue => e
+        rescue StandardError => e
           @shared.error(e)
         end
 

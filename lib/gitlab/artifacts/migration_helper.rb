@@ -24,7 +24,7 @@ module Gitlab
           artifact.file.migrate!(store)
 
           yield artifact if block
-        rescue => e
+        rescue StandardError => e
           raise StandardError.new("Failed to transfer artifact of type #{artifact.file_type} and ID #{artifact.id} with error: #{e.message}")
         end
       end

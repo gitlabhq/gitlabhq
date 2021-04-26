@@ -286,6 +286,18 @@ RSpec.describe Ci::Stage, :models do
         end
       end
 
+      context 'when stage has statuses with nil idx' do
+        before do
+          create(:ci_build, :running, stage_id: stage.id, stage_idx: nil)
+          create(:ci_build, :running, stage_id: stage.id, stage_idx: 10)
+          create(:ci_build, :running, stage_id: stage.id, stage_idx: nil)
+        end
+
+        it 'sets index to a non-empty value' do
+          expect { stage.update_legacy_status }.to change { stage.reload.position }.from(nil).to(10)
+        end
+      end
+
       context 'when stage does not have statuses' do
         it 'fallbacks to zero' do
           expect(stage.reload.position).to be_nil

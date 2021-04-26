@@ -200,7 +200,7 @@ describe('Group Settings App', () => {
       });
 
       it('has an optimistic response', async () => {
-        const mavenDuplicateExceptionRegex = 'latest[master]something';
+        const mavenDuplicateExceptionRegex = 'latest[main]something';
         mountComponent();
 
         await waitForApolloQueryAndRender();

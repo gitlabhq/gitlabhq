@@ -28,7 +28,7 @@ module Gitlab
 
       def call(env)
         @app.call(env)
-      rescue => e
+      rescue StandardError => e
         @options.callback&.call(env, e)
 
         raise

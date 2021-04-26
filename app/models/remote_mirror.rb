@@ -214,7 +214,7 @@ class RemoteMirror < ApplicationRecord
     if super
       Gitlab::UrlSanitizer.new(super, credentials: credentials).full_url
     end
-  rescue
+  rescue StandardError
     super
   end
 
@@ -275,7 +275,7 @@ class RemoteMirror < ApplicationRecord
     return url unless ssh_key_auth? && password.present?
 
     Gitlab::UrlSanitizer.new(read_attribute(:url), credentials: { user: user }).full_url
-  rescue
+  rescue StandardError
     super
   end
 

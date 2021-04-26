@@ -319,7 +319,7 @@ class Note < ApplicationRecord
     return commit if for_commit?
 
     super
-  rescue
+  rescue StandardError
     # Temp fix to prevent app crash
     # if note commit id doesn't exist
     nil

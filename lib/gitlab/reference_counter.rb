@@ -84,7 +84,7 @@ module Gitlab
       Gitlab::Redis::SharedState.with { |redis| yield(redis) }
 
       true
-    rescue => e
+    rescue StandardError => e
       Gitlab::AppLogger.warn("GitLab: An unexpected error occurred in writing to Redis: #{e}")
 
       false

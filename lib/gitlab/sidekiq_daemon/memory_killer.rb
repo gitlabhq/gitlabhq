@@ -73,7 +73,7 @@ module Gitlab
           begin
             sleep(CHECK_INTERVAL_SECONDS)
             restart_sidekiq unless rss_within_range?
-          rescue => e
+          rescue StandardError => e
             log_exception(e, __method__)
           rescue Exception => e # rubocop:disable Lint/RescueException
             log_exception(e, __method__ )
@@ -249,7 +249,7 @@ module Gitlab
 
       def get_job_options(job, key, default)
         job[:worker_class].sidekiq_options.fetch(key, default)
-      rescue
+      rescue StandardError
         default
       end
 

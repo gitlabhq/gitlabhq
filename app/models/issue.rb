@@ -87,7 +87,8 @@ class Issue < ApplicationRecord
   enum issue_type: {
     issue: 0,
     incident: 1,
-    test_case: 2 ## EE-only
+    test_case: 2, ## EE-only
+    requirement: 3 ## EE-only
   }
 
   alias_method :issuing_parent, :project

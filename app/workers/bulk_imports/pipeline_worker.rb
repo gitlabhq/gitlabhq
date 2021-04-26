@@ -46,7 +46,7 @@ module BulkImports
       pipeline_tracker.pipeline_class.new(context).run
 
       pipeline_tracker.finish!
-    rescue => e
+    rescue StandardError => e
       pipeline_tracker.fail_op!
 
       logger.error(

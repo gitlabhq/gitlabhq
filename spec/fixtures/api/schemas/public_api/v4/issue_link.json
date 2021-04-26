@@ -15,8 +15,8 @@
        "type": "string",
        "enum": ["relates_to", "blocks", "is_blocked_by"]
      },
-     "link_created_at": { "type": "date" },
-     "link_updated_at": { "type": "date" }
+     "link_created_at": { "type": "string" },
+     "link_updated_at": { "type": "string" }
   },
   "required" : [ "source_issue", "target_issue", "link_type" ]
 }

@@ -94,7 +94,7 @@ module DesignManagement
 
         version
       end
-    rescue
+    rescue StandardError
       raise CouldNotCreateVersion.new(sha, issue_id, design_actions)
     end
 

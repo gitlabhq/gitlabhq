@@ -23,7 +23,7 @@ module Gitlab
         else
           raise Projects::ImportService::Error.new(shared.errors.to_sentence)
         end
-      rescue => e
+      rescue StandardError => e
         # If some exception was raised could mean that the SnippetsRepoRestorer
         # was not called. This would leave us with snippets without a repository.
         # This is a state we don't want them to be, so we better delete them.

@@ -7,7 +7,7 @@ module Gitlab
     def initialize(data)
       begin
         entries = YAML.safe_load(data)
-      rescue
+      rescue StandardError
         raise FormatError, 'Route map is not valid YAML'
       end
 

@@ -131,7 +131,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
             expect(page).not_to have_selector('.diffs .diff-file .notes_holder')
           end
 
-          it 'shows resolved thread when toggled' do
+          it 'shows resolved thread when toggled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/327439' do
             find('.diff-comment-avatar-holders').click
 
             expect(find('.diffs .diff-file .notes_holder')).to be_visible

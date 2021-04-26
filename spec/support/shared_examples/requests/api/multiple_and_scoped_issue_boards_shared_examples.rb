@@ -14,7 +14,6 @@ RSpec.shared_examples 'multiple and scoped issue boards' do |route_definition|
         post api(root_url, user), params: { name: "new board" }
 
         expect(response).to have_gitlab_http_status(:created)
-
         expect(response).to match_response_schema('public_api/v4/board', dir: "ee")
       end
     end

@@ -16,7 +16,7 @@ module Projects
         end
 
         success
-      rescue => e
+      rescue StandardError => e
         error(e.message)
       end
     end

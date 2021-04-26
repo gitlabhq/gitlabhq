@@ -27,7 +27,7 @@ module Snippets
     rescue DeleteRepositoryError
       attempt_rollback_repositories
       service_response_error('Failed to delete snippet repositories.', 400)
-    rescue
+    rescue StandardError
       # In case the delete operation fails
       attempt_rollback_repositories
       service_response_error('Failed to remove snippets.', 400)

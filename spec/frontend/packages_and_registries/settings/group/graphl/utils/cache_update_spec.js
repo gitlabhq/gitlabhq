@@ -9,7 +9,7 @@ describe('Package and Registries settings group cache updates', () => {
       updateNamespacePackageSettings: {
         packageSettings: {
           mavenDuplicatesAllowed: false,
-          mavenDuplicateExceptionRegex: 'latest[master]something',
+          mavenDuplicateExceptionRegex: 'latest[main]something',
         },
       },
     },

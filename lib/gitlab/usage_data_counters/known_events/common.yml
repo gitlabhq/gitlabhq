@@ -175,52 +175,42 @@
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_alert_status_changed
 - name: incident_management_alert_assigned
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_alert_assigned
 - name: incident_management_alert_todo
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_alert_todo
 - name: incident_management_incident_created
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_created
 - name: incident_management_incident_reopened
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_reopened
 - name: incident_management_incident_closed
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_closed
 - name: incident_management_incident_assigned
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_assigned
 - name: incident_management_incident_todo
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_todo
 - name: incident_management_incident_comment
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_comment
 - name: incident_management_incident_zoom_meeting
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_zoom_meeting
 - name: incident_management_incident_published
   redis_slot: incident_management
   category: incident_management
@@ -230,23 +220,19 @@
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_relate
 - name: incident_management_incident_unrelate
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_unrelate
 - name: incident_management_incident_change_confidential
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_change_confidential
 # Incident management alerts
 - name: incident_management_alert_create_incident
   redis_slot: incident_management
   category: incident_management_alerts
   aggregation: weekly
-  feature_flag: usage_data_incident_management_alert_create_incident
 # Incident management on-call
 - name: i_incident_management_oncall_notification_sent
   redis_slot: incident_management

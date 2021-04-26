@@ -171,7 +171,7 @@ module Gitlab
         else
           value
         end
-      rescue
+      rescue StandardError
         fallback
       end
 
@@ -188,7 +188,7 @@ module Gitlab
         return fallback unless client
 
         yield client
-      rescue
+      rescue StandardError
         fallback
       end
 
@@ -271,7 +271,7 @@ module Gitlab
           api_url = "#{scheme}://#{server_address}"
           client = Gitlab::PrometheusClient.new(api_url, allow_local_requests: true, verify: verify)
           break client if client.ready?
-        rescue
+        rescue StandardError
           nil
         end
       end

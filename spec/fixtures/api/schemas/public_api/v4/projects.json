@@ -9,7 +9,7 @@
       "description": { "type": ["string", "null"] },
       "path": { "type": "string" },
       "path_with_namespace": { "type": "string" },
-      "created_at": { "type": "date" },
+      "created_at": { "type": "string", "format": "date-time" },
       "default_branch": { "type": ["string", "null"] },
       "tag_list": {
         "type": "array",
@@ -24,7 +24,7 @@
       "avatar_url": { "type": ["string", "null"] },
       "star_count": { "type": "integer" },
       "forks_count": { "type": "integer" },
-      "last_activity_at": { "type": "date" },
+      "last_activity_at": { "type": "string", "format": "date-time" },
       "namespace": {
         "type": "object",
         "properties" : {

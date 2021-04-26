@@ -72,7 +72,7 @@ module ApplicationHelper
     else
       'Never'
     end
-  rescue
+  rescue StandardError
     'Never'
   end
 

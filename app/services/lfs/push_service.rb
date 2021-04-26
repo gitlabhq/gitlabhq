@@ -16,7 +16,7 @@ module Lfs
       end
 
       success
-    rescue => err
+    rescue StandardError => err
       Gitlab::ErrorTracking.log_exception(err, extra_context)
       error(err.message)
     end

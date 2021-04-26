@@ -46,9 +46,9 @@ CREATE FUNCTION table_sync_function_29bc99d6db() RETURNS trigger
     AS $$
 BEGIN
 IF (TG_OP = 'DELETE') THEN
-  DELETE FROM web_hook_logs_part_0c5294f417 where id = OLD.id;
+  DELETE FROM web_hook_logs_archived where id = OLD.id;
 ELSIF (TG_OP = 'UPDATE') THEN
-  UPDATE web_hook_logs_part_0c5294f417
+  UPDATE web_hook_logs_archived
   SET web_hook_id = NEW.web_hook_id,
     trigger = NEW.trigger,
     url = NEW.url,
@@ -59,11 +59,11 @@ ELSIF (TG_OP = 'UPDATE') THEN
     response_status = NEW.response_status,
     execution_duration = NEW.execution_duration,
     internal_error_message = NEW.internal_error_message,
-    updated_at = NEW.updated_at,
-    created_at = NEW.created_at
-  WHERE web_hook_logs_part_0c5294f417.id = NEW.id;
+    created_at = NEW.created_at,
+    updated_at = NEW.updated_at
+  WHERE web_hook_logs_archived.id = NEW.id;
 ELSIF (TG_OP = 'INSERT') THEN
-  INSERT INTO web_hook_logs_part_0c5294f417 (id,
+  INSERT INTO web_hook_logs_archived (id,
     web_hook_id,
     trigger,
     url,
@@ -74,8 +74,8 @@ ELSIF (TG_OP = 'INSERT') THEN
     response_status,
     execution_duration,
     internal_error_message,
-    updated_at,
-    created_at)
+    created_at,
+    updated_at)
   VALUES (NEW.id,
     NEW.web_hook_id,
     NEW.trigger,
@@ -87,8 +87,8 @@ ELSIF (TG_OP = 'INSERT') THEN
     NEW.response_status,
     NEW.execution_duration,
     NEW.internal_error_message,
-    NEW.updated_at,
-    NEW.created_at);
+    NEW.created_at,
+    NEW.updated_at);
 END IF;
 RETURN NULL;
 
@@ -163,7 +163,7 @@ CREATE TABLE audit_events (
 )
 PARTITION BY RANGE (created_at);
 
-CREATE TABLE web_hook_logs_part_0c5294f417 (
+CREATE TABLE web_hook_logs (
     id bigint NOT NULL,
     web_hook_id integer NOT NULL,
     trigger character varying,
@@ -18915,7 +18915,7 @@ CREATE SEQUENCE vulnerability_user_mentions_id_seq
 
 ALTER SEQUENCE vulnerability_user_mentions_id_seq OWNED BY vulnerability_user_mentions.id;
 
-CREATE TABLE web_hook_logs (
+CREATE TABLE web_hook_logs_archived (
     id integer NOT NULL,
     web_hook_id integer NOT NULL,
     trigger character varying,
@@ -21608,11 +21608,11 @@ ALTER TABLE ONLY vulnerability_statistics
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT vulnerability_user_mentions_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY web_hook_logs_part_0c5294f417
-    ADD CONSTRAINT web_hook_logs_part_0c5294f417_pkey PRIMARY KEY (id, created_at);
+ALTER TABLE ONLY web_hook_logs_archived
+    ADD CONSTRAINT web_hook_logs_archived_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY web_hook_logs
-    ADD CONSTRAINT web_hook_logs_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT web_hook_logs_pkey PRIMARY KEY (id, created_at);
 
 ALTER TABLE ONLY web_hooks
     ADD CONSTRAINT web_hooks_pkey PRIMARY KEY (id);
@@ -24368,13 +24368,13 @@ CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id ON vulnerabili
 
 CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id_and_note_id ON vulnerability_user_mentions USING btree (vulnerability_id, note_id);
 
-CREATE INDEX index_web_hook_logs_on_created_at_and_web_hook_id ON web_hook_logs USING btree (created_at, web_hook_id);
+CREATE INDEX index_web_hook_logs_on_created_at_and_web_hook_id ON web_hook_logs_archived USING btree (created_at, web_hook_id);
 
-CREATE INDEX index_web_hook_logs_on_web_hook_id ON web_hook_logs USING btree (web_hook_id);
+CREATE INDEX index_web_hook_logs_on_web_hook_id ON web_hook_logs_archived USING btree (web_hook_id);
 
-CREATE INDEX index_web_hook_logs_part_on_created_at_and_web_hook_id ON ONLY web_hook_logs_part_0c5294f417 USING btree (created_at, web_hook_id);
+CREATE INDEX index_web_hook_logs_part_on_created_at_and_web_hook_id ON ONLY web_hook_logs USING btree (created_at, web_hook_id);
 
-CREATE INDEX index_web_hook_logs_part_on_web_hook_id ON ONLY web_hook_logs_part_0c5294f417 USING btree (web_hook_id);
+CREATE INDEX index_web_hook_logs_part_on_web_hook_id ON ONLY web_hook_logs USING btree (web_hook_id);
 
 CREATE INDEX index_web_hooks_on_group_id ON web_hooks USING btree (group_id) WHERE ((type)::text = 'GroupHook'::text);
 
@@ -26149,7 +26149,7 @@ ALTER TABLE ONLY operations_feature_flags_clients
 ALTER TABLE ONLY namespace_admin_notes
     ADD CONSTRAINT fk_rails_666166ea7b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY web_hook_logs
+ALTER TABLE ONLY web_hook_logs_archived
     ADD CONSTRAINT fk_rails_666826e111 FOREIGN KEY (web_hook_id) REFERENCES web_hooks(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY jira_imports
@@ -26587,7 +26587,7 @@ ALTER TABLE ONLY approval_project_rules_users
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_rails_baed5f39b7 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE CASCADE;
 
-ALTER TABLE web_hook_logs_part_0c5294f417
+ALTER TABLE web_hook_logs
     ADD CONSTRAINT fk_rails_bb3355782d FOREIGN KEY (web_hook_id) REFERENCES web_hooks(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY security_findings

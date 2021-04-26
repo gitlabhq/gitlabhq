@@ -169,7 +169,7 @@ module Gitlab
       # @return [Boolean]
       def feature_table_exists?
         Feature::FlipperFeature.table_exists?
-      rescue
+      rescue StandardError
         false
       end
     end

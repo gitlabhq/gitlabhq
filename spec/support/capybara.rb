@@ -157,7 +157,7 @@ RSpec.configure do |config|
     unless session.current_window.size == CAPYBARA_WINDOW_SIZE
       begin
         session.current_window.resize_to(*CAPYBARA_WINDOW_SIZE)
-      rescue # ?
+      rescue StandardError # ?
       end
     end
   end

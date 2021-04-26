@@ -131,7 +131,7 @@ class AuditEventService
 
   def save_or_track(event)
     event.save!
-  rescue => e
+  rescue StandardError => e
     Gitlab::ErrorTracking.track_exception(e, audit_event_type: event.class.to_s)
   end
 end

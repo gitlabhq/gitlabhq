@@ -28,7 +28,7 @@ module Gitlab
           deployment.file.migrate!(store)
 
           log_success(deployment, store)
-        rescue => e
+        rescue StandardError => e
           log_error(e, deployment)
         end
       end

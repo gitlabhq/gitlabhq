@@ -15,7 +15,7 @@ module Deployments
         Gitlab::OptimisticLocking.retry_lock(older_deployment.deployable, name: 'older_deployments_drop') do |deployable|
           deployable.drop(:forward_deployment_failure)
         end
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, subject_id: @deployment.id, deployment_id: older_deployment.id)
       end
     end

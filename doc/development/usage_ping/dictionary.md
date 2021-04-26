@@ -17544,15 +17544,15 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.monitor.projects_incident_sla_enabled`
 
-Missing description
+Count of projects with Incident SLA enabled
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216183753_projects_incident_sla_enabled.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216183753_projects_incident_sla_enabled.yml)
 
-Group: ``
+Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.monitor.projects_with_alert_incidents`
 
@@ -17568,7 +17568,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.monitor.projects_with_error_tracking_enabled`
 
-Missing description
+Count of users creating projects with error tracking enabled.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181004_projects_with_error_tracking_enabled.yml)
 
@@ -17576,7 +17576,7 @@ Group: `group::monitor`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.monitor.projects_with_incidents`
 

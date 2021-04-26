@@ -30,7 +30,7 @@ module Gitlab
         Sidekiq.logger.warn log_job_done(job, started_time, base_payload, job_exception.cause || job_exception)
 
         raise
-      rescue => job_exception
+      rescue StandardError => job_exception
         Sidekiq.logger.warn log_job_done(job, started_time, base_payload, job_exception)
 
         raise

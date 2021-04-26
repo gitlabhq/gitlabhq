@@ -47,7 +47,7 @@ module Gitlab
         Gitlab::JiraImport::HandleLabelsService.new(project, response['values']).execute
 
         response['isLast']
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, project_id: project.id, request: request)
       end
     end

@@ -16,7 +16,7 @@ namespace :gitlab do
         helper.migrate_to_remote_storage do |artifact|
           logger.info("Transferred artifact ID #{artifact.id} of type #{artifact.file_type} with size #{artifact.size} to object storage")
         end
-      rescue => e
+      rescue StandardError => e
         logger.error(e.message)
       end
     end
@@ -31,7 +31,7 @@ namespace :gitlab do
         helper.migrate_to_local_storage do |artifact|
           logger.info("Transferred artifact ID #{artifact.id} of type #{artifact.file_type} with size #{artifact.size} to local storage")
         end
-      rescue => e
+      rescue StandardError => e
         logger.error(e.message)
       end
     end

@@ -46,7 +46,7 @@ module Ci
       self.position = statuses.select(:stage_idx)
         .where.not(stage_idx: nil)
         .group(:stage_idx)
-        .order('COUNT(*) DESC')
+        .order('COUNT(id) DESC')
         .first&.stage_idx.to_i
     end
 

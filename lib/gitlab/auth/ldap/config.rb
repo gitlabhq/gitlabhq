@@ -288,7 +288,7 @@ module Gitlab
 
         def secrets
           @secrets ||= self.class.encrypted_secrets[@provider.delete_prefix('ldap').to_sym]
-        rescue => e
+        rescue StandardError => e
           Gitlab::AppLogger.error "LDAP encrypted secrets are invalid: #{e.inspect}"
 
           nil

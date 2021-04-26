@@ -20,7 +20,7 @@ module Gitlab
         end
 
         true
-      rescue => e
+      rescue StandardError => e
         shared.error(e)
         false
       end
@@ -73,7 +73,7 @@ module Gitlab
           begin
             json = IO.read(lfs_json_path)
             ActiveSupport::JSON.decode(json)
-          rescue
+          rescue StandardError
             raise Gitlab::ImportExport::Error.new('Incorrect JSON format')
           end
       end

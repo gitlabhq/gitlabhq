@@ -15,7 +15,7 @@ module AutoMerge
       AutoMergeProcessWorker.perform_async(merge_request.id)
 
       strategy.to_sym
-    rescue => e
+    rescue StandardError => e
       track_exception(e, merge_request)
       :failed
     end
@@ -35,7 +35,7 @@ module AutoMerge
       end
 
       success
-    rescue => e
+    rescue StandardError => e
       track_exception(e, merge_request)
       error("Can't cancel the automatic merge", 406)
     end
@@ -47,7 +47,7 @@ module AutoMerge
       end
 
       success
-    rescue => e
+    rescue StandardError => e
       track_exception(e, merge_request)
       error("Can't abort the automatic merge", 406)
     end

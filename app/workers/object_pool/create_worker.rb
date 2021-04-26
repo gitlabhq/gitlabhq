@@ -28,7 +28,7 @@ module ObjectPool
 
       pool.create_object_pool
       pool.mark_ready
-    rescue => e
+    rescue StandardError => e
       pool.mark_failed
       raise e
     end

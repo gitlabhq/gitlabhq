@@ -26,7 +26,7 @@ module Backup
         Thread.new do
           Rails.application.executor.wrap do
             dump_storage(storage, semaphore, max_storage_concurrency: max_storage_concurrency)
-          rescue => e
+          rescue StandardError => e
             errors << e
           end
         end
@@ -115,7 +115,7 @@ module Backup
 
               begin
                 dump_container(container)
-              rescue => e
+              rescue StandardError => e
                 errors << e
                 break
               ensure
@@ -260,7 +260,7 @@ module Backup
 
         progress.puts " * #{display_repo_path} ... " + "[DONE]".color(:green)
 
-      rescue => e
+      rescue StandardError => e
         progress.puts "[Failed] backing up #{display_repo_path}".color(:red)
         progress.puts "Error #{e}".color(:red)
       end
@@ -279,7 +279,7 @@ module Backup
 
         progress.puts " * #{display_repo_path} ... " + "[DONE]".color(:green)
 
-      rescue => e
+      rescue StandardError => e
         progress.puts "[Failed] restoring #{display_repo_path}".color(:red)
         progress.puts "Error #{e}".color(:red)
       end

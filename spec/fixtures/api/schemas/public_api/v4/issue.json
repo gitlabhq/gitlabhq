@@ -8,9 +8,9 @@
     "description": { "type": ["string", "null"] },
     "state": { "type": "string" },
     "discussion_locked": { "type": ["boolean", "null"] },
-    "closed_at": { "type": "date" },
-    "created_at": { "type": "date" },
-    "updated_at": { "type": "date" },
+    "closed_at": { "type": ["string", "null"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
     "labels": {
       "type": "array",
       "items": {
@@ -27,10 +27,10 @@
         "title": { "type": "string" },
         "description": { "type": ["string", "null"] },
         "state": { "type": "string" },
-        "created_at": { "type": "date" },
-        "updated_at": { "type": "date" },
-        "due_date": { "type": "date" },
-        "start_date": { "type": "date" }
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "due_date": { "type": "string"  , "format": "date-time" },
+        "start_date": { "type": "string", "format": "date-time" }
       },
       "additionalProperties": false
     },
@@ -83,7 +83,7 @@
     "user_notes_count": { "type": "integer" },
     "upvotes": { "type": "integer" },
     "downvotes": { "type": "integer" },
-    "due_date": { "type": ["date", "null"] },
+    "due_date": { "type": ["string", "null"] },
     "confidential": { "type": "boolean" },
     "web_url": { "type": "uri" },
     "time_stats": {

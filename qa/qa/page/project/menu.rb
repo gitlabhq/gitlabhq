@@ -23,10 +23,6 @@ module QA
           element :wiki_link
         end
 
-        view 'app/views/shared/nav/_sidebar_menu_item.html.haml' do
-          element :sidebar_menu_item_link
-        end
-
         def click_merge_requests
           within_sidebar do
             click_element(:merge_requests_link)

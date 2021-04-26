@@ -16,7 +16,7 @@ module Gitlab
         else
           HealthChecks::Result.new(name, false, "unexpected #{human_name} check result: #{check_result}")
         end
-      rescue => e
+      rescue StandardError => e
         HealthChecks::Result.new(name, false, "unexpected #{human_name} check result: #{e}")
       end
 

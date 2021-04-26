@@ -88,7 +88,7 @@ class Wiki
     repository.create_if_not_exists
 
     raise CouldNotCreateWikiError unless repository_exists?
-  rescue => err
+  rescue StandardError => err
     Gitlab::ErrorTracking.track_exception(err, wiki: {
       container_type: container.class.name,
       container_id: container.id,

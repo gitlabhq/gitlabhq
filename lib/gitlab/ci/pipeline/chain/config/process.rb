@@ -31,7 +31,7 @@ module Gitlab
 
               @pipeline.merged_yaml = result.merged_yaml
 
-            rescue => ex
+            rescue StandardError => ex
               Gitlab::ErrorTracking.track_exception(ex,
                 project_id: project.id,
                 sha: @pipeline.sha

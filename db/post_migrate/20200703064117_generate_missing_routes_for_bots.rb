@@ -36,7 +36,7 @@ class GenerateMissingRoutesForBots < ActiveRecord::Migration[6.0]
 
     belongs_to :owner, class_name: 'GenerateMissingRoutesForBots::User'
 
-    scope :for_user, -> { where('type IS NULL') }
+    scope :for_user, -> { where(type: nil) }
     scope :for_bots, -> { for_user.joins(:owner).merge(GenerateMissingRoutesForBots::User.bots) }
 
     scope :without_routes, -> do

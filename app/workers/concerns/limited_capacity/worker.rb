@@ -69,7 +69,7 @@ module LimitedCapacity
       job_tracker.register(jid)
       report_running_jobs_metrics
       perform_work(*args)
-    rescue => exception
+    rescue StandardError => exception
       raise
     ensure
       job_tracker.remove(jid)

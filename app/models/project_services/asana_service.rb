@@ -98,7 +98,7 @@ class AsanaService < Service
         if tuple[0]
           task.update(completed: true)
         end
-      rescue => e
+      rescue StandardError => e
         log_error(e.message)
         next
       end

@@ -53,7 +53,7 @@ module Gitlab
           log_error("Response code #{response.code}") unless success
 
           success
-        rescue => err
+        rescue StandardError => err
           log_error(err)
 
           false

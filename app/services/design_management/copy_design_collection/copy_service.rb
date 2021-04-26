@@ -47,7 +47,7 @@ module DesignManagement
         end
 
         ServiceResponse.success
-      rescue => error
+      rescue StandardError => error
         log_exception(error)
 
         target_design_collection.error_copy!

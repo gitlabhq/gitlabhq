@@ -66,7 +66,7 @@ module Gitlab
         Gitlab::AppLogger.info "Starting storage migration of #{project.full_path} (ID=#{project.id})..."
 
         project.migrate_to_hashed_storage!
-      rescue => err
+      rescue StandardError => err
         Gitlab::AppLogger.error("#{err.message} migrating storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
       end
 
@@ -77,7 +77,7 @@ module Gitlab
         Gitlab::AppLogger.info "Starting storage rollback of #{project.full_path} (ID=#{project.id})..."
 
         project.rollback_to_legacy_storage!
-      rescue => err
+      rescue StandardError => err
         Gitlab::AppLogger.error("#{err.message} rolling-back storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
       end
 

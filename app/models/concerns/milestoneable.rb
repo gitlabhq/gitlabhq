@@ -28,7 +28,7 @@ module Milestoneable
 
     scope :without_release, -> do
       joins("LEFT OUTER JOIN milestone_releases ON #{table_name}.milestone_id = milestone_releases.milestone_id")
-        .where('milestone_releases.release_id IS NULL')
+        .where(milestone_releases: { release_id: nil })
     end
 
     scope :joins_milestone_releases, -> do

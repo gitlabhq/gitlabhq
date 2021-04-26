@@ -58,7 +58,7 @@ RSpec.describe Gitlab::RackAttack::InstrumentedCacheStore do
 
         begin
           test_proc.call(subject)
-        rescue => e
+        rescue StandardError => e
           exception = e
         end
       ensure

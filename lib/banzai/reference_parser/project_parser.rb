@@ -19,7 +19,7 @@ module Banzai
       def readable_project_ids_for(user)
         @project_ids_by_user ||= {}
         @project_ids_by_user[user] ||=
-          Project.public_or_visible_to_user(user).where("projects.id IN (?)", @projects_for_nodes.values.map(&:id)).pluck(:id)
+          Project.public_or_visible_to_user(user).where(projects: { id: @projects_for_nodes.values.map(&:id) }).pluck(:id)
       end
 
       def can_read_reference?(user, ref_project, node)

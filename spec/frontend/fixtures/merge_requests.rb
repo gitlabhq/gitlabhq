@@ -69,7 +69,7 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
   end
 
   it 'merge_requests/merge_request_of_current_user.html' do
-    merge_request.update(author: user)
+    merge_request.update!(author: user)
 
     render_merge_request(merge_request)
   end

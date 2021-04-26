@@ -26,7 +26,7 @@ class RemoveExpiredMembersWorker # rubocop:disable Scalability/IdempotentWorker
           Users::DestroyService.new(nil).execute(expired_user, skip_authorization: true)
         end
       end
-    rescue => ex
+    rescue StandardError => ex
       logger.error("Expired Member ID=#{member.id} cannot be removed - #{ex}")
     end
   end

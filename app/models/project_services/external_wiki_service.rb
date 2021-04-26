@@ -39,7 +39,7 @@ class ExternalWikiService < Service
   def execute(_data)
     response = Gitlab::HTTP.get(properties['external_wiki_url'], verify: true)
     response.body if response.code == 200
-  rescue
+  rescue StandardError
     nil
   end
 

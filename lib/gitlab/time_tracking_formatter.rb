@@ -15,7 +15,7 @@ module Gitlab
           ChronicDuration.parse(
             string,
             CUSTOM_DAY_AND_MONTH_LENGTH.merge(default_unit: 'hours'))
-        rescue
+        rescue StandardError
           nil
         end
 
@@ -30,7 +30,7 @@ module Gitlab
           format: :short,
           limit_to_hours: limit_to_hours_setting,
           weeks: true))
-    rescue
+    rescue StandardError
       nil
     end
 

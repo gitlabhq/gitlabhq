@@ -102,7 +102,7 @@ module Projects
       File.open(file, 'r') do |f|
         f.read
       end
-    rescue
+    rescue StandardError
       nil
     end
   end

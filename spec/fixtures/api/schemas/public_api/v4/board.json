@@ -30,6 +30,7 @@
       "properties": {
         "id": { "type": "integer" },
         "avatar_url": { "type": ["string", "null"] },
+        "readme_url":  { "type": ["string", "null"] },
         "description": { "type": ["string", "null"] },
         "default_branch": { "type": ["string", "null"] },
         "tag_list": { "type": "array" },
@@ -42,8 +43,9 @@
         "path_with_namespace": { "type": "string" },
         "star_count": { "type": "integer" },
         "forks_count": { "type": "integer" },
-        "created_at": { "type": "date" },
-        "last_activity_at": { "type": "date" }
+        "created_at": { "type": "string", "format": "date-time" },
+        "namespace": {"type": "object" },
+        "last_activity_at": { "type": "string", "format": "date-time" }
       },
       "additionalProperties": false
     },
@@ -70,7 +72,7 @@
               "id": { "type": "integer" },
               "color": {
                 "type": "string",
-                "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
+                "pattern": "#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})"
               },
               "description": { "type": ["string", "null"] },
               "name": { "type": "string" }

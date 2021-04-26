@@ -8,7 +8,7 @@ class ServiceDeskEmailReceiverWorker < EmailReceiverWorker # rubocop:disable Sca
 
     begin
       Gitlab::Email::ServiceDeskReceiver.new(raw).execute
-    rescue => e
+    rescue StandardError => e
       handle_failure(raw, e)
     end
   end

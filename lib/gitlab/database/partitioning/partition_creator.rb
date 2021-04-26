@@ -38,7 +38,7 @@ module Gitlab
 
               create(model, partitions_to_create)
             end
-          rescue => e
+          rescue StandardError => e
             Gitlab::AppLogger.error("Failed to create partition(s) for #{model.table_name}: #{e.class}: #{e.message}")
           end
         end

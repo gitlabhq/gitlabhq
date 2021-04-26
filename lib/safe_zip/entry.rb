@@ -44,7 +44,7 @@ module SafeZip
       end
     rescue SafeZip::Extract::Error
       raise
-    rescue => e
+    rescue StandardError => e
       raise SafeZip::Extract::ExtractError, e.message
     end
 
@@ -90,7 +90,7 @@ module SafeZip
 
     def expand_symlink(source_path)
       ::File.realpath(source_path, path_dir)
-    rescue
+    rescue StandardError
       raise SafeZip::Extract::SymlinkSourceDoesNotExistError, "Symlink source #{source_path} does not exist"
     end
   end

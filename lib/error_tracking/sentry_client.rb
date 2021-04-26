@@ -80,7 +80,7 @@ module ErrorTracking
       raise_error 'Sentry returned invalid SSL data'
     rescue Errno::ECONNREFUSED
       raise_error 'Connection refused'
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e)
       raise_error "Sentry request failed due to #{e.class}"
     end

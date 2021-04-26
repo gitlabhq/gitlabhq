@@ -11,7 +11,7 @@
     "project_id": { "type": ["integer", "null"] },
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
-    "due_date": { "type": ["date", "null"] },
+    "due_date": { "type": ["string", "null"] },
     "relative_position": { "type": ["integer", "null"] },
     "time_estimate": { "type": "integer" },
     "issue_sidebar_endpoint": { "type": "string" },

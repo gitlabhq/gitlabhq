@@ -153,7 +153,7 @@ class Feature
         definition.deep_symbolize_keys!
 
         self.new(path, definition).tap(&:validate!)
-      rescue => e
+      rescue StandardError => e
         raise Feature::InvalidFeatureFlagError, "Invalid definition for `#{path}`: #{e.message}"
       end
 

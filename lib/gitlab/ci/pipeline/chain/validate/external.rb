@@ -54,7 +54,7 @@ module Gitlab
               else
                 raise InvalidResponseCode, "Unsupported response code received from Validation Service: #{response_code}"
               end
-            rescue => ex
+            rescue StandardError => ex
               Gitlab::ErrorTracking.track_exception(ex, project_id: project.id)
 
               true

@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "required": [
     "type", "options"
@@ -6,7 +7,7 @@
   "properties": {
     "type": { "enum": "metric_label_values" },
     "label": { "type": "string" },
-    "options": { "$ref": "metric_label_values_variable_options.json" }
+    "options": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/metric_label_values_variable_options.json" }
   },
   "additionalProperties": false
 }

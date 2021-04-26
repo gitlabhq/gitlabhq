@@ -90,7 +90,7 @@ module Gitlab
           File.open(file_path, 'wb') do |file|
             yield(file)
           end
-        rescue
+        rescue StandardError
           FileUtils.rm(file_path)
         end
       end

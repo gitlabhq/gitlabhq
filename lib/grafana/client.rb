@@ -62,7 +62,7 @@ module Grafana
       raise_error 'Grafana returned invalid SSL data'
     rescue Errno::ECONNREFUSED
       raise_error 'Connection refused'
-    rescue => e
+    rescue StandardError => e
       raise_error "Grafana request failed due to #{e.class}"
     end
 

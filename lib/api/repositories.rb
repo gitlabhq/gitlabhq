@@ -37,7 +37,7 @@ module API
           begin
             @blob = Gitlab::Git::Blob.raw(@repo, params[:sha])
             @blob.load_all_data!(@repo)
-          rescue
+          rescue StandardError
             not_found! 'Blob'
           end
 
@@ -106,7 +106,7 @@ module API
         not_acceptable! if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
 
         send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true
-      rescue
+      rescue StandardError
         not_found!('File')
       end
 
@@ -152,7 +152,7 @@ module API
       get ':id/repository/contributors' do
         contributors = ::Kaminari.paginate_array(user_project.repository.contributors(order_by: params[:order_by], sort: params[:sort]))
         present paginate(contributors), with: Entities::Contributor
-      rescue
+      rescue StandardError
         not_found!
       end
 

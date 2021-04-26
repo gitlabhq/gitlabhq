@@ -6,7 +6,7 @@
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
     "closed": { "type": "boolean" },
-    "due_date": { "type": "date" },
+    "due_date": { "type": ["string", "null"] },
     "project_id": { "type": "integer" },
     "relative_position": { "type": ["integer", "null"] },
     "time_estimate": { "type": "integer" },

@@ -92,7 +92,7 @@ module Gitlab
         end
 
         true
-      rescue => e
+      rescue StandardError => e
         log " * Failed to move repo: #{e.message}".color(:red)
 
         false

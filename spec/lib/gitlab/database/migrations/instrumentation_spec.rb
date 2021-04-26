@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
 
         before do
           instance.observe(migration) { raise 'something went wrong' }
-        rescue
+        rescue StandardError
           # ignore
         end
 

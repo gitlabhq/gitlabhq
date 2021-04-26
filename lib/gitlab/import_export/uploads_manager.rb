@@ -17,7 +17,7 @@ module Gitlab
         copy_project_uploads
 
         true
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       end
@@ -30,7 +30,7 @@ module Gitlab
         end
 
         true
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       end

@@ -49,7 +49,7 @@ RSpec.describe API::MavenPackages do
 
   shared_examples 'rejecting the request for non existing maven path' do |expected_status: :not_found|
     before do
-      if Feature.enabled?(:check_maven_path_first)
+      if Feature.enabled?(:check_maven_path_first, default_enabled: :yaml)
         expect(::Packages::Maven::PackageFinder).not_to receive(:new)
       end
     end

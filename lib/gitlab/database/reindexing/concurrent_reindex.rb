@@ -70,7 +70,7 @@ module Gitlab
         ensure
           begin
             remove_index(index.schema, replacement_index_name)
-          rescue => e
+          rescue StandardError => e
             logger.error(e)
           end
         end

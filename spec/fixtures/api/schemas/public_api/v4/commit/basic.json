@@ -19,7 +19,7 @@
     "id": { "type": ["string", "null"] },
     "short_id": { "type": ["string", "null"] },
     "title": { "type": "string" },
-    "created_at": { "type": "date" },
+    "created_at": { "type": "string", "format": "date-time" },
     "parent_ids": {
       "type": ["array", "null"],
       "items": {
@@ -30,10 +30,10 @@
     "message": { "type": "string" },
     "author_name": { "type": "string" },
     "author_email": { "type": "string" },
-    "authored_date": { "type": "date" },
+    "authored_date": { "type": "string", "format": "date-time" },
     "committer_name": { "type": "string" },
     "committer_email": { "type": "string" },
-    "committed_date": { "type": "date" },
+    "committed_date": { "type": "string", "format": "date-time" },
     "web_url": { "type": "string" }
   }
 }

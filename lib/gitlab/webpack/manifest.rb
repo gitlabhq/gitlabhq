@@ -102,13 +102,13 @@ module Gitlab
         rescue OpenSSL::SSL::SSLError, EOFError => e
           ssl_status = Gitlab.config.webpack.dev_server.https ? ' over SSL' : ''
           raise ManifestLoadError.new("Could not connect to webpack-dev-server at #{uri}#{ssl_status}.\n\nIs SSL enabled? Check that settings in `gitlab.yml` and webpack-dev-server match.", e)
-        rescue => e
+        rescue StandardError => e
           raise ManifestLoadError.new("Could not load manifest from webpack-dev-server at #{uri}.\n\nIs webpack-dev-server running? Try running `gdk status webpack` or `gdk tail webpack`.", e)
         end
 
         def load_static_manifest
           File.read(static_manifest_path)
-        rescue => e
+        rescue StandardError => e
           raise ManifestLoadError.new("Could not load compiled manifest from #{static_manifest_path}.\n\nHave you run `rake gitlab:assets:compile`?", e)
         end
 

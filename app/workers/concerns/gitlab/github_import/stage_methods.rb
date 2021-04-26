@@ -14,7 +14,7 @@ module Gitlab
         try_import(client, project)
 
         info(project_id, message: 'stage finished')
-      rescue => e
+      rescue StandardError => e
         error(project_id, e)
       end
 

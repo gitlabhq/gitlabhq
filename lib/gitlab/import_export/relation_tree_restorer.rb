@@ -48,7 +48,7 @@ module Gitlab
         @importable.reload # rubocop:disable Cop/ActiveRecordAssociationReload
 
         true
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       end
@@ -81,7 +81,7 @@ module Gitlab
           relation_object.save!
           log_relation_creation(@importable, relation_key, relation_object)
         end
-      rescue => e
+      rescue StandardError => e
         import_failure_service.log_import_failure(
           source: 'process_relation_item!',
           relation_key: relation_key,

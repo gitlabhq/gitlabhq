@@ -27,7 +27,7 @@ module Gitlab
           @shared.error(Gitlab::ImportExport::Error.new(error_message))
           false
         end
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       ensure

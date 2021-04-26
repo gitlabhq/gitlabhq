@@ -38,7 +38,7 @@ module Banzai
         begin
           code = Rouge::Formatters::HTMLGitlab.format(lex(lexer, node.text), tag: language)
           css_classes << " language-#{language}" if language
-        rescue
+        rescue StandardError
           # Gracefully handle syntax highlighter bugs/errors to ensure users can
           # still access an issue/comment/etc. First, retry with the plain text
           # filter. If that fails, then just skip this entirely, but that would

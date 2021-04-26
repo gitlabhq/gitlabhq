@@ -67,7 +67,7 @@ module Gitlab
     rescue Timeout::Error => e
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
       highlight_plain(text)
-    rescue
+    rescue StandardError
       highlight_plain(text)
     end
 

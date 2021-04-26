@@ -82,12 +82,12 @@ class CleanupProjectsWithMissingNamespace < ActiveRecord::Migration[6.0]
       # There should only be one Group for User Ghost starting with LOST_AND_FOUND_GROUP
       Group
         .joins('INNER JOIN members ON namespaces.id = members.source_id')
-        .where('namespaces.type = ?', 'Group')
-        .where('members.type = ?', 'GroupMember')
-        .where('members.source_type = ?', 'Namespace')
-        .where('members.user_id = ?', self.id)
-        .where('members.requested_at IS NULL')
-        .where('members.access_level = ?', ACCESS_LEVEL_OWNER)
+        .where(namespaces: { type: 'Group' })
+        .where(members: { type: 'GroupMember' })
+        .where(members: { source_type: 'Namespace' })
+        .where(members: { user_id: self.id })
+        .where(members: { requested_at: nil })
+        .where(members: { access_level: ACCESS_LEVEL_OWNER })
         .find_by(Group.arel_table[:name].matches("#{LOST_AND_FOUND_GROUP}%"))
     end
 

@@ -10,7 +10,7 @@
   ],
   "properties" : {
     "id": { "type": "integer" },
-    "created_at": { "type": "date" },
+    "created_at": { "type": "string", "format": "date-time" },
     "state": { "type": "string" },
     "source_storage_name": { "type": "string" },
     "destination_storage_name": { "type": "string" },

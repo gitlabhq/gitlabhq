@@ -15,7 +15,7 @@ module SimpleCov
       def resultset_hashes
         resultset_files.map do |path|
           JSON.parse(File.read(path))
-        rescue
+        rescue StandardError
           {}
         end
       end

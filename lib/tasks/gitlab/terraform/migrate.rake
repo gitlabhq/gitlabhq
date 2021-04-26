@@ -15,7 +15,7 @@ namespace :gitlab do
 
           logger.info(message)
         end
-      rescue => e
+      rescue StandardError => e
         logger.error("Failed to migrate: #{e.message}")
       end
     end

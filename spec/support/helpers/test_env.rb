@@ -266,7 +266,7 @@ module TestEnv
     Integer(sleep_time / sleep_interval).times do
       Socket.unix(socket)
       return
-    rescue
+    rescue StandardError
       sleep sleep_interval
     end
 

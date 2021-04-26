@@ -318,7 +318,7 @@ module API
 
     def verify_workhorse_api!
       Gitlab::Workhorse.verify_api_request!(request.headers)
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e)
 
       forbidden!
@@ -559,7 +559,7 @@ module API
       return unless Feature.enabled?(feature_name)
 
       Gitlab::UsageDataCounters.count(event_name)
-    rescue => error
+    rescue StandardError => error
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end
 
@@ -569,7 +569,7 @@ module API
       return unless values.present?
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: values)
-    rescue => error
+    rescue StandardError => error
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end
 

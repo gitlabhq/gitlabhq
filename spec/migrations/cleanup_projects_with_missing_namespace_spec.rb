@@ -95,12 +95,12 @@ RSpec.describe CleanupProjectsWithMissingNamespace, :migration, schema: SchemaVe
     expect(
       described_class::Group
         .joins('INNER JOIN members ON namespaces.id = members.source_id')
-        .where('namespaces.type = ?', 'Group')
-        .where('members.type = ?', 'GroupMember')
-        .where('members.source_type = ?', 'Namespace')
-        .where('members.user_id = ?', ghost_user.id)
-        .where('members.requested_at IS NULL')
-        .where('members.access_level = ?', described_class::ACCESS_LEVEL_OWNER)
+        .where(namespaces: { type: 'Group' })
+        .where(members: { type: 'GroupMember' })
+        .where(members: { source_type: 'Namespace' })
+        .where(members: { user_id: ghost_user.id })
+        .where(members: { requested_at: nil })
+        .where(members: { access_level: described_class::ACCESS_LEVEL_OWNER })
         .where(
           described_class::Group
           .arel_table[:name]

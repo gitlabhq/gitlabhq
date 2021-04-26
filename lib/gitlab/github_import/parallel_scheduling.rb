@@ -48,7 +48,7 @@ module Gitlab
         info(project.id, message: "importer finished")
 
         retval
-      rescue => e
+      rescue StandardError => e
         error(project.id, e)
 
         raise e

@@ -32,7 +32,7 @@ class ReleaseHighlight
 
       begin
         item.tap {|i| i['body'] = Kramdown::Document.new(i['body']).to_html }
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, file_path: file_path)
 
         next

@@ -32,7 +32,7 @@ module Gitlab
 
         counter.increment
         info(project.id, message: 'importer finished')
-      rescue => e
+      rescue StandardError => e
         error(project.id, e)
       end
 

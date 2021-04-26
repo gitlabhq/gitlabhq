@@ -93,7 +93,7 @@ module Gitlab
           end
 
           nil
-        rescue
+        rescue StandardError
           # if bad regex or something goes wrong we dont want to interrupt transition
           # so we just silently ignore error for now
         end

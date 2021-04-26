@@ -47,7 +47,7 @@ module Gitlab
             nodes: topology_node_data(client)
           }.compact
         end
-      rescue => e
+      rescue StandardError => e
         @failures << CollectionFailure.new('other', e.class.to_s)
 
         {}
@@ -183,7 +183,7 @@ module Gitlab
 
         @failures << CollectionFailure.new(query_name, 'empty_result')
         fallback
-      rescue => e
+      rescue StandardError => e
         @failures << CollectionFailure.new(query_name, e.class.to_s)
         fallback
       end

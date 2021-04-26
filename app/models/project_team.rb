@@ -130,7 +130,7 @@ class ProjectTeam
     end
 
     true
-  rescue
+  rescue StandardError
     false
   end
 

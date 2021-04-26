@@ -17,8 +17,8 @@ RSpec.describe ::Packages::Npm::PackagePresenter do
 
     context 'for packages without dependencies' do
       it { is_expected.to be_a(Hash) }
-      it { expect(subject[package1.version]).to match_schema('public_api/v4/packages/npm_package_version') }
-      it { expect(subject[package2.version]).to match_schema('public_api/v4/packages/npm_package_version') }
+      it { expect(subject[package1.version].with_indifferent_access).to match_schema('public_api/v4/packages/npm_package_version') }
+      it { expect(subject[package2.version].with_indifferent_access).to match_schema('public_api/v4/packages/npm_package_version') }
 
       described_class::NPM_VALID_DEPENDENCY_TYPES.each do |dependency_type|
         it { expect(subject.dig(package1.version, dependency_type)).to be nil }
@@ -32,8 +32,8 @@ RSpec.describe ::Packages::Npm::PackagePresenter do
       end
 
       it { is_expected.to be_a(Hash) }
-      it { expect(subject[package1.version]).to match_schema('public_api/v4/packages/npm_package_version') }
-      it { expect(subject[package2.version]).to match_schema('public_api/v4/packages/npm_package_version') }
+      it { expect(subject[package1.version].with_indifferent_access).to match_schema('public_api/v4/packages/npm_package_version') }
+      it { expect(subject[package2.version].with_indifferent_access).to match_schema('public_api/v4/packages/npm_package_version') }
       described_class::NPM_VALID_DEPENDENCY_TYPES.each do |dependency_type|
         it { expect(subject.dig(package1.version, dependency_type.to_s)).to be_any }
       end

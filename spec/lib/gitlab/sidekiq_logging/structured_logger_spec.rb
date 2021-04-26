@@ -69,7 +69,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect do
             call_subject(job, 'test_queue') do
               raise ArgumentError, 'Something went wrong'
-            rescue
+            rescue StandardError
               raise Sidekiq::JobRetry::Skip
             end
           end.to raise_error(Sidekiq::JobRetry::Skip)
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect do
             call_subject(job, 'test_queue') do
               raise ArgumentError, 'Something went wrong'
-            rescue
+            rescue StandardError
               raise Sidekiq::JobRetry::Handled
             end
           end.to raise_error(Sidekiq::JobRetry::Handled)

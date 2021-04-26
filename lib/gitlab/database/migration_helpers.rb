@@ -663,7 +663,7 @@ module Gitlab
 
             install_rename_triggers(table, column, temp_column)
           end
-        rescue
+        rescue StandardError
           # create_column_from can not run inside a transaction, which means
           #  that there is a risk that if any of the operations that follow it
           #  fail, we'll be left with an inconsistent schema

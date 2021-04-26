@@ -132,7 +132,7 @@ module Gitlab
           return unless feature_enabled?(event)
 
           Gitlab::Redis::HLL.add(key: redis_key(event, time, context), value: values, expiry: expiry(event))
-        rescue => e
+        rescue StandardError => e
           # Ignore any exceptions unless is dev or test env
           # The application flow should not be blocked by erros in tracking
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)

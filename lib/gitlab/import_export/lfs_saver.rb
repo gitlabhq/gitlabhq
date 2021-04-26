@@ -27,7 +27,7 @@ module Gitlab
         write_lfs_json
 
         true
-      rescue => e
+      rescue StandardError => e
         shared.error(e)
 
         false

@@ -23,9 +23,6 @@ To use SSH to communicate with GitLab, you need:
 
 To view the version of SSH installed on your system, run `ssh -V`.
 
-GitLab does [not support installation on Microsoft Windows](../install/requirements.md#microsoft-windows),
-but you can set up SSH keys on the Windows [client](#use-ssh-on-microsoft-windows).
-
 ## Supported SSH key types
 
 To communicate with GitLab, you can use the following SSH key types:
@@ -58,8 +55,10 @@ Review the `man` page for your installed `ssh-keygen` command for details.
 
 Before you create a key pair, see if a key pair already exists.
 
-1. On Linux or macOS, go to your home directory.
-1. Go to the `.ssh/` subdirectory.
+1. On Windows, Linux, or macOS, go to your home directory.
+1. Go to the `.ssh/` subdirectory. If the `.ssh/` subdirectory doesn't exist,
+   you are either not in the home directory, or you haven't used `ssh` before.
+   In the latter case, you need to [generate an SSH key pair](#generate-an-ssh-key-pair).
 1. See if a file with one of the following formats exists:
 
    | Algorithm | Public key | Private key |
@@ -324,12 +323,18 @@ If you are using [EGit](https://www.eclipse.org/egit/), you can [add your SSH ke
 
 ## Use SSH on Microsoft Windows
 
-If you're running Windows 10, you can use the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
-with [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10#update-to-wsl-2).
-You can use WSL to install Linux distributions, which include the Git and SSH clients.
+If you're running Windows 10, you can either use the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+with [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10#update-to-wsl-2) which
+has both `git` and `ssh` preinstalled, or install [Git for Windows](https://gitforwindows.org) to 
+use SSH through Powershell.
 
-For other versions of Windows, you can install the Git and SSH clients by using
-[Git for Windows](https://gitforwindows.org).
+The SSH key generated in WSL is not directly available for Git for Windows, and vice versa,
+as both have a different home directory:
+
+- WSL: `/home/<user>`
+- Git for Windows: `C:\Users\<user>`
+
+You can either copy over the `.ssh/` directory to use the same key, or generate a key in each environment.
 
 Alternative tools include:
 

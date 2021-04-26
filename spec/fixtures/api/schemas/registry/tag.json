@@ -29,9 +29,7 @@
     "total_size": {
       "type": "integer"
     },
-    "created_at": {
-      "type": "date"
-    },
+    "created_at":  { "type": "string", "format": "date-time" },
     "destroy_path": {
       "type": "string"
     }

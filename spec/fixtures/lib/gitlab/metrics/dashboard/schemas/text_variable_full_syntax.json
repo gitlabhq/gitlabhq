@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "required": [
     "type", "options"
@@ -6,7 +7,7 @@
   "properties": {
     "type": { "enum": ["text"] },
     "label": { "type": "string" },
-    "options": { "$ref": "text_variable_options.json" }
+    "options": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/text_variable_options.json" }
   },
   "additionalProperties": false
 }

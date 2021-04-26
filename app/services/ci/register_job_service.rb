@@ -169,7 +169,7 @@ module Ci
       @metrics.increment_queue_operation(:build_conflict_transition)
 
       Result.new(nil, nil, false)
-    rescue => ex
+    rescue StandardError => ex
       @metrics.increment_queue_operation(:build_conflict_exception)
 
       # If an error (e.g. GRPC::DeadlineExceeded) occurred constructing
@@ -233,7 +233,7 @@ module Ci
       Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'register_job_scheduler_failure') do |subject|
         subject.drop!(:scheduler_failure)
       end
-    rescue => ex
+    rescue StandardError => ex
       build.doom!
 
       # This requires extra exception, otherwise we would loose information

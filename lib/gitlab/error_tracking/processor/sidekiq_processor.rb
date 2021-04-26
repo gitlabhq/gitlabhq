@@ -29,7 +29,7 @@ module Gitlab
             @permitted_arguments_for_worker[klass] ||=
               begin
                 klass.constantize&.loggable_arguments&.to_set
-              rescue
+              rescue StandardError
                 Set.new
               end
           end

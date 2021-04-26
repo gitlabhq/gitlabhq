@@ -40,7 +40,7 @@ module Gitlab
         mkdir_p(File.dirname(bundle_full_path))
 
         repository.bundle_to_disk(bundle_full_path)
-      rescue => e
+      rescue StandardError => e
         shared.error(e)
         false
       end

@@ -17,8 +17,8 @@
     "state": { "type": "string" },
     "iid": { "type": "integer" },
     "confidential": { "type": "boolean" },
-    "created_at": { "type": "date" },
-    "due_date": { "type": ["date", "null"] }
+    "created_at": { "type": "string", "format": "date-time" },
+    "due_date": { "type": ["string", "null"], "format": "date-time" }
   },
   "additionalProperties": false
 }

@@ -24,7 +24,7 @@
     "created_at": { "type": "date-time" },
     "updated_at": { "type": "date-time" },
     "branch_name": { "type": ["string", "null"] },
-    "due_date": { "type": "date" },
+    "due_date": { "type": ["string", "null"], "format": "date-time" },
     "confidential": { "type": "boolean" },
     "discussion_locked": { "type": ["boolean", "null"] },
     "updated_by_id": { "type": ["integer", "null"] },

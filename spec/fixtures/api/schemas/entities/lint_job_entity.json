@@ -39,18 +39,18 @@
       "type": ["boolean"]
     },
     "environment": {
-      "type": ["string", null]
+      "type": ["string", "null"]
     },
     "tag_list": {
       "type": ["array"],
       "items": { "type": "string" }
     },
     "only": {
-      "type": ["array", "object", null],
+      "type": ["array", "object", "null"],
       "items": { "type": ["string", "array"]}
     },
     "except": {
-      "type": ["array", "object", null],
+      "type": ["array", "object", "null"],
       "items": { "type": ["string", "array"]}
     }
   },

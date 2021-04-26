@@ -21,8 +21,8 @@
       "visibility": { "type": "string" },
       "web_url": { "type": "string" },
       "raw_url": { "type": "string" },
-      "created_at": { "type": "date" },
-      "updated_at": { "type": "date" },
+      "created_at": { "type": "string", "format": "date-time" },
+      "updated_at": { "type": "string", "format": "date-time" },
       "author": {
         "type": "object",
         "properties": {

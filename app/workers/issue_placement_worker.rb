@@ -4,6 +4,7 @@ class IssuePlacementWorker
   include ApplicationWorker
 
   idempotent!
+  deduplicate :until_executed, including_scheduled: true
   feature_category :issue_tracking
   urgency :high
   worker_resource_boundary :cpu

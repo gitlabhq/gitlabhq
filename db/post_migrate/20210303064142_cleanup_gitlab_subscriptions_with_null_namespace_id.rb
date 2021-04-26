@@ -15,7 +15,7 @@ class CleanupGitlabSubscriptionsWithNullNamespaceId < ActiveRecord::Migration[6.
     # This will be fast on GitLab.com, because:
     #   - gitlab_subscriptions.count=5021850
     #   - namespace_id is indexed, so the query is pretty fast. Try on database-lab, this uses 5.931 ms
-    GitlabSubscription.where('namespace_id IS NULL').delete_all
+    GitlabSubscription.where(namespace_id: nil).delete_all
   end
 
   def down

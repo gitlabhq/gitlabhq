@@ -35,7 +35,7 @@ module AccessMatchersGeneric
 
       run_matcher(action, role, @membership, @owned_objects) do |action|
         action.call
-      rescue => e
+      rescue StandardError => e
         @error = e
         raise unless e.is_a?(ERROR_CLASS)
       end

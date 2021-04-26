@@ -22,7 +22,7 @@ module Packages
         rescue ActiveRecord::RecordNotFound
           # ignore. likely due to object already being deleted.
         end
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e)
       end
     end

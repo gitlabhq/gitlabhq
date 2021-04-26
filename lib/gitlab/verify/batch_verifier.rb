@@ -39,7 +39,7 @@ module Gitlab
 
       def verify(object)
         local?(object) ? verify_local(object) : verify_remote(object)
-      rescue => err
+      rescue StandardError => err
         failure(object, err.inspect)
       end
 

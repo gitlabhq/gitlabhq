@@ -13,11 +13,11 @@
             { "$ref": "../user/basic.json" }
           ]
         },
-        "created_at": { "type": ["date", "null"] },
-        "updated_at": { "type": ["date", "null"] },
-        "started_at": { "type": ["date", "null"] },
-        "finished_at": { "type": ["date", "null"] },
-        "committed_at": { "type": ["date", "null"] },
+        "created_at": { "type": ["string", "null"], "format": "date-time" },
+        "updated_at": { "type": ["string", "null"], "format": "date-time" },
+        "started_at": { "type": ["string", "null"], "format": "date-time" },
+        "finished_at": { "type": ["string", "null"], "format": "date-time" },
+        "committed_at": { "type": ["string", "null"], "format": "date-time"  },
         "duration": { "type": ["number", "null"] },
         "coverage": { "type": ["string", "null"] },
         "detailed_status": {

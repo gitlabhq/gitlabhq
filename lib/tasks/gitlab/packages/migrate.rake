@@ -17,7 +17,7 @@ namespace :gitlab do
         package_file.file.migrate!(::Packages::PackageFileUploader::Store::REMOTE)
 
         logger.info("Transferred package file #{package_file.id} of size #{package_file.size.to_i.bytes} to object storage")
-      rescue => e
+      rescue StandardError => e
         logger.error("Failed to transfer package file #{package_file.id} with error: #{e.message}")
       end
     end

@@ -12,7 +12,7 @@ module Ci
       prerequisites.each(&:complete!)
 
       build.enqueue_preparing!
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, build_id: build.id)
 
       build.drop(:unmet_prerequisites)

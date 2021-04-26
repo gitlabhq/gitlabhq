@@ -35,7 +35,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
     return if archive_not_modified?
 
     send_git_archive @repository, **repo_params
-  rescue => ex
+  rescue StandardError => ex
     logger.error("#{self.class.name}: #{ex}")
     git_not_found!
   end

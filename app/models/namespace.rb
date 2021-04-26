@@ -89,7 +89,7 @@ class Namespace < ApplicationRecord
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
-  scope :for_user, -> { where('type IS NULL') }
+  scope :for_user, -> { where(type: nil) }
   scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
   scope :include_route, -> { includes(:route) }
   scope :by_parent, -> (parent) { where(parent_id: parent) }

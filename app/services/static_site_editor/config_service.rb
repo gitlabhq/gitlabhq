@@ -25,7 +25,7 @@ module StaticSiteEditor
       ServiceResponse.success(payload: data)
     rescue ValidationError => e
       ServiceResponse.error(message: e.message)
-    rescue => e
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_and_raise_exception(e)
     end
 

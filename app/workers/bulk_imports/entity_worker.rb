@@ -26,7 +26,7 @@ module BulkImports
           entity_id
         )
       end
-    rescue => e
+    rescue StandardError => e
       logger.error(
         worker: self.class.name,
         entity_id: entity_id,

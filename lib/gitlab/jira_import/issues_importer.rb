@@ -70,7 +70,7 @@ module Gitlab
             # These ids are cleaned-up when import finishes.
             # see Gitlab::JiraImport::Stage::FinishImportWorker
             mark_as_imported(jira_issue.id)
-          rescue => ex
+          rescue StandardError => ex
             # handle exceptionn here and skip the failed to import issue, instead of
             # failing to import the entire batch of issues
 

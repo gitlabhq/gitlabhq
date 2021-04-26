@@ -67,7 +67,7 @@ namespace :gitlab do
 
         begin
           helper.migrate_to_remote_storage
-        rescue => e
+        rescue StandardError => e
           logger.error(e.message)
         end
       end
@@ -80,7 +80,7 @@ namespace :gitlab do
 
         begin
           helper.migrate_to_local_storage
-        rescue => e
+        rescue StandardError => e
           logger.error(e.message)
         end
       end

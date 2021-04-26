@@ -11825,6 +11825,9 @@ msgstr ""
 msgid "Edit title and description"
 msgstr ""
 
+msgid "Edit user: %{user_name}"
+msgstr ""
+
 msgid "Edit wiki page"
 msgstr ""
 
@@ -12168,6 +12171,9 @@ msgid "Enable unauthenticated request rate limit"
 msgstr ""
 
 msgid "Enable usage ping"
+msgstr ""
+
+msgid "Enable version check"
 msgstr ""
 
 msgid "EnableReviewApp|%{stepStart}Step 1%{stepEnd}. Ensure you have Kubernetes set up and have a base domain for your %{linkStart}cluster%{linkEnd}."
@@ -13795,6 +13801,14 @@ msgstr ""
 msgid "FeatureFlag|User List"
 msgstr ""
 
+msgid "FeatureHighlight|%{daysRemaining} day remaining to enjoy %{featureName}"
+msgid_plural "FeatureHighlight|%{daysRemaining} days remaining to enjoy %{featureName}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "FeatureHighlight|Enjoying your GitLab %{planNameForTrial} trial? To continue using %{featureName} after your trial ends, upgrade to GitLab %{planNameForUpgrade}."
+msgstr ""
+
 msgid "Feb"
 msgstr ""
 
@@ -14942,6 +14956,9 @@ msgid "GitLab uses %{linkStart}Sidekiq%{linkEnd} to process background jobs"
 msgstr ""
 
 msgid "GitLab version"
+msgstr ""
+
+msgid "GitLab will inform you if a new version is available."
 msgstr ""
 
 msgid "GitLab will periodically run %{link_to_git_fsck} in all project and wiki repositories to look for silent disk corruption issues."
@@ -16170,6 +16187,9 @@ msgid "History"
 msgstr ""
 
 msgid "History of authentications"
+msgstr ""
+
+msgid "Home page URL"
 msgstr ""
 
 msgid "Homepage"
@@ -23282,6 +23302,12 @@ msgstr ""
 msgid "Password (optional)"
 msgstr ""
 
+msgid "Password authentication enabled for Git over HTTP(S)"
+msgstr ""
+
+msgid "Password authentication enabled for web interface"
+msgstr ""
+
 msgid "Password authentication is unavailable."
 msgstr ""
 
@@ -27294,6 +27320,9 @@ msgid "Require all users in this group to setup two-factor authentication"
 msgstr ""
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
+msgstr ""
+
+msgid "Require all users to set up two-factor authentication"
 msgstr ""
 
 msgid "Require new approvals when new commits are added to an MR."
@@ -33831,6 +33860,9 @@ msgstr ""
 msgid "Two-factor authentication is not enabled for this user"
 msgstr ""
 
+msgid "Two-factor grace period (hours)"
+msgstr ""
+
 msgid "Type"
 msgstr ""
 
@@ -35632,6 +35664,12 @@ msgstr ""
 msgid "We will notify %{inviter} that you declined their invitation to join GitLab. You will stop receiving reminders."
 msgstr ""
 
+msgid "We will redirect non-logged in users to this page"
+msgstr ""
+
+msgid "We will redirect users to this page after they sign out"
+msgstr ""
+
 msgid "We would like to inform you that your subscription GitLab Enterprise Edition %{plan_name} is nearing its user limit. You have %{active_user_count} active users, which is almost at the user limit of %{maximum_user_count}."
 msgstr ""
 
@@ -35888,6 +35926,9 @@ msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
 msgid "When an event in GitLab triggers a webhook, you can use the request details to figure out if something went wrong."
+msgstr ""
+
+msgid "When disabled, an external authentication provider must be used."
 msgstr ""
 
 msgid "When enabled, if an npm package isn't found in the GitLab Registry, we will attempt to pull from the global npm registry."

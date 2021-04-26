@@ -8,7 +8,7 @@ module Gitlab
           project: @project,
           shared: @shared
         ).restore
-      rescue => e
+      rescue StandardError => e
         @shared.error(e)
         false
       end

@@ -93,7 +93,7 @@ module Gitlab
             current_timeout_s = timeout_s
           end
         end
-      rescue => e
+      rescue StandardError => e
         log_event("stackprof failed: #{e}")
       end
       t.abort_on_exception = true

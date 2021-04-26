@@ -246,7 +246,7 @@ module Gitlab
       connection
 
       true
-    rescue
+    rescue StandardError
       false
     end
 

@@ -94,7 +94,7 @@ class Milestone < ApplicationRecord
   end
 
   def participants
-    User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).distinct
+    User.joins(assigned_issues: :milestone).where(milestones: { id: id }).distinct
   end
 
   def self.sort_by_attribute(method)

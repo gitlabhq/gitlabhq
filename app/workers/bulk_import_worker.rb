@@ -29,7 +29,7 @@ class BulkImportWorker # rubocop:disable Scalability/IdempotentWorker
     end
 
     re_enqueue
-  rescue => e
+  rescue StandardError => e
     Gitlab::ErrorTracking.track_exception(e, bulk_import_id: @bulk_import&.id)
 
     @bulk_import&.fail_op

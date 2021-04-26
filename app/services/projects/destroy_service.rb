@@ -41,7 +41,7 @@ module Projects
       current_user.invalidate_personal_projects_count
 
       true
-    rescue => error
+    rescue StandardError => error
       attempt_rollback(project, error.message)
       false
     rescue Exception => error # rubocop:disable Lint/RescueException

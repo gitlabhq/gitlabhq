@@ -21,7 +21,7 @@ module QA
 
       def self.blank_page?
         ['', 'about:blank', 'data:,'].include?(Capybara.current_session.driver.browser.current_url)
-      rescue
+      rescue StandardError
         true
       end
 

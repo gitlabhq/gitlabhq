@@ -628,11 +628,6 @@ Rails/SquishedSQLHeredocs:
 
 # Offense count: 44
 # Cop supports --auto-correct.
-Rails/WhereEquals:
-  Enabled: false
-
-# Offense count: 44
-# Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: exists, where
 Rails/WhereExists:
@@ -847,13 +842,6 @@ Style/RaiseArgs:
   Enabled: false
   EnforcedStyle: exploded
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/RedundantBegin:
-  Exclude:
-    - 'app/services/clusters/applications/check_installation_progress_service.rb'
-    - 'lib/gitlab/database/postgres_hll/batch_distinct_counter.rb'
-
 # Offense count: 26
 # Cop supports --auto-correct.
 # Configuration parameters: SafeForConstants.
@@ -898,13 +886,6 @@ Style/RedundantSelf:
 # Offense count: 53
 # Cop supports --auto-correct.
 Style/RescueModifier:
-  Enabled: false
-
-# Offense count: 359
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: implicit, explicit
-Style/RescueStandardError:
   Enabled: false
 
 # Offense count: 123

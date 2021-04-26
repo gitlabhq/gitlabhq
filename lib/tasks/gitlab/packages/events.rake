@@ -9,7 +9,7 @@ namespace :gitlab do
       task generate: :environment do
         Rake::Task["gitlab:packages:events:generate_counts"].invoke
         Rake::Task["gitlab:packages:events:generate_unique"].invoke
-      rescue => e
+      rescue StandardError => e
         logger.error("Error building events list: #{e}")
       end
 
@@ -21,7 +21,7 @@ namespace :gitlab do
         File.open(path, "w") { |file| file << counter_events_list.to_yaml }
 
         logger.info("Events file `#{path}` generated successfully")
-      rescue => e
+      rescue StandardError => e
         logger.error("Error building events list: #{e}")
       end
 
@@ -33,7 +33,7 @@ namespace :gitlab do
         File.open(path, "w") { |file| file << generate_unique_events_list.to_yaml }
 
         logger.info("Events file `#{path}` generated successfully")
-      rescue => e
+      rescue StandardError => e
         logger.error("Error building events list: #{e}")
       end
 

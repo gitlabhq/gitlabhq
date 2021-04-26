@@ -116,7 +116,7 @@ module Gitlab
         { status: :authentication_failure, connection_error: :authentication_error }
       rescue Kubeclient::HttpError => e
         { status: kubeclient_error_status(e.message), connection_error: :http_error }
-      rescue => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, cluster_id: cluster_id)
 
         { status: :unknown_failure, connection_error: :unknown_error }

@@ -74,7 +74,7 @@ module Atlassian
             'deploymentSequenceNumber' => { 'type' => 'integer' },
             'updateSequenceNumber' => { 'type' => 'integer' },
             'associations' => {
-              'type' => 'array',
+              'type' => %w(array),
               'items' => association_type,
               'minItems' => 1
             },

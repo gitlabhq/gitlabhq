@@ -40,7 +40,7 @@ module Gitlab
       # the commits are missing.
       def create_source_branch
         @project.repository.create_branch(@merge_request.source_branch, @diff_head_sha)
-      rescue => err
+      rescue StandardError => err
         Gitlab::Import::Logger.warn(
           message: 'Import warning: Failed to create source branch',
           source_branch: @merge_request.source_branch,

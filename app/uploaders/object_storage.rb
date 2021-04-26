@@ -483,7 +483,7 @@ module ObjectStorage
       end
 
       file
-    rescue => e
+    rescue StandardError => e
       # in case of failure delete new file
       new_file.delete unless new_file.nil?
       # revert back to the old file

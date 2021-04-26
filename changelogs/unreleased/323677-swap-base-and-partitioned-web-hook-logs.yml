@@ -1,0 +1,5 @@
+---
+title: Add migration to swap partitioned web_hook_logs
+merge_request: 60184
+author:
+type: other

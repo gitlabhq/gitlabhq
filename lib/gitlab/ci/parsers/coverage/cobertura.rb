@@ -121,7 +121,7 @@ module Gitlab
               # Using `Integer()` here to raise exception on invalid values
               [Integer(line["number"]), Integer(line["hits"])]
             end
-          rescue
+          rescue StandardError
             raise InvalidLineInformationError, "Line information had invalid values"
           end
 
