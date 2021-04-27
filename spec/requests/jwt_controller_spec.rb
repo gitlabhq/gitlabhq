@@ -262,25 +262,21 @@ RSpec.describe JwtController do
       let(:credential_user) { group_deploy_token.username }
       let(:credential_password) { group_deploy_token.token }
 
-      it_behaves_like 'with valid credentials'
+      it_behaves_like 'returning response status', :forbidden
     end
 
     context 'with project deploy token' do
       let(:credential_user) { project_deploy_token.username }
       let(:credential_password) { project_deploy_token.token }
 
-      it_behaves_like 'with valid credentials'
+      it_behaves_like 'returning response status', :forbidden
     end
 
     context 'with invalid credentials' do
       let(:credential_user) { 'foo' }
       let(:credential_password) { 'bar' }
 
-      it 'returns unauthorized' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
+      it_behaves_like 'returning response status', :unauthorized
     end
   end
 
