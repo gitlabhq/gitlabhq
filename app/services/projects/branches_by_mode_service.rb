@@ -37,7 +37,7 @@ class Projects::BranchesByModeService
   def use_gitaly_pagination?
     return false if params[:page].present? || params[:search].present?
 
-    Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: true)
+    Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: :yaml)
   end
 
   def fetch_branches_via_offset_pagination
