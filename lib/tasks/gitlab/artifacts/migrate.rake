@@ -10,7 +10,7 @@ namespace :gitlab do
       logger = Logger.new(STDOUT)
       logger.info('Starting transfer of artifacts to remote storage')
 
-      helper = Gitlab::Artifacts::MigrationHelper.new
+      helper = Gitlab::Ci::Artifacts::MigrationHelper.new
 
       begin
         helper.migrate_to_remote_storage do |artifact|
@@ -25,7 +25,7 @@ namespace :gitlab do
       logger = Logger.new(STDOUT)
       logger.info('Starting transfer of artifacts to local storage')
 
-      helper = Gitlab::Artifacts::MigrationHelper.new
+      helper = Gitlab::Ci::Artifacts::MigrationHelper.new
 
       begin
         helper.migrate_to_local_storage do |artifact|

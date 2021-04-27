@@ -64,6 +64,7 @@ the following tables:
 | GitLab analyzer                                                        | Outputs severity levels? | Native severity level type | Native severity level example                                |
 |------------------------------------------------------------------------|--------------------------|----------------------------|--------------------------------------------------------------|
 | [`klar`](https://gitlab.com/gitlab-org/security-products/analyzers/klar) | **{check-circle}** Yes   | String                     | `Negligible`, `Low`, `Medium`, `High`, `Critical`, `Defcon1` |
+| [`container-scanning`](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning)| **{check-circle}** Yes | String | `Unknown`, `Low`, `Medium`, `High`, `Critical` |
 
 ## Fuzz Testing
 

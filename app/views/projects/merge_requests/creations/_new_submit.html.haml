@@ -26,16 +26,16 @@
             %li.commits-tab.new-tab
               = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
                 Commits
-                %span.badge.badge-pill= @total_commit_count
+                %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @total_commit_count
             - if @pipelines.any?
               %li.builds-tab
                 = link_to url_for(safe_params.merge(action: 'pipelines')), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tabvue'} do
                   Pipelines
-                  %span.badge.badge-pill= @pipelines.size
+                  %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @pipelines.size
             %li.diffs-tab
               = link_to url_for(safe_params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tabvue', qa_selector: 'diffs_tab'} do
                 Changes
-                %span.badge.badge-pill= @merge_request.diff_size
+                %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @merge_request.diff_size
 
     #diff-notes-app.tab-content
       #new.commits.tab-pane.active

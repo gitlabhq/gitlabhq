@@ -1,0 +1,5 @@
+---
+title: 'Fix invite banner display member count for subgroups page'
+merge_request: 59948
+author:
+type: fixed
