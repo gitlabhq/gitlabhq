@@ -1,5 +1,0 @@
----
-title: Do not allow deploy tokens in the dependency proxy authentication service
-merge_request:
-author:
-type: security
