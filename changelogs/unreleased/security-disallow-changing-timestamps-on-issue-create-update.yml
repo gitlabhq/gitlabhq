@@ -1,0 +1,5 @@
+---
+title: Restrict setting system_note_timestamp to owners
+merge_request:
+author:
+type: security
