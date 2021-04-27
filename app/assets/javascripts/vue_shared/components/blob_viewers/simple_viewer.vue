@@ -6,6 +6,7 @@ import { HIGHLIGHT_CLASS_NAME } from './constants';
 import ViewerMixin from './mixins';
 
 export default {
+  name: 'SimpleViewer',
   components: {
     GlIcon,
     EditorLite: () =>

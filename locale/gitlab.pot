@@ -4027,9 +4027,6 @@ msgstr ""
 msgid "Applying suggestions..."
 msgstr ""
 
-msgid "Approval Gate"
-msgstr ""
-
 msgid "Approval Status"
 msgstr ""
 
@@ -4047,15 +4044,6 @@ msgid_plural "ApprovalRuleRemove|%d members"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ApprovalRuleRemove|Remove approval gate"
-msgstr ""
-
-msgid "ApprovalRuleRemove|Remove approval gate?"
-msgstr ""
-
-msgid "ApprovalRuleRemove|You are about to remove the %{name} approval gate. Approval from this service is not revoked."
-msgstr ""
-
 msgid "ApprovalRuleRemove|You are about to remove the %{name} approver group which has %{strongStart}%{count} member%{strongEnd}. Approvals from this member are not revoked."
 msgid_plural "ApprovalRuleRemove|You are about to remove the %{name} approver group which has %{strongStart}%{count} members%{strongEnd}. Approvals from these members are not revoked."
 msgstr[0] ""
@@ -4071,22 +4059,13 @@ msgid_plural "ApprovalRuleSummary|%{count} approvals required from %{membersCoun
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ApprovalRule|Add approvel gate"
-msgstr ""
-
 msgid "ApprovalRule|Add approvers"
 msgstr ""
 
 msgid "ApprovalRule|Approval rules"
 msgstr ""
 
-msgid "ApprovalRule|Approval service API"
-msgstr ""
-
 msgid "ApprovalRule|Approvals required"
-msgstr ""
-
-msgid "ApprovalRule|Approvel gate"
 msgstr ""
 
 msgid "ApprovalRule|Approver Type"
@@ -4098,13 +4077,13 @@ msgstr ""
 msgid "ApprovalRule|Examples: QA, Security."
 msgstr ""
 
-msgid "ApprovalRule|Invoke an external API as part of the approvals"
-msgstr ""
-
 msgid "ApprovalRule|Name"
 msgstr ""
 
 msgid "ApprovalRule|Rule name"
+msgstr ""
+
+msgid "ApprovalRule|Status check"
 msgstr ""
 
 msgid "ApprovalRule|Target branch"
@@ -8582,7 +8561,7 @@ msgstr ""
 msgid "ContainerRegistry|Delete image repository?"
 msgstr ""
 
-msgid "ContainerRegistry|Delete selected"
+msgid "ContainerRegistry|Delete selected tags"
 msgstr ""
 
 msgid "ContainerRegistry|Deleting the image repository will delete all images and tags inside. This action cannot be undone."
@@ -10550,6 +10529,9 @@ msgid "Delete comment"
 msgstr ""
 
 msgid "Delete domain"
+msgstr ""
+
+msgid "Delete image repository"
 msgstr ""
 
 msgid "Delete label"
@@ -30450,6 +30432,24 @@ msgid "Status:"
 msgstr ""
 
 msgid "Status: %{title}"
+msgstr ""
+
+msgid "StatusCheck|API to check"
+msgstr ""
+
+msgid "StatusCheck|Invoke an external API as part of the approvals"
+msgstr ""
+
+msgid "StatusCheck|Remove status check"
+msgstr ""
+
+msgid "StatusCheck|Remove status check?"
+msgstr ""
+
+msgid "StatusCheck|Status to check"
+msgstr ""
+
+msgid "StatusCheck|You are about to remove the %{name} status check."
 msgstr ""
 
 msgid "StatusPage|AWS %{docsLink}"

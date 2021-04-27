@@ -20,7 +20,7 @@ CATEGORIES = YAML
   .freeze
 
 def check_changelog_trailer(commit)
-  trailer = commit.message.match(/^Changelog:\s*(?<category>\w+)/)
+  trailer = commit.message.match(/^Changelog:\s*(?<category>.+)$/)
 
   return :missing if trailer.nil? || trailer[:category].nil?
 

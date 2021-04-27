@@ -65,6 +65,15 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
       end
 
       context 'there are aggregated metrics defined' do
+        let(:aggregated_metrics) do
+          [
+            aggregated_metric(name: "gmau_1", source: datasource, time_frame: time_frame, operator: operator)
+          ]
+        end
+
+        let(:results) { { 'gmau_1' => 5 } }
+        let(:params) { { start_date: start_date, end_date: end_date, recorded_at: recorded_at } }
+
         before do
           allow_next_instance_of(described_class) do |instance|
             allow(instance).to receive(:aggregated_metrics).and_return(aggregated_metrics)
@@ -72,19 +81,19 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
         end
 
         context 'with OR operator' do
-          let(:aggregated_metrics) do
-            [
-              aggregated_metric(name: "gmau_1", source: datasource, time_frame: time_frame, operator: "OR")
-            ]
-          end
+          let(:operator) { Gitlab::Usage::Metrics::Aggregates::UNION_OF_AGGREGATED_METRICS }
 
           it 'returns the number of unique events occurred for any metric in aggregate', :aggregate_failures do
-            results = {
-              'gmau_1' => 5
-            }
-            params = { start_date: start_date, end_date: end_date, recorded_at: recorded_at }
-
             expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event1 event2 event3])).and_return(5)
+            expect(aggregated_metrics_data).to eq(results)
+          end
+        end
+
+        context 'with AND operator' do
+          let(:operator) { Gitlab::Usage::Metrics::Aggregates::INTERSECTION_OF_AGGREGATED_METRICS }
+
+          it 'returns the number of unique events that occurred for all of metrics in the aggregate', :aggregate_failures do
+            expect(namespace::SOURCES[datasource]).to receive(:calculate_metrics_intersections).with(params.merge(metric_names: %w[event1 event2 event3])).and_return(5)
             expect(aggregated_metrics_data).to eq(results)
           end
         end

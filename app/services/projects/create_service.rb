@@ -40,7 +40,7 @@ module Projects
       if namespace_id
         # Find matching namespace and check if it allowed
         # for current user if namespace_id passed.
-        unless allowed_namespace?(current_user, namespace_id)
+        unless current_user.can?(:create_projects, project_namespace)
           @project.namespace_id = nil
           deny_namespace
           return @project
@@ -82,13 +82,6 @@ module Projects
     def deny_namespace
       @project.errors.add(:namespace, "is not valid")
     end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def allowed_namespace?(user, namespace_id)
-      namespace = Namespace.find_by(id: namespace_id)
-      current_user.can?(:create_projects, namespace)
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.full_name}\"")

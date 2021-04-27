@@ -31,7 +31,7 @@ export const CONFIGURATION_DETAILS_ROW_TEST = s__(
 );
 
 export const REMOVE_TAG_BUTTON_TITLE = s__('ContainerRegistry|Remove tag');
-export const REMOVE_TAGS_BUTTON_TITLE = s__('ContainerRegistry|Delete selected');
+export const REMOVE_TAGS_BUTTON_TITLE = s__('ContainerRegistry|Delete selected tags');
 
 export const REMOVE_TAG_CONFIRMATION_TEXT = s__(
   `ContainerRegistry|You are about to remove %{item}. Are you sure?`,

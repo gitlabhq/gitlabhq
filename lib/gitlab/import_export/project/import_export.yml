@@ -261,6 +261,8 @@ excluded_attributes:
     - :resource_group_id
     - :waiting_for_resource_at
     - :processed
+    - :id_convert_to_bigint
+    - :stage_id_convert_to_bigint
   sentry_issue:
     - :issue_id
   push_event_payload:

@@ -62,6 +62,9 @@ module Ci
     delegate :gitlab_deploy_token, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
 
+    ignore_columns :id_convert_to_bigint, remove_with: '14.1', remove_after: '2021-07-22'
+    ignore_columns :stage_id_convert_to_bigint, remove_with: '14.1', remove_after: '2021-07-22'
+
     ##
     # Since Gitlab 11.5, deployments records started being created right after
     # `ci_builds` creation. We can look up a relevant `environment` through

@@ -1,6 +1,12 @@
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { __ } from '~/locale';
+import {
+  REPO_BLOB_LOAD_VIEWER_START,
+  REPO_BLOB_LOAD_VIEWER_FINISH,
+  REPO_BLOB_LOAD_VIEWER,
+} from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import { fixTitle } from '~/tooltips';
 import { deprecatedCreateFlash as Flash } from '../../flash';
 import axios from '../../lib/utils/axios_utils';
@@ -130,6 +136,9 @@ export default class BlobViewer {
   }
 
   switchToViewer(name) {
+    performanceMarkAndMeasure({
+      mark: REPO_BLOB_LOAD_VIEWER_START,
+    });
     const newViewer = this.$fileHolder[0].querySelector(`.blob-viewer[data-type='${name}']`);
     if (this.activeViewer === newViewer) return;
 
@@ -163,6 +172,15 @@ export default class BlobViewer {
         handleLocationHash();
 
         this.toggleCopyButtonState();
+        performanceMarkAndMeasure({
+          mark: REPO_BLOB_LOAD_VIEWER_FINISH,
+          measures: [
+            {
+              name: REPO_BLOB_LOAD_VIEWER,
+              start: REPO_BLOB_LOAD_VIEWER_START,
+            },
+          ],
+        });
       })
       .catch(() => new Flash(__('Error loading viewer')));
   }

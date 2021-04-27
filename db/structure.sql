@@ -115,6 +115,16 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_3f6129be01d2() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."id_convert_to_bigint" := NEW."id";
+  NEW."stage_id_convert_to_bigint" := NEW."stage_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_69523443cc10() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -10433,6 +10443,8 @@ CREATE TABLE ci_builds (
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
     scheduling_type smallint,
+    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    stage_id_convert_to_bigint bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -24753,6 +24765,8 @@ CREATE TRIGGER table_sync_trigger_b99eb6998c AFTER INSERT OR DELETE OR UPDATE ON
 CREATE TRIGGER trigger_07c94931164e BEFORE INSERT OR UPDATE ON push_event_payloads FOR EACH ROW EXECUTE PROCEDURE trigger_07c94931164e();
 
 CREATE TRIGGER trigger_21e7a2602957 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE PROCEDURE trigger_21e7a2602957();
+
+CREATE TRIGGER trigger_3f6129be01d2 BEFORE INSERT OR UPDATE ON ci_builds FOR EACH ROW EXECUTE PROCEDURE trigger_3f6129be01d2();
 
 CREATE TRIGGER trigger_69523443cc10 BEFORE INSERT OR UPDATE ON events FOR EACH ROW EXECUTE PROCEDURE trigger_69523443cc10();
 

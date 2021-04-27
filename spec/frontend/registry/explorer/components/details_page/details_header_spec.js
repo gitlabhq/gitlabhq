@@ -120,7 +120,7 @@ describe('Details Header', () => {
     it('has the correct text', () => {
       mountComponent();
 
-      expect(findDeleteButton().text()).toBe('Delete');
+      expect(findDeleteButton().text()).toBe('Delete image repository');
     });
 
     it('has the correct props', () => {

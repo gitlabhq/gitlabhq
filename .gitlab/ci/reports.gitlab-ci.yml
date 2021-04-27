@@ -1,40 +1,17 @@
-# include:
-#   - template: Jobs/Code-Quality.gitlab-ci.yml
+include:
+  - template: Jobs/Code-Quality.gitlab-ci.yml
 #   - template: Security/SAST.gitlab-ci.yml
 #   - template: Security/Dependency-Scanning.gitlab-ci.yml
 #   - template: Security/DAST.gitlab-ci.yml
 
-# We need to duplicate this job's definition because the rules
-# defined in the extended jobs rely on local YAML anchors
-# (`*if-default-refs`)
 code_quality:
   extends:
     - .default-retry
-    - .reports:rules:code_quality
     - .use-docker-in-docker
-  stage: test
-  needs: []
-  variables:
-    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.23"
-  script:
-    - |
-      if ! docker info &>/dev/null; then
-        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
-          export DOCKER_HOST='tcp://localhost:2375'
-        fi
-      fi
-    - docker pull --quiet "$CODE_QUALITY_IMAGE"
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "$CODE_QUALITY_IMAGE" /code
   artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
     paths:
       - gl-code-quality-report.json  # GitLab-specific
-    expire_in: 1 week  # GitLab-specific
+  rules: !reference [".reports:rules:code_quality", rules]
 
 # We need to duplicate this job's definition because the rules
 # defined in the extended jobs rely on local YAML anchors

@@ -130,7 +130,7 @@ export default {
         :disabled="deleteButtonDisabled"
         @click="$emit('delete')"
       >
-        {{ __('Delete') }}
+        {{ __('Delete image repository') }}
       </gl-button>
     </template>
   </title-area>
