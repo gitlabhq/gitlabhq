@@ -110,7 +110,13 @@ class GraphqlController < ApplicationController
   end
 
   def context
-    @context ||= { current_user: current_user, is_sessionless_user: !!sessionless_user?, request: request }
+    api_user = !!sessionless_user?
+    @context ||= {
+      current_user: current_user,
+      is_sessionless_user: api_user,
+      request: request,
+      scope_validator: ::Gitlab::Auth::ScopeValidator.new(api_user, request_authenticator)
+    }
   end
 
   def build_variables(variable_info)

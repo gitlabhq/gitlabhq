@@ -20,8 +20,9 @@ RSpec.describe Projects::DownloadService do
 
     context 'for URLs that are on the whitelist' do
       before do
-        stub_request(:get, 'http://mycompany.fogbugz.com/rails_sample.jpg').to_return(body: File.read(Rails.root + 'spec/fixtures/rails_sample.jpg'))
-        stub_request(:get, 'http://mycompany.fogbugz.com/doc_sample.txt').to_return(body: File.read(Rails.root + 'spec/fixtures/doc_sample.txt'))
+        # `ssrf_filter` resolves the hostname. See https://github.com/carrierwaveuploader/carrierwave/commit/91714adda998bc9e8decf5b1f5d260d808761304
+        stub_request(:get, %r{http://[\d\.]+/rails_sample.jpg}).to_return(body: File.read(Rails.root + 'spec/fixtures/rails_sample.jpg'))
+        stub_request(:get, %r{http://[\d\.]+/doc_sample.txt}).to_return(body: File.read(Rails.root + 'spec/fixtures/doc_sample.txt'))
       end
 
       context 'an image file' do

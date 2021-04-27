@@ -44,9 +44,18 @@ module Mutations
       end
     end
 
+    def self.authorizes_object?
+      true
+    end
+
     def self.authorized?(object, context)
-      # we never provide an object to mutations, but we do need to have a user.
-      context[:current_user].present? && !context[:current_user].blocked?
+      auth = ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(:execute_graphql_mutation, :api)
+
+      return true if auth.ok?(:global, context[:current_user],
+                              scope_validator: context[:scope_validator])
+
+      # in our mutations we raise, rather than returning a null value.
+      raise_resource_not_available_error!
     end
 
     # See: AuthorizeResource#authorized_resource?
