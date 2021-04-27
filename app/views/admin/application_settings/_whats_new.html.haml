@@ -1,0 +1,13 @@
+= form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-whats-new-settings'), html: { class: 'fieldset-form whats-new-settings' } do |f|
+  = form_errors(@application_setting)
+
+  - whats_new_variants.keys.each do |variant|
+    .form-check.gl-mb-4
+      = f.radio_button :whats_new_variant, variant, class: 'form-check-input'
+      = f.label :whats_new_variant, value: variant, class: 'form-check-label' do
+        .font-weight-bold
+          = whats_new_variants_label(variant)
+        .option-description
+          = whats_new_variants_description(variant)
+
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

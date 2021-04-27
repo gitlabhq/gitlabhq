@@ -274,6 +274,11 @@
             = link_to project_pages_path(@project), title: _('Pages') do
               %span
                 = _('Pages')
+        - if settings_packages_and_registries_enabled?(@project)
+          = nav_link(controller: :packages_and_registries) do
+            = link_to project_settings_packages_and_registries_path(@project), title: _('Packages & Registries'), data: { qa_selector: 'project_package_settings_link' } do
+              %span
+                = _('Packages & Registries')
 
 -# Shortcut to Project > Activity
 %li.hidden

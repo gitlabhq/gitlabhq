@@ -45,6 +45,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['require_admin_approval_after_user_signup']).to eq(true)
       expect(json_response['personal_access_token_prefix']).to be_nil
       expect(json_response['admin_mode']).to be(false)
+      expect(json_response['whats_new_variant']).to eq('all_tiers')
     end
   end
 
@@ -483,6 +484,33 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
           message = json_response["message"]
           expect(message["personal_access_token_prefix"]).to include(a_string_matching("can contain only letters of the Base64 alphabet"))
         end
+      end
+    end
+
+    context 'whats_new_variant setting' do
+      before do
+        Gitlab::CurrentSettings.current_application_settings.whats_new_variant_disabled!
+      end
+
+      it 'updates setting' do
+        new_value = 'all_tiers'
+        put api("/application/settings", admin),
+        params: {
+          whats_new_variant: new_value
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['whats_new_variant']).to eq(new_value)
+      end
+
+      it 'fails to update setting with invalid value' do
+        put api("/application/settings", admin),
+        params: {
+          whats_new_variant: 'invalid_value'
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('whats_new_variant does not have a valid value')
       end
     end
   end

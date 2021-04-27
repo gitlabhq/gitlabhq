@@ -7592,6 +7592,30 @@ Status: `data_available`
 
 Tiers:
 
+### `redis_hll_counters.analytics.users_viewing_analytics_group_devops_adoption_monthly`
+
+Counts visits to DevOps Adoption page per month
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210419105414_users_viewing_analytics_group_devops_adoption_monthly.yml)
+
+Group: `group::optimize`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.analytics.users_viewing_analytics_group_devops_adoption_weekly`
+
+Counts visits to DevOps Adoption page per week
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210419105408_users_viewing_analytics_group_devops_adoption_weekly.yml)
+
+Group: `group::optimize`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.ci_secrets_management.i_ci_secrets_management_vault_build_created_monthly`
 
 Missing description

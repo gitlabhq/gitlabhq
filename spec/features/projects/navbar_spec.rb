@@ -12,6 +12,7 @@ RSpec.describe 'Project navbar' do
   let_it_be(:project) { create(:project, :repository) }
 
   before do
+    stub_feature_flags(sidebar_refactor: false)
     insert_package_nav(_('Operations'))
     insert_infrastructure_registry_nav
     stub_config(registry: { enabled: false })
@@ -63,6 +64,25 @@ RSpec.describe 'Project navbar' do
       stub_config(registry: { enabled: true })
 
       insert_container_nav
+
+      visit project_path(project)
+    end
+
+    it_behaves_like 'verified navigation bar'
+  end
+
+  context 'when sidebar refactor feature flag is on' do
+    before do
+      stub_feature_flags(sidebar_refactor: true)
+      stub_config(registry: { enabled: true })
+
+      insert_container_nav
+
+      insert_after_sub_nav_item(
+        _('Operations'),
+        within: _('Settings'),
+        new_sub_nav_item_name: _('Packages & Registries')
+      )
 
       visit project_path(project)
     end

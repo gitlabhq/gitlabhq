@@ -364,7 +364,8 @@ module ApplicationSettingsHelper
       :rate_limiting_response_text,
       :container_registry_expiration_policies_worker_capacity,
       :container_registry_cleanup_tags_service_max_list_size,
-      :keep_latest_artifact
+      :keep_latest_artifact,
+      :whats_new_variant
     ]
   end
 

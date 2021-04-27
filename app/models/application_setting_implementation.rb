@@ -187,7 +187,8 @@ module ApplicationSettingImplementation
         kroki_enabled: false,
         kroki_url: nil,
         kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false },
-        rate_limiting_response_text: nil
+        rate_limiting_response_text: nil,
+        whats_new_variant: 0
       }
     end
 

@@ -108,6 +108,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | Option | Description |
 | ------ | ----------- |
 | [Email](email.md) | Various email settings. |
+| [What's new](../../../administration/whats-new.md) | Configure What's new drawer and content. |
 | [Help page](help_page.md) | Help page text and support page URL. |
 | [Pages](../../../administration/pages/index.md#custom-domain-verification) | Size and domain settings for static websites |
 | [Real-time features](../../../administration/polling.md) | Change this value to influence how frequently the GitLab UI polls for updates. |

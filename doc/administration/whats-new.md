@@ -19,11 +19,23 @@ feature list, the feature list is tailored to your subscription type:
 - Features only available to self-managed installations are not shown on GitLab.com.
 - Features only available on GitLab.com are not shown to self-managed installations.
 
-The **What's new** feature cannot be disabled, but
-[is planned](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59011) for a future release.
-
 ## Self-managed installations
 
 Due to our release post process, the content for **What's new** is not yet finalized
 when a new version (`.0` release) is cut. The updated **What's new** is included
 in the first patch release, such as `13.10.1`.
+
+## Configure What's new variant
+
+You can configure the What's new variant:
+
+1. Navigate to **Admin Area > Settings > Preferences**, then expand **What's new**.
+1. Choose one of the following options:
+
+   | Option | Description |
+   | ------ | ----------- |
+   | Enable What's new: All tiers | What's new presents new features from all tiers to help you keep track of all new features. |
+   | Enable What's new: Current tier only | What's new presents new features for your current subscription tier, while hiding new features not available to your subscription tier. |
+   | Disable What's new | What's new is disabled and can no longer be viewed. |
+
+1. Save your changes.

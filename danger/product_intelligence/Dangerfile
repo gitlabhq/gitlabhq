@@ -86,8 +86,13 @@ if matching_changed_files.any?
 
   fail format(UPDATE_DICTIONARY_MESSAGE) if required_dictionary_update_changed_files.any? && dictionary_changed_file.empty?
 
-  labels = ['product intelligence']
-  labels << 'product intelligence::review pending' unless helper.mr_has_labels?('product intelligence::approved')
+  labels = []
+  labels << 'product intelligence' unless helper.mr_has_labels?('product intelligence')
+  labels << 'product intelligence::review pending' unless helper.mr_has_labels?(['product intelligence::approved', 'product intelligence::review pending'])
 
-  markdown(helper.prepare_labels_for_mr(labels))
+  if labels.any?
+    gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
+                                    gitlab.mr_json['iid'],
+                                    add_labels: helper.prepare_labels_for_mr(labels))
+  end
 end

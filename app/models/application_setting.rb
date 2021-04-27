@@ -13,6 +13,8 @@ class ApplicationSetting < ApplicationRecord
   KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
     'Admin Area > Settings > General > Kroki'
 
+  enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
+
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
   add_authentication_token_field :static_objects_external_storage_auth_token
@@ -490,6 +492,9 @@ class ApplicationSetting < ApplicationRecord
   validates :external_pipeline_validation_service_timeout,
             allow_nil: true,
             numericality: { only_integer: true, greater_than: 0 }
+
+  validates :whats_new_variant,
+            inclusion: { in: ApplicationSetting.whats_new_variants.keys }
 
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,

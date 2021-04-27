@@ -7,7 +7,7 @@
         .col-form-label.col-sm-2
           = f.label :title, _('Title')
         .col-sm-10
-          = f.text_field :title, maxlength: 255, class: 'form-control', data: { qa_selector: 'milestone_title_field' }, required: true, autofocus: true
+          = f.text_field :title, maxlength: 255, class: 'form-control gl-form-input', data: { qa_selector: 'milestone_title_field' }, required: true, autofocus: true
       .form-group.row.milestone-description
         .col-form-label.col-sm-2
           = f.label :description, _('Description')

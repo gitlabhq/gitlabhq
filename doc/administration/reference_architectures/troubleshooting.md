@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting a reference architecture setup
+# Troubleshooting a reference architecture setup **(FREE SELF)**
 
 This page serves as the troubleshooting documentation if you followed one of
 the [reference architectures](index.md#reference-architectures).

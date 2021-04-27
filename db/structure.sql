@@ -9501,6 +9501,7 @@ CREATE TABLE application_settings (
     throttle_unauthenticated_packages_api_enabled boolean DEFAULT false NOT NULL,
     throttle_authenticated_packages_api_enabled boolean DEFAULT false NOT NULL,
     deactivate_dormant_users boolean DEFAULT false NOT NULL,
+    whats_new_variant smallint DEFAULT 0,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),

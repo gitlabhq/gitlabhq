@@ -397,7 +397,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/features/markdown/metrics_spec.rb
     - ee/spec/features/registrations/group_invites_during_signup_flow_spec.rb
     - ee/spec/features/subscriptions_spec.rb
-    - ee/spec/graphql/types/issue_type_spec.rb
     - ee/spec/helpers/ee/graph_helper_spec.rb
     - ee/spec/helpers/ee/issues_helper_spec.rb
     - ee/spec/helpers/ee/projects/incidents_helper_spec.rb

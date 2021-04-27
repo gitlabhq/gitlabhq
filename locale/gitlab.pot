@@ -1868,9 +1868,6 @@ msgstr ""
 msgid "Add README"
 msgstr ""
 
-msgid "Add Variable"
-msgstr ""
-
 msgid "Add Zoom meeting"
 msgstr ""
 
@@ -3736,9 +3733,6 @@ msgstr ""
 msgid "An example showing how to use Jsonnet with GitLab dynamic child pipelines"
 msgstr ""
 
-msgid "An extendable open source CI/CD server."
-msgstr ""
-
 msgid "An instance-level serverless domain already exists."
 msgstr ""
 
@@ -4917,13 +4911,13 @@ msgstr ""
 msgid "BambooService|Bamboo service root URL."
 msgstr ""
 
+msgid "BambooService|Run CI/CD pipelines with Atlassian Bamboo."
+msgstr ""
+
+msgid "BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up automatic revision labeling and a repository trigger in Bamboo. %{docs_link}"
+msgstr ""
+
 msgid "BambooService|The user with API access to the Bamboo server."
-msgstr ""
-
-msgid "BambooService|Use Atlassian Bamboo to run CI/CD pipelines. You must set up automatic revision labeling and a repository trigger in Bamboo. %{docs_link}"
-msgstr ""
-
-msgid "BambooService|Use the Atlassian Bamboo CI/CD server with GitLab."
 msgstr ""
 
 msgid "Based on"
@@ -8314,6 +8308,9 @@ msgstr ""
 msgid "Configure Tracing"
 msgstr ""
 
+msgid "Configure What's new drawer and content."
+msgstr ""
+
 msgid "Configure a %{codeStart}.gitlab-webide.yml%{codeEnd} file in the %{codeStart}.gitlab%{codeEnd} directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
 msgstr ""
 
@@ -11379,6 +11376,9 @@ msgstr ""
 msgid "Disable Two-factor Authentication"
 msgstr ""
 
+msgid "Disable What's new"
+msgstr ""
+
 msgid "Disable for this project"
 msgstr ""
 
@@ -12027,6 +12027,12 @@ msgid "Enable Seat Link"
 msgstr ""
 
 msgid "Enable Spam Check via external API endpoint"
+msgstr ""
+
+msgid "Enable What's new: All tiers"
+msgstr ""
+
+msgid "Enable What's new: Current tier only"
 msgstr ""
 
 msgid "Enable access to Grafana"
@@ -16479,6 +16485,9 @@ msgid "Import CSV"
 msgstr ""
 
 msgid "Import Projects from Gitea"
+msgstr ""
+
+msgid "Import a project"
 msgstr ""
 
 msgid "Import an exported GitLab project"
@@ -27648,6 +27657,12 @@ msgstr ""
 msgid "Run CI/CD pipelines for external repositories"
 msgstr ""
 
+msgid "Run CI/CD pipelines with Jenkins when you push to a repository, or when a merge request is created, updated, or merged. %{docs_link}"
+msgstr ""
+
+msgid "Run CI/CD pipelines with Jenkins."
+msgstr ""
+
 msgid "Run housekeeping"
 msgstr ""
 
@@ -33719,9 +33734,6 @@ msgstr ""
 msgid "Trigger"
 msgstr ""
 
-msgid "Trigger Jenkins builds when you push to a repository, or when a merge request is created, updated, or merged. %{docs_link}"
-msgstr ""
-
 msgid "Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions."
 msgstr ""
 
@@ -35905,6 +35917,15 @@ msgid "What is your job title? (optional)"
 msgstr ""
 
 msgid "What's new"
+msgstr ""
+
+msgid "What's new is disabled and can no longer be viewed."
+msgstr ""
+
+msgid "What's new presents new features for your current subscription tier, while hiding new features not available to your subscription tier."
+msgstr ""
+
+msgid "What's new presents new features from all tiers to help you keep track of all new features."
 msgstr ""
 
 msgid "What’s your experience level?"

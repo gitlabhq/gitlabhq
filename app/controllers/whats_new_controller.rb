@@ -5,6 +5,7 @@ class WhatsNewController < ApplicationController
 
   skip_before_action :authenticate_user!
 
+  before_action :check_whats_new_enabled
   before_action :check_valid_page_param, :set_pagination_headers
 
   feature_category :navigation
@@ -18,6 +19,10 @@ class WhatsNewController < ApplicationController
   end
 
   private
+
+  def check_whats_new_enabled
+    render_404 if Gitlab::CurrentSettings.current_application_settings.whats_new_variant_disabled?
+  end
 
   def check_valid_page_param
     render_404 if current_page < 1

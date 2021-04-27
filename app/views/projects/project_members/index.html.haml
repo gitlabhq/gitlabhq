@@ -18,7 +18,11 @@
                   = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
         .col-md-12.col-lg-6
           .gl-display-flex.gl-flex-wrap.gl-justify-content-end
-            .js-invite-group-trigger{ data: { classes: 'gl-mt-3 gl-sm-w-auto gl-w-full', display_text: _('Invite a group') } }
+            = link_to _("Import a project"),
+              import_project_project_members_path(@project),
+              class: "btn btn-default btn-md gl-button gl-mt-3 gl-sm-w-auto gl-w-full",
+              title: _("Import members from another project")
+            .js-invite-group-trigger{ data: { classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite a group') } }
             .js-invite-members-trigger{ data: { variant: 'success', classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite members') } }
         = render 'projects/invite_members_modal', project: @project
 

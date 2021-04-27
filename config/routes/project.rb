@@ -129,6 +129,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
               put :revoke
             end
           end
+
+          resources :packages_and_registries, only: [:index]
         end
 
         resources :autocomplete_sources, only: [] do

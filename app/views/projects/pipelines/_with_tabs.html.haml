@@ -11,16 +11,16 @@
     %li.js-builds-tab-link
       = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
         = _('Jobs')
-        %span.badge.badge-pill.js-builds-counter= pipeline.total_size
+        %span.badge.badge-pill.gl-badge.badge-muted.sm.js-builds-counter= pipeline.total_size
     - if @pipeline.failed_builds.present?
       %li.js-failures-tab-link
         = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
           = _('Failed Jobs')
-          %span.badge.badge-pill.js-failures-counter= @pipeline.failed_builds.count
+          %span.badge.badge-pill.gl-badge.badge-muted.sm.js-failures-counter= @pipeline.failed_builds.count
     %li.js-tests-tab-link
       = link_to test_report_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-tests', action: 'test_report', toggle: 'tab' }, class: 'test-tab' do
         = s_('TestReports|Tests')
-        %span.badge.badge-pill.js-test-report-badge-counter= @pipeline.test_report_summary.total[:count]
+        %span.badge.badge-pill.gl-badge.badge-muted.sm.js-test-report-badge-counter= @pipeline.test_report_summary.total[:count]
     = render_if_exists "projects/pipelines/tabs_holder", pipeline: @pipeline, project: @project
 
 .tab-content

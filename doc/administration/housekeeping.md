@@ -4,9 +4,10 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Housekeeping
+# Housekeeping **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3041) in GitLab 8.4.
+GitLab supports and automates housekeeping tasks within your current repository,
+such as compressing file revisions and removing unreachable objects.
 
 ## Automatic housekeeping
 
@@ -37,9 +38,11 @@ the `pushes_since_gc` value is 200 a `git gc` runs.
 Housekeeping also [removes unreferenced LFS files](../raketasks/cleanup.md#remove-unreferenced-lfs-files)
 from your project on the same schedule as the `git gc` operation, freeing up storage space for your project.
 
-You can find this option under your project's **Settings > General > Advanced**.
+To manually start the housekeeping process:
 
-![Housekeeping settings](img/housekeeping_settings.png)
+1. In your project, go to **Settings > General**.
+1. Expand the **Advanced** section.
+1. Select **Run housekeeping**.
 
 ## How housekeeping handles pool repositories
 

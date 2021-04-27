@@ -64,12 +64,12 @@ class JenkinsService < CiService
   end
 
   def description
-    s_('An extendable open source CI/CD server.')
+    s_('Run CI/CD pipelines with Jenkins.')
   end
 
   def help
     docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('integration/jenkins'), target: '_blank', rel: 'noopener noreferrer'
-    s_('Trigger Jenkins builds when you push to a repository, or when a merge request is created, updated, or merged. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+    s_('Run CI/CD pipelines with Jenkins when you push to a repository, or when a merge request is created, updated, or merged. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
   end
 
   def self.to_param

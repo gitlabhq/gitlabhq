@@ -36,12 +36,12 @@ class BambooService < CiService
   end
 
   def description
-    s_('BambooService|Use the Atlassian Bamboo CI/CD server with GitLab.')
+    s_('BambooService|Run CI/CD pipelines with Atlassian Bamboo.')
   end
 
   def help
     docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/bamboo'), target: '_blank', rel: 'noopener noreferrer'
-    s_('BambooService|Use Atlassian Bamboo to run CI/CD pipelines. You must set up automatic revision labeling and a repository trigger in Bamboo. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+    s_('BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up automatic revision labeling and a repository trigger in Bamboo. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
   end
 
   def self.to_param

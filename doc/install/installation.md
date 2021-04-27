@@ -276,10 +276,7 @@ we need to install through the following commands:
 curl --location "https://deb.nodesource.com/setup_14.x" | sudo bash -
 sudo apt-get install -y nodejs
 
-curl --silent --show-error "https://dl.yarnpkg.com/debian/pubkey.gpg" | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update
-sudo apt-get install yarn
+npm install --global yarn
 ```
 
 Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://classic.yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
