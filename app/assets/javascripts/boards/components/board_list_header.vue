@@ -84,7 +84,7 @@ export default {
       return this.list?.label?.description || this.list?.assignee?.name || this.list.title || '';
     },
     showListHeaderButton() {
-      return !this.disabled && this.listType !== ListType.closed;
+      return !this.disabled && this.listType !== ListType.closed && !this.isEpicBoard;
     },
     showMilestoneListDetails() {
       return this.listType === ListType.milestone && this.list.milestone && this.showListDetails;
@@ -161,7 +161,7 @@ export default {
       const collapsed = !this.list.collapsed;
       this.toggleListCollapsed({ listId: this.list.id, collapsed });
 
-      if (!this.isLoggedIn || this.isEpicBoard) {
+      if (!this.isLoggedIn) {
         this.addToLocalStorage();
       } else {
         this.updateListFunction();

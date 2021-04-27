@@ -24,11 +24,12 @@ RSpec.describe Mutations::Commits::Create do
     let(:branch) { 'master' }
     let(:start_branch) { nil }
     let(:message) { 'Commit message' }
+    let(:file_path) { "#{SecureRandom.uuid}.md" }
     let(:actions) do
       [
         {
           action: 'create',
-          file_path: 'NEW_FILE.md',
+          file_path: file_path,
           content: 'Hello'
         }
       ]
@@ -68,12 +69,17 @@ RSpec.describe Mutations::Commits::Create do
       end
 
       context 'when service successfully creates a new commit' do
+        it "returns the ETag path for the commit's pipeline" do
+          commit_pipeline_path = subject[:commit_pipeline_path]
+          expect(commit_pipeline_path).to match(%r(pipelines/sha/\w+))
+        end
+
         it 'returns a new commit' do
           expect(mutated_commit).to have_attributes(message: message, project: project)
           expect(subject[:errors]).to be_empty
 
           expect_to_contain_deltas([
-            a_hash_including(a_mode: '0', b_mode: '100644', new_file: true, new_path: 'NEW_FILE.md')
+            a_hash_including(a_mode: '0', b_mode: '100644', new_file: true, new_path: file_path)
           ])
         end
       end

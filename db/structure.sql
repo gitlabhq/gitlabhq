@@ -9084,7 +9084,9 @@ CREATE TABLE analytics_devops_adoption_snapshots (
     pipeline_succeeded boolean NOT NULL,
     deploy_succeeded boolean NOT NULL,
     security_scan_succeeded boolean NOT NULL,
-    end_time timestamp with time zone NOT NULL
+    end_time timestamp with time zone NOT NULL,
+    total_projects_count integer,
+    code_owners_used_count integer
 );
 
 CREATE SEQUENCE analytics_devops_adoption_snapshots_id_seq

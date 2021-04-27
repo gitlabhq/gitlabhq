@@ -817,7 +817,7 @@ apollo: {
 },
 ```
 
-Then, because Etags depend on the request being a `GET` instead of GraphQL's usual `POST`, but our default link library does not support `GET` we need to let our defaut Apollo client know to use a different library.
+Then, because Etags depend on the request being a `GET` instead of GraphQL's usual `POST`, but our default link library does not support `GET` we need to let our default Apollo client know to use a different library.
 
 ```javascript
 /* componentMountIndex.js */

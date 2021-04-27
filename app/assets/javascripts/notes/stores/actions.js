@@ -345,7 +345,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       // this is a temporary solution until we have confidentiality real-time updates
       if (
         confidentialWidget.setConfidentiality &&
-        message.some((m) => m.includes('confidential'))
+        message.some((m) => m.includes('Made this issue confidential'))
       ) {
         confidentialWidget.setConfidentiality();
       }

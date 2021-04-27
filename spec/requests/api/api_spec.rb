@@ -170,20 +170,6 @@ RSpec.describe API::API do
         expect(response.media_type).to eq('application/json')
         expect(response.body).to include('{"id":')
       end
-
-      context 'when api_always_use_application_json is disabled' do
-        before do
-          stub_feature_flags(api_always_use_application_json: false)
-        end
-
-        it 'returns text/plain' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('text/plain')
-          expect(response.body).to include('#<API::Entities::User:')
-        end
-      end
     end
   end
 end

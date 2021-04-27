@@ -22,6 +22,13 @@ module AlertManagement
     }.freeze
     private_constant :STATUSES
 
+    STATUS_DESCRIPTIONS = {
+      triggered: 'Investigation has not started',
+      acknowledged: 'Someone is actively investigating the problem',
+      resolved: 'No further work is required',
+      ignored: 'No action will be taken on the alert'
+    }.freeze
+
     belongs_to :project
     belongs_to :issue, optional: true
     belongs_to :prometheus_alert, optional: true

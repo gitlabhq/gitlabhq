@@ -310,7 +310,7 @@ module SearchHelper
       link_to search_path(search_params) do
         concat label
         concat ' '
-        concat content_tag(:span, count, class: ['badge badge-pill', badge_class], data: badge_data)
+        concat content_tag(:span, count, class: ['badge badge-pill gl-badge badge-muted sm', badge_class], data: badge_data)
       end
     end
   end

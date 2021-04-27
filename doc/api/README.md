@@ -777,7 +777,3 @@ some API endpoints also support `text/plain`.
 
 In [GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/250342),
 API endpoints do not support `text/plain` by default, unless it's explicitly documented.
-
-This change is deployed behind the `:api_always_use_application_json` [feature flag](../user/feature_flags.md),
-enabled by default. On GitLab self-managed instances, GitLab administrators can choose
-to [disable it](../administration/feature_flags.md). **(FREE SELF)**

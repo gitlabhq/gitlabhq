@@ -364,6 +364,10 @@ module GitlabRoutingHelper
     [api_graphql_path, "pipelines/id/#{pipeline.id}"].join(':')
   end
 
+  def graphql_etag_pipeline_sha_path(sha)
+    [api_graphql_path, "pipelines/sha/#{sha}"].join(':')
+  end
+
   private
 
   def snippet_query_params(snippet, *args)

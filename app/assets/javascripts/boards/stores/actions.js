@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import { updateListQueries } from 'ee_else_ce/boards/constants';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
@@ -31,7 +32,6 @@ import {
 } from '../boards_util';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
 import destroyBoardListMutation from '../graphql/board_list_destroy.mutation.graphql';
-import updateBoardListMutation from '../graphql/board_list_update.mutation.graphql';
 import groupProjectsQuery from '../graphql/group_projects.query.graphql';
 import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
 import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.graphql';
@@ -238,10 +238,13 @@ export default {
     dispatch('updateList', { listId, position: newPosition, backupList });
   },
 
-  updateList: ({ commit }, { listId, position, collapsed, backupList }) => {
+  updateList: (
+    { commit, state: { issuableType } },
+    { listId, position, collapsed, backupList },
+  ) => {
     gqlClient
       .mutate({
-        mutation: updateBoardListMutation,
+        mutation: updateListQueries[issuableType].mutation,
         variables: {
           listId,
           position,

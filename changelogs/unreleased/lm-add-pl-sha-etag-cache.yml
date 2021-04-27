@@ -1,0 +1,5 @@
+---
+title: Add commmit_pipeline_path to CreateCommit mutation
+merge_request: 58931
+author:
+type: added

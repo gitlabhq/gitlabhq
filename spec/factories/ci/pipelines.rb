@@ -237,7 +237,7 @@ FactoryBot.define do
       trait :merged_result_pipeline do
         detached_merge_request_pipeline
 
-        sha { 'test-merge-sha'}
+        sha { 'mergeSha' }
         ref { merge_request.merge_ref_path }
         source_sha { merge_request.source_branch_sha }
         target_sha { merge_request.target_branch_sha }

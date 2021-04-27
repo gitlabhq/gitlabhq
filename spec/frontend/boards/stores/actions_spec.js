@@ -459,6 +459,7 @@ describe('updateList', () => {
       boardType: 'group',
       disabled: false,
       boardLists: [{ type: 'closed' }],
+      issuableType: 'issue',
     };
 
     testAction(
