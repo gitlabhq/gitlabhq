@@ -1,4 +1,4 @@
-import { filteredTokens, locationSearch } from 'jest/issues_list/mock_data';
+import { apiParams, filteredTokens, locationSearch, urlParams } from 'jest/issues_list/mock_data';
 import { sortParams } from '~/issues_list/constants';
 import {
   convertToApiParams,
@@ -23,27 +23,13 @@ describe('getFilterTokens', () => {
 
 describe('convertToApiParams', () => {
   it('returns api params given filtered tokens', () => {
-    expect(convertToApiParams(filteredTokens)).toEqual({
-      author_username: 'homer',
-      'not[author_username]': 'marge',
-      assignee_username: 'bart',
-      'not[assignee_username]': 'lisa',
-      labels: 'cartoon,tv',
-      'not[labels]': 'live action,drama',
-    });
+    expect(convertToApiParams(filteredTokens)).toEqual(apiParams);
   });
 });
 
 describe('convertToUrlParams', () => {
   it('returns url params given filtered tokens', () => {
-    expect(convertToUrlParams(filteredTokens)).toEqual({
-      author_username: ['homer'],
-      'not[author_username]': ['marge'],
-      'assignee_username[]': ['bart'],
-      'not[assignee_username][]': ['lisa'],
-      'label_name[]': ['cartoon', 'tv'],
-      'not[label_name][]': ['live action', 'drama'],
-    });
+    expect(convertToUrlParams(filteredTokens)).toEqual(urlParams);
   });
 });
 

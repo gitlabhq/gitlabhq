@@ -1,31 +1,29 @@
 import Vue from 'vue';
 import Translate from '../vue_shared/translate';
 import CycleAnalytics from './components/base.vue';
-import CycleAnalyticsService from './cycle_analytics_service';
-import CycleAnalyticsStore from './cycle_analytics_store';
+import createStore from './store';
 
 Vue.use(Translate);
 
-const createCycleAnalyticsService = (requestPath) =>
-  new CycleAnalyticsService({
+export default () => {
+  const store = createStore();
+  const el = document.querySelector('#js-cycle-analytics');
+  const { noAccessSvgPath, noDataSvgPath, requestPath } = el.dataset;
+
+  store.dispatch('initializeVsa', {
     requestPath,
   });
-
-export default () => {
-  const el = document.querySelector('#js-cycle-analytics');
-  const { noAccessSvgPath, noDataSvgPath } = el.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
     el,
     name: 'CycleAnalytics',
+    store,
     render: (createElement) =>
       createElement(CycleAnalytics, {
         props: {
           noDataSvgPath,
           noAccessSvgPath,
-          store: CycleAnalyticsStore,
-          service: createCycleAnalyticsService(el.dataset.requestPath),
         },
       }),
   });

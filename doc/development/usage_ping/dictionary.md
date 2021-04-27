@@ -6350,7 +6350,7 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216183248_pg_system_id.yml)
 
-Group: ``
+Group: `group::distribution`
 
 Status: `data_available`
 

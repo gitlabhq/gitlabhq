@@ -39,7 +39,8 @@ module SidebarsHelper
       current_user: user,
       container: project,
       learn_gitlab_experiment_enabled: learn_gitlab_experiment_enabled?(project),
-      current_ref: current_ref
+      current_ref: current_ref,
+      jira_issues_integration: project_jira_issues_integration?
     }
   end
 end

@@ -34,6 +34,16 @@ module Sidebars
         end
       end
 
+      def replace_element(list, element_to_replace, new_element)
+        return unless new_element
+
+        index = index_of(list, element_to_replace)
+
+        return unless index
+
+        list[index] = new_element
+      end
+
       private
 
       # Classes including this method will have to define

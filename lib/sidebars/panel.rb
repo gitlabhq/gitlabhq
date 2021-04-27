@@ -32,6 +32,10 @@ module Sidebars
       insert_element_after(@menus, after_menu, new_menu)
     end
 
+    def replace_menu(menu_to_replace, new_menu)
+      replace_element(@menus, menu_to_replace, new_menu)
+    end
+
     def set_scope_menu(scope_menu)
       @scope_menu = scope_menu
     end

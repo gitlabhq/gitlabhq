@@ -11,6 +11,8 @@ module Sidebars
         add_menu(Sidebars::Projects::Menus::LearnGitlabMenu.new(context))
         add_menu(Sidebars::Projects::Menus::RepositoryMenu.new(context))
         add_menu(Sidebars::Projects::Menus::IssuesMenu.new(context))
+        add_menu(Sidebars::Projects::Menus::ExternalIssueTrackerMenu.new(context))
+        add_menu(Sidebars::Projects::Menus::LabelsMenu.new(context))
       end
 
       override :render_raw_menus_partial
@@ -25,3 +27,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Projects::Panel.prepend_if_ee('EE::Sidebars::Projects::Panel')

@@ -17,6 +17,8 @@ module Gitlab
 
         delegate :aborted?, :job_class, :table_name, :column_name, :job_arguments,
           to: :batched_migration, prefix: :migration
+
+        attribute :pause_ms, :integer, default: 100
       end
     end
   end

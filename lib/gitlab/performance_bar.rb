@@ -7,10 +7,10 @@ module Gitlab
     EXPIRY_TIME_L2_CACHE = 5.minutes
 
     def self.enabled_for_request?
-      Gitlab::SafeRequestStore[:peek_enabled]
+      !Gitlab::SafeRequestStore[:capturing_flamegraph] && Gitlab::SafeRequestStore[:peek_enabled]
     end
 
-    def self.enabled_for_user?(user = nil)
+    def self.allowed_for_user?(user = nil)
       return true if Rails.env.development?
       return true if user&.admin?
       return false unless user && allowed_group_id

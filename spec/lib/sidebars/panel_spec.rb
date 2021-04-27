@@ -101,4 +101,27 @@ RSpec.describe Sidebars::Panel do
       end
     end
   end
+
+  describe '#replace_element' do
+    let(:user) { build(:user) }
+    let(:list) { [1, user] }
+
+    it 'replace existing element in the list' do
+      panel.replace_element(list, Integer, 2)
+
+      expect(list).to eq [2, user]
+    end
+
+    it 'does not add nil elements' do
+      panel.replace_element(list, Integer, nil)
+
+      expect(list).to eq [1, user]
+    end
+
+    it 'does not add the element if the other element is not found' do
+      panel.replace_element(list, Project, 2)
+
+      expect(list).to eq [1, user]
+    end
+  end
 end

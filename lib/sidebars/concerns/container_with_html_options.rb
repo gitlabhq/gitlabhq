@@ -18,6 +18,22 @@ module Sidebars
         {}
       end
 
+      # The attributes returned from this method
+      # will be applied to helper methods like
+      # `link_to` or the div containing the container
+      # when it is collapsed.
+      def collapsed_container_html_options
+        {
+          aria: { label: title }
+        }.merge(extra_collapsed_container_html_options)
+      end
+
+      # Classes should mostly override this method
+      # and not `collapsed_container_html_options`.
+      def extra_collapsed_container_html_options
+        {}
+      end
+
       # Attributes to pass to the html_options attribute
       # in the helper method that sets the active class
       # on each element.

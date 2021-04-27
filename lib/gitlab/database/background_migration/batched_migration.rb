@@ -23,6 +23,8 @@ module Gitlab
           finished: 3
         }
 
+        attribute :pause_ms, :integer, default: 100
+
         def self.active_migration
           active.queue_order.first
         end

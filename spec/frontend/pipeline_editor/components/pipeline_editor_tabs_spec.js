@@ -22,7 +22,6 @@ describe('Pipeline editor tabs component', () => {
   };
   const mockProvide = {
     glFeatures: {
-      ciConfigVisualizationTab: true,
       ciConfigMergedTab: true,
     },
   };
@@ -102,21 +101,6 @@ describe('Pipeline editor tabs component', () => {
           expect(findVisualizationTab().exists()).toBe(true);
           expect(findPipelineGraph().exists()).toBe(true);
         });
-      });
-    });
-
-    describe('with feature flag off', () => {
-      beforeEach(() => {
-        createComponent({
-          provide: {
-            glFeatures: { ciConfigVisualizationTab: false },
-          },
-        });
-      });
-
-      it('does not display the tab or component', () => {
-        expect(findVisualizationTab().exists()).toBe(false);
-        expect(findPipelineGraph().exists()).toBe(false);
       });
     });
   });

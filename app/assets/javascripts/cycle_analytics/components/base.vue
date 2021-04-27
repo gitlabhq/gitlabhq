@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlEmptyState, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import Cookies from 'js-cookie';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import { mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
 import banner from './banner.vue';
 import stageCodeComponent from './stage_code_component.vue';
@@ -39,94 +39,59 @@ export default {
       type: String,
       required: true,
     },
-    store: {
-      type: Object,
-      required: true,
-    },
-    service: {
-      type: Object,
-      required: true,
-    },
   },
   data() {
     return {
-      state: this.store.state,
-      isLoading: false,
-      isLoadingStage: false,
-      isEmptyStage: false,
-      hasError: true,
-      startDate: 30,
       isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
     };
   },
   computed: {
-    currentStage() {
-      return this.store.currentActiveStage();
+    ...mapState([
+      'isLoading',
+      'isLoadingStage',
+      'isEmptyStage',
+      'selectedStage',
+      'selectedStageEvents',
+      'stages',
+      'summary',
+      'startDate',
+    ]),
+    displayStageEvents() {
+      const { selectedStageEvents, isLoadingStage, isEmptyStage } = this;
+      return selectedStageEvents.length && !isLoadingStage && !isEmptyStage;
     },
-  },
-  created() {
-    this.fetchCycleAnalyticsData();
+    displayNotEnoughData() {
+      const { selectedStage, isEmptyStage, isLoadingStage } = this;
+      return selectedStage && isEmptyStage && !isLoadingStage;
+    },
+    displayNoAccess() {
+      const { selectedStage } = this;
+      return selectedStage && !selectedStage.isUserAllowed;
+    },
   },
   methods: {
-    handleError() {
-      this.store.setErrorState(true);
-      return new Flash(__('There was an error while fetching value stream analytics data.'));
-    },
+    ...mapActions([
+      'fetchCycleAnalyticsData',
+      'fetchStageData',
+      'setSelectedStage',
+      'setDateRange',
+    ]),
     handleDateSelect(startDate) {
-      this.startDate = startDate;
-      this.fetchCycleAnalyticsData({ startDate: this.startDate });
+      this.setDateRange({ startDate });
+      this.fetchCycleAnalyticsData();
     },
-    fetchCycleAnalyticsData(options) {
-      const fetchOptions = options || { startDate: this.startDate };
-
-      this.isLoading = true;
-
-      this.service
-        .fetchCycleAnalyticsData(fetchOptions)
-        .then((response) => {
-          this.store.setCycleAnalyticsData(response);
-          this.selectDefaultStage();
-        })
-        .catch(() => {
-          this.handleError();
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
-    selectDefaultStage() {
-      const stage = this.state.stages[0];
-      this.selectStage(stage);
+    isActiveStage(stage) {
+      return stage.slug === this.selectedStage.slug;
     },
     selectStage(stage) {
-      if (this.isLoadingStage) return;
-      if (this.currentStage === stage) return;
+      if (this.selectedStage === stage) return;
 
+      this.setSelectedStage(stage);
       if (!stage.isUserAllowed) {
-        this.store.setActiveStage(stage);
         return;
       }
 
-      this.isLoadingStage = true;
-      this.store.setStageEvents([], stage);
-      this.store.setActiveStage(stage);
-
-      this.service
-        .fetchStageData({
-          stage,
-          startDate: this.startDate,
-          projectIds: this.selectedProjectIds,
-        })
-        .then((response) => {
-          this.isEmptyStage = !response.events.length;
-          this.store.setStageEvents(response.events, stage);
-        })
-        .catch(() => {
-          this.isEmptyStage = true;
-        })
-        .finally(() => {
-          this.isLoadingStage = false;
-        });
+      this.fetchStageData();
     },
     dismissOverviewDialog() {
       this.isOverviewDialogDismissed = true;
@@ -146,7 +111,7 @@ export default {
       <div class="card">
         <div class="card-header">{{ __('Recent Project Activity') }}</div>
         <div class="d-flex justify-content-between">
-          <div v-for="item in state.summary" :key="item.title" class="flex-grow text-center">
+          <div v-for="item in summary" :key="item.title" class="gl-flex-grow-1 gl-text-center">
             <h3 class="header">{{ item.value }}</h3>
             <p class="text">{{ item.title }}</p>
           </div>
@@ -207,11 +172,9 @@ export default {
                   </span>
                 </li>
                 <li class="event-header pl-3">
-                  <span
-                    v-if="currentStage && currentStage.legend"
-                    class="stage-name font-weight-bold"
-                    >{{ currentStage ? __(currentStage.legend) : __('Related Issues') }}</span
-                  >
+                  <span v-if="selectedStage" class="stage-name font-weight-bold">{{
+                    selectedStage.legend ? __(selectedStage.legend) : __('Related Issues')
+                  }}</span>
                   <span
                     class="has-tooltip"
                     data-placement="top"
@@ -242,19 +205,19 @@ export default {
             <nav class="stage-nav">
               <ul>
                 <stage-nav-item
-                  v-for="stage in state.stages"
+                  v-for="stage in stages"
                   :key="stage.title"
                   :title="stage.title"
                   :is-user-allowed="stage.isUserAllowed"
                   :value="stage.value"
-                  :is-active="stage.active"
+                  :is-active="isActiveStage(stage)"
                   @select="selectStage(stage)"
                 />
               </ul>
             </nav>
             <section class="stage-events overflow-auto">
               <gl-loading-icon v-show="isLoadingStage" size="lg" />
-              <template v-if="currentStage && !currentStage.isUserAllowed">
+              <template v-if="displayNoAccess">
                 <gl-empty-state
                   class="js-empty-state"
                   :title="__('You need permission.')"
@@ -263,19 +226,19 @@ export default {
                 />
               </template>
               <template v-else>
-                <template v-if="currentStage && isEmptyStage && !isLoadingStage">
+                <template v-if="displayNotEnoughData">
                   <gl-empty-state
                     class="js-empty-state"
-                    :description="currentStage.emptyStageText"
+                    :description="selectedStage.emptyStageText"
                     :svg-path="noDataSvgPath"
                     :title="__('We don\'t have enough data to show this stage.')"
                   />
                 </template>
-                <template v-if="state.events.length && !isLoadingStage && !isEmptyStage">
+                <template v-if="displayStageEvents">
                   <component
-                    :is="currentStage.component"
-                    :stage="currentStage"
-                    :items="state.events"
+                    :is="selectedStage.component"
+                    :stage="selectedStage"
+                    :items="selectedStageEvents"
                   />
                 </template>
               </template>

@@ -110,7 +110,6 @@ export default {
       <text-editor :value="ciFileContent" v-on="$listeners" />
     </editor-tab>
     <editor-tab
-      v-if="glFeatures.ciConfigVisualizationTab"
       class="gl-mb-3"
       :empty-message="$options.i18n.empty.visualization"
       :is-empty="isEmpty"

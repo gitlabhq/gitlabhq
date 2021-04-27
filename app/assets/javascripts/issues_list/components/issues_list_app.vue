@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlEmptyState, GlIcon, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlEmptyState,
+  GlFilteredSearchToken,
+  GlIcon,
+  GlLink,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { toNumber } from 'lodash';
 import createFlash from '~/flash';
@@ -26,7 +34,9 @@ import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase, getParameterByName } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
+import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import eventHub from '../eventhub';
 import IssueCardTimeInfo from './issue_card_time_info.vue';
 
@@ -52,6 +62,9 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: {
+    autocompleteAwardEmojisPath: {
+      default: '',
+    },
     autocompleteUsersPath: {
       default: '',
     },
@@ -86,6 +99,9 @@ export default {
       default: '',
     },
     projectLabelsPath: {
+      default: '',
+    },
+    projectMilestonesPath: {
       default: '',
     },
     projectPath: {
@@ -156,12 +172,43 @@ export default {
           fetchAuthors: this.fetchUsers,
         },
         {
+          type: 'milestone',
+          title: __('Milestone'),
+          icon: 'clock',
+          token: MilestoneToken,
+          unique: true,
+          defaultMilestones: [],
+          fetchMilestones: this.fetchMilestones,
+        },
+        {
           type: 'labels',
           title: __('Label'),
           icon: 'labels',
           token: LabelToken,
           defaultLabels: [],
           fetchLabels: this.fetchLabels,
+        },
+        {
+          type: 'my_reaction_emoji',
+          title: __('My-Reaction'),
+          icon: 'thumb-up',
+          token: EmojiToken,
+          unique: true,
+          operators: [{ value: '=', description: __('is') }],
+          defaultEmojis: [],
+          fetchEmojis: this.fetchEmojis,
+        },
+        {
+          type: 'confidential',
+          title: __('Confidential'),
+          icon: 'eye-slash',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: [{ value: '=', description: __('is') }],
+          options: [
+            { icon: 'eye-slash', value: 'yes', title: __('Yes') },
+            { icon: 'eye', value: 'no', title: __('No') },
+          ],
         },
       ];
     },
@@ -187,28 +234,39 @@ export default {
       };
     },
   },
+  created() {
+    this.cache = {};
+  },
   mounted() {
-    eventHub.$on('issuables:toggleBulkEdit', (showBulkEditSidebar) => {
-      this.showBulkEditSidebar = showBulkEditSidebar;
-    });
+    eventHub.$on('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
     this.fetchIssues();
   },
   beforeDestroy() {
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    eventHub.$off('issuables:toggleBulkEdit');
+    eventHub.$off('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
   },
   methods: {
-    fetchLabels(search) {
-      if (this.labelsCache) {
-        return search
-          ? Promise.resolve(fuzzaldrinPlus.filter(this.labelsCache, search, { key: 'title' }))
-          : Promise.resolve(this.labelsCache.slice(0, MAX_LIST_SIZE));
+    fetchWithCache(path, cacheName, searchKey, search, wrapData = false) {
+      if (this.cache[cacheName]) {
+        const data = search
+          ? fuzzaldrinPlus.filter(this.cache[cacheName], search, { key: searchKey })
+          : this.cache[cacheName].slice(0, MAX_LIST_SIZE);
+        return wrapData ? Promise.resolve({ data }) : Promise.resolve(data);
       }
 
-      return axios.get(this.projectLabelsPath).then(({ data }) => {
-        this.labelsCache = data;
-        return data.slice(0, MAX_LIST_SIZE);
+      return axios.get(path).then(({ data }) => {
+        this.cache[cacheName] = data;
+        const result = data.slice(0, MAX_LIST_SIZE);
+        return wrapData ? { data: result } : result;
       });
+    },
+    fetchEmojis(search) {
+      return this.fetchWithCache(this.autocompleteAwardEmojisPath, 'emojis', 'name', search);
+    },
+    fetchLabels(search) {
+      return this.fetchWithCache(this.projectLabelsPath, 'labels', 'title', search);
+    },
+    fetchMilestones(search) {
+      return this.fetchWithCache(this.projectMilestonesPath, 'milestones', 'title', search, true);
     },
     fetchUsers(search) {
       return axios.get(this.autocompleteUsersPath, { params: { search } });
@@ -309,6 +367,9 @@ export default {
     handleSort(value) {
       this.sortKey = value;
       this.fetchIssues();
+    },
+    toggleBulkEditSidebar(showBulkEditSidebar) {
+      this.showBulkEditSidebar = showBulkEditSidebar;
     },
   },
 };

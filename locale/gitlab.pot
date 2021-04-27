@@ -14619,7 +14619,16 @@ msgstr ""
 msgid "Geo|Remove entry"
 msgstr ""
 
+msgid "Geo|Remove node"
+msgstr ""
+
+msgid "Geo|Remove secondary node"
+msgstr ""
+
 msgid "Geo|Remove tracking database entry"
+msgstr ""
+
+msgid "Geo|Removing a Geo secondary node stops the synchronization to that node. Are you sure?"
 msgstr ""
 
 msgid "Geo|Replicated data is verified with the secondary node(s) using checksums."
@@ -14707,6 +14716,9 @@ msgid "Geo|The node is currently %{minutes_behind} behind the primary node."
 msgstr ""
 
 msgid "Geo|There are no %{replicable_type} to show"
+msgstr ""
+
+msgid "Geo|There was an error deleting the Geo Node"
 msgstr ""
 
 msgid "Geo|There was an error fetching the Geo Nodes"

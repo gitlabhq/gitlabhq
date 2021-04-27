@@ -47,6 +47,16 @@ export default {
       );
     },
   },
+  watch: {
+    active: {
+      immediate: true,
+      handler(newValue) {
+        if (!newValue && !this.emojis.length) {
+          this.fetchEmojiBySearchTerm(this.value.data);
+        }
+      },
+    },
+  },
   methods: {
     fetchEmojiBySearchTerm(searchTerm) {
       this.loading = true;

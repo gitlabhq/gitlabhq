@@ -1,10 +1,10 @@
 ---
 key_path: database.pg_system_id
-description: ''
-product_section: ''
-product_stage: ''
-product_group: ''
-product_category: ''
+description: TBD
+product_section: enablement
+product_stage: enablement
+product_group: group::distribution
+product_category:
 value_type: number
 status: data_available
 time_frame: all

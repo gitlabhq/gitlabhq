@@ -3,7 +3,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
-import { filteredTokens, locationSearch } from 'jest/issues_list/mock_data';
+import { apiParams, filteredTokens, locationSearch, urlParams } from 'jest/issues_list/mock_data';
 import createFlash from '~/flash';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
@@ -558,25 +558,11 @@ describe('IssuesListApp component', () => {
       });
 
       it('makes an API call to search for issues with the search term', () => {
-        expect(axiosMock.history.get[1].params).toMatchObject({
-          author_username: 'homer',
-          'not[author_username]': 'marge',
-          assignee_username: 'bart',
-          'not[assignee_username]': 'lisa',
-          labels: 'cartoon,tv',
-          'not[labels]': 'live action,drama',
-        });
+        expect(axiosMock.history.get[1].params).toMatchObject(apiParams);
       });
 
       it('updates IssuableList with url params', () => {
-        expect(findIssuableList().props('urlParams')).toMatchObject({
-          author_username: ['homer'],
-          'not[author_username]': ['marge'],
-          'assignee_username[]': ['bart'],
-          'not[assignee_username][]': ['lisa'],
-          'label_name[]': ['cartoon', 'tv'],
-          'not[label_name][]': ['live action', 'drama'],
-        });
+        expect(findIssuableList().props('urlParams')).toMatchObject(urlParams);
       });
     });
   });

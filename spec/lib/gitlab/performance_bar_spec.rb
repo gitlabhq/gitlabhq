@@ -6,7 +6,7 @@ RSpec.describe Gitlab::PerformanceBar do
   it { expect(described_class.l1_cache_backend).to eq(Gitlab::ProcessMemoryCache.cache_backend) }
   it { expect(described_class.l2_cache_backend).to eq(Rails.cache) }
 
-  describe '.enabled_for_user?' do
+  describe '.allowed_for_user?' do
     let(:user) { create(:user) }
 
     before do
@@ -14,24 +14,24 @@ RSpec.describe Gitlab::PerformanceBar do
     end
 
     it 'returns false when given user is nil' do
-      expect(described_class.enabled_for_user?(nil)).to be_falsy
+      expect(described_class.allowed_for_user?(nil)).to be_falsy
     end
 
     it 'returns true when given user is an admin' do
       user = build_stubbed(:user, :admin)
 
-      expect(described_class.enabled_for_user?(user)).to be_truthy
+      expect(described_class.allowed_for_user?(user)).to be_truthy
     end
 
     it 'returns false when allowed_group_id is nil' do
       expect(described_class).to receive(:allowed_group_id).and_return(nil)
 
-      expect(described_class.enabled_for_user?(user)).to be_falsy
+      expect(described_class.allowed_for_user?(user)).to be_falsy
     end
 
     context 'when allowed group ID does not exist' do
       it 'returns false' do
-        expect(described_class.enabled_for_user?(user)).to be_falsy
+        expect(described_class.allowed_for_user?(user)).to be_falsy
       end
     end
 
@@ -44,15 +44,15 @@ RSpec.describe Gitlab::PerformanceBar do
 
       context 'when user is not a member of the allowed group' do
         it 'returns false' do
-          expect(described_class.enabled_for_user?(user)).to be_falsy
+          expect(described_class.allowed_for_user?(user)).to be_falsy
         end
 
         context 'caching of allowed user IDs' do
-          subject { described_class.enabled_for_user?(user) }
+          subject { described_class.allowed_for_user?(user) }
 
           before do
             # Warm the caches
-            described_class.enabled_for_user?(user)
+            described_class.allowed_for_user?(user)
           end
 
           it_behaves_like 'allowed user IDs are cached'
@@ -65,15 +65,15 @@ RSpec.describe Gitlab::PerformanceBar do
         end
 
         it 'returns true' do
-          expect(described_class.enabled_for_user?(user)).to be_truthy
+          expect(described_class.allowed_for_user?(user)).to be_truthy
         end
 
         context 'caching of allowed user IDs' do
-          subject { described_class.enabled_for_user?(user) }
+          subject { described_class.allowed_for_user?(user) }
 
           before do
             # Warm the caches
-            described_class.enabled_for_user?(user)
+            described_class.allowed_for_user?(user)
           end
 
           it_behaves_like 'allowed user IDs are cached'
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::PerformanceBar do
       end
 
       it 'returns the nested group' do
-        expect(described_class.enabled_for_user?(user)).to be_truthy
+        expect(described_class.allowed_for_user?(user)).to be_truthy
       end
     end
 
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::PerformanceBar do
       end
 
       it 'returns false' do
-        expect(described_class.enabled_for_user?(user)).to be_falsy
+        expect(described_class.allowed_for_user?(user)).to be_falsy
       end
     end
   end

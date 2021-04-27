@@ -73,6 +73,7 @@ export function initIssuesListApp() {
   }
 
   const {
+    autocompleteAwardEmojisPath,
     autocompleteUsersPath,
     calendarPath,
     canBulkUpdate,
@@ -94,6 +95,7 @@ export function initIssuesListApp() {
     newIssuePath,
     projectImportJiraPath,
     projectLabelsPath,
+    projectMilestonesPath,
     projectPath,
     rssPath,
     showNewIssueLink,
@@ -106,6 +108,7 @@ export function initIssuesListApp() {
     // issue is fixed upstream in https://github.com/vuejs/vue-apollo/pull/1153
     apolloProvider: {},
     provide: {
+      autocompleteAwardEmojisPath,
       autocompleteUsersPath,
       calendarPath,
       canBulkUpdate: parseBoolean(canBulkUpdate),
@@ -120,6 +123,7 @@ export function initIssuesListApp() {
       jiraIntegrationPath,
       newIssuePath,
       projectLabelsPath,
+      projectMilestonesPath,
       projectPath,
       rssPath,
       showNewIssueLink: parseBoolean(showNewIssueLink),

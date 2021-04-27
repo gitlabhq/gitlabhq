@@ -61,11 +61,6 @@ export const NOT_FILTER = 'not[';
 
 export const flashAnimationDuration = 2000;
 
-export default {
-  BoardType,
-  ListType,
-};
-
 export const blockingIssuablesQueries = {
   [issuableTypes.issue]: {
     query: boardBlockingIssuesQuery,
@@ -94,4 +89,9 @@ export const subscriptionQueries = {
   [issuableTypes.epic]: {
     mutation: updateEpicSubscriptionMutation,
   },
+};
+
+export default {
+  BoardType,
+  ListType,
 };

@@ -166,6 +166,7 @@ module IssuesHelper
   def issues_list_data(project, current_user, finder)
     {
       autocomplete_users_path: autocomplete_users_path(active: true, current_user: true, project_id: project.id, format: :json),
+      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
       can_bulk_update: can?(current_user, :admin_issue, project).to_s,
       can_edit: can?(current_user, :admin_project, project).to_s,
@@ -183,6 +184,7 @@ module IssuesHelper
       new_issue_path: new_project_issue_path(project, issue: { assignee_id: finder.assignee.try(:id), milestone_id: finder.milestones.first.try(:id) }),
       project_import_jira_path: project_import_jira_path(project),
       project_labels_path: project_labels_path(project, include_ancestor_groups: true, format: :json),
+      project_milestones_path: project_milestones_path(project, format: :json),
       project_path: project.full_path,
       rss_path: url_for(safe_params.merge(rss_url_options)),
       show_new_issue_link: show_new_issue_link?(project).to_s,

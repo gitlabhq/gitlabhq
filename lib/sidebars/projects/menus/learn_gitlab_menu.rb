@@ -24,9 +24,9 @@ module Sidebars
           { class: 'home' }
         end
 
-        override :sprite_icon
-        def sprite_icon
-          'home'
+        override :image_path
+        def image_path
+          'learn_gitlab/graduation_hat.svg'
         end
 
         override :render?
