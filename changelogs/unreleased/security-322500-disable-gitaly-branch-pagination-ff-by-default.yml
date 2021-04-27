@@ -1,0 +1,5 @@
+---
+title: Disable keyset pagination for branches by default
+merge_request:
+author:
+type: security
