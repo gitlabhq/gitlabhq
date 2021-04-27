@@ -86,7 +86,7 @@ by using a `release` node in the job definition.
 The release is created only if the job processes without error. If the Rails API returns an error
 during release creation, the release job fails.
 
-### Schedule a future release
+### Upcoming releases
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
 

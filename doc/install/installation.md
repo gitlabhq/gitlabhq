@@ -828,6 +828,8 @@ to use. Read all about the needed configuration at the
 
 If you want to use HTTPS, replace the `gitlab` NGINX configuration with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
+For the NGINX to be able to read the GitLab-Workhorse socket, you need to make sure, that the `www-data` user can read the socket, which will be owned by the GitLab user. This is most easily achieved, if it is world-readable, for example that it has permissions `0755`, which is the default. `www-data` also needs to be able to list the parent directories.
+
 ### Test Configuration
 
 Validate your `gitlab` or `gitlab-ssl` NGINX configuration file with the following command:

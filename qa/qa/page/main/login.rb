@@ -50,15 +50,17 @@ module QA
           return if Page::Main::Menu.perform(&:signed_in?)
 
           using_wait_time 0 do
-            set_initial_password_if_present
-
-            raise 'If an LDAP user is provided, it must be used for sign-in', QA::Resource::User::InvalidUserError if Runtime::User.ldap_user? && user && user.username != Runtime::User.ldap_username
+            if Runtime::User.ldap_user? && user && user.username != Runtime::User.ldap_username
+              raise 'If an LDAP user is provided, it must be used for sign-in', QA::Resource::User::InvalidUserError
+            end
 
             if Runtime::User.ldap_user?
               sign_in_using_ldap_credentials(user: user || Runtime::User)
             else
               sign_in_using_gitlab_credentials(user: user || Runtime::User, skip_page_validation: skip_page_validation)
             end
+
+            set_initial_password_if_present
           end
         end
 
@@ -69,8 +71,6 @@ module QA
           end
 
           using_wait_time 0 do
-            set_initial_password_if_present
-
             sign_in_using_gitlab_credentials(user: admin)
           end
 
@@ -81,8 +81,6 @@ module QA
           Page::Main::Menu.perform(&:sign_out_if_signed_in)
 
           using_wait_time 0 do
-            set_initial_password_if_present
-
             switch_to_ldap_tab
 
             fill_element :username_field, user.ldap_username
@@ -169,11 +167,11 @@ module QA
         end
 
         def set_initial_password_if_present
-          return unless has_content?('Change your password')
+          return unless has_content?('Set up new password')
 
-          fill_element :password_field, Runtime::User.password
-          fill_element :password_confirmation_field, Runtime::User.password
-          click_element :change_password_button
+          Profile::Password.perform do |new_password_page|
+            new_password_page.set_new_password(Runtime::User.password, Runtime::User.password)
+          end
         end
       end
     end

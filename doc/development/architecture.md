@@ -372,6 +372,8 @@ repository updates to secondary nodes.
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/geo.md)
 - Layer: Core Service (Processor)
 
+Geo is a premium feature built to help speed up the development of distributed teams by providing one or more read-only mirrors of a primary GitLab instance. This mirror (a Geo secondary site) reduces the time to clone or fetch large repositories and projects, or can be part of a Disaster Recovery solution.
+
 #### GitLab Exporter
 
 - [Project page](https://gitlab.com/gitlab-org/gitlab-exporter)

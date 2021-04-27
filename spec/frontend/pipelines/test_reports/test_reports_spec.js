@@ -31,7 +31,7 @@ describe('Test reports app', () => {
     removeSelectedSuiteIndex: jest.fn(),
   };
 
-  const createComponent = ({ state = {}, hasTestReport = true } = {}) => {
+  const createComponent = ({ state = {} } = {}) => {
     store = new Vuex.Store({
       state: {
         isLoading: false,
@@ -47,9 +47,6 @@ describe('Test reports app', () => {
       shallowMount(TestReports, {
         store,
         localVue,
-        provide: {
-          hasTestReport,
-        },
       }),
     );
   };
@@ -63,12 +60,6 @@ describe('Test reports app', () => {
       createComponent();
 
       expect(actionSpies.fetchSummary).toHaveBeenCalled();
-    });
-
-    it('should not call fetchSummary when pipeline does not have test report', () => {
-      createComponent({ state: {}, hasTestReport: false });
-
-      expect(actionSpies.fetchSummary).not.toHaveBeenCalled();
     });
   });
 

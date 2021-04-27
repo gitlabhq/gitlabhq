@@ -13456,9 +13456,9 @@ Type of a tree entry.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="entrytypeblob"></a>`blob` |  |
-| <a id="entrytypecommit"></a>`commit` |  |
-| <a id="entrytypetree"></a>`tree` |  |
+| <a id="entrytypeblob"></a>`blob` | File tree type. |
+| <a id="entrytypecommit"></a>`commit` | Commit tree type. |
+| <a id="entrytypetree"></a>`tree` | Directory tree type. |
 
 ### `EpicSort`
 

@@ -16,16 +16,16 @@
       .col-sm-2.col-form-label
         = f.label :current_password, _('Current password')
       .col-sm-10
-        = f.password_field :current_password, required: true, class: 'form-control gl-form-input'
+        = f.password_field :current_password, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'current_password_field' }
   .form-group.row
     .col-sm-2.col-form-label
       = f.label :password, _('New password')
     .col-sm-10
-      = f.password_field :password, required: true, class: 'form-control gl-form-input'
+      = f.password_field :password, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'new_password_field' }
   .form-group.row
     .col-sm-2.col-form-label
       = f.label :password_confirmation, _('Password confirmation')
     .col-sm-10
-      = f.password_field :password_confirmation, required: true, class: 'form-control gl-form-input'
+      = f.password_field :password_confirmation, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'confirm_password_field' }
   .form-actions
-    = f.submit _('Set new password'), class: 'gl-button btn btn-confirm'
+    = f.submit _('Set new password'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'set_new_password_button' }

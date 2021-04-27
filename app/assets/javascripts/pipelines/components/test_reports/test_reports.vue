@@ -15,11 +15,6 @@ export default {
     TestSummary,
     TestSummaryTable,
   },
-  inject: {
-    hasTestReport: {
-      default: false,
-    },
-  },
   computed: {
     ...mapState(['isLoading', 'selectedSuiteIndex', 'testReports']),
     ...mapGetters(['getSelectedSuite']),
@@ -32,9 +27,7 @@ export default {
     },
   },
   created() {
-    if (this.hasTestReport) {
-      this.fetchSummary();
-    }
+    this.fetchSummary();
   },
   methods: {
     ...mapActions([

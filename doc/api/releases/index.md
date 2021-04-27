@@ -717,6 +717,5 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
 
-A release with a `released_at` attribute set to a future date is labeled an **Upcoming Release** in the UI:
-
-![Upcoming release](img/upcoming_release_v12_1.png)
+A release with a `released_at` attribute set to a future date is labeled
+as an **Upcoming Release** [in the UI](../../user/project/releases/index.md#upcoming-releases).
