@@ -26,11 +26,11 @@ module Gitlab
       private
 
       def keyset_pagination_enabled?
-        Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: true) && params[:pagination] == 'keyset'
+        Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: :yaml) && params[:pagination] == 'keyset'
       end
 
       def paginate_first_page?
-        Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: true) && (params[:page].blank? || params[:page].to_i == 1)
+        Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: :yaml) && (params[:page].blank? || params[:page].to_i == 1)
       end
 
       def paginate_via_gitaly(finder)

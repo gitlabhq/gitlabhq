@@ -8,7 +8,10 @@ module Auth
 
     def execute(authentication_abilities:)
       return error('dependency proxy not enabled', 404) unless ::Gitlab.config.dependency_proxy.enabled
-      return error('access forbidden', 403) unless current_user
+
+      # Because app/controllers/concerns/dependency_proxy/auth.rb consumes this
+      # JWT only as `User.find`, we currently only allow User (not DeployToken, etc)
+      return error('access forbidden', 403) unless current_user.is_a?(User)
 
       { token: authorized_token.encoded }
     end
