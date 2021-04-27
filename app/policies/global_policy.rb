@@ -23,6 +23,7 @@ class GlobalPolicy < BasePolicy
     prevent :receive_notifications
     prevent :use_quick_actions
     prevent :create_group
+    prevent :execute_graphql_mutation
   end
 
   rule { default }.policy do
@@ -32,6 +33,7 @@ class GlobalPolicy < BasePolicy
     enable :receive_notifications
     enable :use_quick_actions
     enable :use_slash_commands
+    enable :execute_graphql_mutation
   end
 
   rule { inactive }.policy do
@@ -47,6 +49,8 @@ class GlobalPolicy < BasePolicy
     prevent :receive_notifications
     prevent :use_slash_commands
   end
+
+  rule { ~can?(:access_api) }.prevent :execute_graphql_mutation
 
   rule { blocked | (internal & ~migration_bot & ~security_bot) }.policy do
     prevent :access_git

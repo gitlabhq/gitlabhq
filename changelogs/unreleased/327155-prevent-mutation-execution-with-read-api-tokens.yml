@@ -1,0 +1,5 @@
+---
+title: Prevent tokens with only read_api scope from executing mutations
+merge_request:
+author:
+type: security
