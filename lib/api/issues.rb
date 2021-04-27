@@ -236,7 +236,6 @@ module API
         authorize! :create_issue, user_project
 
         issue_params = declared_params(include_missing: false)
-        issue_params[:system_note_timestamp] = params[:created_at]
 
         issue_params = convert_parameters_from_legacy_format(issue_params)
 
@@ -279,8 +278,6 @@ module API
 
         issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))
         authorize! :update_issue, issue
-
-        issue.system_note_timestamp = params[:updated_at]
 
         update_params = declared_params(include_missing: false).merge(request: request, api: true)
 
