@@ -1,12 +1,15 @@
 - page_title _('Pipelines')
 - add_page_specific_style 'page_bundles/pipelines'
 - add_page_specific_style 'page_bundles/ci_status'
+- artifacts_endpoint_placeholder = ':pipeline_artifacts_id'
 
 = render_if_exists "shared/shared_runners_minutes_limit_flash_message"
 
 #pipelines-list-vue{ data: { endpoint: project_pipelines_path(@project, format: :json),
   project_id: @project.id,
   params: params.to_json,
+  "artifacts-endpoint" => downloadable_artifacts_project_pipeline_path(@project, artifacts_endpoint_placeholder, format: :json),
+  "artifacts-endpoint-placeholder" => artifacts_endpoint_placeholder,
   "pipeline-schedule-url" => pipeline_schedules_path(@project),
   "empty-state-svg-path" => image_path('illustrations/pipelines_empty.svg'),
   "error-state-svg-path" => image_path('illustrations/pipelines_failed.svg'),

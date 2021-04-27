@@ -130,6 +130,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_artifacts) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
+    it { is_expected.to have_many(:timelogs) }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }

@@ -13,14 +13,24 @@ RSpec.describe 'Math rendering', :js do
       ```math
       a^2+b^2=c^2
       ```
+
+      This math is aligned
+
+      ```math
+      \\begin{align*}
+        a&=b+c \\\\
+        d+e&=f
+      \\end{align*}
+      ```
     MATH
 
     issue = create(:issue, project: project, description: description)
 
     visit project_issue_path(project, issue)
 
-    expect(page).to have_selector('.katex .mord.mathdefault', text: 'b')
-    expect(page).to have_selector('.katex-display .mord.mathdefault', text: 'b')
+    expect(page).to have_selector('.katex .mord.mathnormal', text: 'b')
+    expect(page).to have_selector('.katex-display .mord.mathnormal', text: 'b')
+    expect(page).to have_selector('.katex-display .mtable .col-align-l .mord.mathnormal', text: 'f')
   end
 
   it 'only renders non XSS links' do
@@ -35,7 +45,9 @@ RSpec.describe 'Math rendering', :js do
     visit project_issue_path(project, issue)
 
     page.within '.description > .md' do
-      expect(page).to have_selector('.katex-error')
+      # unfortunately there is no class selector for KaTeX's "unsupported command"
+      # formatting so we must match the style attribute
+      expect(page).to have_selector('.katex-html .mord[style*="color:"][style*="#cc0000"]', text: '\href')
       expect(page).to have_selector('.katex-html a', text: 'Gitlab')
     end
   end

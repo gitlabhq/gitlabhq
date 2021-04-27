@@ -123,6 +123,16 @@ module Gitlab
       # ignore - happens when Rake tasks yet have to create a database, e.g. for testing
     end
 
+    def self.nulls_order(field, direction = :asc, nulls_order = :nulls_last)
+      raise ArgumentError unless [:nulls_last, :nulls_first].include?(nulls_order)
+      raise ArgumentError unless [:asc, :desc].include?(direction)
+
+      case nulls_order
+      when :nulls_last then nulls_last_order(field, direction)
+      when :nulls_first then nulls_first_order(field, direction)
+      end
+    end
+
     def self.nulls_last_order(field, direction = 'ASC')
       Arel.sql("#{field} #{direction} NULLS LAST")
     end

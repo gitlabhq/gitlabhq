@@ -640,6 +640,7 @@ Timelog:
 - time_spent
 - merge_request_id
 - user_id
+- project_id
 - spent_at
 - created_at
 - updated_at

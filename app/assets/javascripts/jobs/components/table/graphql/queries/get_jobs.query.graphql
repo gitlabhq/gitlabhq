@@ -8,7 +8,20 @@ query getJobs($fullPath: ID!, $statuses: [CiJobStatus!]) {
         startCursor
       }
       nodes {
+        artifacts {
+          nodes {
+            downloadPath
+          }
+        }
+        allowFailure
+        status
+        scheduledAt
+        manualJob
+        triggered
+        createdByTag
         detailedStatus {
+          detailsPath
+          group
           icon
           label
           text

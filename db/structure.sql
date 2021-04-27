@@ -14016,14 +14016,6 @@ CREATE TABLE jira_tracker_data (
     deployment_type smallint DEFAULT 0 NOT NULL,
     vulnerabilities_issuetype text,
     vulnerabilities_enabled boolean DEFAULT false NOT NULL,
-    encrypted_proxy_address text,
-    encrypted_proxy_address_iv text,
-    encrypted_proxy_port text,
-    encrypted_proxy_port_iv text,
-    encrypted_proxy_username text,
-    encrypted_proxy_username_iv text,
-    encrypted_proxy_password text,
-    encrypted_proxy_password_iv text,
     jira_issue_transition_automatic boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0bf84b76e9 CHECK ((char_length(vulnerabilities_issuetype) <= 255)),
     CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255))
@@ -18015,7 +18007,8 @@ CREATE TABLE timelogs (
     issue_id integer,
     merge_request_id integer,
     spent_at timestamp without time zone,
-    note_id integer
+    note_id integer,
+    project_id integer
 );
 
 CREATE SEQUENCE timelogs_id_seq
@@ -24149,6 +24142,8 @@ CREATE INDEX index_timelogs_on_merge_request_id ON timelogs USING btree (merge_r
 
 CREATE INDEX index_timelogs_on_note_id ON timelogs USING btree (note_id);
 
+CREATE INDEX index_timelogs_on_project_id_and_spent_at ON timelogs USING btree (project_id, spent_at);
+
 CREATE INDEX index_timelogs_on_spent_at ON timelogs USING btree (spent_at) WHERE (spent_at IS NOT NULL);
 
 CREATE INDEX index_timelogs_on_user_id ON timelogs USING btree (user_id);
@@ -25323,6 +25318,9 @@ ALTER TABLE ONLY geo_event_log
 
 ALTER TABLE ONLY vulnerability_exports
     ADD CONSTRAINT fk_c3d3cb5d0f FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY timelogs
+    ADD CONSTRAINT fk_c49c83dd77 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_c4b1c1f66e FOREIGN KEY (repository_deleted_event_id) REFERENCES geo_repository_deleted_events(id) ON DELETE CASCADE;

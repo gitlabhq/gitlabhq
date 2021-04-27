@@ -54,6 +54,11 @@ export default {
     isCancelling() {
       return this.cancelingPipeline === this.pipeline.id;
     },
+    showArtifacts() {
+      return (
+        this.pipeline.details.artifacts?.length || this.pipeline.details.has_downloadable_artifacts
+      );
+    },
   },
   watch: {
     pipeline() {
@@ -110,10 +115,7 @@ export default {
         @click="handleCancelClick"
       />
 
-      <pipeline-multi-actions
-        v-if="pipeline.details.artifacts.length"
-        :artifacts="pipeline.details.artifacts"
-      />
+      <pipeline-multi-actions v-if="showArtifacts" :pipeline-id="pipeline.id" />
     </div>
   </div>
 </template>

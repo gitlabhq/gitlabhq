@@ -114,6 +114,12 @@ class SafeMathRenderer {
           throwOnError: true,
           maxSize: 20,
           maxExpand: 20,
+          trust: (context) =>
+            // this config option restores the KaTeX pre-v0.11.0
+            // behavior of allowing certain commands and protocols
+            // eslint-disable-next-line @gitlab/require-i18n-strings
+            ['\\url', '\\href'].includes(context.command) &&
+            ['http', 'https', 'mailto', '_relative'].includes(context.protocol),
         });
       } catch (e) {
         // Don't show a flash for now because it would override an existing flash message

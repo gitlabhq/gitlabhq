@@ -568,6 +568,7 @@ project:
 - debian_distributions
 - merge_request_metrics
 - security_orchestration_policy_configuration
+- timelogs
 award_emoji:
 - awardable
 - user

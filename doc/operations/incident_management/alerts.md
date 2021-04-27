@@ -33,9 +33,10 @@ The alert list displays the following information:
 - **Event count**: The number of times that an alert has fired.
 - **Issue**: A link to the incident issue that has been created for the alert.
 - **Status**: The current status of the alert:
-  - **Triggered**: No one has begun investigation.
+  - **Triggered**: Investigation has not started.
   - **Acknowledged**: Someone is actively investigating the problem.
   - **Resolved**: No further work is required.
+  - **Ignored**: No action will be taken on the alert.
 
 NOTE:
 Check out a live example available from the

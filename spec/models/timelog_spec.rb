@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Timelog do
-  subject { build(:timelog) }
+  subject { create(:timelog) }
 
   let(:issue) { create(:issue) }
   let(:merge_request) { create(:merge_request) }
 
+  it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:issue).touch(true) }
   it { is_expected.to belong_to(:merge_request).touch(true) }
 
@@ -15,6 +16,8 @@ RSpec.describe Timelog do
 
   it { is_expected.to validate_presence_of(:time_spent) }
   it { is_expected.to validate_presence_of(:user) }
+
+  it { expect(subject.project_id).not_to be_nil }
 
   describe 'Issuable validation' do
     it 'is invalid if issue_id and merge_request_id are missing' do

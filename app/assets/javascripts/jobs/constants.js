@@ -22,3 +22,5 @@ export const JOB_RETRY_FORWARD_DEPLOYMENT_MODAL = {
   primaryText: __('Retry job'),
   title: s__('Jobs|Are you sure you want to retry this job?'),
 };
+
+export const SUCCESS_STATUS = 'SUCCESS';
