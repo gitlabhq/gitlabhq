@@ -62,7 +62,7 @@ Gitaly comes pre-configured with Omnibus GitLab, which is a configuration
 [suitable for up to 1000 users](../reference_architectures/1k_users.md). For:
 
 - Omnibus GitLab installations for up to 2000 users, see [specific Gitaly configuration instructions](../reference_architectures/2k_users.md#configure-gitaly).
-- Source installations or custom Gitaly installations, see [Configure Gitaly](#configure-gitaly).
+- Source installations or custom Gitaly installations, see [Configure Gitaly](configure_gitaly.md).
 
 GitLab installations for more than 2000 users should use Gitaly Cluster.
 

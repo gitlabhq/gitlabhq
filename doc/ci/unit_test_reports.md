@@ -199,7 +199,7 @@ There are a few tools that can produce JUnit report format XML files in C/C++.
 In the following example, `gtest` is used to generate the test reports.
 If there are multiple `gtest` executables created for different architectures (`x86`, `x64` or `arm`),
 you are required to run each test providing a unique filename. The results
-are then be aggregated together.
+are then aggregated together.
 
 ```yaml
 cpp:
