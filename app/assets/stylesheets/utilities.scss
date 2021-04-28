@@ -172,3 +172,13 @@
     width: 50%;
   }
 }
+
+.gl-sm-mr-3 {
+  @include media-breakpoint-up(sm) {
+    margin-right: $gl-spacing-scale-3;
+  }
+}
+
+.gl-mb-n3 {
+  margin-bottom: -$gl-spacing-scale-3;
+}

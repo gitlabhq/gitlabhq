@@ -112,7 +112,13 @@ class GraphqlController < ApplicationController
   # When modifying the context, also update GraphqlChannel#context if needed
   # so that we have similar context when executing queries, mutations, and subscriptions
   def context
-    @context ||= { current_user: current_user, is_sessionless_user: !!sessionless_user?, request: request }
+    api_user = !!sessionless_user?
+    @context ||= {
+      current_user: current_user,
+      is_sessionless_user: api_user,
+      request: request,
+      scope_validator: ::Gitlab::Auth::ScopeValidator.new(api_user, request_authenticator)
+    }
   end
 
   def build_variables(variable_info)

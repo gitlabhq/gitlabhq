@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'User edit preferences profile', :js do
@@ -61,19 +62,6 @@ RSpec.describe 'User edit preferences profile', :js do
       page.execute_script("document.querySelector('#user_tab_width').setAttribute('min', '-1')")
       click_button 'Save changes'
       expect(page).to have_content('Failed to save preferences.')
-    end
-  end
-
-  describe 'User language' do
-    let(:user) { create(:user, preferred_language: :es) }
-
-    it 'shows the user preferred language by default' do
-      expect(page).to have_select(
-        'user[preferred_language]',
-        selected: 'Spanish - español',
-        options: Gitlab::I18n.selectable_locales.values,
-        visible: :all
-      )
     end
   end
 end

@@ -31,6 +31,8 @@ RSpec.describe 'Adding a Note' do
       project.add_developer(current_user)
     end
 
+    it_behaves_like 'a working GraphQL mutation'
+
     it_behaves_like 'a Note mutation that creates a Note'
 
     it_behaves_like 'a Note mutation when there are active record validation errors'

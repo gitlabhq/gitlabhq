@@ -3,6 +3,7 @@ import { GlLoadingIcon, GlPagination, GlSprintf } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Mousetrap from 'mousetrap';
 import { mapState, mapGetters, mapActions } from 'vuex';
+import api from '~/api';
 import {
   keysFor,
   MR_PREVIOUS_FILE_IN_DIFF,
@@ -30,6 +31,15 @@ import {
   ALERT_OVERFLOW_HIDDEN,
   ALERT_MERGE_CONFLICT,
   ALERT_COLLAPSED_FILES,
+  INLINE_DIFF_VIEW_TYPE,
+  TRACKING_DIFF_VIEW_INLINE,
+  TRACKING_DIFF_VIEW_PARALLEL,
+  TRACKING_FILE_BROWSER_TREE,
+  TRACKING_FILE_BROWSER_LIST,
+  TRACKING_WHITESPACE_SHOW,
+  TRACKING_WHITESPACE_HIDE,
+  TRACKING_SINGLE_FILE_MODE,
+  TRACKING_MULTIPLE_FILES_MODE,
 } from '../constants';
 
 import { reviewStatuses } from '../utils/file_reviews';
@@ -183,6 +193,8 @@ export default {
       'hasConflicts',
       'viewDiffsFileByFile',
       'mrReviews',
+      'renderTreeList',
+      'showWhitespace',
     ]),
     ...mapGetters('diffs', ['whichCollapsedTypes', 'isParallelView', 'currentDiffIndex']),
     ...mapGetters('batchComments', ['draftsCount']),
@@ -304,6 +316,32 @@ export default {
 
     if (id && id.indexOf('#note') !== 0) {
       this.setHighlightedRow(id.split('diff-content').pop().slice(1));
+    }
+
+    if (window.gon?.features?.diffSettingsUsageData) {
+      if (this.renderTreeList) {
+        api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_TREE);
+      } else {
+        api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_LIST);
+      }
+
+      if (this.diffViewType === INLINE_DIFF_VIEW_TYPE) {
+        api.trackRedisHllUserEvent(TRACKING_DIFF_VIEW_INLINE);
+      } else {
+        api.trackRedisHllUserEvent(TRACKING_DIFF_VIEW_PARALLEL);
+      }
+
+      if (this.showWhitespace) {
+        api.trackRedisHllUserEvent(TRACKING_WHITESPACE_SHOW);
+      } else {
+        api.trackRedisHllUserEvent(TRACKING_WHITESPACE_HIDE);
+      }
+
+      if (this.viewDiffsFileByFile) {
+        api.trackRedisHllUserEvent(TRACKING_SINGLE_FILE_MODE);
+      } else {
+        api.trackRedisHllUserEvent(TRACKING_MULTIPLE_FILES_MODE);
+      }
     }
   },
   beforeCreate() {

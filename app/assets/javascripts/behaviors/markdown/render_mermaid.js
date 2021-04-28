@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { once } from 'lodash';
+import { once, countBy } from 'lodash';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { __, sprintf } from '~/locale';
@@ -22,6 +22,8 @@ import { __, sprintf } from '~/locale';
 const MAX_CHAR_LIMIT = 2000;
 // Max # of mermaid blocks that can be rendered in a page.
 const MAX_MERMAID_BLOCK_LIMIT = 50;
+// Max # of `&` allowed in Chaining of links syntax
+const MAX_CHAINING_OF_LINKS_LIMIT = 30;
 // Keep a map of mermaid blocks we've already rendered.
 const elsProcessingMap = new WeakMap();
 let renderedMermaidBlocks = 0;
@@ -62,6 +64,18 @@ function importMermaidModule() {
       // eslint-disable-next-line no-console
       console.error(err);
     });
+}
+
+function shouldLazyLoadMermaidBlock(source) {
+  /**
+   * If source contains `&`, which means that it might
+   * contain Chaining of links a new syntax in Mermaid.
+   */
+  if (countBy(source)['&'] > MAX_CHAINING_OF_LINKS_LIMIT) {
+    return true;
+  }
+
+  return false;
 }
 
 function fixElementSource(el) {
@@ -128,7 +142,8 @@ function renderMermaids($els) {
         if (
           (source && source.length > MAX_CHAR_LIMIT) ||
           renderedChars > MAX_CHAR_LIMIT ||
-          renderedMermaidBlocks >= MAX_MERMAID_BLOCK_LIMIT
+          renderedMermaidBlocks >= MAX_MERMAID_BLOCK_LIMIT ||
+          shouldLazyLoadMermaidBlock(source)
         ) {
           const html = `
           <div class="alert gl-alert gl-alert-warning alert-dismissible lazy-render-mermaid-container js-lazy-render-mermaid-container fade show" role="alert">

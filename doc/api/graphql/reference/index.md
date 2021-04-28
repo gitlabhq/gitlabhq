@@ -13558,9 +13558,9 @@ Group member relation.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="groupmemberrelationdescendants"></a>`DESCENDANTS` | Descendants members. |
-| <a id="groupmemberrelationdirect"></a>`DIRECT` | Direct members. |
-| <a id="groupmemberrelationinherited"></a>`INHERITED` | Inherited members. |
+| <a id="groupmemberrelationdescendants"></a>`DESCENDANTS` | Members in the group's subgroups. |
+| <a id="groupmemberrelationdirect"></a>`DIRECT` | Members in the group itself. |
+| <a id="groupmemberrelationinherited"></a>`INHERITED` | Members in the group's ancestor groups. |
 
 ### `HealthStatus`
 

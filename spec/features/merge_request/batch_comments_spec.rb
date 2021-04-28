@@ -34,7 +34,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
       expect(page).to have_css('.review-bar-component')
 
-      expect(find('.review-bar-content .btn-success')).to have_content('1')
+      expect(find('.review-bar-content .btn-confirm')).to have_content('1')
     end
 
     it 'publishes review' do
@@ -157,7 +157,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
         expect(find('.new .draft-note-component')).to have_content('Line is wrong')
         expect(find('.old .draft-note-component')).to have_content('Another wrong line')
 
-        expect(find('.review-bar-content .btn-success')).to have_content('2')
+        expect(find('.review-bar-content .btn-confirm')).to have_content('2')
       end
     end
 

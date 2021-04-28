@@ -8048,6 +8048,222 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `redis_hll_counters.code_review.i_code_review_click_file_browser_setting_monthly`
+
+Count of users clicking merge request file browser setting
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210421145818_i_code_review_click_file_browser_setting_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_click_file_browser_setting_weekly`
+
+Count of users with merge request file list setting
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210421145814_i_code_review_click_file_browser_setting_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_click_single_file_mode_setting_monthly`
+
+Count of users clicking single file mode setting
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210421144352_i_code_review_click_single_file_mode_setting_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_click_single_file_mode_setting_weekly`
+
+Count of users clicking single file mode setting
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210421144349_i_code_review_click_single_file_mode_setting_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_click_whitespace_setting_monthly`
+
+Count of users clicking merge request whitespae setting
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210421145945_i_code_review_click_whitespace_setting_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_click_whitespace_setting_weekly`
+
+Count of users clicking merge request whitespae setting
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210421145942_i_code_review_click_whitespace_setting_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_hide_whitespace_monthly`
+
+Count of users with show whitespace disabled
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210422102010_i_code_review_diff_hide_whitespace_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_hide_whitespace_weekly`
+
+Count of users with show whitespace disabled
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210422102007_i_code_review_diff_hide_whitespace_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_multiple_files_monthly`
+
+Count of users with single mode disabled
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210422102202_i_code_review_diff_multiple_files_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_multiple_files_weekly`
+
+Count of users with single mode disabled
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210422102159_i_code_review_diff_multiple_files_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_show_whitespace_monthly`
+
+Count of users with show whitespace enabled
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210422101928_i_code_review_diff_show_whitespace_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_show_whitespace_weekly`
+
+Count of users with show whitespace enabled
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210422101925_i_code_review_diff_show_whitespace_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_single_file_monthly`
+
+Count of users with single file mode enabled
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210422102121_i_code_review_diff_single_file_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_single_file_weekly`
+
+Count of users with single file mode enabled
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210422102118_i_code_review_diff_single_file_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_view_inline_monthly`
+
+Count of users with merge request view type as inline
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210422101516_i_code_review_diff_view_inline_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_view_inline_weekly`
+
+Count of users with merge request view type as inline
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210422101512_i_code_review_diff_view_inline_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_view_parallel_monthly`
+
+Count of users with merge request view type as parallel
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210422101613_i_code_review_diff_view_parallel_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_diff_view_parallel_weekly`
+
+Count of users with merge request view type as parallel
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210422101609_i_code_review_diff_view_parallel_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.code_review.i_code_review_edit_mr_desc_monthly`
 
 Count of unique users per month who edit the description of a merge request
@@ -8093,6 +8309,54 @@ Count of unique users per week who edit the title of a merge request
 Group: `group::code review`
 
 Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_file_browser_list_view_monthly`
+
+Count of users with merge request file list setting
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210422101852_i_code_review_file_browser_list_view_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_file_browser_list_view_weekly`
+
+Count of users with merge request file list setting
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210422101849_i_code_review_file_browser_list_view_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_file_browser_tree_view_monthly`
+
+Count of users with merge request file tree setting
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210422101753_i_code_review_file_browser_tree_view_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_file_browser_tree_view_weekly`
+
+Count of users with merge request file tree setting
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210422101750_i_code_review_file_browser_tree_view_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
 
 Tiers: `free`, `premium`, `ultimate`
 

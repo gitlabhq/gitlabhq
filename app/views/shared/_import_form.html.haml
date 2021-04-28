@@ -7,20 +7,20 @@
       %span
         = _('Git repository URL')
     = f.text_field :import_url, value: import_url.sanitized_url,
-        autocomplete: 'off', class: 'form-control', placeholder: 'https://gitlab.company.com/group/project.git', required: true
+        autocomplete: 'off', class: 'form-control gl-form-input', placeholder: 'https://gitlab.company.com/group/project.git', required: true
 
   .row
     .form-group.col-md-6
       = f.label :import_url_user, class: 'label-bold' do
         %span
           = _('Username (optional)')
-      = f.text_field :import_url_user, value: import_url.user, class: 'form-control', required: false, autocomplete: 'new-password'
+      = f.text_field :import_url_user, value: import_url.user, class: 'form-control gl-form-input', required: false, autocomplete: 'new-password'
 
     .form-group.col-md-6
       = f.label :import_url_password, class: 'label-bold' do
         %span
           = _('Password (optional)')
-      = f.password_field :import_url_password, class: 'form-control', required: false, autocomplete: 'new-password'
+      = f.password_field :import_url_password, class: 'form-control gl-form-input', required: false, autocomplete: 'new-password'
 
   .info-well.prepend-top-20
     .well-segment

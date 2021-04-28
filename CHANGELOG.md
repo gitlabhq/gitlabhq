@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.11.2 (2021-04-27)
+
+### Security (5 changes)
+
+- Prevent tokens with only read_api scope from executing mutations.
+- Do not allow deploy tokens in the dependency proxy authentication service.
+- Disable keyset pagination for branches by default.
+- Bump Carrierwave gem to v1.3.2.
+- Restrict setting system_note_timestamp to owners.
+
+
 ## 13.11.1 (2021-04-22)
 
 ### Changed (1 change)
@@ -819,6 +830,18 @@ entry.
 - Externalize strings in labels/new.html.haml. (nuwe1)
 
 
+## 13.10.4 (2021-04-27)
+
+### Security (6 changes)
+
+- Prevent tokens with only read_api scope from executing mutations.
+- Update mermaid to version 8.9.2.
+- Do not allow deploy tokens in the dependency proxy authentication service.
+- Disable keyset pagination for branches by default.
+- Bump Carrierwave gem to v1.3.2.
+- Restrict setting system_note_timestamp to owners.
+
+
 ## 13.10.3 (2021-04-13)
 
 ### Security (3 changes)
@@ -1386,6 +1409,18 @@ entry.
 - Remove merge_request_rebase_nowait_lock flag. !56406
 - Update mobsf version in the SAST template. !56413
 - Convert mattermost alert to pajamas. !56556
+
+
+## 13.9.7 (2021-04-27)
+
+### Security (6 changes)
+
+- Prevent tokens with only read_api scope from executing mutations.
+- Update mermaid to version 8.9.2.
+- Do not allow deploy tokens in the dependency proxy authentication service.
+- Disable keyset pagination for branches by default.
+- Bump Carrierwave gem to v1.3.2.
+- Restrict setting system_note_timestamp to owners.
 
 
 ## 13.9.6 (2021-04-13)

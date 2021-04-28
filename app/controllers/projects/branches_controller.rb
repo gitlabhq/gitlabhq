@@ -185,7 +185,7 @@ class Projects::BranchesController < Projects::ApplicationController
     # Here we get one more branch to indicate if there are more data we're not showing
     limit = @overview_max_branches + 1
 
-    if Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: true)
+    if Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: :yaml)
       @active_branches =
         BranchesFinder.new(@repository, { per_page: limit, sort: sort_value_recently_updated })
           .execute(gitaly_pagination: true).select(&:active?)

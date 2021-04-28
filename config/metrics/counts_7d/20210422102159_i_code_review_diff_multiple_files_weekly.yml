@@ -1,0 +1,19 @@
+---
+key_path: redis_hll_counters.code_review.i_code_review_diff_multiple_files_weekly
+description: Count of users with single mode disabled
+product_section: dev
+product_stage: create
+product_group: group::code review
+product_category: code_review
+value_type: number
+status: implemented
+milestone: '13.12'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59979
+time_frame: 7d
+data_source: redis_hll
+distribution:
+  - ce
+tier:
+  - free
+  - premium
+  - ultimate

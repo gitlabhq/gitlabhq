@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import Vue from 'vue';
+import api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
@@ -36,6 +37,18 @@ import {
   DIFF_VIEW_FILE_BY_FILE,
   DIFF_VIEW_ALL_FILES,
   DIFF_FILE_BY_FILE_COOKIE_NAME,
+  TRACKING_CLICK_DIFF_VIEW_SETTING,
+  TRACKING_DIFF_VIEW_INLINE,
+  TRACKING_DIFF_VIEW_PARALLEL,
+  TRACKING_CLICK_FILE_BROWSER_SETTING,
+  TRACKING_FILE_BROWSER_TREE,
+  TRACKING_FILE_BROWSER_LIST,
+  TRACKING_CLICK_WHITESPACE_SETTING,
+  TRACKING_WHITESPACE_SHOW,
+  TRACKING_WHITESPACE_HIDE,
+  TRACKING_CLICK_SINGLE_FILE_SETTING,
+  TRACKING_SINGLE_FILE_MODE,
+  TRACKING_MULTIPLE_FILES_MODE,
 } from '../constants';
 import eventHub from '../event_hub';
 import { isCollapsed } from '../utils/diff_file';
@@ -352,6 +365,11 @@ export const setInlineDiffViewType = ({ commit }) => {
   Cookies.set(DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE);
   const url = mergeUrlParams({ view: INLINE_DIFF_VIEW_TYPE }, window.location.href);
   historyPushState(url);
+
+  if (window.gon?.features?.diffSettingsUsageData) {
+    api.trackRedisHllUserEvent(TRACKING_CLICK_DIFF_VIEW_SETTING);
+    api.trackRedisHllUserEvent(TRACKING_DIFF_VIEW_INLINE);
+  }
 };
 
 export const setParallelDiffViewType = ({ commit }) => {
@@ -360,6 +378,11 @@ export const setParallelDiffViewType = ({ commit }) => {
   Cookies.set(DIFF_VIEW_COOKIE_NAME, PARALLEL_DIFF_VIEW_TYPE);
   const url = mergeUrlParams({ view: PARALLEL_DIFF_VIEW_TYPE }, window.location.href);
   historyPushState(url);
+
+  if (window.gon?.features?.diffSettingsUsageData) {
+    api.trackRedisHllUserEvent(TRACKING_CLICK_DIFF_VIEW_SETTING);
+    api.trackRedisHllUserEvent(TRACKING_DIFF_VIEW_PARALLEL);
+  }
 };
 
 export const showCommentForm = ({ commit }, { lineCode, fileHash }) => {
@@ -527,6 +550,16 @@ export const setRenderTreeList = ({ commit }, renderTreeList) => {
   commit(types.SET_RENDER_TREE_LIST, renderTreeList);
 
   localStorage.setItem(TREE_LIST_STORAGE_KEY, renderTreeList);
+
+  if (window.gon?.features?.diffSettingsUsageData) {
+    api.trackRedisHllUserEvent(TRACKING_CLICK_FILE_BROWSER_SETTING);
+
+    if (renderTreeList) {
+      api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_TREE);
+    } else {
+      api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_LIST);
+    }
+  }
 };
 
 export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = false }) => {
@@ -540,6 +573,16 @@ export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = fals
   }
 
   notesEventHub.$emit('refetchDiffData');
+
+  if (window.gon?.features?.diffSettingsUsageData) {
+    api.trackRedisHllUserEvent(TRACKING_CLICK_WHITESPACE_SETTING);
+
+    if (showWhitespace) {
+      api.trackRedisHllUserEvent(TRACKING_WHITESPACE_SHOW);
+    } else {
+      api.trackRedisHllUserEvent(TRACKING_WHITESPACE_HIDE);
+    }
+  }
 };
 
 export const toggleFileFinder = ({ commit }, visible) => {
@@ -753,6 +796,16 @@ export const setFileByFile = ({ state, commit }, { fileByFile }) => {
   const fileViewMode = fileByFile ? DIFF_VIEW_FILE_BY_FILE : DIFF_VIEW_ALL_FILES;
   commit(types.SET_FILE_BY_FILE, fileByFile);
   Cookies.set(DIFF_FILE_BY_FILE_COOKIE_NAME, fileViewMode);
+
+  if (window.gon?.features?.diffSettingsUsageData) {
+    api.trackRedisHllUserEvent(TRACKING_CLICK_SINGLE_FILE_SETTING);
+
+    if (fileByFile) {
+      api.trackRedisHllUserEvent(TRACKING_SINGLE_FILE_MODE);
+    } else {
+      api.trackRedisHllUserEvent(TRACKING_MULTIPLE_FILES_MODE);
+    }
+  }
 
   return axios
     .put(state.endpointUpdateUser, {

@@ -30989,6 +30989,9 @@ msgstr ""
 msgid "SuperSonics|Your subscription"
 msgstr ""
 
+msgid "SuperSonics|Your subscription was successfully activated. You can see the details below."
+msgstr ""
+
 msgid "Support"
 msgstr ""
 
@@ -37790,6 +37793,9 @@ msgid "https://bamboo.example.com"
 msgstr ""
 
 msgid "https://your-bitbucket-server"
+msgstr ""
+
+msgid "i18n|%{language} (%{percent_translated}%% translated)"
 msgstr ""
 
 msgid "image diff"

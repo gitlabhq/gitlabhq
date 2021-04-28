@@ -14,7 +14,6 @@ module QA
         include SubMenus::Packages
 
         view 'app/views/layouts/nav/sidebar/_project_menus.html.haml' do
-          element :merge_requests_link
           element :snippets_link
           element :members_link
         end
@@ -25,7 +24,7 @@ module QA
 
         def click_merge_requests
           within_sidebar do
-            click_element(:merge_requests_link)
+            click_element(:sidebar_menu_link, menu_item: 'Merge requests')
           end
         end
 

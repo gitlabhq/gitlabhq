@@ -4,6 +4,12 @@ class GroupMembersFinder < UnionFinder
   RELATIONS = %i(direct inherited descendants).freeze
   DEFAULT_RELATIONS = %i(direct inherited).freeze
 
+  RELATIONS_DESCRIPTIONS = {
+    direct: 'Members in the group itself',
+    inherited: "Members in the group's ancestor groups",
+    descendants: "Members in the group's subgroups"
+  }.freeze
+
   include CreatedAtFilter
 
   # Params can be any of the following:

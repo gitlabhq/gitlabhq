@@ -362,7 +362,7 @@ export default {
           </template>
         </markdown-field>
       </comment-field-layout>
-      <div class="note-form-actions clearfix">
+      <div class="note-form-actions">
         <template v-if="showBatchCommentsActions">
           <p v-if="showResolveDiscussionToggle">
             <label>
@@ -386,12 +386,12 @@ export default {
               </template>
             </label>
           </p>
-          <div class="gl-display-sm-flex gl-flex-wrap">
+          <div class="gl-display-flex gl-flex-wrap gl-mb-n3">
             <gl-button
               :disabled="isDisabled"
               category="primary"
               variant="confirm"
-              class="gl-mr-3"
+              class="gl-sm-mr-3 gl-mb-3"
               data-qa-selector="start_review_button"
               @click="handleAddToReview"
             >
@@ -401,15 +401,15 @@ export default {
             <gl-button
               :disabled="isDisabled"
               category="secondary"
-              variant="default"
+              variant="confirm"
               data-qa-selector="comment_now_button"
-              class="gl-mr-3 js-comment-button"
+              class="gl-sm-mr-3 gl-mb-3 js-comment-button"
               @click="handleUpdate()"
             >
               {{ __('Add comment now') }}
             </gl-button>
             <gl-button
-              class="note-edit-cancel js-close-discussion-note-form"
+              class="note-edit-cancel gl-mb-3 js-close-discussion-note-form"
               category="secondary"
               variant="default"
               data-testid="cancelBatchCommentsEnabled"

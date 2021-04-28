@@ -243,6 +243,20 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
+  describe 'Merge Requests' do
+    it 'has a link to the merge request list path' do
+      render
+
+      expect(rendered).to have_link('Merge requests', href: project_merge_requests_path(project), class: 'shortcuts-merge_requests')
+    end
+
+    it 'shows pill with the number of merge requests' do
+      render
+
+      expect(rendered).to have_css('span.badge.badge-pill.merge_counter.js-merge-counter')
+    end
+  end
+
   describe 'packages tab' do
     before do
       stub_container_registry_config(enabled: true)
