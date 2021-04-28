@@ -943,6 +943,34 @@ RSpec.describe API::Issues do
     it_behaves_like 'issuable update endpoint' do
       let(:entity) { issue }
     end
+
+    describe 'updated_at param' do
+      let(:fixed_time) { Time.new(2001, 1, 1) }
+      let(:updated_at) { Time.new(2000, 1, 1) }
+
+      before do
+        travel_to fixed_time
+      end
+
+      it 'allows admins to set the timestamp' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", admin), params: { labels: 'label1', updated_at: updated_at }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Time.parse(json_response['updated_at'])).to be_like_time(updated_at)
+        expect(ResourceLabelEvent.last.created_at).to be_like_time(updated_at)
+      end
+
+      it 'does not allow other users to set the timestamp' do
+        reporter = create(:user)
+        project.add_developer(reporter)
+
+        put api("/projects/#{project.id}/issues/#{issue.iid}", reporter), params: { labels: 'label1', updated_at: updated_at }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Time.parse(json_response['updated_at'])).to be_like_time(fixed_time)
+        expect(ResourceLabelEvent.last.created_at).to be_like_time(fixed_time)
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/issues/:issue_iid' do
