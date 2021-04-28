@@ -28,8 +28,12 @@ module Mutations
     end
 
     def ready?(**args)
+      auth = ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(:execute_graphql_mutation, :api)
+
       if Gitlab::Database.read_only?
         raise Gitlab::Graphql::Errors::ResourceNotAvailable, ERROR_MESSAGE
+      elsif !auth.ok?(:global, current_user, scope_validator: context[:scope_validator])
+        raise_resource_not_available_error!
       else
         true
       end
