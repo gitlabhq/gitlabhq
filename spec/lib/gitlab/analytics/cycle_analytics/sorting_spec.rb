@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Analytics::CycleAnalytics::Sorting do
   let(:stage) { build(:cycle_analytics_project_stage, start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged) }
 
-  subject(:order_values) { described_class.apply(MergeRequest.joins(:metrics), stage, sort, direction).order_values }
+  subject(:order_values) { described_class.new(query: MergeRequest.joins(:metrics), stage: stage).apply(sort, direction).order_values }
 
   context 'when invalid sorting params are given' do
     let(:sort) { :unknown_sort }

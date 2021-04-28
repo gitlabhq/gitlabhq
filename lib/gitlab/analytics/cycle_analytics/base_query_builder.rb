@@ -5,6 +5,7 @@ module Gitlab
     module CycleAnalytics
       class BaseQueryBuilder
         include Gitlab::CycleAnalytics::MetricsTables
+        include StageQueryHelpers
 
         delegate :subject_class, to: :stage
 
@@ -12,6 +13,8 @@ module Gitlab
           MergeRequest.to_s => MergeRequestsFinder,
           Issue.to_s => IssuesFinder
         }.freeze
+
+        DEFAULT_END_EVENT_FILTER = :finished
 
         def initialize(stage:, params: {})
           @stage = stage
@@ -22,8 +25,7 @@ module Gitlab
         def build
           query = finder.execute
           query = stage.start_event.apply_query_customization(query)
-          query = stage.end_event.apply_query_customization(query)
-          query.where(duration_condition)
+          apply_end_event_query_customization(query)
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
@@ -46,6 +48,7 @@ module Gitlab
         def build_finder_params(params)
           {}.tap do |finder_params|
             finder_params[:current_user] = params[:current_user]
+            finder_params[:end_event_filter] = params[:end_event_filter] || DEFAULT_END_EVENT_FILTER
 
             add_parent_model_params!(finder_params)
             add_time_range_params!(finder_params, params[:from], params[:to])
@@ -62,6 +65,17 @@ module Gitlab
           finder_params[:created_after] = from || 30.days.ago
           finder_params[:created_before] = to if to
         end
+
+        # rubocop: disable CodeReuse/ActiveRecord
+        def apply_end_event_query_customization(query)
+          if in_progress?
+            stage.end_event.apply_negated_query_customization(query)
+          else
+            query = stage.end_event.apply_query_customization(query)
+            query.where(duration_condition)
+          end
+        end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

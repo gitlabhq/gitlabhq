@@ -266,6 +266,10 @@ module QA
       autoload :Menu, 'qa/page/project/menu'
       autoload :Members, 'qa/page/project/members'
 
+      module Artifact
+        autoload :Show, 'qa/page/project/artifact/show'
+      end
+
       module Branches
         autoload :Show, 'qa/page/project/branches/show'
       end

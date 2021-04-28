@@ -29,13 +29,13 @@ module Gitlab
 
         def median
           strong_memoize(:median) do
-            Median.new(stage: stage, query: query)
+            Median.new(stage: stage, query: query, params: params)
           end
         end
 
         def average
           strong_memoize(:average) do
-            Average.new(stage: stage, query: query)
+            Average.new(stage: stage, query: query, params: params)
           end
         end
 

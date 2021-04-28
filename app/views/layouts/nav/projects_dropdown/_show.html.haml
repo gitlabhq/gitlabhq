@@ -1,3 +1,7 @@
+-# WARNING! This file is slated to be removed along with the `combined_menu`
+-# feature flag. The logic here will be migrated to an upcoming `top_nav_helper`.
+-# Please see [this MR][1] for more context.
+-# [1]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587
 - project_meta = { id: @project.id, name: @project.name, namespace: @project.full_name, web_url: project_path(@project), avatar_url: @project.avatar_url } if @project&.persisted?
 .frequent-items-dropdown-container
   .frequent-items-dropdown-sidebar.qa-projects-dropdown-sidebar

@@ -51,6 +51,12 @@ module Gitlab
             query
           end
 
+          # rubocop: disable CodeReuse/ActiveRecord
+          def apply_negated_query_customization(query)
+            query.where(timestamp_projection.eq(nil))
+          end
+          # rubocop: enable CodeReuse/ActiveRecord
+
           def self.label_based?
             false
           end

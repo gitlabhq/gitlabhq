@@ -4,23 +4,35 @@ module Gitlab
   module Analytics
     module CycleAnalytics
       class Sorting
-        # rubocop: disable CodeReuse/ActiveRecord
-        SORTING_OPTIONS = {
-          end_event: {
-            asc: -> (query, stage) { query.reorder(stage.end_event.timestamp_projection.asc) },
-            desc: -> (query, stage) { query.reorder(stage.end_event.timestamp_projection.desc) }
-          }.freeze,
-          duration: {
-            asc: -> (query, stage) { query.reorder(Arel::Nodes::Subtraction.new(stage.end_event.timestamp_projection, stage.start_event.timestamp_projection).asc) },
-            desc: -> (query, stage) { query.reorder(Arel::Nodes::Subtraction.new(stage.end_event.timestamp_projection, stage.start_event.timestamp_projection).desc) }
-          }.freeze
-        }.freeze
-        # rubocop: enable CodeReuse/ActiveRecord,
+        include StageQueryHelpers
 
-        def self.apply(query, stage, sort, direction)
-          sort_lambda = SORTING_OPTIONS.dig(sort, direction) || SORTING_OPTIONS.dig(:end_event, :desc)
-          sort_lambda.call(query, stage)
+        def initialize(stage:, query:, params: {})
+          @stage = stage
+          @query = query
+          @params = params
         end
+
+        # rubocop: disable CodeReuse/ActiveRecord
+        def apply(sort, direction)
+          sorting_options = {
+            end_event: {
+              asc: -> { query.reorder(end_event_timestamp_projection.asc) },
+              desc: -> { query.reorder(end_event_timestamp_projection.desc) }
+            },
+            duration: {
+              asc: -> { query.reorder(duration.asc) },
+              desc: -> { query.reorder(duration.desc) }
+            }
+          }
+
+          sort_lambda = sorting_options.dig(sort, direction) || sorting_options.dig(:end_event, :desc)
+          sort_lambda.call
+        end
+        # rubocop: enable CodeReuse/ActiveRecord
+
+        private
+
+        attr_reader :stage, :query, :params
       end
     end
   end

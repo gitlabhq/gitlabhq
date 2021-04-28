@@ -7,9 +7,10 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
         include StageQueryHelpers
 
-        def initialize(stage:, query:)
+        def initialize(stage:, query:, params: {})
           @stage = stage
           @query = query
+          @params = params
         end
 
         def seconds
@@ -22,7 +23,7 @@ module Gitlab
 
         private
 
-        attr_reader :stage
+        attr_reader :stage, :params
 
         # rubocop: disable CodeReuse/ActiveRecord
         def select_average
