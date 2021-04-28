@@ -52,7 +52,7 @@ Each method has benefits and drawbacks:
 
 |  | YAML method | UI method (Ultimate only) |
 |--|:------------|:-------------------------------|
-| **Benefits** | A change control process is possible by requiring [MR Approvals](../../../merge_requests/merge_request_approvals.md). All changes are fully tracked and audited in the same way that Git tracks the history of any file in its repository. | The UI provides a simple rules editor for users who are less familiar with the YAML syntax of NetworkPolicies. This view is a live representation of the policies currently deployed in the Kubernetes cluster. The UI also allows for multiple network policies to be created per environment. |
+| **Benefits** | A change control process is possible by requiring [MR Approvals](../../../merge_requests/approvals/index.md). All changes are fully tracked and audited in the same way that Git tracks the history of any file in its repository. | The UI provides a simple rules editor for users who are less familiar with the YAML syntax of NetworkPolicies. This view is a live representation of the policies currently deployed in the Kubernetes cluster. The UI also allows for multiple network policies to be created per environment. |
 | **Drawbacks** | Only one network policy can be deployed per environment (although that policy can be as detailed as needed). Also, if changes were made in Kubernetes directly rather than through the `auto-deploy-values.yaml` file, the YAML file's contents don't represent the actual state of policies deployed in Kubernetes. | Policy changes aren't audited and a change control process isn't available. |
 
 Users are encouraged to choose one of the two methods to manage their policies. If users attempt to

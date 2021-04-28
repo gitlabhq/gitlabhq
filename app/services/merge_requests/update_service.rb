@@ -295,6 +295,8 @@ module MergeRequests
       case attribute
       when :assignee_ids
         assignees_service.execute(merge_request)
+      when :spend_time
+        add_time_spent_service.execute(merge_request)
       else
         nil
       end
@@ -303,6 +305,10 @@ module MergeRequests
     def assignees_service
       @assignees_service ||= ::MergeRequests::UpdateAssigneesService
         .new(project, current_user, params)
+    end
+
+    def add_time_spent_service
+      @add_time_spent_service ||= ::MergeRequests::AddSpentTimeService.new(project, current_user, params)
     end
   end
 end

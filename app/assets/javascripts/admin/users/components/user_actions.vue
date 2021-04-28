@@ -109,6 +109,7 @@ export default {
           :key="action"
           :paths="userPaths"
           :username="user.name"
+          :oncall-schedules="user.oncallSchedules"
           :data-testid="`delete-${action}`"
         >
           {{ $options.i18n[action] }}

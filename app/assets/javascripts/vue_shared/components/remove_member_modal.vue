@@ -55,13 +55,12 @@ export default {
       return !this.isAccessRequest && this.oncallSchedules.schedules?.length;
     },
     oncallSchedules() {
-      let schedules = {};
       try {
-        schedules = JSON.parse(this.modalData.oncallSchedules);
+        return JSON.parse(this.modalData.oncallSchedules);
       } catch (e) {
         Sentry.captureException(e);
       }
-      return schedules;
+      return {};
     },
   },
   mounted() {

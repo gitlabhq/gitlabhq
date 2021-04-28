@@ -297,7 +297,7 @@ rating.
 
 ### Enabling Security Approvals within a project
 
-To enable the `Vulnerability-Check` or `License-Check` Security Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#adding--editing-a-default-approval-rule)
+To enable the `Vulnerability-Check` or `License-Check` Security Approvals, a [project approval rule](../project/merge_requests/approvals/rules.md#adding--editing-a-default-approval-rule)
 must be created. A [security scanner job](#security-scanning-tools) must be enabled for
 `Vulnerability-Check`, and a [license scanning](../compliance/license_compliance/index.md#configuration)
 job must be enabled for `License-Check`. When the proper jobs aren't configured, the following

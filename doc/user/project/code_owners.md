@@ -76,7 +76,7 @@ The user that would show for `README.md` would be `@user2`.
 After you've added Code Owners to a project, you can configure it to
 be used for merge request approvals:
 
-- As [merge request eligible approvers](merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers).
+- As [merge request eligible approvers](merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
 - As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners). **(PREMIUM)**
 
 Developer or higher [permissions](../permissions.md) are required to
@@ -87,9 +87,9 @@ After it's set, Code Owners are displayed in merge request widgets:
 ![MR widget - Code Owners](img/code_owners_mr_widget_v12_4.png)
 
 While you can use the `CODEOWNERS` file in addition to Merge Request
-[Approval Rules](merge_requests/merge_request_approvals.md#approval-rules),
+[Approval Rules](merge_requests/approvals/rules.md),
 you can also use it as the sole driver of merge request approvals
-without using [Approval Rules](merge_requests/merge_request_approvals.md#approval-rules):
+without using [Approval Rules](merge_requests/approvals/rules.md):
 
 1. Create the file in one of the three locations specified above.
 1. Set the code owners as required approvers for

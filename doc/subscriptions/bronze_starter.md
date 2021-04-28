@@ -64,12 +64,12 @@ the tiers are no longer mentioned in GitLab documentation:
   - [`elasticsearch.log`](../administration/logs.md#elasticsearchlog)
 - Merge requests:
   - [Full code quality reports in the code quality tab](../user/project/merge_requests/code_quality.md#code-quality-reports)
-  - [Merge request approvals](../user/project/merge_requests/merge_request_approvals.md)
+  - [Merge request approvals](../user/project/merge_requests/approvals/index.md)
   - [Multiple assignees](../user/project/merge_requests/getting_started.md#multiple-assignees)
   - [Approval Rule information for Reviewers](../user/project/merge_requests/getting_started.md#approval-rule-information-for-reviewers) **(PREMIUM)**
-  - [Required Approvals](../user/project/merge_requests/merge_request_approvals.md#required-approvals)
-  - [Code Owners as eligible approvers](../user/project/merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers)
-  - [Approval rules](../user/project/merge_requests/merge_request_approvals.md#approval-rules) features
+  - [Required Approvals](../user/project/merge_requests/approvals/index.md#required-approvals)
+  - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
+  - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
   - [Restricting push and merge access to certain users](../user/project/protected_branches.md#restricting-push-and-merge-access-to-certain-users)
   - [Visual Reviews](../ci/review_apps/index.md#visual-reviews)
 - Metrics and analytics:
@@ -130,7 +130,7 @@ Bronze-level subscribers:
   - Project milestones API: [Get all burndown chart events for a single milestone](../api/milestones.md#get-all-burndown-chart-events-for-a-single-milestone)
   - [Project iterations API](../api/iterations.md)
   - Fields in the [Search API](../api/search.md) available only to [Advanced Search (Elasticsearch)](../integration/elasticsearch.md) users
-  - Fields in the [Merge requests API](../api/merge_requests.md) for [merge request approvals](../user/project/merge_requests/merge_request_approvals.md)
+  - Fields in the [Merge requests API](../api/merge_requests.md) for [merge request approvals](../user/project/merge_requests/approvals/index.md)
   - Fields in the [Protected branches API](../api/protected_branches.md) that specify users or groups allowed to merge
   - [Merge request approvals API](../api/merge_request_approvals.md)
   - [Visual review discussions API](../api/visual_review_discussions.md)

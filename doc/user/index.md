@@ -56,7 +56,7 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 With GitLab Enterprise Edition, you can also:
 
 - Improve collaboration with:
-  - [Merge Request Approvals](project/merge_requests/merge_request_approvals.md).
+  - [Merge Request Approvals](project/merge_requests/approvals/index.md).
   - [Multiple Assignees for Issues](project/issues/multiple_assignees_for_issues.md).
   - [Multiple Issue Boards](project/issue_board.md#multiple-issue-boards).
 - Create formal relationships between issues with [linked issues](project/issues/related_issues.md).

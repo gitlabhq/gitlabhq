@@ -80,10 +80,19 @@ you can use `CI_JOB_TOKEN` instead of a personal access token or deploy token.
 For example:
 
 ```yaml
-image: ruby:latest
+# assuming a my_gem.gemspec file is present in the repository with the version currently set to 0.0.1
+image: ruby
 
 run:
+  before_script:
+    - mkdir ~/.gem
+    - echo "---" > ~/.gem/credentials
+    - |
+      echo "https://gitlab.example.com/api/v4/projects/${CI_PROJECT_ID}/packages/rubygems: '${CI_JOB_TOKEN}'" >> ~/.gem/credentials
+    - chmod 0600 ~/.gem/credentials # rubygems requires 0600 permissions on the credentials file
   script:
+    - gem build my_gem
+    - gem push my_gem-0.0.1.gem --host https://gitlab.example.com/api/v4/projects/${CI_PROJECT_ID}/packages/rubygems
 ```
 
 You can also use `CI_JOB_TOKEN` in a `~/.gem/credentials` file that you check in to

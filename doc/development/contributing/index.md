@@ -152,7 +152,7 @@ Keep the following in mind when submitting merge requests:
   reviewer will have reservations about the code's overall quality. When there is a reservation,
   the reviewer will inform the author and provide some guidance.
 - Though GitLab generally allows anyone to indicate
-  [approval](../../user/project/merge_requests/merge_request_approvals.md) of merge requests, the
+  [approval](../../user/project/merge_requests/approvals/index.md) of merge requests, the
   maintainer may require [approvals from certain reviewers](../code_review.md#approval-guidelines)
   before merging a merge request.
 - After review, the author may be asked to update the merge request. Once the merge request has been

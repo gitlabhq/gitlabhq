@@ -202,7 +202,7 @@ The following table depicts the various user permission levels in a project.
 1. Actions are limited only to records owned (referenced) by user.
 1. When [Share Group Lock](group/index.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
 1. For information on eligible approvers for merge requests, see
-   [Eligible approvers](project/merge_requests/merge_request_approvals.md#eligible-approvers).
+   [Eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers).
 1. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
 1. Users can only view events based on their individual actions.
 1. Project access tokens are supported for self-managed instances on Free and above. They are also

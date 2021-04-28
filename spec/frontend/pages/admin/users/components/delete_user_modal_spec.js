@@ -1,6 +1,7 @@
 import { GlButton, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import DeleteUserModal from '~/pages/admin/users/components/delete_user_modal.vue';
+import OncallSchedulesList from '~/vue_shared/components/oncall_schedules_list.vue';
 import ModalStub from './stubs/modal_stub';
 
 const TEST_DELETE_USER_URL = 'delete-url';
@@ -17,13 +18,14 @@ describe('User Operation confirmation modal', () => {
       .filter((w) => w.attributes('variant') === variant && w.attributes('category') === category)
       .at(0);
   const findForm = () => wrapper.find('form');
-  const findUsernameInput = () => wrapper.find(GlFormInput);
+  const findUsernameInput = () => wrapper.findComponent(GlFormInput);
   const findPrimaryButton = () => findButton('danger', 'primary');
   const findSecondaryButton = () => findButton('danger', 'secondary');
   const findAuthenticityToken = () => new FormData(findForm().element).get('authenticity_token');
   const getUsername = () => findUsernameInput().attributes('value');
   const getMethodParam = () => new FormData(findForm().element).get('_method');
   const getFormAction = () => findForm().attributes('action');
+  const findOnCallSchedulesList = () => wrapper.findComponent(OncallSchedulesList);
 
   const setUsername = (username) => {
     findUsernameInput().vm.$emit('input', username);
@@ -31,6 +33,7 @@ describe('User Operation confirmation modal', () => {
 
   const username = 'username';
   const badUsername = 'bad_username';
+  const oncallSchedules = '["schedule1", "schedule2"]';
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(DeleteUserModal, {
@@ -43,6 +46,7 @@ describe('User Operation confirmation modal', () => {
         deleteUserUrl: TEST_DELETE_USER_URL,
         blockUserUrl: TEST_BLOCK_USER_URL,
         csrfToken: TEST_CSRF,
+        oncallSchedules,
         ...props,
       },
       stubs: {
@@ -143,6 +147,21 @@ describe('User Operation confirmation modal', () => {
         expect(findAuthenticityToken()).toBe(TEST_CSRF);
         expect(formSubmitSpy).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('Related oncall-schedules list', () => {
+    it('does NOT render the list when user has no related schedules', () => {
+      createComponent({ oncallSchedules: '[]' });
+      expect(findOnCallSchedulesList().exists()).toBe(false);
+    });
+
+    it('renders the list when user has related schedules', () => {
+      createComponent();
+
+      const schedules = findOnCallSchedulesList();
+      expect(schedules.exists()).toBe(true);
+      expect(schedules.props('schedules')).toEqual(JSON.parse(oncallSchedules));
     });
   });
 });

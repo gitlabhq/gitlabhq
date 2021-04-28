@@ -1,18 +1,16 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 import { cloneDeep } from 'lodash';
 import { getJSONFixture } from 'helpers/fixtures';
 import testAction from 'helpers/vuex_action_helper';
-import api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import httpStatus from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
+import createReleaseAssetLinkMutation from '~/releases/queries/create_release_link.mutation.graphql';
+import deleteReleaseAssetLinkMutation from '~/releases/queries/delete_release_link.mutation.graphql';
+import updateReleaseMutation from '~/releases/queries/update_release.mutation.graphql';
 import * as actions from '~/releases/stores/modules/edit_new/actions';
 import * as types from '~/releases/stores/modules/edit_new/mutation_types';
 import createState from '~/releases/stores/modules/edit_new/state';
-import { releaseToApiJson, apiJsonToRelease } from '~/releases/util';
+import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
 
 jest.mock('~/flash');
 
@@ -21,12 +19,21 @@ jest.mock('~/lib/utils/url_utility', () => ({
   joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
 }));
 
-const originalRelease = getJSONFixture('api/releases/release.json');
+jest.mock('~/releases/util', () => ({
+  ...jest.requireActual('~/releases/util'),
+  gqClient: {
+    query: jest.fn(),
+    mutate: jest.fn(),
+  },
+}));
+
+const originalOneReleaseForEditingQueryResponse = getJSONFixture(
+  'graphql/releases/queries/one_release_for_editing.query.graphql.json',
+);
 
 describe('Release edit/new actions', () => {
   let state;
-  let release;
-  let mock;
+  let releaseResponse;
   let error;
 
   const setupState = (updates = {}) => {
@@ -34,36 +41,24 @@ describe('Release edit/new actions', () => {
       isExistingRelease: true,
     };
 
-    const rootState = {
-      featureFlags: {
-        graphqlIndividualReleasePage: false,
-      },
-    };
-
     state = {
       ...createState({
         projectId: '18',
-        tagName: release.tag_name,
+        tagName: releaseResponse.tag_name,
         releasesPagePath: 'path/to/releases/page',
         markdownDocsPath: 'path/to/markdown/docs',
         markdownPreviewPath: 'path/to/markdown/preview',
       }),
       ...getters,
-      ...rootState,
       ...updates,
     };
   };
 
   beforeEach(() => {
-    release = cloneDeep(originalRelease);
-    mock = new MockAdapter(axios);
+    releaseResponse = cloneDeep(originalOneReleaseForEditingQueryResponse);
     gon.api_version = 'v4';
-    error = { message: 'An error occurred' };
+    error = new Error('Yikes!');
     createFlash.mockClear();
-  });
-
-  afterEach(() => {
-    mock.restore();
   });
 
   describe('when creating a new release', () => {
@@ -118,15 +113,9 @@ describe('Release edit/new actions', () => {
     beforeEach(setupState);
 
     describe('fetchRelease', () => {
-      let getReleaseUrl;
-
-      beforeEach(() => {
-        getReleaseUrl = `/api/v4/projects/${state.projectId}/releases/${state.tagName}`;
-      });
-
       describe('when the network request to the Release API is successful', () => {
         beforeEach(() => {
-          mock.onGet(getReleaseUrl).replyOnce(httpStatus.OK, release);
+          gqClient.query.mockResolvedValue(releaseResponse);
         });
 
         it(`commits ${types.REQUEST_RELEASE} and then commits ${types.RECEIVE_RELEASE_SUCCESS} with the converted release object`, () => {
@@ -136,15 +125,15 @@ describe('Release edit/new actions', () => {
             },
             {
               type: types.RECEIVE_RELEASE_SUCCESS,
-              payload: apiJsonToRelease(release, { deep: true }),
+              payload: convertOneReleaseGraphQLResponse(releaseResponse).data,
             },
           ]);
         });
       });
 
-      describe('when the network request to the Release API fails', () => {
+      describe('when the GraphQL network request fails', () => {
         beforeEach(() => {
-          mock.onGet(getReleaseUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+          gqClient.query.mockRejectedValue(error);
         });
 
         it(`commits ${types.REQUEST_RELEASE} and then commits ${types.RECEIVE_RELEASE_ERROR} with an error object`, () => {
@@ -282,44 +271,50 @@ describe('Release edit/new actions', () => {
 
     describe('receiveSaveReleaseSuccess', () => {
       it(`commits ${types.RECEIVE_SAVE_RELEASE_SUCCESS}`, () =>
-        testAction(actions.receiveSaveReleaseSuccess, release, state, [
+        testAction(actions.receiveSaveReleaseSuccess, releaseResponse, state, [
           { type: types.RECEIVE_SAVE_RELEASE_SUCCESS },
         ]));
 
       it("redirects to the release's dedicated page", () => {
-        actions.receiveSaveReleaseSuccess({ commit: jest.fn(), state }, release);
+        const { selfUrl } = releaseResponse.data.project.release.links;
+        actions.receiveSaveReleaseSuccess({ commit: jest.fn(), state }, selfUrl);
         expect(redirectTo).toHaveBeenCalledTimes(1);
-        expect(redirectTo).toHaveBeenCalledWith(release._links.self);
+        expect(redirectTo).toHaveBeenCalledWith(selfUrl);
       });
     });
 
     describe('createRelease', () => {
-      let createReleaseUrl;
       let releaseLinksToCreate;
 
       beforeEach(() => {
-        const camelCasedRelease = convertObjectPropsToCamelCase(release);
+        const { data: release } = convertOneReleaseGraphQLResponse(
+          originalOneReleaseForEditingQueryResponse,
+        );
 
-        releaseLinksToCreate = camelCasedRelease.assets.links.slice(0, 1);
+        releaseLinksToCreate = release.assets.links.slice(0, 1);
 
         setupState({
-          release: camelCasedRelease,
+          release,
           releaseLinksToCreate,
         });
-
-        createReleaseUrl = `/api/v4/projects/${state.projectId}/releases`;
       });
 
-      describe('when the network request to the Release API is successful', () => {
+      describe('when the GraphQL request is successful', () => {
+        const selfUrl = 'url/to/self';
+
         beforeEach(() => {
-          const expectedRelease = releaseToApiJson({
-            ...state.release,
-            assets: {
-              links: releaseLinksToCreate,
+          gqClient.mutate.mockResolvedValue({
+            data: {
+              releaseCreate: {
+                release: {
+                  links: {
+                    selfUrl,
+                  },
+                },
+                errors: [],
+              },
             },
           });
-
-          mock.onPost(createReleaseUrl, expectedRelease).replyOnce(httpStatus.CREATED, release);
         });
 
         it(`dispatches "receiveSaveReleaseSuccess" with the converted release object`, () => {
@@ -331,16 +326,16 @@ describe('Release edit/new actions', () => {
             [
               {
                 type: 'receiveSaveReleaseSuccess',
-                payload: apiJsonToRelease(release, { deep: true }),
+                payload: selfUrl,
               },
             ],
           );
         });
       });
 
-      describe('when the network request to the Release API fails', () => {
+      describe('when the GraphQL network request fails', () => {
         beforeEach(() => {
-          mock.onPost(createReleaseUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+          gqClient.mutate.mockRejectedValue(error);
         });
 
         it(`commits ${types.RECEIVE_SAVE_RELEASE_ERROR} with an error object`, () => {
@@ -358,7 +353,7 @@ describe('Release edit/new actions', () => {
             .then(() => {
               expect(createFlash).toHaveBeenCalledTimes(1);
               expect(createFlash).toHaveBeenCalledWith(
-                'Something went wrong while creating a new release',
+                'Something went wrong while creating a new release.',
               );
             });
         });
@@ -369,112 +364,209 @@ describe('Release edit/new actions', () => {
       let getters;
       let dispatch;
       let commit;
-      let callOrder;
+      let release;
 
       beforeEach(() => {
         getters = {
           releaseLinksToDelete: [{ id: '1' }, { id: '2' }],
-          releaseLinksToCreate: [{ id: 'new-link-1' }, { id: 'new-link-2' }],
+          releaseLinksToCreate: [
+            { id: 'new-link-1', name: 'Link 1', url: 'https://example.com/1', linkType: 'Other' },
+            { id: 'new-link-2', name: 'Link 2', url: 'https://example.com/2', linkType: 'Package' },
+          ],
+          releaseUpdateMutatationVariables: {},
         };
 
+        release = convertOneReleaseGraphQLResponse(releaseResponse).data;
+
         setupState({
-          release: convertObjectPropsToCamelCase(release),
+          release,
           ...getters,
         });
 
         dispatch = jest.fn();
         commit = jest.fn();
 
-        callOrder = [];
-        jest.spyOn(api, 'updateRelease').mockImplementation(() => {
-          callOrder.push('updateRelease');
-          return Promise.resolve({ data: release });
-        });
-        jest.spyOn(api, 'deleteReleaseLink').mockImplementation(() => {
-          callOrder.push('deleteReleaseLink');
-          return Promise.resolve();
-        });
-        jest.spyOn(api, 'createReleaseLink').mockImplementation(() => {
-          callOrder.push('createReleaseLink');
-          return Promise.resolve();
+        gqClient.mutate.mockResolvedValue({
+          data: {
+            releaseUpdate: {
+              errors: [],
+            },
+            releaseAssetLinkDelete: {
+              errors: [],
+            },
+            releaseAssetLinkCreate: {
+              errors: [],
+            },
+          },
         });
       });
 
       describe('when the network request to the Release API is successful', () => {
-        it('dispatches receiveSaveReleaseSuccess', () => {
-          return actions.updateRelease({ commit, dispatch, state, getters }).then(() => {
-            expect(dispatch.mock.calls).toEqual([
-              ['receiveSaveReleaseSuccess', apiJsonToRelease(release)],
-            ]);
-          });
+        it('dispatches receiveSaveReleaseSuccess', async () => {
+          await actions.updateRelease({ commit, dispatch, state, getters });
+          expect(dispatch.mock.calls).toEqual([['receiveSaveReleaseSuccess', release._links.self]]);
         });
 
-        it('updates the Release, then deletes all existing links, and then recreates new links', () => {
-          return actions.updateRelease({ dispatch, state, getters }).then(() => {
-            expect(callOrder).toEqual([
-              'updateRelease',
-              'deleteReleaseLink',
-              'deleteReleaseLink',
-              'createReleaseLink',
-              'createReleaseLink',
-            ]);
+        it('updates the Release, then deletes all existing links, and then recreates new links', async () => {
+          await actions.updateRelease({ commit, dispatch, state, getters });
 
-            expect(api.updateRelease.mock.calls).toEqual([
-              [
-                state.projectId,
-                state.tagName,
-                releaseToApiJson({
-                  ...state.release,
-                  assets: {
-                    links: getters.releaseLinksToCreate,
-                  },
-                }),
-              ],
-            ]);
+          // First, update the release
+          expect(gqClient.mutate.mock.calls[0]).toEqual([
+            {
+              mutation: updateReleaseMutation,
+              variables: getters.releaseUpdateMutatationVariables,
+            },
+          ]);
 
-            expect(api.deleteReleaseLink).toHaveBeenCalledTimes(
-              getters.releaseLinksToDelete.length,
-            );
-            getters.releaseLinksToDelete.forEach((link) => {
-              expect(api.deleteReleaseLink).toHaveBeenCalledWith(
-                state.projectId,
-                state.tagName,
-                link.id,
-              );
-            });
+          // Then, delete the first asset link
+          expect(gqClient.mutate.mock.calls[1]).toEqual([
+            {
+              mutation: deleteReleaseAssetLinkMutation,
+              variables: { input: { id: getters.releaseLinksToDelete[0].id } },
+            },
+          ]);
 
-            expect(api.createReleaseLink).toHaveBeenCalledTimes(
-              getters.releaseLinksToCreate.length,
-            );
-            getters.releaseLinksToCreate.forEach((link) => {
-              expect(api.createReleaseLink).toHaveBeenCalledWith(
-                state.projectId,
-                state.tagName,
-                link,
-              );
-            });
-          });
+          // And the second
+          expect(gqClient.mutate.mock.calls[2]).toEqual([
+            {
+              mutation: deleteReleaseAssetLinkMutation,
+              variables: { input: { id: getters.releaseLinksToDelete[1].id } },
+            },
+          ]);
+
+          // Recreate the first asset link
+          expect(gqClient.mutate.mock.calls[3]).toEqual([
+            {
+              mutation: createReleaseAssetLinkMutation,
+              variables: {
+                input: {
+                  projectPath: state.projectPath,
+                  tagName: state.tagName,
+                  name: getters.releaseLinksToCreate[0].name,
+                  url: getters.releaseLinksToCreate[0].url,
+                  linkType: getters.releaseLinksToCreate[0].linkType.toUpperCase(),
+                },
+              },
+            },
+          ]);
+
+          // And finally, recreate the second
+          expect(gqClient.mutate.mock.calls[4]).toEqual([
+            {
+              mutation: createReleaseAssetLinkMutation,
+              variables: {
+                input: {
+                  projectPath: state.projectPath,
+                  tagName: state.tagName,
+                  name: getters.releaseLinksToCreate[1].name,
+                  url: getters.releaseLinksToCreate[1].url,
+                  linkType: getters.releaseLinksToCreate[1].linkType.toUpperCase(),
+                },
+              },
+            },
+          ]);
         });
       });
 
-      describe('when the network request to the Release API fails', () => {
+      describe('when the GraphQL network request fails', () => {
         beforeEach(() => {
-          jest.spyOn(api, 'updateRelease').mockRejectedValue(error);
+          gqClient.mutate.mockRejectedValue(error);
         });
 
-        it('dispatches requestUpdateRelease and receiveUpdateReleaseError with an error object', () => {
-          return actions.updateRelease({ commit, dispatch, state, getters }).then(() => {
-            expect(commit.mock.calls).toEqual([[types.RECEIVE_SAVE_RELEASE_ERROR, error]]);
+        it('dispatches requestUpdateRelease and receiveUpdateReleaseError with an error object', async () => {
+          await actions.updateRelease({ commit, dispatch, state, getters });
+
+          expect(commit.mock.calls).toEqual([[types.RECEIVE_SAVE_RELEASE_ERROR, error]]);
+        });
+
+        it('shows a flash message', async () => {
+          await actions.updateRelease({ commit, dispatch, state, getters });
+
+          expect(createFlash).toHaveBeenCalledTimes(1);
+          expect(createFlash).toHaveBeenCalledWith(
+            'Something went wrong while saving the release details.',
+          );
+        });
+      });
+
+      describe('when the GraphQL mutation returns errors-as-data', () => {
+        const expectCorrectErrorHandling = () => {
+          it('dispatches requestUpdateRelease and receiveUpdateReleaseError with an error object', async () => {
+            await actions.updateRelease({ commit, dispatch, state, getters });
+
+            expect(commit.mock.calls).toEqual([
+              [types.RECEIVE_SAVE_RELEASE_ERROR, expect.any(Error)],
+            ]);
           });
-        });
 
-        it('shows a flash message', () => {
-          return actions.updateRelease({ commit, dispatch, state, getters }).then(() => {
+          it('shows a flash message', async () => {
+            await actions.updateRelease({ commit, dispatch, state, getters });
+
             expect(createFlash).toHaveBeenCalledTimes(1);
             expect(createFlash).toHaveBeenCalledWith(
-              'Something went wrong while saving the release details',
+              'Something went wrong while saving the release details.',
             );
           });
+        };
+
+        describe('when the releaseUpdate mutation returns errors-as-data', () => {
+          beforeEach(() => {
+            gqClient.mutate.mockResolvedValue({
+              data: {
+                releaseUpdate: {
+                  errors: ['Something went wrong!'],
+                },
+                releaseAssetLinkDelete: {
+                  errors: [],
+                },
+                releaseAssetLinkCreate: {
+                  errors: [],
+                },
+              },
+            });
+          });
+
+          expectCorrectErrorHandling();
+        });
+
+        describe('when the releaseAssetLinkDelete mutation returns errors-as-data', () => {
+          beforeEach(() => {
+            gqClient.mutate.mockResolvedValue({
+              data: {
+                releaseUpdate: {
+                  errors: [],
+                },
+                releaseAssetLinkDelete: {
+                  errors: ['Something went wrong!'],
+                },
+                releaseAssetLinkCreate: {
+                  errors: [],
+                },
+              },
+            });
+          });
+
+          expectCorrectErrorHandling();
+        });
+
+        describe('when the releaseAssetLinkCreate mutation returns errors-as-data', () => {
+          beforeEach(() => {
+            gqClient.mutate.mockResolvedValue({
+              data: {
+                releaseUpdate: {
+                  errors: [],
+                },
+                releaseAssetLinkDelete: {
+                  errors: [],
+                },
+                releaseAssetLinkCreate: {
+                  errors: ['Something went wrong!'],
+                },
+              },
+            });
+          });
+
+          expectCorrectErrorHandling();
         });
       });
     });

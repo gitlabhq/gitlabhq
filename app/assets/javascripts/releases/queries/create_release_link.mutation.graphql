@@ -1,0 +1,5 @@
+mutation createReleaseAssetLink($input: ReleaseAssetLinkCreateInput!) {
+  releaseAssetLinkCreate(input: $input) {
+    errors
+  }
+}

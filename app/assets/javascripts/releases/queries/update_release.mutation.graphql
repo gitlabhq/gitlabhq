@@ -1,0 +1,5 @@
+mutation updateRelease($input: ReleaseUpdateInput!) {
+  releaseUpdate(input: $input) {
+    errors
+  }
+}

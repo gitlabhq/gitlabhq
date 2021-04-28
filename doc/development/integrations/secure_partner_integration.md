@@ -47,7 +47,7 @@ best place to integrate your own product and its results into GitLab.
   displays the results of the pipeline's security checks and the developer can
   review them. The developer can review both a summary and a detailed version
   of the results.
-- If certain policies (such as [merge request approvals](../../user/project/merge_requests/merge_request_approvals.md))
+- If certain policies (such as [merge request approvals](../../user/project/merge_requests/approvals/index.md))
   are in place for a project, developers must resolve specific findings or get
   an approval from a specific list of people.
 - The [security dashboard](../../user/application_security/security_dashboard/index.md)

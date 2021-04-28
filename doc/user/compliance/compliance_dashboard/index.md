@@ -46,9 +46,9 @@ We support a separation of duties policy between users who create and approve Me
 The approval status column can help you identify violations of this policy.
 Our criteria for the separation of duties is as follows:
 
-- [A Merge Request author is **not** allowed to approve their Merge Request](../../project/merge_requests/merge_request_approvals.md#allowing-merge-request-authors-to-approve-their-own-merge-requests)
-- [A Merge Request committer is **not** allowed to approve a Merge Request they have added commits to](../../project/merge_requests/merge_request_approvals.md#prevent-approval-of-merge-requests-by-their-committers)
-- [The minimum number of approvals required to merge a Merge Request is **at least** two](../../project/merge_requests/merge_request_approvals.md#approval-rules)
+- [A Merge Request author is **not** allowed to approve their Merge Request](../../project/merge_requests/approvals/settings.md#allowing-merge-request-authors-to-approve-their-own-merge-requests)
+- [A Merge Request committer is **not** allowed to approve a Merge Request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-approval-of-merge-requests-by-their-committers)
+- [The minimum number of approvals required to merge a Merge Request is **at least** two](../../project/merge_requests/approvals/rules.md)
 
 The "Approval status" column shows you, at a glance, whether a Merge Request is complying with the above.
 This column has four states:

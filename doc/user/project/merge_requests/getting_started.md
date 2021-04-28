@@ -56,7 +56,7 @@ request's page at the top-right side:
 - [Assign](#assignee) the merge request to a colleague for review. With [multiple assignees](#multiple-assignees), you can assign it to more than one person at a time.
 - Set a [milestone](../milestones/index.md) to track time-sensitive changes.
 - Add [labels](../labels.md) to help contextualize and filter your merge requests over time.
-- Require [approval](merge_request_approvals.md) from your team. **(PREMIUM)**
+- [Require approval](approvals/index.md#required-approvals) from your team. **(PREMIUM)**
 - [Close issues automatically](#merge-requests-to-close-issues) when they are merged.
 - Enable the [delete source branch when merge request is accepted](#deleting-the-source-branch) option to keep your repository clean.
 - Enable the [squash commits when merge request is accepted](squash_and_merge.md) option to combine all the commits into one before merging, thus keep a clean commit history in your repository.
@@ -138,7 +138,7 @@ When selected, GitLab creates a [to-do list item](../../todos.md) for each revie
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
-displays the name of the matching [approval rule](merge_request_approvals.md#approval-rules)
+displays the name of the matching [approval rule](approvals/rules.md)
 below the name of each suggested reviewer. [Code Owners](../code_owners.md) are displayed as `Codeowner` without group detail.
 
 This example shows reviewers and approval rules when creating a new merge request:

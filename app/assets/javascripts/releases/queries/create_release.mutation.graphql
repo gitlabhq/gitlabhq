@@ -1,0 +1,10 @@
+mutation createRelease($input: ReleaseCreateInput!) {
+  releaseCreate(input: $input) {
+    release {
+      links {
+        selfUrl
+      }
+    }
+    errors
+  }
+}

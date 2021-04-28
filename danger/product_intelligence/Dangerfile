@@ -81,10 +81,11 @@ matching_changed_files = usage_data_changed_files +
                          snowplow_changed_files
 
 if matching_changed_files.any?
-
   warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files))
 
   fail format(UPDATE_DICTIONARY_MESSAGE) if required_dictionary_update_changed_files.any? && dictionary_changed_file.empty?
+
+  return unless helper.ci?
 
   labels = []
   labels << 'product intelligence' unless helper.mr_has_labels?('product intelligence')
@@ -93,6 +94,6 @@ if matching_changed_files.any?
   if labels.any?
     gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
                                     gitlab.mr_json['iid'],
-                                    add_labels: helper.prepare_labels_for_mr(labels))
+                                    add_labels: labels)
   end
 end

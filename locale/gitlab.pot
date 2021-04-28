@@ -22409,6 +22409,9 @@ msgstr ""
 msgid "OnCallSchedules|Add a schedule"
 msgstr ""
 
+msgid "OnCallSchedules|Add an additional schedule to your project"
+msgstr ""
+
 msgid "OnCallSchedules|Add rotation"
 msgstr ""
 
@@ -22419,6 +22422,9 @@ msgid "OnCallSchedules|Are you sure you want to delete the \"%{deleteRotation}\"
 msgstr ""
 
 msgid "OnCallSchedules|Are you sure you want to delete the \"%{deleteSchedule}\" schedule? This action cannot be undone."
+msgstr ""
+
+msgid "OnCallSchedules|Collapse schedule"
 msgstr ""
 
 msgid "OnCallSchedules|Create on-call schedules  in GitLab"
@@ -22440,6 +22446,9 @@ msgid "OnCallSchedules|Edit schedule"
 msgstr ""
 
 msgid "OnCallSchedules|Enable end date"
+msgstr ""
+
+msgid "OnCallSchedules|Expand schedule"
 msgstr ""
 
 msgid "OnCallSchedules|Failed to add rotation"
@@ -26663,13 +26672,13 @@ msgstr ""
 msgid "Releases|New Release"
 msgstr ""
 
-msgid "Release|Something went wrong while creating a new release"
+msgid "Release|Something went wrong while creating a new release."
 msgstr ""
 
 msgid "Release|Something went wrong while getting the release details."
 msgstr ""
 
-msgid "Release|Something went wrong while saving the release details"
+msgid "Release|Something went wrong while saving the release details."
 msgstr ""
 
 msgid "Remediations"

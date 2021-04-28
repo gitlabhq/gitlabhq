@@ -29,10 +29,10 @@ For a software developer working in a team:
 1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md).
 1. You verify your changes with [Unit test reports](../../../ci/unit_test_reports.md) in GitLab CI/CD.
 1. You avoid using dependencies whose license is not compatible with your project with [License Compliance reports](../../compliance/license_compliance/index.md).
-1. You request the [approval](merge_request_approvals.md) from your manager.
+1. You request the [approval](approvals/index.md) from your manager.
 1. Your manager:
    1. Pushes a commit with their final review.
-   1. [Approves the merge request](merge_request_approvals.md).
+   1. [Approves the merge request](approvals/index.md).
    1. Sets it to [merge when pipeline succeeds](merge_when_pipeline_succeeds.md).
 1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#whenmanual) for GitLab CI/CD.
 1. Your implementations were successfully shipped to your customer.
@@ -43,7 +43,7 @@ For a web developer writing a webpage for your company's website:
 1. You gather feedback from your reviewers.
 1. You preview your changes with [Review Apps](../../../ci/review_apps/index.md).
 1. You request your web designers for their implementation.
-1. You request the [approval](merge_request_approvals.md) from your manager.
+1. You request the [approval](approvals/index.md) from your manager.
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
 1. Your production team [cherry picks](cherry_pick_changes.md) the merge commit into production.
 

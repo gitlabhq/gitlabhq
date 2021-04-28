@@ -85,10 +85,15 @@ module API
       post ":id/#{issuable_collection_name}/:#{issuable_key}/add_spent_time" do
         authorize! admin_issuable_key, load_issuable
 
-        update_issuable(spend_time: {
-          duration: Gitlab::TimeTrackingFormatter.parse(params.delete(:duration)),
-          user_id: current_user.id
-        })
+        update_params = {
+          spend_time: {
+            duration: Gitlab::TimeTrackingFormatter.parse(params.delete(:duration)),
+            user_id: current_user.id
+          }
+        }
+        update_params[:use_specialized_service] = true if issuable_name == 'merge_request'
+
+        update_issuable(update_params)
       end
 
       desc "Reset spent time for a project #{issuable_name}"
