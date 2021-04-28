@@ -14,9 +14,11 @@ module Users
     end
 
     def execute(skip_authorization: false)
+      @skip_authorization = skip_authorization
+
       raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_create_user?
 
-      user_params = build_user_params(skip_authorization: skip_authorization)
+      user_params = build_user_params
       user = User.new(user_params)
 
       if current_user&.admin?
@@ -36,6 +38,8 @@ module Users
     end
 
     private
+
+    attr_reader :skip_authorization
 
     def identity_attributes
       [:extern_uid, :provider]
@@ -102,7 +106,7 @@ module Users
       ]
     end
 
-    def build_user_params(skip_authorization:)
+    def build_user_params
       if current_user&.admin?
         user_params = params.slice(*admin_create_params)
 
@@ -111,10 +115,10 @@ module Users
         end
       else
         allowed_signup_params = signup_params
-        allowed_signup_params << :skip_confirmation if skip_authorization
+        allowed_signup_params << :skip_confirmation if allow_caller_to_request_skip_confirmation?
 
         user_params = params.slice(*allowed_signup_params)
-        if user_params[:skip_confirmation].nil?
+        if assign_skip_confirmation_from_settings?(user_params)
           user_params[:skip_confirmation] = skip_user_confirmation_email_from_setting
         end
 
@@ -134,6 +138,14 @@ module Users
       user_params.delete(:user_type) unless project_bot?(user_params[:user_type])
 
       user_params
+    end
+
+    def allow_caller_to_request_skip_confirmation?
+      skip_authorization
+    end
+
+    def assign_skip_confirmation_from_settings?(user_params)
+      user_params[:skip_confirmation].nil?
     end
 
     def skip_user_confirmation_email_from_setting

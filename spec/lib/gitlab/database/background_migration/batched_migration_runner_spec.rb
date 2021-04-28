@@ -50,6 +50,15 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
             batch_size: migration.batch_size,
             sub_batch_size: migration.sub_batch_size)
         end
+
+        it 'optimizes the migration after executing the job' do
+          migration.update!(min_value: event1.id, max_value: event2.id)
+
+          expect(migration_wrapper).to receive(:perform).ordered
+          expect(migration).to receive(:optimize!).ordered
+
+          runner.run_migration_job(migration)
+        end
       end
 
       context 'when the batch maximum exceeds the migration maximum' do

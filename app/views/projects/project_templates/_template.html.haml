@@ -10,7 +10,7 @@
   .controls.d-flex.align-items-center
     %a.btn.gl-button.btn-default.gl-mr-3{ href: template.preview, rel: 'noopener noreferrer', target: '_blank', data: { track_label: "template_preview", track_property: template.name, track_event: "click_button", track_value: "" } }
       = _("Preview")
-    %label.btn.gl-button.btn-success.template-button.choose-template.gl-mb-0{ for: template.name }
+    %label.btn.gl-button.btn-confirm.template-button.choose-template.gl-mb-0{ for: template.name }
       %input{ type: "radio", autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name, data: { track_label: "template_use", track_property: template.name, track_event: "click_button", track_value: "" } }
       %span{ data: { qa_selector: 'use_template_button' } }
         = _("Use template")

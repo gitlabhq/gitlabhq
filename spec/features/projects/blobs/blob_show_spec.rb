@@ -125,6 +125,7 @@ RSpec.describe 'File blob', :js do
 
         page.within '.project-refs-form' do
           click_link ref_name
+          wait_for_requests
         end
       end
 
@@ -168,6 +169,27 @@ RSpec.describe 'File blob', :js do
 
         page.within '.blob-content' do
           expect(page).not_to have_css('.hll')
+        end
+      end
+
+      context 'sucessfully change ref of similar name' do
+        before do
+          project.repository.create_branch('dev')
+          project.repository.create_branch('development')
+        end
+
+        it 'switch ref from longer to shorter ref name' do
+          visit_blob('files/js/application.js', ref: 'development')
+          switch_ref_to('dev')
+
+          expect(page.find('.file-title-name').text).to eq('application.js')
+        end
+
+        it 'switch ref from shorter to longer ref name' do
+          visit_blob('files/js/application.js', ref: 'dev')
+          switch_ref_to('development')
+
+          expect(page.find('.file-title-name').text).to eq('application.js')
         end
       end
     end

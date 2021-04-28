@@ -645,9 +645,6 @@ The group's new subgroups have push rules set for them based on either:
   and issues) of group members. **(PREMIUM)**
 - [Issue analytics](issues_analytics/index.md): View a bar chart of your group's number of issues per month. **(PREMIUM)**
 - Use GitLab as a [dependency proxy](../packages/dependency_proxy/index.md) for upstream Docker images.
-- [DORA4 Project Analytics API](../../api/dora4_group_analytics.md): View deployment frequency analytics.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291747) in GitLab Ultimate 13.9 as a
-  [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta). **(ULTIMATE SELF)**
 - [Epics](epics/index.md): Track groups of issues that share a theme. **(ULTIMATE)**
 - [Security Dashboard](../application_security/security_dashboard/index.md): View the vulnerabilities of all
   the projects in a group and its subgroups. **(ULTIMATE)**

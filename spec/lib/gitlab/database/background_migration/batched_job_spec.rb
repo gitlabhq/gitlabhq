@@ -47,4 +47,55 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
       end
     end
   end
+
+  describe '#time_efficiency' do
+    subject { job.time_efficiency }
+
+    let(:migration) { build(:batched_background_migration, interval: 120.seconds) }
+    let(:job) { build(:batched_background_migration_job, status: :succeeded, batched_migration: migration) }
+
+    context 'when job has not yet succeeded' do
+      let(:job) { build(:batched_background_migration_job, status: :running) }
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when finished_at is not set' do
+      it 'returns nil' do
+        job.started_at = Time.zone.now
+
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when started_at is not set' do
+      it 'returns nil' do
+        job.finished_at = Time.zone.now
+
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when job has finished' do
+      it 'returns ratio of duration to interval, here: 0.5' do
+        freeze_time do
+          job.started_at = Time.zone.now - migration.interval / 2
+          job.finished_at = Time.zone.now
+
+          expect(subject).to eq(0.5)
+        end
+      end
+
+      it 'returns ratio of duration to interval, here: 1' do
+        freeze_time do
+          job.started_at = Time.zone.now - migration.interval
+          job.finished_at = Time.zone.now
+
+          expect(subject).to eq(1)
+        end
+      end
+    end
+  end
 end

@@ -155,11 +155,19 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def resource
-    @resource ||= Users::BuildService.new(current_user, sign_up_params).execute
+    @resource ||= Users::RegistrationsBuildService
+                    .new(current_user, sign_up_params.merge({ skip_confirmation: skip_email_confirmation? }))
+                    .execute
   end
 
   def devise_mapping
     @devise_mapping ||= Devise.mappings[:user]
+  end
+
+  def skip_email_confirmation?
+    invite_email = session.delete(:invite_email)
+
+    sign_up_params[:email] == invite_email
   end
 
   def load_recaptcha

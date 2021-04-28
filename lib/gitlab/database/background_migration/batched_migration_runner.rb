@@ -21,6 +21,8 @@ module Gitlab
         def run_migration_job(active_migration)
           if next_batched_job = create_next_batched_job!(active_migration)
             migration_wrapper.perform(next_batched_job)
+
+            active_migration.optimize!
           else
             finish_active_migration(active_migration)
           end

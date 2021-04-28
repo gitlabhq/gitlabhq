@@ -93,6 +93,8 @@ class InvitesController < ApplicationController
     store_location_for(:user, invite_landing_url) if member
 
     if user_sign_up?
+      session[:invite_email] = member.invite_email
+
       redirect_to new_user_registration_path(invite_email: member.invite_email), notice: _("To accept this invitation, create an account or sign in.")
     else
       redirect_to new_user_session_path(sign_in_redirect_params), notice: sign_in_notice

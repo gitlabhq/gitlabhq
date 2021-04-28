@@ -22,8 +22,9 @@ RSpec.describe RegistrationsController do
   describe '#create' do
     let(:base_user_params) { { first_name: 'first', last_name: 'last', username: 'new_username', email: 'new@user.com', password: 'Any_password' } }
     let(:user_params) { { user: base_user_params } }
+    let(:session_params) { {} }
 
-    subject { post(:create, params: user_params) }
+    subject { post(:create, params: user_params, session: session_params) }
 
     context '`blocked_pending_approval` state' do
       context 'when the `require_admin_approval_after_user_signup` setting is turned on' do
@@ -148,6 +149,26 @@ RSpec.describe RegistrationsController do
             expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
             expect(controller.current_user).to be_nil
           end
+
+          context 'when registration is triggered from an accepted invite' do
+            context 'when invite email matches email used on registration' do
+              let(:session_params) { { invite_email: user_params.dig(:user, :email) } }
+
+              it 'signs the user in without sending a confirmation email', :aggregate_failures do
+                expect { subject }.not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+                expect(controller.current_user).to be_confirmed
+              end
+            end
+
+            context 'when invite email does not match the email used on registration' do
+              let(:session_params) { { invite_email: 'bogus@email.com' } }
+
+              it 'does not authenticate the user and sends a confirmation email', :aggregate_failures do
+                expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+                expect(controller.current_user).to be_nil
+              end
+            end
+          end
         end
 
         context 'when soft email confirmation is enabled' do
@@ -160,6 +181,24 @@ RSpec.describe RegistrationsController do
             expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
             expect(controller.current_user).to be_present
             expect(response).to redirect_to(users_sign_up_welcome_path)
+          end
+
+          context 'when invite email matches email used on registration' do
+            let(:session_params) { { invite_email: user_params.dig(:user, :email) } }
+
+            it 'signs the user in without sending a confirmation email', :aggregate_failures do
+              expect { subject }.not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+              expect(controller.current_user).to be_confirmed
+            end
+          end
+
+          context 'when invite email does not match the email used on registration' do
+            let(:session_params) { { invite_email: 'bogus@email.com' } }
+
+            it 'authenticates the user and sends a confirmation email without confirming', :aggregate_failures do
+              expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+              expect(controller.current_user).not_to be_confirmed
+            end
           end
         end
       end

@@ -39,10 +39,12 @@ class DeploymentsFinder
   private
 
   def init_collection
-    if params[:project]
+    if params[:project].present?
       params[:project].deployments
+    elsif params[:group].present?
+      ::Deployment.for_projects(params[:group].all_projects)
     else
-      Deployment.none
+      ::Deployment.none
     end
   end
 
@@ -113,5 +115,3 @@ class DeploymentsFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end
-
-DeploymentsFinder.prepend_if_ee('EE::DeploymentsFinder')

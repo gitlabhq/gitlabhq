@@ -77,6 +77,7 @@ The following languages and dependency managers are supported:
 1. Support for [sbt](https://www.scala-sbt.org/) 1.3 and above was added in GitLab 13.9.
 
 Plans are underway for supporting the following languages, dependency managers, and dependency files. For details, see the issue link for each.
+For workarounds, see the [Troubleshooting section](#troubleshooting)
 
 | Package Managers    | Languages | Supported files | Scan tools | Issue |
 | ------------------- | --------- | --------------- | ---------- | ----- |
@@ -567,6 +568,53 @@ As a workaround, remove the [`retire.js`](analyzers.md#selecting-specific-analyz
 [DS_DEFAULT_ANALYZERS](#configuring-dependency-scanning).
 
 ## Troubleshooting
+
+### Working around missing support for certain languages or package managers
+
+As noted in the ["Supported languages" section](#supported-languages-and-package-managers)
+some dependency definition files are not yet supported.
+However, Dependency Scanning can be achieved if
+the language, a package manager, or a third-party tool
+can convert the definition file
+into a supported format.
+
+Generally, the approach is the following:
+
+1. Define a dedicated converter job in your `.gitlab-ci.yml` file.
+   Use a suitable Docker image, script, or both to facilitate the conversion.
+1. Let that job upload the converted, supported file as an artifact.
+1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/README.md#dependencies)
+   to your `dependency_scanning` job to make use of the converted definitions files.
+
+For example, the currently unsupported `poetry.lock` file can be
+[converted](https://python-poetry.org/docs/cli/#export)
+to the supported `requirements.txt` as follows.
+
+```yaml
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+
+stages:
+  - .pre
+  - test
+
+variables:
+  PIP_REQUIREMENTS_FILE: "requirements-converted.txt"
+
+convert-poetry:
+  stage: .pre
+  image: python:3-slim
+  script:
+    - pip install poetry  # Or via another method: https://python-poetry.org/docs/#installation
+    - poetry export --output "$PIP_REQUIREMENTS_FILE"
+  artifacts:
+    paths:
+      - "$PIP_REQUIREMENTS_FILE"
+
+dependency_scanning:
+  stage: test
+  dependencies: ["convert-poetry"]
+```
 
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
