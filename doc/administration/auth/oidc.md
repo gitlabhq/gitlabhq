@@ -338,7 +338,6 @@ that suggests checking that the app manifest contains these settings:
 
   - `"accessTokenAcceptedVersion": null`
   - `"signInAudience": "AzureADMyOrg"`
-    1. `"signInAudience": "AzureADMyOrg"`
 
     Note that this configuration corresponds with the `Supported account types` setting used when creating the `IdentityExperienceFramework` app.
 

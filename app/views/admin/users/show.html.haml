@@ -64,6 +64,9 @@
           %span.light= _('External User:')
           %strong
             = @user.external? ? _('Yes') : _('No')
+
+        = render_if_exists 'admin/users/provisioned_by', user: @user
+
         %li
           %span.light= _('Can create groups:')
           %strong

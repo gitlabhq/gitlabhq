@@ -45,6 +45,7 @@ RSpec.describe Ci::PipelineEditorHelper do
         "initial-branch-name": nil,
         "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
         "new-merge-request-path" => '/mock/project/-/merge_requests/new',
+        "pipeline_etag" => graphql_etag_pipeline_sha_path(project.commit.sha),
         "project-path" => project.path,
         "project-full-path" => project.full_path,
         "project-namespace" => project.namespace.full_path,

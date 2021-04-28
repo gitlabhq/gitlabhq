@@ -63,6 +63,16 @@ RSpec.describe Gitlab::Graphql::Present::FieldExtension do
 
       expect(value).to eq 'made of concrete'
     end
+
+    context 'when the implementation is inherited' do
+      it 'resolves the interface field using the implementation from the presenter' do
+        subclass = Class.new(implementation) { graphql_name 'Subclass' }
+        field = ::Types::BaseField.new(name: :interface_field, type: GraphQL::STRING_TYPE, null: true, owner: interface)
+        value = resolve_field(field, object, object_type: subclass)
+
+        expect(value).to eq 'made of concrete'
+      end
+    end
   end
 
   describe 'interactions with inheritance' do
