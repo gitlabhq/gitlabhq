@@ -27,10 +27,6 @@ module Spec
             all_rows[2]
           end
 
-          def invite_users_form
-            page.find('[data-testid="invite-users-form"]')
-          end
-
           def find_row(name)
             page.within(members_table) do
               page.find('tbody > tr', text: name)

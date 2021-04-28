@@ -48,6 +48,7 @@ exceptions:
   - EOL
   - EXIF
   - FAQ
+  - FIPS
   - FOSS
   - FQDN
   - FREE

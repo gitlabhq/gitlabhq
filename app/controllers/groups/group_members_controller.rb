@@ -22,6 +22,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   feature_category :authentication_and_authorization
 
   def index
+    preload_max_access
     @sort = params[:sort].presence || sort_value_name
 
     @members = GroupMembersFinder
@@ -49,6 +50,14 @@ class Groups::GroupMembersController < Groups::ApplicationController
   alias_method :membershipable, :group
 
   private
+
+  def preload_max_access
+    return unless current_user
+
+    # this allows the can? against admin type queries in this action to
+    # only perform the query once, even if it is cached
+    current_user.max_access_for_group[@group.id] = @group.max_member_access(current_user)
+  end
 
   def can_manage_members
     can?(current_user, :admin_group_member, @group)

@@ -8308,6 +8308,18 @@ msgstr ""
 msgid "Configure Prometheus"
 msgstr ""
 
+msgid "Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
+msgstr ""
+
+msgid "Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist"
+msgstr ""
+
+msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) to customize Secret Detection settings."
+msgstr ""
+
+msgid "Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
+msgstr ""
+
 msgid "Configure Tracing"
 msgstr ""
 
@@ -29095,12 +29107,6 @@ msgstr ""
 msgid "Set %{epic_ref} as the parent epic."
 msgstr ""
 
-msgid "Set .gitlab-ci.yml to enable or configure SAST"
-msgstr ""
-
-msgid "Set .gitlab-ci.yml to enable or configure SAST security scanning using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
-msgstr ""
-
 msgid "Set a default description template to be used for new issues. %{link_start}What are description templates?%{link_end}"
 msgstr ""
 
@@ -38135,6 +38141,9 @@ msgstr ""
 msgid "mrWidget|Merged by"
 msgstr ""
 
+msgid "mrWidget|Merging! Drum roll, please…"
+msgstr ""
+
 msgid "mrWidget|More information"
 msgstr ""
 
@@ -38226,9 +38235,6 @@ msgid "mrWidget|This action will start a merge train when pipeline %{pipelineLin
 msgstr ""
 
 msgid "mrWidget|This merge request failed to be merged automatically"
-msgstr ""
-
-msgid "mrWidget|This merge request is in the process of being merged"
 msgstr ""
 
 msgid "mrWidget|This project is archived, write access has been disabled"

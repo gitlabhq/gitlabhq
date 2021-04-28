@@ -121,7 +121,7 @@ rspec frontend_fixture as-if-foss:
 rspec-ee frontend_fixture:
   extends:
     - .frontend-fixtures-base
-    - .frontend:rules:default-frontend-jobs
+    - .frontend:rules:default-frontend-jobs-ee
   parallel: 2
 
 graphql-schema-dump:
@@ -169,8 +169,10 @@ karma:
   extends:
     - .karma-base
     - .frontend:rules:default-frontend-jobs
-  # Don't use `needs` since `rspec-ee frontend_fixture` doesn't exist in `gitlab-foss` pipelines.
-  dependencies: ["rspec frontend_fixture", "rspec-ee frontend_fixture"]
+  needs:
+    - job: "rspec frontend_fixture"
+    - job: "rspec-ee frontend_fixture"
+      optional: true
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
     name: coverage-javascript
@@ -201,8 +203,10 @@ jest:
   extends:
     - .jest-base
     - .frontend:rules:default-frontend-jobs
-  # Don't use `needs` since `rspec-ee frontend_fixture` doesn't exist in `gitlab-foss` pipelines.
-  dependencies: ["rspec frontend_fixture", "rspec-ee frontend_fixture"]
+  needs:
+    - job: "rspec frontend_fixture"
+    - job: "rspec-ee frontend_fixture"
+      optional: true
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -222,8 +226,11 @@ jest-integration:
   script:
     - *yarn-install
     - run_timed_command "yarn jest:integration --ci"
-  # Don't use `needs` since `rspec-ee frontend_fixture` doesn't exist in `gitlab-foss` pipelines.
-  dependencies: ["rspec frontend_fixture", "rspec-ee frontend_fixture", "graphql-schema-dump"]
+  needs:
+    - job: "rspec frontend_fixture"
+    - job: "rspec-ee frontend_fixture"
+      optional: true
+    - job: "graphql-schema-dump"
 
 jest-as-if-foss:
   extends:

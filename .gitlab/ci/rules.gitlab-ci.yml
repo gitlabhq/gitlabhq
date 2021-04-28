@@ -424,6 +424,13 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
+.frontend:rules:default-frontend-jobs-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+
 .frontend:rules:default-frontend-jobs-as-if-foss:
   rules:
     - <<: *if-not-ee
@@ -931,6 +938,25 @@
     - <<: *if-merge-request
       changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
+#########################
+# Static analysis rules #
+#########################
+
+.static-analysis:rules:ee-and-foss:
+  rules:
+    - changes: *code-backstage-qa-patterns
+
+.static-analysis:rules:as-if-foss:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-title-as-if-foss
+      changes: *code-backstage-qa-patterns
+    - <<: *if-security-merge-request
+      changes: *code-backstage-qa-patterns
+    - <<: *if-merge-request
+      changes: *ci-patterns
+
 #######################
 # Vendored gems rules #
 #######################
@@ -1050,7 +1076,6 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
-      when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
@@ -1071,7 +1096,6 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
-      when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
@@ -1094,7 +1118,6 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
-      when: manual
       allow_failure: true
 
 .review:rules:review-qa-all:

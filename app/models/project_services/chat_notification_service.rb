@@ -15,9 +15,14 @@ class ChatNotificationService < Service
 
   EVENT_CHANNEL = proc { |event| "#{event}_channel" }
 
+  LABEL_NOTIFICATION_BEHAVIOURS = [
+    MATCH_ANY_LABEL = 'match_any',
+    MATCH_ALL_LABELS = 'match_all'
+  ].freeze
+
   default_value_for :category, 'chat'
 
-  prop_accessor :webhook, :username, :channel, :branches_to_be_notified, :labels_to_be_notified
+  prop_accessor :webhook, :username, :channel, :branches_to_be_notified, :labels_to_be_notified, :labels_to_be_notified_behavior
 
   # Custom serialized properties initialization
   prop_accessor(*SUPPORTED_EVENTS.map { |event| EVENT_CHANNEL[event] })
@@ -25,12 +30,14 @@ class ChatNotificationService < Service
   boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
 
   validates :webhook, presence: true, public_url: true, if: :activated?
+  validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_nil: true
 
   def initialize_properties
     if properties.nil?
       self.properties = {}
       self.notify_only_broken_pipelines = true
       self.branches_to_be_notified = "default"
+      self.labels_to_be_notified_behavior = MATCH_ANY_LABEL
     elsif !self.notify_only_default_branch.nil?
       # In older versions, there was only a boolean property named
       # `notify_only_default_branch`. Now we have a string property named
@@ -65,7 +72,20 @@ class ChatNotificationService < Service
       { type: 'text', name: 'username', placeholder: 'GitLab-integration' }.freeze,
       { type: 'checkbox', name: 'notify_only_broken_pipelines', help: 'Do not send notifications for successful pipelines.' }.freeze,
       { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }.freeze,
-      { type: 'text', name: 'labels_to_be_notified', placeholder: '~backend,~frontend', help: 'Send notifications for issue, merge request, and comment events with the listed labels only. Leave blank to receive notifications for all events.' }.freeze
+      {
+        type: 'text',
+        name: 'labels_to_be_notified',
+        placeholder: '~backend,~frontend',
+        help: 'Send notifications for issue, merge request, and comment events with the listed labels only. Leave blank to receive notifications for all events.'
+      }.freeze,
+      {
+        type: 'select',
+        name: 'labels_to_be_notified_behavior',
+        choices: [
+          ['Match any of the labels', MATCH_ANY_LABEL],
+          ['Match all of the labels', MATCH_ALL_LABELS]
+        ]
+      }.freeze
     ].freeze
   end
 
@@ -136,11 +156,17 @@ class ChatNotificationService < Service
   def notify_label?(data)
     return true unless SUPPORTED_EVENTS_FOR_LABEL_FILTER.include?(data[:object_kind]) && labels_to_be_notified.present?
 
-    issue_labels = data.dig(:issue, :labels) || []
-    merge_request_labels = data.dig(:merge_request, :labels) || []
-    label_titles = (issue_labels + merge_request_labels).pluck(:title)
+    labels = data.dig(:issue, :labels) || data.dig(:merge_request, :labels)
 
-    (labels_to_be_notified_list & label_titles).any?
+    return false if labels.nil?
+
+    matching_labels = labels_to_be_notified_list & labels.pluck(:title)
+
+    if labels_to_be_notified_behavior == MATCH_ALL_LABELS
+      labels_to_be_notified_list.difference(matching_labels).empty?
+    else
+      matching_labels.any?
+    end
   end
 
   def user_id_from_hook_data(data)

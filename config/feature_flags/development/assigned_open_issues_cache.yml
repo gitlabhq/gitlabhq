@@ -1,0 +1,7 @@
+---
+name: assigned_open_issues_cache
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59961
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325470
+group: group::product planning
+type: development
+default_enabled: false

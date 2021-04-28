@@ -1,0 +1,5 @@
+---
+title: Recalculate assigned open issues count after cache invalidation
+merge_request: 59961
+author:
+type: performance

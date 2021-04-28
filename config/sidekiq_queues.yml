@@ -398,6 +398,8 @@
   - 1
 - - upload_checksum
   - 1
+- - users_update_open_issue_count
+  - 1
 - - vulnerabilities_statistics_adjustment
   - 1
 - - vulnerability_exports_export

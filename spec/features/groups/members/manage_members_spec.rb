@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe 'Groups > Members > Manage members' do
   include Select2Helper
   include Spec::Support::Helpers::Features::MembersHelpers
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
   let(:user1) { create(:user, name: 'John Doe') }
   let(:user2) { create(:user, name: 'Mary Jane') }
   let(:group) { create(:group) }
 
   before do
-    stub_feature_flags(invite_members_group_modal: false)
     sign_in(user1)
   end
 
@@ -27,15 +27,15 @@ RSpec.describe 'Groups > Members > Manage members' do
   end
 
   context 'when Invite Members modal is enabled' do
-    before do
-      stub_feature_flags(invite_members_group_modal: true)
-    end
-
     it_behaves_like 'includes the correct Invite link', '.js-invite-members-trigger', '.invite-users-form'
     it_behaves_like 'includes the correct Invite link', '.js-invite-group-trigger', '.invite-group-form'
   end
 
   context 'when Invite Members modal is disabled' do
+    before do
+      stub_feature_flags(invite_members_group_modal: false)
+    end
+
     it_behaves_like 'includes the correct Invite link', '.invite-users-form', '.js-invite-members-trigger'
     it_behaves_like 'includes the correct Invite link', '.invite-group-form', '.js-invite-group-trigger'
   end
@@ -59,7 +59,7 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     visit group_group_members_path(group)
 
-    add_user(user2.id, 'Reporter')
+    invite_member(user2.name, role: 'Reporter')
 
     page.within(second_row) do
       expect(page).to have_content(user2.name)
@@ -73,19 +73,44 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     visit group_group_members_path(group)
 
-    find('.select2-container').click
-    select_input = find('.select2-input')
+    click_on 'Invite members'
+    fill_in 'Select members or type email addresses', with: '@gitlab.com'
 
-    select_input.send_keys('@gitlab.com')
     wait_for_requests
 
     expect(page).to have_content('No matches found')
 
-    select_input.native.clear
-    select_input.send_keys('undisclosed_email@gitlab.com')
+    fill_in 'Select members or type email addresses', with: 'undisclosed_email@gitlab.com'
     wait_for_requests
 
     expect(page).to have_content("Jane 'invisible' Doe")
+  end
+
+  context 'when Invite Members modal is disabled' do
+    before do
+      stub_feature_flags(invite_members_group_modal: false)
+    end
+
+    it 'do not disclose email addresses', :js do
+      group.add_owner(user1)
+      create(:user, email: 'undisclosed_email@gitlab.com', name: "Jane 'invisible' Doe")
+
+      visit group_group_members_path(group)
+
+      find('.select2-container').click
+      select_input = find('.select2-input')
+
+      select_input.send_keys('@gitlab.com')
+      wait_for_requests
+
+      expect(page).to have_content('No matches found')
+
+      select_input.native.clear
+      select_input.send_keys('undisclosed_email@gitlab.com')
+      wait_for_requests
+
+      expect(page).to have_content("Jane 'invisible' Doe")
+    end
   end
 
   it 'remove user from group', :js do
@@ -115,7 +140,7 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     visit group_group_members_path(group)
 
-    add_user(user1.id, 'Reporter')
+    invite_member(user1.name, role: 'Reporter')
 
     page.within(first_row) do
       expect(page).to have_content(user1.name)
@@ -128,7 +153,7 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     visit group_group_members_path(group)
 
-    add_user('test@example.com', 'Reporter')
+    invite_member('test@example.com', role: 'Reporter')
 
     expect(page).to have_link 'Invited'
     click_link 'Invited'
@@ -148,6 +173,8 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     expect(page).not_to have_selector '.invite-users-form'
     expect(page).not_to have_selector '.invite-group-form'
+    expect(page).not_to have_selector '.js-invite-members-modal'
+    expect(page).not_to have_selector '.js-invite-group-modal'
 
     page.within(second_row) do
       # Can not modify user2 role
@@ -155,14 +182,6 @@ RSpec.describe 'Groups > Members > Manage members' do
 
       # Can not remove user2
       expect(page).not_to have_selector 'button[title="Remove member"]'
-    end
-  end
-
-  def add_user(id, role)
-    page.within ".invite-users-form" do
-      select2(id, from: "#user_ids", multiple: true)
-      select(role, from: "access_level")
-      click_button "Invite"
     end
   end
 end

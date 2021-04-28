@@ -2,23 +2,14 @@
 
 module Security
   module CiConfiguration
-    class SastBuildActions
+    class SastBuildAction < BaseBuildAction
       SAST_DEFAULT_ANALYZERS = 'bandit, brakeman, eslint, flawfinder, gosec, kubesec, nodejs-scan, phpcs-security-audit, pmd-apex, security-code-scan, sobelow, spotbugs'
 
       def initialize(auto_devops_enabled, params, existing_gitlab_ci_content)
-        @auto_devops_enabled = auto_devops_enabled
+        super(auto_devops_enabled, existing_gitlab_ci_content)
         @variables = variables(params)
-        @existing_gitlab_ci_content = existing_gitlab_ci_content || {}
         @default_sast_values = default_sast_values(params)
         @default_values_overwritten = false
-      end
-
-      def generate
-        action = @existing_gitlab_ci_content.present? ? 'update' : 'create'
-
-        update_existing_content!
-
-        [{ action: action, file_path: '.gitlab-ci.yml', content: prepare_existing_content, default_values_overwritten: @default_values_overwritten }]
       end
 
       private
@@ -71,17 +62,10 @@ module Security
         @existing_gitlab_ci_content['stages'] = set_stages
         @existing_gitlab_ci_content['variables'] = set_variables(global_variables, @existing_gitlab_ci_content)
         @existing_gitlab_ci_content['sast'] = set_sast_block
-        @existing_gitlab_ci_content['include'] = set_includes
+        @existing_gitlab_ci_content['include'] = generate_includes
 
         @existing_gitlab_ci_content.select! { |k, v| v.present? }
         @existing_gitlab_ci_content['sast'].select! { |k, v| v.present? }
-      end
-
-      def set_includes
-        includes = @existing_gitlab_ci_content['include'] || []
-        includes = includes.is_a?(Array) ? includes : [includes]
-        includes << { 'template' => template }
-        includes.uniq
       end
 
       def set_stages
@@ -119,26 +103,6 @@ module Security
         sast_content['variables'] = set_variables(sast_variables)
         sast_content['stage'] = sast_stage
         sast_content.select { |k, v| v.present? }
-      end
-
-      def prepare_existing_content
-        content = @existing_gitlab_ci_content.to_yaml
-        content = remove_document_delimeter(content)
-
-        content.prepend(sast_comment)
-      end
-
-      def remove_document_delimeter(content)
-        content.gsub(/^---\n/, '')
-      end
-
-      def sast_comment
-        <<~YAML
-          # You can override the included template(s) by including variable overrides
-          # See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
-        YAML
       end
 
       def template

@@ -12,6 +12,7 @@ module ServiceParams
     :bamboo_url,
     :branches_to_be_notified,
     :labels_to_be_notified,
+    :labels_to_be_notified_behavior,
     :build_key,
     :build_type,
     :ca_pem,

@@ -551,11 +551,17 @@ class Group < Namespace
   def max_member_access_for_user(user, only_concrete_membership: false)
     return GroupMember::NO_ACCESS unless user
     return GroupMember::OWNER if user.can_admin_all_resources? && !only_concrete_membership
+    return user.max_access_for_group[id] if user.max_access_for_group[id]
 
-    max_member_access = members_with_parents.where(user_id: user)
-                                            .reorder(access_level: :desc)
-                                            .first
-                                            &.access_level
+    max_member_access(user)
+  end
+
+  def max_member_access(user)
+    max_member_access = members_with_parents
+                          .where(user_id: user)
+                          .reorder(access_level: :desc)
+                          .first
+                          &.access_level
 
     max_member_access || GroupMember::NO_ACCESS
   end

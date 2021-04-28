@@ -5,9 +5,8 @@ require 'spec_helper'
 RSpec.describe Groups::GroupMembersController do
   include ExternalAuthorizationServiceHelpers
 
-  let(:user) { create(:user) }
-  let(:group) { create(:group, :public) }
-  let(:membership) { create(:group_member, group: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group, reload: true) { create(:group, :public) }
 
   before do
     travel_to DateTime.new(2019, 4, 1)
@@ -26,11 +25,19 @@ RSpec.describe Groups::GroupMembersController do
     end
 
     context 'user with owner access' do
-      let!(:invited) { create_list(:group_member, 3, :invited, group: group) }
+      let_it_be(:invited) { create_list(:group_member, 3, :invited, group: group) }
 
       before do
         group.add_owner(user)
         sign_in(user)
+      end
+
+      it 'assigns max_access_for_group' do
+        allow(controller).to receive(:current_user).and_return(user)
+
+        get :index, params: { group_id: group }
+
+        expect(user.max_access_for_group[group.id]).to eq(Gitlab::Access::OWNER)
       end
 
       it 'assigns invited members' do
@@ -65,8 +72,8 @@ RSpec.describe Groups::GroupMembersController do
     end
 
     context 'when user has owner access to subgroup' do
-      let(:nested_group) { create(:group, parent: group) }
-      let(:nested_group_user) { create(:user) }
+      let_it_be(:nested_group) { create(:group, parent: group) }
+      let_it_be(:nested_group_user) { create(:user) }
 
       before do
         group.add_owner(user)
@@ -95,7 +102,7 @@ RSpec.describe Groups::GroupMembersController do
   end
 
   describe 'POST create' do
-    let(:group_user) { create(:user) }
+    let_it_be(:group_user) { create(:user) }
 
     before do
       sign_in(user)
@@ -189,7 +196,7 @@ RSpec.describe Groups::GroupMembersController do
   end
 
   describe 'PUT update' do
-    let(:requester) { create(:group_member, :access_request, group: group) }
+    let_it_be(:requester) { create(:group_member, :access_request, group: group) }
 
     before do
       group.add_owner(user)
@@ -292,9 +299,9 @@ RSpec.describe Groups::GroupMembersController do
   end
 
   describe 'DELETE destroy' do
-    let(:sub_group) { create(:group, parent: group) }
-    let!(:member) { create(:group_member, :developer, group: group) }
-    let!(:sub_member) { create(:group_member, :developer, group: sub_group, user: member.user) }
+    let_it_be(:sub_group) { create(:group, parent: group) }
+    let_it_be(:member) { create(:group_member, :developer, group: group) }
+    let_it_be(:sub_member) { create(:group_member, :developer, group: sub_group, user: member.user) }
 
     before do
       sign_in(user)
@@ -403,6 +410,8 @@ RSpec.describe Groups::GroupMembersController do
       end
 
       context 'and is a requester' do
+        let(:group) { create(:group, :public) }
+
         before do
           group.request_access(user)
         end
@@ -435,7 +444,7 @@ RSpec.describe Groups::GroupMembersController do
   end
 
   describe 'POST approve_access_request' do
-    let(:member) { create(:group_member, :access_request, group: group) }
+    let_it_be(:member) { create(:group_member, :access_request, group: group) }
 
     before do
       sign_in(user)
@@ -479,6 +488,8 @@ RSpec.describe Groups::GroupMembersController do
   end
 
   context 'with external authorization enabled' do
+    let_it_be(:membership) { create(:group_member, group: group) }
+
     before do
       enable_external_authorization_service_check
       group.add_owner(user)

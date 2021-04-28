@@ -26,11 +26,11 @@ module Gitlab
       def json_schema_path
         return '' unless has_json_schema?
 
-        "#{BASE_REPO_PATH}/#{attributes[:object_json_schema]}"
+        "#{BASE_REPO_PATH}/#{attributes[:value_json_schema]}"
       end
 
       def has_json_schema?
-        attributes[:value_type] == 'object' && attributes[:object_json_schema].present?
+        attributes[:value_type] == 'object' && attributes[:value_json_schema].present?
       end
 
       def yaml_path

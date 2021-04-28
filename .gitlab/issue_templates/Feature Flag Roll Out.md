@@ -70,6 +70,11 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 - [ ] Announce on the issue an estimated time this will be enabled on GitLab.com
 
+- [ ] Check if the feature flag change needs to be accompagnied with a
+      [change management
+      issue](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process). Cross
+      link the issue here if it does.
+
 *Partial Rollout Phase*
 - [ ] Enable on GitLab.com for individual groups/projects listed above and verify behaviour (`/chatops run feature set --project=gitlab-org/gitlab feature_name true`)
 

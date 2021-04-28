@@ -445,7 +445,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       wait_for_requests
 
       expect(page).not_to have_button('Merge')
-      expect(page).to have_content('This merge request is in the process of being merged')
+      expect(page).to have_content('Merging! Drum roll, please…')
     end
   end
 

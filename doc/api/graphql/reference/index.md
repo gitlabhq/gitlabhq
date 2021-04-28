@@ -851,6 +851,10 @@ Input type: `CommitCreateInput`
 
 ### `Mutation.configureSast`
 
+Configure SAST for a project by enabling SAST in a new or modified
+`.gitlab-ci.yml` file in a new branch. The new branch and a URL to
+create a Merge Request are a part of the response.
+
 Input type: `ConfigureSastInput`
 
 #### Arguments
@@ -865,10 +869,35 @@ Input type: `ConfigureSastInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationconfiguresastbranch"></a>`branch` | [`String`](#string) | Branch that has the new/modified `.gitlab-ci.yml` file. |
 | <a id="mutationconfiguresastclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationconfiguresasterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationconfiguresaststatus"></a>`status` | [`String!`](#string) | Status of creating the commit for the supplied SAST CI configuration. |
 | <a id="mutationconfiguresastsuccesspath"></a>`successPath` | [`String`](#string) | Redirect path to use when the response is successful. |
+
+### `Mutation.configureSecretDetection`
+
+Configure Secret Detection for a project by enabling Secret Detection
+in a new or modified `.gitlab-ci.yml` file in a new branch. The new
+branch and a URL to create a Merge Request are a part of the
+response.
+
+Input type: `ConfigureSecretDetectionInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationconfiguresecretdetectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationconfiguresecretdetectionprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationconfiguresecretdetectionbranch"></a>`branch` | [`String`](#string) | Branch that has the new/modified `.gitlab-ci.yml` file. |
+| <a id="mutationconfiguresecretdetectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationconfiguresecretdetectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationconfiguresecretdetectionsuccesspath"></a>`successPath` | [`String`](#string) | Redirect path to use when the response is successful. |
 
 ### `Mutation.createAlertIssue`
 

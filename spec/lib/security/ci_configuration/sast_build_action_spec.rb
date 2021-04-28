@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::CiConfiguration::SastBuildActions do
+RSpec.describe Security::CiConfiguration::SastBuildAction do
   let(:default_sast_values) do
     { 'global' =>
       [
@@ -85,8 +85,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
         subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
         it 'generates the correct YML' do
-          expect(result.first[:action]).to eq('update')
-          expect(result.first[:content]).to eq(sast_yaml_two_includes)
+          expect(result[:action]).to eq('update')
+          expect(result[:content]).to eq(sast_yaml_two_includes)
         end
       end
 
@@ -96,12 +96,12 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
         subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
         it 'generates the correct YML' do
-          expect(result.first[:action]).to eq('update')
-          expect(result.first[:content]).to eq(sast_yaml_two_includes)
+          expect(result[:action]).to eq('update')
+          expect(result[:content]).to eq(sast_yaml_two_includes)
         end
 
         it 'reports defaults have been overwritten' do
-          expect(result.first[:default_values_overwritten]).to eq(true)
+          expect(result[:default_values_overwritten]).to eq(true)
         end
       end
     end
@@ -112,8 +112,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
       subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
       it 'generates the correct YML' do
-        expect(result.first[:action]).to eq('update')
-        expect(result.first[:content]).to eq(sast_yaml_all_params)
+        expect(result[:action]).to eq('update')
+        expect(result[:content]).to eq(sast_yaml_all_params)
       end
     end
 
@@ -124,11 +124,11 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
       subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
       it 'generates the correct YML' do
-        expect(result.first[:content]).to eq(sast_yaml_with_no_variables_set)
+        expect(result[:content]).to eq(sast_yaml_with_no_variables_set)
       end
 
       it 'reports defaults have not been overwritten' do
-        expect(result.first[:default_values_overwritten]).to eq(false)
+        expect(result[:default_values_overwritten]).to eq(false)
       end
 
       context 'analyzer section' do
@@ -137,7 +137,7 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
         subject(:result) { described_class.new(auto_devops_enabled, params_with_analyzer_info, gitlab_ci_content).generate }
 
         it 'generates the correct YML' do
-          expect(result.first[:content]).to eq(sast_yaml_with_no_variables_set_but_analyzers)
+          expect(result[:content]).to eq(sast_yaml_with_no_variables_set_but_analyzers)
         end
 
         context 'analyzers are disabled' do
@@ -146,9 +146,9 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
           subject(:result) { described_class.new(auto_devops_enabled, params_with_analyzer_info, gitlab_ci_content).generate }
 
           it 'writes SAST_EXCLUDED_ANALYZERS' do
-            stub_const('Security::CiConfiguration::SastBuildActions::SAST_DEFAULT_ANALYZERS', 'bandit, brakeman, flawfinder')
+            stub_const('Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS', 'bandit, brakeman, flawfinder')
 
-            expect(result.first[:content]).to eq(sast_yaml_with_no_variables_set_but_analyzers)
+            expect(result[:content]).to eq(sast_yaml_with_no_variables_set_but_analyzers)
           end
         end
 
@@ -158,9 +158,9 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
           subject(:result) { described_class.new(auto_devops_enabled, params_with_all_analyzers_enabled, gitlab_ci_content).generate }
 
           it 'does not write SAST_DEFAULT_ANALYZERS or SAST_EXCLUDED_ANALYZERS' do
-            stub_const('Security::CiConfiguration::SastBuildActions::SAST_DEFAULT_ANALYZERS', 'brakeman, flawfinder')
+            stub_const('Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS', 'brakeman, flawfinder')
 
-            expect(result.first[:content]).to eq(sast_yaml_with_no_variables_set)
+            expect(result[:content]).to eq(sast_yaml_with_no_variables_set)
           end
         end
       end
@@ -186,8 +186,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
       subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
       it 'generates the correct YML' do
-        expect(result.first[:action]).to eq('update')
-        expect(result.first[:content]).to eq(sast_yaml_updated_stage)
+        expect(result[:action]).to eq('update')
+        expect(result[:content]).to eq(sast_yaml_updated_stage)
       end
     end
 
@@ -197,8 +197,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
       subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
       it 'generates the correct YML' do
-        expect(result.first[:action]).to eq('update')
-        expect(result.first[:content]).to eq(sast_yaml_variable_section_added)
+        expect(result[:action]).to eq('update')
+        expect(result[:content]).to eq(sast_yaml_variable_section_added)
       end
     end
 
@@ -208,8 +208,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
       subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
       it 'generates the correct YML' do
-        expect(result.first[:action]).to eq('update')
-        expect(result.first[:content]).to eq(sast_yaml_sast_section_added)
+        expect(result[:action]).to eq('update')
+        expect(result[:content]).to eq(sast_yaml_sast_section_added)
       end
     end
 
@@ -219,8 +219,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
       subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
       it 'generates the correct YML' do
-        expect(result.first[:action]).to eq('update')
-        expect(result.first[:content]).to eq(sast_yaml_sast_variables_section_added)
+        expect(result[:action]).to eq('update')
+        expect(result[:content]).to eq(sast_yaml_sast_variables_section_added)
       end
     end
 
@@ -289,7 +289,7 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
         subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
         it 'generates the correct YML' do
-          expect(result.first[:content]).to eq(sast_yaml_with_no_variables_set)
+          expect(result[:content]).to eq(sast_yaml_with_no_variables_set)
         end
       end
 
@@ -297,7 +297,7 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
         subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
         it 'generates the correct YML' do
-          expect(result.first[:content]).to eq(sast_yaml_all_params)
+          expect(result[:content]).to eq(sast_yaml_all_params)
         end
       end
     end
@@ -308,22 +308,22 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
       subject(:result) { described_class.new(auto_devops_enabled, params, gitlab_ci_content).generate }
 
       before do
-        allow_next_instance_of(described_class) do |sast_build_actions|
-          allow(sast_build_actions).to receive(:auto_devops_stages).and_return(fast_auto_devops_stages)
+        allow_next_instance_of(described_class) do |sast_build_action|
+          allow(sast_build_action).to receive(:auto_devops_stages).and_return(fast_auto_devops_stages)
         end
       end
 
       it 'generates the correct YML' do
-        expect(result.first[:content]).to eq(auto_devops_with_custom_stage)
+        expect(result[:content]).to eq(auto_devops_with_custom_stage)
       end
     end
   end
 
-  describe 'Security::CiConfiguration::SastBuildActions::SAST_DEFAULT_ANALYZERS' do
-    subject(:variable) {Security::CiConfiguration::SastBuildActions::SAST_DEFAULT_ANALYZERS}
+  describe 'Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS' do
+    subject(:variable) {Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS}
 
     it 'is sorted alphabetically' do
-      sorted_variable = Security::CiConfiguration::SastBuildActions::SAST_DEFAULT_ANALYZERS
+      sorted_variable = Security::CiConfiguration::SastBuildAction::SAST_DEFAULT_ANALYZERS
         .split(',')
         .map(&:strip)
         .sort
@@ -342,7 +342,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
   def sast_yaml_with_no_variables_set_but_analyzers
     <<-CI_YML.strip_heredoc
     # You can override the included template(s) by including variable overrides
-    # See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+    # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+    # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
     # Note that environment variables can be set in several places
     # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
     stages:
@@ -360,7 +361,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
   def sast_yaml_with_no_variables_set
     <<-CI_YML.strip_heredoc
     # You can override the included template(s) by including variable overrides
-    # See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+    # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+    # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
     # Note that environment variables can be set in several places
     # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
     stages:
@@ -375,7 +377,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
   def sast_yaml_all_params
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
       stages:
@@ -396,7 +399,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
   def auto_devops_with_custom_stage
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
       stages:
@@ -430,7 +434,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
   def sast_yaml_two_includes
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
       stages:
@@ -453,7 +458,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
   def sast_yaml_variable_section_added
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
       stages:
@@ -474,7 +480,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
   def sast_yaml_sast_section_added
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
       stages:
@@ -496,7 +503,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
   def sast_yaml_sast_variables_section_added
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
       stages:
@@ -518,7 +526,8 @@ RSpec.describe Security::CiConfiguration::SastBuildActions do
   def sast_yaml_updated_stage
     <<-CI_YML.strip_heredoc
       # You can override the included template(s) by including variable overrides
-      # See https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+      # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
       # Note that environment variables can be set in several places
       # See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
       stages:

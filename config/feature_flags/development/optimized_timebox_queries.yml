@@ -1,8 +1,0 @@
----
-name: optimized_timebox_queries
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32953
-rollout_issue_url:  https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34043
-milestone: '13.1'
-type: development
-group: group::project management
-default_enabled: true

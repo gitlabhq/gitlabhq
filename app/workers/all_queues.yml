@@ -2440,6 +2440,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: users_update_open_issue_count
+  :feature_category: :users
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: web_hook
   :feature_category: :integrations
   :has_external_dependencies: true

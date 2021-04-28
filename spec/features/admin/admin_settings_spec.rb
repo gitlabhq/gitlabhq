@@ -266,6 +266,7 @@ RSpec.describe 'Admin updates settings' do
         fill_in 'service[push_channel]', with: '#test_channel'
         page.check('Notify only broken pipelines')
         page.select 'All branches', from: 'Branches to be notified'
+        page.select 'Match any of the labels', from: 'Labels to be notified behavior'
 
         check_all_events
         click_button 'Save changes'

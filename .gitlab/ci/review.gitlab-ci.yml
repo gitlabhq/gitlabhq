@@ -35,9 +35,6 @@ review-build-cng:
       artifacts: false
   script:
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
-    # When the job is manual, review-deploy is also manual and we don't want people
-    # to have to manually start the jobs in sequence, so we do it for them.
-    - '[ -z $CI_JOB_MANUAL ] || scripts/api/play_job.rb --job-name "review-deploy"'
 
 .review-workflow-base:
   extends:
@@ -59,7 +56,7 @@ review-deploy:
     - .review-workflow-base
     - .review:rules:review-deploy
   stage: review
-  dependencies: []
+  needs: ["review-build-cng"]
   resource_group: "review/${CI_COMMIT_REF_NAME}"
   before_script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
@@ -75,10 +72,6 @@ review-deploy:
     - date
     - deploy || (display_deployment_debug && exit 1)
     - disable_sign_ups || (delete_release && exit 1)
-    # When the job is manual, review-qa-smoke is also manual and we don't want people
-    # to have to manually start the jobs in sequence, so we do it for them.
-    - '[ -z $CI_JOB_MANUAL ] || scripts/api/play_job.rb --job-name "review-qa-smoke"'
-    - '[ -z $CI_JOB_MANUAL ] || scripts/api/play_job.rb --job-name "review-performance"'
   after_script:
     # Run seed-dast-test-data.sh only when DAST_RUN is set to true. This is to pupulate review app with data for DAST scan.
     # Set DAST_RUN to true when jobs are manually scheduled.
@@ -123,9 +116,7 @@ review-stop:
     - .use-docker-in-docker
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7
   stage: qa
-  # This is needed so that manual jobs with needs don't block the pipeline.
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
-  dependencies: ["review-deploy"]
+  needs: ["review-deploy"]
   variables:
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
     QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
@@ -175,9 +166,7 @@ review-performance:
     name: sitespeedio/sitespeed.io
     entrypoint: [""]
   stage: qa
-  # This is needed so that manual jobs with needs don't block the pipeline.
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
-  dependencies: ["review-deploy"]
+  needs: ["review-deploy"]
   before_script:
     - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
@@ -200,7 +189,7 @@ parallel-spec-reports:
     - .review:rules:review-qa-all
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
   stage: post-qa
-  dependencies: ["review-qa-all"]
+  needs: ["review-qa-all"]
   variables:
     NEW_PARALLEL_SPECS_REPORT: qa/report-new.html
     BASE_ARTIFACT_URL: "${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/qa/"

@@ -6602,11 +6602,11 @@ Whether auto DevOps is enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210204124856_instance_auto_devops_enabled.yml)
 
-Group: `group::product intelligence`
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `ldap_enabled`
 
@@ -7666,27 +7666,27 @@ Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_monthly`
 
-Missing description
+Number of projects using 5 min production app CI template in last 7 days.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184517_p_ci_templates_5_min_production_app_monthly.yml)
 
-Group: ``
+Group: `group::5-min-app`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_weekly`
 
-Missing description
+Number of projects using 5 min production app CI template in last 7 days.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184515_p_ci_templates_5_min_production_app_weekly.yml)
 
-Group: ``
+Group: `group::5-min-app`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_build_monthly`
 
@@ -7786,51 +7786,51 @@ Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_aws_cf_deploy_ec2_monthly`
 
-Missing description
+Count of projects using `AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml` template in last 28 days.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184526_p_ci_templates_aws_cf_deploy_ec2_monthly.yml)
 
-Group: ``
+Group: `group::release`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_aws_cf_deploy_ec2_weekly`
 
-Missing description
+Count of projects using `AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml` template in last 7 days.
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184524_p_ci_templates_aws_cf_deploy_ec2_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184524_p_ci_templates_aws_cf_deploy_ec2_weekly.yml)
 
-Group: ``
+Group: `group::release`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_aws_deploy_ecs_monthly`
 
-Missing description
+Count of projects using `AWS/Deploy-ECS.gitlab-ci.yml` template in last 28 days.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184530_p_ci_templates_aws_deploy_ecs_monthly.yml)
 
-Group: ``
+Group: `group::release`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_aws_deploy_ecs_weekly`
 
-Missing description
+Count of projects using `AWS/Deploy-ECS.gitlab-ci.yml` template in last 7 days.
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216184528_p_ci_templates_aws_deploy_ecs_weekly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184528_p_ci_templates_aws_deploy_ecs_weekly.yml)
 
-Group: ``
+Group: `group::release`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_build_monthly`
 

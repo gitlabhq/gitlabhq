@@ -208,6 +208,7 @@ In these cases, use the following workflow:
 - [Image scaling guide](image_scaling.md)
 - [Export to CSV](export_csv.md)
 - [Cascading Settings](cascading_settings.md)
+- [FIPS compliance](fips_compliance.md)
 
 ## Performance guides
 

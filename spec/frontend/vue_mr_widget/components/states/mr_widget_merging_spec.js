@@ -4,6 +4,7 @@ import MrWidgetMerging from '~/vue_merge_request_widget/components/states/mr_wid
 describe('MRWidgetMerging', () => {
   let wrapper;
 
+  const GlEmoji = { template: '<img />' };
   beforeEach(() => {
     wrapper = shallowMount(MrWidgetMerging, {
       propsData: {
@@ -11,6 +12,9 @@ describe('MRWidgetMerging', () => {
           targetBranchPath: '/branch-path',
           targetBranch: 'branch',
         },
+      },
+      stubs: {
+        GlEmoji,
       },
     });
   });
@@ -27,7 +31,7 @@ describe('MRWidgetMerging', () => {
         .trim()
         .replace(/\s\s+/g, ' ')
         .replace(/[\r\n]+/g, ' '),
-    ).toContain('This merge request is in the process of being merged');
+    ).toContain('Merging! Drum roll, please…');
   });
 
   it('renders branch information', () => {

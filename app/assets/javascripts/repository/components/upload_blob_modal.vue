@@ -93,7 +93,7 @@ export default {
         text: PRIMARY_OPTIONS_TEXT,
         attributes: [
           {
-            variant: 'success',
+            variant: 'confirm',
             loading: this.loading,
             disabled: !this.formCompleted || this.loading,
           },

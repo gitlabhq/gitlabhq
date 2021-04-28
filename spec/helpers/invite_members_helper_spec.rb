@@ -150,8 +150,6 @@ RSpec.describe InviteMembersHelper do
           end
 
           it 'returns false' do
-            stub_feature_flags(invite_members_group_modal: false)
-
             expect(helper.can_invite_members_for_group?(group)).to eq false
             expect(helper).not_to have_received(:can?)
           end

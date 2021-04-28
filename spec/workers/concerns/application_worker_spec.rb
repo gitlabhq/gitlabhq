@@ -3,7 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe ApplicationWorker do
-  let_it_be(:worker) do
+  # We depend on the lazy-load characteristic of rspec. If the worker is loaded
+  # before setting up, it's likely to go wrong. Consider this catcha:
+  # before do
+  #   allow(router).to receive(:route).with(worker).and_return('queue_1')
+  # end
+  # As worker is triggered, it includes ApplicationWorker, and the router is
+  # called before it is stubbed. That makes the stubbing useless.
+  let(:worker) do
     Class.new do
       def self.name
         'Gitlab::Foo::Bar::DummyWorker'
@@ -14,10 +21,77 @@ RSpec.describe ApplicationWorker do
   end
 
   let(:instance) { worker.new }
+  let(:router) { double(:router) }
 
-  describe 'Sidekiq options' do
-    it 'sets the queue name based on the class name' do
+  before do
+    allow(::Gitlab::SidekiqConfig::WorkerRouter).to receive(:global).and_return(router)
+    allow(router).to receive(:route).and_return('foo_bar_dummy')
+  end
+
+  describe 'Sidekiq attributes' do
+    it 'sets the queue name based on the output of the router' do
       expect(worker.sidekiq_options['queue']).to eq('foo_bar_dummy')
+      expect(router).to have_received(:route).with(worker).at_least(:once)
+    end
+
+    context 'when a worker attribute is updated' do
+      before do
+        counter = 0
+        allow(router).to receive(:route) do
+          counter += 1
+          "queue_#{counter}"
+        end
+      end
+
+      it 'updates the queue name afterward' do
+        expect(worker.sidekiq_options['queue']).to eq('queue_1')
+
+        worker.feature_category :pages
+        expect(worker.sidekiq_options['queue']).to eq('queue_2')
+
+        worker.feature_category_not_owned!
+        expect(worker.sidekiq_options['queue']).to eq('queue_3')
+
+        worker.urgency :high
+        expect(worker.sidekiq_options['queue']).to eq('queue_4')
+
+        worker.worker_has_external_dependencies!
+        expect(worker.sidekiq_options['queue']).to eq('queue_5')
+
+        worker.worker_resource_boundary :cpu
+        expect(worker.sidekiq_options['queue']).to eq('queue_6')
+
+        worker.idempotent!
+        expect(worker.sidekiq_options['queue']).to eq('queue_7')
+
+        worker.weight 3
+        expect(worker.sidekiq_options['queue']).to eq('queue_8')
+
+        worker.tags :hello
+        expect(worker.sidekiq_options['queue']).to eq('queue_9')
+
+        worker.big_payload!
+        expect(worker.sidekiq_options['queue']).to eq('queue_10')
+
+        expect(router).to have_received(:route).with(worker).at_least(10).times
+      end
+    end
+
+    context 'when the worker is inherited' do
+      let(:sub_worker) { Class.new(worker) }
+
+      before do
+        allow(router).to receive(:route).and_return('queue_1')
+        worker # Force loading worker 1 to update its queue
+
+        allow(router).to receive(:route).and_return('queue_2')
+      end
+
+      it 'sets the queue name for the inherited worker' do
+        expect(sub_worker.sidekiq_options['queue']).to eq('queue_2')
+
+        expect(router).to have_received(:route).with(sub_worker).at_least(:once)
+      end
     end
   end
 
@@ -74,10 +148,23 @@ RSpec.describe ApplicationWorker do
   end
 
   describe '.queue_namespace' do
-    it 'sets the queue name based on the class name' do
+    before do
+      allow(router).to receive(:route).and_return('foo_bar_dummy', 'some_namespace:foo_bar_dummy')
+    end
+
+    it 'updates the queue name from the router again' do
+      expect(worker.queue).to eq('foo_bar_dummy')
+
       worker.queue_namespace :some_namespace
 
       expect(worker.queue).to eq('some_namespace:foo_bar_dummy')
+    end
+
+    it 'updates the queue_namespace options of the worker' do
+      worker.queue_namespace :some_namespace
+
+      expect(worker.queue_namespace).to eql('some_namespace')
+      expect(worker.sidekiq_options['queue_namespace']).to be(:some_namespace)
     end
   end
 

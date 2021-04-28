@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Maintainer adds member with expiration date', :js do
-  include Select2Helper
   include ActiveSupport::Testing::TimeHelpers
   include Spec::Support::Helpers::Features::MembersHelpers
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:project) { create(:project) }
@@ -20,18 +20,9 @@ RSpec.describe 'Projects > Members > Maintainer adds member with expiration date
   end
 
   it 'expiration date is displayed in the members list' do
-    stub_feature_flags(invite_members_group_modal: false)
-
     visit project_project_members_path(project)
 
-    page.within '.invite-users-form' do
-      select2(new_member.id, from: '#user_ids', multiple: true)
-
-      fill_in 'expires_at', with: 5.days.from_now.to_date
-      find_field('expires_at').native.send_keys :enter
-
-      click_on 'Invite'
-    end
+    invite_member(new_member.name, role: 'Guest', expires_at: 5.days.from_now.to_date)
 
     page.within find_member_row(new_member) do
       expect(page).to have_content(/in \d days/)

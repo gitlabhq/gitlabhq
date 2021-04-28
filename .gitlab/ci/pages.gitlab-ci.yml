@@ -3,7 +3,7 @@ pages:
     - .default-retry
     - .pages:rules
   stage: pages
-  dependencies:
+  needs:
     - rspec:coverage
     - coverage-frontend
     - karma

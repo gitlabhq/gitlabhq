@@ -30,6 +30,8 @@ Service.available_services_names.each do |service|
           hash.merge!(k => '1,2,3')
         elsif service == 'emails_on_push' && k == :recipients
           hash.merge!(k => 'foo@bar.com')
+        elsif service == 'slack' || service == 'mattermost' && k == :labels_to_be_notified_behavior
+          hash.merge!(k => "match_any")
         else
           hash.merge!(k => "someword")
         end

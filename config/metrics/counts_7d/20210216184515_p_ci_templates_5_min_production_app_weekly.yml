@@ -1,0 +1,19 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_weekly
+description: Number of projects using 5 min production app CI template in last 7 days.
+product_section: seg
+product_stage: deploy
+product_group: "group::5-min-app"
+product_category: five_minute_production_app
+value_type: number
+status: data_available
+time_frame: 7d
+data_source: redis_hll
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+
