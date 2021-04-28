@@ -13,6 +13,7 @@ class Release < ApplicationRecord
   belongs_to :author, class_name: 'User'
 
   has_many :links, class_name: 'Releases::Link'
+  has_many :sorted_links, -> { sorted }, class_name: 'Releases::Link'
 
   has_many :milestone_releases
   has_many :milestones, through: :milestone_releases
@@ -27,7 +28,10 @@ class Release < ApplicationRecord
   validates :links, nested_attributes_duplicates: { scope: :release, child_attributes: %i[name url filepath] }
 
   scope :sorted, -> { order(released_at: :desc) }
-  scope :preloaded, -> { includes(:evidences, :milestones, project: [:project_feature, :route, { namespace: :route }]) }
+  scope :preloaded, -> {
+    includes(:author, :evidences, :milestones, :links, :sorted_links,
+             project: [:project_feature, :route, { namespace: :route }])
+  }
   scope :with_project_and_namespace, -> { includes(project: :namespace) }
   scope :recent, -> { sorted.limit(MAX_NUMBER_TO_DISPLAY) }
   scope :without_evidence, -> { left_joins(:evidences).where(::Releases::Evidence.arel_table[:id].eq(nil)) }
@@ -58,8 +62,8 @@ class Release < ApplicationRecord
   end
 
   def assets_count(except: [])
-    links_count = links.count
-    sources_count = except.include?(:sources) ? 0 : sources.count
+    links_count = links.size
+    sources_count = except.include?(:sources) ? 0 : sources.size
 
     links_count + sources_count
   end

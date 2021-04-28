@@ -417,7 +417,7 @@ RSpec.describe "Issues > User edits issue", :js do
 
             wait_for_requests
 
-            expect(find('[data-testid="sidebar-duedate-value"]').text).to have_content date.strftime('%b %-d, %Y')
+            expect(find('[data-testid="sidebar-date-value"]').text).to have_content date.strftime('%b %-d, %Y')
           end
         end
 

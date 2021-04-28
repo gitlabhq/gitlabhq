@@ -135,9 +135,7 @@ If you select the **Busy** checkbox, remember to clear it when you become availa
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259649) in GitLab 13.6.
 > - It was [deployed behind a feature flag](../feature_flags.md), disabled by default.
 > - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/281073) in GitLab 13.8.
-> - It's enabled on GitLab.com.
-> - It's not recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-busy-status-feature).
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329163) in GitLab 13.12.
 
 To indicate to others that you are busy, you can set an indicator.
 
@@ -172,23 +170,6 @@ To set the busy status indicator, either:
   | Notes | Note headers |
   | --- | --- |
   | ![Busy status - notes](img/busy_indicator_notes_v13_9.png) | ![Busy status - note header](img/busy_indicator_note_header_v13_9.png) |
-
-### Disable busy status feature
-
-The busy status feature is deployed behind a feature flag and is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md) can disable it for your instance from the [rails console](../../administration/feature_flags.md#start-the-gitlab-rails-console).
-
-To disable it:
-
-```ruby
-Feature.disable(:set_user_availability_status)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:set_user_availability_status)
-```
 
 ## Change the email displayed on your commits
 

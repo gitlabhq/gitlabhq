@@ -17417,7 +17417,8 @@ CREATE TABLE security_orchestration_policy_configurations (
     project_id bigint NOT NULL,
     security_policy_management_project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    configured_at timestamp with time zone
 );
 
 COMMENT ON TABLE security_orchestration_policy_configurations IS '{"owner":"group::container security","description":"Configuration used to store relationship between project and security policy repository"}';
@@ -17430,6 +17431,29 @@ CREATE SEQUENCE security_orchestration_policy_configurations_id_seq
     CACHE 1;
 
 ALTER SEQUENCE security_orchestration_policy_configurations_id_seq OWNED BY security_orchestration_policy_configurations.id;
+
+CREATE TABLE security_orchestration_policy_rule_schedules (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    next_run_at timestamp with time zone,
+    security_orchestration_policy_configuration_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    policy_index integer NOT NULL,
+    cron text NOT NULL,
+    CONSTRAINT check_915825a76e CHECK ((char_length(cron) <= 255))
+);
+
+COMMENT ON TABLE security_orchestration_policy_rule_schedules IS '{"owner":"group::container security","description":"Schedules used to store relationship between project and security policy repository"}';
+
+CREATE SEQUENCE security_orchestration_policy_rule_schedules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_orchestration_policy_rule_schedules_id_seq OWNED BY security_orchestration_policy_rule_schedules.id;
 
 CREATE TABLE security_scans (
     id bigint NOT NULL,
@@ -19848,6 +19872,8 @@ ALTER TABLE ONLY security_findings ALTER COLUMN id SET DEFAULT nextval('security
 
 ALTER TABLE ONLY security_orchestration_policy_configurations ALTER COLUMN id SET DEFAULT nextval('security_orchestration_policy_configurations_id_seq'::regclass);
 
+ALTER TABLE ONLY security_orchestration_policy_rule_schedules ALTER COLUMN id SET DEFAULT nextval('security_orchestration_policy_rule_schedules_id_seq'::regclass);
+
 ALTER TABLE ONLY security_scans ALTER COLUMN id SET DEFAULT nextval('security_scans_id_seq'::regclass);
 
 ALTER TABLE ONLY self_managed_prometheus_alert_events ALTER COLUMN id SET DEFAULT nextval('self_managed_prometheus_alert_events_id_seq'::regclass);
@@ -21409,6 +21435,9 @@ ALTER TABLE ONLY security_findings
 
 ALTER TABLE ONLY security_orchestration_policy_configurations
     ADD CONSTRAINT security_orchestration_policy_configurations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_orchestration_policy_rule_schedules
+    ADD CONSTRAINT security_orchestration_policy_rule_schedules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_scans
     ADD CONSTRAINT security_scans_pkey PRIMARY KEY (id);
@@ -24072,6 +24101,10 @@ CREATE UNIQUE INDEX index_sop_configs_on_project_id ON security_orchestration_po
 
 CREATE INDEX index_sop_configurations_project_id_policy_project_id ON security_orchestration_policy_configurations USING btree (security_policy_management_project_id, project_id);
 
+CREATE INDEX index_sop_schedules_on_sop_configuration_id ON security_orchestration_policy_rule_schedules USING btree (security_orchestration_policy_configuration_id);
+
+CREATE INDEX index_sop_schedules_on_user_id ON security_orchestration_policy_rule_schedules USING btree (user_id);
+
 CREATE INDEX index_spam_logs_on_user_id ON spam_logs USING btree (user_id);
 
 CREATE INDEX index_sprints_iterations_cadence_id ON sprints USING btree (iterations_cadence_id);
@@ -25669,6 +25702,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_project_stages
 ALTER TABLE ONLY packages_build_infos
     ADD CONSTRAINT fk_rails_17a9a0dffc FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY security_orchestration_policy_rule_schedules
+    ADD CONSTRAINT fk_rails_17ade83f17 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY clusters_applications_jupyter
     ADD CONSTRAINT fk_rails_17df21c98c FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
@@ -26907,6 +26943,9 @@ ALTER TABLE ONLY label_priorities
 
 ALTER TABLE ONLY fork_network_members
     ADD CONSTRAINT fk_rails_efccadc4ec FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_orchestration_policy_rule_schedules
+    ADD CONSTRAINT fk_rails_efe1d9b133 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY prometheus_alerts
     ADD CONSTRAINT fk_rails_f0e8db86aa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

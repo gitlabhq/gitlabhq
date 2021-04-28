@@ -129,6 +129,7 @@ class Project < ApplicationRecord
   after_create :check_repository_absence!
 
   acts_as_ordered_taggable
+  alias_method :topics, :tag_list
 
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name

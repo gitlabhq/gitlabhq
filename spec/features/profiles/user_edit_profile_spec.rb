@@ -232,17 +232,6 @@ RSpec.describe 'User edit profile' do
           expect(page.find('.issuable-assignees')).to have_content("#{user.name} (Busy)")
         end
       end
-
-      context 'with set_user_availability_status feature flag disabled' do
-        before do
-          stub_feature_flags(set_user_availability_status: false)
-          visit root_path(user)
-        end
-
-        it 'does not display the availability checkbox' do
-          expect(page).not_to have_css('[data-testid="user-availability-checkbox"]')
-        end
-      end
     end
 
     context 'user menu' do
@@ -485,19 +474,6 @@ RSpec.describe 'User edit profile' do
           first_note = page.find_all(".main-notes-list .timeline-entry").first
 
           expect(first_note).not_to have_css('.user-status-emoji')
-        end
-      end
-
-      context 'with set_user_availability_status feature flag disabled' do
-        before do
-          stub_feature_flags(set_user_availability_status: false)
-          visit root_path(user)
-        end
-
-        it 'does not display the availability checkbox' do
-          open_user_status_modal
-
-          expect(page).not_to have_css('[data-testid="user-availability-checkbox"]')
         end
       end
     end

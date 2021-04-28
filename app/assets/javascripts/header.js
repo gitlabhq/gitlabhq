@@ -45,7 +45,6 @@ function initStatusTriggers() {
                 defaultEmoji,
                 currentMessage,
                 currentAvailability,
-                canSetUserAvailability,
                 currentClearStatusAfter,
               } = setStatusModalWrapperEl.dataset;
 
@@ -54,7 +53,6 @@ function initStatusTriggers() {
                 defaultEmoji,
                 currentMessage,
                 currentAvailability,
-                canSetUserAvailability,
                 currentClearStatusAfter,
               };
             },
@@ -64,7 +62,6 @@ function initStatusTriggers() {
                 defaultEmoji,
                 currentMessage,
                 currentAvailability,
-                canSetUserAvailability,
                 currentClearStatusAfter,
               } = this;
 
@@ -74,7 +71,6 @@ function initStatusTriggers() {
                   defaultEmoji,
                   currentMessage,
                   currentAvailability,
-                  canSetUserAvailability,
                   currentClearStatusAfter,
                 },
               });

@@ -29924,10 +29924,10 @@ msgstr ""
 msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
-msgid "Something went wrong while setting %{issuableType} confidentiality."
+msgid "Something went wrong while setting %{issuableType} %{dateType} date."
 msgstr ""
 
-msgid "Something went wrong while setting %{issuableType} due date."
+msgid "Something went wrong while setting %{issuableType} confidentiality."
 msgstr ""
 
 msgid "Something went wrong while stopping this environment. Please try again."
@@ -32349,6 +32349,9 @@ msgid "There was an error while fetching value stream analytics duration data."
 msgstr ""
 
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
+msgstr ""
+
+msgid "These dates affect how your epics appear in the roadmap. Set a fixed date or one inherited from the milestones assigned to issues in this epic."
 msgstr ""
 
 msgid "These examples show how to trigger this project's pipeline for a branch or tag."
@@ -38468,6 +38471,9 @@ msgid "remove"
 msgstr ""
 
 msgid "remove due date"
+msgstr ""
+
+msgid "remove start date"
 msgstr ""
 
 msgid "remove weight"

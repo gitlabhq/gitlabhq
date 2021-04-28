@@ -390,16 +390,16 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def topics_to_show
-    project.tag_list.take(MAX_TOPICS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
+    project.topics.take(MAX_TOPICS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   def topics_not_shown
-    project.tag_list - topics_to_show
+    project.topics - topics_to_show
   end
 
   def count_of_extra_topics_not_shown
-    if project.tag_list.count > MAX_TOPICS_TO_SHOW
-      project.tag_list.count - MAX_TOPICS_TO_SHOW
+    if project.topics.count > MAX_TOPICS_TO_SHOW
+      project.topics.count - MAX_TOPICS_TO_SHOW
     else
       0
     end

@@ -136,8 +136,8 @@ RSpec.describe API::Releases do
         get api("/projects/#{project.id}/releases", maintainer)
       end.count
 
-      create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
-      create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
+      create_list(:release, 2, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
+      create_list(:release, 2, project: project)
 
       expect do
         get api("/projects/#{project.id}/releases", maintainer)

@@ -13,7 +13,7 @@ import { __ } from '~/locale';
 import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assignee_list.vue';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
-import SidebarDueDateWidget from '~/sidebar/components/due_date/sidebar_due_date_widget.vue';
+import SidebarDueDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
 import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
 import { apolloProvider } from '~/sidebar/graphql';
 import Translate from '../vue_shared/translate';
@@ -225,14 +225,14 @@ function mountDueDateComponent() {
       SidebarDueDateWidget,
     },
     provide: {
-      iid: String(iid),
-      fullPath,
       canUpdate: editable,
     },
 
     render: (createElement) =>
       createElement('sidebar-due-date-widget', {
         props: {
+          iid: String(iid),
+          fullPath,
           issuableType: IssuableType.Issue,
         },
       }),

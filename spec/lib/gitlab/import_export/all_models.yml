@@ -113,6 +113,7 @@ releases:
 - author
 - project
 - links
+- sorted_links
 - milestone_releases
 - milestones
 - evidences

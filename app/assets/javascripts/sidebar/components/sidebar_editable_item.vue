@@ -103,6 +103,7 @@ export default {
   <div>
     <div class="gl-display-flex gl-align-items-center" @click.self="collapse">
       <span class="hide-collapsed" data-testid="title" @click="collapse">{{ title }}</span>
+      <slot name="title-extra"></slot>
       <gl-loading-icon v-if="loading || initialLoading" inline class="gl-ml-2 hide-collapsed" />
       <gl-loading-icon
         v-if="loading && isClassicSidebar"

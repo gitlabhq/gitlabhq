@@ -233,7 +233,7 @@ export const issueConfidentialityResponse = (confidential = false) => ({
   },
 });
 
-export const issueDueDateResponse = (dueDate = null) => ({
+export const issuableDueDateResponse = (dueDate = null) => ({
   data: {
     workspace: {
       __typename: 'Project',
@@ -241,6 +241,22 @@ export const issueDueDateResponse = (dueDate = null) => ({
         __typename: 'Issue',
         id: 'gid://gitlab/Issue/4',
         dueDate,
+      },
+    },
+  },
+});
+
+export const issuableStartDateResponse = (startDate = null) => ({
+  data: {
+    workspace: {
+      __typename: 'Group',
+      issuable: {
+        __typename: 'Epic',
+        id: 'gid://gitlab/Epic/4',
+        startDate,
+        startDateIsFixed: true,
+        startDateFixed: startDate,
+        startDateFromMilestones: null,
       },
     },
   },

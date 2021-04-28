@@ -23,7 +23,13 @@
     - ~"development guidelines" when changing docs under `doc/development/*`, `CONTRIBUTING.md`, or `README.md`.
     - ~"development guidelines" and ~"Documentation guidelines" when changing docs under `development/documentation/*`.
     - ~"development guidelines" and ~"Description templates (.gitlab/\*)" when creating/updating issue and MR description templates.
-  - [ ] Assign the [designated Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+  - [ ] [Request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature)
+        from the [designated Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+
+/label ~"development guidelines"
+/label ~"Description templates (.gitlab/\*)"
+
+/assign me
 
 Do not add the ~"feature", ~"frontend", ~"backend", ~"bug", or ~"database" labels if you are only updating documentation. These labels will cause the MR to be added to code verification QA issues.
 
