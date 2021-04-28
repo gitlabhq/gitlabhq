@@ -29,6 +29,10 @@ RSpec.describe NewProjectReadmeExperiment, :experiment do
   context "when tracking initial writes" do
     let!(:project) { create(:project, :repository) }
 
+    before do
+      stub_experiments(new_project_readme: :control)
+    end
+
     it "tracks an event for the first commit on a project with a repository" do
       expect(subject).to receive(:commit_count_for).with(project, default_count: described_class::INITIAL_WRITE_LIMIT, max_count: described_class::INITIAL_WRITE_LIMIT, experiment: 'new_project_readme').and_return(1)
       expect(subject).to receive(:track).with(:write, property: project.created_at.to_s, value: 1).and_call_original

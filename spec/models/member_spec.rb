@@ -884,7 +884,7 @@ RSpec.describe Member do
       user    = create(:user)
       member  = project.add_reporter(user)
 
-      member.destroy
+      member.destroy!
 
       expect(user.authorized_projects).not_to include(project)
     end
@@ -901,7 +901,7 @@ RSpec.describe Member do
 
     with_them do
       describe 'create member' do
-        let!(:source) { create(source_type) }
+        let!(:source) { create(source_type) } # rubocop:disable Rails/SaveBang
 
         subject { create(member_type, :guest, user: user, source: source) }
 
@@ -913,20 +913,20 @@ RSpec.describe Member do
 
         describe 'update member' do
           context 'when access level was changed' do
-            subject { member.update(access_level: Gitlab::Access::GUEST) }
+            subject { member.update!(access_level: Gitlab::Access::GUEST) }
 
             include_examples 'update highest role with exclusive lease'
           end
 
           context 'when access level was not changed' do
-            subject { member.update(notification_level: NotificationSetting.levels[:disabled]) }
+            subject { member.update!(notification_level: NotificationSetting.levels[:disabled]) }
 
             include_examples 'does not update the highest role'
           end
         end
 
         describe 'destroy member' do
-          subject { member.destroy }
+          subject { member.destroy! }
 
           include_examples 'update highest role with exclusive lease'
         end

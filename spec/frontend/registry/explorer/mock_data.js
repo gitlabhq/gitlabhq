@@ -161,6 +161,20 @@ export const tagsMock = [
   },
 ];
 
+export const imageTagsMock = (nodes = tagsMock) => ({
+  data: {
+    containerRepository: {
+      id: containerRepositoryMock.id,
+      tags: {
+        nodes,
+        pageInfo: { ...tagsPageInfo },
+        __typename: 'ContainerRepositoryTagConnection',
+      },
+      __typename: 'ContainerRepositoryDetails',
+    },
+  },
+});
+
 export const graphQLImageDetailsMock = (override) => ({
   data: {
     containerRepository: {

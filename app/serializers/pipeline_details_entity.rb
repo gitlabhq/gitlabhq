@@ -8,7 +8,8 @@ class PipelineDetailsEntity < Ci::PipelineEntity
   end
 
   expose :details do
-    expose :artifacts do |pipeline, options|
+    expose :has_downloadable_artifacts?, as: :has_downloadable_artifacts
+    expose :artifacts, unless: proc { options[:disable_artifacts] } do |pipeline, options|
       rel = pipeline.downloadable_artifacts
 
       if Feature.enabled?(:non_public_artifacts, type: :development)

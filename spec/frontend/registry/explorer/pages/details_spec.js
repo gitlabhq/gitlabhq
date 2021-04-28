@@ -28,12 +28,10 @@ import Tracking from '~/tracking';
 
 import {
   graphQLImageDetailsMock,
-  graphQLImageDetailsEmptyTagsMock,
   graphQLDeleteImageRepositoryTagsMock,
   containerRepositoryMock,
   graphQLEmptyImageDetailsMock,
   tagsMock,
-  tagsPageInfo,
 } from '../mock_data';
 import { DeleteModal } from '../stubs';
 
@@ -71,12 +69,6 @@ describe('Details Page', () => {
     await waitForPromises();
     await wrapper.vm.$nextTick();
   };
-
-  const tagsArrayToSelectedTags = (tags) =>
-    tags.reduce((acc, c) => {
-      acc[c.name] = true;
-      return acc;
-    }, {});
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock()),
@@ -138,12 +130,6 @@ describe('Details Page', () => {
 
       expect(findTagsList().exists()).toBe(false);
     });
-
-    it('does not show pagination', () => {
-      mountComponent();
-
-      expect(findPagination().exists()).toBe(false);
-    });
   });
 
   describe('when the image does not exist', () => {
@@ -167,34 +153,6 @@ describe('Details Page', () => {
     });
   });
 
-  describe('when the list of tags is empty', () => {
-    const resolver = jest.fn().mockResolvedValue(graphQLImageDetailsEmptyTagsMock);
-
-    it('has the empty state', async () => {
-      mountComponent({ resolver });
-
-      await waitForApolloRequestRender();
-
-      expect(findEmptyState().exists()).toBe(true);
-    });
-
-    it('does not show the loader', async () => {
-      mountComponent({ resolver });
-
-      await waitForApolloRequestRender();
-
-      expect(findTagsLoader().exists()).toBe(false);
-    });
-
-    it('does not show the list', async () => {
-      mountComponent({ resolver });
-
-      await waitForApolloRequestRender();
-
-      expect(findTagsList().exists()).toBe(false);
-    });
-  });
-
   describe('list', () => {
     it('exists', async () => {
       mountComponent();
@@ -211,7 +169,6 @@ describe('Details Page', () => {
 
       expect(findTagsList().props()).toMatchObject({
         isMobile: false,
-        tags: cleanTags,
       });
     });
 
@@ -224,7 +181,7 @@ describe('Details Page', () => {
           await waitForApolloRequestRender();
 
           [tagToBeDeleted] = cleanTags;
-          findTagsList().vm.$emit('delete', { [tagToBeDeleted.name]: true });
+          findTagsList().vm.$emit('delete', [tagToBeDeleted]);
         });
 
         it('open the modal', async () => {
@@ -244,7 +201,7 @@ describe('Details Page', () => {
 
           await waitForApolloRequestRender();
 
-          findTagsList().vm.$emit('delete', tagsArrayToSelectedTags(cleanTags));
+          findTagsList().vm.$emit('delete', cleanTags);
         });
 
         it('open the modal', () => {
@@ -257,61 +214,6 @@ describe('Details Page', () => {
           });
         });
       });
-    });
-  });
-
-  describe('pagination', () => {
-    it('exists', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
-      expect(findPagination().exists()).toBe(true);
-    });
-
-    it('is hidden when there are no more pages', async () => {
-      mountComponent({ resolver: jest.fn().mockResolvedValue(graphQLImageDetailsEmptyTagsMock) });
-
-      await waitForApolloRequestRender();
-
-      expect(findPagination().exists()).toBe(false);
-    });
-
-    it('is wired to the correct pagination props', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
-      expect(findPagination().props()).toMatchObject({
-        hasNextPage: tagsPageInfo.hasNextPage,
-        hasPreviousPage: tagsPageInfo.hasPreviousPage,
-      });
-    });
-
-    it('fetch next page when user clicks next', async () => {
-      const resolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock());
-      mountComponent({ resolver });
-
-      await waitForApolloRequestRender();
-
-      findPagination().vm.$emit('next');
-
-      expect(resolver).toHaveBeenCalledWith(
-        expect.objectContaining({ after: tagsPageInfo.endCursor }),
-      );
-    });
-
-    it('fetch previous page when user clicks prev', async () => {
-      const resolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock());
-      mountComponent({ resolver });
-
-      await waitForApolloRequestRender();
-
-      findPagination().vm.$emit('prev');
-
-      expect(resolver).toHaveBeenCalledWith(
-        expect.objectContaining({ first: null, before: tagsPageInfo.startCursor }),
-      );
     });
   });
 
@@ -349,7 +251,7 @@ describe('Details Page', () => {
       });
       describe('when one item is selected to be deleted', () => {
         it('calls apollo mutation with the right parameters', async () => {
-          findTagsList().vm.$emit('delete', { [cleanTags[0].name]: true });
+          findTagsList().vm.$emit('delete', [cleanTags[0]]);
 
           await wrapper.vm.$nextTick();
 
@@ -363,7 +265,7 @@ describe('Details Page', () => {
 
       describe('when more than one item is selected to be deleted', () => {
         it('calls apollo mutation with the right parameters', async () => {
-          findTagsList().vm.$emit('delete', { ...tagsArrayToSelectedTags(tagsMock) });
+          findTagsList().vm.$emit('delete', tagsMock);
 
           await wrapper.vm.$nextTick();
 

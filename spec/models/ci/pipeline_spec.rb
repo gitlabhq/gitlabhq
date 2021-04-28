@@ -4437,4 +4437,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         .not_to exceed_query_limit(control_count)
     end
   end
+
+  describe '#has_downloadable_artifacts?' do
+    it 'returns false when when pipeline does not have downloadable artifacts' do
+      pipeline = create(:ci_pipeline, :success)
+
+      expect(pipeline.has_downloadable_artifacts?). to eq(false)
+    end
+
+    it 'returns false when when pipeline does not have downloadable artifacts' do
+      pipeline = create(:ci_pipeline, :with_codequality_reports)
+
+      expect(pipeline.has_downloadable_artifacts?). to eq(true)
+    end
+  end
 end

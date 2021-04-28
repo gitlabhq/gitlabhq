@@ -1,45 +1,21 @@
-import api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import {
-  normalizeHeaders,
-  parseIntPagination,
-  convertObjectPropsToCamelCase,
-} from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import { PAGE_SIZE } from '~/releases/constants';
 import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
-import { PAGE_SIZE } from '../../../constants';
-import { gqClient, convertAllReleasesGraphQLResponse } from '../../../util';
+import { gqClient, convertAllReleasesGraphQLResponse } from '~/releases/util';
 import * as types from './mutation_types';
 
 /**
- * Gets a paginated list of releases from the server
+ * Gets a paginated list of releases from the GraphQL endpoint
  *
  * @param {Object} vuexParams
  * @param {Object} actionParams
- * @param {Number} [actionParams.page] The page number of results to fetch
- * (this parameter is only used when fetching results from the REST API)
  * @param {String} [actionParams.before] A GraphQL cursor. If provided,
- * the items returned will proceed the provided cursor (this parameter is only
- * used when fetching results from the GraphQL API).
+ * the items returned will proceed the provided cursor.
  * @param {String} [actionParams.after] A GraphQL cursor. If provided,
- * the items returned will follow the provided cursor (this parameter is only
- * used when fetching results from the GraphQL API).
+ * the items returned will follow the provided cursor.
  */
-export const fetchReleases = ({ dispatch, rootGetters }, { page = 1, before, after }) => {
-  if (rootGetters.useGraphQLEndpoint) {
-    dispatch('fetchReleasesGraphQl', { before, after });
-  } else {
-    dispatch('fetchReleasesRest', { page });
-  }
-};
-
-/**
- * Gets a paginated list of releases from the GraphQL endpoint
- */
-export const fetchReleasesGraphQl = (
-  { dispatch, commit, state },
-  { before = null, after = null },
-) => {
+export const fetchReleases = ({ dispatch, commit, state }, { before, after }) => {
   commit(types.REQUEST_RELEASES);
 
   const { sort, orderBy } = state.sorting;
@@ -55,7 +31,7 @@ export const fetchReleasesGraphQl = (
     paginationParams = { first: PAGE_SIZE, after };
   } else {
     throw new Error(
-      'Both a `before` and an `after` parameter were provided to fetchReleasesGraphQl. These parameters cannot be used together.',
+      'Both a `before` and an `after` parameter were provided to fetchReleases. These parameters cannot be used together.',
     );
   }
 
@@ -74,28 +50,6 @@ export const fetchReleasesGraphQl = (
       commit(types.RECEIVE_RELEASES_SUCCESS, {
         data,
         graphQlPageInfo,
-      });
-    })
-    .catch(() => dispatch('receiveReleasesError'));
-};
-
-/**
- * Gets a paginated list of releases from the REST endpoint
- */
-export const fetchReleasesRest = ({ dispatch, commit, state }, { page }) => {
-  commit(types.REQUEST_RELEASES);
-
-  const { sort, orderBy } = state.sorting;
-
-  api
-    .releases(state.projectId, { page, sort, order_by: orderBy })
-    .then(({ data, headers }) => {
-      const restPageInfo = parseIntPagination(normalizeHeaders(headers));
-      const camelCasedReleases = convertObjectPropsToCamelCase(data, { deep: true });
-
-      commit(types.RECEIVE_RELEASES_SUCCESS, {
-        data: camelCasedReleases,
-        restPageInfo,
       });
     })
     .catch(() => dispatch('receiveReleasesError'));

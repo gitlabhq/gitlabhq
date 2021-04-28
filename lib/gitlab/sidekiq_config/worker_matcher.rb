@@ -10,6 +10,7 @@ module Gitlab
       QUERY_TERM_REGEX = %r{^(\w+)(!?=)([\w:#{QUERY_CONCATENATE_OPERATOR}]+)}.freeze
 
       QUERY_PREDICATES = {
+        worker_name: :to_s,
         feature_category: :to_sym,
         has_external_dependencies: lambda { |value| value == 'true' },
         name: :to_s,

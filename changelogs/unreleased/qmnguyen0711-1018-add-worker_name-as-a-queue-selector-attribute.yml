@@ -1,0 +1,5 @@
+---
+title: Support worker_name predicate in Sidekiq queue selector
+merge_request: 60084
+author:
+type: changed

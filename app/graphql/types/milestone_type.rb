@@ -57,8 +57,6 @@ module Types
           description: 'Milestone statistics.'
 
     def stats
-      return unless Feature.enabled?(:graphql_milestone_stats, milestone.project || milestone.group, default_enabled: true)
-
       milestone
     end
   end

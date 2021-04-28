@@ -4,9 +4,9 @@ module Gitlab
   module SidekiqConfig
     # For queues that don't have explicit workers - default and mailers
     class DummyWorker
-      attr_accessor :queue
-
       ATTRIBUTE_METHODS = {
+        queue: :queue,
+        name: :name,
         feature_category: :get_feature_category,
         has_external_dependencies: :worker_has_external_dependencies?,
         urgency: :get_urgency,
@@ -16,8 +16,7 @@ module Gitlab
         tags: :get_tags
       }.freeze
 
-      def initialize(queue, attributes = {})
-        @queue = queue
+      def initialize(attributes = {})
         @attributes = attributes
       end
 

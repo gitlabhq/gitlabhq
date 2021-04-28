@@ -51,12 +51,8 @@ export default {
     }),
     fetchReleases() {
       this.fetchReleasesStoreAction({
-        // these two parameters are only used in "GraphQL mode"
         before: getParameterByName('before'),
         after: getParameterByName('after'),
-
-        // this parameter is only used when in "REST mode"
-        page: getParameterByName('page'),
       });
     },
   },
@@ -73,17 +69,17 @@ export default {
         :aria-describedby="shouldRenderEmptyState && 'releases-description'"
         category="primary"
         variant="success"
-        class="js-new-release-btn"
+        data-testid="new-release-button"
       >
         {{ __('New release') }}
       </gl-button>
     </div>
 
-    <release-skeleton-loader v-if="isLoading" class="js-loading" />
+    <release-skeleton-loader v-if="isLoading" />
 
     <gl-empty-state
       v-else-if="shouldRenderEmptyState"
-      class="js-empty-state"
+      data-testid="empty-state"
       :title="__('Getting started with releases')"
       :svg-path="illustrationPath"
     >
@@ -101,7 +97,7 @@ export default {
       </template>
     </gl-empty-state>
 
-    <div v-else-if="shouldRenderSuccessState" class="js-success-state">
+    <div v-else-if="shouldRenderSuccessState" data-testid="success-state">
       <release-block
         v-for="(release, index) in releases"
         :key="index"

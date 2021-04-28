@@ -30974,6 +30974,9 @@ msgstr ""
 msgid "SuperSonics|There is a connectivity issue."
 msgstr ""
 
+msgid "SuperSonics|This field is required."
+msgstr ""
+
 msgid "SuperSonics|Type"
 msgstr ""
 

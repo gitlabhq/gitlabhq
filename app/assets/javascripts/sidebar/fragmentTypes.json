@@ -1,0 +1,1 @@
+{"__schema":{"types":[{"kind":"UNION","name":"Issuable","possibleTypes":[{"name":"Issue"},{"name":"MergeRequest"}]}, {"kind":"INTERFACE","name":"User","possibleTypes":[{"name":"UserCore"}]}]}}

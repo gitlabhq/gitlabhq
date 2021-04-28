@@ -1,6 +1,6 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
-import Experiment from '~/experimentation/components/experiment.vue';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import PipelinesCiTemplates from './pipelines_ci_templates.vue';
@@ -17,7 +17,7 @@ export default {
   name: 'PipelinesEmptyState',
   components: {
     GlEmptyState,
-    Experiment,
+    GitlabExperiment,
     PipelinesCiTemplates,
   },
   props: {
@@ -39,7 +39,7 @@ export default {
 </script>
 <template>
   <div>
-    <experiment name="pipeline_empty_state_templates">
+    <gitlab-experiment name="pipeline_empty_state_templates">
       <template #control>
         <gl-empty-state
           v-if="canSetCi"
@@ -59,6 +59,6 @@ export default {
       <template #candidate>
         <pipelines-ci-templates />
       </template>
-    </experiment>
+    </gitlab-experiment>
   </div>
 </template>

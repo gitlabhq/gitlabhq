@@ -11,7 +11,7 @@ RSpec.describe AvatarsHelper do
     shared_examples 'resource with a default avatar' do |source_type|
       it 'returns a default avatar div' do
         expect(public_send("#{source_type}_icon", *helper_args))
-          .to match(%r{<div class="identicon bg\d+">F</div>})
+          .to match(%r{<span class="identicon bg\d+">F</span>})
       end
     end
 
@@ -434,7 +434,7 @@ RSpec.describe AvatarsHelper do
       let(:resource) { build_stubbed(:group, name: 'foo') }
 
       it 'displays group avatar' do
-        is_expected.to match(%r{<div class="avatar identicon bg\d+ s32">F</div>})
+        is_expected.to match(%r{<span class="avatar identicon bg\d+ s32">F</span>})
       end
     end
   end

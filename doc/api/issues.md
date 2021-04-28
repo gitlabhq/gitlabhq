@@ -903,7 +903,8 @@ POST /projects/:id/issues
 
 | Attribute                                 | Type           | Required | Description  |
 |-------------------------------------------|----------------|----------|--------------|
-| `assignee_ids`                            | integer array  | no       | The ID of the user(s) to assign the issue to. |
+| `assignee_id`                             | integer        | no       | The ID of the user to assign the issue to. Only appears on GitLab Free. |
+| `assignee_ids` **(PREMIUM)**              | integer array  | no       | The IDs of the users to assign the issue to. |
 | `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
 | `created_at`                              | string         | no       | When the issue was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 | `description`                             | string         | no       | The description of an issue. Limited to 1,048,576 characters. |

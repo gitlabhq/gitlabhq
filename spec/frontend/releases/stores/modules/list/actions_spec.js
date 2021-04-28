@@ -1,28 +1,16 @@
 import { cloneDeep } from 'lodash';
 import { getJSONFixture } from 'helpers/fixtures';
 import testAction from 'helpers/vuex_action_helper';
-import api from '~/api';
-import {
-  normalizeHeaders,
-  parseIntPagination,
-  convertObjectPropsToCamelCase,
-} from '~/lib/utils/common_utils';
 import { PAGE_SIZE } from '~/releases/constants';
 import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
 import {
   fetchReleases,
-  fetchReleasesGraphQl,
-  fetchReleasesRest,
   receiveReleasesError,
   setSorting,
 } from '~/releases/stores/modules/index/actions';
 import * as types from '~/releases/stores/modules/index/mutation_types';
 import createState from '~/releases/stores/modules/index/state';
 import { gqClient, convertAllReleasesGraphQLResponse } from '~/releases/util';
-import { pageInfoHeadersWithoutPagination } from '../../../mock_data';
-
-const originalRelease = getJSONFixture('api/releases/release.json');
-const originalReleases = [originalRelease];
 
 const originalGraphqlReleasesResponse = getJSONFixture(
   'graphql/releases/queries/all_releases.query.graphql.json',
@@ -30,14 +18,12 @@ const originalGraphqlReleasesResponse = getJSONFixture(
 
 describe('Releases State actions', () => {
   let mockedState;
-  let releases;
   let graphqlReleasesResponse;
 
   const projectPath = 'root/test-project';
   const projectId = 19;
   const before = 'testBeforeCursor';
   const after = 'testAfterCursor';
-  const page = 2;
 
   beforeEach(() => {
     mockedState = {
@@ -47,57 +33,10 @@ describe('Releases State actions', () => {
       }),
     };
 
-    releases = convertObjectPropsToCamelCase(originalReleases, { deep: true });
     graphqlReleasesResponse = cloneDeep(originalGraphqlReleasesResponse);
   });
 
-  describe('when all the necessary GraphQL feature flags are enabled', () => {
-    beforeEach(() => {
-      mockedState.useGraphQLEndpoint = true;
-    });
-
-    describe('fetchReleases', () => {
-      it('dispatches fetchReleasesGraphQl with before and after parameters', () => {
-        return testAction(
-          fetchReleases,
-          { before, after, page },
-          mockedState,
-          [],
-          [
-            {
-              type: 'fetchReleasesGraphQl',
-              payload: { before, after },
-            },
-          ],
-        );
-      });
-    });
-  });
-
-  describe('when at least one of the GraphQL feature flags is disabled', () => {
-    beforeEach(() => {
-      mockedState.useGraphQLEndpoint = false;
-    });
-
-    describe('fetchReleases', () => {
-      it('dispatches fetchReleasesRest with a page parameter', () => {
-        return testAction(
-          fetchReleases,
-          { before, after, page },
-          mockedState,
-          [],
-          [
-            {
-              type: 'fetchReleasesRest',
-              payload: { page },
-            },
-          ],
-        );
-      });
-    });
-  });
-
-  describe('fetchReleasesGraphQl', () => {
+  describe('fetchReleases', () => {
     describe('GraphQL query variables', () => {
       let vuexParams;
 
@@ -109,7 +48,7 @@ describe('Releases State actions', () => {
 
       describe('when neither a before nor an after parameter is provided', () => {
         beforeEach(() => {
-          fetchReleasesGraphQl(vuexParams, { before: undefined, after: undefined });
+          fetchReleases(vuexParams, { before: undefined, after: undefined });
         });
 
         it('makes a GraphQl query with a first variable', () => {
@@ -122,7 +61,7 @@ describe('Releases State actions', () => {
 
       describe('when only a before parameter is provided', () => {
         beforeEach(() => {
-          fetchReleasesGraphQl(vuexParams, { before, after: undefined });
+          fetchReleases(vuexParams, { before, after: undefined });
         });
 
         it('makes a GraphQl query with last and before variables', () => {
@@ -135,7 +74,7 @@ describe('Releases State actions', () => {
 
       describe('when only an after parameter is provided', () => {
         beforeEach(() => {
-          fetchReleasesGraphQl(vuexParams, { before: undefined, after });
+          fetchReleases(vuexParams, { before: undefined, after });
         });
 
         it('makes a GraphQl query with first and after variables', () => {
@@ -148,12 +87,12 @@ describe('Releases State actions', () => {
 
       describe('when both before and after parameters are provided', () => {
         it('throws an error', () => {
-          const callFetchReleasesGraphQl = () => {
-            fetchReleasesGraphQl(vuexParams, { before, after });
+          const callFetchReleases = () => {
+            fetchReleases(vuexParams, { before, after });
           };
 
-          expect(callFetchReleasesGraphQl).toThrowError(
-            'Both a `before` and an `after` parameter were provided to fetchReleasesGraphQl. These parameters cannot be used together.',
+          expect(callFetchReleases).toThrowError(
+            'Both a `before` and an `after` parameter were provided to fetchReleases. These parameters cannot be used together.',
           );
         });
       });
@@ -171,7 +110,7 @@ describe('Releases State actions', () => {
             mockedState.sorting.sort = sort;
             mockedState.sorting.orderBy = orderBy;
 
-            fetchReleasesGraphQl(vuexParams, { before: undefined, after: undefined });
+            fetchReleases(vuexParams, { before: undefined, after: undefined });
 
             expect(gqClient.query).toHaveBeenCalledWith({
               query: allReleasesQuery,
@@ -191,7 +130,7 @@ describe('Releases State actions', () => {
         const convertedResponse = convertAllReleasesGraphQLResponse(graphqlReleasesResponse);
 
         return testAction(
-          fetchReleasesGraphQl,
+          fetchReleases,
           {},
           mockedState,
           [
@@ -218,90 +157,7 @@ describe('Releases State actions', () => {
 
       it(`commits ${types.REQUEST_RELEASES} and dispatch receiveReleasesError`, () => {
         return testAction(
-          fetchReleasesGraphQl,
-          {},
-          mockedState,
-          [
-            {
-              type: types.REQUEST_RELEASES,
-            },
-          ],
-          [
-            {
-              type: 'receiveReleasesError',
-            },
-          ],
-        );
-      });
-    });
-  });
-
-  describe('fetchReleasesRest', () => {
-    describe('REST query parameters', () => {
-      let vuexParams;
-
-      beforeEach(() => {
-        jest
-          .spyOn(api, 'releases')
-          .mockResolvedValue({ data: releases, headers: pageInfoHeadersWithoutPagination });
-
-        vuexParams = { dispatch: jest.fn(), commit: jest.fn(), state: mockedState };
-      });
-
-      describe('when a page parameter is provided', () => {
-        beforeEach(() => {
-          fetchReleasesRest(vuexParams, { page: 2 });
-        });
-
-        it('makes a REST query with a page query parameter', () => {
-          expect(api.releases).toHaveBeenCalledWith(projectId, {
-            page,
-            order_by: 'released_at',
-            sort: 'desc',
-          });
-        });
-      });
-    });
-
-    describe('when the request is successful', () => {
-      beforeEach(() => {
-        jest
-          .spyOn(api, 'releases')
-          .mockResolvedValue({ data: releases, headers: pageInfoHeadersWithoutPagination });
-      });
-
-      it(`commits ${types.REQUEST_RELEASES} and ${types.RECEIVE_RELEASES_SUCCESS}`, () => {
-        return testAction(
-          fetchReleasesRest,
-          {},
-          mockedState,
-          [
-            {
-              type: types.REQUEST_RELEASES,
-            },
-            {
-              type: types.RECEIVE_RELEASES_SUCCESS,
-              payload: {
-                data: convertObjectPropsToCamelCase(releases, { deep: true }),
-                restPageInfo: parseIntPagination(
-                  normalizeHeaders(pageInfoHeadersWithoutPagination),
-                ),
-              },
-            },
-          ],
-          [],
-        );
-      });
-    });
-
-    describe('when the request fails', () => {
-      beforeEach(() => {
-        jest.spyOn(api, 'releases').mockRejectedValue(new Error('Something went wrong!'));
-      });
-
-      it(`commits ${types.REQUEST_RELEASES} and dispatch receiveReleasesError`, () => {
-        return testAction(
-          fetchReleasesRest,
+          fetchReleases,
           {},
           mockedState,
           [

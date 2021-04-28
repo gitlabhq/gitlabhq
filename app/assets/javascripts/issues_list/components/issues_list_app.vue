@@ -12,6 +12,7 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { toNumber } from 'lodash';
 import createFlash from '~/flash';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
+import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import {
@@ -54,6 +55,7 @@ export default {
     GlIcon,
     GlLink,
     GlSprintf,
+    IssuableByEmail,
     IssuableList,
     IssueCardTimeInfo,
     BlockingIssuesCount: () => import('ee_component/issues/components/blocking_issues_count.vue'),
@@ -85,6 +87,9 @@ export default {
     },
     hasIssues: {
       default: false,
+    },
+    initialEmail: {
+      default: '',
     },
     isSignedIn: {
       default: false,
@@ -376,143 +381,146 @@ export default {
 </script>
 
 <template>
-  <issuable-list
-    v-if="hasIssues"
-    :namespace="projectPath"
-    recent-searches-storage-key="issues"
-    :search-input-placeholder="__('Search or filter results…')"
-    :search-tokens="searchTokens"
-    :initial-filter-value="filterTokens"
-    :sort-options="$options.sortOptions"
-    :initial-sort-by="sortKey"
-    :issuables="issues"
-    :tabs="$options.IssuableListTabs"
-    :current-tab="state"
-    :tab-counts="tabCounts"
-    :issuables-loading="isLoading"
-    :is-manual-ordering="isManualOrdering"
-    :show-bulk-edit-sidebar="showBulkEditSidebar"
-    :show-pagination-controls="showPaginationControls"
-    :total-items="totalIssues"
-    :current-page="page"
-    :previous-page="page - 1"
-    :next-page="page + 1"
-    :url-params="urlParams"
-    @click-tab="handleClickTab"
-    @filter="handleFilter"
-    @page-change="handlePageChange"
-    @reorder="handleReorder"
-    @sort="handleSort"
-    @update-legacy-bulk-edit="handleUpdateLegacyBulkEdit"
-  >
-    <template #nav-actions>
-      <gl-button
-        v-gl-tooltip
-        :href="rssPath"
-        icon="rss"
-        :title="$options.i18n.rssLabel"
-        :aria-label="$options.i18n.rssLabel"
-      />
-      <gl-button
-        v-gl-tooltip
-        :href="calendarPath"
-        icon="calendar"
-        :title="$options.i18n.calendarLabel"
-        :aria-label="$options.i18n.calendarLabel"
-      />
-      <csv-import-export-buttons
-        class="gl-mr-3"
-        :export-csv-path="exportCsvPathWithQuery"
-        :issuable-count="totalIssues"
-      />
-      <gl-button
-        v-if="canBulkUpdate"
-        :disabled="showBulkEditSidebar"
-        @click="handleBulkUpdateClick"
-      >
-        {{ __('Edit issues') }}
-      </gl-button>
-      <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-        {{ $options.i18n.newIssueLabel }}
-      </gl-button>
-    </template>
+  <div v-if="hasIssues">
+    <issuable-list
+      :namespace="projectPath"
+      recent-searches-storage-key="issues"
+      :search-input-placeholder="__('Search or filter results…')"
+      :search-tokens="searchTokens"
+      :initial-filter-value="filterTokens"
+      :sort-options="$options.sortOptions"
+      :initial-sort-by="sortKey"
+      :issuables="issues"
+      :tabs="$options.IssuableListTabs"
+      :current-tab="state"
+      :tab-counts="tabCounts"
+      :issuables-loading="isLoading"
+      :is-manual-ordering="isManualOrdering"
+      :show-bulk-edit-sidebar="showBulkEditSidebar"
+      :show-pagination-controls="showPaginationControls"
+      :total-items="totalIssues"
+      :current-page="page"
+      :previous-page="page - 1"
+      :next-page="page + 1"
+      :url-params="urlParams"
+      @click-tab="handleClickTab"
+      @filter="handleFilter"
+      @page-change="handlePageChange"
+      @reorder="handleReorder"
+      @sort="handleSort"
+      @update-legacy-bulk-edit="handleUpdateLegacyBulkEdit"
+    >
+      <template #nav-actions>
+        <gl-button
+          v-gl-tooltip
+          :href="rssPath"
+          icon="rss"
+          :title="$options.i18n.rssLabel"
+          :aria-label="$options.i18n.rssLabel"
+        />
+        <gl-button
+          v-gl-tooltip
+          :href="calendarPath"
+          icon="calendar"
+          :title="$options.i18n.calendarLabel"
+          :aria-label="$options.i18n.calendarLabel"
+        />
+        <csv-import-export-buttons
+          class="gl-mr-3"
+          :export-csv-path="exportCsvPathWithQuery"
+          :issuable-count="totalIssues"
+        />
+        <gl-button
+          v-if="canBulkUpdate"
+          :disabled="showBulkEditSidebar"
+          @click="handleBulkUpdateClick"
+        >
+          {{ __('Edit issues') }}
+        </gl-button>
+        <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
+          {{ $options.i18n.newIssueLabel }}
+        </gl-button>
+      </template>
 
-    <template #timeframe="{ issuable = {} }">
-      <issue-card-time-info :issue="issuable" />
-    </template>
+      <template #timeframe="{ issuable = {} }">
+        <issue-card-time-info :issue="issuable" />
+      </template>
 
-    <template #statistics="{ issuable = {} }">
-      <li
-        v-if="issuable.mergeRequestsCount"
-        v-gl-tooltip
-        class="gl-display-none gl-sm-display-block"
-        :title="__('Related merge requests')"
-        data-testid="issuable-mr"
-      >
-        <gl-icon name="merge-request" />
-        {{ issuable.mergeRequestsCount }}
-      </li>
-      <li
-        v-if="issuable.upvotes"
-        v-gl-tooltip
-        class="gl-display-none gl-sm-display-block"
-        :title="__('Upvotes')"
-        data-testid="issuable-upvotes"
-      >
-        <gl-icon name="thumb-up" />
-        {{ issuable.upvotes }}
-      </li>
-      <li
-        v-if="issuable.downvotes"
-        v-gl-tooltip
-        class="gl-display-none gl-sm-display-block"
-        :title="__('Downvotes')"
-        data-testid="issuable-downvotes"
-      >
-        <gl-icon name="thumb-down" />
-        {{ issuable.downvotes }}
-      </li>
-      <blocking-issues-count
-        class="gl-display-none gl-sm-display-block"
-        :blocking-issues-count="issuable.blockingIssuesCount"
-        :is-list-item="true"
-      />
-    </template>
+      <template #statistics="{ issuable = {} }">
+        <li
+          v-if="issuable.mergeRequestsCount"
+          v-gl-tooltip
+          class="gl-display-none gl-sm-display-block"
+          :title="__('Related merge requests')"
+          data-testid="issuable-mr"
+        >
+          <gl-icon name="merge-request" />
+          {{ issuable.mergeRequestsCount }}
+        </li>
+        <li
+          v-if="issuable.upvotes"
+          v-gl-tooltip
+          class="gl-display-none gl-sm-display-block"
+          :title="__('Upvotes')"
+          data-testid="issuable-upvotes"
+        >
+          <gl-icon name="thumb-up" />
+          {{ issuable.upvotes }}
+        </li>
+        <li
+          v-if="issuable.downvotes"
+          v-gl-tooltip
+          class="gl-display-none gl-sm-display-block"
+          :title="__('Downvotes')"
+          data-testid="issuable-downvotes"
+        >
+          <gl-icon name="thumb-down" />
+          {{ issuable.downvotes }}
+        </li>
+        <blocking-issues-count
+          class="gl-display-none gl-sm-display-block"
+          :blocking-issues-count="issuable.blockingIssuesCount"
+          :is-list-item="true"
+        />
+      </template>
 
-    <template #empty-state>
-      <gl-empty-state
-        v-if="searchQuery"
-        :description="$options.i18n.noSearchResultsDescription"
-        :title="$options.i18n.noSearchResultsTitle"
-        :svg-path="emptyStateSvgPath"
-      >
-        <template #actions>
-          <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-            {{ $options.i18n.newIssueLabel }}
-          </gl-button>
-        </template>
-      </gl-empty-state>
+      <template #empty-state>
+        <gl-empty-state
+          v-if="searchQuery"
+          :description="$options.i18n.noSearchResultsDescription"
+          :title="$options.i18n.noSearchResultsTitle"
+          :svg-path="emptyStateSvgPath"
+        >
+          <template #actions>
+            <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
+              {{ $options.i18n.newIssueLabel }}
+            </gl-button>
+          </template>
+        </gl-empty-state>
 
-      <gl-empty-state
-        v-else-if="isOpenTab"
-        :description="$options.i18n.noOpenIssuesDescription"
-        :title="$options.i18n.noOpenIssuesTitle"
-        :svg-path="emptyStateSvgPath"
-      >
-        <template #actions>
-          <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-            {{ $options.i18n.newIssueLabel }}
-          </gl-button>
-        </template>
-      </gl-empty-state>
+        <gl-empty-state
+          v-else-if="isOpenTab"
+          :description="$options.i18n.noOpenIssuesDescription"
+          :title="$options.i18n.noOpenIssuesTitle"
+          :svg-path="emptyStateSvgPath"
+        >
+          <template #actions>
+            <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
+              {{ $options.i18n.newIssueLabel }}
+            </gl-button>
+          </template>
+        </gl-empty-state>
 
-      <gl-empty-state
-        v-else
-        :title="$options.i18n.noClosedIssuesTitle"
-        :svg-path="emptyStateSvgPath"
-      />
-    </template>
-  </issuable-list>
+        <gl-empty-state
+          v-else
+          :title="$options.i18n.noClosedIssuesTitle"
+          :svg-path="emptyStateSvgPath"
+        />
+      </template>
+    </issuable-list>
+
+    <issuable-by-email v-if="initialEmail" class="gl-text-center gl-pt-5 gl-pb-7" />
+  </div>
 
   <div v-else-if="isSignedIn">
     <gl-empty-state

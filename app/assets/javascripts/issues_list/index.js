@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { IssuableType } from '~/issue_show/constants';
 import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
@@ -80,6 +81,7 @@ export function initIssuesListApp() {
     canEdit,
     canImportIssues,
     email,
+    emailsHelpPagePath,
     emptyStateSvgPath,
     endpoint,
     exportCsvPath,
@@ -88,15 +90,19 @@ export function initIssuesListApp() {
     hasIssues,
     hasIssueWeightsFeature,
     importCsvIssuesPath,
+    initialEmail,
     isSignedIn,
     issuesPath,
     jiraIntegrationPath,
+    markdownHelpPath,
     maxAttachmentSize,
     newIssuePath,
     projectImportJiraPath,
     projectLabelsPath,
     projectMilestonesPath,
     projectPath,
+    quickActionsHelpPath,
+    resetPath,
     rssPath,
     showNewIssueLink,
     signInPath,
@@ -138,6 +144,13 @@ export function initIssuesListApp() {
       showExportButton: parseBoolean(hasIssues),
       showImportButton: parseBoolean(canImportIssues),
       showLabel: !parseBoolean(hasIssues),
+      // For IssuableByEmail component
+      emailsHelpPagePath,
+      initialEmail,
+      issuableType: IssuableType.Issue,
+      markdownHelpPath,
+      quickActionsHelpPath,
+      resetPath,
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

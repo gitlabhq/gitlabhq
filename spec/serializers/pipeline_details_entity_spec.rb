@@ -32,7 +32,7 @@ RSpec.describe PipelineDetailsEntity do
         expect(subject[:details])
           .to include :duration, :finished_at
         expect(subject[:details])
-          .to include :stages, :artifacts, :manual_actions, :scheduled_actions
+          .to include :stages, :artifacts, :has_downloadable_artifacts, :manual_actions, :scheduled_actions
         expect(subject[:details][:status]).to include :icon, :favicon, :text, :label
       end
 
@@ -186,5 +186,35 @@ RSpec.describe PipelineDetailsEntity do
     end
 
     it_behaves_like 'public artifacts'
+
+    context 'when pipeline has downloadable artifacts' do
+      subject(:entity) { described_class.represent(pipeline, request: request, disable_artifacts: disable_artifacts).as_json }
+
+      let_it_be(:pipeline) { create(:ci_pipeline, :with_codequality_reports) }
+
+      context 'when disable_artifacts is true' do
+        subject(:entity) { described_class.represent(pipeline, request: request, disable_artifacts: true).as_json }
+
+        it 'excludes artifacts data' do
+          expect(entity[:details]).not_to include(:artifacts)
+        end
+
+        it 'returns true for has_downloadable_artifacts' do
+          expect(entity[:details][:has_downloadable_artifacts]).to eq(true)
+        end
+      end
+
+      context 'when disable_artifacts is false' do
+        subject(:entity) { described_class.represent(pipeline, request: request, disable_artifacts: false).as_json }
+
+        it 'includes artifacts data' do
+          expect(entity[:details]).to include(:artifacts)
+        end
+
+        it 'returns true for has_downloadable_artifacts' do
+          expect(entity[:details][:has_downloadable_artifacts]).to eq(true)
+        end
+      end
+    end
   end
 end

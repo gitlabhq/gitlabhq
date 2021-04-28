@@ -460,20 +460,6 @@ RSpec.describe 'Pipelines', :js do
           it 'has artifacts dropdown' do
             expect(page).to have_selector('[data-testid="pipeline-multi-actions-dropdown"]')
           end
-
-          it 'has artifacts download dropdown' do
-            find('[data-testid="pipeline-multi-actions-dropdown"]').click
-
-            expect(page).to have_link(with_artifacts.file_type)
-          end
-
-          it 'has download attribute on download links' do
-            find('[data-testid="pipeline-multi-actions-dropdown"]').click
-            expect(page).to have_selector('a', text: 'Download')
-            page.all('[data-testid="artifact-item"]', text: 'Download').each do |link|
-              expect(link[:download]).to eq ''
-            end
-          end
         end
 
         context 'with artifacts expired' do

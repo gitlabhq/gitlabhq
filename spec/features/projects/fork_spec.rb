@@ -228,7 +228,7 @@ RSpec.describe 'Project fork' do
       click_link 'Fork'
 
       page.within('.fork-thumbnail-container') do
-        expect(page).to have_css('div.identicon')
+        expect(page).to have_css('span.identicon')
       end
     end
 

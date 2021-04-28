@@ -149,7 +149,7 @@ module AvatarsHelper
     options[:class] =
       [*options[:class], "identicon bg#{bg_key}", size_class].compact.join(' ')
 
-    content_tag(:div, class: options[:class].strip) do
+    content_tag(:span, class: options[:class].strip) do
       source.name[0, 1].upcase
     end
   end

@@ -41,7 +41,7 @@ export default {
         this.pipeline.flags.retryable ||
         this.pipeline.flags.cancelable ||
         this.pipeline.details.manual_actions.length ||
-        this.pipeline.details.artifacts.length
+        this.pipeline.details.has_downloadable_artifacts
       );
     },
     actions() {
@@ -55,9 +55,7 @@ export default {
       return this.cancelingPipeline === this.pipeline.id;
     },
     showArtifacts() {
-      return (
-        this.pipeline.details.artifacts?.length || this.pipeline.details.has_downloadable_artifacts
-      );
+      return this.pipeline.details.has_downloadable_artifacts;
     },
   },
   watch: {

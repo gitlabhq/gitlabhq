@@ -29,7 +29,7 @@
   .issues-holder
     = render 'issues'
     - if new_issue_email
-      .issuable-footer.text-center
+      .gl-text-center.gl-pt-5.gl-pb-7
         .js-issueable-by-email{ data: { initial_email: new_issue_email, issuable_type: issuable_type, emails_help_page_path: help_page_path('development/emails', anchor: 'email-namespace'), quick_actions_help_path: help_page_path('user/project/quick_actions'), markdown_help_path: help_page_path('user/markdown'), reset_path: new_issuable_address_project_path(@project, issuable_type: issuable_type) } }
 - else
   - new_project_issue_button_path = @project.archived? ? false : new_project_issue_path(@project)

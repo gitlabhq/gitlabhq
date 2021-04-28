@@ -4,6 +4,7 @@
 # Do not edit it manually!
 ---
 - :name: authorized_project_update:authorized_project_update_project_create
+  :worker_name: AuthorizedProjectUpdate::ProjectCreateWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -12,6 +13,7 @@
   :idempotent: true
   :tags: []
 - :name: authorized_project_update:authorized_project_update_project_group_link_create
+  :worker_name: AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -20,6 +22,7 @@
   :idempotent: true
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_over_user_range
+  :worker_name: AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -28,6 +31,7 @@
   :idempotent:
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
+  :worker_name: AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -36,6 +40,7 @@
   :idempotent: true
   :tags: []
 - :name: auto_devops:auto_devops_disable
+  :worker_name: AutoDevops::DisableWorker
   :feature_category: :auto_devops
   :has_external_dependencies:
   :urgency: :low
@@ -44,6 +49,7 @@
   :idempotent:
   :tags: []
 - :name: auto_merge:auto_merge_process
+  :worker_name: AutoMergeProcessWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
@@ -52,6 +58,7 @@
   :idempotent:
   :tags: []
 - :name: chaos:chaos_cpu_spin
+  :worker_name: Chaos::CpuSpinWorker
   :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: :low
@@ -60,6 +67,7 @@
   :idempotent:
   :tags: []
 - :name: chaos:chaos_db_spin
+  :worker_name: Chaos::DbSpinWorker
   :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: :low
@@ -68,6 +76,7 @@
   :idempotent:
   :tags: []
 - :name: chaos:chaos_kill
+  :worker_name: Chaos::KillWorker
   :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: :low
@@ -76,6 +85,7 @@
   :idempotent:
   :tags: []
 - :name: chaos:chaos_leak_mem
+  :worker_name: Chaos::LeakMemWorker
   :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: :low
@@ -84,6 +94,7 @@
   :idempotent:
   :tags: []
 - :name: chaos:chaos_sleep
+  :worker_name: Chaos::SleepWorker
   :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: :low
@@ -92,6 +103,7 @@
   :idempotent:
   :tags: []
 - :name: container_repository:cleanup_container_repository
+  :worker_name: CleanupContainerRepositoryWorker
   :feature_category: :container_registry
   :has_external_dependencies:
   :urgency: :low
@@ -100,6 +112,7 @@
   :idempotent: true
   :tags: []
 - :name: container_repository:container_expiration_policies_cleanup_container_repository
+  :worker_name: ContainerExpirationPolicies::CleanupContainerRepositoryWorker
   :feature_category: :container_registry
   :has_external_dependencies:
   :urgency: :low
@@ -108,6 +121,7 @@
   :idempotent: true
   :tags: []
 - :name: container_repository:delete_container_repository
+  :worker_name: DeleteContainerRepositoryWorker
   :feature_category: :container_registry
   :has_external_dependencies:
   :urgency: :low
@@ -116,6 +130,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:admin_email
+  :worker_name: AdminEmailWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -124,6 +139,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:analytics_instance_statistics_count_job_trigger
+  :worker_name: Analytics::InstanceStatistics::CountJobTriggerWorker
   :feature_category: :devops_reports
   :has_external_dependencies:
   :urgency: :low
@@ -132,6 +148,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:analytics_usage_trends_count_job_trigger
+  :worker_name: Analytics::UsageTrends::CountJobTriggerWorker
   :feature_category: :devops_reports
   :has_external_dependencies:
   :urgency: :low
@@ -140,6 +157,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:authorized_project_update_periodic_recalculate
+  :worker_name: AuthorizedProjectUpdate::PeriodicRecalculateWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -148,6 +166,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:ci_archive_traces_cron
+  :worker_name: Ci::ArchiveTracesCronWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -156,6 +175,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:ci_pipeline_artifacts_expire_artifacts
+  :worker_name: Ci::PipelineArtifacts::ExpireArtifactsWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -164,6 +184,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:ci_platform_metrics_update_cron
+  :worker_name: CiPlatformMetricsUpdateCronWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -172,6 +193,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:ci_schedule_delete_objects_cron
+  :worker_name: Ci::ScheduleDeleteObjectsCronWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -180,6 +202,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:container_expiration_policy
+  :worker_name: ContainerExpirationPolicyWorker
   :feature_category: :container_registry
   :has_external_dependencies:
   :urgency: :low
@@ -188,6 +211,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:database_batched_background_migration
+  :worker_name: Database::BatchedBackgroundMigrationWorker
   :feature_category: :database
   :has_external_dependencies:
   :urgency: :low
@@ -196,6 +220,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:environments_auto_stop_cron
+  :worker_name: Environments::AutoStopCronWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
@@ -204,6 +229,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:expire_build_artifacts
+  :worker_name: ExpireBuildArtifactsWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -212,6 +238,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:gitlab_usage_ping
+  :worker_name: GitlabUsagePingWorker
   :feature_category: :usage_ping
   :has_external_dependencies:
   :urgency: :low
@@ -220,6 +247,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:import_export_project_cleanup
+  :worker_name: ImportExportProjectCleanupWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -228,6 +256,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:import_stuck_project_import_jobs
+  :worker_name: Gitlab::Import::StuckProjectImportJobsWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -236,6 +265,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:issue_due_scheduler
+  :worker_name: IssueDueSchedulerWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -244,6 +274,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:jira_import_stuck_jira_import_jobs
+  :worker_name: Gitlab::JiraImport::StuckJiraImportJobsWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -252,6 +283,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:member_invitation_reminder_emails
+  :worker_name: MemberInvitationReminderEmailsWorker
   :feature_category: :subgroups
   :has_external_dependencies:
   :urgency: :low
@@ -260,6 +292,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:metrics_dashboard_schedule_annotations_prune
+  :worker_name: Metrics::Dashboard::ScheduleAnnotationsPruneWorker
   :feature_category: :metrics
   :has_external_dependencies:
   :urgency: :low
@@ -268,6 +301,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:namespaces_in_product_marketing_emails
+  :worker_name: Namespaces::InProductMarketingEmailsWorker
   :feature_category: :subgroups
   :has_external_dependencies:
   :urgency: :low
@@ -276,6 +310,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:namespaces_prune_aggregation_schedules
+  :worker_name: Namespaces::PruneAggregationSchedulesWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -284,6 +319,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:packages_composer_cache_cleanup
+  :worker_name: Packages::Composer::CacheCleanupWorker
   :feature_category: :package_registry
   :has_external_dependencies:
   :urgency: :low
@@ -292,6 +328,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:pages_domain_removal_cron
+  :worker_name: PagesDomainRemovalCronWorker
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
@@ -300,6 +337,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:pages_domain_ssl_renewal_cron
+  :worker_name: PagesDomainSslRenewalCronWorker
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
@@ -308,6 +346,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:pages_domain_verification_cron
+  :worker_name: PagesDomainVerificationCronWorker
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
@@ -316,6 +355,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:partition_creation
+  :worker_name: PartitionCreationWorker
   :feature_category: :database
   :has_external_dependencies:
   :urgency: :low
@@ -324,6 +364,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:personal_access_tokens_expired_notification
+  :worker_name: PersonalAccessTokens::ExpiredNotificationWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -332,6 +373,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:personal_access_tokens_expiring
+  :worker_name: PersonalAccessTokens::ExpiringWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -340,6 +382,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:pipeline_schedule
+  :worker_name: PipelineScheduleWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -348,6 +391,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:prune_old_events
+  :worker_name: PruneOldEventsWorker
   :feature_category: :users
   :has_external_dependencies:
   :urgency: :low
@@ -356,6 +400,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:prune_web_hook_logs
+  :worker_name: PruneWebHookLogsWorker
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low
@@ -364,6 +409,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:releases_manage_evidence
+  :worker_name: Releases::ManageEvidenceWorker
   :feature_category: :release_evidence
   :has_external_dependencies:
   :urgency: :low
@@ -372,6 +418,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:remove_expired_group_links
+  :worker_name: RemoveExpiredGroupLinksWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -380,6 +427,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:remove_expired_members
+  :worker_name: RemoveExpiredMembersWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -388,6 +436,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:remove_unaccepted_member_invites
+  :worker_name: RemoveUnacceptedMemberInvitesWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -396,6 +445,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:remove_unreferenced_lfs_objects
+  :worker_name: RemoveUnreferencedLfsObjectsWorker
   :feature_category: :git_lfs
   :has_external_dependencies:
   :urgency: :low
@@ -404,6 +454,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:repository_archive_cache
+  :worker_name: RepositoryArchiveCacheWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -412,6 +463,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:repository_check_dispatch
+  :worker_name: RepositoryCheck::DispatchWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -420,6 +472,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:requests_profiles
+  :worker_name: RequestsProfilesWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -428,6 +481,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:schedule_merge_request_cleanup_refs
+  :worker_name: ScheduleMergeRequestCleanupRefsWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
@@ -436,6 +490,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:schedule_migrate_external_diffs
+  :worker_name: ScheduleMigrateExternalDiffsWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
@@ -444,6 +499,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:ssh_keys_expired_notification
+  :worker_name: SshKeys::ExpiredNotificationWorker
   :feature_category: :compliance_management
   :has_external_dependencies:
   :urgency: :low
@@ -452,6 +508,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:ssh_keys_expiring_soon_notification
+  :worker_name: SshKeys::ExpiringSoonNotificationWorker
   :feature_category: :compliance_management
   :has_external_dependencies:
   :urgency: :low
@@ -460,6 +517,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:stuck_ci_jobs
+  :worker_name: StuckCiJobsWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -468,6 +526,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:stuck_export_jobs
+  :worker_name: StuckExportJobsWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -476,6 +535,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:stuck_merge_jobs
+  :worker_name: StuckMergeJobsWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
@@ -484,6 +544,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:trending_projects
+  :worker_name: TrendingProjectsWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -492,6 +553,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:update_container_registry_info
+  :worker_name: UpdateContainerRegistryInfoWorker
   :feature_category: :container_registry
   :has_external_dependencies:
   :urgency: :low
@@ -500,6 +562,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:user_status_cleanup_batch
+  :worker_name: UserStatusCleanup::BatchWorker
   :feature_category: :users
   :has_external_dependencies:
   :urgency: :low
@@ -508,6 +571,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:users_create_statistics
+  :worker_name: Users::CreateStatisticsWorker
   :feature_category: :users
   :has_external_dependencies:
   :urgency: :low
@@ -516,6 +580,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:users_deactivate_dormant_users
+  :worker_name: Users::DeactivateDormantUsersWorker
   :feature_category: :utilization
   :has_external_dependencies:
   :urgency: :low
@@ -524,6 +589,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:x509_issuer_crl_check
+  :worker_name: X509IssuerCrlCheckWorker
   :feature_category: :source_code_management
   :has_external_dependencies: true
   :urgency: :low
@@ -532,6 +598,7 @@
   :idempotent: true
   :tags: []
 - :name: dependency_proxy:purge_dependency_proxy_cache
+  :worker_name: PurgeDependencyProxyCacheWorker
   :feature_category: :dependency_proxy
   :has_external_dependencies:
   :urgency: :low
@@ -540,6 +607,7 @@
   :idempotent: true
   :tags: []
 - :name: deployment:deployments_drop_older_deployments
+  :worker_name: Deployments::DropOlderDeploymentsWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
@@ -548,6 +616,7 @@
   :idempotent:
   :tags: []
 - :name: deployment:deployments_execute_hooks
+  :worker_name: Deployments::ExecuteHooksWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
@@ -556,6 +625,7 @@
   :idempotent:
   :tags: []
 - :name: deployment:deployments_finished
+  :worker_name: Deployments::FinishedWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
@@ -564,6 +634,7 @@
   :idempotent:
   :tags: []
 - :name: deployment:deployments_forward_deployment
+  :worker_name: Deployments::ForwardDeploymentWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
@@ -572,6 +643,7 @@
   :idempotent:
   :tags: []
 - :name: deployment:deployments_link_merge_request
+  :worker_name: Deployments::LinkMergeRequestWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
@@ -580,6 +652,7 @@
   :idempotent: true
   :tags: []
 - :name: deployment:deployments_success
+  :worker_name: Deployments::SuccessWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
@@ -588,6 +661,7 @@
   :idempotent:
   :tags: []
 - :name: deployment:deployments_update_environment
+  :worker_name: Deployments::UpdateEnvironmentWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
@@ -596,6 +670,7 @@
   :idempotent: true
   :tags: []
 - :name: gcp_cluster:cluster_configure_istio
+  :worker_name: ClusterConfigureIstioWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -604,6 +679,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:cluster_install_app
+  :worker_name: ClusterInstallAppWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -612,6 +688,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:cluster_patch_app
+  :worker_name: ClusterPatchAppWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -620,6 +697,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:cluster_provision
+  :worker_name: ClusterProvisionWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -628,6 +706,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:cluster_update_app
+  :worker_name: ClusterUpdateAppWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies:
   :urgency: :low
@@ -636,6 +715,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:cluster_upgrade_app
+  :worker_name: ClusterUpgradeAppWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -644,6 +724,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:cluster_wait_for_app_installation
+  :worker_name: ClusterWaitForAppInstallationWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -652,6 +733,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:cluster_wait_for_app_update
+  :worker_name: ClusterWaitForAppUpdateWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies:
   :urgency: :low
@@ -660,6 +742,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:cluster_wait_for_ingress_ip_address
+  :worker_name: ClusterWaitForIngressIpAddressWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -668,6 +751,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:clusters_applications_activate_service
+  :worker_name: Clusters::Applications::ActivateServiceWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies:
   :urgency: :low
@@ -676,6 +760,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:clusters_applications_deactivate_service
+  :worker_name: Clusters::Applications::DeactivateServiceWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies:
   :urgency: :low
@@ -684,6 +769,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:clusters_applications_uninstall
+  :worker_name: Clusters::Applications::UninstallWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -692,6 +778,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:clusters_applications_wait_for_uninstall_app
+  :worker_name: Clusters::Applications::WaitForUninstallAppWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -700,6 +787,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:clusters_cleanup_app
+  :worker_name: Clusters::Cleanup::AppWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -708,6 +796,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:clusters_cleanup_project_namespace
+  :worker_name: Clusters::Cleanup::ProjectNamespaceWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -716,6 +805,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:clusters_cleanup_service_account
+  :worker_name: Clusters::Cleanup::ServiceAccountWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -724,6 +814,7 @@
   :idempotent:
   :tags: []
 - :name: gcp_cluster:wait_for_cluster_creation
+  :worker_name: WaitForClusterCreationWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -732,6 +823,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_import_diff_note
+  :worker_name: Gitlab::GithubImport::ImportDiffNoteWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -740,6 +832,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_import_issue
+  :worker_name: Gitlab::GithubImport::ImportIssueWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -748,6 +841,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_import_lfs_object
+  :worker_name: Gitlab::GithubImport::ImportLfsObjectWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -756,6 +850,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_import_note
+  :worker_name: Gitlab::GithubImport::ImportNoteWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -764,6 +859,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_import_pull_request
+  :worker_name: Gitlab::GithubImport::ImportPullRequestWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -772,6 +868,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_import_pull_request_merged_by
+  :worker_name: Gitlab::GithubImport::ImportPullRequestMergedByWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -780,6 +877,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_import_pull_request_review
+  :worker_name: Gitlab::GithubImport::ImportPullRequestReviewWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -788,6 +886,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_refresh_import_jid
+  :worker_name: Gitlab::GithubImport::RefreshImportJidWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -796,6 +895,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_finish_import
+  :worker_name: Gitlab::GithubImport::Stage::FinishImportWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -804,6 +904,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_base_data
+  :worker_name: Gitlab::GithubImport::Stage::ImportBaseDataWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -812,6 +913,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_issues_and_diff_notes
+  :worker_name: Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -820,6 +922,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_lfs_objects
+  :worker_name: Gitlab::GithubImport::Stage::ImportLfsObjectsWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -828,6 +931,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_notes
+  :worker_name: Gitlab::GithubImport::Stage::ImportNotesWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -836,6 +940,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_pull_requests
+  :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -844,6 +949,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_pull_requests_merged_by
+  :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -852,6 +958,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_pull_requests_reviews
+  :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -860,6 +967,7 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_repository
+  :worker_name: Gitlab::GithubImport::Stage::ImportRepositoryWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -868,6 +976,7 @@
   :idempotent:
   :tags: []
 - :name: hashed_storage:hashed_storage_migrator
+  :worker_name: HashedStorage::MigratorWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -876,6 +985,7 @@
   :idempotent:
   :tags: []
 - :name: hashed_storage:hashed_storage_project_migrate
+  :worker_name: HashedStorage::ProjectMigrateWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -884,6 +994,7 @@
   :idempotent:
   :tags: []
 - :name: hashed_storage:hashed_storage_project_rollback
+  :worker_name: HashedStorage::ProjectRollbackWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -892,6 +1003,7 @@
   :idempotent:
   :tags: []
 - :name: hashed_storage:hashed_storage_rollbacker
+  :worker_name: HashedStorage::RollbackerWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -900,6 +1012,7 @@
   :idempotent:
   :tags: []
 - :name: incident_management:clusters_applications_check_prometheus_health
+  :worker_name: Clusters::Applications::CheckPrometheusHealthWorker
   :feature_category: :incident_management
   :has_external_dependencies: true
   :urgency: :low
@@ -908,6 +1021,7 @@
   :idempotent: true
   :tags: []
 - :name: incident_management:incident_management_add_severity_system_note
+  :worker_name: IncidentManagement::AddSeveritySystemNoteWorker
   :feature_category: :incident_management
   :has_external_dependencies:
   :urgency: :low
@@ -916,6 +1030,7 @@
   :idempotent:
   :tags: []
 - :name: incident_management:incident_management_pager_duty_process_incident
+  :worker_name: IncidentManagement::PagerDuty::ProcessIncidentWorker
   :feature_category: :incident_management
   :has_external_dependencies:
   :urgency: :low
@@ -924,6 +1039,7 @@
   :idempotent:
   :tags: []
 - :name: incident_management:incident_management_process_alert
+  :worker_name: IncidentManagement::ProcessAlertWorker
   :feature_category: :incident_management
   :has_external_dependencies:
   :urgency: :low
@@ -932,6 +1048,7 @@
   :idempotent:
   :tags: []
 - :name: incident_management:incident_management_process_prometheus_alert
+  :worker_name: IncidentManagement::ProcessPrometheusAlertWorker
   :feature_category: :incident_management
   :has_external_dependencies:
   :urgency: :low
@@ -940,6 +1057,7 @@
   :idempotent:
   :tags: []
 - :name: jira_connect:jira_connect_sync_branch
+  :worker_name: JiraConnect::SyncBranchWorker
   :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
@@ -948,6 +1066,7 @@
   :idempotent: true
   :tags: []
 - :name: jira_connect:jira_connect_sync_builds
+  :worker_name: JiraConnect::SyncBuildsWorker
   :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
@@ -956,6 +1075,7 @@
   :idempotent: true
   :tags: []
 - :name: jira_connect:jira_connect_sync_deployments
+  :worker_name: JiraConnect::SyncDeploymentsWorker
   :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
@@ -964,6 +1084,7 @@
   :idempotent: true
   :tags: []
 - :name: jira_connect:jira_connect_sync_feature_flags
+  :worker_name: JiraConnect::SyncFeatureFlagsWorker
   :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
@@ -972,6 +1093,7 @@
   :idempotent: true
   :tags: []
 - :name: jira_connect:jira_connect_sync_merge_request
+  :worker_name: JiraConnect::SyncMergeRequestWorker
   :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
@@ -980,6 +1102,7 @@
   :idempotent: true
   :tags: []
 - :name: jira_connect:jira_connect_sync_project
+  :worker_name: JiraConnect::SyncProjectWorker
   :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
@@ -988,6 +1111,7 @@
   :idempotent: true
   :tags: []
 - :name: jira_importer:jira_import_advance_stage
+  :worker_name: Gitlab::JiraImport::AdvanceStageWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -996,6 +1120,7 @@
   :idempotent:
   :tags: []
 - :name: jira_importer:jira_import_import_issue
+  :worker_name: Gitlab::JiraImport::ImportIssueWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1004,6 +1129,7 @@
   :idempotent:
   :tags: []
 - :name: jira_importer:jira_import_stage_finish_import
+  :worker_name: Gitlab::JiraImport::Stage::FinishImportWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1012,6 +1138,7 @@
   :idempotent:
   :tags: []
 - :name: jira_importer:jira_import_stage_import_attachments
+  :worker_name: Gitlab::JiraImport::Stage::ImportAttachmentsWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1020,6 +1147,7 @@
   :idempotent:
   :tags: []
 - :name: jira_importer:jira_import_stage_import_issues
+  :worker_name: Gitlab::JiraImport::Stage::ImportIssuesWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1028,6 +1156,7 @@
   :idempotent:
   :tags: []
 - :name: jira_importer:jira_import_stage_import_labels
+  :worker_name: Gitlab::JiraImport::Stage::ImportLabelsWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1036,6 +1165,7 @@
   :idempotent:
   :tags: []
 - :name: jira_importer:jira_import_stage_import_notes
+  :worker_name: Gitlab::JiraImport::Stage::ImportNotesWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1044,6 +1174,7 @@
   :idempotent:
   :tags: []
 - :name: jira_importer:jira_import_stage_start_import
+  :worker_name: Gitlab::JiraImport::Stage::StartImportWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1052,6 +1183,7 @@
   :idempotent:
   :tags: []
 - :name: mail_scheduler:mail_scheduler_issue_due
+  :worker_name: MailScheduler::IssueDueWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1060,6 +1192,7 @@
   :idempotent:
   :tags: []
 - :name: mail_scheduler:mail_scheduler_notification_service
+  :worker_name: MailScheduler::NotificationServiceWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1068,6 +1201,7 @@
   :idempotent:
   :tags: []
 - :name: object_pool:object_pool_create
+  :worker_name: ObjectPool::CreateWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :low
@@ -1076,6 +1210,7 @@
   :idempotent:
   :tags: []
 - :name: object_pool:object_pool_destroy
+  :worker_name: ObjectPool::DestroyWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :low
@@ -1084,6 +1219,7 @@
   :idempotent:
   :tags: []
 - :name: object_pool:object_pool_join
+  :worker_name: ObjectPool::JoinWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :low
@@ -1092,6 +1228,7 @@
   :idempotent:
   :tags: []
 - :name: object_pool:object_pool_schedule_join
+  :worker_name: ObjectPool::ScheduleJoinWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :low
@@ -1100,6 +1237,7 @@
   :idempotent:
   :tags: []
 - :name: object_storage:object_storage_background_move
+  :worker_name: ObjectStorage::BackgroundMoveWorker
   :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: :low
@@ -1108,6 +1246,7 @@
   :idempotent:
   :tags: []
 - :name: object_storage:object_storage_migrate_uploads
+  :worker_name: ObjectStorage::MigrateUploadsWorker
   :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: :low
@@ -1116,6 +1255,7 @@
   :idempotent:
   :tags: []
 - :name: package_repositories:packages_debian_process_changes
+  :worker_name: Packages::Debian::ProcessChangesWorker
   :feature_category: :package_registry
   :has_external_dependencies:
   :urgency: :low
@@ -1124,6 +1264,7 @@
   :idempotent: true
   :tags: []
 - :name: package_repositories:packages_go_sync_packages
+  :worker_name: Packages::Go::SyncPackagesWorker
   :feature_category: :package_registry
   :has_external_dependencies:
   :urgency: :low
@@ -1132,6 +1273,7 @@
   :idempotent: true
   :tags: []
 - :name: package_repositories:packages_maven_metadata_sync
+  :worker_name: Packages::Maven::Metadata::SyncWorker
   :feature_category: :package_registry
   :has_external_dependencies:
   :urgency: :low
@@ -1140,6 +1282,7 @@
   :idempotent: true
   :tags: []
 - :name: package_repositories:packages_nuget_extraction
+  :worker_name: Packages::Nuget::ExtractionWorker
   :feature_category: :package_registry
   :has_external_dependencies:
   :urgency: :low
@@ -1148,6 +1291,7 @@
   :idempotent:
   :tags: []
 - :name: package_repositories:packages_rubygems_extraction
+  :worker_name: Packages::Rubygems::ExtractionWorker
   :feature_category: :package_registry
   :has_external_dependencies:
   :urgency: :low
@@ -1156,6 +1300,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:archive_trace
+  :worker_name: ArchiveTraceWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1164,6 +1309,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_background:ci_build_trace_chunk_flush
+  :worker_name: Ci::BuildTraceChunkFlushWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1172,6 +1318,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_daily_build_group_report_results
+  :worker_name: Ci::DailyBuildGroupReportResultsWorker
   :feature_category: :code_testing
   :has_external_dependencies:
   :urgency: :low
@@ -1180,6 +1327,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_pipeline_artifacts_coverage_report
+  :worker_name: Ci::PipelineArtifacts::CoverageReportWorker
   :feature_category: :code_testing
   :has_external_dependencies:
   :urgency: :low
@@ -1188,6 +1336,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_pipeline_artifacts_create_quality_report
+  :worker_name: Ci::PipelineArtifacts::CreateQualityReportWorker
   :feature_category: :code_testing
   :has_external_dependencies:
   :urgency: :low
@@ -1196,6 +1345,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_pipeline_success_unlock_artifacts
+  :worker_name: Ci::PipelineSuccessUnlockArtifactsWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1204,6 +1354,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_ref_delete_unlock_artifacts
+  :worker_name: Ci::RefDeleteUnlockArtifactsWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1212,6 +1363,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_test_failure_history
+  :worker_name: Ci::TestFailureHistoryWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1220,6 +1372,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_cache:expire_job_cache
+  :worker_name: ExpireJobCacheWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1228,6 +1381,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_cache:expire_pipeline_cache
+  :worker_name: ExpirePipelineCacheWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1236,6 +1390,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_creation:create_pipeline
+  :worker_name: CreatePipelineWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1244,6 +1399,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_creation:merge_requests_create_pipeline
+  :worker_name: MergeRequests::CreatePipelineWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1252,6 +1408,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_creation:run_pipeline_schedule
+  :worker_name: RunPipelineScheduleWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1260,6 +1417,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_default:ci_create_cross_project_pipeline
+  :worker_name: Ci::CreateCrossProjectPipelineWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1268,6 +1426,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_default:ci_drop_pipeline
+  :worker_name: Ci::DropPipelineWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1276,6 +1435,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_default:ci_merge_requests_add_todo_when_build_fails
+  :worker_name: Ci::MergeRequests::AddTodoWhenBuildFailsWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1284,6 +1444,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_default:ci_pipeline_bridge_status
+  :worker_name: Ci::PipelineBridgeStatusWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1292,6 +1453,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_default:pipeline_metrics
+  :worker_name: PipelineMetricsWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1300,6 +1462,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_default:pipeline_notification
+  :worker_name: PipelineNotificationWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1308,6 +1471,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_hooks:build_hooks
+  :worker_name: BuildHooksWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1316,6 +1480,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_hooks:pipeline_hooks
+  :worker_name: PipelineHooksWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1324,6 +1489,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_processing:build_finished
+  :worker_name: BuildFinishedWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1332,6 +1498,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_processing:build_queue
+  :worker_name: BuildQueueWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1340,6 +1507,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_processing:build_success
+  :worker_name: BuildSuccessWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1348,6 +1516,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_processing:ci_build_prepare
+  :worker_name: Ci::BuildPrepareWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1356,6 +1525,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_processing:ci_build_schedule
+  :worker_name: Ci::BuildScheduleWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1364,6 +1534,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_processing:ci_initial_pipeline_process
+  :worker_name: Ci::InitialPipelineProcessWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1372,6 +1543,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_processing:ci_resource_groups_assign_resource_from_resource_group
+  :worker_name: Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
@@ -1380,6 +1552,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_processing:pipeline_process
+  :worker_name: PipelineProcessWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1388,6 +1561,7 @@
   :idempotent:
   :tags: []
 - :name: pipeline_processing:pipeline_update
+  :worker_name: PipelineUpdateWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1396,6 +1570,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_processing:stage_update
+  :worker_name: StageUpdateWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1404,6 +1579,7 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_processing:update_head_pipeline_for_merge_request
+  :worker_name: UpdateHeadPipelineForMergeRequestWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1412,6 +1588,7 @@
   :idempotent: true
   :tags: []
 - :name: repository_check:repository_check_batch
+  :worker_name: RepositoryCheck::BatchWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -1420,6 +1597,7 @@
   :idempotent:
   :tags: []
 - :name: repository_check:repository_check_clear
+  :worker_name: RepositoryCheck::ClearWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -1428,6 +1606,7 @@
   :idempotent:
   :tags: []
 - :name: repository_check:repository_check_single_repository
+  :worker_name: RepositoryCheck::SingleRepositoryWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -1436,6 +1615,7 @@
   :idempotent:
   :tags: []
 - :name: todos_destroyer:todos_destroyer_confidential_issue
+  :worker_name: TodosDestroyer::ConfidentialIssueWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1444,6 +1624,7 @@
   :idempotent:
   :tags: []
 - :name: todos_destroyer:todos_destroyer_destroyed_issuable
+  :worker_name: TodosDestroyer::DestroyedIssuableWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1452,6 +1633,7 @@
   :idempotent: true
   :tags: []
 - :name: todos_destroyer:todos_destroyer_entity_leave
+  :worker_name: TodosDestroyer::EntityLeaveWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1460,6 +1642,7 @@
   :idempotent:
   :tags: []
 - :name: todos_destroyer:todos_destroyer_group_private
+  :worker_name: TodosDestroyer::GroupPrivateWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1468,6 +1651,7 @@
   :idempotent:
   :tags: []
 - :name: todos_destroyer:todos_destroyer_private_features
+  :worker_name: TodosDestroyer::PrivateFeaturesWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1476,6 +1660,7 @@
   :idempotent:
   :tags: []
 - :name: todos_destroyer:todos_destroyer_project_private
+  :worker_name: TodosDestroyer::ProjectPrivateWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1484,6 +1669,7 @@
   :idempotent:
   :tags: []
 - :name: unassign_issuables:members_destroyer_unassign_issuables
+  :worker_name: MembersDestroyer::UnassignIssuablesWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -1492,6 +1678,7 @@
   :idempotent: true
   :tags: []
 - :name: update_namespace_statistics:namespaces_root_statistics
+  :worker_name: Namespaces::RootStatisticsWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -1500,6 +1687,7 @@
   :idempotent: true
   :tags: []
 - :name: update_namespace_statistics:namespaces_schedule_aggregation
+  :worker_name: Namespaces::ScheduleAggregationWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -1508,6 +1696,7 @@
   :idempotent: true
   :tags: []
 - :name: analytics_instance_statistics_counter_job
+  :worker_name: Analytics::InstanceStatistics::CounterJobWorker
   :feature_category: :devops_reports
   :has_external_dependencies:
   :urgency: :low
@@ -1516,6 +1705,7 @@
   :idempotent: true
   :tags: []
 - :name: analytics_usage_trends_counter_job
+  :worker_name: Analytics::UsageTrends::CounterJobWorker
   :feature_category: :devops_reports
   :has_external_dependencies:
   :urgency: :low
@@ -1524,6 +1714,7 @@
   :idempotent: true
   :tags: []
 - :name: approve_blocked_pending_approval_users
+  :worker_name: ApproveBlockedPendingApprovalUsersWorker
   :feature_category: :users
   :has_external_dependencies:
   :urgency: :low
@@ -1532,6 +1723,7 @@
   :idempotent: true
   :tags: []
 - :name: authorized_keys
+  :worker_name: AuthorizedKeysWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :high
@@ -1540,6 +1732,7 @@
   :idempotent: true
   :tags: []
 - :name: authorized_projects
+  :worker_name: AuthorizedProjectsWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :high
@@ -1548,6 +1741,7 @@
   :idempotent: true
   :tags: []
 - :name: background_migration
+  :worker_name: BackgroundMigrationWorker
   :feature_category: :database
   :has_external_dependencies:
   :urgency: :throttled
@@ -1556,6 +1750,7 @@
   :idempotent:
   :tags: []
 - :name: bulk_import
+  :worker_name: BulkImportWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1564,6 +1759,7 @@
   :idempotent:
   :tags: []
 - :name: bulk_imports_entity
+  :worker_name: BulkImports::EntityWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -1572,6 +1768,7 @@
   :idempotent:
   :tags: []
 - :name: bulk_imports_pipeline
+  :worker_name: BulkImports::PipelineWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -1580,6 +1777,7 @@
   :idempotent:
   :tags: []
 - :name: chat_notification
+  :worker_name: ChatNotificationWorker
   :feature_category: :chatops
   :has_external_dependencies: true
   :urgency: :low
@@ -1588,6 +1786,7 @@
   :idempotent:
   :tags: []
 - :name: ci_delete_objects
+  :worker_name: Ci::DeleteObjectsWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1596,6 +1795,7 @@
   :idempotent: true
   :tags: []
 - :name: create_commit_signature
+  :worker_name: CreateCommitSignatureWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -1604,6 +1804,7 @@
   :idempotent: true
   :tags: []
 - :name: create_note_diff_file
+  :worker_name: CreateNoteDiffFileWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
@@ -1612,6 +1813,7 @@
   :idempotent:
   :tags: []
 - :name: default
+  :worker_name:
   :feature_category:
   :has_external_dependencies:
   :urgency:
@@ -1620,6 +1822,7 @@
   :idempotent:
   :tags: []
 - :name: delete_diff_files
+  :worker_name: DeleteDiffFilesWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
@@ -1628,6 +1831,7 @@
   :idempotent:
   :tags: []
 - :name: delete_merged_branches
+  :worker_name: DeleteMergedBranchesWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -1636,6 +1840,7 @@
   :idempotent:
   :tags: []
 - :name: delete_stored_files
+  :worker_name: DeleteStoredFilesWorker
   :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: :low
@@ -1644,6 +1849,7 @@
   :idempotent:
   :tags: []
 - :name: delete_user
+  :worker_name: DeleteUserWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -1652,6 +1858,7 @@
   :idempotent:
   :tags: []
 - :name: design_management_copy_design_collection
+  :worker_name: DesignManagement::CopyDesignCollectionWorker
   :feature_category: :design_management
   :has_external_dependencies:
   :urgency: :low
@@ -1660,6 +1867,7 @@
   :idempotent: true
   :tags: []
 - :name: design_management_new_version
+  :worker_name: DesignManagement::NewVersionWorker
   :feature_category: :design_management
   :has_external_dependencies:
   :urgency: :low
@@ -1668,6 +1876,7 @@
   :idempotent:
   :tags: []
 - :name: destroy_pages_deployments
+  :worker_name: DestroyPagesDeploymentsWorker
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
@@ -1676,6 +1885,7 @@
   :idempotent: true
   :tags: []
 - :name: detect_repository_languages
+  :worker_name: DetectRepositoryLanguagesWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -1684,6 +1894,7 @@
   :idempotent:
   :tags: []
 - :name: disallow_two_factor_for_group
+  :worker_name: DisallowTwoFactorForGroupWorker
   :feature_category: :subgroups
   :has_external_dependencies:
   :urgency: :low
@@ -1692,6 +1903,7 @@
   :idempotent: true
   :tags: []
 - :name: disallow_two_factor_for_subgroups
+  :worker_name: DisallowTwoFactorForSubgroupsWorker
   :feature_category: :subgroups
   :has_external_dependencies:
   :urgency: :low
@@ -1700,6 +1912,7 @@
   :idempotent: true
   :tags: []
 - :name: email_receiver
+  :worker_name: EmailReceiverWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :high
@@ -1708,6 +1921,7 @@
   :idempotent:
   :tags: []
 - :name: emails_on_push
+  :worker_name: EmailsOnPushWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -1716,6 +1930,7 @@
   :idempotent:
   :tags: []
 - :name: environments_canary_ingress_update
+  :worker_name: Environments::CanaryIngress::UpdateWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies: true
   :urgency: :low
@@ -1724,6 +1939,7 @@
   :idempotent: true
   :tags: []
 - :name: error_tracking_issue_link
+  :worker_name: ErrorTrackingIssueLinkWorker
   :feature_category: :error_tracking
   :has_external_dependencies: true
   :urgency: :low
@@ -1732,6 +1948,7 @@
   :idempotent:
   :tags: []
 - :name: experiments_record_conversion_event
+  :worker_name: Experiments::RecordConversionEventWorker
   :feature_category: :users
   :has_external_dependencies:
   :urgency: :low
@@ -1740,6 +1957,7 @@
   :idempotent: true
   :tags: []
 - :name: expire_build_instance_artifacts
+  :worker_name: ExpireBuildInstanceArtifactsWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1748,6 +1966,7 @@
   :idempotent:
   :tags: []
 - :name: export_csv
+  :worker_name: ExportCsvWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1756,6 +1975,7 @@
   :idempotent:
   :tags: []
 - :name: external_service_reactive_caching
+  :worker_name: ExternalServiceReactiveCachingWorker
   :feature_category: :not_owned
   :has_external_dependencies: true
   :urgency: :low
@@ -1764,6 +1984,7 @@
   :idempotent:
   :tags: []
 - :name: file_hook
+  :worker_name: FileHookWorker
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low
@@ -1772,6 +1993,7 @@
   :idempotent:
   :tags: []
 - :name: flush_counter_increments
+  :worker_name: FlushCounterIncrementsWorker
   :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: :low
@@ -1780,6 +2002,7 @@
   :idempotent: true
   :tags: []
 - :name: git_garbage_collect
+  :worker_name: GitGarbageCollectWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :low
@@ -1788,6 +2011,7 @@
   :idempotent:
   :tags: []
 - :name: github_import_advance_stage
+  :worker_name: Gitlab::GithubImport::AdvanceStageWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1796,6 +2020,7 @@
   :idempotent:
   :tags: []
 - :name: gitlab_performance_bar_stats
+  :worker_name: GitlabPerformanceBarStatsWorker
   :feature_category: :metrics
   :has_external_dependencies:
   :urgency: :low
@@ -1804,6 +2029,7 @@
   :idempotent: true
   :tags: []
 - :name: gitlab_shell
+  :worker_name: GitlabShellWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :high
@@ -1812,6 +2038,7 @@
   :idempotent:
   :tags: []
 - :name: group_destroy
+  :worker_name: GroupDestroyWorker
   :feature_category: :subgroups
   :has_external_dependencies:
   :urgency: :low
@@ -1821,6 +2048,7 @@
   :tags:
   - :requires_disk_io
 - :name: group_export
+  :worker_name: GroupExportWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1829,6 +2057,7 @@
   :idempotent:
   :tags: []
 - :name: group_import
+  :worker_name: GroupImportWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1837,6 +2066,7 @@
   :idempotent:
   :tags: []
 - :name: import_issues_csv
+  :worker_name: ImportIssuesCsvWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1845,6 +2075,7 @@
   :idempotent: true
   :tags: []
 - :name: invalid_gpg_signature_update
+  :worker_name: InvalidGpgSignatureUpdateWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -1853,6 +2084,7 @@
   :idempotent:
   :tags: []
 - :name: irker
+  :worker_name: IrkerWorker
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low
@@ -1861,6 +2093,7 @@
   :idempotent:
   :tags: []
 - :name: issuable_export_csv
+  :worker_name: IssuableExportCsvWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1869,6 +2102,7 @@
   :idempotent:
   :tags: []
 - :name: issue_placement
+  :worker_name: IssuePlacementWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :high
@@ -1877,6 +2111,7 @@
   :idempotent: true
   :tags: []
 - :name: issue_rebalancing
+  :worker_name: IssueRebalancingWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1885,6 +2120,7 @@
   :idempotent: true
   :tags: []
 - :name: mailers
+  :worker_name: ActionMailer::MailDeliveryJob
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: low
@@ -1893,6 +2129,7 @@
   :idempotent:
   :tags: []
 - :name: merge
+  :worker_name: MergeWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :high
@@ -1901,6 +2138,7 @@
   :idempotent: true
   :tags: []
 - :name: merge_request_cleanup_refs
+  :worker_name: MergeRequestCleanupRefsWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
@@ -1909,6 +2147,7 @@
   :idempotent: true
   :tags: []
 - :name: merge_request_mergeability_check
+  :worker_name: MergeRequestMergeabilityCheckWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
@@ -1917,6 +2156,7 @@
   :idempotent: true
   :tags: []
 - :name: merge_requests_assignees_change
+  :worker_name: MergeRequests::AssigneesChangeWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :high
@@ -1925,6 +2165,7 @@
   :idempotent: true
   :tags: []
 - :name: merge_requests_delete_source_branch
+  :worker_name: MergeRequests::DeleteSourceBranchWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :high
@@ -1933,6 +2174,7 @@
   :idempotent: true
   :tags: []
 - :name: merge_requests_handle_assignees_change
+  :worker_name: MergeRequests::HandleAssigneesChangeWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :high
@@ -1941,6 +2183,7 @@
   :idempotent: true
   :tags: []
 - :name: merge_requests_resolve_todos
+  :worker_name: MergeRequests::ResolveTodosWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :high
@@ -1949,6 +2192,7 @@
   :idempotent: true
   :tags: []
 - :name: metrics_dashboard_prune_old_annotations
+  :worker_name: Metrics::Dashboard::PruneOldAnnotationsWorker
   :feature_category: :metrics
   :has_external_dependencies:
   :urgency: :low
@@ -1957,6 +2201,7 @@
   :idempotent: true
   :tags: []
 - :name: metrics_dashboard_sync_dashboards
+  :worker_name: Metrics::Dashboard::SyncDashboardsWorker
   :feature_category: :metrics
   :has_external_dependencies:
   :urgency: :low
@@ -1965,6 +2210,7 @@
   :idempotent: true
   :tags: []
 - :name: migrate_external_diffs
+  :worker_name: MigrateExternalDiffsWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
@@ -1973,6 +2219,7 @@
   :idempotent:
   :tags: []
 - :name: namespaceless_project_destroy
+  :worker_name: NamespacelessProjectDestroyWorker
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
   :urgency: :low
@@ -1981,6 +2228,7 @@
   :idempotent:
   :tags: []
 - :name: namespaces_onboarding_issue_created
+  :worker_name: Namespaces::OnboardingIssueCreatedWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -1989,6 +2237,7 @@
   :idempotent: true
   :tags: []
 - :name: namespaces_onboarding_pipeline_created
+  :worker_name: Namespaces::OnboardingPipelineCreatedWorker
   :feature_category: :subgroups
   :has_external_dependencies:
   :urgency: :low
@@ -1997,6 +2246,7 @@
   :idempotent: true
   :tags: []
 - :name: namespaces_onboarding_progress
+  :worker_name: Namespaces::OnboardingProgressWorker
   :feature_category: :product_analytics
   :has_external_dependencies:
   :urgency: :low
@@ -2005,6 +2255,7 @@
   :idempotent: true
   :tags: []
 - :name: namespaces_onboarding_user_added
+  :worker_name: Namespaces::OnboardingUserAddedWorker
   :feature_category: :users
   :has_external_dependencies:
   :urgency: :low
@@ -2013,6 +2264,7 @@
   :idempotent: true
   :tags: []
 - :name: new_issue
+  :worker_name: NewIssueWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :high
@@ -2021,6 +2273,7 @@
   :idempotent:
   :tags: []
 - :name: new_merge_request
+  :worker_name: NewMergeRequestWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :high
@@ -2029,6 +2282,7 @@
   :idempotent:
   :tags: []
 - :name: new_note
+  :worker_name: NewNoteWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :high
@@ -2037,6 +2291,7 @@
   :idempotent:
   :tags: []
 - :name: packages_composer_cache_update
+  :worker_name: Packages::Composer::CacheUpdateWorker
   :feature_category: :package_registry
   :has_external_dependencies:
   :urgency: :low
@@ -2045,6 +2300,7 @@
   :idempotent: true
   :tags: []
 - :name: pages
+  :worker_name: PagesWorker
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
@@ -2054,6 +2310,7 @@
   :tags:
   - :requires_disk_io
 - :name: pages_domain_ssl_renewal
+  :worker_name: PagesDomainSslRenewalWorker
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
@@ -2063,6 +2320,7 @@
   :tags:
   - :requires_disk_io
 - :name: pages_domain_verification
+  :worker_name: PagesDomainVerificationWorker
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
@@ -2072,6 +2330,7 @@
   :tags:
   - :requires_disk_io
 - :name: pages_remove
+  :worker_name: PagesRemoveWorker
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
@@ -2080,6 +2339,7 @@
   :idempotent:
   :tags: []
 - :name: pages_transfer
+  :worker_name: PagesTransferWorker
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
@@ -2088,6 +2348,7 @@
   :idempotent:
   :tags: []
 - :name: pages_update_configuration
+  :worker_name: PagesUpdateConfigurationWorker
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
@@ -2096,6 +2357,7 @@
   :idempotent: true
   :tags: []
 - :name: phabricator_import_import_tasks
+  :worker_name: Gitlab::PhabricatorImport::ImportTasksWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -2104,6 +2366,7 @@
   :idempotent:
   :tags: []
 - :name: post_receive
+  :worker_name: PostReceive
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :high
@@ -2112,6 +2375,7 @@
   :idempotent:
   :tags: []
 - :name: process_commit
+  :worker_name: ProcessCommitWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :high
@@ -2120,6 +2384,7 @@
   :idempotent: true
   :tags: []
 - :name: project_cache
+  :worker_name: ProjectCacheWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :high
@@ -2128,6 +2393,7 @@
   :idempotent: true
   :tags: []
 - :name: project_daily_statistics
+  :worker_name: ProjectDailyStatisticsWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2136,6 +2402,7 @@
   :idempotent:
   :tags: []
 - :name: project_destroy
+  :worker_name: ProjectDestroyWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2145,6 +2412,7 @@
   :tags:
   - :requires_disk_io
 - :name: project_export
+  :worker_name: ProjectExportWorker
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :throttled
@@ -2153,6 +2421,7 @@
   :idempotent:
   :tags: []
 - :name: project_schedule_bulk_repository_shard_moves
+  :worker_name: ProjectScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :throttled
@@ -2161,6 +2430,7 @@
   :idempotent: true
   :tags: []
 - :name: project_service
+  :worker_name: ProjectServiceWorker
   :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
@@ -2169,6 +2439,7 @@
   :idempotent:
   :tags: []
 - :name: project_update_repository_storage
+  :worker_name: ProjectUpdateRepositoryStorageWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :throttled
@@ -2177,6 +2448,7 @@
   :idempotent: true
   :tags: []
 - :name: projects_git_garbage_collect
+  :worker_name: Projects::GitGarbageCollectWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :low
@@ -2185,6 +2457,7 @@
   :idempotent:
   :tags: []
 - :name: projects_post_creation
+  :worker_name: Projects::PostCreationWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2193,6 +2466,7 @@
   :idempotent: true
   :tags: []
 - :name: projects_schedule_bulk_repository_shard_moves
+  :worker_name: Projects::ScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :throttled
@@ -2201,6 +2475,7 @@
   :idempotent: true
   :tags: []
 - :name: projects_update_repository_storage
+  :worker_name: Projects::UpdateRepositoryStorageWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :throttled
@@ -2209,6 +2484,7 @@
   :idempotent: true
   :tags: []
 - :name: prometheus_create_default_alerts
+  :worker_name: Prometheus::CreateDefaultAlertsWorker
   :feature_category: :incident_management
   :has_external_dependencies:
   :urgency: :high
@@ -2217,6 +2493,7 @@
   :idempotent: true
   :tags: []
 - :name: propagate_integration
+  :worker_name: PropagateIntegrationWorker
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low
@@ -2225,6 +2502,7 @@
   :idempotent: true
   :tags: []
 - :name: propagate_integration_group
+  :worker_name: PropagateIntegrationGroupWorker
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low
@@ -2233,6 +2511,7 @@
   :idempotent: true
   :tags: []
 - :name: propagate_integration_inherit
+  :worker_name: PropagateIntegrationInheritWorker
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low
@@ -2241,6 +2520,7 @@
   :idempotent: true
   :tags: []
 - :name: propagate_integration_inherit_descendant
+  :worker_name: PropagateIntegrationInheritDescendantWorker
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low
@@ -2249,6 +2529,7 @@
   :idempotent: true
   :tags: []
 - :name: propagate_integration_project
+  :worker_name: PropagateIntegrationProjectWorker
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low
@@ -2257,6 +2538,7 @@
   :idempotent: true
   :tags: []
 - :name: propagate_service_template
+  :worker_name: PropagateServiceTemplateWorker
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low
@@ -2265,6 +2547,7 @@
   :idempotent:
   :tags: []
 - :name: reactive_caching
+  :worker_name: ReactiveCachingWorker
   :feature_category: :not_owned
   :has_external_dependencies:
   :urgency: :low
@@ -2273,6 +2556,7 @@
   :idempotent:
   :tags: []
 - :name: rebase
+  :worker_name: RebaseWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2281,6 +2565,7 @@
   :idempotent:
   :tags: []
 - :name: releases_create_evidence
+  :worker_name: Releases::CreateEvidenceWorker
   :feature_category: :release_evidence
   :has_external_dependencies:
   :urgency: :low
@@ -2289,6 +2574,7 @@
   :idempotent:
   :tags: []
 - :name: remote_mirror_notification
+  :worker_name: RemoteMirrorNotificationWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2297,6 +2583,7 @@
   :idempotent:
   :tags: []
 - :name: repository_cleanup
+  :worker_name: RepositoryCleanupWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2305,6 +2592,7 @@
   :idempotent:
   :tags: []
 - :name: repository_fork
+  :worker_name: RepositoryForkWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2313,6 +2601,7 @@
   :idempotent:
   :tags: []
 - :name: repository_import
+  :worker_name: RepositoryImportWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -2321,6 +2610,7 @@
   :idempotent:
   :tags: []
 - :name: repository_remove_remote
+  :worker_name: RepositoryRemoveRemoteWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2329,6 +2619,7 @@
   :idempotent:
   :tags: []
 - :name: repository_update_remote_mirror
+  :worker_name: RepositoryUpdateRemoteMirrorWorker
   :feature_category: :source_code_management
   :has_external_dependencies: true
   :urgency: :low
@@ -2337,6 +2628,7 @@
   :idempotent: true
   :tags: []
 - :name: self_monitoring_project_create
+  :worker_name: SelfMonitoringProjectCreateWorker
   :feature_category: :metrics
   :has_external_dependencies:
   :urgency: :low
@@ -2345,6 +2637,7 @@
   :idempotent:
   :tags: []
 - :name: self_monitoring_project_delete
+  :worker_name: SelfMonitoringProjectDeleteWorker
   :feature_category: :metrics
   :has_external_dependencies:
   :urgency: :low
@@ -2353,6 +2646,7 @@
   :idempotent:
   :tags: []
 - :name: service_desk_email_receiver
+  :worker_name: ServiceDeskEmailReceiverWorker
   :feature_category: :issue_tracking
   :has_external_dependencies:
   :urgency: :low
@@ -2361,6 +2655,7 @@
   :idempotent:
   :tags: []
 - :name: snippet_schedule_bulk_repository_shard_moves
+  :worker_name: SnippetScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :throttled
@@ -2369,6 +2664,7 @@
   :idempotent: true
   :tags: []
 - :name: snippet_update_repository_storage
+  :worker_name: SnippetUpdateRepositoryStorageWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :throttled
@@ -2377,6 +2673,7 @@
   :idempotent: true
   :tags: []
 - :name: snippets_schedule_bulk_repository_shard_moves
+  :worker_name: Snippets::ScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :throttled
@@ -2385,6 +2682,7 @@
   :idempotent: true
   :tags: []
 - :name: snippets_update_repository_storage
+  :worker_name: Snippets::UpdateRepositoryStorageWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :throttled
@@ -2393,6 +2691,7 @@
   :idempotent: true
   :tags: []
 - :name: system_hook_push
+  :worker_name: SystemHookPushWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2401,6 +2700,7 @@
   :idempotent:
   :tags: []
 - :name: update_external_pull_requests
+  :worker_name: UpdateExternalPullRequestsWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2409,6 +2709,7 @@
   :idempotent:
   :tags: []
 - :name: update_highest_role
+  :worker_name: UpdateHighestRoleWorker
   :feature_category: :utilization
   :has_external_dependencies:
   :urgency: :high
@@ -2417,6 +2718,7 @@
   :idempotent: true
   :tags: []
 - :name: update_merge_requests
+  :worker_name: UpdateMergeRequestsWorker
   :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :high
@@ -2425,6 +2727,7 @@
   :idempotent:
   :tags: []
 - :name: update_project_statistics
+  :worker_name: UpdateProjectStatisticsWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2433,6 +2736,7 @@
   :idempotent:
   :tags: []
 - :name: upload_checksum
+  :worker_name: UploadChecksumWorker
   :feature_category: :geo_replication
   :has_external_dependencies:
   :urgency: :low
@@ -2441,6 +2745,7 @@
   :idempotent:
   :tags: []
 - :name: users_update_open_issue_count
+  :worker_name: Users::UpdateOpenIssueCountWorker
   :feature_category: :users
   :has_external_dependencies:
   :urgency: :low
@@ -2449,6 +2754,7 @@
   :idempotent: true
   :tags: []
 - :name: web_hook
+  :worker_name: WebHookWorker
   :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
@@ -2457,6 +2763,7 @@
   :idempotent:
   :tags: []
 - :name: web_hooks_destroy
+  :worker_name: WebHooks::DestroyWorker
   :feature_category: :integrations
   :has_external_dependencies:
   :urgency: :low
@@ -2465,6 +2772,7 @@
   :idempotent: true
   :tags: []
 - :name: wikis_git_garbage_collect
+  :worker_name: Wikis::GitGarbageCollectWorker
   :feature_category: :gitaly
   :has_external_dependencies:
   :urgency: :low
@@ -2473,6 +2781,7 @@
   :idempotent:
   :tags: []
 - :name: x509_certificate_revoke
+  :worker_name: X509CertificateRevokeWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low

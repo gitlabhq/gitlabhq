@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import ExperimentComponent from '~/experimentation/components/experiment.vue';
+import ExperimentComponent from '~/experimentation/components/gitlab_experiment.vue';
 
 const defaultProps = { name: 'experiment_name' };
 const defaultSlots = {

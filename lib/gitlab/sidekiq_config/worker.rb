@@ -47,6 +47,7 @@ module Gitlab
       def to_yaml
         {
           name: queue,
+          worker_name: klass.name,
           feature_category: get_feature_category,
           has_external_dependencies: worker_has_external_dependencies?,
           urgency: get_urgency,
