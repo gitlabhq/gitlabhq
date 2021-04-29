@@ -7,6 +7,9 @@ export const selectedTargetIndex = (state) =>
 
 export const selectedSourceIndex = (state) => state.mergeRequestDiff.version_index;
 
+export const selectedContextCommitsDiffs = (state) =>
+  state.contextCommitsDiff && state.contextCommitsDiff.showing_context_commits_diff;
+
 export const diffCompareDropdownTargetVersions = (state, getters) => {
   // startVersion only exists if the user has selected a version other
   // than "base" so if startVersion is null then base must be selected
@@ -58,7 +61,7 @@ export const diffCompareDropdownTargetVersions = (state, getters) => {
 
 export const diffCompareDropdownSourceVersions = (state, getters) => {
   // Appended properties here are to make the compare_dropdown_layout easier to reason about
-  return state.mergeRequestDiffs.map((v, i) => {
+  const versions = state.mergeRequestDiffs.map((v, i) => {
     const isLatestVersion = i === 0;
 
     return {
@@ -69,7 +72,20 @@ export const diffCompareDropdownSourceVersions = (state, getters) => {
       versionName: isLatestVersion
         ? __('latest version')
         : sprintf(__(`version %{versionIndex}`), { versionIndex: v.version_index }),
-      selected: v.version_index === getters.selectedSourceIndex,
+      selected:
+        v.version_index === getters.selectedSourceIndex && !getters.selectedContextCommitsDiffs,
     };
   });
+
+  const { contextCommitsDiff } = state;
+  if (contextCommitsDiff) {
+    versions.push({
+      href: contextCommitsDiff.diffs_path,
+      commitsText: n__(`%d commit`, `%d commits`, contextCommitsDiff.commits_count),
+      versionName: __('previously merged commits'),
+      selected: getters.selectedContextCommitsDiffs,
+      addDivider: state.mergeRequestDiffs.length > 0,
+    });
+  }
+  return versions;
 };

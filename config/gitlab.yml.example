@@ -1422,7 +1422,7 @@ test:
         gitaly_address: unix:tmp/tests/gitaly/praefect.socket
 
   gitaly:
-    client_path: tmp/tests/gitaly
+    client_path: tmp/tests/gitaly/_build/bin
     token: secret
   workhorse:
     secret_file: tmp/gitlab_workhorse_test_secret

@@ -1,4 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { GlLabel } from '@gitlab/ui';
+import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import BoardCard from '~/boards/components/board_card.vue';
@@ -18,6 +19,7 @@ describe('Board card', () => {
     mockActions = {
       toggleBoardItem: jest.fn(),
       toggleBoardItemMultiSelection: jest.fn(),
+      performSearch: jest.fn(),
     };
 
     store = new Vuex.Store({
@@ -35,12 +37,15 @@ describe('Board card', () => {
   };
 
   // this particular mount component needs to be used after the root beforeEach because it depends on list being initialized
-  const mountComponent = ({ propsData = {}, provide = {} } = {}) => {
-    wrapper = shallowMount(BoardCard, {
+  const mountComponent = ({
+    propsData = {},
+    provide = {},
+    mountFn = shallowMount,
+    stubs = { BoardCardInner },
+  } = {}) => {
+    wrapper = mountFn(BoardCard, {
       localVue,
-      stubs: {
-        BoardCardInner,
-      },
+      stubs,
       store,
       propsData: {
         list: mockLabelList,
@@ -72,6 +77,17 @@ describe('Board card', () => {
     wrapper.destroy();
     wrapper = null;
     store = null;
+  });
+
+  describe('when GlLabel is clicked in BoardCardInner', () => {
+    it('doesnt call toggleBoardItem', () => {
+      createStore({ initialState: { isShowingLabels: true } });
+      mountComponent({ mountFn: mount, stubs: {} });
+
+      wrapper.find(GlLabel).trigger('mouseup');
+
+      expect(mockActions.toggleBoardItem).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe.each`

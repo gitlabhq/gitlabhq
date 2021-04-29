@@ -45,3 +45,5 @@ module SidebarsHelper
     }
   end
 end
+
+SidebarsHelper.prepend_if_ee('EE::SidebarsHelper')

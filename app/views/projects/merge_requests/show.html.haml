@@ -40,7 +40,7 @@
           = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab", id: "diffs-tab", qa_selector: "diffs_tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
-              %span.badge.badge-pill.gl-badge.badge-muted.sm= @merge_request.diff_size
+              %span.badge.badge-pill.gl-badge.badge-muted.sm= @diffs_count
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter
 

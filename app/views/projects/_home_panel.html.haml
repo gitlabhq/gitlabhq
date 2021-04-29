@@ -2,7 +2,7 @@
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 - max_project_topic_length = 15
 - emails_disabled = @project.emails_disabled?
-- cache_enabled = Feature.enabled?(:cache_home_panel, type: :development, default_enabled: :yaml)
+- cache_enabled = Feature.enabled?(:cache_home_panel, @project, type: :development, default_enabled: :yaml)
 
 .project-home-panel.js-show-on-project-root.gl-my-5{ class: [("empty-project" if empty_repo)] }
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-mb-3

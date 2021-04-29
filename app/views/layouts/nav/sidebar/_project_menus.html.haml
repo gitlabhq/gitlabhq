@@ -1,6 +1,3 @@
-- if project_nav_tab? :security_and_compliance
-  = render_if_exists 'layouts/nav/sidebar/project_security_link' # EE-specific
-
 - if project_nav_tab? :operations
   = nav_link(controller: sidebar_operations_paths) do
     = link_to sidebar_operations_link_path, class: 'shortcuts-operations', data: { qa_selector: 'operations_link' } do

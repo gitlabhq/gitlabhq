@@ -190,6 +190,7 @@ export default {
       <template v-for="label in orderedLabels">
         <gl-label
           :key="label.id"
+          class="js-no-trigger"
           :background-color="label.color"
           :title="label.title"
           :description="label.description"

@@ -8,35 +8,43 @@ module Gitlab
       end
 
       def call(env)
-        request = Rack::Request.new(env)
+        request = ActionDispatch::Request.new(env)
 
-        if request.params['performance_bar'] == 'flamegraph' && Gitlab::PerformanceBar.allowed_for_user?(request.env['warden'].user)
-          body = nil
+        return @app.call(env) unless rendering_flamegraph?(request)
 
-          Gitlab::SafeRequestStore[:capturing_flamegraph] = true
+        body = nil
 
-          require 'stackprof'
+        ::Gitlab::SafeRequestStore[:capturing_flamegraph] = true
 
+        require 'stackprof'
+
+        begin
           flamegraph = ::StackProf.run(
             mode: :wall,
             raw: true,
             aggregate: false,
-            interval: (0.5 * 1000).to_i
+            interval: ::Gitlab::StackProf::DEFAULT_INTERVAL_US
           ) do
             _, _, body = @app.call(env)
           end
-
-          path = env['PATH_INFO'].sub('//', '/')
+        ensure
           body.close if body.respond_to?(:close)
-
-          return flamegraph(flamegraph, path)
         end
 
-        @app.call(env)
+        render_flamegraph(flamegraph, request)
       end
 
-      def flamegraph(graph, path)
+      private
+
+      def rendering_flamegraph?(request)
+        request.params['performance_bar'] == 'flamegraph' && ::Gitlab::PerformanceBar.allowed_for_user?(request.env['warden']&.user)
+      end
+
+      def render_flamegraph(graph, request)
         headers = { 'Content-Type' => 'text/html' }
+        path = request.env['PATH_INFO'].sub('//', '/')
+
+        speedscope_url = ActionController::Base.helpers.asset_url('/-/speedscope/index.html')
 
         html = <<~HTML
           <!DOCTYPE html>
@@ -48,7 +56,7 @@ module Gitlab
               </style>
             </head>
             <body>
-              <script type="text/javascript">
+              <script type="text/javascript" nonce="#{request.content_security_policy_nonce}">
                 var graph = #{Gitlab::Json.generate(graph)};
                 var json = JSON.stringify(graph);
                 var blob = new Blob([json], { type: 'text/plain' });
@@ -56,7 +64,7 @@ module Gitlab
                 var iframe = document.createElement('IFRAME');
                 iframe.setAttribute('id', 'speedscope-iframe');
                 document.body.appendChild(iframe);
-                var iframeUrl = '#{Gitlab.config.gitlab.relative_url_root}/assets/speedscope/index.html#profileURL=' + objUrl + '&title=' + 'Flamegraph for #{CGI.escape(path)}';
+                var iframeUrl = '#{speedscope_url}#profileURL=' + objUrl + '&title=' + 'Flamegraph for #{CGI.escape(path)}';
                 iframe.setAttribute('src', iframeUrl);
               </script>
             </body>

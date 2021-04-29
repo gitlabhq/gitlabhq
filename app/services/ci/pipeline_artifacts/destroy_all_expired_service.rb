@@ -25,7 +25,7 @@ module Ci
       private
 
       def destroy_artifacts_batch
-        artifacts = ::Ci::PipelineArtifact.expired(BATCH_SIZE).to_a
+        artifacts = ::Ci::PipelineArtifact.unlocked.expired(BATCH_SIZE).to_a
         return false if artifacts.empty?
 
         artifacts.each(&:destroy!)

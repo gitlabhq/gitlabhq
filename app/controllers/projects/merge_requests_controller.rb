@@ -113,6 +113,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count + @merge_request.context_commits_count
+        @diffs_count = get_diffs_count
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
         @current_user_data = UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestCurrentUserEntity).to_json
         @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
@@ -384,6 +385,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   private
+
+  def get_diffs_count
+    if show_only_context_commits?
+      @merge_request.context_commits_diff.raw_diffs.size
+    else
+      @merge_request.diff_size
+    end
+  end
 
   def merge_request_update_params
     merge_request_params.merge!(params.permit(:merge_request_diff_head_sha))

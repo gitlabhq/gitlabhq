@@ -1899,6 +1899,12 @@ class MergeRequest < ApplicationRecord
     diff_stats.map(&:path).include?(project.ci_config_path_or_default)
   end
 
+  def context_commits_diff
+    strong_memoize(:context_commits_diff) do
+      ContextCommitsDiff.new(self)
+    end
+  end
+
   private
 
   def missing_report_error(report_type)

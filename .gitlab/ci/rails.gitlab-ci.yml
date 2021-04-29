@@ -159,18 +159,13 @@ setup-test-env:
     expire_in: 7d
     paths:
       - config/secrets.yml
+      - tmp/tests/gitaly/_build/bin/
       - tmp/tests/gitaly/config.toml
-      - tmp/tests/gitaly/gitaly
       - tmp/tests/gitaly/gitaly2.config.toml
-      - tmp/tests/gitaly/gitaly-git2go
-      - tmp/tests/gitaly/gitaly-hooks
-      - tmp/tests/gitaly/gitaly-lfs-smudge
-      - tmp/tests/gitaly/gitaly-ssh
       - tmp/tests/gitaly/internal/
       - tmp/tests/gitaly/internal_gitaly2/
       - tmp/tests/gitaly/internal_sockets/
       - tmp/tests/gitaly/Makefile
-      - tmp/tests/gitaly/praefect
       - tmp/tests/gitaly/praefect.config.toml
       - tmp/tests/gitaly/ruby/
       - tmp/tests/gitlab-elasticsearch-indexer/bin/gitlab-elasticsearch-indexer

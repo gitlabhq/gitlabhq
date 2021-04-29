@@ -30,8 +30,6 @@ module Gitlab
       end
 
       def download(url, upload_path)
-        validate_url!(url)
-
         File.open(upload_path, 'w') do |file|
           # Download (stream) file from the uploader's location
           IO.copy_stream(URI.parse(url).open, file)
@@ -64,19 +62,6 @@ module Gitlab
         mkdir_p(destination_folder)
         FileUtils.copy_entry(source, destination)
         true
-      end
-
-      def validate_url!(url)
-        ::Gitlab::UrlBlocker.validate!(
-          url,
-          allow_localhost: allow_local_requests?,
-          allow_local_network: allow_local_requests?,
-          schemes: %w(http https)
-        )
-      end
-
-      def allow_local_requests?
-        ::Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
       end
     end
   end

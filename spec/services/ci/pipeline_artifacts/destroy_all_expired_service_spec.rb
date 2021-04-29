@@ -30,7 +30,7 @@ RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService do
         stub_const('::Ci::PipelineArtifacts::DestroyAllExpiredService::LOOP_LIMIT', 1)
         stub_const('::Ci::PipelineArtifacts::DestroyAllExpiredService::BATCH_SIZE', 1)
 
-        create_list(:ci_pipeline_artifact, 2, expire_at: 1.week.ago)
+        create_list(:ci_pipeline_artifact, 2, :unlocked, expire_at: 1.week.ago)
       end
 
       it 'destroys one artifact' do
@@ -46,7 +46,7 @@ RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService do
       before do
         stub_const('Ci::PipelineArtifacts::DestroyAllExpiredService::BATCH_SIZE', 1)
 
-        create_list(:ci_pipeline_artifact, 2, expire_at: 1.week.ago)
+        create_list(:ci_pipeline_artifact, 2, :unlocked, expire_at: 1.week.ago)
       end
 
       it 'destroys all expired artifacts' do
@@ -60,7 +60,21 @@ RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService do
 
     context 'when artifacts are not expired' do
       before do
-        create(:ci_pipeline_artifact, expire_at: 2.days.from_now)
+        create(:ci_pipeline_artifact, :unlocked, expire_at: 2.days.from_now)
+      end
+
+      it 'does not destroy pipeline artifacts' do
+        expect { subject }.not_to change { Ci::PipelineArtifact.count }
+      end
+
+      it 'reports the number of destroyed artifacts' do
+        is_expected.to eq(0)
+      end
+    end
+
+    context 'when pipeline is locked' do
+      before do
+        create(:ci_pipeline_artifact, expire_at: 2.weeks.ago)
       end
 
       it 'does not destroy pipeline artifacts' do

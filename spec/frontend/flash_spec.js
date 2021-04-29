@@ -339,6 +339,20 @@ describe('Flash', () => {
           expect(actionConfig.clickHandler).toHaveBeenCalled();
         });
       });
+
+      describe('additional behavior', () => {
+        describe('close', () => {
+          it('clicks the close icon', () => {
+            const flash = createFlash({ ...defaultParams });
+            const close = document.querySelector('.flash-alert .js-close-icon');
+
+            jest.spyOn(close, 'click');
+            flash.close();
+
+            expect(close.click.mock.calls.length).toBe(1);
+          });
+        });
+      });
     });
   });
 

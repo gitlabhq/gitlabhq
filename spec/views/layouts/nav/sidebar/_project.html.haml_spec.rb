@@ -315,6 +315,36 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
+  describe 'Security and Compliance' do
+    describe 'when user does not have permissions' do
+      before do
+        allow(view).to receive(:current_user).and_return(nil)
+      end
+
+      it 'top level navigation link is not visible' do
+        render
+
+        expect(rendered).not_to have_link('Security & Compliance')
+      end
+    end
+
+    context 'when user has permissions' do
+      before do
+        allow(view).to receive(:current_user).and_return(user)
+
+        render
+      end
+
+      it 'top level navigation link is visible' do
+        expect(rendered).to have_link('Security & Compliance')
+      end
+
+      it 'security configuration link is visible' do
+        expect(rendered).to have_link('Configuration', href: project_security_configuration_path(project))
+      end
+    end
+  end
+
   describe 'packages tab' do
     before do
       stub_container_registry_config(enabled: true)

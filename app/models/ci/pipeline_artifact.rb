@@ -40,6 +40,8 @@ module Ci
       code_quality_mr_diff: 2
     }
 
+    scope :unlocked, -> { joins(:pipeline).merge(::Ci::Pipeline.unlocked) }
+
     class << self
       def report_exists?(file_type)
         return false unless REPORT_TYPES.key?(file_type)

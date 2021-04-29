@@ -47,7 +47,7 @@ RSpec.describe 'User can display performance bar', :js do
     end
   end
 
-  let(:group) { create(:group) }
+  let_it_be(:group) { create(:group) }
 
   before do
     allow(GitlabPerformanceBarStatsWorker).to receive(:perform_in)
@@ -120,6 +120,40 @@ RSpec.describe 'User can display performance bar', :js do
 
           expect(page).to have_link('Stats', href: stats_url, visible: :all)
         end
+      end
+    end
+  end
+
+  context 'flamegraphs' do
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      group.add_guest(user)
+    end
+
+    context 'when user has access' do
+      before do
+        stub_application_setting(performance_bar_allowed_group_id: group.id)
+
+        Warden.on_next_request do |proxy|
+          proxy.set_user(user)
+        end
+      end
+
+      it 'renders flamegraph when requested' do
+        visit root_path(performance_bar: 'flamegraph')
+
+        page.within_frame 'speedscope-iframe' do
+          expect(page).to have_content('Flamegraph for /')
+        end
+      end
+    end
+
+    context 'when user does not have access' do
+      it 'renders the original page' do
+        visit root_path(performance_bar: 'flamegraph')
+
+        expect(page).not_to have_selector('iframe#speedscope-iframe')
       end
     end
   end

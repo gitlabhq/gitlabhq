@@ -605,3 +605,27 @@
 
   @include media-breakpoint-down(xs) { margin-right: 3px; }
 }
+
+.toggle-mobile-nav {
+  display: none;
+  background-color: transparent;
+  border: 0;
+  padding: 6px 16px;
+  margin: 0 0 0 -15px;
+  height: 46px;
+  color: $gl-text-color;
+
+  @include media-breakpoint-down(sm) {
+    display: flex;
+    align-items: center;
+
+    i {
+      font-size: 18px;
+    }
+
+    + .breadcrumbs-links {
+      padding-left: $gl-padding;
+      border-left: 1px solid $gl-text-color-quaternary;
+    }
+  }
+}

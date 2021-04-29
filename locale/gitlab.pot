@@ -12038,6 +12038,9 @@ msgstr ""
 msgid "Enable PlantUML"
 msgstr ""
 
+msgid "Enable Prometheus Metrics"
+msgstr ""
+
 msgid "Enable Pseudonymizer data collection"
 msgstr ""
 
@@ -12057,6 +12060,9 @@ msgid "Enable What's new: All tiers"
 msgstr ""
 
 msgid "Enable What's new: Current tier only"
+msgstr ""
+
+msgid "Enable a Prometheus metrics endpoint at %{metrics_path} to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available %{link}."
 msgstr ""
 
 msgid "Enable access to Grafana"
@@ -12324,6 +12330,9 @@ msgid "Environment is required for Stages::VariableEndpointInserter"
 msgstr ""
 
 msgid "Environment scope"
+msgstr ""
+
+msgid "Environment variable %{code_start}%{environment_variable}%{code_end} does not exist or is not pointing to a valid directory."
 msgstr ""
 
 msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default."
@@ -16465,6 +16474,9 @@ msgstr ""
 msgid "Image details"
 msgstr ""
 
+msgid "ImageAltText|Sparkling golden tanuki logo"
+msgstr ""
+
 msgid "ImageDiffViewer|2-up"
 msgstr ""
 
@@ -20414,6 +20426,9 @@ msgid "Messages"
 msgstr ""
 
 msgid "Method"
+msgstr ""
+
+msgid "Method Call Threshold (ms)"
 msgstr ""
 
 msgid "Metric was successfully added."
@@ -27942,6 +27957,9 @@ msgstr ""
 msgid "SSL verification"
 msgstr ""
 
+msgid "SVG illustration"
+msgstr ""
+
 msgid "Satisfied"
 msgstr ""
 
@@ -32879,6 +32897,9 @@ msgstr ""
 msgid "This setting can be overridden in each project."
 msgstr ""
 
+msgid "This setting requires a %{link_to_restart} to take effect."
+msgstr ""
+
 msgid "This setting will update the hostname that is used to generate private commit emails. %{learn_more}"
 msgstr ""
 
@@ -35628,6 +35649,9 @@ msgstr ""
 msgid "Vulnerability|Unmodified Response"
 msgstr ""
 
+msgid "WARNING:"
+msgstr ""
+
 msgid "Wait for the file to load to copy its contents"
 msgstr ""
 
@@ -37807,6 +37831,9 @@ msgstr ""
 msgid "help"
 msgstr ""
 
+msgid "here"
+msgstr ""
+
 msgid "http:"
 msgstr ""
 
@@ -38444,6 +38471,9 @@ msgid_plural "points"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "previously merged commits"
+msgstr ""
+
 msgid "private"
 msgstr ""
 
@@ -38533,6 +38563,9 @@ msgid "required"
 msgstr ""
 
 msgid "reset it."
+msgstr ""
+
+msgid "restart"
 msgstr ""
 
 msgid "revised"

@@ -180,7 +180,8 @@ RSpec.describe Projects::MergeRequests::DiffsController do
           start_version: nil,
           start_sha: nil,
           commit: nil,
-          latest_diff: true
+          latest_diff: true,
+          only_context_commits: false
         }
 
         expect_next_instance_of(DiffsMetadataSerializer) do |instance|
@@ -261,7 +262,8 @@ RSpec.describe Projects::MergeRequests::DiffsController do
           start_version: nil,
           start_sha: nil,
           commit: nil,
-          latest_diff: true
+          latest_diff: true,
+          only_context_commits: false
         }
 
         expect_next_instance_of(DiffsMetadataSerializer) do |instance|
@@ -290,7 +292,8 @@ RSpec.describe Projects::MergeRequests::DiffsController do
           start_version: nil,
           start_sha: nil,
           commit: merge_request.diff_head_commit,
-          latest_diff: nil
+          latest_diff: nil,
+          only_context_commits: false
         }
 
         expect_next_instance_of(DiffsMetadataSerializer) do |instance|

@@ -84,6 +84,15 @@ class DiffsEntity < Grape::Entity
     project_blob_path(merge_request.project, merge_request.diff_head_sha)
   end
 
+  expose :context_commits_diff, if: -> (_) { merge_request&.project&.context_commits_enabled? } do |diffs, options|
+    next unless merge_request.context_commits_diff.commits_count > 0
+
+    ContextCommitsDiffEntity.represent(
+      merge_request.context_commits_diff,
+      options
+    )
+  end
+
   def merge_request
     options[:merge_request]
   end

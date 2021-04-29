@@ -81,6 +81,10 @@ FactoryBot.define do
         status { :failed }
       end
 
+      trait :unlocked do
+        locked { Ci::Pipeline.lockeds[:unlocked] }
+      end
+
       trait :protected do
         add_attribute(:protected) { true }
       end

@@ -50,6 +50,30 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
     end
   end
 
+  describe 'scopes' do
+    describe '.unlocked' do
+      subject(:pipeline_artifacts) { described_class.unlocked }
+
+      context 'when pipeline is locked' do
+        it 'returns an empty collection' do
+          expect(pipeline_artifacts).to be_empty
+        end
+      end
+
+      context 'when pipeline is unlocked' do
+        before do
+          create(:ci_pipeline_artifact, :with_coverage_report)
+        end
+
+        it 'returns unlocked artifacts' do
+          codequality_report = create(:ci_pipeline_artifact, :with_codequality_mr_diff_report, :unlocked)
+
+          expect(pipeline_artifacts).to eq([codequality_report])
+        end
+      end
+    end
+  end
+
   describe 'file is being stored' do
     subject { create(:ci_pipeline_artifact, :with_coverage_report) }
 

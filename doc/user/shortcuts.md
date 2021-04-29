@@ -15,7 +15,7 @@ To display a window in GitLab that lists its keyboard shortcuts, use one of the
 following methods:
 
 - Press <kbd>?</kbd>.
-- In the Help menu in the top right of the appication, select **Keyboard shortcuts**.
+- In the Help menu in the top right of the application, select **Keyboard shortcuts**.
 
 In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22113),
 you can disable keyboard shortcuts by using the **Keyboard shortcuts** toggle
