@@ -867,10 +867,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.7.tgz#1ee6f838cc4410a1d797770934df91d90df8179e"
   integrity sha512-c6ySRK/Ma7lxwpIVbSAF3P+xiTLrNTGTLRx4/pHK111AdFxwgUwrYF6aVZFXvmG65jHOJHoa0eQQ21RW6rm0Rg==
 
-"@gitlab/eslint-plugin@8.2.0":
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-8.2.0.tgz#caccf2777febd89420c0225e000a789376ecaba2"
-  integrity sha512-14VJEOmAx8MpsxlYdloWD9KG9+AVX8HLKWAo2M5cz57Ji6AiJtdCAfFCrVetcvzDyeiFA7gt4k1fSKbTjuVgBQ==
+"@gitlab/eslint-plugin@8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-8.3.0.tgz#156a375c6ab9e578ba39080932bca27006413486"
+  integrity sha512-AuJ6ddKVbfjVUd9DLaNLhpflThZKULWatpUuI+0RhcqyRTmcb1KL5YPxxKDlE1K+faeefgiWaGB+vSNmyNNPQQ==
   dependencies:
     babel-eslint "^10.0.3"
     eslint-config-airbnb-base "^14.2.1"

@@ -78,6 +78,25 @@ RSpec.shared_examples 'issue boards sidebar' do
     end
   end
 
+  context 'confidentiality' do
+    it 'make issue confidential' do
+      page.within('.confidentiality') do
+        expect(page).to have_content('Not confidential')
+
+        click_button 'Edit'
+        expect(page).to have_css('.sidebar-item-warning-message')
+
+        within('.sidebar-item-warning-message') do
+          click_button 'Turn on'
+        end
+
+        wait_for_requests
+
+        expect(page).to have_content('This issue is confidential')
+      end
+    end
+  end
+
   context 'in time tracking' do
     it 'displays time tracking feature with default message' do
       page.within('[data-testid="time-tracker"]') do

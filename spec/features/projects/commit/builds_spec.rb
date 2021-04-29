@@ -30,7 +30,7 @@ RSpec.describe 'project commit pipelines', :js do
       wait_for_requests
 
       page.within('.merge-request-info') do
-        expect(page).not_to have_selector '.spinner'
+        expect(page).not_to have_selector '.gl-spinner'
         expect(page).to have_content 'No related merge requests found'
       end
     end

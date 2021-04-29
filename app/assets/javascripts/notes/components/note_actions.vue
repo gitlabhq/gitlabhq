@@ -354,6 +354,7 @@ export default {
       @click="onDelete"
     />
     <div v-else-if="shouldShowActionsDropdown" class="dropdown more-actions">
+      <!-- eslint-disable @gitlab/vue-no-data-toggle -->
       <gl-button
         v-gl-tooltip
         :title="$options.i18n.moreActionsLabel"
@@ -365,6 +366,7 @@ export default {
         data-toggle="dropdown"
         @click="closeTooltip"
       />
+      <!-- eslint-enable @gitlab/vue-no-data-toggle -->
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <gl-dropdown-item v-if="canReportAsAbuse" :href="reportAbusePath">
           {{ __('Report abuse to admin') }}

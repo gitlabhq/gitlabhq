@@ -28,6 +28,7 @@ export default {
 </script>
 
 <template>
+  <!-- eslint-disable @gitlab/vue-no-data-toggle -->
   <button
     :disabled="isDisabled || isLoading"
     class="dropdown-menu-toggle dropdown-menu-full-width"

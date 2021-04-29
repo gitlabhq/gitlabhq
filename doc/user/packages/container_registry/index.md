@@ -729,20 +729,78 @@ As a workaround, you should include the architecture in the tag name of individu
 
 ### The cleanup policy doesn't delete any tags
 
-In GitLab 13.6 and earlier, when you run the cleanup policy,
-you may expect it to delete tags and it does not.
+There can be different reasons behind this:
 
-This issue occurs when the cleanup policy was saved without
-editing the value in the **Remove tags matching** field.
+- In GitLab 13.6 and earlier, when you run the cleanup policy you may expect it to delete tags and
+  it does not. This occurs when the cleanup policy is saved without editing the value in the
+  **Remove tags matching** field. This field has a grayed out `.*` value as a placeholder. Unless
+  `.*` (or another regex pattern) is entered explicitly into the field, a `nil` value is submitted.
+  This value prevents the saved cleanup policy from matching any tags. As a workaround, edit the
+  cleanup policy. In the **Remove tags matching** field, enter `.*` and save. This value indicates
+  that all tags should be removed.
 
-This field had a grayed out `.*` value as a placeholder.
-Unless `.*` (or other regex pattern) was entered explicitly into the
-field, a `nil` value was submitted. This value prevents the
-saved cleanup policy from matching any tags.
+- If you are on GitLab self-managed instances and you have 1000+ tags in a container repository, you
+  might run into a [Container Registry token expiration issue](https://gitlab.com/gitlab-org/gitlab/-/issues/288814),
+  with `error authorizing context: invalid token` in the logs.
 
-As a workaround, edit the cleanup policy. In the **Remove tags matching**
-field, enter `.*` and save. This value indicates that all tags should
-be removed.
+  To fix this, there are two workarounds:
+
+  - If you are on GitLab 13.9 or later, you can [set limits for the cleanup policy](#set-cleanup-limits-to-conserve-resources).
+    This limits the cleanup execution in time, and avoids the expired token error.
+
+  - Extend the expiration delay of the Container Registry authentication tokens. This defaults to 5
+    minutes. You can set a custom value by running
+    `ApplicationSetting.last.update(container_registry_token_expire_delay: <integer>)` in the Rails
+    console, where `<integer>` is the desired number of minutes. For reference, 15 minutes is the
+    value currently in use for GitLab.com. Be aware that by extending this value you increase the
+    time required to revoke permissions.
+
+If the previous fixes didn't work or you are on earlier versions of GitLab, you can generate a list
+of the tags that you want to delete, and then use that list to delete the tags. To do this, follow
+these steps:
+
+1. Run the following shell script. The command just before the `for` loop ensures that
+   `list_o_tags.out` is always reinitialized when starting the loop. After running this command, all
+   the tags' names will be in the `list_o_tags.out` file:
+
+   ```shell
+   # Get a list of all tags in a certain container repository while considering [pagination](../../../api/README.md#pagination)
+   echo -n "" > list_o_tags.out; for i in {1..N}; do curl --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
+   ```
+
+1. Remove from the `list_o_tags.out` file any tags that you want to keep. Here are some example
+   `sed` commands for this. Note that these commands are simply examples. You may change them to
+   best suit your needs:
+
+   ```shell
+   # Remove the `latest` tag from the file
+   sed -i '/latest/d' list_o_tags.out
+
+   # Remove the first N tags from the file
+   sed -i '1,Nd' list_o_tags.out
+
+   # Remove the tags starting with `Av` from the file
+   sed -i '/^Av/d' list_o_tags.out
+
+   # Remove the tags ending with `_v3` from the file
+   sed -i '/_v3$/d' list_o_tags.out
+   ```
+
+   If you are running macOS, you must add `.bak` to the commands. For example:
+
+   ```shell
+   sed -i .bak '/latest/d' list_o_tags.out
+   ```
+
+1. Double-check the `list_o_tags.out` file to make sure it contains only the tags that you want to
+   delete.
+
+1. Run this shell script to delete the tags in the `list_o_tags.out` file:
+
+   ```shell
+   # loop over list_o_tags.out to delete a single tag at a time
+   while read -r LINE || [[ -n $LINE ]]; do echo ${LINE}; curl --request DELETE --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags/${LINE}"; sleep 0.1; echo; done < list_o_tags.out > delete.logs
+   ```
 
 ### Troubleshoot as a GitLab server admin
 

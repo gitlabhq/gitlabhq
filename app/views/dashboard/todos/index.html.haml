@@ -29,10 +29,10 @@
         .gl-mr-3
           = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'gl-button btn btn-default btn-loading align-items-center js-todos-mark-all', method: :delete, data: { href: destroy_all_dashboard_todos_path(todos_filter_params) } do
             Mark all as done
-            %span.spinner.ml-1
+            %span.gl-spinner.ml-1
           = link_to bulk_restore_dashboard_todos_path, class: 'gl-button btn btn-default btn-loading align-items-center js-todos-undo-all hidden', method: :patch , data: { href: bulk_restore_dashboard_todos_path(todos_filter_params) } do
             Undo mark all as done
-            %span.spinner.ml-1
+            %span.gl-spinner.ml-1
 
   .todos-filters
     .issues-details-filters.row-content-block.second-block

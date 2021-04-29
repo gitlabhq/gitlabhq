@@ -10,6 +10,7 @@ import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.v
 import { ISSUABLE } from '~/boards/constants';
 import { contentTop } from '~/lib/utils/common_utils';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
+import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -18,6 +19,7 @@ export default {
     GlDrawer,
     BoardSidebarTitle,
     SidebarAssigneesWidget,
+    SidebarConfidentialityWidget,
     BoardSidebarTimeTracker,
     BoardSidebarLabelsSelect,
     BoardSidebarDueDate,
@@ -50,7 +52,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleBoardItem', 'setAssignees']),
+    ...mapActions(['toggleBoardItem', 'setAssignees', 'setActiveItemConfidential']),
     handleClose() {
       this.toggleBoardItem({ boardItem: this.activeBoardItem, sidebarType: this.sidebarType });
     },
@@ -90,6 +92,12 @@ export default {
       <board-sidebar-due-date />
       <board-sidebar-labels-select class="labels" />
       <board-sidebar-weight-input v-if="glFeatures.issueWeights" class="weight" />
+      <sidebar-confidentiality-widget
+        :iid="activeBoardItem.iid"
+        :full-path="fullPath"
+        :issuable-type="issuableType"
+        @confidentialityUpdated="setActiveItemConfidential($event)"
+      />
       <board-sidebar-subscription class="subscriptions" />
     </template>
   </gl-drawer>

@@ -652,6 +652,15 @@ export default {
     });
   },
 
+  setActiveItemConfidential: ({ commit, getters }, confidential) => {
+    const { activeBoardItem } = getters;
+    commit(types.UPDATE_BOARD_ITEM_BY_ID, {
+      itemId: activeBoardItem.id,
+      prop: 'confidential',
+      value: confidential,
+    });
+  },
+
   fetchGroupProjects: ({ commit, state }, { search = '', fetchNext = false }) => {
     commit(types.REQUEST_GROUP_PROJECTS, fetchNext);
 

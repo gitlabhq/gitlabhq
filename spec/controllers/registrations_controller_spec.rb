@@ -20,8 +20,12 @@ RSpec.describe RegistrationsController do
   end
 
   describe '#create' do
-    let(:base_user_params) { { first_name: 'first', last_name: 'last', username: 'new_username', email: 'new@user.com', password: 'Any_password' } }
-    let(:user_params) { { user: base_user_params } }
+    let_it_be(:base_user_params) do
+      { first_name: 'first', last_name: 'last', username: 'new_username', email: 'new@user.com', password: 'Any_password' }
+    end
+
+    let_it_be(:user_params) { { user: base_user_params } }
+
     let(:session_params) { {} }
 
     subject { post(:create, params: user_params, session: session_params) }
@@ -151,6 +155,38 @@ RSpec.describe RegistrationsController do
           end
 
           context 'when registration is triggered from an accepted invite' do
+            context 'when it is part of our invite email experiment', :experiment do
+              let_it_be(:member) { create(:project_member, :invited, invite_email: user_params.dig(:user, :email)) }
+
+              let(:originating_member_id) { member.id }
+              let(:session_params) do
+                {
+                  invite_email: user_params.dig(:user, :email),
+                  originating_member_id: originating_member_id
+                }
+              end
+
+              context 'when member exists from the session key value' do
+                it 'tracks the experiment' do
+                  expect(experiment('members/invite_email')).to track(:accepted)
+                                                                  .with_context(actor: member)
+                                                                  .on_next_instance
+
+                  subject
+                end
+              end
+
+              context 'when member does not exist from the session key value' do
+                let(:originating_member_id) { -1 }
+
+                it 'tracks the experiment' do
+                  expect(experiment('members/invite_email')).not_to track(:accepted)
+
+                  subject
+                end
+              end
+            end
+
             context 'when invite email matches email used on registration' do
               let(:session_params) { { invite_email: user_params.dig(:user, :email) } }
 

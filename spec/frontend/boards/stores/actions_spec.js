@@ -1536,6 +1536,33 @@ describe('setActiveItemTitle', () => {
   });
 });
 
+describe('setActiveItemConfidential', () => {
+  const state = { boardItems: { [mockIssue.id]: mockIssue } };
+  const getters = { activeBoardItem: mockIssue };
+
+  it('set confidential value on board item', (done) => {
+    const payload = {
+      itemId: getters.activeBoardItem.id,
+      prop: 'confidential',
+      value: true,
+    };
+
+    testAction(
+      actions.setActiveItemConfidential,
+      true,
+      { ...state, ...getters },
+      [
+        {
+          type: types.UPDATE_BOARD_ITEM_BY_ID,
+          payload,
+        },
+      ],
+      [],
+      done,
+    );
+  });
+});
+
 describe('fetchGroupProjects', () => {
   const state = {
     fullPath: 'gitlab-org',

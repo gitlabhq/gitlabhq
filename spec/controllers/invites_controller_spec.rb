@@ -8,11 +8,12 @@ RSpec.describe InvitesController do
   let(:raw_invite_token) { member.raw_invite_token }
   let(:project_members) { member.source.users }
   let(:md5_member_global_id) { Digest::MD5.hexdigest(member.to_global_id.to_s) }
-  let(:params) { { id: raw_invite_token } }
+  let(:extra_params) { {} }
+  let(:params) { { id: raw_invite_token }.merge(extra_params) }
 
   shared_examples 'invalid token' do
     context 'when invite token is not valid' do
-      let(:params) { { id: '_bogus_token_' } }
+      let(:raw_invite_token) { '_bogus_token_' }
 
       it 'renders the 404 page' do
         request
@@ -24,6 +25,37 @@ RSpec.describe InvitesController do
 
   describe 'GET #show' do
     subject(:request) { get :show, params: params }
+
+    context 'when it is part of our invite email experiment' do
+      let(:extra_params) { { invite_type: 'initial_email' } }
+
+      it 'tracks the experiment' do
+        experiment = double(track: true)
+        allow(controller).to receive(:experiment).with('members/invite_email', actor: member).and_return(experiment)
+
+        request
+
+        expect(experiment).to have_received(:track).with(:join_clicked)
+      end
+
+      context 'when member does not exist' do
+        let(:raw_invite_token) { '_bogus_token_' }
+
+        it 'does not track the experiment' do
+          expect(controller).not_to receive(:experiment).with('members/invite_email', actor: member)
+
+          request
+        end
+      end
+    end
+
+    context 'when it is not part of our invite email experiment' do
+      it 'does not track via experiment' do
+        expect(controller).not_to receive(:experiment).with('members/invite_email', actor: member)
+
+        request
+      end
+    end
 
     context 'when logged in' do
       before do
@@ -51,32 +83,10 @@ RSpec.describe InvitesController do
       end
 
       it_behaves_like 'invalid token'
-
-      context 'when invite comes from the initial email invite' do
-        let(:params) { { id: raw_invite_token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE } }
-
-        it 'tracks via experiment', :aggregate_failures do
-          experiment = double(track: true)
-          allow(controller).to receive(:experiment).and_return(experiment)
-
-          request
-
-          expect(experiment).to have_received(:track).with(:opened)
-          expect(experiment).to have_received(:track).with(:accepted)
-        end
-      end
-
-      context 'when invite does not come from initial email invite' do
-        it 'does not track via experiment' do
-          expect(controller).not_to receive(:experiment)
-
-          request
-        end
-      end
     end
 
     context 'when not logged in' do
-      context 'when inviter is a member' do
+      context 'when invite token belongs to a valid member' do
         context 'when instance allows sign up' do
           it 'indicates an account can be created in notice' do
             request
@@ -121,6 +131,30 @@ RSpec.describe InvitesController do
 
               expect(response).to redirect_to(new_user_registration_path(invite_email: member.invite_email))
             end
+
+            it 'sets session keys for auto email confirmation on sign up' do
+              request
+
+              expect(session[:invite_email]).to eq(member.invite_email)
+            end
+
+            context 'when it is part of our invite email experiment' do
+              let(:extra_params) { { invite_type: 'initial_email' } }
+
+              it 'sets session key for invite acceptance tracking on sign-up' do
+                request
+
+                expect(session[:originating_member_id]).to eq(member.id)
+              end
+            end
+
+            context 'when it is not part of our invite email experiment' do
+              it 'does not set the session key for invite acceptance tracking on sign-up' do
+                request
+
+                expect(session[:originating_member_id]).to be_nil
+              end
+            end
           end
         end
 
@@ -157,7 +191,7 @@ RSpec.describe InvitesController do
         end
       end
 
-      context 'when inviter is not a member' do
+      context 'when invite token does not belong to a valid member' do
         let(:params) { { id: '_bogus_token_' } }
 
         it 'is redirected to a new session' do
@@ -177,25 +211,6 @@ RSpec.describe InvitesController do
     subject(:request) { post :accept, params: params }
 
     it_behaves_like 'invalid token'
-
-    context 'when invite comes from the initial email invite' do
-      it 'tracks via experiment' do
-        experiment = double(track: true)
-        allow(controller).to receive(:experiment).and_return(experiment)
-
-        post :accept, params: params, session: { invite_type: Members::InviteEmailExperiment::INVITE_TYPE }
-
-        expect(experiment).to have_received(:track).with(:accepted)
-      end
-    end
-
-    context 'when invite does not come from initial email invite' do
-      it 'does not track via experiment' do
-        expect(controller).not_to receive(:experiment)
-
-        request
-      end
-    end
   end
 
   describe 'POST #decline for link in UI' do

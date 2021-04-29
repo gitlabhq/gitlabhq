@@ -61,6 +61,7 @@ export default {
 </script>
 
 <template>
+  <!-- eslint-disable @gitlab/vue-no-data-toggle -->
   <button
     ref="dropdownButton"
     :class="{ 'js-extra-options': showExtraOptions }"

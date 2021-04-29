@@ -11,6 +11,16 @@ RSpec.describe Members::InviteEmailExperiment, :clean_gitlab_redis_shared_state 
     allow(invite_email).to receive(:enabled?).and_return(true)
   end
 
+  describe ".initial_invite_email?" do
+    it "is an initial invite email" do
+      expect(described_class.initial_invite_email?('initial_email')).to be(true)
+    end
+
+    it "is not an initial invite email" do
+      expect(described_class.initial_invite_email?('_bogus_')).to be(false)
+    end
+  end
+
   describe "exclusions", :experiment do
     it "excludes when created by is nil" do
       expect(experiment('members/invite_email')).to exclude(actor: double(created_by: nil))

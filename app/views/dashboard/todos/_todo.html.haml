@@ -50,12 +50,12 @@
     .todo-actions
       = link_to dashboard_todo_path(todo), method: :delete, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-done-todo', data: { href: dashboard_todo_path(todo) } do
         Done
-        %span.spinner.ml-1
+        %span.gl-spinner.ml-1
       = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-undo-todo hidden', data: { href: restore_dashboard_todo_path(todo) } do
         Undo
-        %span.spinner.ml-1
+        %span.gl-spinner.ml-1
   - else
     .todo-actions
       = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-add-todo', data: { href: restore_dashboard_todo_path(todo) } do
         Add a to do
-        %span.spinner.ml-1
+        %span.gl-spinner.ml-1

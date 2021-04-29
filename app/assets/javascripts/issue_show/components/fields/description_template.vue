@@ -53,6 +53,7 @@ export default {
 </script>
 
 <template>
+  <!-- eslint-disable @gitlab/vue-no-data-toggle -->
   <div class="dropdown js-issuable-selector-wrap" data-issuable-type="issues">
     <button
       ref="toggle"

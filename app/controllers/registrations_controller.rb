@@ -187,6 +187,20 @@ class RegistrationsController < Devise::RegistrationsController
   def set_invite_params
     @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
   end
+
+  def after_pending_invitations_hook
+    member_id = session.delete(:originating_member_id)
+
+    return unless member_id
+
+    # if invited multiple times to different projects, only the email clicked will be counted as accepted
+    # for the specific member on a project or group
+    member = resource.members.find_by(id: member_id) # rubocop: disable CodeReuse/ActiveRecord
+
+    return unless member
+
+    experiment('members/invite_email', actor: member).track(:accepted)
+  end
 end
 
 RegistrationsController.prepend_if_ee('EE::RegistrationsController')

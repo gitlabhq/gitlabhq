@@ -169,7 +169,7 @@
               = s_('UserProfile|Most Recent Activity')
             .content_list{ data: { href: user_activity_path } }
             .loading
-              .spinner.spinner-md
+              .gl-spinner.gl-spinner-md
       - unless @user.bot?
         - if profile_tab?(:groups)
           #groups.tab-pane
@@ -200,7 +200,7 @@
             -# This tab is always loaded via AJAX
 
     .loading.hide
-      .spinner.spinner-md
+      .gl-spinner.gl-spinner-md
 
     - if profile_tabs.empty?
       .svg-content

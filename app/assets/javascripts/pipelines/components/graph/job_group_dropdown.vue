@@ -53,6 +53,7 @@ export default {
 };
 </script>
 <template>
+  <!-- eslint-disable @gitlab/vue-no-data-toggle -->
   <div :id="computedJobId" class="ci-job-dropdown-container dropdown dropright">
     <button
       type="button"

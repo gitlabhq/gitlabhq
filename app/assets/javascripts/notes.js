@@ -1732,7 +1732,7 @@ export default class Notes {
         // Submission failed, revert back to original note
         $noteBodyText.html(escape(cachedNoteBodyText));
         $editingNote.removeClass('being-posted fade-in');
-        $editingNote.find('.spinner').remove();
+        $editingNote.find('.gl-spinner').remove();
 
         // Show Flash message about failure
         this.updateNoteError();

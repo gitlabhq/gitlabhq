@@ -30,7 +30,7 @@
               = dropdown_loading
         .card-footer
           .text-center
-            .js-source-loading.mt-1.spinner.spinner-sm
+            .js-source-loading.mt-1.gl-spinner
           %ul.list-unstyled.mr_source_commit
 
     .col-lg-6
@@ -59,7 +59,7 @@
               = dropdown_loading
         .card-footer
           .text-center
-            .js-target-loading.mt-1.spinner.spinner-sm
+            .js-target-loading.mt-1.gl-spinner
           %ul.list-unstyled.mr_target_commit
 
   - if @merge_request.errors.any?

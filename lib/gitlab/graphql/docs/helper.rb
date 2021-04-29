@@ -267,7 +267,7 @@ module Gitlab
           if deprecated?(object, owner)
             render_deprecation(object, owner, context)
           else
-            render_description_of(object)
+            render_description_of(object, owner, context)
           end
         end
 
@@ -278,7 +278,7 @@ module Gitlab
           deprecations.key?(key)
         end
 
-        def render_description_of(object)
+        def render_description_of(object, owner, context = nil)
           desc = if object[:is_edge]
                    base = object[:name].chomp('Edge')
                    "The edge type for [`#{base}`](##{base.downcase})."
@@ -292,14 +292,31 @@ module Gitlab
           return if desc.blank?
 
           desc += '.' unless desc.ends_with?('.')
+          see = doc_reference(object, owner)
+          desc += " #{see}" if see
+          desc += " (see [Connections](#connections))" if connection?(object) && context != :block
           desc
+        end
+
+        def doc_reference(object, owner)
+          field = schema_field(owner, object[:name]) if owner
+          return unless field
+
+          ref = field.try(:doc_reference)
+          return if ref.blank?
+
+          parts = ref.to_a.map do |(title, url)|
+            "[#{title.strip}](#{url.strip})"
+          end
+
+          "See #{parts.join(', ')}."
         end
 
         def render_deprecation(object, owner, context)
           buff = []
           deprecation = schema_deprecation(owner, object[:name])
 
-          buff << (deprecation&.original_description || render_description_of(object)) if context == :block
+          buff << (deprecation&.original_description || render_description_of(object, owner)) if context == :block
           buff << if deprecation
                     deprecation.markdown(context: context)
                   else
@@ -380,6 +397,13 @@ module Gitlab
           return unless input_field
 
           "Input type: `#{input_field[:type][:name]}`"
+        end
+
+        def schema_field(type_name, field_name)
+          type = schema.types[type_name]
+          return unless type && type.kind.fields?
+
+          type.fields[field_name]
         end
 
         def deprecations

@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe 'Group or Project invitations', :aggregate_failures do
+  let_it_be(:owner) { create(:user, name: 'John Doe') }
+  let_it_be(:group) { create(:group, name: 'Owned') }
+  let_it_be(:project) { create(:project, :repository, namespace: group) }
+
   let(:user) { create(:user, email: 'user@example.com') }
-  let(:owner) { create(:user, name: 'John Doe') }
-  let(:group) { create(:group, name: 'Owned') }
-  let(:project) { create(:project, :repository, namespace: group) }
   let(:group_invite) { group.group_members.invite.last }
 
   before do
@@ -90,19 +91,21 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     let(:new_user) { build_stubbed(:user) }
     let(:invite_email) { new_user.email }
     let(:group_invite) { create(:group_member, :invited, group: group, invite_email: invite_email, created_by: owner) }
+    let(:send_email_confirmation) { true }
+
+    before do
+      stub_application_setting(send_user_confirmation_email: send_email_confirmation)
+    end
 
     context 'when registering using invitation email' do
       before do
-        stub_application_setting(send_user_confirmation_email: send_email_confirmation)
-        visit invite_path(group_invite.raw_invite_token)
+        visit invite_path(group_invite.raw_invite_token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE)
       end
 
       context 'with admin approval required enabled' do
         before do
           stub_application_setting(require_admin_approval_after_user_signup: true)
         end
-
-        let(:send_email_confirmation) { true }
 
         it 'does not sign the user in' do
           fill_in_sign_up_form(new_user)
@@ -136,7 +139,15 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
       end
 
       context 'email confirmation enabled' do
-        let(:send_email_confirmation) { true }
+        context 'with members/invite_email experiment', :experiment do
+          it 'tracks the accepted invite' do
+            expect(experiment('members/invite_email')).to track(:accepted)
+                                                            .with_context(actor: group_invite)
+                                                            .on_next_instance
+
+            fill_in_sign_up_form(new_user)
+          end
+        end
 
         context 'when soft email confirmation is not enabled' do
           before do
@@ -201,8 +212,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     end
 
     context 'when declining the invitation' do
-      let(:send_email_confirmation) { true }
-
       context 'as an existing user' do
         let(:group_invite) { create(:group_member, user: user, group: group, created_by: owner) }
 
@@ -246,8 +255,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     end
 
     context 'when accepting the invitation as an existing user' do
-      let(:send_email_confirmation) { true }
-
       before do
         sign_in(user)
         visit invite_path(group_invite.raw_invite_token)

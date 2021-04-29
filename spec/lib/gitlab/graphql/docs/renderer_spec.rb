@@ -150,6 +150,69 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
       end
     end
 
+    context 'when a field has a documentation reference' do
+      let(:type) do
+        wibble = Class.new(::Types::BaseObject) do
+          graphql_name 'Wibble'
+          field :x, ::GraphQL::INT_TYPE, null: false
+        end
+
+        Class.new(Types::BaseObject) do
+          graphql_name 'DocRefSpec'
+          description 'Testing doc refs'
+
+          field :foo,
+                type: GraphQL::STRING_TYPE,
+                null: false,
+                description: 'The foo.',
+                see: { 'A list of foos' => 'https://example.com/foos' }
+          field :bar,
+                type: GraphQL::STRING_TYPE,
+                null: false,
+                description: 'The bar.',
+                see: { 'A list of bars' => 'https://example.com/bars' } do
+                  argument :barity, ::GraphQL::INT_TYPE, required: false, description: '?'
+                end
+          field :wibbles,
+                type: wibble.connection_type,
+                null: true,
+                description: 'The wibbles',
+                see: { 'wibblance' => 'https://example.com/wibbles' }
+        end
+      end
+
+      let(:section) do
+        <<~DOC
+          ### `DocRefSpec`
+
+          Testing doc refs.
+
+          #### Fields
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="docrefspecfoo"></a>`foo` | [`String!`](#string) | The foo. See [A list of foos](https://example.com/foos). |
+          | <a id="docrefspecwibbles"></a>`wibbles` | [`WibbleConnection`](#wibbleconnection) | The wibbles. See [wibblance](https://example.com/wibbles). (see [Connections](#connections)) |
+
+          #### Fields with arguments
+
+          ##### `DocRefSpec.bar`
+
+          The bar. See [A list of bars](https://example.com/bars).
+
+          Returns [`String!`](#string).
+
+          ###### Arguments
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="docrefspecbarbarity"></a>`barity` | [`Int`](#int) | ?. |
+        DOC
+      end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
+    end
+
     context 'when an argument is deprecated' do
       let(:type) do
         Class.new(Types::BaseObject) do

@@ -117,6 +117,7 @@ export default {
           </div>
           <div class="flex-grow align-self-center text-center">
             <div class="js-ca-dropdown dropdown inline">
+              <!-- eslint-disable-next-line @gitlab/vue-no-data-toggle -->
               <button class="dropdown-menu-toggle" data-toggle="dropdown" type="button">
                 <span class="dropdown-label">
                   <gl-sprintf :message="$options.i18n.dropdownText">
