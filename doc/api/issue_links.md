@@ -117,7 +117,7 @@ Example response:
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/11",
     "confidential": false,
-    "weight": null,
+    "weight": null
   },
   "target_issue" : {
     "id" : 84,
@@ -147,7 +147,7 @@ Example response:
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/14",
     "confidential": false,
-    "weight": null,
+    "weight": null
   },
   "link_type": "relates_to"
 }
@@ -198,7 +198,7 @@ DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/11",
     "confidential": false,
-    "weight": null,
+    "weight": null
   },
   "target_issue" : {
     "id" : 84,
@@ -228,7 +228,7 @@ DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/14",
     "confidential": false,
-    "weight": null,
+    "weight": null
   },
   "link_type": "relates_to"
 }

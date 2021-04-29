@@ -104,7 +104,7 @@ an email notifying the user to download the file, uploading the exported file to
   "export_status": "finished",
   "_links": {
     "api_url": "https://gitlab.example.com/api/v4/projects/1/export/download",
-    "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/download_export",
+    "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/download_export"
   }
 }
 ```

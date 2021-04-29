@@ -664,7 +664,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
         "web_url": "http://localhost:3000/root"
       }
     }
-  ],
+  ]
 }
 ```
 
@@ -1109,7 +1109,7 @@ does not match, the response code is `409`.
         "web_url": "http://localhost:3000/ryley"
       }
     }
-  ],
+  ]
 }
 ```
 

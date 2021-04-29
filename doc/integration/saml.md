@@ -442,7 +442,7 @@ in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Has
 
 For example, if your SAMLResponse contains an Attribute called `EmailAddress`,
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the
-corresponding key in the `info` hash. URI-named Attributes are also supported, for example, 
+corresponding key in the `info` hash. URI-named Attributes are also supported, for example,
 `{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`.
 
 This setting allows you tell GitLab where to look for certain attributes required
@@ -859,7 +859,7 @@ For this you need take the following into account:
   the request to contain one. In this case the fingerprint or fingerprint
   validators are optional
 
-If none of the above described scenarios is valid, the request 
+If none of the above described scenarios is valid, the request
 fails with one of the mentioned errors.
 
 ### User is blocked when signing in through SAML

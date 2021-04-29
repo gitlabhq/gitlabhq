@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe InviteMembersHelper do
+  include Devise::Test::ControllerHelpers
+
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_projects: [project]) }
 
@@ -14,18 +16,19 @@ RSpec.describe InviteMembersHelper do
 
   context 'with project' do
     before do
+      allow(helper).to receive(:current_user) { owner }
       assign(:project, project)
     end
 
     describe "#can_invite_members_for_project?" do
-      context 'when the user can_import_members' do
+      context 'when the user can_manage_project_members' do
         before do
-          allow(helper).to receive(:can_import_members?).and_return(true)
+          allow(helper).to receive(:can_manage_project_members?).and_return(true)
         end
 
         it 'returns true' do
           expect(helper.can_invite_members_for_project?(project)).to eq true
-          expect(helper).to have_received(:can_import_members?)
+          expect(helper).to have_received(:can_manage_project_members?)
         end
 
         context 'when feature flag is disabled' do
@@ -35,14 +38,14 @@ RSpec.describe InviteMembersHelper do
 
           it 'returns false' do
             expect(helper.can_invite_members_for_project?(project)).to eq false
-            expect(helper).not_to have_received(:can_import_members?)
+            expect(helper).not_to have_received(:can_manage_project_members?)
           end
         end
       end
 
-      context 'when the user can not invite members' do
+      context 'when the user can not manage project members' do
         before do
-          expect(helper).to receive(:can_import_members?).and_return(false)
+          expect(helper).to receive(:can_manage_project_members?).and_return(false)
         end
 
         it 'returns false' do
@@ -87,7 +90,7 @@ RSpec.describe InviteMembersHelper do
         allow(helper).to receive(:current_user) { user }
       end
 
-      context 'when the user can_import_members' do
+      context 'when the user can admin_group_member' do
         before do
           allow(helper).to receive(:can?).with(user, :admin_group_member, group).and_return(true)
         end
@@ -109,7 +112,7 @@ RSpec.describe InviteMembersHelper do
         end
       end
 
-      context 'when the user can not invite members' do
+      context 'when the user can not admin_group_member' do
         before do
           expect(helper).to receive(:can?).with(user, :admin_group_member, group).and_return(false)
         end

@@ -318,7 +318,7 @@ npmScopes:
   foo:
     npmRegistryServer: "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/"
     npmPublishRegistry: "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/"
-      
+
 npmRegistries:
   //gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:
     npmAlwaysAuth: true

@@ -44,9 +44,9 @@ directly in a file system level.
 
 The first step to mirror you SVN repository in GitLab is to create a new empty
 project that is used as a mirror. For Omnibus installations the path to
-the repository is 
+the repository is
 `/var/opt/gitlab/git-data/repositories/USER/REPO.git` by default. For
-installations from source, the default repository directory is 
+installations from source, the default repository directory is
 `/home/git/repositories/USER/REPO.git`. For convenience, assign this path to a
 variable:
 

@@ -176,7 +176,9 @@ Example responses:
 {
   "level": "watch"
 }
+```
 
+```json
 {
   "level": "custom",
   "events": {

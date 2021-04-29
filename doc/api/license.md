@@ -80,7 +80,7 @@ GET /licenses
       "Name": "Doe John"
     },
     "add_ons": {
-      "GitLab_FileLocks": 1,
+      "GitLab_FileLocks": 1
     }
   }
 ]

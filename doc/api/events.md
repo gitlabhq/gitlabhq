@@ -301,7 +301,7 @@ Example response:
 ```json
 [
   {
-    "id": 8
+    "id": 8,
     "title":null,
     "project_id":1,
     "action_name":"opened",

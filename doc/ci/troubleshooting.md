@@ -269,7 +269,7 @@ which pipelines can run.
 resource_group = Project.find_by_full_path('...').resource_groups.find_by(key: 'the-group-name')
 busy_resources = resource_group.resources.where('build_id IS NOT NULL')
 
-# identify which builds are occupying the resource 
+# identify which builds are occupying the resource
 # (I think it should be 1 as of today)
 busy_resources.pluck(:build_id)
 

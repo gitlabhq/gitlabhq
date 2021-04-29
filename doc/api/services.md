@@ -42,7 +42,7 @@ Example response:
     "wiki_page_events": true,
     "job_events": true,
     "comment_on_event_enabled": true
-  }
+  },
   {
     "id": 76,
     "title": "Alerts endpoint",

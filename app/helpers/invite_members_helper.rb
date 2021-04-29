@@ -8,7 +8,7 @@ module InviteMembersHelper
   end
 
   def can_invite_members_for_project?(project)
-    Feature.enabled?(:invite_members_group_modal, project.group) && can_import_members?
+    Feature.enabled?(:invite_members_group_modal, project.group) && can_manage_project_members?(project)
   end
 
   def directly_invite_members?

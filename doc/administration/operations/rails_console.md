@@ -152,7 +152,7 @@ Traceback (most recent call last):
 In case you encounter a similar error to this:
 
 ```plaintext
-[root ~]# sudo gitlab-rails runner helloworld.rb 
+[root ~]# sudo gitlab-rails runner helloworld.rb
 Please specify a valid ruby command or the path of a script to run.
 Run 'rails runner -h' for help.
 

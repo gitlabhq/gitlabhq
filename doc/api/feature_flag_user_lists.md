@@ -126,7 +126,7 @@ Example response:
    "iid": 1,
    "project_id": 1,
    "created_at": "2020-02-04T08:13:10.507Z",
-   "updated_at": "2020-02-04T08:13:10.507Z",
+   "updated_at": "2020-02-04T08:13:10.507Z"
 }
 ```
 

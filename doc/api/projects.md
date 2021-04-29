@@ -94,7 +94,7 @@ When `simple=true` or the user is unauthenticated this returns something like:
     "last_activity_at": "2013-09-30T13:46:02Z",
     "forks_count": 0,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
-    "star_count": 0,
+    "star_count": 0
   },
   {
     "id": 6,
@@ -189,7 +189,7 @@ When the user is authenticated and `simple` is not set this returns something li
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
       "members": "http://example.com/api/v4/projects/1/members"
-    },
+    }
   },
   {
     "id": 6,
@@ -902,7 +902,6 @@ GET /projects/:id
   "merge_method": "merge",
   "auto_devops_enabled": true,
   "auto_devops_deploy_strategy": "continuous",
-  "repository_storage": "default",
   "approvals_before_merge": 0,
   "mirror": false,
   "mirror_user_id": 45,
@@ -986,7 +985,7 @@ If the project is a fork, and you provide a valid token to authenticate, the
         "name": "MIT License",
         "nickname": null,
         "html_url": "http://choosealicense.com/licenses/mit/",
-        "source_url": "https://opensource.org/licenses/MIT",
+        "source_url": "https://opensource.org/licenses/MIT"
       },
       "star_count":3812,
       "forks_count":3561,
@@ -1661,26 +1660,26 @@ Example responses:
 [
   {
     "starred_since": "2019-01-28T14:47:30.642Z",
-    "user":
-      {
+    "user": {
         "id": 1,
         "username": "jane_smith",
         "name": "Jane Smith",
         "state": "active",
         "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
         "web_url": "http://localhost:3000/jane_smith"
-      }
+    }
   },
+  {
     "starred_since": "2018-01-02T11:40:26.570Z",
-    "user":
-      {
-        "id": 2,
-        "username": "janine_smith",
-        "name": "Janine Smith",
-        "state": "blocked",
-        "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
-        "web_url": "http://localhost:3000/janine_smith"
-      }
+    "user": {
+      "id": 2,
+      "username": "janine_smith",
+      "name": "Janine Smith",
+      "state": "blocked",
+      "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
+      "web_url": "http://localhost:3000/janine_smith"
+    }
+  }
 ]
 ```
 

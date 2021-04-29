@@ -26,7 +26,7 @@ Settings are not cascading by default. To define a cascading setting, take the f
     ```ruby
     class NamespaceSetting
       include CascadingNamespaceSettingAttribute
-   
+
       cascading_attr :delayed_project_removal
     end
     ```
@@ -40,11 +40,11 @@ Settings are not cascading by default. To define a cascading setting, take the f
     ```ruby
     class AddDelayedProjectRemovalCascadingSetting < ActiveRecord::Migration[6.0]
       include Gitlab::Database::MigrationHelpers::CascadingNamespaceSettings
-    
+
       def up
         add_cascading_namespace_setting :delayed_project_removal, :boolean, default: false, null: false
       end
-   
+
       def down
        remove_cascading_namespace_setting :delayed_project_removal
       end
@@ -100,7 +100,7 @@ cascaded value using the following criteria:
 ### `_locked?` method
 
 By default, the `_locked?` method (`delayed_project_removal_locked?`) returns
-`true` if an ancestor of the group or application setting locks the attribute. 
+`true` if an ancestor of the group or application setting locks the attribute.
 It returns `false` when called from the group that locked the attribute.
 
 When `include_self: true` is specified, it returns `true` when called from the group that locked the attribute.

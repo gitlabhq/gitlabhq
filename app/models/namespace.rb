@@ -198,7 +198,7 @@ class Namespace < ApplicationRecord
   end
 
   def any_project_has_container_registry_tags?
-    all_projects.any?(&:has_container_registry_tags?)
+    all_projects.includes(:container_repositories).any?(&:has_container_registry_tags?)
   end
 
   def first_project_with_container_registry_tags

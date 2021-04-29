@@ -38,6 +38,30 @@ RSpec.describe Release do
       end
     end
 
+    context 'when description of a release is longer than the limit' do
+      let(:description) { 'a' * (Gitlab::Database::MAX_TEXT_SIZE_LIMIT + 1) }
+      let(:release) { build(:release, project: project, description: description) }
+
+      it 'creates a validation error' do
+        release.validate
+
+        expect(release.errors.full_messages)
+          .to include("Description is too long (maximum is #{Gitlab::Database::MAX_TEXT_SIZE_LIMIT} characters)")
+      end
+
+      context 'when validate_release_description_length feature flag is disabled' do
+        before do
+          stub_feature_flags(validate_release_description_length: false)
+        end
+
+        it 'does not create a validation error' do
+          release.validate
+
+          expect(release.errors.full_messages).to be_empty
+        end
+      end
+    end
+
     context 'when a release is tied to a milestone for another project' do
       it 'creates a validation error' do
         milestone = build(:milestone, project: create(:project))

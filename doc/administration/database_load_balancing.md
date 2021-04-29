@@ -208,7 +208,7 @@ response timings.
 ## Primary sticking
 
 After a write has been performed, GitLab sticks to using the primary for a
-certain period of time, scoped to the user that performed the write. GitLab 
+certain period of time, scoped to the user that performed the write. GitLab
 reverts back to using secondaries when they have either caught up, or after 30
 seconds.
 

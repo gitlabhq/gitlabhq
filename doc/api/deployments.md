@@ -266,7 +266,7 @@ Example of response
       "status": "success",
       "updated_at": "2016-08-11T07:43:52.143Z",
       "web_url": "http://gitlab.dev/root/project/pipelines/5"
-    }
+    },
     "runner": null
   }
 }

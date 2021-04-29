@@ -22,7 +22,7 @@ file system performance, see
 ## Gitaly and NFS deprecation
 
 WARNING:
-From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories are no longer 
+From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories are no longer
 considered and customer technical support is considered out of scope.
 [Read more about Gitaly and NFS](gitaly/index.md#nfs-deprecation-notice) and
 [the correct mount options to use](#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).

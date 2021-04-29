@@ -14,6 +14,10 @@ export const locationSearch = [
   'not[label_name][]=drama',
   'my_reaction_emoji=thumbsup',
   'confidential=no',
+  'iteration_title=season:+%234',
+  'not[iteration_title]=season:+%2320',
+  'weight=1',
+  'not[weight]=3',
 ].join('&');
 
 export const filteredTokens = [
@@ -29,6 +33,10 @@ export const filteredTokens = [
   { type: 'labels', value: { data: 'drama', operator: OPERATOR_IS_NOT } },
   { type: 'my_reaction_emoji', value: { data: 'thumbsup', operator: OPERATOR_IS } },
   { type: 'confidential', value: { data: 'no', operator: OPERATOR_IS } },
+  { type: 'iteration', value: { data: 'season: #4', operator: OPERATOR_IS } },
+  { type: 'iteration', value: { data: 'season: #20', operator: OPERATOR_IS_NOT } },
+  { type: 'weight', value: { data: '1', operator: OPERATOR_IS } },
+  { type: 'weight', value: { data: '3', operator: OPERATOR_IS_NOT } },
   { type: 'filtered-search-term', value: { data: 'find' } },
   { type: 'filtered-search-term', value: { data: 'issues' } },
 ];
@@ -44,6 +52,10 @@ export const apiParams = {
   'not[labels]': 'live action,drama',
   my_reaction_emoji: 'thumbsup',
   confidential: 'no',
+  iteration_title: 'season: #4',
+  'not[iteration_title]': 'season: #20',
+  weight: '1',
+  'not[weight]': '3',
 };
 
 export const urlParams = {
@@ -57,4 +69,8 @@ export const urlParams = {
   'not[label_name][]': ['live action', 'drama'],
   my_reaction_emoji: ['thumbsup'],
   confidential: ['no'],
+  iteration_title: ['season: #4'],
+  'not[iteration_title]': ['season: #20'],
+  weight: ['1'],
+  'not[weight]': ['3'],
 };

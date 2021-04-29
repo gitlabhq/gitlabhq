@@ -114,7 +114,7 @@ curl --request POST "https://gitlab.com/api/v4/projects/:id/snippets" \
   "files": [
     {
       "file_path": "example.txt",
-      "content" : "source code \n with multiple lines\n",
+      "content" : "source code \n with multiple lines\n"
     }
   ]
 }

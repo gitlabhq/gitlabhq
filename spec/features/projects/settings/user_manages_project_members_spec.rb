@@ -52,9 +52,11 @@ RSpec.describe 'Projects > Settings > User manages project members' do
   end
 
   describe 'when the :invite_members_group_modal is disabled' do
-    it 'imports a team from another project', :js do
+    before do
       stub_feature_flags(invite_members_group_modal: false)
+    end
 
+    it 'imports a team from another project', :js do
       project2.add_maintainer(user)
       project2.add_reporter(user_mike)
 

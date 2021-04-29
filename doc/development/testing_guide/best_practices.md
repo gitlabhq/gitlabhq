@@ -451,7 +451,7 @@ expect(page).to have_current_path 'gitlab/gitlab-test/-/issues'
 
 expect(page).to have_title 'Not Found'
 
-# acceptable when a more specific matcher above is not possible 
+# acceptable when a more specific matcher above is not possible
 expect(page).to have_css 'h2', text: 'Issue title'
 expect(page).to have_css 'p', text: 'Issue description', exact: true
 expect(page).to have_css '[data-testid="weight"]', text: 2

@@ -192,6 +192,6 @@ Example response:
   "link_url": "http://example.com/ci_status.svg?project=%{project_path}&ref=%{default_branch}",
   "image_url": "https://shields.io/my/badge",
   "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=master",
-  "rendered_image_url": "https://shields.io/my/badge",
+  "rendered_image_url": "https://shields.io/my/badge"
 }
 ```

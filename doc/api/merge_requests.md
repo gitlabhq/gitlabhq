@@ -2319,7 +2319,7 @@ Example response:
       "short": "!1",
       "relative": "!1",
       "full": "my-group/my-project!1"
-    },
+    }
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
   "body": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",

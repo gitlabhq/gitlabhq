@@ -68,7 +68,7 @@ explorer. GraphiQL explorer is available for:
           }
         }
       }
-    } 
+    }
    ```
 
 1. Open the [GraphiQL explorer tool](https://gitlab.com/-/graphql-explorer).

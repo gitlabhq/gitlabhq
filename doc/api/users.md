@@ -1762,6 +1762,6 @@ Example response:
     "source_name": "Group three",
     "source_type": "Namespace",
     "access_level": "20"
-  },
+  }
 ]
 ```

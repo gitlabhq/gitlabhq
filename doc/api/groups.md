@@ -101,7 +101,7 @@ GET /groups?statistics=true
       "lfs_objects_size" : 123,
       "job_artifacts_size" : 57,
       "packages_size": 0,
-      "snippets_size" : 50,
+      "snippets_size" : 50
     }
   }
 ]

@@ -126,7 +126,7 @@ Example response:
         "ip_address": "127.0.0.1",
         "is_shared": true,
         "name": null,
-        "online": false
+        "online": false,
         "status": "offline"
     },
     {
@@ -136,7 +136,7 @@ Example response:
         "ip_address": "127.0.0.1",
         "is_shared": false,
         "name": null,
-        "online": true
+        "online": true,
         "status": "paused"
     },
     {
@@ -428,7 +428,7 @@ Example response:
         "ip_address": "127.0.0.1",
         "is_shared": true,
         "name": null,
-        "online": true
+        "online": true,
         "status": "paused"
     }
 ]

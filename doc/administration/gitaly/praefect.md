@@ -1453,7 +1453,7 @@ To determine the current primary Gitaly node for a specific Praefect node:
 - Use the `Shard Primary Election` [Grafana chart](#grafana) on the [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
   This is recommended.
 - If you do not have Grafana set up, use the following command on each host of each
-  Praefect node: 
+  Praefect node:
 
   ```shell
   curl localhost:9652/metrics | grep gitaly_praefect_primaries`

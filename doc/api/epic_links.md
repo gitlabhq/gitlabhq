@@ -97,7 +97,7 @@ Example response:
   "id": 6,
   "iid": 38,
   "group_id": 1,
-  "parent_id": 5
+  "parent_id": 5,
   "title": "Accusamus iste et ullam ratione voluptatem omnis debitis dolor est.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "author": {

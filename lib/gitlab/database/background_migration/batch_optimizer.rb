@@ -17,22 +17,26 @@ module Gitlab
       class BatchOptimizer
         # Target time efficiency for a job
         # Time efficiency is defined as: job duration / interval
-        TARGET_EFFICIENCY = (0.8..0.98).freeze
+        TARGET_EFFICIENCY = (0.9..0.95).freeze
 
         # Lower and upper bound for the batch size
-        ALLOWED_BATCH_SIZE = (1_000..1_000_000).freeze
+        ALLOWED_BATCH_SIZE = (1_000..2_000_000).freeze
 
-        # Use this batch_size multiplier to increase batch size
-        INCREASE_MULTIPLIER = 1.1
+        # Limit for the multiplier of the batch size
+        MAX_MULTIPLIER = 1.2
 
-        # Use this batch_size multiplier to decrease batch size
-        DECREASE_MULTIPLIER = 0.8
+        # When smoothing time efficiency, use this many jobs
+        NUMBER_OF_JOBS = 20
 
-        attr_reader :migration, :number_of_jobs
+        # Smoothing factor for exponential moving average
+        EMA_ALPHA = 0.4
 
-        def initialize(migration, number_of_jobs: 10)
+        attr_reader :migration, :number_of_jobs, :ema_alpha
+
+        def initialize(migration, number_of_jobs: NUMBER_OF_JOBS, ema_alpha: EMA_ALPHA)
           @migration = migration
           @number_of_jobs = number_of_jobs
+          @ema_alpha = ema_alpha
         end
 
         def optimize!
@@ -47,20 +51,15 @@ module Gitlab
         private
 
         def batch_size_multiplier
-          efficiency = migration.smoothed_time_efficiency(number_of_jobs: number_of_jobs)
+          efficiency = migration.smoothed_time_efficiency(number_of_jobs: number_of_jobs, alpha: ema_alpha)
 
-          return unless efficiency
+          return if efficiency.nil? || efficiency == 0
 
-          if TARGET_EFFICIENCY.include?(efficiency)
-            # We hit the range - no change
-            nil
-          elsif efficiency > TARGET_EFFICIENCY.max
-            # We're above the range - decrease by 20%
-            DECREASE_MULTIPLIER
-          else
-            # We're below the range - increase by 10%
-            INCREASE_MULTIPLIER
-          end
+          # We hit the range - no change
+          return if TARGET_EFFICIENCY.include?(efficiency)
+
+          # Assumption: time efficiency is linear in the batch size
+          [TARGET_EFFICIENCY.max / efficiency, MAX_MULTIPLIER].min
         end
       end
     end

@@ -248,12 +248,12 @@ To deprecate a metric:
      end
    end
    ```
- 
+
 1. Update the Metrics Dictionary following [guidelines instructions](dictionary.md).
 
 ### 4. Remove a metric
 
-Only deprecated metrics can be removed from Usage Ping. 
+Only deprecated metrics can be removed from Usage Ping.
 
 For an example of the metric removal process take a look at this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/297029)
 
@@ -262,9 +262,9 @@ To remove a deprecated metric:
 1. Verify that removing the metric from the Usage Ping payload does not cause
    errors in [Version App](https://gitlab.com/gitlab-services/version-gitlab-com)
    when the updated payload is collected and processed. Version App collects
-   and persists all Usage Ping reports. To do that you can modify 
+   and persists all Usage Ping reports. To do that you can modify
    [fixtures](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/spec/support/usage_data_helpers.rb#L540)
-   used to test 
+   used to test
    [`UsageDataController#create`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/3760ef28/spec/controllers/usage_data_controller_spec.rb#L75)
    endpoint, and assure that test suite does not fail when metric that you wish to remove is not included into test payload.  
 
@@ -273,7 +273,7 @@ To remove a deprecated metric:
    Ask for confirmation that the metric is not referred to in any SiSense dashboards and
    can be safely removed from Usage Ping. Use this
    [example issue](https://gitlab.com/gitlab-data/analytics/-/issues/7539) for guidance.
-   This step can be skipped if verification done during [deprecation process](#3-deprecate-a-metric) 
+   This step can be skipped if verification done during [deprecation process](#3-deprecate-a-metric)
    reported that metric is not required by any data transformation in Snowflake data warehouse nor it is
    used by any of SiSense dashboards.
   
@@ -288,15 +288,15 @@ To remove a deprecated metric:
    instances might not immediately update to the latest version of GitLab, and
    therefore continue to report the removed metric. The Product Intelligence team
    requires a record of all removed metrics in order to identify and filter them.
-    
+
    For example please take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#b01f429a54843feb22265100c0e4fec1b7da1240_10_10).
-    
+
 1. After you verify the metric can be safely removed,
    remove the metric's instrumentation from
    [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb)
    or
    [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb).
-   
+
    For example please take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#6335dc533bd21df26db9de90a02dd66278c2390d_167_167).
 
 1. Remove any other records related to the metric:

@@ -70,7 +70,7 @@ Example response:
       "version": "new_version_flag",
       "created_at":"2019-11-04T08:13:10.507Z",
       "updated_at":"2019-11-04T08:13:10.507Z",
-      "scopes":[]
+      "scopes":[],
       "strategies": [
         {
           "id": 2,

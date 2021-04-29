@@ -68,6 +68,7 @@ Example response:
       "path": "project1",
       "path_with_namespace": "namespace1/project1",
       "created_at": "2020-05-07T04:27:17.016Z"
+    }
   }
 ]
 ```
@@ -111,6 +112,7 @@ Example response:
       "path": "project1",
       "path_with_namespace": "namespace1/project1",
       "created_at": "2020-05-07T04:27:17.016Z"
+    }
   }
 ]
 ```
@@ -150,6 +152,7 @@ Example response:
     "path": "project1",
     "path_with_namespace": "namespace1/project1",
     "created_at": "2020-05-07T04:27:17.016Z"
+  }
 }
 ```
 
@@ -189,6 +192,7 @@ Example response:
     "path": "project1",
     "path_with_namespace": "namespace1/project1",
     "created_at": "2020-05-07T04:27:17.016Z"
+  }
 }
 ```
 
@@ -237,6 +241,7 @@ Example response:
     "path": "project1",
     "path_with_namespace": "namespace1/project1",
     "created_at": "2020-05-07T04:27:17.016Z"
+  }
 }
 ```
 

@@ -144,9 +144,9 @@ Example response:
       },
       "evidences":[
         {
-          sha: "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
-          filepath: "https://gitlab.example.com/root/awesome-app/-/releases/v0.2/evidence.json",
-          collected_at: "2019-01-03T01:56:19.539Z"
+          "sha": "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
+          "filepath": "https://gitlab.example.com/root/awesome-app/-/releases/v0.2/evidence.json",
+          "collected_at": "2019-01-03T01:56:19.539Z"
         }
      ]
    },
@@ -208,9 +208,9 @@ Example response:
       },
       "evidences":[
         {
-          sha: "c3ffedec13af470e760d6cdfb08790f71cf52c6cde4d",
-          filepath: "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json",
-          collected_at: "2019-01-03T01:55:18.203Z"
+          "sha": "c3ffedec13af470e760d6cdfb08790f71cf52c6cde4d",
+          "filepath": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json",
+          "collected_at": "2019-01-03T01:55:18.203Z"
         }
      ]
    }
@@ -340,9 +340,9 @@ Example response:
    },
    "evidences":[
      {
-       sha: "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
-       filepath: "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json",
-       collected_at: "2019-07-16T14:00:12.256Z"
+       "sha": "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
+       "filepath": "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json",
+       "collected_at": "2019-07-16T14:00:12.256Z"
      }
   ]
 }
@@ -482,7 +482,7 @@ Example response:
          }
       ],
       "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.3/evidence.json"
-   },
+   }
 }
 ```
 
@@ -625,7 +625,7 @@ Example response:
 
       ],
       "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
-   },
+   }
 }
 ```
 
@@ -709,7 +709,7 @@ Example response:
 
       ],
       "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
-   },
+   }
 }
 ```
 

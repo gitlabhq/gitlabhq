@@ -154,7 +154,7 @@ If you have multiple jobs for the same environment (including non-deployment job
 build:service-a:
  environment:
    name: production
- 
+
 build:service-b:
  environment:
    name: production

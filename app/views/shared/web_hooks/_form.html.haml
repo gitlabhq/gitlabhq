@@ -43,13 +43,13 @@
       = form.label :issues_events, class: 'list-label form-check-label gl-ml-1' do
         %strong= s_('Webhooks|Issues events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|URL is triggered when an issue is created, updated, or merged')
+        = s_('Webhooks|URL is triggered when an issue is created, updated, closed, or reopened')
     %li
       = form.check_box :confidential_issues_events, class: 'form-check-input'
       = form.label :confidential_issues_events, class: 'list-label form-check-label gl-ml-1' do
         %strong= s_('Webhooks|Confidential issues events')
       %p.text-muted.gl-ml-1
-        = s_('Webhooks|URL is triggered when a confidential issue is created, updated, or merged')
+        = s_('Webhooks|URL is triggered when a confidential issue is created, updated, closed, or reopened')
     - if @group
       = render_if_exists 'groups/hooks/member_events', form: form
       = render_if_exists 'groups/hooks/subgroup_events', form: form

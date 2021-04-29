@@ -162,7 +162,22 @@ query. This in turn makes it much harder for this code to overload a database.
 
 In a DB cluster we have many read replicas and one primary. A classic use of scaling the DB is to have read-only actions be performed by the replicas. We use [load balancing](../administration/database_load_balancing.md) to distribute this load. This allows for the replicas to grow as the pressure on the DB grows.
 
-By default, queries use read-only replicas, but due to [primary sticking](../administration/database_load_balancing.md#primary-sticking), GitLab sticks to using the primary for a certain period of time and reverts back to secondaries after they have either caught up or after 30 seconds, which can lead to a considerable amount of unnecessary load on the primary. In this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56849) we introduced the `without_sticky_writes` block to prevent switching to the primary. This [merge request example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57328) provides a good use case for when queries can stick to the primary and how to prevent this by using `without_sticky_writes`.
+By default, queries use read-only replicas, but due to
+[primary sticking](../administration/database_load_balancing.md#primary-sticking), GitLab uses the
+primary for some time and reverts to secondaries after they have either caught up or after 30 seconds.
+Doing this can lead to a considerable amount of unnecessary load on the primary.
+To prevent switching to the primary [merge request 56849](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56849) introduced the
+`without_sticky_writes` block. Typically, this method can be applied to prevent primary stickiness
+after a trivial or insignificant write which doesn't affect the following queries in the same session.
+
+To learn when a usage timestamp update can lead the session to stick to the primary and how to
+prevent it by using `without_sticky_writes`, see [merge request 57328](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57328)
+
+As a counterpart of the `without_sticky_writes` utility,
+[merge request 59167](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59167) introduced
+`use_replicas_for_read_queries`. This method forces all read-only queries inside its block to read
+replicas regardless of the current primary stickiness.
+This utility is reserved for cases where queries can tolerate replication lag.
 
 Internally, our database load balancer classifies the queries based on their main statement (`select`, `update`, `delete`, etc.). When in doubt, it redirects the queries to the primary database. Hence, there are some common cases the load balancer sends the queries to the primary unnecessarily:
 
@@ -171,7 +186,12 @@ Internally, our database load balancer classifies the queries based on their mai
 - In-flight connection configuration set
 - Sidekiq background jobs
 
-Worse, after the above queries are executed, GitLab [sticks to the primary](../administration/database_load_balancing.md#primary-sticking). In [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56476), we introduced `use_replica_if_possible` to make the inside queries prefer to use the replicas. That MR is also an example how we redirected a costly, time-consuming query to the replicas.
+After the above queries are executed, GitLab
+[sticks to the primary](../administration/database_load_balancing.md#primary-sticking).
+To make the inside queries prefer using the replicas,
+[merge request 59086](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59086) introduced
+`fallback_to_replicas_for_ambiguous_queries`. This MR is also an example of how we redirected a
+costly, time-consuming query to the replicas.
 
 ## Use CTEs wisely
 

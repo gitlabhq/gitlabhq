@@ -334,4 +334,24 @@ export const filters = {
       [OPERATOR_IS]: 'confidential',
     },
   },
+  iteration: {
+    apiParam: {
+      [OPERATOR_IS]: 'iteration_title',
+      [OPERATOR_IS_NOT]: 'not[iteration_title]',
+    },
+    urlParam: {
+      [OPERATOR_IS]: 'iteration_title',
+      [OPERATOR_IS_NOT]: 'not[iteration_title]',
+    },
+  },
+  weight: {
+    apiParam: {
+      [OPERATOR_IS]: 'weight',
+      [OPERATOR_IS_NOT]: 'not[weight]',
+    },
+    urlParam: {
+      [OPERATOR_IS]: 'weight',
+      [OPERATOR_IS_NOT]: 'not[weight]',
+    },
+  },
 };

@@ -36,8 +36,10 @@ import { convertObjectPropsToCamelCase, getParameterByName } from '~/lib/utils/c
 import { __ } from '~/locale';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
+import IterationToken from '~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
+import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 import eventHub from '../eventhub';
 import IssueCardTimeInfo from './issue_card_time_info.vue';
 
@@ -88,6 +90,9 @@ export default {
     hasIssues: {
       default: false,
     },
+    hasIssueWeightsFeature: {
+      default: false,
+    },
     initialEmail: {
       default: '',
     },
@@ -101,6 +106,9 @@ export default {
       default: '',
     },
     newIssuePath: {
+      default: '',
+    },
+    projectIterationsPath: {
       default: '',
     },
     projectLabelsPath: {
@@ -155,7 +163,7 @@ export default {
       return convertToSearchQuery(this.filterTokens) || undefined;
     },
     searchTokens() {
-      return [
+      const tokens = [
         {
           type: 'author_username',
           title: __('Author'),
@@ -216,6 +224,30 @@ export default {
           ],
         },
       ];
+
+      if (this.projectIterationsPath) {
+        tokens.push({
+          type: 'iteration',
+          title: __('Iteration'),
+          icon: 'iteration',
+          token: IterationToken,
+          unique: true,
+          defaultIterations: [],
+          fetchIterations: this.fetchIterations,
+        });
+      }
+
+      if (this.hasIssueWeightsFeature) {
+        tokens.push({
+          type: 'weight',
+          title: __('Weight'),
+          icon: 'weight',
+          token: WeightToken,
+          unique: true,
+        });
+      }
+
+      return tokens;
     },
     showPaginationControls() {
       return this.issues.length > 0;
@@ -272,6 +304,9 @@ export default {
     },
     fetchMilestones(search) {
       return this.fetchWithCache(this.projectMilestonesPath, 'milestones', 'title', search, true);
+    },
+    fetchIterations(search) {
+      return axios.get(this.projectIterationsPath, { params: { search } });
     },
     fetchUsers(search) {
       return axios.get(this.autocompleteUsersPath, { params: { search } });

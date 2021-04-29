@@ -68,7 +68,6 @@ Example of response
       "status": "pending"
     },
     "ref": "master",
-    "artifacts": [],
     "runner": null,
     "stage": "test",
     "status": "failed",

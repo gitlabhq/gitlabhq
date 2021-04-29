@@ -97,7 +97,7 @@ elsif changelog.optional?
   message changelog.optional_text
 end
 
-if changelog.required? || changelog.optional?
+if helper.ci? && (changelog.required? || changelog.optional?)
   checked = 0
 
   git.commits.each do |commit|
