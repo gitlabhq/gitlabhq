@@ -34,10 +34,6 @@
 module Gitlab
   module Experimentation
     EXPERIMENTS = {
-      invite_members_version_b: {
-        tracking_category: 'Growth::Expansion::Experiment::InviteMembersVersionB',
-        use_backwards_compatible_subject_index: true
-      },
       invite_members_empty_group_version_a: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersEmptyGroupVersionA',
         use_backwards_compatible_subject_index: true

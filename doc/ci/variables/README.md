@@ -181,7 +181,7 @@ To add a group variable:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Environment scope** (optional): `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable). **PREMIUM**
+   - **Environment scope** (optional): `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
    - **Protect variable** (Optional): If selected, the variable is only available
      in pipelines that run on protected branches or tags.
    - **Mask variable** (Optional): If selected, the variable's **Value** is masked

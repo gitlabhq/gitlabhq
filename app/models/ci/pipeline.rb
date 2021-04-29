@@ -908,7 +908,7 @@ module Ci
 
     def same_family_pipeline_ids
       ::Gitlab::Ci::PipelineObjectHierarchy.new(
-        self.class.where(id: root_ancestor), options: { same_project: true }
+        self.class.default_scoped.where(id: root_ancestor), options: { same_project: true }
       ).base_and_descendants.select(:id)
     end
 

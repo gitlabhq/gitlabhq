@@ -7,7 +7,7 @@ module Gitlab
   class ObjectHierarchy
     DEPTH_COLUMN = :depth
 
-    attr_reader :ancestors_base, :descendants_base, :model, :options
+    attr_reader :ancestors_base, :descendants_base, :model, :options, :unscoped_model
 
     # ancestors_base - An instance of ActiveRecord::Relation for which to
     #                  get parent objects.
@@ -19,6 +19,7 @@ module Gitlab
       @ancestors_base = ancestors_base
       @descendants_base = descendants_base
       @model = ancestors_base.model
+      @unscoped_model = @model.unscoped
       @options = options
     end
 
@@ -70,23 +71,23 @@ module Gitlab
 
         # if hierarchy_order is given, the calculated `depth` should be present in SELECT
         if expose_depth
-          recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(model.all).distinct
-          read_only(model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table)).order(depth: hierarchy_order))
+          recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(unscoped_model.all).distinct
+          read_only(unscoped_model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table)).order(depth: hierarchy_order))
         else
-          recursive_query = base_and_ancestors_cte(upto).apply_to(model.all)
+          recursive_query = base_and_ancestors_cte(upto).apply_to(unscoped_model.all)
 
           if skip_ordering?
             recursive_query = recursive_query.distinct
           else
             recursive_query = recursive_query.reselect(*recursive_query.arel.projections, 'ROW_NUMBER() OVER () as depth').distinct
-            recursive_query = model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table))
+            recursive_query = unscoped_model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table))
             recursive_query = remove_depth_and_maintain_order(recursive_query, hierarchy_order: hierarchy_order)
           end
 
           read_only(recursive_query)
         end
       else
-        recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(model.all)
+        recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(unscoped_model.all)
         recursive_query = recursive_query.order(depth: hierarchy_order) if hierarchy_order
         read_only(recursive_query)
       end
@@ -103,23 +104,23 @@ module Gitlab
       if use_distinct?
         # Always calculate `depth`, remove it later if with_depth is false
         if with_depth
-          base_cte = base_and_descendants_cte(with_depth: true).apply_to(model.all).distinct
-          read_only(model.from(Arel::Nodes::As.new(base_cte.arel, objects_table)).order(depth: :asc))
+          base_cte = base_and_descendants_cte(with_depth: true).apply_to(unscoped_model.all).distinct
+          read_only(unscoped_model.from(Arel::Nodes::As.new(base_cte.arel, objects_table)).order(depth: :asc))
         else
-          base_cte = base_and_descendants_cte.apply_to(model.all)
+          base_cte = base_and_descendants_cte.apply_to(unscoped_model.all)
 
           if skip_ordering?
             base_cte = base_cte.distinct
           else
             base_cte = base_cte.reselect(*base_cte.arel.projections, 'ROW_NUMBER() OVER () as depth').distinct
-            base_cte = model.from(Arel::Nodes::As.new(base_cte.arel, objects_table))
+            base_cte = unscoped_model.from(Arel::Nodes::As.new(base_cte.arel, objects_table))
             base_cte = remove_depth_and_maintain_order(base_cte, hierarchy_order: :asc)
           end
 
           read_only(base_cte)
         end
       else
-        read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(model.all))
+        read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(unscoped_model.all))
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -154,16 +155,15 @@ module Gitlab
       ancestors_table = ancestors.alias_to(objects_table)
       descendants_table = descendants.alias_to(objects_table)
 
-      ancestors_scope = model.unscoped.from(ancestors_table)
-      descendants_scope = model.unscoped.from(descendants_table)
+      ancestors_scope = unscoped_model.from(ancestors_table)
+      descendants_scope = unscoped_model.from(descendants_table)
 
       if use_distinct?
         ancestors_scope = ancestors_scope.distinct
         descendants_scope = descendants_scope.distinct
       end
 
-      relation = model
-        .unscoped
+      relation = unscoped_model
         .with
         .recursive(ancestors.to_arel, descendants.to_arel)
         .from_union([
@@ -215,7 +215,7 @@ module Gitlab
       cte << base_query
 
       # Recursively get all the ancestors of the base set.
-      parent_query = model
+      parent_query = unscoped_model
         .from(from_tables(cte))
         .where(ancestor_conditions(cte))
         .except(:order)
@@ -248,7 +248,7 @@ module Gitlab
       cte << base_query
 
       # Recursively get all the descendants of the base set.
-      descendants_query = model
+      descendants_query = unscoped_model
         .from(from_tables(cte))
         .where(descendant_conditions(cte))
         .except(:order)

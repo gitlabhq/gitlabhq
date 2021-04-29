@@ -47,9 +47,6 @@ export default {
     directlyInviteMembers: {
       default: false,
     },
-    indirectlyInviteMembers: {
-      default: false,
-    },
   },
   props: {
     iid: {
@@ -444,7 +441,7 @@ export default {
           </template>
           <template #footer>
             <gl-dropdown-item>
-              <sidebar-invite-members v-if="directlyInviteMembers || indirectlyInviteMembers" />
+              <sidebar-invite-members v-if="directlyInviteMembers" />
             </gl-dropdown-item>
           </template>
         </multi-select-dropdown>

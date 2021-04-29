@@ -9,7 +9,7 @@ import {
   formatIssue,
   getMoveData,
 } from '~/boards/boards_util';
-import { inactiveId, ISSUABLE, ListType } from '~/boards/constants';
+import { inactiveId, ISSUABLE, ListType, issuableTypes } from '~/boards/constants';
 import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
 import actions, { gqlClient } from '~/boards/stores/actions';
@@ -459,7 +459,7 @@ describe('updateList', () => {
       boardType: 'group',
       disabled: false,
       boardLists: [{ type: 'closed' }],
-      issuableType: 'issue',
+      issuableType: issuableTypes.issue,
     };
 
     testAction(
@@ -503,6 +503,7 @@ describe('removeList', () => {
   beforeEach(() => {
     state = {
       boardLists: mockListsById,
+      issuableType: issuableTypes.issue,
     };
   });
 
@@ -1375,7 +1376,7 @@ describe('setActiveItemSubscribed', () => {
       [mockActiveIssue.id]: mockActiveIssue,
     },
     fullPath: 'gitlab-org',
-    issuableType: 'issue',
+    issuableType: issuableTypes.issue,
   };
   const getters = { activeBoardItem: mockActiveIssue, isEpicBoard: false };
   const subscribedState = true;
@@ -1483,7 +1484,7 @@ describe('setActiveIssueMilestone', () => {
 describe('setActiveItemTitle', () => {
   const state = {
     boardItems: { [mockIssue.id]: mockIssue },
-    issuableType: 'issue',
+    issuableType: issuableTypes.issue,
     fullPath: 'path/f',
   };
   const getters = { activeBoardItem: mockIssue, isEpicBoard: false };

@@ -17,9 +17,9 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
       end
 
       it 'marks the migration as finished' do
-        relation = Gitlab::Database::BackgroundMigration::BatchedMigration.finished.where(id: migration.id)
+        runner.run_migration_job(migration)
 
-        expect { runner.run_migration_job(migration) }.to change { relation.count }.by(1)
+        expect(migration.reload).to be_finished
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
       let!(:event3) { create(:event) }
 
       let!(:migration) do
-        create(:batched_background_migration, :active, batch_size: 2, min_value: event1.id, max_value: event3.id)
+        create(:batched_background_migration, :active, batch_size: 2, min_value: event1.id, max_value: event2.id)
       end
 
       let!(:previous_job) do
@@ -101,14 +101,24 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
           min_value: event1.id,
           max_value: event2.id,
           batch_size: 2,
-          sub_batch_size: 1)
+          sub_batch_size: 1,
+          status: :succeeded
+        )
       end
 
       let(:job_relation) do
         Gitlab::Database::BackgroundMigration::BatchedJob.where(batched_background_migration_id: migration.id)
       end
 
+      context 'when the migration has no batches remaining' do
+        it_behaves_like 'it has completed the migration'
+      end
+
       context 'when the migration has batches to process' do
+        before do
+          migration.update!(max_value: event3.id)
+        end
+
         it 'runs the migration job for the next batch' do
           expect(migration_wrapper).to receive(:perform) do |job_record|
             expect(job_record).to eq(job_relation.last)
@@ -132,17 +142,82 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
         end
       end
 
-      context 'when the migration has no batches remaining' do
+      context 'when migration has failed jobs' do
         before do
-          create(:batched_background_migration_job,
-            batched_migration: migration,
-            min_value: event3.id,
-            max_value: event3.id,
-            batch_size: 2,
-            sub_batch_size: 1)
+          previous_job.update!(status: :failed)
         end
 
-        it_behaves_like 'it has completed the migration'
+        it 'retries the failed job' do
+          expect(migration_wrapper).to receive(:perform) do |job_record|
+            expect(job_record).to eq(previous_job)
+          end
+
+          expect { runner.run_migration_job(migration) }.to change { job_relation.count }.by(0)
+        end
+
+        context 'when failed job has reached the maximum number of attempts' do
+          before do
+            previous_job.update!(attempts: Gitlab::Database::BackgroundMigration::BatchedJob::MAX_ATTEMPTS)
+          end
+
+          it 'marks the migration as failed' do
+            expect(migration_wrapper).not_to receive(:perform)
+
+            expect { runner.run_migration_job(migration) }.to change { job_relation.count }.by(0)
+
+            expect(migration).to be_failed
+          end
+        end
+      end
+
+      context 'when migration has stuck jobs' do
+        before do
+          previous_job.update!(status: :running, updated_at: 1.hour.ago - Gitlab::Database::BackgroundMigration::BatchedJob::STUCK_JOBS_TIMEOUT)
+        end
+
+        it 'retries the stuck job' do
+          expect(migration_wrapper).to receive(:perform) do |job_record|
+            expect(job_record).to eq(previous_job)
+          end
+
+          expect { runner.run_migration_job(migration.reload) }.to change { job_relation.count }.by(0)
+        end
+      end
+
+      context 'when migration has possible stuck jobs' do
+        before do
+          previous_job.update!(status: :running, updated_at: 1.hour.from_now - Gitlab::Database::BackgroundMigration::BatchedJob::STUCK_JOBS_TIMEOUT)
+        end
+
+        it 'keeps the migration active' do
+          expect(migration_wrapper).not_to receive(:perform)
+
+          expect { runner.run_migration_job(migration) }.to change { job_relation.count }.by(0)
+
+          expect(migration.reload).to be_active
+        end
+      end
+
+      context 'when the migration has batches to process and failed jobs' do
+        before do
+          migration.update!(max_value: event3.id)
+          previous_job.update!(status: :failed)
+        end
+
+        it 'runs next batch then retries the failed job' do
+          expect(migration_wrapper).to receive(:perform) do |job_record|
+            expect(job_record).to eq(job_relation.last)
+            job_record.update!(status: :succeeded)
+          end
+
+          expect { runner.run_migration_job(migration) }.to change { job_relation.count }.by(1)
+
+          expect(migration_wrapper).to receive(:perform) do |job_record|
+            expect(job_record).to eq(previous_job)
+          end
+
+          expect { runner.run_migration_job(migration.reload) }.to change { job_relation.count }.by(0)
+        end
       end
     end
   end
@@ -189,10 +264,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
       it 'runs all jobs inline until finishing the migration' do
         expect(migration_wrapper).to receive(:perform) do |job_record|
           expect(job_record).to eq(job_relation.first)
+          job_record.update!(status: :succeeded)
         end
 
         expect(migration_wrapper).to receive(:perform) do |job_record|
           expect(job_record).to eq(job_relation.last)
+          job_record.update!(status: :succeeded)
         end
 
         expect { runner.run_entire_migration(migration) }.to change { job_relation.count }.by(2)

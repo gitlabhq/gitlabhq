@@ -533,7 +533,7 @@ describe('Sidebar assignees widget', () => {
     expect(findInviteMembersLink().exists()).toBe(false);
   });
 
-  it('does not render invite members link if `directlyInviteMembers` and `indirectlyInviteMembers` were not passed', async () => {
+  it('does not render invite members link if `directlyInviteMembers` was not passed', async () => {
     createComponent();
     await waitForPromises();
     expect(findInviteMembersLink().exists()).toBe(false);
@@ -543,16 +543,6 @@ describe('Sidebar assignees widget', () => {
     createComponent({
       provide: {
         directlyInviteMembers: true,
-      },
-    });
-    await waitForPromises();
-    expect(findInviteMembersLink().exists()).toBe(true);
-  });
-
-  it('renders invite members link if `indirectlyInviteMembers` is true', async () => {
-    createComponent({
-      provide: {
-        indirectlyInviteMembers: true,
       },
     });
     await waitForPromises();

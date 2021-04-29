@@ -1122,6 +1122,35 @@ to define the explicit address that the GitLab Pages daemon should listen on:
 gitlab_pages['listen_proxy'] = '127.0.0.1:8090'
 ```
 
+### Intermittent 502 errors or after a few days
+
+If you run Pages on a system that uses `systemd` and
+[`tmpfiles.d`](https://www.freedesktop.org/software/systemd/man/tmpfiles.d.html),
+you may encounter intermittent 502 errors trying to serve Pages with an error similar to:
+
+```plaintext
+dial tcp: lookup gitlab.example.com on [::1]:53: dial udp [::1]:53: connect: no route to host"
+```
+
+GitLab Pages creates a [bind mount](https://man7.org/linux/man-pages/man8/mount.8.html)
+inside `/tmp/gitlab-pages-*` that includes files like `/etc/hosts`.
+However, `systemd` may clean the `/tmp/` directory on a regular basis so the DNS
+configuration may be lost.
+
+To stop `systemd` from cleaning the Pages related content:
+
+1. Tell `tmpfiles.d` to not remove the Pages `/tmp` directory:
+
+   ```shell
+   echo 'x /tmp/gitlab-pages-*' >> /etc/tmpfiles.d/gitlab-pages-jail.conf
+   ```
+
+1. Restart GitLab Pages:
+
+   ```shell
+   sudo gitlab-ctl restart gitlab-pages
+   ```
+
 ### 404 error after transferring the project to a different group or user, or changing project path
 
 If you encounter a `404 Not Found` error a Pages site after transferring a project to

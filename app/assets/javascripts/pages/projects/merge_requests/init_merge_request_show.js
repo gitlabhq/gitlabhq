@@ -3,8 +3,6 @@ import loadAwardsHandler from '~/awards_handler';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import initPipelines from '~/commit/pipelines/pipelines_bundle';
 import initIssuableSidebar from '~/init_issuable_sidebar';
-import initInviteMemberModal from '~/invite_member/init_invite_member_modal';
-import initInviteMemberTrigger from '~/invite_member/init_invite_member_trigger';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { handleLocationHash } from '~/lib/utils/common_utils';
@@ -28,8 +26,6 @@ export default function initMergeRequestShow() {
   } else {
     loadAwardsHandler();
   }
-  initInviteMemberModal();
-  initInviteMemberTrigger();
   initInviteMembersModal();
   initInviteMembersTrigger();
 

@@ -33,7 +33,7 @@ compatible.
 
 For GitLab.com, please take into consideration that regular migrations (under `db/migrate`)
 are run before [Canary is deployed](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/#configuration-and-deployment),
-and post-deployment migrations (`db/post_migrate`) are run after the deployment to production has finished.
+and [post-deployment migrations](post_deployment_migrations.md) (`db/post_migrate`) are run after the deployment to production has finished.
 
 ## Schema Changes
 

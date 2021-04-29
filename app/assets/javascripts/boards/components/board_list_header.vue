@@ -84,7 +84,7 @@ export default {
       return this.list?.label?.description || this.list?.assignee?.name || this.list.title || '';
     },
     showListHeaderButton() {
-      return !this.disabled && this.listType !== ListType.closed && !this.isEpicBoard;
+      return !this.disabled && this.listType !== ListType.closed;
     },
     showMilestoneListDetails() {
       return this.listType === ListType.milestone && this.list.milestone && this.showListDetails;

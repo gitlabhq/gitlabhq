@@ -57,7 +57,6 @@ module DeprecationToolkitEnv
     %w[
       activerecord-6.0.3.6/lib/active_record/migration.rb
       activesupport-6.0.3.6/lib/active_support/cache.rb
-      carrierwave-1.3.1/lib/carrierwave/sanitized_file.rb
       activerecord-6.0.3.6/lib/active_record/relation.rb
       asciidoctor-2.0.12/lib/asciidoctor/extensions.rb
     ]

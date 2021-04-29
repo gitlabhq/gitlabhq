@@ -214,9 +214,9 @@ module AtomicInternalId
   def self.project_init(klass, column_name = :iid)
     ->(instance, scope) do
       if instance
-        klass.where(project_id: instance.project_id).maximum(column_name)
+        klass.default_scoped.where(project_id: instance.project_id).maximum(column_name)
       elsif scope.present?
-        klass.where(**scope).maximum(column_name)
+        klass.default_scoped.where(**scope).maximum(column_name)
       end
     end
   end

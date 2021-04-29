@@ -1,7 +1,7 @@
-import { waitFor } from '@testing-library/dom';
 import MockAdapter from 'axios-mock-adapter';
 import { memoize, cloneDeep } from 'lodash';
 import { getFixture, getJSONFixture } from 'helpers/fixtures';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import UsersSelect from '~/users_select';
 
@@ -103,8 +103,10 @@ export const setAssignees = (...users) => {
   );
 };
 export const toggleDropdown = () => findUserSearchButton().click();
-export const waitForDropdownItems = () =>
-  waitFor(() => expect(findDropdownItem(getUsersFixtureAt(0))).not.toBeNull());
+export const waitForDropdownItems = async () => {
+  await axios.waitForAll();
+  await waitForPromises();
+};
 
 // assertion helpers ---------------------------------------------------------
 export const createUnassignedExpectation = () => {

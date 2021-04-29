@@ -12,16 +12,12 @@ module QA
 
             base.class_eval do
               include QA::Page::Project::SubMenus::Common
-
-              view 'app/views/layouts/nav/sidebar/_project_menus.html.haml' do
-                element :link_pipelines
-              end
             end
           end
 
           def click_ci_cd_pipelines
             within_sidebar do
-              click_element :link_pipelines
+              click_element(:sidebar_menu_link, menu_item: 'CI/CD')
             end
           end
         end

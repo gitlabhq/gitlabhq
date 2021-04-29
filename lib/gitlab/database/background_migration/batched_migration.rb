@@ -20,7 +20,8 @@ module Gitlab
           paused: 0,
           active: 1,
           aborted: 2,
-          finished: 3
+          finished: 3,
+          failed: 4
         }
 
         attribute :pause_ms, :integer, default: 100

@@ -22115,6 +22115,8 @@ CREATE INDEX index_badges_on_project_id ON badges USING btree (project_id);
 
 CREATE INDEX index_batched_jobs_by_batched_migration_id_and_id ON batched_background_migration_jobs USING btree (batched_background_migration_id, id);
 
+CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_background_migration_jobs USING btree (batched_background_migration_id, status);
+
 CREATE INDEX index_batched_migrations_on_job_table_and_column_name ON batched_background_migrations USING btree (job_class_name, table_name, column_name);
 
 CREATE INDEX index_board_assignees_on_assignee_id ON board_assignees USING btree (assignee_id);

@@ -31,7 +31,7 @@ module Gitlab
         private
 
         def start_tracking_execution(tracking_record)
-          tracking_record.update!(attempts: tracking_record.attempts + 1, status: :running, started_at: Time.current)
+          tracking_record.update!(attempts: tracking_record.attempts + 1, status: :running, started_at: Time.current, finished_at: nil, metrics: {})
         end
 
         def execute_batch(tracking_record)

@@ -4,9 +4,22 @@ module Gitlab
   module Database
     module BackgroundMigration
       class BatchedJob < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
+        include FromUnion
+
         self.table_name = :batched_background_migration_jobs
 
+        MAX_ATTEMPTS = 3
+        STUCK_JOBS_TIMEOUT = 1.hour.freeze
+
         belongs_to :batched_migration, foreign_key: :batched_background_migration_id
+
+        scope :active, -> { where(status: [:pending, :running]) }
+        scope :stuck, -> { active.where('updated_at <= ?', STUCK_JOBS_TIMEOUT.ago) }
+        scope :retriable, -> {
+          failed_jobs = where(status: :failed).where('attempts < ?', MAX_ATTEMPTS)
+
+          from_union([failed_jobs, self.stuck])
+        }
 
         enum status: {
           pending: 0,

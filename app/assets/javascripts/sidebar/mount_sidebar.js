@@ -86,7 +86,7 @@ function mountAssigneesComponent() {
 
   if (!el) return;
 
-  const { id, iid, fullPath, editable, projectMembersPath } = getSidebarOptions();
+  const { id, iid, fullPath, editable } = getSidebarOptions();
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -96,9 +96,7 @@ function mountAssigneesComponent() {
     },
     provide: {
       canUpdate: editable,
-      projectMembersPath,
       directlyInviteMembers: el.hasAttribute('data-directly-invite-members'),
-      indirectlyInviteMembers: el.hasAttribute('data-indirectly-invite-members'),
     },
     render: (createElement) =>
       createElement('sidebar-assignees-widget', {

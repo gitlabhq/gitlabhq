@@ -140,7 +140,8 @@ class Member < ApplicationRecord
   scope :distinct_on_user_with_max_access_level, -> do
     distinct_members = select('DISTINCT ON (user_id, invite_email) *')
                        .order('user_id, invite_email, access_level DESC, expires_at DESC, created_at ASC')
-    Member.from(distinct_members, :members)
+
+    from(distinct_members, :members)
   end
 
   scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }

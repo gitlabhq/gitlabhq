@@ -2528,7 +2528,7 @@ class Project < ApplicationRecord
     namespace.root_ancestor.all_projects
       .joins(:packages)
       .where.not(id: id)
-      .merge(Packages::Package.with_name(package_name))
+      .merge(Packages::Package.default_scoped.with_name(package_name))
       .exists?
   end
 

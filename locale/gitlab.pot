@@ -6032,9 +6032,6 @@ msgstr ""
 msgid "Changes to the title have not been saved"
 msgstr ""
 
-msgid "Changes won't take place until the index is %{link_start}recreated%{link_end}."
-msgstr ""
-
 msgid "Changing group URL can have unintended side effects."
 msgstr ""
 
@@ -16252,13 +16249,7 @@ msgstr ""
 msgid "How many days need to pass between marking entity for deletion and actual removing it."
 msgstr ""
 
-msgid "How many replicas each Elasticsearch shard has."
-msgstr ""
-
 msgid "How many seconds an IP will be counted towards the limit"
-msgstr ""
-
-msgid "How many shards to split the Elasticsearch index over."
 msgstr ""
 
 msgid "How many users will be evaluating the trial?"
@@ -17257,6 +17248,9 @@ msgstr ""
 msgid "Indent"
 msgstr ""
 
+msgid "Index"
+msgstr ""
+
 msgid "Index all projects"
 msgstr ""
 
@@ -17871,22 +17865,10 @@ msgstr ""
 msgid "InviteMember|Invited users will be added with developer level permissions. %{linkStart}View the documentation%{linkEnd} to see how to change this later."
 msgstr ""
 
-msgid "InviteMember|Oops, this feature isn't ready yet"
-msgstr ""
-
-msgid "InviteMember|See who can invite members for you"
-msgstr ""
-
 msgid "InviteMember|Send invitations"
 msgstr ""
 
 msgid "InviteMember|Skip this for now"
-msgstr ""
-
-msgid "InviteMember|Until then, ask an owner to invite new project members for you"
-msgstr ""
-
-msgid "InviteMember|We're working to allow everyone to invite new members, making it easier for teams to get started with GitLab"
 msgstr ""
 
 msgid "InviteReminderEmail|%{inviter} is still waiting for you to join GitLab"
@@ -18999,6 +18981,9 @@ msgid "Learn more about deploying to a cluster"
 msgstr ""
 
 msgid "Learn more about group-level project templates"
+msgstr ""
+
+msgid "Learn more about shards and replicas in the %{configuration_link_start}Advanced search configuration%{configuration_link_end} documentation. Changes won't take place until the index is %{recreated_link_start}recreated%{recreated_link_end}."
 msgstr ""
 
 msgid "Learn more about signing commits"
@@ -22316,10 +22301,7 @@ msgstr ""
 msgid "Number of %{itemTitle}"
 msgstr ""
 
-msgid "Number of Elasticsearch replicas"
-msgstr ""
-
-msgid "Number of Elasticsearch shards"
+msgid "Number of Elasticsearch shards and replicas (per index)"
 msgstr ""
 
 msgid "Number of Git pushes after which 'git gc' is run."
@@ -22356,6 +22338,12 @@ msgid "Number of events for this project: %{total_count}."
 msgstr ""
 
 msgid "Number of files touched"
+msgstr ""
+
+msgid "Number of replicas"
+msgstr ""
+
+msgid "Number of shards"
 msgstr ""
 
 msgid "OK"

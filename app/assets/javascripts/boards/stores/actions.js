@@ -8,6 +8,7 @@ import {
   titleQueries,
   subscriptionQueries,
   SupportedFilters,
+  deleteListQueries,
   updateListQueries,
 } from 'ee_else_ce/boards/constants';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
@@ -31,7 +32,6 @@ import {
   getSupportedParams,
 } from '../boards_util';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
-import destroyBoardListMutation from '../graphql/board_list_destroy.mutation.graphql';
 import groupProjectsQuery from '../graphql/group_projects.query.graphql';
 import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
 import issueSetDueDateMutation from '../graphql/issue_set_due_date.mutation.graphql';
@@ -265,14 +265,14 @@ export default {
     commit(types.TOGGLE_LIST_COLLAPSED, { listId, collapsed });
   },
 
-  removeList: ({ state, commit }, listId) => {
-    const listsBackup = { ...state.boardLists };
+  removeList: ({ state: { issuableType, boardLists }, commit }, listId) => {
+    const listsBackup = { ...boardLists };
 
     commit(types.REMOVE_LIST, listId);
 
     return gqlClient
       .mutate({
-        mutation: destroyBoardListMutation,
+        mutation: deleteListQueries[issuableType].mutation,
         variables: {
           listId,
         },

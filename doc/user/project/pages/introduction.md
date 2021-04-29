@@ -273,6 +273,10 @@ Sure. All you need to do is download the artifacts archive from the job page.
 Yes. GitLab Pages doesn't care whether you set your project's visibility level
 to private, internal or public.
 
+### Can I create a personal or a group website
+
+Yes. See the documentation about [GitLab Pages domain names, URLs, and base URLs](getting_started_part_one.md).
+
 ### Do I need to create a user/group website before creating a project website?
 
 No, you don't. You can create your project first and access it under

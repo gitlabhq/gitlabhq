@@ -390,8 +390,7 @@ module IssuablesHelper
       severity: issuable[:severity],
       timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours,
       createNoteEmail: issuable[:create_note_email],
-      issuableType: issuable[:type],
-      projectMembersPath: project_project_members_path(@project, sort: :access_level_desc)
+      issuableType: issuable[:type]
     }
   end
 

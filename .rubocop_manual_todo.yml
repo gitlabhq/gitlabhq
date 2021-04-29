@@ -385,8 +385,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/controllers/subscriptions_controller_spec.rb
     - ee/spec/features/ci_shared_runner_warnings_spec.rb
     - ee/spec/features/integrations/jira/jira_issues_list_spec.rb
-    - ee/spec/features/issues/bulk_assignment_epic_spec.rb
-    - ee/spec/features/issues/user_uses_quick_actions_spec.rb
     - ee/spec/features/markdown/metrics_spec.rb
     - ee/spec/features/registrations/group_invites_during_signup_flow_spec.rb
     - ee/spec/features/subscriptions_spec.rb

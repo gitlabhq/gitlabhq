@@ -9,6 +9,42 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
     it { is_expected.to belong_to(:batched_migration).with_foreign_key(:batched_background_migration_id) }
   end
 
+  describe 'scopes' do
+    let_it_be(:fixed_time) { Time.new(2021, 04, 27, 10, 00, 00, 00) }
+
+    let_it_be(:pending_job) { create(:batched_background_migration_job, status: :pending, updated_at: fixed_time) }
+    let_it_be(:running_job) { create(:batched_background_migration_job, status: :running, updated_at: fixed_time) }
+    let_it_be(:stuck_job) { create(:batched_background_migration_job, status: :pending, updated_at: fixed_time - described_class::STUCK_JOBS_TIMEOUT) }
+    let_it_be(:failed_job) { create(:batched_background_migration_job, status: :failed, attempts: 1) }
+
+    before_all do
+      create(:batched_background_migration_job, status: :failed, attempts: described_class::MAX_ATTEMPTS)
+      create(:batched_background_migration_job, status: :succeeded)
+    end
+
+    before do
+      travel_to fixed_time
+    end
+
+    describe '.active' do
+      it 'returns active jobs' do
+        expect(described_class.active).to contain_exactly(pending_job, running_job, stuck_job)
+      end
+    end
+
+    describe '.stuck' do
+      it 'returns stuck jobs' do
+        expect(described_class.stuck).to contain_exactly(stuck_job)
+      end
+    end
+
+    describe '.retriable' do
+      it 'returns retriable jobs' do
+        expect(described_class.retriable).to contain_exactly(failed_job, stuck_job)
+      end
+    end
+  end
+
   describe 'delegated batched_migration attributes' do
     let(:batched_job) { build(:batched_background_migration_job) }
     let(:batched_migration) { batched_job.batched_migration }
