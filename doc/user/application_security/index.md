@@ -119,45 +119,6 @@ reports are available to download. To download a report, click on the
 
 ![Security widget](img/security_widget_v13_7.png)
 
-## View details of a DAST vulnerability
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
-
-Vulnerabilities detected by DAST occur in the live web application. Rectification of these types of
-vulnerabilities requires specific information. DAST provides the information required to
-investigate and rectify the underlying cause.
-
-To view details of DAST vulnerabilities:
-
-1. To see all vulnerabilities detected:
-   - In a project, go to the project's **{shield}** **Security & Compliance** page.
-   - Only in a merge request, go the merge request's **Security** tab.
-
-1. Select the vulnerability's description. The following details are provided:
-
-| Field            | Description                                                        |
-|:-----------------|:------------------------------------------------------------------ |
-| Description      | Description of the vulnerability.                                  |
-| Project          | Namespace and project in which the vulnerability was detected.     |
-| Method           | HTTP method used to detect the vulnerability.                      |
-| URL              | URL at which the vulnerability was detected.                       |
-| Request Headers  | Headers of the request.                                            |
-| Response Status  | Response status received from the application.                     |
-| Response Headers | Headers of the response received from the application.             |
-| Evidence         | Evidence of the data found that verified the vulnerability. Often a snippet of the request or response, this can be used to help verify that the finding is a vulnerability. |
-| Identifiers      | Identifiers of the vulnerability.                                  |
-| Severity         | Severity of the vulnerability.                                     |
-| Scanner Type     | Type of vulnerability report.                                      |
-| Links            | Links to further details of the detected vulnerability.            |
-| Solution         | Details of a recommended solution to the vulnerability (optional). |
-
-### Hide sensitive information in headers
-
-HTTP request and response headers may contain sensitive information, including cookies and
-authorization credentials. By default, content of specific headers are masked in DAST vulnerability
-reports. You can specify the list of all headers to be masked. For details, see
-[Hide sensitive information](dast/index.md#hide-sensitive-information).
-
 ## Addressing vulnerabilities
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.8.

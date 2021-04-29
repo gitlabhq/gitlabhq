@@ -1205,7 +1205,7 @@ RSpec.describe Ci::Build do
 
     before do
       allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-      allow(Deployments::ExecuteHooksWorker).to receive(:perform_async)
+      allow(Deployments::HooksWorker).to receive(:perform_async)
     end
 
     it 'has deployments record with created status' do
@@ -1241,7 +1241,7 @@ RSpec.describe Ci::Build do
 
       before do
         allow(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
-        allow(Deployments::ExecuteHooksWorker).to receive(:perform_async)
+        allow(Deployments::HooksWorker).to receive(:perform_async)
       end
 
       it_behaves_like 'avoid deadlock'

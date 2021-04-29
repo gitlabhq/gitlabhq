@@ -9,7 +9,7 @@ RSpec.describe ChatMessage::DeploymentMessage do
       project = create(:project, :repository)
       commit = project.commit('HEAD')
       deployment = create(:deployment, status: :success, environment: environment, project: project, sha: commit.sha)
-      data = Gitlab::DataBuilder::Deployment.build(deployment)
+      data = Gitlab::DataBuilder::Deployment.build(deployment, Time.current)
 
       message = described_class.new(data)
 
@@ -118,7 +118,7 @@ RSpec.describe ChatMessage::DeploymentMessage do
       job_url = Gitlab::Routing.url_helpers.project_job_url(project, ci_build)
       commit_url = Gitlab::UrlBuilder.build(deployment.commit)
       user_url = Gitlab::Routing.url_helpers.user_url(user)
-      data = Gitlab::DataBuilder::Deployment.build(deployment)
+      data = Gitlab::DataBuilder::Deployment.build(deployment, Time.current)
 
       message = described_class.new(data)
 

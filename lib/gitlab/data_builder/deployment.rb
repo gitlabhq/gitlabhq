@@ -5,7 +5,7 @@ module Gitlab
     module Deployment
       extend self
 
-      def build(deployment)
+      def build(deployment, status_changed_at)
         # Deployments will not have a deployable when created using the API.
         deployable_url =
           if deployment.deployable
@@ -15,6 +15,7 @@ module Gitlab
         {
           object_kind: 'deployment',
           status: deployment.status,
+          status_changed_at: status_changed_at,
           deployable_id: deployment.deployable_id,
           deployable_url: deployable_url,
           environment: deployment.environment.name,

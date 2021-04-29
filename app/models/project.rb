@@ -2663,7 +2663,7 @@ class Project < ApplicationRecord
   def cross_namespace_reference?(from)
     case from
     when Project
-      namespace != from.namespace
+      namespace_id != from.namespace_id
     when Namespace
       namespace != from
     when User

@@ -229,7 +229,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
-    "markdownlint-cli": "0.24.0",
+    "markdownlint-cli": "0.26.0",
     "md5": "^2.2.1",
     "miragejs": "^0.1.40",
     "mock-apollo-client": "^0.5.0",

@@ -10,9 +10,9 @@ jest.mock('~/lib/dompurify', () => ({
   sanitize: jest.fn((val) => val),
 }));
 
-const BLOB_URL_TEMPLATE = `${TEST_HOST}/namespace/project/blob/master`;
-const FILE_FIND_URL = `${TEST_HOST}/namespace/project/files/master?format=json`;
-const FIND_TREE_URL = `${TEST_HOST}/namespace/project/tree/master`;
+const BLOB_URL_TEMPLATE = `${TEST_HOST}/namespace/project/blob/main`;
+const FILE_FIND_URL = `${TEST_HOST}/namespace/project/files/main?format=json`;
+const FIND_TREE_URL = `${TEST_HOST}/namespace/project/tree/main`;
 const TEMPLATE = `<div class="file-finder-holder tree-holder js-file-finder" data-blob-url-template="${BLOB_URL_TEMPLATE}" data-file-find-url="${FILE_FIND_URL}"  data-find-tree-url="${FIND_TREE_URL}">
   <input class="file-finder-input" id="file_find" />
   <div class="tree-content-holder">

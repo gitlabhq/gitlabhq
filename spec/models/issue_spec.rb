@@ -297,7 +297,7 @@ RSpec.describe Issue do
       end
 
       context 'when cross-project in different namespace' do
-        let(:another_namespace) { build(:namespace, path: 'another-namespace') }
+        let(:another_namespace) { build(:namespace, id: non_existing_record_id, path: 'another-namespace') }
         let(:another_namespace_project) { build(:project, path: 'another-project', namespace: another_namespace) }
 
         it 'returns complete path to the issue' do

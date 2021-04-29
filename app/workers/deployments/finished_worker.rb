@@ -13,7 +13,7 @@ module Deployments
     def perform(deployment_id)
       if (deploy = Deployment.find_by_id(deployment_id))
         LinkMergeRequestsService.new(deploy).execute
-        deploy.execute_hooks
+        deploy.execute_hooks(Time.current)
       end
     end
   end

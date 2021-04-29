@@ -107,11 +107,13 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes Deployments::ExecuteHooksWorker asynchronously' do
-        expect(Deployments::ExecuteHooksWorker)
-            .to receive(:perform_async).with(deployment.id)
+      it 'executes Deployments::HooksWorker asynchronously' do
+        freeze_time do
+          expect(Deployments::HooksWorker)
+            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
 
-        deployment.run!
+          deployment.run!
+        end
       end
 
       it 'executes Deployments::DropOlderDeploymentsWorker asynchronously' do
@@ -141,11 +143,13 @@ RSpec.describe Deployment do
         deployment.succeed!
       end
 
-      it 'executes Deployments::ExecuteHooksWorker asynchronously' do
-        expect(Deployments::ExecuteHooksWorker)
-          .to receive(:perform_async).with(deployment.id)
+      it 'executes Deployments::HooksWorker asynchronously' do
+        freeze_time do
+          expect(Deployments::HooksWorker)
+          .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
 
-        deployment.succeed!
+          deployment.succeed!
+        end
       end
     end
 
@@ -168,11 +172,13 @@ RSpec.describe Deployment do
         deployment.drop!
       end
 
-      it 'executes Deployments::ExecuteHooksWorker asynchronously' do
-        expect(Deployments::ExecuteHooksWorker)
-            .to receive(:perform_async).with(deployment.id)
+      it 'executes Deployments::HooksWorker asynchronously' do
+        freeze_time do
+          expect(Deployments::HooksWorker)
+            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
 
-        deployment.drop!
+          deployment.drop!
+        end
       end
     end
 
@@ -195,11 +201,13 @@ RSpec.describe Deployment do
         deployment.cancel!
       end
 
-      it 'executes Deployments::ExecuteHooksWorker asynchronously' do
-        expect(Deployments::ExecuteHooksWorker)
-            .to receive(:perform_async).with(deployment.id)
+      it 'executes Deployments::HooksWorker asynchronously' do
+        freeze_time do
+          expect(Deployments::HooksWorker)
+            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
 
-        deployment.cancel!
+          deployment.cancel!
+        end
       end
     end
 
@@ -220,11 +228,13 @@ RSpec.describe Deployment do
         deployment.skip!
       end
 
-      it 'does not execute Deployments::ExecuteHooksWorker' do
-        expect(Deployments::ExecuteHooksWorker)
-            .not_to receive(:perform_async).with(deployment.id)
+      it 'does not execute Deployments::HooksWorker' do
+        freeze_time do
+          expect(Deployments::HooksWorker)
+            .not_to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
 
-        deployment.skip!
+          deployment.skip!
+        end
       end
     end
 
@@ -714,7 +724,7 @@ RSpec.describe Deployment do
     it 'schedules workers when finishing a deploy' do
       expect(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
       expect(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-      expect(Deployments::ExecuteHooksWorker).to receive(:perform_async)
+      expect(Deployments::HooksWorker).to receive(:perform_async)
 
       deploy.update_status('success')
     end

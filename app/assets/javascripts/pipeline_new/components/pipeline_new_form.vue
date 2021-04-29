@@ -22,6 +22,7 @@ import httpStatusCodes from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
 import { VARIABLE_TYPE, FILE_TYPE, CONFIG_VARIABLES_TIMEOUT } from '../constants';
+import filterVariables from '../utils/filter_variables';
 import RefsDropdown from './refs_dropdown.vue';
 
 const i18n = {
@@ -281,20 +282,13 @@ export default {
     },
     createPipeline() {
       this.submitted = true;
-      const filteredVariables = this.variables
-        .filter(({ key, value }) => key !== '' && value !== '')
-        .map(({ variable_type, key, value }) => ({
-          variable_type,
-          key,
-          secret_value: value,
-        }));
 
       return axios
         .post(this.pipelinesPath, {
           // send shortName as fall back for query params
           // https://gitlab.com/gitlab-org/gitlab/-/issues/287815
           ref: this.refValue.fullName || this.refShortName,
-          variables_attributes: filteredVariables,
+          variables_attributes: filterVariables(this.variables),
         })
         .then(({ data }) => {
           redirectTo(`${this.pipelinesPath}/${data.id}`);

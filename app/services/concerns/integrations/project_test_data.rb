@@ -63,7 +63,7 @@ module Integrations
 
       return { error: s_('TestHooks|Ensure the project has deployments.') } unless deployment.present?
 
-      Gitlab::DataBuilder::Deployment.build(deployment)
+      Gitlab::DataBuilder::Deployment.build(deployment, Time.current)
     end
 
     def releases_events_data

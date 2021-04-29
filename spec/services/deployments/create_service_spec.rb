@@ -21,7 +21,7 @@ RSpec.describe Deployments::CreateService do
 
       expect(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
       expect(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-      expect(Deployments::ExecuteHooksWorker).to receive(:perform_async)
+      expect(Deployments::HooksWorker).to receive(:perform_async)
 
       expect(service.execute).to be_persisted
     end
@@ -37,7 +37,7 @@ RSpec.describe Deployments::CreateService do
 
       expect(Deployments::UpdateEnvironmentWorker).not_to receive(:perform_async)
       expect(Deployments::LinkMergeRequestWorker).not_to receive(:perform_async)
-      expect(Deployments::ExecuteHooksWorker).not_to receive(:perform_async)
+      expect(Deployments::HooksWorker).not_to receive(:perform_async)
 
       expect(service.execute).to be_persisted
     end
@@ -57,7 +57,7 @@ RSpec.describe Deployments::CreateService do
 
         expect(Deployments::UpdateEnvironmentWorker).not_to receive(:perform_async)
         expect(Deployments::LinkMergeRequestWorker).not_to receive(:perform_async)
-        expect(Deployments::ExecuteHooksWorker).not_to receive(:perform_async)
+        expect(Deployments::HooksWorker).not_to receive(:perform_async)
 
         described_class.new(environment.reload, user, params).execute
       end

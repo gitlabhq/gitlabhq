@@ -642,6 +642,15 @@
   :weight: 3
   :idempotent:
   :tags: []
+- :name: deployment:deployments_hooks
+  :worker_name: Deployments::HooksWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 3
+  :idempotent:
+  :tags: []
 - :name: deployment:deployments_link_merge_request
   :worker_name: Deployments::LinkMergeRequestWorker
   :feature_category: :continuous_delivery

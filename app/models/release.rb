@@ -13,7 +13,7 @@ class Release < ApplicationRecord
   belongs_to :author, class_name: 'User'
 
   has_many :links, class_name: 'Releases::Link'
-  has_many :sorted_links, -> { sorted }, class_name: 'Releases::Link'
+  has_many :sorted_links, -> { sorted }, class_name: 'Releases::Link', inverse_of: :release
 
   has_many :milestone_releases
   has_many :milestones, through: :milestone_releases

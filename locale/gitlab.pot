@@ -14304,6 +14304,15 @@ msgstr ""
 msgid "Generic package file size in bytes"
 msgstr ""
 
+msgid "GenericReport|After"
+msgstr ""
+
+msgid "GenericReport|Before"
+msgstr ""
+
+msgid "GenericReport|Diff"
+msgstr ""
+
 msgid "Geo"
 msgstr ""
 
@@ -31215,9 +31224,6 @@ msgid "TagsPage|Release notes"
 msgstr ""
 
 msgid "TagsPage|Repository has no tags yet."
-msgstr ""
-
-msgid "TagsPage|Sort by"
 msgstr ""
 
 msgid "TagsPage|Tags"

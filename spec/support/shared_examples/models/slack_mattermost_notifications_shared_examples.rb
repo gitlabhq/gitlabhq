@@ -201,7 +201,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
     context 'deployment events' do
       let_it_be(:deployment) { create(:deployment) }
-      let(:data) { Gitlab::DataBuilder::Deployment.build(deployment) }
+      let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, Time.current) }
 
       it_behaves_like 'calls the service API with the event message', /Deploy to (.*?) created/
     end
