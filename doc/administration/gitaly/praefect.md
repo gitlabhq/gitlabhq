@@ -1068,7 +1068,7 @@ information can be used to automatically failover to a new primary node if the
 current primary node is found to be unhealthy.
 
 - **PostgreSQL (recommended):** Enabled by default, and equivalent to:
-  `praefect['failover_election_strategy'] = sql`. This configuration
+  `praefect['failover_election_strategy'] = 'sql'`. This configuration
   option allows multiple Praefect nodes to coordinate via the
   PostgreSQL database to elect a primary Gitaly node. This configuration
   causes Praefect nodes to elect a new primary, monitor its health,

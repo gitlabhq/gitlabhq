@@ -665,7 +665,7 @@ Use one of the following methods to track events:
      include RedisTracking
 
      skip_before_action :authenticate_user!, only: :show
-     track_redis_hll_event :index, :show, name: 'g_compliance_example_feature_visitors'
+     track_redis_hll_event :index, :show, name: 'users_visiting_projects'
 
      def index
        render html: 'index'
@@ -796,7 +796,7 @@ We have the following recommendations for [Adding new events](#adding-new-events
 
 ##### Enable/Disable Redis HLL tracking
 
-Events are tracked behind [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
+Events are tracked behind optional [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
 
 For a full list of events and corresponding feature flags see, [known_events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
 
@@ -806,6 +806,13 @@ To enable or disable tracking for specific event in <https://gitlab.com> or <htt
 ```shell
 /chatops run feature set <feature_name> true
 /chatops run feature set <feature_name> false
+```
+
+We can also disable tracking completely by using the global flag:
+
+```shell
+/chatops run feature set redis_hll_tracking true
+/chatops run feature set redis_hll_tracking false
 ```
 
 ##### Known events are added automatically in usage data payload
@@ -826,29 +833,24 @@ Example of `redis_hll_counters` data:
 ```ruby
 {:redis_hll_counters=>
   {"compliance"=>
-    {"g_compliance_dashboard_weekly"=>0,
-     "g_compliance_dashboard_monthly"=>0,
-     "g_compliance_audit_events_weekly"=>0,
-     "g_compliance_audit_events_monthly"=>0,
+    {"users_viewing_compliance_dashboard_weekly"=>0,
+     "users_viewing_compliance_dashboard_monthly"=>0,
+     "users_viewing_compliance_audit_events_weekly"=>0,
+     "users_viewing_audit_events_monthly"=>0,
      "compliance_total_unique_counts_weekly"=>0,
      "compliance_total_unique_counts_monthly"=>0},
-   "analytics"=>
-    {"g_analytics_contribution_weekly"=>0,
-     "g_analytics_contribution_monthly"=>0,
-     "g_analytics_insights_weekly"=>0,
-     "g_analytics_insights_monthly"=>0,
+ "analytics"=>
+    {"users_viewing_analytics_group_devops_adoption_weekly"=>0,
+     "users_viewing_analytics_group_devops_adoption_monthly"=>0,
      "analytics_total_unique_counts_weekly"=>0,
      "analytics_total_unique_counts_monthly"=>0},
    "ide_edit"=>
-    {"g_edit_by_web_ide_weekly"=>0,
-     "g_edit_by_web_ide_monthly"=>0,
-     "g_edit_by_sfe_weekly"=>0,
-     "g_edit_by_sfe_monthly"=>0,
+    {"users_editing_by_web_ide_weekly"=>0,
+     "users_editing_by_web_ide_monthly"=>0,
+     "users_editing_by_sfe_weekly"=>0,
+     "users_editing_by_sfe_monthly"=>0,
      "ide_edit_total_unique_counts_weekly"=>0,
-     "ide_edit_total_unique_counts_monthly"=>0},
-   "search"=>
-    {"i_search_total_weekly"=>0, "i_search_total_monthly"=>0, "i_search_advanced_weekly"=>0, "i_search_advanced_monthly"=>0, "i_search_paid_weekly"=>0, "i_search_paid_monthly"=>0, "search_total_unique_counts_weekly"=>0, "search_total_unique_counts_monthly"=>0},
-   "source_code"=>{"wiki_action_weekly"=>0, "wiki_action_monthly"=>0}
+     "ide_edit_total_unique_counts_monthly"=>0}
  }
 ```
 
@@ -862,10 +864,10 @@ redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
 # Define events in common.yml https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml
 
 # Tracking events
-Gitlab::UsageDataCounters::HLLRedisCounter.track_event('expand_vulnerabilities', values: visitor_id)
+Gitlab::UsageDataCounters::HLLRedisCounter.track_event('users_expanding_vulnerabilities', values: visitor_id)
 
 # Get unique events for metric
-redis_usage_data { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'expand_vulnerabilities', start_date: 28.days.ago, end_date: Date.current) }
+redis_usage_data { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'users_expanding_vulnerabilities', start_date: 28.days.ago, end_date: Date.current) }
 ```
 
 ### Alternative Counters
@@ -1144,9 +1146,9 @@ Example aggregated metric entries:
 - name: example_metrics_union
   operator: OR
   events:
-    - 'i_search_total'
-    - 'i_search_advanced'
-    - 'i_search_paid'
+    - 'users_expanding_secure_security_report'
+    - 'users_expanding_testing_code_quality_report'
+    - 'users_expanding_testing_accessibility_report'
   source: redis
   time_frame:
     - 7d

@@ -13,23 +13,25 @@
         = search_filter_link 'issues', _("Issues")
       - if project_search_tabs?(:merge_requests)
         = search_filter_link 'merge_requests', _("Merge requests")
-      - if project_search_tabs?(:milestones)
-        = search_filter_link 'milestones', _("Milestones")
-      - if project_search_tabs?(:notes)
-        = search_filter_link 'notes', _("Comments")
       - if project_search_tabs?(:wiki)
         = search_filter_link 'wiki_blobs', _("Wiki")
       - if project_search_tabs?(:commits)
         = search_filter_link 'commits', _("Commits")
+      - if project_search_tabs?(:notes)
+        = search_filter_link 'notes', _("Comments")
+      - if project_search_tabs?(:milestones)
+        = search_filter_link 'milestones', _("Milestones")
       = users
 
     - elsif @show_snippets
       = search_filter_link 'snippet_titles', _("Titles and Descriptions"), search: { snippets: true, group_id: nil, project_id: nil }
     - else
       = search_filter_link 'projects', _("Projects"), data: { qa_selector: 'projects_tab' }
+      = render_if_exists 'search/category_code'
+      = render_if_exists 'search/epics_filter_link'
       = search_filter_link 'issues', _("Issues")
       = search_filter_link 'merge_requests', _("Merge requests")
-      = search_filter_link 'milestones', _("Milestones")
-      = render_if_exists 'search/epics_filter_link'
+      = render_if_exists 'search/category_wiki'
       = render_if_exists 'search/category_elasticsearch'
+      = search_filter_link 'milestones', _("Milestones")
       = users
