@@ -60,3 +60,8 @@ This is the current call stack by which it is invoked:
 
 To manually invoke it from a Rails console, if needed, you can call `project.pool_repository.object_pool.fetch`.
 This is a potentially long-running task, though Gitaly times out in about 8 hours.
+
+WARNING:
+Do not run `git prune` or `git gc` in pool repositories! This can
+cause data loss in "real" repositories that depend on the pool in
+question.

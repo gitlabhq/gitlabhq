@@ -2006,6 +2006,27 @@ Input type: `EpicBoardListCreateInput`
 | <a id="mutationepicboardlistcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationepicboardlistcreatelist"></a>`list` | [`EpicList`](#epiclist) | Epic list in the epic board. |
 
+### `Mutation.epicBoardListDestroy`
+
+Destroys an epic board list.
+
+Input type: `EpicBoardListDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationepicboardlistdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationepicboardlistdestroylistid"></a>`listId` | [`BoardsEpicListID!`](#boardsepiclistid) | Global ID of the epic board list to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationepicboardlistdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationepicboardlistdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationepicboardlistdestroylist"></a>`list` | [`EpicList`](#epiclist) | The epic board list. `null` if the board was destroyed successfully. |
+
 ### `Mutation.epicBoardUpdate`
 
 Input type: `EpicBoardUpdateInput`

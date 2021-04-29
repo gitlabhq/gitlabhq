@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { Editor as TiptapEditor } from '@tiptap/vue-2';
 
 export default {
   components: {
@@ -13,8 +14,8 @@ export default {
       type: String,
       required: true,
     },
-    editor: {
-      type: Object,
+    tiptapEditor: {
+      type: TiptapEditor,
       required: true,
     },
     contentType: {
@@ -25,23 +26,23 @@ export default {
       type: String,
       required: true,
     },
-    executeCommand: {
-      type: Boolean,
+    editorCommand: {
+      type: String,
       required: false,
-      default: true,
+      default: '',
     },
   },
   computed: {
     isActive() {
-      return this.editor.isActive[this.contentType]() && this.editor.focused;
+      return this.tiptapEditor.isActive(this.contentType) && this.tiptapEditor.isFocused;
     },
   },
   methods: {
     execute() {
       const { contentType } = this;
 
-      if (this.executeCommand) {
-        this.editor.commands[contentType]();
+      if (this.editorCommand) {
+        this.tiptapEditor.chain()[this.editorCommand]().focus().run();
       }
 
       this.$emit('click', { contentType });

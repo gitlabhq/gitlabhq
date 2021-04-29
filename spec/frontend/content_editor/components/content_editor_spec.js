@@ -1,38 +1,59 @@
-import { mount } from '@vue/test-utils';
-import { EditorContent } from 'tiptap';
-import waitForPromises from 'helpers/wait_for_promises';
+import { EditorContent } from '@tiptap/vue-2';
+import { shallowMount } from '@vue/test-utils';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import TopToolbar from '~/content_editor/components/top_toolbar.vue';
-import createEditor from '~/content_editor/services/create_editor';
+import { createContentEditor } from '~/content_editor/services/create_content_editor';
 
 describe('ContentEditor', () => {
   let wrapper;
   let editor;
 
-  const createWrapper = async (_editor) => {
-    wrapper = mount(ContentEditor, {
+  const createWrapper = async (contentEditor) => {
+    wrapper = shallowMount(ContentEditor, {
       propsData: {
-        editor: _editor,
+        contentEditor,
       },
     });
   };
 
-  beforeEach(async () => {
-    editor = await createEditor({ renderMarkdown: () => 'sample text' });
-    createWrapper(editor);
-
-    await waitForPromises();
+  beforeEach(() => {
+    editor = createContentEditor({ renderMarkdown: () => true });
   });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('renders editor content component and attaches editor instance', async () => {
-    expect(wrapper.findComponent(EditorContent).props().editor).toBe(editor);
+  it('renders editor content component and attaches editor instance', () => {
+    createWrapper(editor);
+
+    expect(wrapper.findComponent(EditorContent).props().editor).toBe(editor.tiptapEditor);
   });
 
-  it('renders top toolbar component and attaches editor instance', async () => {
-    expect(wrapper.findComponent(TopToolbar).props().editor).toBe(editor);
+  it('renders top toolbar component and attaches editor instance', () => {
+    createWrapper(editor);
+
+    expect(wrapper.findComponent(TopToolbar).props().contentEditor).toBe(editor);
+  });
+
+  it.each`
+    isFocused | classes
+    ${true}   | ${['md', 'md-area', 'is-focused']}
+    ${false}  | ${['md', 'md-area']}
+  `(
+    'has $classes class selectors when tiptapEditor.isFocused = $isFocused',
+    ({ isFocused, classes }) => {
+      editor.tiptapEditor.isFocused = isFocused;
+      createWrapper(editor);
+
+      expect(wrapper.classes()).toStrictEqual(classes);
+    },
+  );
+
+  it('adds isFocused class when tiptapEditor is focused', () => {
+    editor.tiptapEditor.isFocused = true;
+    createWrapper(editor);
+
+    expect(wrapper.classes()).toContain('is-focused');
   });
 });

@@ -39,30 +39,31 @@ You can tune the notifications you receive by combining your notification settin
 - [Notification scope](#notification-scope)
 - [Notification levels](#notification-levels)
 
-### Editing notification settings
+## Editing notification settings
 
 To edit your notification settings:
 
-1. Click on your profile picture and select **Preferences**.
-1. Click **Notifications** in the left sidebar.
+1. In the top-right corner, select your avatar.
+1. Select **Preferences**.
+1. In the left sidebar, select **Notifications**.
 1. Edit the desired notification settings. Edited settings are automatically saved and enabled.
 
 These notification settings apply only to you. They do not affect the notifications received by anyone else in the same project or group.
-
-![notification settings](img/notification_global_settings.png)
 
 ## Global notification settings
 
 Your **Global notification settings** are the default settings unless you select
 different values for a project or a group.
 
-- **Notification email**: The email address your notifications are sent to.
-- **Global notification level**: The default [notification level](#notification-levels)
+- **Notification email**: the email address your notifications are sent to.
+- **Receive product marketing emails**: select this check box to receive
+  [periodic emails](#product-marketing-emails) about GitLab features.
+- **Global notification level**: the default [notification level](#notification-levels)
   which applies to all your notifications.
-- **Receive product marketing emails**: Select this check box to receive periodic
-  emails about GitLab features.
-- **Receive notifications about your own activity**: Select this check box to receive
+- **Receive notifications about your own activity**: select this check box to receive
   notifications about your own activity. Not selected by default.
+
+![notification settings](img/notification_global_settings_v13_12.png)
 
 ### Notification scope
 
@@ -85,15 +86,16 @@ You can select a notification level for each project to help you closely monitor
 
 To select a notification level for a project, use either of these methods:
 
-1. Click on your profile picture and select **Preferences**.
-1. Click **Notifications** in the left sidebar.
+1. In the top-right corner, select your avatar.
+1. Select **Preferences**.
+1. In the left sidebar, select **Notifications**.
 1. Locate the project in the **Projects** section.
 1. Select the desired [notification level](#notification-levels).
 
 Or:
 
-1. Navigate to the project's page.
-1. Click the notification dropdown, marked with a bell icon.
+1. Go to your project.
+1. Select the notification dropdown, marked with a bell icon (**{notifications}**).
 1. Select the desired [notification level](#notification-levels).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -109,15 +111,16 @@ You can select a notification level and email address for each group.
 
 To select a notification level for a group, use either of these methods:
 
-1. Click on your profile picture and select **Preferences**.
-1. Click **Notifications** in the left sidebar.
+1. In the top-right corner, select your avatar.
+1. Select **Preferences**.
+1. In the left sidebar, select **Notifications**.
 1. Locate the project in the **Groups** section.
 1. Select the desired [notification level](#notification-levels).
 
 ---
 
-1. Navigate to the group's page.
-1. Click the notification dropdown, marked with a bell icon.
+1. Go to your group.
+1. Select the notification dropdown, marked with a bell icon (**{notifications}**).
 1. Select the desired [notification level](#notification-levels).
 
 ##### Group notification email address
@@ -126,8 +129,9 @@ To select a notification level for a group, use either of these methods:
 
 You can select an email address to receive notifications for each group you belong to. This could be useful, for example, if you work freelance, and want to keep email about clients' projects separate.
 
-1. Click on your profile picture and select **Preferences**.
-1. Click **Notifications** in the left sidebar.
+1. In the top-right corner, select your avatar.
+1. Select **Preferences**.
+1. In the left sidebar, select **Notifications**.
 1. Locate the project in the **Groups** section.
 1. Select the desired email address.
 
@@ -143,6 +147,27 @@ For each project and group you can select one of the following levels:
 | Participate | Receive notifications for threads you have participated in. |
 | Disabled    | Turns off notifications. |
 | Custom      | Receive notifications for custom selected events. |
+
+### Product marketing emails
+
+You can receive emails that teach you about various GitLab features.
+This is enabled by default.
+
+To opt out, [edit your notification settings](#editing-notification-settings) and clear the
+**Receive product marketing emails** checkbox.
+
+Disabling these emails does not disable all emails.
+Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
+
+#### Self-managed product marketing emails **(FREE SELF)**
+
+The self-managed installation generates and automatically sends these emails based on user actions.
+Turning this on does not cause your GitLab instance or your company to send any personal information to
+GitLab Inc.
+
+An instance administrator can configure this setting for all users. If you choose to opt out, your
+setting overrides the instance-wide setting, even when an administrator later enables these emails
+for all users.
 
 ## Notification events
 
@@ -176,7 +201,11 @@ To enable notifications on one specific issue, merge request or epic, you need t
 - **Disable**: If you are receiving notifications for updates to that issue but no
   longer want to receive them, unsubscribe from it.
 
-Configuring this notification on an epic doesn't make you automatically subscribed to the issue that are linked to the epic.
+Disabling this toggle only unsubscribes you from updates related to this issue, merge request, or epic.
+Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
+
+Enabling this notification on an epic doesn't automatically subscribe you to the issues linked
+to the epic.
 
 For most events, the notification is sent to:
 
@@ -229,7 +258,7 @@ If the title or description of an issue or merge request is
 changed, notifications are sent to any **new** mentions by `@username` as
 if they had been mentioned in the original text.
 
-You don't receive notifications for Issues, Merge Requests or Milestones created
+You don't receive notifications for issues, merge requests or milestones created
 by yourself (except when an issue is due). You only receive automatic
 notifications when somebody else comments or adds changes to the ones that
 you've created or mentions you.
@@ -249,6 +278,21 @@ The participants are:
 - Authors of the design (can be multiple people if different authors have uploaded different versions of the design).
 - Authors of comments on the design.
 - Anyone that is `@mentioned` in a comment on the design.
+
+## Opt out of all GitLab emails
+
+If you no longer wish to receive any email notifications:
+
+1. [Go to the Notifications settings page.](#editing-notification-settings)
+1. Clear the **Receive product marketing emails** checkbox.
+1. Set your **Global notification level** to **Disabled**.
+1. Clear the **Receive notifications about your own activity** checkbox.
+1. If you belong to any groups or projects, set their notification setting to **Global** or
+   **Disabled**.
+
+On self-managed installations, even after doing this, your instance administrator
+[can still email you](../../tools/email.md).
+To unsubscribe, select the unsubscribe link in one of these emails.
 
 ## Filtering email
 

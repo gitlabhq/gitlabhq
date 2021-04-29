@@ -384,10 +384,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
   Exclude:
     - ee/spec/controllers/subscriptions_controller_spec.rb
     - ee/spec/features/ci_shared_runner_warnings_spec.rb
-    - ee/spec/features/groups/groups_security_credentials_spec.rb
-    - ee/spec/features/groups/hooks/user_edits_hooks_spec.rb
-    - ee/spec/features/groups/iterations/user_edits_iteration_spec.rb
-    - ee/spec/features/groups/usage_quotas_spec.rb
     - ee/spec/features/integrations/jira/jira_issues_list_spec.rb
     - ee/spec/features/issues/bulk_assignment_epic_spec.rb
     - ee/spec/features/issues/user_uses_quick_actions_spec.rb
@@ -479,8 +475,6 @@ RSpec/EmptyLineAfterFinalLetItBe:
     - ee/spec/services/alert_management/process_prometheus_alert_service_spec.rb
     - ee/spec/services/approval_rules/create_service_spec.rb
     - ee/spec/services/audit_event_service_spec.rb
-    - ee/spec/services/award_emojis/add_service_spec.rb
-    - ee/spec/services/award_emojis/destroy_service_spec.rb
     - ee/spec/services/billable_members/destroy_service_spec.rb
     - ee/spec/services/boards/epic_boards/destroy_service_spec.rb
     - ee/spec/services/clusters/agent_tokens/create_service_spec.rb

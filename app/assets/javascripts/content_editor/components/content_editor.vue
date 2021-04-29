@@ -1,24 +1,24 @@
 <script>
-import { EditorContent, Editor } from 'tiptap';
+import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
+import { ContentEditor } from '../services/content_editor';
 import TopToolbar from './top_toolbar.vue';
 
 export default {
   components: {
-    EditorContent,
+    TiptapEditorContent,
     TopToolbar,
   },
   props: {
-    editor: {
-      type: Object,
+    contentEditor: {
+      type: ContentEditor,
       required: true,
-      validator: (editor) => editor instanceof Editor,
     },
   },
 };
 </script>
 <template>
-  <div class="md md-area" :class="{ 'is-focused': editor.focused }">
-    <top-toolbar class="gl-mb-4" :editor="editor" />
-    <editor-content :editor="editor" />
+  <div class="md md-area" :class="{ 'is-focused': contentEditor.tiptapEditor.isFocused }">
+    <top-toolbar class="gl-mb-4" :content-editor="contentEditor" />
+    <tiptap-editor-content :editor="contentEditor.tiptapEditor" />
   </div>
 </template>

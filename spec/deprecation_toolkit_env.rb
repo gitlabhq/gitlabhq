@@ -59,7 +59,6 @@ module DeprecationToolkitEnv
       activesupport-6.0.3.6/lib/active_support/cache.rb
       carrierwave-1.3.1/lib/carrierwave/sanitized_file.rb
       activerecord-6.0.3.6/lib/active_record/relation.rb
-      selenium-webdriver-3.142.7/lib/selenium/webdriver/firefox/driver.rb
       asciidoctor-2.0.12/lib/asciidoctor/extensions.rb
     ]
   end

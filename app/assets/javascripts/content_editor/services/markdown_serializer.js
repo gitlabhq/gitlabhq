@@ -54,14 +54,24 @@ const create = ({ render = () => null }) => {
      */
     serialize: ({ schema, content }) => {
       const document = schema.nodeFromJSON(content);
-      const serializer = new ProseMirrorMarkdownSerializer(defaultMarkdownSerializer.nodes, {
-        ...defaultMarkdownSerializer.marks,
-        bold: {
-          // creates a bold alias for the strong mark converter
-          ...defaultMarkdownSerializer.marks.strong,
+      const { nodes, marks } = defaultMarkdownSerializer;
+
+      const serializer = new ProseMirrorMarkdownSerializer(
+        {
+          ...defaultMarkdownSerializer.nodes,
+          horizontalRule: nodes.horizontal_rule,
+          bulletList: nodes.bullet_list,
+          listItem: nodes.list_item,
+          orderedList: nodes.ordered_list,
+          codeBlock: nodes.code_block,
+          hardBreak: nodes.hard_break,
         },
-        italic: { open: '_', close: '_', mixable: true, expelEnclosingWhitespace: true },
-      });
+        {
+          ...defaultMarkdownSerializer.marks,
+          bold: marks.strong,
+          italic: { open: '_', close: '_', mixable: true, expelEnclosingWhitespace: true },
+        },
+      );
 
       return serializer.serialize(document, {
         tightLists: true,
