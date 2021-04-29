@@ -281,13 +281,12 @@ function download_chart() {
 
   curl --location -o gitlab.tar.bz2 "https://gitlab.com/gitlab-org/charts/gitlab/-/archive/${GITLAB_HELM_CHART_REF}/gitlab-${GITLAB_HELM_CHART_REF}.tar.bz2"
   tar -xjf gitlab.tar.bz2
-  cd "gitlab-${GITLAB_HELM_CHART_REF}"
 
   echoinfo "Adding the gitlab repo to Helm..."
   helm repo add gitlab https://charts.gitlab.io
 
   echoinfo "Building the gitlab chart's dependencies..."
-  helm dependency build .
+  helm dependency build "gitlab-${GITLAB_HELM_CHART_REF}"
 }
 
 function base_config_changed() {
@@ -372,7 +371,7 @@ HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
   --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
   -f "${base_config_file}" \
-  "${release}" .
+  "${release}" "gitlab-${GITLAB_HELM_CHART_REF}"
 EOF
 )
 

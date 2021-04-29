@@ -164,13 +164,12 @@ standard for GitLab documentation).
 
 A rule that could cause confusion is `MD044/proper-names`, as it might not be
 immediately clear what caused markdownlint to fail, or how to correct the
-failure. This rule checks a list of known words, listed in the `.markdownlint.json`
+failure. This rule checks a list of known words, listed in the `.markdownlint.yml`
 file in each project, to verify proper use of capitalization and backticks.
 Words in backticks are ignored by markdownlint.
 
 In general, product names should follow the exact capitalization of the official
-names of the products, protocols, and so on. See [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json)
-for the words tested for proper capitalization in GitLab documentation.
+names of the products, protocols, and so on.
 
 Some examples fail if incorrect capitalization is used:
 
@@ -370,7 +369,7 @@ Capitalize names of:
 - Third-party organizations, software, and products. For example, Prometheus,
   Kubernetes, Git, and The Linux Foundation.
 - Methods or methodologies. For example, Continuous Integration,
-  Continuous Deployment, Scrum, and Agile. (Tested in [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json).)
+  Continuous Deployment, Scrum, and Agile.
 
 Follow the capitalization style listed at the [authoritative source](#links-to-external-documentation)
 for the entity, which may use non-standard case styles. For example: GitLab and

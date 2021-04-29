@@ -124,7 +124,7 @@
 .docs-patterns: &docs-patterns
   - ".gitlab/route-map.yml"
   - "doc/**/*"
-  - ".markdownlint.json"
+  - ".markdownlint.yml"
   - "scripts/lint-doc.sh"
 
 .frontend-dependency-patterns: &frontend-dependency-patterns

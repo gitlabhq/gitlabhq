@@ -150,11 +150,11 @@ from those guidelines.
 
 markdownlint configuration is found in the following projects:
 
-- [`gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.markdownlint.json)
-- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/blob/master/.markdownlint.json)
-- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/.markdownlint.json)
-- [`charts`](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.markdownlint.json)
-- [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.markdownlint.json)
+- [`gitlab`](https://gitlab.com/gitlab-org/gitlab)
+- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner)
+- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab)
+- [`charts`](https://gitlab.com/gitlab-org/charts/gitlab)
+- [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit)
 
 This configuration is also used in build pipelines.
 

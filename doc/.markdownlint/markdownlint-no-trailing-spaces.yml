@@ -1,0 +1,3 @@
+# Extended Markdown configuration to enforce no-trailing-spaces rule
+"extends": "../../.markdownlint.yml"
+"no-trailing-spaces": true

@@ -26,9 +26,7 @@
   - [ ] [Request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature)
         from the [designated Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
 
-/label ~"development guidelines"
-/label ~"Description templates (.gitlab/\*)"
-
+/label ~documentation
 /assign me
 
 Do not add the ~"feature", ~"frontend", ~"backend", ~"bug", or ~"database" labels if you are only updating documentation. These labels will cause the MR to be added to code verification QA issues.
@@ -74,5 +72,3 @@ For more information, see our documentation on [Merging a merge request](https:/
 1. [ ] Review by assigned maintainer, who can always request/require the above reviews. Maintainer's review can occur before or after a technical writer review.
 1. [ ] Ensure a release milestone is set.
 1. [ ] If there has not been a technical writer review, [create an issue for one using the Doc Review template](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Doc%20Review).
-
-/label ~documentation

@@ -48,7 +48,7 @@ PreCommit:
     enabled: true
     description: 'Lint documentation for Markdown errors'
     required_executable: 'node_modules/.bin/markdownlint'
-    flags: ['--config', '.markdownlint.json', 'doc/**/*.md']
+    flags: ['--config', '.markdownlint.yml', 'doc/**/*.md']
     install_command: 'yarn install'
     include:
       - 'doc/**/*.md'
