@@ -305,6 +305,10 @@ RSpec.describe 'Admin updates settings' do
 
         expect(page).not_to have_content('Some settings have moved')
       end
+
+      it 'shows integrations table' do
+        expect(page).to have_selector '[data-testid="inactive-integrations-table"]'
+      end
     end
 
     context 'CI/CD page' do
