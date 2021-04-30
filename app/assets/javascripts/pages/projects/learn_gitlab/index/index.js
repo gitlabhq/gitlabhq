@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import trackLearnGitlab from '~/learn_gitlab/track_learn_gitlab';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import LearnGitlabA from '../components/learn_gitlab_a.vue';
 import LearnGitlabB from '../components/learn_gitlab_b.vue';
@@ -13,6 +14,8 @@ function initLearnGitlab() {
   const actions = convertObjectPropsToCamelCase(JSON.parse(el.dataset.actions));
 
   const { learnGitlabA } = gon.experiments;
+
+  trackLearnGitlab(learnGitlabA);
 
   return new Vue({
     el,

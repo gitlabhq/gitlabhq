@@ -91,4 +91,37 @@ RSpec.describe LearnGitlabHelper do
       end
     end
   end
+
+  describe '.learn_gitlab_experiment_tracking_category' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+
+    subject { helper.learn_gitlab_experiment_tracking_category }
+
+    where(:experiment_a, :experiment_b, :result) do
+      false       | false         | nil
+      false       | true          | 'Growth::Activation::Experiment::LearnGitLabB'
+      true        | false         | 'Growth::Conversion::Experiment::LearnGitLabA'
+      true        | true          | 'Growth::Conversion::Experiment::LearnGitLabA'
+    end
+
+    with_them do
+      before do
+        stub_experiment_for_subject(learn_gitlab_a: experiment_a, learn_gitlab_b: experiment_b)
+      end
+
+      context 'when signed in' do
+        before do
+          sign_in(user)
+        end
+
+        it { is_expected.to eq(result) }
+      end
+
+      context 'when not signed in' do
+        it { is_expected.to eq(nil) }
+      end
+    end
+  end
 end

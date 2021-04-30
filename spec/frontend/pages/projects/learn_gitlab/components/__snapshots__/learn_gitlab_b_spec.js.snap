@@ -110,6 +110,9 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
              
             <a
               class="gl-link"
+              data-track-action="click_link"
+              data-track-label="Invite your colleagues"
+              data-track-property="Growth::Activation::Experiment::LearnGitLabB"
               href="http://example.com/"
               rel="noopener noreferrer"
               target="_blank"
@@ -168,6 +171,9 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
              
             <a
               class="gl-link"
+              data-track-action="click_link"
+              data-track-label="Create or import a repository"
+              data-track-property="Growth::Activation::Experiment::LearnGitLabB"
               href="http://example.com/"
               rel="noopener noreferrer"
               target="_blank"
@@ -218,6 +224,9 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
              
             <a
               class="gl-link"
+              data-track-action="click_link"
+              data-track-label="Set-up CI/CD"
+              data-track-property="Growth::Activation::Experiment::LearnGitLabB"
               href="http://example.com/"
               rel="noopener noreferrer"
               target="_blank"
@@ -268,6 +277,9 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
              
             <a
               class="gl-link"
+              data-track-action="click_link"
+              data-track-label="Try GitLab Ultimate for free"
+              data-track-property="Growth::Activation::Experiment::LearnGitLabB"
               href="http://example.com/"
               rel="noopener noreferrer"
               target="_blank"
@@ -323,6 +335,9 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
              
             <a
               class="gl-link"
+              data-track-action="click_link"
+              data-track-label="Add code owners"
+              data-track-property="Growth::Activation::Experiment::LearnGitLabB"
               href="http://example.com/"
               rel="noopener noreferrer"
               target="_blank"
@@ -378,6 +393,9 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
              
             <a
               class="gl-link"
+              data-track-action="click_link"
+              data-track-label="Enable require merge approvals"
+              data-track-property="Growth::Activation::Experiment::LearnGitLabB"
               href="http://example.com/"
               rel="noopener noreferrer"
               target="_blank"
@@ -444,6 +462,9 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
              
             <a
               class="gl-link"
+              data-track-action="click_link"
+              data-track-label="Create an issue"
+              data-track-property="Growth::Activation::Experiment::LearnGitLabB"
               href="http://example.com/"
               rel="noopener noreferrer"
               target="_blank"
@@ -494,6 +515,9 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
              
             <a
               class="gl-link"
+              data-track-action="click_link"
+              data-track-label="Submit a merge request (MR)"
+              data-track-property="Growth::Activation::Experiment::LearnGitLabB"
               href="http://example.com/"
               rel="noopener noreferrer"
               target="_blank"
@@ -560,6 +584,9 @@ exports[`Learn GitLab Design B renders correctly 1`] = `
              
             <a
               class="gl-link"
+              data-track-action="click_link"
+              data-track-label="Run a Security scan using CI/CD"
+              data-track-property="Growth::Activation::Experiment::LearnGitLabB"
               href="http://example.com/"
               rel="noopener noreferrer"
               target="_blank"

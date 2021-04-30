@@ -185,6 +185,8 @@ export default class EnvironmentsStore {
 
       updated.isChildren = true;
 
+      updated = setDeployBoard(env, updated);
+
       return updated;
     });
 

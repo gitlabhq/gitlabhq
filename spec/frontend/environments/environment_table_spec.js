@@ -89,6 +89,42 @@ describe('Environment table', () => {
     expect(wrapper.find('.deploy-board-icon').exists()).toBe(true);
   });
 
+  it('should render deploy board container when data is provided for children', async () => {
+    const mockItem = {
+      name: 'review',
+      size: 1,
+      environment_path: 'url',
+      logs_path: 'url',
+      id: 1,
+      isFolder: true,
+      isOpen: true,
+      children: [
+        {
+          name: 'review/test',
+          hasDeployBoard: true,
+          deployBoardData: deployBoardMockData,
+          isDeployBoardVisible: true,
+          isLoadingDeployBoard: false,
+          isEmptyDeployBoard: false,
+        },
+      ],
+    };
+
+    await factory({
+      propsData: {
+        environments: [mockItem],
+        canCreateDeployment: false,
+        canReadEnvironment: true,
+        userCalloutsPath: '/callouts',
+        lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
+        helpCanaryDeploymentsPath: 'help/canary-deployments',
+      },
+    });
+
+    expect(wrapper.find('.js-deploy-board-row').exists()).toBe(true);
+    expect(wrapper.find('.deploy-board-icon').exists()).toBe(true);
+  });
+
   it('should toggle deploy board visibility when arrow is clicked', (done) => {
     const mockItem = {
       name: 'review',
@@ -125,7 +161,7 @@ describe('Environment table', () => {
     wrapper.find('.deploy-board-icon').trigger('click');
   });
 
-  it('should set the enviornment to change and weight when a change canary weight event is recevied', async () => {
+  it('should set the environment to change and weight when a change canary weight event is recevied', async () => {
     const mockItem = {
       name: 'review',
       size: 1,

@@ -134,9 +134,16 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             <span>
               <a
                 class="gl-link"
+                data-track-action="click_link"
+                data-track-label="Set up CI/CD"
+                data-track-property="Growth::Conversion::Experiment::LearnGitLabA"
                 href="http://example.com/"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                Set up CI/CD
+                
+      Set up CI/CD
+    
               </a>
             </span>
              
@@ -148,9 +155,16 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             <span>
               <a
                 class="gl-link"
+                data-track-action="click_link"
+                data-track-label="Start a free Ultimate trial"
+                data-track-property="Growth::Conversion::Experiment::LearnGitLabA"
                 href="http://example.com/"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                Start a free Ultimate trial
+                
+      Start a free Ultimate trial
+    
               </a>
             </span>
              
@@ -162,9 +176,16 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             <span>
               <a
                 class="gl-link"
+                data-track-action="click_link"
+                data-track-label="Add code owners"
+                data-track-property="Growth::Conversion::Experiment::LearnGitLabA"
                 href="http://example.com/"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                Add code owners
+                
+      Add code owners
+    
               </a>
             </span>
              
@@ -183,9 +204,16 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             <span>
               <a
                 class="gl-link"
+                data-track-action="click_link"
+                data-track-label="Add merge request approval"
+                data-track-property="Growth::Conversion::Experiment::LearnGitLabA"
                 href="http://example.com/"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                Add merge request approval
+                
+      Add merge request approval
+    
               </a>
             </span>
              
@@ -240,9 +268,16 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             <span>
               <a
                 class="gl-link"
+                data-track-action="click_link"
+                data-track-label="Create an issue"
+                data-track-property="Growth::Conversion::Experiment::LearnGitLabA"
                 href="http://example.com/"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                Create an issue
+                
+      Create an issue
+    
               </a>
             </span>
              
@@ -254,9 +289,16 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             <span>
               <a
                 class="gl-link"
+                data-track-action="click_link"
+                data-track-label="Submit a merge request"
+                data-track-property="Growth::Conversion::Experiment::LearnGitLabA"
                 href="http://example.com/"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                Submit a merge request
+                
+      Submit a merge request
+    
               </a>
             </span>
              
@@ -304,9 +346,16 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             <span>
               <a
                 class="gl-link"
+                data-track-action="click_link"
+                data-track-label="Run a Security scan using CI/CD"
+                data-track-property="Growth::Conversion::Experiment::LearnGitLabA"
                 href="http://example.com/"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                Run a Security scan using CI/CD
+                
+      Run a Security scan using CI/CD
+    
               </a>
             </span>
              

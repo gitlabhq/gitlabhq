@@ -8,6 +8,16 @@ module LearnGitlabHelper
     learn_gitlab_onboarding_available?(project)
   end
 
+  def learn_gitlab_experiment_tracking_category
+    return unless current_user
+
+    if Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_a, subject: current_user)
+      Gitlab::Experimentation.get_experiment(:learn_gitlab_a).tracking_category
+    elsif Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_b, subject: current_user)
+      Gitlab::Experimentation.get_experiment(:learn_gitlab_b).tracking_category
+    end
+  end
+
   def onboarding_actions_data(project)
     attributes = onboarding_progress(project).attributes.symbolize_keys
 

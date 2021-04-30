@@ -3,14 +3,40 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::LearnGitlabMenu do
-  let(:project) { build(:project) }
-  let(:experiment_enabled) { true }
-  let(:context) { Sidebars::Projects::Context.new(current_user: nil, container: project, learn_gitlab_experiment_enabled: experiment_enabled) }
+  let_it_be(:project) { build(:project) }
+  let_it_be(:experiment_enabled) { true }
+  let_it_be(:tracking_category) { 'Growth::Activation::Experiment::LearnGitLabB' }
+
+  let(:context) do
+    Sidebars::Projects::Context.new(
+      current_user: nil,
+      container: project,
+      learn_gitlab_experiment_enabled: experiment_enabled,
+      learn_gitlab_experiment_tracking_category: tracking_category
+    )
+  end
 
   subject { described_class.new(context) }
 
   it 'does not contain any sub menu' do
     expect(subject.instance_variable_get(:@items)).to be_empty
+  end
+
+  describe '#nav_link_html_options' do
+    let_it_be(:data_tracking) do
+      {
+        class: 'home',
+        data: {
+          track_action: 'click_menu',
+          track_property: tracking_category,
+          track_label: 'learn_gitlab'
+        }
+      }
+    end
+
+    specify do
+      expect(subject.nav_link_html_options).to eq(data_tracking)
+    end
   end
 
   describe '#render?' do

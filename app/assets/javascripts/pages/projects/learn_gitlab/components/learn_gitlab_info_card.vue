@@ -64,7 +64,15 @@ export default {
       <img :src="svg" :alt="actionLabel" />
       <h6>{{ title }}</h6>
       <p class="gl-font-sm gl-text-gray-700">{{ description }}</p>
-      <gl-link :href="url" target="_blank">{{ actionLabel }}</gl-link>
+      <gl-link
+        :href="url"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-track-action="click_link"
+        :data-track-label="actionLabel"
+        data-track-property="Growth::Activation::Experiment::LearnGitLabB"
+        >{{ actionLabel }}</gl-link
+      >
     </div>
   </gl-card>
 </template>

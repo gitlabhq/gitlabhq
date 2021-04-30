@@ -1,6 +1,6 @@
 <script>
-import { GlBadge, GlModal } from '@gitlab/ui';
-import { __, n__, sprintf } from '~/locale';
+import { GlBadge, GlFriendlyWrap, GlLink, GlModal } from '@gitlab/ui';
+import { __, n__, s__, sprintf } from '~/locale';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 
 export default {
@@ -8,6 +8,8 @@ export default {
   components: {
     CodeBlock,
     GlBadge,
+    GlFriendlyWrap,
+    GlLink,
     GlModal,
   },
   props: {
@@ -50,6 +52,7 @@ export default {
     duration: __('Execution time'),
     history: __('History'),
     trace: __('System output'),
+    attachment: s__('TestReports|Attachment'),
   },
   modalCloseButton: {
     text: __('Close'),
@@ -83,6 +86,18 @@ export default {
       <div class="col-sm-9" data-testid="test-case-recent-failures">
         <gl-badge variant="warning">{{ failureHistoryMessage }}</gl-badge>
       </div>
+    </div>
+
+    <div v-if="testCase.attachment_url" class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3">
+      <strong class="gl-text-right col-sm-3">{{ $options.text.attachment }}</strong>
+      <gl-link
+        class="col-sm-9"
+        :href="testCase.attachment_url"
+        target="_blank"
+        data-testid="test-case-attachment-url"
+      >
+        <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.attachment_url" />
+      </gl-link>
     </div>
 
     <div

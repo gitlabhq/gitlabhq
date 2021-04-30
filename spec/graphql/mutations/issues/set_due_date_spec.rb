@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Issues::SetDueDate do
-  let(:issue) { create(:issue) }
-  let(:user) { create(:user) }
+  let(:issue) { create(:issue, due_date: '2021-05-01') }
+
+  let_it_be(:user) { create(:user) }
 
   subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
 
@@ -23,17 +24,25 @@ RSpec.describe Mutations::Issues::SetDueDate do
         issue.project.add_developer(user)
       end
 
-      it 'returns the issue with updated due date' do
+      it 'returns the issue with updated due date', :aggregate_failures do
         expect(mutated_issue).to eq(issue)
         expect(mutated_issue.due_date).to eq(Date.today + 2.days)
         expect(subject[:errors]).to be_empty
       end
 
+      context 'when due date is nil' do
+        let(:due_date) { nil }
+
+        it 'updates due date to be nil' do
+          expect(mutated_issue.due_date).to be nil
+        end
+      end
+
       context 'when passing incorrect due date value' do
         let(:due_date) { 'test' }
 
-        it 'does not update due date' do
-          expect(mutated_issue.due_date).to eq(issue.due_date)
+        it 'updates due date to be nil' do
+          expect(mutated_issue.due_date).to be nil
         end
       end
     end

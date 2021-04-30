@@ -123,6 +123,29 @@ describe('Store', () => {
 
       expect(store.state.environments[1].children.length).toEqual(serverData.length);
     });
+
+    it('should parse deploy board data for children', () => {
+      store.storeEnvironments(serverData);
+
+      store.setfolderContent(store.state.environments[1], [
+        {
+          name: 'foo',
+          size: 1,
+          latest: {
+            id: 1,
+            rollout_status: deployBoardMockData,
+          },
+        },
+      ]);
+      const result = store.state.environments[1].children[0];
+      expect(result).toMatchObject({
+        deployBoardData: deployBoardMockData,
+        hasDeployBoard: true,
+        isDeployBoardVisible: true,
+        isLoadingDeployBoard: false,
+        isEmptyDeployBoard: false,
+      });
+    });
   });
 
   describe('store pagination', () => {

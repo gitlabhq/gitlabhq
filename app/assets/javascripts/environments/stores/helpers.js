@@ -4,7 +4,7 @@
  */
 export const setDeployBoard = (oldEnvironmentState, environment) => {
   let parsedEnvironment = environment;
-  if (environment.size === 1 && environment.rollout_status) {
+  if (!environment.isFolder && environment.rollout_status) {
     parsedEnvironment = {
       ...environment,
       hasDeployBoard: true,

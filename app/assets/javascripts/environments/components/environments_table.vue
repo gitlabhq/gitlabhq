@@ -188,15 +188,37 @@ export default {
         </div>
 
         <template v-else>
-          <div
-            is="environment-item"
-            v-for="(children, index) in model.children"
-            :key="`env-item-${i}-${index}`"
-            :model="children"
-            :can-read-environment="canReadEnvironment"
-            :table-data="tableData"
-            data-qa-selector="environment_item"
-          />
+          <template v-for="(child, index) in model.children">
+            <div
+              is="environment-item"
+              :key="`environment-row-${i}-${index}`"
+              :model="child"
+              :can-read-environment="canReadEnvironment"
+              :table-data="tableData"
+              data-qa-selector="environment_item"
+            />
+
+            <div
+              v-if="shouldRenderDeployBoard(child)"
+              :key="`deploy-board-row-${i}-${index}`"
+              class="js-deploy-board-row"
+            >
+              <div class="deploy-board-container">
+                <deploy-board
+                  :deploy-board-data="child.deployBoardData"
+                  :is-loading="child.isLoadingDeployBoard"
+                  :is-empty="child.isEmptyDeployBoard"
+                  :logs-path="child.logs_path"
+                  @changeCanaryWeight="changeCanaryWeight(child, $event)"
+                />
+              </div>
+            </div>
+            <environment-alert
+              v-if="shouldRenderAlert(model)"
+              :key="`alert-row-${i}-${index}`"
+              :environment="child"
+            />
+          </template>
 
           <div :key="`sub-div-${i}`">
             <div class="text-center gl-mt-3">
