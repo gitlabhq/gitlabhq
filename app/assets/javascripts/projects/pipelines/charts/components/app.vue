@@ -29,7 +29,7 @@ export default {
       const chartsToShow = ['pipelines'];
 
       if (this.shouldRenderDoraCharts) {
-        chartsToShow.push('deployments', 'lead-time');
+        chartsToShow.push('deployment-frequency', 'lead-time');
       }
 
       return chartsToShow;
@@ -62,10 +62,10 @@ export default {
         <pipeline-charts />
       </gl-tab>
       <template v-if="shouldRenderDoraCharts">
-        <gl-tab :title="__('Deployments')">
+        <gl-tab :title="__('Deployment frequency')">
           <deployment-frequency-charts />
         </gl-tab>
-        <gl-tab :title="__('Lead Time')">
+        <gl-tab :title="__('Lead time')">
           <lead-time-charts />
         </gl-tab>
       </template>

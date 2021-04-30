@@ -13,23 +13,17 @@ describe('Codequality Reports mutations', () => {
   describe('SET_PATHS', () => {
     it('sets paths to given values', () => {
       const basePath = 'base.json';
-      const headPath = 'head.json';
-      const baseBlobPath = 'base/blob/path/';
-      const headBlobPath = 'head/blob/path/';
+      const reportsPath = 'reports.json';
       const helpPath = 'help.html';
 
       mutations.SET_PATHS(localState, {
         basePath,
-        headPath,
-        baseBlobPath,
-        headBlobPath,
+        reportsPath,
         helpPath,
       });
 
       expect(localState.basePath).toEqual(basePath);
-      expect(localState.headPath).toEqual(headPath);
-      expect(localState.baseBlobPath).toEqual(baseBlobPath);
-      expect(localState.headBlobPath).toEqual(headBlobPath);
+      expect(localState.reportsPath).toEqual(reportsPath);
       expect(localState.helpPath).toEqual(helpPath);
     });
   });

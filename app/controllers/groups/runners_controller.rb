@@ -10,7 +10,6 @@ class Groups::RunnersController < Groups::ApplicationController
   feature_category :continuous_integration
 
   def show
-    render 'shared/runners/show'
   end
 
   def edit

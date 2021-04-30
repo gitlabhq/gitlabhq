@@ -48,7 +48,6 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def show
-    render 'shared/runners/show'
   end
 
   def toggle_shared_runners

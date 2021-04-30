@@ -5,30 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import createStore from '~/reports/codequality_report/store';
 import * as actions from '~/reports/codequality_report/store/actions';
 import * as types from '~/reports/codequality_report/store/mutation_types';
-import {
-  headIssues,
-  baseIssues,
-  mockParsedHeadIssues,
-  mockParsedBaseIssues,
-  reportIssues,
-  parsedReportIssues,
-} from '../mock_data';
-
-// mock codequality comparison worker
-jest.mock('~/reports/codequality_report/workers/codequality_comparison_worker', () =>
-  jest.fn().mockImplementation(() => {
-    return {
-      addEventListener: (eventName, callback) => {
-        callback({
-          data: {
-            newIssues: [mockParsedHeadIssues[0]],
-            resolvedIssues: [mockParsedBaseIssues[0]],
-          },
-        });
-      },
-    };
-  }),
-);
+import { reportIssues, parsedReportIssues } from '../mock_data';
 
 describe('Codequality Reports actions', () => {
   let localState;
@@ -43,9 +20,6 @@ describe('Codequality Reports actions', () => {
     it('should commit SET_PATHS mutation', (done) => {
       const paths = {
         basePath: 'basePath',
-        headPath: 'headPath',
-        baseBlobPath: 'baseBlobPath',
-        headBlobPath: 'headBlobPath',
         reportsPath: 'reportsPath',
         helpPath: 'codequalityHelpPath',
       };
@@ -63,119 +37,64 @@ describe('Codequality Reports actions', () => {
 
   describe('fetchReports', () => {
     let mock;
-    let diffFeatureFlagEnabled;
 
-    describe('with codequalityBackendComparison feature flag enabled', () => {
-      beforeEach(() => {
-        diffFeatureFlagEnabled = true;
-        localState.reportsPath = `${TEST_HOST}/codequality_reports.json`;
-        mock = new MockAdapter(axios);
-      });
+    beforeEach(() => {
+      localState.reportsPath = `${TEST_HOST}/codequality_reports.json`;
+      localState.basePath = '/base/path';
+      mock = new MockAdapter(axios);
+    });
 
-      afterEach(() => {
-        mock.restore();
-      });
+    afterEach(() => {
+      mock.restore();
+    });
 
-      describe('on success', () => {
-        it('commits REQUEST_REPORTS and dispatches receiveReportsSuccess', (done) => {
-          mock.onGet(`${TEST_HOST}/codequality_reports.json`).reply(200, reportIssues);
+    describe('on success', () => {
+      it('commits REQUEST_REPORTS and dispatches receiveReportsSuccess', (done) => {
+        mock.onGet(`${TEST_HOST}/codequality_reports.json`).reply(200, reportIssues);
 
-          testAction(
-            actions.fetchReports,
-            diffFeatureFlagEnabled,
-            localState,
-            [{ type: types.REQUEST_REPORTS }],
-            [
-              {
-                payload: parsedReportIssues,
-                type: 'receiveReportsSuccess',
-              },
-            ],
-            done,
-          );
-        });
-      });
-
-      describe('on error', () => {
-        it('commits REQUEST_REPORTS and dispatches receiveReportsError', (done) => {
-          mock.onGet(`${TEST_HOST}/codequality_reports.json`).reply(500);
-
-          testAction(
-            actions.fetchReports,
-            diffFeatureFlagEnabled,
-            localState,
-            [{ type: types.REQUEST_REPORTS }],
-            [{ type: 'receiveReportsError', payload: expect.any(Error) }],
-            done,
-          );
-        });
+        testAction(
+          actions.fetchReports,
+          null,
+          localState,
+          [{ type: types.REQUEST_REPORTS }],
+          [
+            {
+              payload: parsedReportIssues,
+              type: 'receiveReportsSuccess',
+            },
+          ],
+          done,
+        );
       });
     });
 
-    describe('with codequalityBackendComparison feature flag disabled', () => {
-      beforeEach(() => {
-        diffFeatureFlagEnabled = false;
-        localState.headPath = `${TEST_HOST}/head.json`;
-        localState.basePath = `${TEST_HOST}/base.json`;
-        mock = new MockAdapter(axios);
+    describe('on error', () => {
+      it('commits REQUEST_REPORTS and dispatches receiveReportsError', (done) => {
+        mock.onGet(`${TEST_HOST}/codequality_reports.json`).reply(500);
+
+        testAction(
+          actions.fetchReports,
+          null,
+          localState,
+          [{ type: types.REQUEST_REPORTS }],
+          [{ type: 'receiveReportsError', payload: expect.any(Error) }],
+          done,
+        );
       });
+    });
 
-      afterEach(() => {
-        mock.restore();
-      });
+    describe('with no base path', () => {
+      it('commits REQUEST_REPORTS and dispatches receiveReportsError', (done) => {
+        localState.basePath = null;
 
-      describe('on success', () => {
-        it('commits REQUEST_REPORTS and dispatches receiveReportsSuccess', (done) => {
-          mock.onGet(`${TEST_HOST}/head.json`).reply(200, headIssues);
-          mock.onGet(`${TEST_HOST}/base.json`).reply(200, baseIssues);
-
-          testAction(
-            actions.fetchReports,
-            diffFeatureFlagEnabled,
-            localState,
-            [{ type: types.REQUEST_REPORTS }],
-            [
-              {
-                payload: {
-                  newIssues: [mockParsedHeadIssues[0]],
-                  resolvedIssues: [mockParsedBaseIssues[0]],
-                },
-                type: 'receiveReportsSuccess',
-              },
-            ],
-            done,
-          );
-        });
-      });
-
-      describe('on error', () => {
-        it('commits REQUEST_REPORTS and dispatches receiveReportsError', (done) => {
-          mock.onGet(`${TEST_HOST}/head.json`).reply(500);
-
-          testAction(
-            actions.fetchReports,
-            diffFeatureFlagEnabled,
-            localState,
-            [{ type: types.REQUEST_REPORTS }],
-            [{ type: 'receiveReportsError', payload: expect.any(Error) }],
-            done,
-          );
-        });
-      });
-
-      describe('with no base path', () => {
-        it('commits REQUEST_REPORTS and dispatches receiveReportsError', (done) => {
-          localState.basePath = null;
-
-          testAction(
-            actions.fetchReports,
-            diffFeatureFlagEnabled,
-            localState,
-            [{ type: types.REQUEST_REPORTS }],
-            [{ type: 'receiveReportsError' }],
-            done,
-          );
-        });
+        testAction(
+          actions.fetchReports,
+          null,
+          localState,
+          [{ type: types.REQUEST_REPORTS }],
+          [{ type: 'receiveReportsError' }],
+          done,
+        );
       });
     });
   });

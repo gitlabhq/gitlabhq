@@ -586,13 +586,15 @@ RSpec.describe Projects::IssuesController do
   end
 
   describe 'PUT #update' do
+    let(:issue_params) { { title: 'New title' } }
+
     subject do
       put :update,
         params: {
           namespace_id: project.namespace,
           project_id: project,
           id: issue.to_param,
-          issue: { title: 'New title' }
+          issue: issue_params
         },
         format: :json
     end
@@ -612,6 +614,17 @@ RSpec.describe Projects::IssuesController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(issue.reload.title).to eq('New title')
+      end
+
+      context 'with issue_type param' do
+        let(:issue_params) { { issue_type: 'incident' } }
+
+        it 'permits the parameter' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(issue.reload.issue_type).to eql('incident')
+        end
       end
 
       context 'when the SpamVerdictService disallows' do

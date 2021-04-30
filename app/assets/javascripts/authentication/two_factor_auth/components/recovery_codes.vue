@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlButton, GlAlert } from '@gitlab/ui';
+import { GlSprintf, GlButton, GlAlert, GlCard } from '@gitlab/ui';
 import Mousetrap from 'mousetrap';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -34,7 +34,7 @@ export default {
   recoveryCodeDownloadFilename: RECOVERY_CODE_DOWNLOAD_FILENAME,
   i18n,
   mousetrap: null,
-  components: { GlSprintf, GlButton, GlAlert, ClipboardButton },
+  components: { GlSprintf, GlButton, GlAlert, ClipboardButton, GlCard },
   mixins: [Tracking.mixin()],
   props: {
     codes: {
@@ -116,8 +116,8 @@ export default {
       </gl-sprintf>
     </p>
 
-    <div
-      class="codes-to-print gl-my-5 gl-p-5 gl-border-solid gl-border-1 gl-border-gray-100 gl-rounded-base"
+    <gl-card
+      class="codes-to-print gl-my-5"
       data-testid="recovery-codes"
       data-qa-selector="codes_content"
     >
@@ -126,7 +126,7 @@ export default {
           <span class="gl-font-monospace" data-qa-selector="code_content">{{ code }}</span>
         </li>
       </ul>
-    </div>
+    </gl-card>
     <div class="gl-my-n2 gl-mx-n2 gl-display-flex gl-flex-wrap">
       <div class="gl-p-2">
         <clipboard-button

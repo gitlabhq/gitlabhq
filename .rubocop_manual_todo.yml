@@ -1366,7 +1366,6 @@ RSpec/AnyInstanceOf:
     - 'spec/uploaders/workers/object_storage/migrate_uploads_worker_spec.rb'
     - 'spec/views/layouts/_head.html.haml_spec.rb'
     - 'spec/views/projects/artifacts/_artifact.html.haml_spec.rb'
-    - 'spec/views/shared/runners/show.html.haml_spec.rb'
     - 'spec/workers/archive_trace_worker_spec.rb'
     - 'spec/workers/build_coverage_worker_spec.rb'
     - 'spec/workers/build_hooks_worker_spec.rb'

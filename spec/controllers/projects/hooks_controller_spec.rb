@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Projects::HooksController do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+
+  let(:user) { project.owner }
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -17,6 +17,56 @@ RSpec.describe Projects::HooksController do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
+    end
+  end
+
+  describe '#edit' do
+    let_it_be(:hook) { create(:project_hook, project: project) }
+
+    let(:params) do
+      { namespace_id: project.namespace, project_id: project, id: hook.id }
+    end
+
+    render_views
+
+    it 'does not error if the hook cannot be found' do
+      get :edit, params: params.merge(id: non_existing_record_id)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'assigns hook_logs' do
+      get :edit, params: params
+
+      expect(assigns[:hook]).to be_present
+      expect(assigns[:hook_logs]).to be_empty
+      it_renders_correctly
+    end
+
+    it 'handles when logs are present' do
+      create_list(:web_hook_log, 3, web_hook: hook)
+
+      get :edit, params: params
+
+      expect(assigns[:hook]).to be_present
+      expect(assigns[:hook_logs].count).to eq 3
+      it_renders_correctly
+    end
+
+    it 'can paginate logs' do
+      create_list(:web_hook_log, 21, web_hook: hook)
+
+      get :edit, params: params.merge(page: 2)
+
+      expect(assigns[:hook]).to be_present
+      expect(assigns[:hook_logs].count).to eq 1
+      it_renders_correctly
+    end
+
+    def it_renders_correctly
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:edit)
+      expect(response).to render_template('projects/hook_logs/_index')
     end
   end
 

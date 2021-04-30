@@ -770,6 +770,29 @@ argument :title, GraphQL::STRING_TYPE,
           description: copy_field_description(Types::MergeRequestType, :title)
 ```
 
+### Documentation references
+
+Sometimes we want to refer to external URLs in our descriptions. To make this
+easier, and provide proper markup in the generated reference documentation, we
+provide a `see` property on fields. For example:
+
+```ruby
+field :genus,
+      type: GraphQL::STRING_TYPE,
+      null: true,
+      description: 'A taxonomic genus.'
+      see: { 'Wikipedia page on genera' => 'https://wikipedia.org/wiki/Genus' }
+```
+
+This will render in our documentation as:
+
+```markdown
+A taxonomic genus. See: [Wikipedia page on genera](https://wikipedia.org/wiki/Genus)
+```
+
+Multiple documentation references can be provided. The syntax for this property
+is a `HashMap` where the keys are textual descriptions, and the values are URLs.
+
 ## Authorization
 
 See: [GraphQL Authorization](graphql_guide/authorization.md)

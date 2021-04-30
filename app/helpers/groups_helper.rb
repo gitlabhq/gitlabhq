@@ -26,6 +26,8 @@ module GroupsHelper
       applications#show
       applications#edit
       packages_and_registries#index
+      groups/runners#show
+      groups/runners#edit
     ]
   end
 

@@ -1,0 +1,5 @@
+---
+title: Move card in billing page to gl-card utility class
+merge_request: 59138
+author: Yogi (@yo)
+type: changed

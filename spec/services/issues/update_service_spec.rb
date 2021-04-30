@@ -282,7 +282,14 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'filters out params that cannot be set without the :admin_issue permission' do
-          described_class.new(project, guest, opts.merge(confidential: true)).execute(issue)
+          described_class.new(
+            project,
+            guest,
+            opts.merge(
+              confidential: true,
+              issue_type: 'test_case'
+            )
+          ).execute(issue)
 
           expect(issue).to be_valid
           expect(issue.title).to eq 'New title'
@@ -293,6 +300,7 @@ RSpec.describe Issues::UpdateService, :mailer do
           expect(issue.due_date).to be_nil
           expect(issue.discussion_locked).to be_falsey
           expect(issue.confidential).to be_falsey
+          expect(issue.issue_type).to eql('issue')
         end
       end
 

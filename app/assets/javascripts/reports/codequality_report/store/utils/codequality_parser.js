@@ -1,5 +1,3 @@
-import CodeQualityComparisonWorker from '../../workers/codequality_comparison_worker';
-
 export const parseCodeclimateMetrics = (issues = [], path = '') => {
   return issues.map((issue) => {
     const parsedIssue = {
@@ -25,19 +23,5 @@ export const parseCodeclimateMetrics = (issues = [], path = '') => {
     }
 
     return parsedIssue;
-  });
-};
-
-export const doCodeClimateComparison = (headIssues, baseIssues) => {
-  // Do these comparisons in worker threads to avoid blocking the main thread
-  return new Promise((resolve, reject) => {
-    const worker = new CodeQualityComparisonWorker();
-    worker.addEventListener('message', ({ data }) =>
-      data.newIssues && data.resolvedIssues ? resolve(data) : reject(data),
-    );
-    worker.postMessage({
-      headIssues,
-      baseIssues,
-    });
   });
 };

@@ -170,7 +170,7 @@
                 %span
                   = _('Repository')
 
-            = nav_link(controller: :ci_cd) do
+            = nav_link(controller: [:ci_cd, 'groups/runners']) do
               = link_to group_settings_ci_cd_path(@group), title: _('CI/CD') do
                 %span
                   = _('CI/CD')

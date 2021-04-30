@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
@@ -18,6 +18,7 @@ export default {
   },
   computed: {
     ...mapState(['showDropdownContentsCreateView']),
+    ...mapGetters(['isDropdownVariantSidebar']),
     dropdownContentsView() {
       if (this.showDropdownContentsCreateView) {
         return 'dropdown-contents-create-view';
@@ -25,11 +26,8 @@ export default {
       return 'dropdown-contents-labels-view';
     },
     directionStyle() {
-      if (this.renderOnTop) {
-        return { bottom: '100%' };
-      }
-
-      return {};
+      const bottom = this.isDropdownVariantSidebar ? '3rem' : '2rem';
+      return this.renderOnTop ? { bottom } : {};
     },
   },
 };
@@ -37,7 +35,7 @@ export default {
 
 <template>
   <div
-    class="labels-select-dropdown-contents w-100 mt-1 mb-3 py-2 rounded-top rounded-bottom position-absolute"
+    class="labels-select-dropdown-contents gl-w-full gl-my-2 gl-py-3 gl-rounded-base gl-absolute"
     data-qa-selector="labels_dropdown_content"
     :style="directionStyle"
   >

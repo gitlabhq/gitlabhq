@@ -1037,7 +1037,7 @@ we felt we cannot assume this is true everywhere.
 The cache needs a directory to store its files in. This directory
 should be:
 
-- In a filesystem with enough space. If the cache filesystem runs out of space, all
+- In a file system with enough space. If the cache file system runs out of space, all
   fetches start failing.
 - On a disk with enough IO bandwidth. If the cache disk runs out of IO bandwidth, all
   fetches, and probably the entire server, slows down.
@@ -1052,8 +1052,8 @@ uses a unique random string as part of the cache filenames it creates. This mean
 - They do not reuse another process's files.
 
 While the default directory puts the cache files in the same
-filesystem as your repository data, this is not requirement. You can
-put the cache files on a different filesystem if that works better for
+file system as your repository data, this is not requirement. You can
+put the cache files on a different file system if that works better for
 your infrastructure.
 
 The amount of IO bandwidth required from the disk depends on:
@@ -1157,7 +1157,7 @@ The following cache metrics are available.
 
 |Metric|Type|Labels|Description|
 |:---|:---|:---|:---|
-|`gitaly_pack_objects_cache_enabled`|gauge|`dir`,`max_age`|Set to `1` when the cache is enabled via the Gitaly config file|
+|`gitaly_pack_objects_cache_enabled`|gauge|`dir`,`max_age`|Set to `1` when the cache is enabled via the Gitaly configuration file|
 |`gitaly_pack_objects_cache_lookups_total`|counter|`result`|Hit/miss counter for cache lookups|
 |`gitaly_pack_objects_generated_bytes_total`|counter||Number of bytes written into the cache|
 |`gitaly_pack_objects_served_bytes_total`|counter||Number of bytes read from the cache|

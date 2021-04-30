@@ -9956,10 +9956,7 @@ msgstr ""
 msgid "DORA4Metrics|Days from merge to deploy"
 msgstr ""
 
-msgid "DORA4Metrics|Deployments"
-msgstr ""
-
-msgid "DORA4Metrics|Deployments charts"
+msgid "DORA4Metrics|Deployment frequency"
 msgstr ""
 
 msgid "DORA4Metrics|Lead time"
@@ -9971,19 +9968,19 @@ msgstr ""
 msgid "DORA4Metrics|No merge requests were deployed during this period"
 msgstr ""
 
-msgid "DORA4Metrics|Something went wrong while getting deployment frequency data"
+msgid "DORA4Metrics|Number of deployments"
+msgstr ""
+
+msgid "DORA4Metrics|Something went wrong while getting deployment frequency data."
 msgstr ""
 
 msgid "DORA4Metrics|Something went wrong while getting lead time data."
 msgstr ""
 
-msgid "DORA4Metrics|These charts display the frequency of deployments to the production environment, as part of the DORA 4 metrics. The environment must be named %{codeStart}production%{codeEnd} for its data to appear in these charts."
+msgid "DORA4Metrics|The chart displays the frequency of deployments to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
 msgstr ""
 
-msgid "DORA4Metrics|These charts display the median time between a merge request being merged and deployed to production, as part of the DORA 4 metrics."
-msgstr ""
-
-msgid "DORA4|Lead time charts"
+msgid "DORA4Metrics|The chart displays the median time between a merge request being merged and deployed to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
 msgstr ""
 
 msgid "Dashboard"
@@ -10988,6 +10985,9 @@ msgid "Deploying to AWS is easy with GitLab"
 msgstr ""
 
 msgid "Deployment Frequency"
+msgstr ""
+
+msgid "Deployment frequency"
 msgstr ""
 
 msgid "Deployments"
@@ -18951,6 +18951,9 @@ msgid "Lead"
 msgstr ""
 
 msgid "Lead Time"
+msgstr ""
+
+msgid "Lead time"
 msgstr ""
 
 msgid "Learn CI/CD syntax"
@@ -35806,6 +35809,15 @@ msgid "WebIDE|You need permission to edit files directly in this project. Fork t
 msgstr ""
 
 msgid "WebIDE|You need permission to edit files directly in this project. Go to your fork to make changes and submit a merge request."
+msgstr ""
+
+msgid "WebexTeamsService|Send notifications about project events to Webex Teams."
+msgstr ""
+
+msgid "WebexTeamsService|Send notifications about project events to a Webex Teams conversation. %{docs_link}"
+msgstr ""
+
+msgid "WebexTeamsService|Webex Teams"
 msgstr ""
 
 msgid "Webhook"

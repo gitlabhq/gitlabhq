@@ -83,12 +83,13 @@ export default {
       const highlightedLabel = this.$refs.labelsListContainer.querySelector('.is-focused');
 
       if (highlightedLabel) {
-        const rect = highlightedLabel.getBoundingClientRect();
-        if (rect.bottom > this.$refs.labelsListContainer.clientHeight) {
-          highlightedLabel.scrollIntoView(false);
-        }
-        if (rect.top < 0) {
-          highlightedLabel.scrollIntoView();
+        const container = this.$refs.labelsListContainer.getBoundingClientRect();
+        const label = highlightedLabel.getBoundingClientRect();
+
+        if (label.bottom > container.bottom) {
+          this.$refs.labelsListContainer.scrollTop += label.bottom - container.bottom;
+        } else if (label.top < container.top) {
+          this.$refs.labelsListContainer.scrollTop -= container.top - label.top;
         }
       }
     },

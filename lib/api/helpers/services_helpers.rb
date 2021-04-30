@@ -765,7 +765,7 @@ module API
               required: true,
               name: :webhook,
               type: String,
-              desc: 'The Webex Teams webhook. e.g. https://api.ciscospark.com/v1/webhooks/incoming/…'
+              desc: 'The Webex Teams webhook. For example, https://api.ciscospark.com/v1/webhooks/incoming/...'
             },
             chat_notification_events
           ].flatten

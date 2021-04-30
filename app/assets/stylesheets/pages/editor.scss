@@ -37,10 +37,6 @@
 
   .file-title {
     @include gl-font-monospace;
-    line-height: 35px;
-    padding-top: 7px;
-    padding-bottom: 7px;
-    display: flex;
   }
 
   .editor-ref {
@@ -69,19 +65,15 @@
   }
 
   .file-buttons {
-    display: flex;
     flex: 1;
-    justify-content: flex-end;
   }
 
   .soft-wrap-toggle {
-    display: inline-block;
-    vertical-align: top;
     font-family: $regular-font;
-    margin: 0 $btn-side-margin;
+    margin-left: $gl-padding-8;
 
     .soft-wrap {
-      display: block;
+      display: inline-flex;
     }
 
     .no-wrap {
@@ -94,7 +86,7 @@
       }
 
       .no-wrap {
-        display: block;
+        display: inline-flex;
       }
     }
   }
@@ -111,17 +103,21 @@
     .new-file-path {
       max-width: none;
       width: 100%;
-      margin-bottom: 3px;
+      margin-top: $gl-padding-8;
     }
 
     .file-buttons {
-      display: block;
+      display: flex;
+      flex-direction: column;
       width: 100%;
-      margin-bottom: 10px;
+
+      .md-header-toolbar {
+        margin: $gl-padding 0;
+      }
 
       .soft-wrap-toggle {
         width: 100%;
-        margin: 3px 0;
+        margin-left: 0;
       }
 
       @media(max-width: map-get($grid-breakpoints, md)-1) {

@@ -723,6 +723,8 @@ module ProjectsHelper
       badges#index
       pages#show
       packages_and_registries#index
+      projects/runners#show
+      projects/runners#edit
     ]
   end
 

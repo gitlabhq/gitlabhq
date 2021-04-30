@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'shared/runners/show.html.haml' do
+RSpec.describe 'shared/runners/_runner_details.html.haml' do
   include PageLayoutHelper
 
   let(:runner) do
@@ -14,7 +14,7 @@ RSpec.describe 'shared/runners/show.html.haml' do
   end
 
   before do
-    assign(:runner, runner)
+    allow(view).to receive(:runner) { runner }
   end
 
   subject do
@@ -24,7 +24,7 @@ RSpec.describe 'shared/runners/show.html.haml' do
 
   describe 'Page title' do
     before do
-      expect_any_instance_of(PageLayoutHelper).to receive(:page_title).with("#{runner.description} ##{runner.id}", 'Runners')
+      expect(view).to receive(:page_title).with("##{runner.id} (#{runner.short_sha})")
     end
 
     it 'sets proper page title' do
@@ -147,7 +147,7 @@ RSpec.describe 'shared/runners/show.html.haml' do
 
     context 'when runner have already contacted' do
       let(:runner) { create(:ci_runner, contacted_at: DateTime.now - 6.days) }
-      let(:expected_contacted_at) { I18n.localize(runner.contacted_at, format: "%b %d, %Y") }
+      let(:expected_contacted_at) { I18n.l(runner.contacted_at, format: "%b %d, %Y") }
 
       it { is_expected.to have_content("Last contact #{expected_contacted_at}") }
     end

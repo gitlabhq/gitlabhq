@@ -600,7 +600,6 @@ Rails/ShortI18n:
   Exclude:
     - 'app/models/project_services/chat_message/pipeline_message.rb'
     - 'app/uploaders/content_type_whitelist.rb'
-    - 'spec/views/shared/runners/show.html.haml_spec.rb'
 
 # Offense count: 1144
 # Configuration parameters: ForbiddenMethods, AllowedMethods.

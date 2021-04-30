@@ -52,7 +52,7 @@ The following table shows the supported metrics, at which level they are support
 | --------------- | -----------               | ---------------                      | ----------                                      | -------                                                                               |
 | `deployment_frequency`    | Project-level       | [13.7+](../../api/dora/metrics.md)  | [13.8+](#deployment-frequency-charts) | The [old API endopint](../../api/dora4_project_analytics.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10. |
 | `deployment_frequency`    | Group-level     | [13.10+](../../api/dora/metrics.md) | To be supported  |                                                                                       |
-| `lead_time_for_changes`   | Project-level      | [13.10+](../../api/dora/metrics.md) | To be supported  | Unit in seconds. Aggregation method is median.                                                                    |
+| `lead_time_for_changes`   | Project-level      | [13.10+](../../api/dora/metrics.md) | [13.11+](#lead-time-charts)  | Unit in seconds. Aggregation method is median.                                                                    |
 | `lead_time_for_changes`   | Group-level     |  [13.10+](../../api/dora/metrics.md) | To be supported  | Unit in seconds. Aggregation method is median.                                                                    |
 | `change_failure_rate`     | Project/Group-level   |  To be supported                      | To be supported  |                                                                                       |
 | `time_to_restore_service` | Project/Group-level   |  To be supported                      | To be supported  |                                                                                       |
@@ -61,9 +61,10 @@ The following table shows the supported metrics, at which level they are support
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.8.
 
-The **Analytics > CI/CD Analytics** page shows information about the deployment frequency to the
-`production` environment. The environment **must** be named `production` for its deployment
-information to appear on the graphs.
+The **Analytics > CI/CD Analytics** page shows information about the deployment
+frequency to the `production` environment. The environment must be part of the
+[production deployment tier](../../ci/environments/index.md#deployment-tier-of-environments)
+for its deployment information to appear on the graphs.
 
 ![Deployment frequency](img/deployment_frequency_chart_v13_8.png)
 

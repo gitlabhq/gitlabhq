@@ -40,7 +40,7 @@ RSpec.describe 'List issue resource label events', :js do
 
         labels.each { |label| click_link label }
 
-        click_on 'Edit'
+        send_keys(:escape)
         wait_for_requests
       end
     end
