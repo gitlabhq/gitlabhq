@@ -22571,6 +22571,12 @@ msgstr ""
 msgid "OnCallSchedules|The schedule could not be updated. Please try again."
 msgstr ""
 
+msgid "OnCallSchedules|To create an escalation policy that defines which schedule is used when, visit the %{linkStart}escalation policy%{linkEnd} page."
+msgstr ""
+
+msgid "OnCallSchedules|To create an escalation policy using this schedule, visit the %{linkStart}escalation policy%{linkEnd} page."
+msgstr ""
+
 msgid "OnCallSchedules|Try adding a rotation"
 msgstr ""
 
@@ -22586,7 +22592,7 @@ msgstr ""
 msgid "OnCallSchedules|You are currently a part of:"
 msgstr ""
 
-msgid "OnCallSchedules|Your schedule has been successfully created and all alerts from this project will now be routed to this schedule. Currently, only one schedule can be created per project. More coming soon! To add individual users to this schedule, use the add a rotation button."
+msgid "OnCallSchedules|Your schedule has been successfully created. To add individual users to this schedule, use the add a rotation button."
 msgstr ""
 
 msgid "OnDemandScans|Could not fetch scanner profiles. Please refresh the page, or try again later."

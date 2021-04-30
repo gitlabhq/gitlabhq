@@ -1,7 +1,0 @@
-- return unless can?(current_user, :read_environment, @project)
-
-- if project_nav_tab? :settings
-  = nav_link(controller: :tracings, action: [:show]) do
-    = link_to project_tracing_path(@project), title: _('Tracing') do
-      %span
-        = _('Tracing')

@@ -10,7 +10,7 @@ class InitializeConversionOfCiBuildNeedsToBigint < ActiveRecord::Migration[6.0]
   def down
     trigger_name = rename_trigger_name(:ci_build_needs, :build_id, :build_id_convert_to_bigint)
 
-    remove_rename_triggers_for_postgresql :ci_build_needs, trigger_name
+    remove_rename_triggers :ci_build_needs, trigger_name
 
     remove_column :ci_build_needs, :build_id_convert_to_bigint
   end

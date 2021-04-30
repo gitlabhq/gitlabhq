@@ -1,0 +1,5 @@
+---
+title: Add "active" filter to deploy tokens API
+merge_request: 59582
+author: Devin Christensen
+type: added

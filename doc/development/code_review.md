@@ -39,7 +39,7 @@ or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/cod
 
 For approvals, we use the approval functionality found in the merge request
 widget. For reviewers, we use the [reviewer functionality](../user/project/merge_requests/getting_started.md#reviewer) in the sidebar.
-Reviewers can add their approval by [approving additionally](../user/project/merge_requests/approvals/index.md#adding-or-removing-an-approval).
+Reviewers can add their approval by [approving additionally](../user/project/merge_requests/approvals/index.md#approve-a-merge-request).
 
 Getting your merge request **merged** also requires a maintainer. If it requires
 more than one approval, the last maintainer to review and approve merges it.

@@ -12,20 +12,13 @@ module QA
 
             base.class_eval do
               include QA::Page::Project::SubMenus::Common
-
-              view 'app/views/layouts/nav/sidebar/_project_menus.html.haml' do
-                element :operations_link
-                element :operations_environments_link
-                element :operations_metrics_link
-                element :operations_incidents_link
-              end
             end
           end
 
           def go_to_operations_environments
             hover_operations do
               within_submenu do
-                click_element(:operations_environments_link)
+                click_element(:sidebar_menu_item_link, menu_item: 'Environments')
               end
             end
           end
@@ -33,7 +26,7 @@ module QA
           def go_to_operations_metrics
             hover_operations do
               within_submenu do
-                click_element(:operations_metrics_link)
+                click_element(:sidebar_menu_item_link, menu_item: 'Metrics')
               end
             end
           end
@@ -49,7 +42,7 @@ module QA
           def go_to_operations_incidents
             hover_operations do
               within_submenu do
-                click_element(:operations_incidents_link)
+                click_element(:sidebar_menu_item_link, menu_item: 'Incidents')
               end
             end
           end
@@ -58,8 +51,8 @@ module QA
 
           def hover_operations
             within_sidebar do
-              scroll_to_element(:operations_link)
-              find_element(:operations_link).hover
+              scroll_to_element(:sidebar_menu_link, menu_item: 'Operations')
+              find_element(:sidebar_menu_link, menu_item: 'Operations').hover
 
               yield
             end

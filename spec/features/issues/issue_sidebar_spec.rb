@@ -190,6 +190,7 @@ RSpec.describe 'Issue Sidebar' do
             end
 
             find('.js-right-sidebar').click
+            wait_for_requests
 
             open_assignees_dropdown
 

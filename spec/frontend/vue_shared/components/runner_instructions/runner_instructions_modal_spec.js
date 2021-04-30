@@ -1,4 +1,5 @@
-import { GlAlert, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -18,6 +19,24 @@ import {
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
+let resizeCallback;
+const MockResizeObserver = {
+  bind(el, { value }) {
+    resizeCallback = value;
+  },
+  mockResize(size) {
+    bp.getBreakpointSize.mockReturnValue(size);
+    resizeCallback();
+  },
+  unbind() {
+    resizeCallback = null;
+  },
+};
+
+localVue.directive('gl-resize-observer', MockResizeObserver);
+
+jest.mock('@gitlab/ui/dist/utils');
+
 describe('RunnerInstructionsModal component', () => {
   let wrapper;
   let fakeApollo;
@@ -27,7 +46,8 @@ describe('RunnerInstructionsModal component', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findPlatformButtons = () => wrapper.findAllByTestId('platform-button');
+  const findPlatformButtonGroup = () => wrapper.findByTestId('platform-buttons');
+  const findPlatformButtons = () => findPlatformButtonGroup().findAllComponents(GlButton);
   const findArchitectureDropdownItems = () => wrapper.findAllByTestId('architecture-dropdown-item');
   const findBinaryInstructions = () => wrapper.findByTestId('binary-instructions');
   const findRegisterCommand = () => wrapper.findByTestId('register-command');
@@ -138,6 +158,22 @@ describe('RunnerInstructionsModal component', () => {
       const command = findRegisterCommand().text();
 
       expect(command).toBe(registerInstructions);
+    });
+  });
+
+  describe('when the modal resizes', () => {
+    it('to an xs viewport', async () => {
+      MockResizeObserver.mockResize('xs');
+      await nextTick();
+
+      expect(findPlatformButtonGroup().attributes('vertical')).toBeTruthy();
+    });
+
+    it('to a non-xs viewport', async () => {
+      MockResizeObserver.mockResize('sm');
+      await nextTick();
+
+      expect(findPlatformButtonGroup().props('vertical')).toBeFalsy();
     });
   });
 

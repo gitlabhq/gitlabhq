@@ -9,7 +9,9 @@ import {
   GlIcon,
   GlLoadingIcon,
   GlSkeletonLoader,
+  GlResizeObserverDirective,
 } from '@gitlab/ui';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { isEmpty } from 'lodash';
 import { __, s__ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
@@ -32,6 +34,9 @@ export default {
     GlLoadingIcon,
     GlSkeletonLoader,
     ModalCopyButton,
+  },
+  directives: {
+    GlResizeObserver: GlResizeObserverDirective,
   },
   props: {
     modalId: {
@@ -87,6 +92,7 @@ export default {
       selectedArchitecture: null,
       showAlert: false,
       instructions: {},
+      platformsButtonGroupVertical: false,
     };
   },
   computed: {
@@ -127,6 +133,13 @@ export default {
     toggleAlert(state) {
       this.showAlert = state;
     },
+    onPlatformsButtonResize() {
+      if (bp.getBreakpointSize() === 'xs') {
+        this.platformsButtonGroupVertical = true;
+      } else {
+        this.platformsButtonGroupVertical = false;
+      }
+    },
   },
   i18n: {
     installARunner: s__('Runners|Install a runner'),
@@ -159,17 +172,23 @@ export default {
       <h5>
         {{ __('Environment') }}
       </h5>
-      <gl-button-group class="gl-mb-3">
-        <gl-button
-          v-for="platform in platforms"
-          :key="platform.name"
-          :selected="selectedPlatform && selectedPlatform.name === platform.name"
-          data-testid="platform-button"
-          @click="selectPlatform(platform)"
+      <div v-gl-resize-observer="onPlatformsButtonResize">
+        <gl-button-group
+          :vertical="platformsButtonGroupVertical"
+          :class="{ 'gl-w-full': platformsButtonGroupVertical }"
+          class="gl-mb-3"
+          data-testid="platform-buttons"
         >
-          {{ platform.humanReadableName }}
-        </gl-button>
-      </gl-button-group>
+          <gl-button
+            v-for="platform in platforms"
+            :key="platform.name"
+            :selected="selectedPlatform && selectedPlatform.name === platform.name"
+            @click="selectPlatform(platform)"
+          >
+            {{ platform.humanReadableName }}
+          </gl-button>
+        </gl-button-group>
+      </div>
     </template>
     <template v-if="hasArchitecureList">
       <template v-if="selectedPlatform">
@@ -190,7 +209,7 @@ export default {
             {{ architecture.name }}
           </gl-dropdown-item>
         </gl-dropdown>
-        <div class="gl-display-flex gl-align-items-center gl-mb-3">
+        <div class="gl-sm-display-flex gl-align-items-center gl-mb-3">
           <h5>{{ $options.i18n.downloadInstallBinary }}</h5>
           <gl-button
             class="gl-ml-auto"

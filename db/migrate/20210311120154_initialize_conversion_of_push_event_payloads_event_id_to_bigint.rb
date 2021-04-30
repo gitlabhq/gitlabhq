@@ -14,7 +14,7 @@ class InitializeConversionOfPushEventPayloadsEventIdToBigint < ActiveRecord::Mig
   def down
     trigger_name = rename_trigger_name(:push_event_payloads, :event_id, :event_id_convert_to_bigint)
 
-    remove_rename_triggers_for_postgresql :push_event_payloads, trigger_name
+    remove_rename_triggers :push_event_payloads, trigger_name
 
     remove_column :push_event_payloads, :event_id_convert_to_bigint
   end

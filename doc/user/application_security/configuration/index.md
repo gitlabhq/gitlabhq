@@ -49,3 +49,6 @@ You can configure the following security controls:
   - Click either **Enable** or **Configure** to use SAST for the current project. For more details, see [Configure SAST in the UI](../sast/index.md#configure-sast-in-the-ui).
 - DAST Profiles
   - Click **Manage** to manage the available DAST profiles used for on-demand scans. For more details, see [DAST on-demand scans](../dast/index.md#on-demand-scans).
+- Secret Detection
+  - Select **Configure via Merge Request** to create a merge request with the changes required to
+    enable Secret Detection. For more details, see [Enable Secret Detection via an automatic merge request](../secret_detection/index.md#enable-secret-detection-via-an-automatic-merge-request).

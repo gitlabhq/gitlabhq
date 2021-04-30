@@ -404,14 +404,6 @@ module ProjectsHelper
       nav_tabs << :pipelines
     end
 
-    if can_view_operations_tab?(current_user, project)
-      nav_tabs << :operations
-    end
-
-    if can_view_product_analytics?(current_user, project)
-      nav_tabs << :product_analytics
-    end
-
     tab_ability_map.each do |tab, ability|
       if can?(current_user, ability, project)
         nav_tabs << tab
@@ -468,32 +460,6 @@ module ProjectsHelper
       feature_flags:      :read_feature_flag,
       analytics:          :read_analytics
     }
-  end
-
-  def view_operations_tab_ability
-    [
-      :metrics_dashboard,
-      :read_alert_management_alert,
-      :read_environment,
-      :read_issue,
-      :read_sentry_issue,
-      :read_cluster,
-      :read_feature_flag,
-      :read_terraform_state
-    ]
-  end
-
-  def can_view_operations_tab?(current_user, project)
-    return false unless project.feature_available?(:operations, current_user)
-
-    view_operations_tab_ability.any? do |ability|
-      can?(current_user, ability, project)
-    end
-  end
-
-  def can_view_product_analytics?(current_user, project)
-    Feature.enabled?(:product_analytics, project) &&
-      can?(current_user, :read_product_analytics, project)
   end
 
   def search_tab_ability_map
@@ -560,14 +526,6 @@ module ProjectsHelper
       gitlab_config.protocol
     else
       'ssh'
-    end
-  end
-
-  def sidebar_operations_link_path(project = @project)
-    if can?(current_user, :read_environment, project)
-      metrics_project_environments_path(project)
-    else
-      project_feature_flags_path(project)
     end
   end
 

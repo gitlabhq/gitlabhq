@@ -477,43 +477,6 @@ RSpec.describe ProjectsHelper do
     end
   end
 
-  describe '#can_view_operations_tab?' do
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).and_return(false)
-    end
-
-    subject { helper.send(:can_view_operations_tab?, user, project) }
-
-    where(:ability) do
-      [
-        :metrics_dashboard,
-        :read_alert_management_alert,
-        :read_environment,
-        :read_issue,
-        :read_sentry_issue,
-        :read_cluster
-      ]
-    end
-
-    with_them do
-      it 'includes operations tab' do
-        allow(helper).to receive(:can?).with(user, ability, project).and_return(true)
-
-        is_expected.to be(true)
-      end
-
-      context 'when operations feature is disabled' do
-        it 'does not include operations tab' do
-          allow(helper).to receive(:can?).with(user, ability, project).and_return(true)
-          project.project_feature.update_attribute(:operations_access_level, ProjectFeature::DISABLED)
-
-          is_expected.to be(false)
-        end
-      end
-    end
-  end
-
   describe '#show_projects' do
     let(:projects) do
       Project.all

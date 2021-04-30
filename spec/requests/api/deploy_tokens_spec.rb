@@ -8,7 +8,11 @@ RSpec.describe API::DeployTokens do
   let_it_be(:project)       { create(:project, creator_id: creator.id) }
   let_it_be(:group)         { create(:group) }
   let!(:deploy_token) { create(:deploy_token, projects: [project]) }
+  let!(:revoked_deploy_token) { create(:deploy_token, projects: [project], revoked: true) }
+  let!(:expired_deploy_token) { create(:deploy_token, projects: [project], expires_at: '1988-01-11T04:33:04-0600') }
   let!(:group_deploy_token) { create(:deploy_token, :group, groups: [group]) }
+  let!(:revoked_group_deploy_token) { create(:deploy_token, :group, groups: [group], revoked: true) }
+  let!(:expired_group_deploy_token) { create(:deploy_token, :group, groups: [group], expires_at: '1988-01-11T04:33:04-0600') }
 
   describe 'GET /deploy_tokens' do
     subject do
@@ -36,8 +40,31 @@ RSpec.describe API::DeployTokens do
       it 'returns all deploy tokens' do
         subject
 
+        token_ids = json_response.map { |token| token['id'] }
         expect(response).to include_pagination_headers
         expect(response).to match_response_schema('public_api/v4/deploy_tokens')
+        expect(token_ids).to match_array([
+          deploy_token.id,
+          revoked_deploy_token.id,
+          expired_deploy_token.id,
+          group_deploy_token.id,
+          revoked_group_deploy_token.id,
+          expired_group_deploy_token.id
+        ])
+      end
+
+      context 'and active=true' do
+        it 'only returns active deploy tokens' do
+          get api('/deploy_tokens?active=true', user)
+
+          token_ids = json_response.map { |token| token['id'] }
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(token_ids).to match_array([
+            deploy_token.id,
+            group_deploy_token.id
+          ])
+        end
       end
     end
   end
@@ -82,7 +109,22 @@ RSpec.describe API::DeployTokens do
         subject
 
         token_ids = json_response.map { |token| token['id'] }
-        expect(token_ids).not_to include(other_deploy_token.id)
+        expect(token_ids).to match_array([
+          deploy_token.id,
+          expired_deploy_token.id,
+          revoked_deploy_token.id
+        ])
+      end
+
+      context 'and active=true' do
+        it 'only returns active deploy tokens for the project' do
+          get api("/projects/#{project.id}/deploy_tokens?active=true", user)
+
+          token_ids = json_response.map { |token| token['id'] }
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(token_ids).to match_array([deploy_token.id])
+        end
       end
     end
   end
@@ -119,8 +161,10 @@ RSpec.describe API::DeployTokens do
       it 'returns all deploy tokens for the group' do
         subject
 
+        token_ids = json_response.map { |token| token['id'] }
         expect(response).to include_pagination_headers
         expect(response).to match_response_schema('public_api/v4/deploy_tokens')
+        expect(token_ids.length).to be(3)
       end
 
       it 'does not return deploy tokens for other groups' do
@@ -128,6 +172,17 @@ RSpec.describe API::DeployTokens do
 
         token_ids = json_response.map { |token| token['id'] }
         expect(token_ids).not_to include(other_deploy_token.id)
+      end
+
+      context 'and active=true' do
+        it 'only returns active deploy tokens for the group' do
+          get api("/groups/#{group.id}/deploy_tokens?active=true", user)
+
+          token_ids = json_response.map { |token| token['id'] }
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(token_ids).to eql([group_deploy_token.id])
+        end
       end
     end
   end

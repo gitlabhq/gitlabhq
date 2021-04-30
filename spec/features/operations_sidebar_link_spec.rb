@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
   let_it_be_with_reload(:project) { create(:project, :internal, :repository) }
+
   let(:user) { create(:user) }
   let(:access_level) { ProjectFeature::PUBLIC }
   let(:role) { nil }
@@ -37,16 +38,16 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
   context 'user is not a member' do
     it 'has the correct `Operations` menu items', :aggregate_failures do
       expect(page).to have_selector('a.shortcuts-operations', text: 'Operations')
-      expect(page).to have_link(title: 'Incidents', href: project_incidents_path(project))
-      expect(page).to have_link(title: 'Environments', href: project_environments_path(project))
+      expect(page).to have_link('Incidents', href: project_incidents_path(project))
+      expect(page).to have_link('Environments', href: project_environments_path(project))
 
-      expect(page).not_to have_link(title: 'Metrics', href: project_metrics_dashboard_path(project))
-      expect(page).not_to have_link(title: 'Alerts', href: project_alert_management_index_path(project))
-      expect(page).not_to have_link(title: 'Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).not_to have_link(title: 'Product Analytics', href: project_product_analytics_path(project))
-      expect(page).not_to have_link(title: 'Serverless', href: project_serverless_functions_path(project))
-      expect(page).not_to have_link(title: 'Logs', href: project_logs_path(project))
-      expect(page).not_to have_link(title: 'Kubernetes', href: project_clusters_path(project))
+      expect(page).not_to have_link('Metrics', href: project_metrics_dashboard_path(project))
+      expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
+      expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project))
+      expect(page).not_to have_link('Product Analytics', href: project_product_analytics_path(project))
+      expect(page).not_to have_link('Serverless', href: project_serverless_functions_path(project))
+      expect(page).not_to have_link('Logs', href: project_logs_path(project))
+      expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
     context 'when operations project feature is PRIVATE' do
@@ -71,16 +72,16 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
 
     it 'has the correct `Operations` menu items' do
       expect(page).to have_selector('a.shortcuts-operations', text: 'Operations')
-      expect(page).to have_link(title: 'Incidents', href: project_incidents_path(project))
-      expect(page).to have_link(title: 'Environments', href: project_environments_path(project))
+      expect(page).to have_link('Incidents', href: project_incidents_path(project))
+      expect(page).to have_link('Environments', href: project_environments_path(project))
 
-      expect(page).not_to have_link(title: 'Metrics', href: project_metrics_dashboard_path(project))
-      expect(page).not_to have_link(title: 'Alerts', href: project_alert_management_index_path(project))
-      expect(page).not_to have_link(title: 'Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).not_to have_link(title: 'Product Analytics', href: project_product_analytics_path(project))
-      expect(page).not_to have_link(title: 'Serverless', href: project_serverless_functions_path(project))
-      expect(page).not_to have_link(title: 'Logs', href: project_logs_path(project))
-      expect(page).not_to have_link(title: 'Kubernetes', href: project_clusters_path(project))
+      expect(page).not_to have_link('Metrics', href: project_metrics_dashboard_path(project))
+      expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
+      expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project))
+      expect(page).not_to have_link('Product Analytics', href: project_product_analytics_path(project))
+      expect(page).not_to have_link('Serverless', href: project_serverless_functions_path(project))
+      expect(page).not_to have_link('Logs', href: project_logs_path(project))
+      expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
     it_behaves_like 'shows Operations menu based on the access level'
@@ -90,16 +91,16 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
     let(:role) { :reporter }
 
     it 'has the correct `Operations` menu items' do
-      expect(page).to have_link(title: 'Metrics', href: project_metrics_dashboard_path(project))
-      expect(page).to have_link(title: 'Incidents', href: project_incidents_path(project))
-      expect(page).to have_link(title: 'Environments', href: project_environments_path(project))
-      expect(page).to have_link(title: 'Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).to have_link(title: 'Product Analytics', href: project_product_analytics_path(project))
+      expect(page).to have_link('Metrics', href: project_metrics_dashboard_path(project))
+      expect(page).to have_link('Incidents', href: project_incidents_path(project))
+      expect(page).to have_link('Environments', href: project_environments_path(project))
+      expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
+      expect(page).to have_link('Product Analytics', href: project_product_analytics_path(project))
 
-      expect(page).not_to have_link(title: 'Alerts', href: project_alert_management_index_path(project))
-      expect(page).not_to have_link(title: 'Serverless', href: project_serverless_functions_path(project))
-      expect(page).not_to have_link(title: 'Logs', href: project_logs_path(project))
-      expect(page).not_to have_link(title: 'Kubernetes', href: project_clusters_path(project))
+      expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
+      expect(page).not_to have_link('Serverless', href: project_serverless_functions_path(project))
+      expect(page).not_to have_link('Logs', href: project_logs_path(project))
+      expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
     it_behaves_like 'shows Operations menu based on the access level'
@@ -109,16 +110,16 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
     let(:role) { :developer }
 
     it 'has the correct `Operations` menu items' do
-      expect(page).to have_link(title: 'Metrics', href: project_metrics_dashboard_path(project))
-      expect(page).to have_link(title: 'Alerts', href: project_alert_management_index_path(project))
-      expect(page).to have_link(title: 'Incidents', href: project_incidents_path(project))
-      expect(page).to have_link(title: 'Environments', href: project_environments_path(project))
-      expect(page).to have_link(title: 'Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).to have_link(title: 'Product Analytics', href: project_product_analytics_path(project))
-      expect(page).to have_link(title: 'Logs', href: project_logs_path(project))
+      expect(page).to have_link('Metrics', href: project_metrics_dashboard_path(project))
+      expect(page).to have_link('Alerts', href: project_alert_management_index_path(project))
+      expect(page).to have_link('Incidents', href: project_incidents_path(project))
+      expect(page).to have_link('Environments', href: project_environments_path(project))
+      expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
+      expect(page).to have_link('Product Analytics', href: project_product_analytics_path(project))
+      expect(page).to have_link('Logs', href: project_logs_path(project))
 
-      expect(page).not_to have_link(title: 'Serverless', href: project_serverless_functions_path(project))
-      expect(page).not_to have_link(title: 'Kubernetes', href: project_clusters_path(project))
+      expect(page).not_to have_link('Serverless', href: project_serverless_functions_path(project))
+      expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
     it_behaves_like 'shows Operations menu based on the access level'
@@ -128,15 +129,15 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
     let(:role) { :maintainer }
 
     it 'has the correct `Operations` menu items' do
-      expect(page).to have_link(title: 'Metrics', href: project_metrics_dashboard_path(project))
-      expect(page).to have_link(title: 'Alerts', href: project_alert_management_index_path(project))
-      expect(page).to have_link(title: 'Incidents', href: project_incidents_path(project))
-      expect(page).to have_link(title: 'Environments', href: project_environments_path(project))
-      expect(page).to have_link(title: 'Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).to have_link(title: 'Product Analytics', href: project_product_analytics_path(project))
-      expect(page).to have_link(title: 'Serverless', href: project_serverless_functions_path(project))
-      expect(page).to have_link(title: 'Logs', href: project_logs_path(project))
-      expect(page).to have_link(title: 'Kubernetes', href: project_clusters_path(project))
+      expect(page).to have_link('Metrics', href: project_metrics_dashboard_path(project))
+      expect(page).to have_link('Alerts', href: project_alert_management_index_path(project))
+      expect(page).to have_link('Incidents', href: project_incidents_path(project))
+      expect(page).to have_link('Environments', href: project_environments_path(project))
+      expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
+      expect(page).to have_link('Product Analytics', href: project_product_analytics_path(project))
+      expect(page).to have_link('Serverless', href: project_serverless_functions_path(project))
+      expect(page).to have_link('Logs', href: project_logs_path(project))
+      expect(page).to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
     it_behaves_like 'shows Operations menu based on the access level'
