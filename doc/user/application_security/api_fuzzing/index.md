@@ -128,8 +128,6 @@ Follow these steps to configure API fuzzing in GitLab with an OpenAPI specificat
      - template: API-Fuzzing.gitlab-ci.yml
    ```
 
-1. Add the configuration file [`gitlab-api-fuzzing-config.yml`](https://gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing/-/blob/master/gitlab-api-fuzzing-config.yml) to your repository's root as `.gitlab-api-fuzzing.yml`.
-
 1. The [configuration file](#configuration-files) has several testing profiles defined with varying
    amounts of fuzzing. We recommend that you start with the `Quick-10` profile. Testing with this
    profile completes quickly, allowing for easier configuration validation.
@@ -221,8 +219,6 @@ target API to test:
      - template: API-Fuzzing.gitlab-ci.yml
    ```
 
-1. Add the configuration file [`gitlab-api-fuzzing-config.yml`](https://gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing/-/blob/master/gitlab-api-fuzzing-config.yml) to your repository's root as `.gitlab-api-fuzzing.yml`.
-
 1. The [configuration file](#configuration-files) has several testing profiles defined with varying
    amounts of fuzzing. We recommend that you start with the `Quick-10` profile. Testing with this
    profile completes quickly, allowing for easier configuration validation.
@@ -311,9 +307,6 @@ information about the target API to test:
    include:
      - template: API-Fuzzing.gitlab-ci.yml
    ```
-
-1. Add the configuration file [`gitlab-api-fuzzing-config.yml`](https://gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing/-/blob/master/gitlab-api-fuzzing-config.yml)
-   to your repository's root as `.gitlab-api-fuzzing.yml`.
 
 1. The [configuration file](#configuration-files) has several testing profiles defined with varying
    amounts of fuzzing. We recommend that you start with the `Quick-10` profile. Testing with this

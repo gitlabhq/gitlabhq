@@ -6,8 +6,11 @@ module API
 
     RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
       .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
+    RELEASE_CLI_USER_AGENT = 'GitLab-release-cli'
 
     before { authorize_read_releases! }
+
+    after { track_release_event }
 
     feature_category :release_orchestration
 
@@ -17,6 +20,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a project releases' do
         detail 'This feature was introduced in GitLab 11.7.'
+        named 'get_releases'
         success Entities::Release
       end
       params do
@@ -34,6 +38,7 @@ module API
 
       desc 'Get a single project release' do
         detail 'This feature was introduced in GitLab 11.7.'
+        named 'get_release'
         success Entities::Release
       end
       params do
@@ -47,6 +52,7 @@ module API
 
       desc 'Create a new release' do
         detail 'This feature was introduced in GitLab 11.7.'
+        named 'create_release'
         success Entities::Release
       end
       params do
@@ -84,6 +90,7 @@ module API
 
       desc 'Update a release' do
         detail 'This feature was introduced in GitLab 11.7.'
+        named 'update_release'
         success Entities::Release
       end
       params do
@@ -112,6 +119,7 @@ module API
 
       desc 'Delete a release' do
         detail 'This feature was introduced in GitLab 11.7.'
+        named 'delete_release'
         success Entities::Release
       end
       params do
@@ -175,6 +183,21 @@ module API
 
       def log_release_milestones_updated_audit_event
         # extended in EE
+      end
+
+      def release_cli?
+        request.env['HTTP_USER_AGENT']&.include?(RELEASE_CLI_USER_AGENT) == true
+      end
+
+      def event_context
+        {
+          release_cli: release_cli?
+        }
+      end
+
+      def track_release_event
+        Gitlab::Tracking.event(options[:for].name, options[:route_options][:named],
+          project: user_project, user: current_user, **event_context)
       end
     end
   end
