@@ -3,6 +3,8 @@
 class UpdateExternalPullRequestsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :source_code_management
   weight 3
   loggable_arguments 2

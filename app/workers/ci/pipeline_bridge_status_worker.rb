@@ -5,6 +5,7 @@ module Ci
     include ::ApplicationWorker
     include ::PipelineQueue
 
+    sidekiq_options retry: 3
     urgency :high
     worker_resource_boundary :cpu
 

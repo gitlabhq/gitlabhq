@@ -5,6 +5,8 @@ module Packages
     class CacheUpdateWorker
       include ApplicationWorker
 
+      sidekiq_options retry: 3
+
       feature_category :package_registry
 
       idempotent!

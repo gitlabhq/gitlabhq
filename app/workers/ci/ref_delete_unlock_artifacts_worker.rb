@@ -3,6 +3,8 @@
 module Ci
   class RefDeleteUnlockArtifactsWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include PipelineBackgroundQueue
 
     idempotent!

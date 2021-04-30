@@ -426,6 +426,7 @@ RSpec.describe 'Admin updates settings' do
           fill_in 'IPs per user', with: 15
           check 'Enable Spam Check via external API endpoint'
           fill_in 'URL of the external Spam Check endpoint', with: 'https://www.example.com/spamcheck'
+          fill_in 'Spam Check API Key', with: 'SPAM_CHECK_API_KEY'
           click_button 'Save changes'
         end
 

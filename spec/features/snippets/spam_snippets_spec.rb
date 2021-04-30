@@ -18,6 +18,7 @@ RSpec.describe 'snippet editor with spam', skip: "Will be handled in https://git
     Gitlab::CurrentSettings.update!(
       akismet_enabled: true,
       akismet_api_key: 'testkey',
+      spam_check_api_key: 'testkey',
       recaptcha_enabled: true,
       recaptcha_site_key: 'test site key',
       recaptcha_private_key: 'test private key'

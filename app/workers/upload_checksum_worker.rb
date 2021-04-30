@@ -3,6 +3,8 @@
 class UploadChecksumWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :geo_replication
 
   def perform(upload_id)

@@ -3,6 +3,8 @@
 module Ci
   class DailyBuildGroupReportResultsWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include PipelineBackgroundQueue
 
     feature_category :code_testing

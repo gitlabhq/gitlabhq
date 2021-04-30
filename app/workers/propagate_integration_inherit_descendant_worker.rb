@@ -3,6 +3,8 @@
 class PropagateIntegrationInheritDescendantWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :integrations
   idempotent!
 

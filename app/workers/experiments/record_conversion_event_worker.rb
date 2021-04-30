@@ -4,6 +4,8 @@ module Experiments
   class RecordConversionEventWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :users
     urgency :low
 

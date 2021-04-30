@@ -3,6 +3,8 @@
 module RepositoryCheck
   class SingleRepositoryWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include RepositoryCheckQueue
 
     def perform(project_id)

@@ -3,6 +3,8 @@
 class ProjectServiceWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   sidekiq_options dead: false
   feature_category :integrations
   worker_has_external_dependencies!

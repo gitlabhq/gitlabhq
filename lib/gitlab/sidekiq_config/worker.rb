@@ -6,10 +6,9 @@ module Gitlab
       include Comparable
 
       attr_reader :klass
-      delegate :feature_category_not_owned?, :get_feature_category, :get_tags,
-               :get_urgency, :get_weight, :get_worker_resource_boundary,
-               :idempotent?, :queue, :queue_namespace,
-               :worker_has_external_dependencies?,
+      delegate :feature_category_not_owned?, :get_feature_category, :get_sidekiq_options,
+               :get_tags, :get_urgency, :get_weight, :get_worker_resource_boundary,
+               :idempotent?, :queue, :queue_namespace, :worker_has_external_dependencies?,
                to: :klass
 
       def initialize(klass, ee:)
@@ -64,6 +63,10 @@ module Gitlab
 
       def queue_and_weight
         [queue, get_weight]
+      end
+
+      def retries
+        get_sidekiq_options['retry']
       end
     end
   end

@@ -5,6 +5,8 @@ module Gitlab
     module Stage
       class StartImportWorker # rubocop:disable Scalability/IdempotentWorker
         include ApplicationWorker
+
+        sidekiq_options retry: 3
         include ProjectStartImport
         include ProjectImportOptions
         include Gitlab::JiraImport::QueueOptions

@@ -3,6 +3,8 @@
 module Ci
   class BuildTraceChunkFlushWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include PipelineBackgroundQueue
 
     deduplicate :until_executed

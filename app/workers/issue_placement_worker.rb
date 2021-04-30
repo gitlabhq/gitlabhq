@@ -3,6 +3,8 @@
 class IssuePlacementWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   idempotent!
   deduplicate :until_executed, including_scheduled: true
   feature_category :issue_tracking

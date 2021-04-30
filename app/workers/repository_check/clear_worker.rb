@@ -3,6 +3,8 @@
 module RepositoryCheck
   class ClearWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include RepositoryCheckQueue
 
     # rubocop: disable CodeReuse/ActiveRecord

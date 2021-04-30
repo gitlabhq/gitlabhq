@@ -3,6 +3,8 @@
 class IssueRebalancingWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   idempotent!
   urgency :low
   feature_category :issue_tracking

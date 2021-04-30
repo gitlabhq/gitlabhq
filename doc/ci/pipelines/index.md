@@ -353,9 +353,10 @@ you visualize the entire pipeline, including all cross-project inter-dependencie
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298973) in GitLab 13.12.
 > - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-job-dependency-view). **(FREE SELF)**
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 13.12.
+> - Enabled on GitLab.com.
+> - Recommended for production use.
+> - To disable in GitLab self-managed instances, ask a GitLab administrator to [disable it](#enable-or-disable-job-dependency-view). **(FREE SELF)**
 
 This in-development feature might not be available for your use. There can be
 [risks when enabling features still in development](../../user/feature_flags.md#risks-when-enabling-features-still-in-development).
@@ -383,10 +384,9 @@ To see the full `needs` dependency tree for a job, hover over it:
 
 #### Enable or disable job dependency view **(FREE SELF)**
 
-The job dependency view is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+The job dependency view is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
+can disable it.
 
 To enable it:
 

@@ -3,6 +3,8 @@
 class UpdateHighestRoleWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :utilization
   urgency :high
   weight 2

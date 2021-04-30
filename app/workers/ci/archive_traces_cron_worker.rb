@@ -3,6 +3,8 @@
 module Ci
   class ArchiveTracesCronWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     feature_category :continuous_integration

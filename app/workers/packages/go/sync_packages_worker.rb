@@ -4,6 +4,8 @@ module Packages
   module Go
     class SyncPackagesWorker
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include Gitlab::Golang
 
       queue_namespace :package_repositories

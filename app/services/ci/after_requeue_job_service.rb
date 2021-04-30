@@ -4,7 +4,7 @@ module Ci
   class AfterRequeueJobService < ::BaseService
     def execute(processable)
       process_subsequent_jobs(processable)
-      reset_ancestor_bridges(processable)
+      reset_source_bridge(processable)
     end
 
     private
@@ -15,8 +15,8 @@ module Ci
       end
     end
 
-    def reset_ancestor_bridges(processable)
-      processable.pipeline.reset_ancestor_bridges!
+    def reset_source_bridge(processable)
+      processable.pipeline.reset_source_bridge!(current_user)
     end
 
     def process(processable)

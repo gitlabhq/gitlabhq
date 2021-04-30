@@ -15,6 +15,36 @@ All workers should include `ApplicationWorker` instead of `Sidekiq::Worker`,
 which adds some convenience methods and automatically sets the queue based on
 the worker's name.
 
+## Retries
+
+Sidekiq defaults to using [25
+retries](https://github.com/mperham/sidekiq/wiki/Error-Handling#automatic-job-retry),
+with back-off between each retry. 25 retries means that the last retry
+would happen around three weeks after the first attempt (assuming all 24
+prior retries failed).
+
+For most workers - especially [idempotent workers](#idempotent-jobs) -
+the default of 25 retries is more than sufficient. Many of our older
+workers declare 3 retries, which used to be the default within the
+GitLab application. 3 retries happen over the course of a couple of
+minutes, so the jobs are prone to failing completely.
+
+A lower retry count may be applicable if any of the below apply:
+
+1. The worker contacts an external service and we do not provide
+   guarantees on delivery. For example, webhooks.
+1. The worker is not idempotent and running it multiple times could
+   leave the system in an inconsistent state. For example, a worker that
+   posts a system note and then performs an action: if the second step
+   fails and the worker retries, the system note will be posted again.
+1. The worker is a cronjob that runs frequently. For example, if a cron
+   job runs every hour, then we don't need to retry beyond an hour
+   because we don't need two of the same job running at once.
+
+Each retry for a worker is counted as a failure in our metrics. A worker
+which always fails 9 times and succeeds on the 10th would have a 90%
+error rate.
+
 ## Dedicated Queues
 
 All workers should use their own queue, which is automatically set based on the
@@ -718,6 +748,23 @@ possible situations:
 1. A job is queued before an upgrade, but executed after an upgrade.
 1. A job is queued by a node running the newer version of the application, but
    executed on a node running an older version of the application.
+
+### Adding new workers
+
+On GitLab.com, we [do not currently have a Sidekiq deployment in the
+canary stage](https://gitlab.com/gitlab-org/gitlab/-/issues/19239). This
+means that a new worker than can be scheduled from an HTTP endpoint may
+be scheduled from canary but not run on Sidekiq until the full
+production deployment is complete. This can be several hours later than
+scheduling the job. For some workers, this will not be a problem. For
+others - particularly [latency-sensitive
+jobs](#latency-sensitive-jobs) - this will result in a poor user
+experience.
+
+This only applies to new worker classes when they are first introduced.
+As we recommend [using feature flags](feature_flags/) as a general
+development process, it's best to control the entire change (including
+scheduling of the new Sidekiq worker) with a feature flag.
 
 ### Changing the arguments for a worker
 

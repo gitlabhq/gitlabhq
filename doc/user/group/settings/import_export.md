@@ -71,7 +71,7 @@ For more details on the specific data persisted in a group export, see the
    ![Export group panel](img/export_panel_v13_0.png)
 
 1. After the export is generated, you should receive an e-mail with a link to the [exported contents](#exported-contents)
-   in a compressed tar archive, with contents in JSON format.
+   in a compressed tar archive, with contents in NDJSON format.
 
 1. Alternatively, you can come back to the project settings and download the
    file from there by clicking **Download export**, or generate a new file by clicking **Regenerate export**.

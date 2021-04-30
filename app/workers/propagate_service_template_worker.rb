@@ -4,6 +4,8 @@
 class PropagateServiceTemplateWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :integrations
 
   LEASE_TIMEOUT = 4.hours.to_i

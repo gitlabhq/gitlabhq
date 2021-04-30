@@ -2,6 +2,8 @@
 
 class PurgeDependencyProxyCacheWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include Gitlab::Allowable
   idempotent!
 

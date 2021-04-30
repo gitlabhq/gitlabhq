@@ -2,6 +2,8 @@
 
 class GroupDestroyWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ExceptionBacktrace
 
   feature_category :subgroups

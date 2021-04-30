@@ -3,6 +3,8 @@
 class PagesUpdateConfigurationWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   idempotent!
   feature_category :pages
 

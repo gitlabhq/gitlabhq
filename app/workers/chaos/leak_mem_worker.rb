@@ -3,6 +3,8 @@
 module Chaos
   class LeakMemWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include ChaosQueue
 
     def perform(memory_mb, duration_s)

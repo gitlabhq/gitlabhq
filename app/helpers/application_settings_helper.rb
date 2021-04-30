@@ -302,6 +302,7 @@ module ApplicationSettingsHelper
       :sourcegraph_public_only,
       :spam_check_endpoint_enabled,
       :spam_check_endpoint_url,
+      :spam_check_api_key,
       :terminal_max_session_time,
       :terms,
       :throttle_authenticated_api_enabled,

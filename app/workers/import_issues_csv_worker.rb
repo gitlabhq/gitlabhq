@@ -3,6 +3,8 @@
 class ImportIssuesCsvWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   idempotent!
   feature_category :issue_tracking
   worker_resource_boundary :cpu

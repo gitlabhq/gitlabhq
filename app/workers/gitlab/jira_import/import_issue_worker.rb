@@ -4,6 +4,8 @@ module Gitlab
   module JiraImport
     class ImportIssueWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include NotifyUponDeath
       include Gitlab::JiraImport::QueueOptions
       include Gitlab::Import::DatabaseHelpers

@@ -3,6 +3,8 @@
 class MergeRequests::AssigneesChangeWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :source_code_management
   urgency :high
   deduplicate :until_executed

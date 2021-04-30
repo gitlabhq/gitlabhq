@@ -4,6 +4,8 @@ module DesignManagement
   class NewVersionWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :design_management
     # Declare this worker as memory bound due to
     # `GenerateImageVersionsService` resizing designs

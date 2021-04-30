@@ -4,6 +4,8 @@
 class UpdateProjectStatisticsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :source_code_management
 
   # project_id - The ID of the project for which to flush the cache.

@@ -4,6 +4,8 @@ module Namespaces
   class ScheduleAggregationWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     queue_namespace :update_namespace_statistics
     feature_category :source_code_management
     idempotent!

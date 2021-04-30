@@ -18231,6 +18231,51 @@ msgstr ""
 msgid "Iterations"
 msgstr ""
 
+msgid "Iterations|Automated scheduling"
+msgstr ""
+
+msgid "Iterations|Cadence name"
+msgstr ""
+
+msgid "Iterations|Create cadence"
+msgstr ""
+
+msgid "Iterations|Duration"
+msgstr ""
+
+msgid "Iterations|Future iterations"
+msgstr ""
+
+msgid "Iterations|Iteration scheduling will be handled automatically"
+msgstr ""
+
+msgid "Iterations|New iteration cadence"
+msgstr ""
+
+msgid "Iterations|Number of future iterations you would like to have scheduled"
+msgstr ""
+
+msgid "Iterations|Select duration"
+msgstr ""
+
+msgid "Iterations|Select number"
+msgstr ""
+
+msgid "Iterations|Select start date"
+msgstr ""
+
+msgid "Iterations|Start date"
+msgstr ""
+
+msgid "Iterations|The duration for each iteration (in weeks)"
+msgstr ""
+
+msgid "Iterations|The start date of your first iteration"
+msgstr ""
+
+msgid "Iterations|Title"
+msgstr ""
+
 msgid "Iteration|Dates cannot overlap with other existing Iterations within this group"
 msgstr ""
 
@@ -30275,6 +30320,9 @@ msgstr ""
 msgid "SourcegraphPreferences|Uses a custom %{linkStart}Sourcegraph instance%{linkEnd}."
 msgstr ""
 
+msgid "Spam Check API Key"
+msgstr ""
+
 msgid "Spam Logs"
 msgstr ""
 
@@ -31622,6 +31670,9 @@ msgid "The %{type} contains the following error:"
 msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "The API key used by GitLab for accessing the Spam Check service endpoint"
+msgstr ""
 
 msgid "The Advanced Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
@@ -34071,6 +34122,9 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to load the merge request widget. Try reloading the page."
+msgstr ""
+
+msgid "Unable to save cadence. Please try again"
 msgstr ""
 
 msgid "Unable to save iteration. Please try again"

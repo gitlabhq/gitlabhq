@@ -2,6 +2,8 @@
 
 class PostReceive # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include Gitlab::Experiment::Dsl
 
   feature_category :source_code_management

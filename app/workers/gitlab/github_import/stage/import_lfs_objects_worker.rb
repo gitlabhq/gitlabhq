@@ -5,6 +5,8 @@ module Gitlab
     module Stage
       class ImportLfsObjectsWorker # rubocop:disable Scalability/IdempotentWorker
         include ApplicationWorker
+
+        sidekiq_options retry: 3
         include GithubImport::Queue
         include StageMethods
 

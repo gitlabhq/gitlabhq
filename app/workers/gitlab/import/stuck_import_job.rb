@@ -9,6 +9,8 @@ module Gitlab
 
       included do
         include ApplicationWorker
+
+        sidekiq_options retry: 3
         # rubocop:disable Scalability/CronWorkerContext
         # This worker updates several import states inline and does not schedule
         # other jobs. So no context needed

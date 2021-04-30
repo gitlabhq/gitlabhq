@@ -4,6 +4,8 @@ module MembersDestroyer
   class UnassignIssuablesWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     ENTITY_TYPES = %w(Group Project).freeze
 
     queue_namespace :unassign_issuables

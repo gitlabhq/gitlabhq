@@ -78,5 +78,9 @@
     .form-group
       = f.label :spam_check_endpoint_url, _('URL of the external Spam Check endpoint'), class: 'label-bold'
       = f.text_field :spam_check_endpoint_url, class: 'form-control gl-form-input'
+    .form-group
+      = f.label :spam_check_api_key, _('Spam Check API Key'), class: 'gl-font-weight-bold'
+      = f.text_field :spam_check_api_key, class: 'form-control gl-form-input'
+      .form-text.text-muted= _('The API key used by GitLab for accessing the Spam Check service endpoint')
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

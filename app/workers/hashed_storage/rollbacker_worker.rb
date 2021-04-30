@@ -4,6 +4,8 @@ module HashedStorage
   class RollbackerWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     queue_namespace :hashed_storage
     feature_category :source_code_management
 

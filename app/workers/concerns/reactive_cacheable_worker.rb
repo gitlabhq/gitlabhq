@@ -6,6 +6,8 @@ module ReactiveCacheableWorker
   included do
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category_not_owned!
     loggable_arguments 0
 

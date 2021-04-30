@@ -4,6 +4,8 @@ module DesignManagement
   class CopyDesignCollectionWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :design_management
     idempotent!
     urgency :low

@@ -9511,6 +9511,8 @@ CREATE TABLE application_settings (
     throttle_authenticated_packages_api_enabled boolean DEFAULT false NOT NULL,
     deactivate_dormant_users boolean DEFAULT false NOT NULL,
     whats_new_variant smallint DEFAULT 0,
+    encrypted_spam_check_api_key bytea,
+    encrypted_spam_check_api_key_iv bytea,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
@@ -12385,13 +12387,34 @@ CREATE SEQUENCE elastic_index_settings_id_seq
 
 ALTER SEQUENCE elastic_index_settings_id_seq OWNED BY elastic_index_settings.id;
 
+CREATE TABLE elastic_reindexing_slices (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    elastic_reindexing_subtask_id bigint NOT NULL,
+    elastic_slice smallint DEFAULT 0 NOT NULL,
+    elastic_max_slice smallint DEFAULT 0 NOT NULL,
+    retry_attempt smallint DEFAULT 0 NOT NULL,
+    elastic_task text,
+    CONSTRAINT check_ca30e1396e CHECK ((char_length(elastic_task) <= 255))
+);
+
+CREATE SEQUENCE elastic_reindexing_slices_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE elastic_reindexing_slices_id_seq OWNED BY elastic_reindexing_slices.id;
+
 CREATE TABLE elastic_reindexing_subtasks (
     id bigint NOT NULL,
     elastic_reindexing_task_id bigint NOT NULL,
     alias_name text NOT NULL,
     index_name_from text NOT NULL,
     index_name_to text NOT NULL,
-    elastic_task text NOT NULL,
+    elastic_task text,
     documents_count_target integer,
     documents_count integer,
     created_at timestamp with time zone NOT NULL,
@@ -19505,6 +19528,8 @@ ALTER TABLE ONLY draft_notes ALTER COLUMN id SET DEFAULT nextval('draft_notes_id
 
 ALTER TABLE ONLY elastic_index_settings ALTER COLUMN id SET DEFAULT nextval('elastic_index_settings_id_seq'::regclass);
 
+ALTER TABLE ONLY elastic_reindexing_slices ALTER COLUMN id SET DEFAULT nextval('elastic_reindexing_slices_id_seq'::regclass);
+
 ALTER TABLE ONLY elastic_reindexing_subtasks ALTER COLUMN id SET DEFAULT nextval('elastic_reindexing_subtasks_id_seq'::regclass);
 
 ALTER TABLE ONLY elastic_reindexing_tasks ALTER COLUMN id SET DEFAULT nextval('elastic_reindexing_tasks_id_seq'::regclass);
@@ -20756,6 +20781,9 @@ ALTER TABLE ONLY draft_notes
 ALTER TABLE ONLY elastic_index_settings
     ADD CONSTRAINT elastic_index_settings_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY elastic_reindexing_slices
+    ADD CONSTRAINT elastic_reindexing_slices_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY elastic_reindexing_subtasks
     ADD CONSTRAINT elastic_reindexing_subtasks_pkey PRIMARY KEY (id);
 
@@ -21929,6 +21957,8 @@ CREATE INDEX idx_container_repositories_on_exp_cleanup_status_and_start_date ON 
 CREATE INDEX idx_deployment_clusters_on_cluster_id_and_kubernetes_namespace ON deployment_clusters USING btree (cluster_id, kubernetes_namespace);
 
 CREATE INDEX idx_eaprpb_external_approval_rule_id ON external_approval_rules_protected_branches USING btree (external_approval_rule_id);
+
+CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON elastic_reindexing_slices USING btree (elastic_reindexing_subtask_id);
 
 CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_merge_requests USING btree (environment_id, merge_request_id);
 
@@ -26588,6 +26618,9 @@ ALTER TABLE ONLY resource_milestone_events
 
 ALTER TABLE ONLY namespace_root_storage_statistics
     ADD CONSTRAINT fk_rails_a0702c430b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY elastic_reindexing_slices
+    ADD CONSTRAINT fk_rails_a17d86aeb9 FOREIGN KEY (elastic_reindexing_subtask_id) REFERENCES elastic_reindexing_subtasks(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_aliases
     ADD CONSTRAINT fk_rails_a1804f74a7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

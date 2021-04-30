@@ -8,6 +8,8 @@
 class FlushCounterIncrementsWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category_not_owned!
   urgency :low
   deduplicate :until_executing, including_scheduled: true

@@ -4,6 +4,8 @@ module Namespaces
   class OnboardingPipelineCreatedWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :subgroups
     urgency :low
 

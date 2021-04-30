@@ -2,6 +2,8 @@
 
 class DisallowTwoFactorForGroupWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ExceptionBacktrace
 
   feature_category :subgroups

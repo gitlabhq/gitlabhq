@@ -4,6 +4,8 @@
 module ObjectStorage
   class MigrateUploadsWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include ObjectStorageQueue
 
     feature_category_not_owned!

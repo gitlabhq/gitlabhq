@@ -3,6 +3,8 @@
 class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :database
   urgency :throttled
   loggable_arguments 0, 1

@@ -603,10 +603,17 @@ to enable the `restrict_user_defined_variables` setting. The setting is `disable
 
 ## Limit the environment scope of a CI/CD variable
 
-You can limit the environment scope of a variable by
-[defining which environments](../environments/index.md) it can be available for.
+By default, all CI/CD variables are available to any job in a pipeline. Therefore, if a project uses a
+compromised tool in a test job, it could expose all CI/CD variables that a deployment job used. This is
+a common scenario in supply chain attacks. GitLab helps mitigate supply chain attacks by limiting
+the environment scope of a variable. GitLab does this by
+[defining which environments and corresponding jobs](../environments/index.md)
+the variable can be available for.
 
 To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scoping-environments-with-specs).
+
+To learn more about ensuring CI/CD variables are only exposed in pipelines running from protected
+branches or tags, see [Protect a CI/CD Variable](#protect-a-cicd-variable).
 
 ## Deployment variables
 

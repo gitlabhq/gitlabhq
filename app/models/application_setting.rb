@@ -134,6 +134,14 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             if: :akismet_enabled
 
+  validates :spam_check_api_key,
+            length: { maximum: 2000, message: _('is too long (maximum is %{count} characters)') },
+            allow_blank: true
+
+  validates :spam_check_api_key,
+            presence: true,
+            if: :spam_check_endpoint_enabled
+
   validates :unique_ips_limit_per_user,
             numericality: { greater_than_or_equal_to: 1 },
             presence: true,
@@ -516,6 +524,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :lets_encrypt_private_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :eks_secret_access_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :akismet_api_key, encryption_options_base_32_aes_256_gcm
+  attr_encrypted :spam_check_api_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :elasticsearch_aws_secret_access_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :recaptcha_private_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :recaptcha_site_key, encryption_options_base_32_aes_256_gcm

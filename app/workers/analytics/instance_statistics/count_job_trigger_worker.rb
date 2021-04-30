@@ -5,6 +5,8 @@ module Analytics
     # This worker will be removed in 14.0
     class CountJobTriggerWorker
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
       feature_category :devops_reports

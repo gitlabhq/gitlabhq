@@ -2,6 +2,8 @@
 
 class DeleteContainerRepositoryWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ExclusiveLeaseGuard
 
   queue_namespace :container_repository

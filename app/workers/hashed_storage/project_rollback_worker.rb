@@ -4,6 +4,8 @@ module HashedStorage
   class ProjectRollbackWorker < BaseWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     queue_namespace :hashed_storage
     loggable_arguments 1
 

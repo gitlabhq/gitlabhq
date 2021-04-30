@@ -3,6 +3,8 @@
 class EmailReceiverWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   feature_category :issue_tracking
   urgency :high
   weight 2

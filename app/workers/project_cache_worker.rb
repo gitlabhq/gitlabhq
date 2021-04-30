@@ -4,6 +4,8 @@
 class ProjectCacheWorker
   include ApplicationWorker
 
+  sidekiq_options retry: 3
+
   LEASE_TIMEOUT = 15.minutes.to_i
 
   feature_category :source_code_management

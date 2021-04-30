@@ -9,6 +9,8 @@ module Gitlab
 
       included do
         include ApplicationWorker
+
+        sidekiq_options retry: 3
         include GithubImport::Queue
         include ReschedulingMethods
         include Gitlab::NotifyUponDeath

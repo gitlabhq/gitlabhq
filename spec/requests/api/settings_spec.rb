@@ -41,6 +41,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['snippet_size_limit']).to eq(50.megabytes)
       expect(json_response['spam_check_endpoint_enabled']).to be_falsey
       expect(json_response['spam_check_endpoint_url']).to be_nil
+      expect(json_response['spam_check_api_key']).to be_nil
       expect(json_response['wiki_page_max_content_bytes']).to be_a(Integer)
       expect(json_response['require_admin_approval_after_user_signup']).to eq(true)
       expect(json_response['personal_access_token_prefix']).to be_nil
@@ -123,6 +124,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             raw_blob_request_limit: 300,
             spam_check_endpoint_enabled: true,
             spam_check_endpoint_url: 'https://example.com/spam_check',
+            spam_check_api_key: 'SPAM_CHECK_API_KEY',
             disabled_oauth_sign_in_sources: 'unknown',
             import_sources: 'github,bitbucket',
             wiki_page_max_content_bytes: 12345,
@@ -168,6 +170,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['raw_blob_request_limit']).to eq(300)
         expect(json_response['spam_check_endpoint_enabled']).to be_truthy
         expect(json_response['spam_check_endpoint_url']).to eq('https://example.com/spam_check')
+        expect(json_response['spam_check_api_key']).to eq('SPAM_CHECK_API_KEY')
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w(github bitbucket))
         expect(json_response['wiki_page_max_content_bytes']).to eq(12345)
@@ -460,10 +463,29 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
 
     context "missing spam_check_endpoint_url value when spam_check_endpoint_enabled is true" do
       it "returns a blank parameter error message" do
-        put api("/application/settings", admin), params: { spam_check_endpoint_enabled: true }
+        put api("/application/settings", admin), params: { spam_check_endpoint_enabled: true, spam_check_api_key: "SPAM_CHECK_API_KEY" }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('spam_check_endpoint_url is missing')
+      end
+    end
+
+    context "missing spam_check_api_key value when spam_check_endpoint_enabled is true" do
+      it "returns a blank parameter error message" do
+        put api("/application/settings", admin), params: { spam_check_endpoint_enabled: true, spam_check_endpoint_url: "https://example.com/spam_check" }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('spam_check_api_key is missing')
+      end
+    end
+
+    context "overly long spam_check_api_key" do
+      it "fails to update the settings with too long spam_check_api_key" do
+        put api("/application/settings", admin), params: { spam_check_api_key: "0123456789" * 500 }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        message = json_response["message"]
+        expect(message["spam_check_api_key"]).to include(a_string_matching("is too long"))
       end
     end
 

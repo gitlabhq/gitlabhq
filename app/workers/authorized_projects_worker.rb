@@ -2,6 +2,8 @@
 
 class AuthorizedProjectsWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   prepend WaitableWorker
 
   feature_category :authentication_and_authorization

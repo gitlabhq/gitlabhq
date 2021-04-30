@@ -4,6 +4,8 @@ module Namespaces
   class OnboardingIssueCreatedWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :issue_tracking
     urgency :low
 

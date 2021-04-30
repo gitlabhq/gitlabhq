@@ -4,6 +4,8 @@ module WebHooks
   class DestroyWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :integrations
     urgency :low
     idempotent!

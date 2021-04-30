@@ -2,6 +2,8 @@
 
 class ScheduleMigrateExternalDiffsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   # rubocop:disable Scalability/CronWorkerContext:
   # This schedules the `MigrateExternalDiffsWorker`
   # issue for adding context: https://gitlab.com/gitlab-org/gitlab/issues/202100

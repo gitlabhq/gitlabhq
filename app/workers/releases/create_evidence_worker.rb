@@ -4,6 +4,8 @@ module Releases
   class CreateEvidenceWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :release_evidence
 
     # pipeline_id is optional for backward compatibility with existing jobs

@@ -3,6 +3,8 @@
 module ContainerExpirationPolicies
   class CleanupContainerRepositoryWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include LimitedCapacity::Worker
     include Gitlab::Utils::StrongMemoize
 

@@ -3,6 +3,8 @@
 module AutoDevops
   class DisableWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include AutoDevopsQueue
 
     def perform(pipeline_id)

@@ -3,6 +3,8 @@
 module SshKeys
   class ExpiringSoonNotificationWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include CronjobQueue
 
     feature_category :compliance_management

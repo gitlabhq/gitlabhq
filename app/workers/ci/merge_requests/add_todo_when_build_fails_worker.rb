@@ -3,6 +3,8 @@ module Ci
   module MergeRequests
     class AddTodoWhenBuildFailsWorker
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include PipelineQueue
 
       urgency :low

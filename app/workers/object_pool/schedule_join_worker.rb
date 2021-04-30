@@ -3,6 +3,8 @@
 module ObjectPool
   class ScheduleJoinWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include ObjectPoolQueue
 
     def perform(pool_id)

@@ -4,6 +4,8 @@ module Gitlab
   module GithubImport
     class RefreshImportJidWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include GithubImport::Queue
 
       # The interval to schedule new instances of this job at.

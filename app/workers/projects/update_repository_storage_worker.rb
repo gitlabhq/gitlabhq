@@ -5,6 +5,8 @@ module Projects
     extend ::Gitlab::Utils::Override
     include ::UpdateRepositoryStorageWorker
 
+    sidekiq_options retry: 3
+
     private
 
     override :find_repository_storage_move

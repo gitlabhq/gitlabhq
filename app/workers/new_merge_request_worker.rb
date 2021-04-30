@@ -2,6 +2,8 @@
 
 class NewMergeRequestWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include NewIssuable
 
   feature_category :code_review

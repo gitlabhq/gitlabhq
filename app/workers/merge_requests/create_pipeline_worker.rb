@@ -3,6 +3,8 @@
 module MergeRequests
   class CreatePipelineWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include PipelineQueue
 
     queue_namespace :pipeline_creation

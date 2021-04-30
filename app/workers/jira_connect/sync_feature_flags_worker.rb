@@ -4,6 +4,8 @@ module JiraConnect
   class SyncFeatureFlagsWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     idempotent!
     worker_has_external_dependencies!
 

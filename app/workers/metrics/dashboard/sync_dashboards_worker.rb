@@ -5,6 +5,8 @@ module Metrics
     class SyncDashboardsWorker
       include ApplicationWorker
 
+      sidekiq_options retry: 3
+
       feature_category :metrics
 
       idempotent!

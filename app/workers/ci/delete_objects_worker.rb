@@ -3,6 +3,8 @@
 module Ci
   class DeleteObjectsWorker
     include ApplicationWorker
+
+    sidekiq_options retry: 3
     include LimitedCapacity::Worker
 
     feature_category :continuous_integration

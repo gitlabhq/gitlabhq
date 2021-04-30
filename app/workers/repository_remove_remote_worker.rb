@@ -2,6 +2,8 @@
 
 class RepositoryRemoveRemoteWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  sidekiq_options retry: 3
   include ExclusiveLeaseGuard
 
   feature_category :source_code_management

@@ -15,6 +15,7 @@ swap:
   active users: '"billable users"'
   docs: '"documentation"'
   GFM: '"GitLab Flavored Markdown"'
+  OAuth2: '"OAuth 2.0"'
   once that: '"after that"'
   once the: '"after the"'
   once you: '"after you"'

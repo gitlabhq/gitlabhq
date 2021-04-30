@@ -4303,17 +4303,71 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe 'reset_ancestor_bridges!' do
-    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+  describe '#reset_source_bridge!' do
+    let(:pipeline) { create(:ci_pipeline, :created, project: project) }
+
+    subject(:reset_bridge) { pipeline.reset_source_bridge!(project.owner) }
+
+    # This whole block will be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/329194
+    # It contains some duplicate checks.
+    context 'when the FF ci_reset_bridge_with_subsequent_jobs is disabled' do
+      before do
+        stub_feature_flags(ci_reset_bridge_with_subsequent_jobs: false)
+      end
+
+      context 'when the pipeline is a child pipeline and the bridge is depended' do
+        let!(:parent_pipeline) { create(:ci_pipeline) }
+        let!(:bridge) { create_bridge(parent_pipeline, pipeline, true) }
+
+        it 'marks source bridge as pending' do
+          reset_bridge
+
+          expect(bridge.reload).to be_pending
+        end
+
+        context 'when the parent pipeline has subsequent jobs after the bridge' do
+          let!(:after_bridge_job) { create(:ci_build, :skipped, pipeline: parent_pipeline, stage_idx: bridge.stage_idx + 1) }
+
+          it 'does not touch subsequent jobs of the bridge' do
+            reset_bridge
+
+            expect(after_bridge_job.reload).to be_skipped
+          end
+        end
+
+        context 'when the parent pipeline has a dependent upstream pipeline' do
+          let!(:upstream_bridge) do
+            create_bridge(create(:ci_pipeline, project: create(:project)), parent_pipeline, true)
+          end
+
+          it 'marks all source bridges as pending' do
+            reset_bridge
+
+            expect(bridge.reload).to be_pending
+            expect(upstream_bridge.reload).to be_pending
+          end
+        end
+      end
+    end
 
     context 'when the pipeline is a child pipeline and the bridge is depended' do
       let!(:parent_pipeline) { create(:ci_pipeline) }
       let!(:bridge) { create_bridge(parent_pipeline, pipeline, true) }
 
       it 'marks source bridge as pending' do
-        pipeline.reset_ancestor_bridges!
+        reset_bridge
 
         expect(bridge.reload).to be_pending
+      end
+
+      context 'when the parent pipeline has subsequent jobs after the bridge' do
+        let!(:after_bridge_job) { create(:ci_build, :skipped, pipeline: parent_pipeline, stage_idx: bridge.stage_idx + 1) }
+
+        it 'marks subsequent jobs of the bridge as processable' do
+          reset_bridge
+
+          expect(after_bridge_job.reload).to be_created
+        end
       end
 
       context 'when the parent pipeline has a dependent upstream pipeline' do
@@ -4322,7 +4376,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         end
 
         it 'marks all source bridges as pending' do
-          pipeline.reset_ancestor_bridges!
+          reset_bridge
 
           expect(bridge.reload).to be_pending
           expect(upstream_bridge.reload).to be_pending
@@ -4335,7 +4389,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let!(:bridge) { create_bridge(parent_pipeline, pipeline, false) }
 
       it 'does not touch source bridge' do
-        pipeline.reset_ancestor_bridges!
+        reset_bridge
 
         expect(bridge.reload).to be_success
       end
@@ -4346,7 +4400,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         end
 
         it 'does not touch any source bridge' do
-          pipeline.reset_ancestor_bridges!
+          reset_bridge
 
           expect(bridge.reload).to be_success
           expect(upstream_bridge.reload).to be_success

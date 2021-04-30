@@ -4,6 +4,8 @@ module Namespaces
   class OnboardingUserAddedWorker
     include ApplicationWorker
 
+    sidekiq_options retry: 3
+
     feature_category :users
     urgency :low
 

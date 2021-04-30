@@ -5,6 +5,8 @@ module Analytics
     class CountJobTriggerWorker
       extend ::Gitlab::Utils::Override
       include ApplicationWorker
+
+      sidekiq_options retry: 3
       include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
       DEFAULT_DELAY = 3.minutes.freeze
