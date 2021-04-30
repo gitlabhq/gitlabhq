@@ -49,7 +49,7 @@
               = @error
           .form-group
             = label_tag :pin_code, _('Pin code'), class: "label-bold"
-            = text_field_tag :pin_code, nil, class: "form-control", required: true, data: { qa_selector: 'pin_code_field' }
+            = text_field_tag :pin_code, nil, class: "form-control gl-form-input", required: true, data: { qa_selector: 'pin_code_field' }
           .gl-mt-3
             = submit_tag _('Register with two-factor app'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'register_2fa_app_button' }
 

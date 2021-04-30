@@ -31,7 +31,7 @@ describe('MRWidgetMerging', () => {
         .trim()
         .replace(/\s\s+/g, ' ')
         .replace(/[\r\n]+/g, ' '),
-    ).toContain('Merging! Drum roll, please…');
+    ).toContain('Merging!');
   });
 
   it('renders branch information', () => {

@@ -3,6 +3,9 @@ import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  i18n: {
+    unassigned: __('Unassigned'),
+  },
   components: { GlButton, GlLoadingIcon },
   inject: {
     canUpdate: {},

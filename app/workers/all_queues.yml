@@ -2119,6 +2119,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: issuables_clear_groups_issue_counter
+  :worker_name: Issuables::ClearGroupsIssueCounterWorker
+  :feature_category: :issue_tracking
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: issue_placement
   :worker_name: IssuePlacementWorker
   :feature_category: :issue_tracking

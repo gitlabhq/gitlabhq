@@ -14,15 +14,16 @@ module Labels
 
       return [] unless labels
 
-      labels = labels.split(',') if labels.is_a?(String)
+      labels = labels.split(',').map(&:strip) if labels.is_a?(String)
+      existing_labels = LabelsFinder.new(current_user, finder_params(labels)).execute.index_by(&:title)
 
       labels.map do |label_name|
         label = Labels::FindOrCreateService.new(
           current_user,
           parent,
           include_ancestor_groups: true,
-          title: label_name.strip,
-          available_labels: available_labels
+          title: label_name,
+          existing_labels_by_title: existing_labels
         ).execute(find_only: find_only)
 
         label
@@ -45,18 +46,19 @@ module Labels
 
     private
 
-    def finder_params
-      params = { include_ancestor_groups: true }
+    def finder_params(titles = nil)
+      finder_params = { include_ancestor_groups: true }
+      finder_params[:title] = titles if titles
 
       case parent
       when Group
-        params[:group_id] = parent.id
-        params[:only_group_labels] = true
+        finder_params[:group_id] = parent.id
+        finder_params[:only_group_labels] = true
       when Project
-        params[:project_id] = parent.id
+        finder_params[:project_id] = parent.id
       end
 
-      params
+      finder_params
     end
   end
 end

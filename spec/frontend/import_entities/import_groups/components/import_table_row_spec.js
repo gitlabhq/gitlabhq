@@ -19,7 +19,7 @@ const getFakeGroup = (status) => ({
     new_name: 'group1',
   },
   id: 1,
-  status,
+  progress: { status },
 });
 
 const EXISTING_GROUP_TARGET_NAMESPACE = 'existing-group';

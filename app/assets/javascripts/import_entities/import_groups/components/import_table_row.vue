@@ -72,11 +72,11 @@ export default {
     },
 
     isAlreadyImported() {
-      return this.group.status !== STATUSES.NONE;
+      return this.group.progress.status !== STATUSES.NONE;
     },
 
     isFinished() {
-      return this.group.status === STATUSES.FINISHED;
+      return this.group.progress.status === STATUSES.FINISHED;
     },
 
     fullPath() {
@@ -165,7 +165,7 @@ export default {
       </div>
     </td>
     <td class="gl-p-4 gl-white-space-nowrap">
-      <import-status :status="group.status" />
+      <import-status :status="group.progress.status" />
     </td>
     <td class="gl-p-4">
       <gl-button

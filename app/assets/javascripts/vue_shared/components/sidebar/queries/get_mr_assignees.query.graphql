@@ -1,0 +1,16 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+
+query getMrAssignees($fullPath: ID!, $iid: String!) {
+  workspace: project(fullPath: $fullPath) {
+    issuable: mergeRequest(iid: $iid) {
+      id
+      assignees {
+        nodes {
+          ...User
+          ...UserAvailability
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,8 @@ module Sidebars
   module Projects
     module Menus
       class LearnGitlabMenu < ::Sidebars::Menu
+        include Gitlab::Utils::StrongMemoize
+
         override :link
         def link
           project_learn_gitlab_path(context.project)
@@ -17,6 +19,20 @@ module Sidebars
         override :title
         def title
           _('Learn GitLab')
+        end
+
+        override :has_pill?
+        def has_pill?
+          context.learn_gitlab_experiment_enabled
+        end
+
+        override :pill_count
+        def pill_count
+          strong_memoize(:pill_count) do
+            percentage = LearnGitlab::Onboarding.new(context.project.namespace).completed_percentage
+
+            "#{percentage}%"
+          end
         end
 
         override :extra_container_html_options

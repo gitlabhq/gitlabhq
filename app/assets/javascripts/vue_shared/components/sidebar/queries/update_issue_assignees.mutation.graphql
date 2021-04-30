@@ -13,12 +13,6 @@ mutation issueSetAssignees($iid: String!, $assigneeUsernames: [String!]!, $fullP
           ...UserAvailability
         }
       }
-      participants {
-        nodes {
-          ...User
-          ...UserAvailability
-        }
-      }
     }
   }
 }

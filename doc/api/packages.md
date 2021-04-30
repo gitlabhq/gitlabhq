@@ -287,6 +287,7 @@ Example response:
     "size": 2421,
     "file_md5": "58e6a45a629910c6ff99145a688971ac",
     "file_sha1": "ebd193463d3915d7e22219f52740056dfd26cbfe",
+    "file_sha256": "a903393463d3915d7e22219f52740056dfd26cbfeff321b",
     "pipelines": [
       {
         "id": 123,
@@ -310,7 +311,8 @@ Example response:
     "file_name": "my-app-1.5-20181107.152550-1.pom",
     "size": 1122,
     "file_md5": "d90f11d851e17c5513586b4a7e98f1b2",
-    "file_sha1": "9608d068fe88aff85781811a42f32d97feb440b5"
+    "file_sha1": "9608d068fe88aff85781811a42f32d97feb440b5",
+    "file_sha256": "2987d068fe88aff85781811a42f32d97feb4f092a399"
   },
   {
     "id": 27,
@@ -319,7 +321,8 @@ Example response:
     "file_name": "maven-metadata.xml",
     "size": 767,
     "file_md5": "6dfd0cce1203145a927fef5e3a1c650c",
-    "file_sha1": "d25932de56052d320a8ac156f745ece73f6a8cd2"
+    "file_sha1": "d25932de56052d320a8ac156f745ece73f6a8cd2",
+    "file_sha256": "ac849d002e56052d320a8ac156f745ece73f6a8cd2f3e82"
   }
 ]
 ```

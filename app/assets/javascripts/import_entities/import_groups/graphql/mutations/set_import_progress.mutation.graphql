@@ -1,0 +1,9 @@
+mutation setImportProgress($status: String!, $sourceGroupId: String!, $jobId: String) {
+  setImportProgress(status: $status, sourceGroupId: $sourceGroupId, jobId: $jobId) @client {
+    id
+    progress {
+      id
+      status
+    }
+  }
+}

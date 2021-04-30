@@ -1,11 +1,17 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import ErrorTrackingForm from './error_tracking_form.vue';
 import ProjectDropdown from './project_dropdown.vue';
 
 export default {
-  components: { ProjectDropdown, ErrorTrackingForm, GlButton },
+  components: {
+    ErrorTrackingForm,
+    GlButton,
+    GlFormCheckbox,
+    GlFormGroup,
+    ProjectDropdown,
+  },
   props: {
     initialApiHost: {
       type: String,
@@ -66,18 +72,18 @@ export default {
 
 <template>
   <div>
-    <div class="form-check form-group">
-      <input
+    <gl-form-group
+      :label="s__('ErrorTracking|Enable error tracking')"
+      label-for="error-tracking-enabled"
+    >
+      <gl-form-checkbox
         id="error-tracking-enabled"
         :checked="enabled"
-        class="form-check-input"
-        type="checkbox"
-        @change="updateEnabled($event.target.checked)"
-      />
-      <label class="form-check-label" for="error-tracking-enabled">{{
-        s__('ErrorTracking|Active')
-      }}</label>
-    </div>
+        @change="updateEnabled($event)"
+      >
+        {{ s__('ErrorTracking|Active') }}
+      </gl-form-checkbox>
+    </gl-form-group>
     <error-tracking-form />
     <div class="form-group">
       <project-dropdown
@@ -95,7 +101,7 @@ export default {
     <gl-button
       :disabled="settingsLoading"
       class="js-error-tracking-button"
-      variant="success"
+      variant="confirm"
       @click="handleSubmit"
     >
       {{ __('Save changes') }}

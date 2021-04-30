@@ -1,0 +1,6 @@
+mutation updateImportStatus($status: String!, $id: String!) {
+  updateImportStatus(status: $status, id: $id) @client {
+    id
+    status
+  }
+}

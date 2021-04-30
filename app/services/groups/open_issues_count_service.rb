@@ -6,6 +6,12 @@ module Groups
     PUBLIC_COUNT_KEY = 'group_public_open_issues_count'
     TOTAL_COUNT_KEY = 'group_total_open_issues_count'
 
+    def clear_all_cache_keys
+      [cache_key(PUBLIC_COUNT_KEY), cache_key(TOTAL_COUNT_KEY)].each do |key|
+        Rails.cache.delete(key)
+      end
+    end
+
     private
 
     def cache_key_name
@@ -23,7 +29,14 @@ module Groups
     end
 
     def relation_for_count
-      IssuesFinder.new(user, group_id: group.id, state: 'opened', non_archived: true, include_subgroups: true, public_only: public_only?).execute
+      IssuesFinder.new(
+        user,
+        group_id: group.id,
+        state: 'opened',
+        non_archived: true,
+        include_subgroups: true,
+        public_only: public_only?
+      ).execute
     end
 
     def issuable_key

@@ -1,3 +1,8 @@
 mutation setTargetNamespace($targetNamespace: String!, $sourceGroupId: String!) {
-  setTargetNamespace(targetNamespace: $targetNamespace, sourceGroupId: $sourceGroupId) @client
+  setTargetNamespace(targetNamespace: $targetNamespace, sourceGroupId: $sourceGroupId) @client {
+    id
+    import_target {
+      target_namespace
+    }
+  }
 }

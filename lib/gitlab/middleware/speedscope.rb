@@ -44,7 +44,7 @@ module Gitlab
         headers = { 'Content-Type' => 'text/html' }
         path = request.env['PATH_INFO'].sub('//', '/')
 
-        speedscope_url = ActionController::Base.helpers.asset_url('/-/speedscope/index.html')
+        speedscope_path = ::Gitlab::Utils.append_path(::Gitlab.config.gitlab.relative_url_root, '/-/speedscope/index.html')
 
         html = <<~HTML
           <!DOCTYPE html>
@@ -64,7 +64,7 @@ module Gitlab
                 var iframe = document.createElement('IFRAME');
                 iframe.setAttribute('id', 'speedscope-iframe');
                 document.body.appendChild(iframe);
-                var iframeUrl = '#{speedscope_url}#profileURL=' + objUrl + '&title=' + 'Flamegraph for #{CGI.escape(path)}';
+                var iframeUrl = '#{speedscope_path}#profileURL=' + objUrl + '&title=' + 'Flamegraph for #{CGI.escape(path)}';
                 iframe.setAttribute('src', iframeUrl);
               </script>
             </body>

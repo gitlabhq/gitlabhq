@@ -8,6 +8,8 @@
       "package_id": { "type": "integer" },
       "file_name": { "type": "string" },
       "file_sha1": { "type": "string" },
+      "file_sha256": { "type": "string" },
+      "file_md5": { "type": "string" },
       "pipelines": {
         "items": { "$ref": "../pipeline.json" }
       }

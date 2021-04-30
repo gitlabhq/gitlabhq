@@ -1,27 +1,20 @@
 import { GlSearchBoxByType, GlDropdown } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { cloneDeep } from 'lodash';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
-import searchUsersQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import { IssuableType } from '~/issue_show/constants';
 import SidebarAssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarInviteMembers from '~/sidebar/components/assignees/sidebar_invite_members.vue';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { ASSIGNEES_DEBOUNCE_DELAY } from '~/sidebar/constants';
-import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dropdown.vue';
-import getIssueParticipantsQuery from '~/vue_shared/components/sidebar/queries/get_issue_participants.query.graphql';
+import getIssueAssigneesQuery from '~/vue_shared/components/sidebar/queries/get_issue_assignees.query.graphql';
 import updateIssueAssigneesMutation from '~/vue_shared/components/sidebar/queries/update_issue_assignees.mutation.graphql';
-import {
-  issuableQueryResponse,
-  searchQueryResponse,
-  updateIssueAssigneesMutationResponse,
-} from '../../mock_data';
+import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
+import { issuableQueryResponse, updateIssueAssigneesMutationResponse } from '../../mock_data';
 
 jest.mock('~/flash');
 
@@ -50,31 +43,19 @@ describe('Sidebar assignees widget', () => {
   const findAssignees = () => wrapper.findComponent(IssuableAssignees);
   const findRealtimeAssignees = () => wrapper.findComponent(SidebarAssigneesRealtime);
   const findEditableItem = () => wrapper.findComponent(SidebarEditableItem);
-  const findDropdown = () => wrapper.findComponent(MultiSelectDropdown);
   const findInviteMembersLink = () => wrapper.findComponent(SidebarInviteMembers);
-  const findSearchField = () => wrapper.findComponent(GlSearchBoxByType);
-
-  const findParticipantsLoading = () => wrapper.find('[data-testid="loading-participants"]');
-  const findSelectedParticipants = () => wrapper.findAll('[data-testid="selected-participant"]');
-  const findUnselectedParticipants = () =>
-    wrapper.findAll('[data-testid="unselected-participant"]');
-  const findCurrentUser = () => wrapper.findAll('[data-testid="current-user"]');
-  const findUnassignLink = () => wrapper.find('[data-testid="unassign"]');
-  const findEmptySearchResults = () => wrapper.find('[data-testid="empty-results"]');
+  const findUserSelect = () => wrapper.findComponent(UserSelect);
 
   const expandDropdown = () => wrapper.vm.$refs.toggle.expand();
 
   const createComponent = ({
-    search = '',
     issuableQueryHandler = jest.fn().mockResolvedValue(issuableQueryResponse),
-    searchQueryHandler = jest.fn().mockResolvedValue(searchQueryResponse),
     updateIssueAssigneesMutationHandler = updateIssueAssigneesMutationSuccess,
     props = {},
     provide = {},
   } = {}) => {
     fakeApollo = createMockApollo([
-      [getIssueParticipantsQuery, issuableQueryHandler],
-      [searchUsersQuery, searchQueryHandler],
+      [getIssueAssigneesQuery, issuableQueryHandler],
       [updateIssueAssigneesMutation, updateIssueAssigneesMutationHandler],
     ]);
     wrapper = shallowMount(SidebarAssigneesWidget, {
@@ -82,14 +63,9 @@ describe('Sidebar assignees widget', () => {
       apolloProvider: fakeApollo,
       propsData: {
         iid: '1',
+        issuableId: 0,
         fullPath: '/mygroup/myProject',
         ...props,
-      },
-      data() {
-        return {
-          search,
-          selected: [],
-        };
       },
       provide: {
         canUpdate: true,
@@ -98,7 +74,7 @@ describe('Sidebar assignees widget', () => {
       },
       stubs: {
         SidebarEditableItem,
-        MultiSelectDropdown,
+        UserSelect,
         GlSearchBoxByType,
         GlDropdown,
       },
@@ -148,19 +124,6 @@ describe('Sidebar assignees widget', () => {
 
       expect(findEditableItem().props('title')).toBe('Assignee');
     });
-
-    describe('when expanded', () => {
-      it('renders a loading spinner if participants are loading', () => {
-        createComponent({
-          props: {
-            initialAssignees,
-          },
-        });
-        expandDropdown();
-
-        expect(findParticipantsLoading().exists()).toBe(true);
-      });
-    });
   });
 
   describe('without passed initial assignees', () => {
@@ -198,7 +161,7 @@ describe('Sidebar assignees widget', () => {
       findAssignees().vm.$emit('assign-self');
 
       expect(updateIssueAssigneesMutationSuccess).toHaveBeenCalledWith({
-        assigneeUsernames: 'root',
+        assigneeUsernames: ['root'],
         fullPath: '/mygroup/myProject',
         iid: '1',
       });
@@ -220,7 +183,7 @@ describe('Sidebar assignees widget', () => {
       findAssignees().vm.$emit('assign-self');
 
       expect(updateIssueAssigneesMutationSuccess).toHaveBeenCalledWith({
-        assigneeUsernames: 'root',
+        assigneeUsernames: ['root'],
         fullPath: '/mygroup/myProject',
         iid: '1',
       });
@@ -245,18 +208,6 @@ describe('Sidebar assignees widget', () => {
       ]);
     });
 
-    it('renders current user if they are not in participants or assignees', async () => {
-      gon.current_username = 'random';
-      gon.current_user_fullname = 'Mr Random';
-      gon.current_user_avatar_url = '/random';
-
-      createComponent();
-      await waitForPromises();
-      expandDropdown();
-
-      expect(findCurrentUser().exists()).toBe(true);
-    });
-
     describe('when expanded', () => {
       beforeEach(async () => {
         createComponent();
@@ -264,27 +215,18 @@ describe('Sidebar assignees widget', () => {
         expandDropdown();
       });
 
-      it('collapses the widget on multiselect dropdown toggle event', async () => {
-        findDropdown().vm.$emit('toggle');
+      it('collapses the widget on user select toggle event', async () => {
+        findUserSelect().vm.$emit('toggle');
         await nextTick();
-        expect(findDropdown().isVisible()).toBe(false);
+        expect(findUserSelect().isVisible()).toBe(false);
       });
 
-      it('renders participants list with correct amount of selected and unselected', async () => {
-        expect(findSelectedParticipants()).toHaveLength(1);
-        expect(findUnselectedParticipants()).toHaveLength(2);
-      });
-
-      it('does not render current user if they are in participants', () => {
-        expect(findCurrentUser().exists()).toBe(false);
-      });
-
-      it('unassigns all participants when clicking on `Unassign`', () => {
-        findUnassignLink().vm.$emit('click');
+      it('calls an update mutation with correct variables on User Select input event', () => {
+        findUserSelect().vm.$emit('input', [{ username: 'root' }]);
         findEditableItem().vm.$emit('close');
 
         expect(updateIssueAssigneesMutationSuccess).toHaveBeenCalledWith({
-          assigneeUsernames: [],
+          assigneeUsernames: ['root'],
           fullPath: '/mygroup/myProject',
           iid: '1',
         });
@@ -293,68 +235,38 @@ describe('Sidebar assignees widget', () => {
 
     describe('when multiselect is disabled', () => {
       beforeEach(async () => {
-        createComponent({ props: { multipleAssignees: false } });
+        createComponent({ props: { allowMultipleAssignees: false } });
         await waitForPromises();
         expandDropdown();
       });
 
-      it('adds a single assignee when clicking on unselected user', async () => {
-        findUnselectedParticipants().at(0).vm.$emit('click');
+      it('closes a dropdown after User Select input event', async () => {
+        findUserSelect().vm.$emit('input', [{ username: 'root' }]);
 
         expect(updateIssueAssigneesMutationSuccess).toHaveBeenCalledWith({
           assigneeUsernames: ['root'],
           fullPath: '/mygroup/myProject',
           iid: '1',
         });
-      });
 
-      it('removes an assignee when clicking on selected user', () => {
-        findSelectedParticipants().at(0).vm.$emit('click', new Event('click'));
+        await waitForPromises();
 
-        expect(updateIssueAssigneesMutationSuccess).toHaveBeenCalledWith({
-          assigneeUsernames: [],
-          fullPath: '/mygroup/myProject',
-          iid: '1',
-        });
+        expect(findUserSelect().isVisible()).toBe(false);
       });
     });
 
     describe('when multiselect is enabled', () => {
       beforeEach(async () => {
-        createComponent({ props: { multipleAssignees: true } });
+        createComponent({ props: { allowMultipleAssignees: true } });
         await waitForPromises();
         expandDropdown();
       });
 
-      it('adds a few assignees after clicking on unselected users and closing a dropdown', () => {
-        findUnselectedParticipants().at(0).vm.$emit('click');
-        findUnselectedParticipants().at(1).vm.$emit('click');
-        findEditableItem().vm.$emit('close');
-
-        expect(updateIssueAssigneesMutationSuccess).toHaveBeenCalledWith({
-          assigneeUsernames: ['francina.skiles', 'root', 'johndoe'],
-          fullPath: '/mygroup/myProject',
-          iid: '1',
-        });
-      });
-
-      it('removes an assignee when clicking on selected user and then closing dropdown', () => {
-        findSelectedParticipants().at(0).vm.$emit('click', new Event('click'));
-
-        findEditableItem().vm.$emit('close');
-
-        expect(updateIssueAssigneesMutationSuccess).toHaveBeenCalledWith({
-          assigneeUsernames: [],
-          fullPath: '/mygroup/myProject',
-          iid: '1',
-        });
-      });
-
       it('does not call a mutation when clicking on participants until dropdown is closed', () => {
-        findUnselectedParticipants().at(0).vm.$emit('click');
-        findSelectedParticipants().at(0).vm.$emit('click', new Event('click'));
+        findUserSelect().vm.$emit('input', [{ username: 'root' }]);
 
         expect(updateIssueAssigneesMutationSuccess).not.toHaveBeenCalled();
+        expect(findUserSelect().isVisible()).toBe(true);
       });
     });
 
@@ -363,7 +275,7 @@ describe('Sidebar assignees widget', () => {
       await waitForPromises();
       expandDropdown();
 
-      findUnassignLink().vm.$emit('click');
+      findUserSelect().vm.$emit('input', []);
       findEditableItem().vm.$emit('close');
 
       await waitForPromises();
@@ -372,106 +284,12 @@ describe('Sidebar assignees widget', () => {
         message: 'An error occurred while updating assignees.',
       });
     });
-
-    describe('when searching', () => {
-      it('does not show loading spinner when debounce timer is still running', async () => {
-        createComponent({ search: 'roo' });
-        await waitForPromises();
-        expandDropdown();
-
-        expect(findParticipantsLoading().exists()).toBe(false);
-      });
-
-      it('shows loading spinner when searching for users', async () => {
-        createComponent({ search: 'roo' });
-        await waitForPromises();
-        expandDropdown();
-        jest.advanceTimersByTime(ASSIGNEES_DEBOUNCE_DELAY);
-        await nextTick();
-
-        expect(findParticipantsLoading().exists()).toBe(true);
-      });
-
-      it('renders a list of found users and external participants matching search term', async () => {
-        const responseCopy = cloneDeep(issuableQueryResponse);
-        responseCopy.data.workspace.issuable.participants.nodes.push({
-          id: 'gid://gitlab/User/5',
-          avatarUrl: '/someavatar',
-          name: 'Roodie',
-          username: 'roodie',
-          webUrl: '/roodie',
-          status: null,
-        });
-
-        const issuableQueryHandler = jest.fn().mockResolvedValue(responseCopy);
-
-        createComponent({ issuableQueryHandler });
-        await waitForPromises();
-        expandDropdown();
-
-        findSearchField().vm.$emit('input', 'roo');
-        await nextTick();
-
-        jest.advanceTimersByTime(ASSIGNEES_DEBOUNCE_DELAY);
-        await nextTick();
-        await waitForPromises();
-
-        expect(findUnselectedParticipants()).toHaveLength(3);
-      });
-
-      it('renders a list of found users only if no external participants match search term', async () => {
-        createComponent({ search: 'roo' });
-        await waitForPromises();
-        expandDropdown();
-        jest.advanceTimersByTime(250);
-        await nextTick();
-        await waitForPromises();
-
-        expect(findUnselectedParticipants()).toHaveLength(2);
-      });
-
-      it('shows a message about no matches if search returned an empty list', async () => {
-        const responseCopy = cloneDeep(searchQueryResponse);
-        responseCopy.data.workspace.users.nodes = [];
-
-        createComponent({
-          search: 'roo',
-          searchQueryHandler: jest.fn().mockResolvedValue(responseCopy),
-        });
-        await waitForPromises();
-        expandDropdown();
-        jest.advanceTimersByTime(ASSIGNEES_DEBOUNCE_DELAY);
-        await nextTick();
-        await waitForPromises();
-
-        expect(findUnselectedParticipants()).toHaveLength(0);
-        expect(findEmptySearchResults().exists()).toBe(true);
-      });
-
-      it('shows an error if search query was rejected', async () => {
-        createComponent({ search: 'roo', searchQueryHandler: mockError });
-        await waitForPromises();
-        expandDropdown();
-        jest.advanceTimersByTime(250);
-        await nextTick();
-        await waitForPromises();
-
-        expect(createFlash).toHaveBeenCalledWith({
-          message: 'An error occurred while searching users.',
-        });
-      });
-    });
   });
 
   describe('when user is not signed in', () => {
     beforeEach(() => {
       gon.current_username = undefined;
       createComponent();
-    });
-
-    it('does not show current user in the dropdown', () => {
-      expandDropdown();
-      expect(findCurrentUser().exists()).toBe(false);
     });
 
     it('passes signedIn prop as false to IssuableAssignees', () => {
@@ -487,9 +305,6 @@ describe('Sidebar assignees widget', () => {
 
   it('when realtime feature flag is enabled', async () => {
     createComponent({
-      props: {
-        issuableId: 1,
-      },
       provide: {
         glFeatures: {
           realTimeIssueSidebar: true,
@@ -510,17 +325,17 @@ describe('Sidebar assignees widget', () => {
       expect(findEditableItem().props('isDirty')).toBe(false);
     });
 
-    it('passes truthy `isDirty` prop if selected users list was changed', async () => {
+    it('passes truthy `isDirty` prop after User Select component emitted an input event', async () => {
       expandDropdown();
       expect(findEditableItem().props('isDirty')).toBe(false);
-      findUnselectedParticipants().at(0).vm.$emit('click');
+      findUserSelect().vm.$emit('input', []);
       await nextTick();
       expect(findEditableItem().props('isDirty')).toBe(true);
     });
 
     it('passes falsy `isDirty` prop after dropdown is closed', async () => {
       expandDropdown();
-      findUnselectedParticipants().at(0).vm.$emit('click');
+      findUserSelect().vm.$emit('input', []);
       findEditableItem().vm.$emit('close');
       await waitForPromises();
       expect(findEditableItem().props('isDirty')).toBe(false);

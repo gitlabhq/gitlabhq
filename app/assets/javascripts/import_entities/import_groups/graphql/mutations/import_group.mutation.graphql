@@ -1,3 +1,9 @@
 mutation importGroup($sourceGroupId: String!) {
-  importGroup(sourceGroupId: $sourceGroupId) @client
+  importGroup(sourceGroupId: $sourceGroupId) @client {
+    id
+    progress {
+      id
+      status
+    }
+  }
 }

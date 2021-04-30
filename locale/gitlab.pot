@@ -3673,9 +3673,6 @@ msgstr ""
 msgid "An error occurred while saving changes: %{error}"
 msgstr ""
 
-msgid "An error occurred while searching users."
-msgstr ""
-
 msgid "An error occurred while subscribing to notifications."
 msgstr ""
 
@@ -12932,6 +12929,9 @@ msgstr ""
 msgid "ErrorTracking|Connection failed. Check Auth Token and try again."
 msgstr ""
 
+msgid "ErrorTracking|Enable error tracking"
+msgstr ""
+
 msgid "ErrorTracking|If you self-host Sentry, enter your Sentry instance's full URL. If you use Sentry's hosted solution, enter https://sentry.io"
 msgstr ""
 
@@ -19394,6 +19394,9 @@ msgid "Link"
 msgstr ""
 
 msgid "Link Prometheus monitoring to GitLab."
+msgstr ""
+
+msgid "Link Sentry to GitLab to discover and view the errors your application generates."
 msgstr ""
 
 msgid "Link an external wiki from the project's sidebar. %{docs_link}"
@@ -26494,9 +26497,6 @@ msgstr ""
 msgid "Recent"
 msgstr ""
 
-msgid "Recent Activity"
-msgstr ""
-
 msgid "Recent Deliveries"
 msgstr ""
 
@@ -33453,9 +33453,6 @@ msgstr ""
 msgid "To learn more about this project, read %{link_to_wiki}."
 msgstr ""
 
-msgid "To link Sentry to GitLab, enter your Sentry URL and Auth Token."
-msgstr ""
-
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
 msgstr ""
 
@@ -35150,10 +35147,19 @@ msgstr ""
 msgid "ValueStreamAnalytics|&lt;1m"
 msgstr ""
 
+msgid "ValueStreamAnalytics|Average number of deployments to production per day."
+msgstr ""
+
 msgid "ValueStreamAnalytics|Median time from first commit to issue closed."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Number of new issues created."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Total number of deploys to production."
 msgstr ""
 
 msgid "ValueStreamEvent|Stage time (median)"
@@ -38222,7 +38228,22 @@ msgstr ""
 msgid "mrWidget|Merged by"
 msgstr ""
 
+msgid "mrWidget|Merging! Changes are being shipped…"
+msgstr ""
+
+msgid "mrWidget|Merging! Changes will land soon…"
+msgstr ""
+
 msgid "mrWidget|Merging! Drum roll, please…"
+msgstr ""
+
+msgid "mrWidget|Merging! Everything's good…"
+msgstr ""
+
+msgid "mrWidget|Merging! This is going to be great…"
+msgstr ""
+
+msgid "mrWidget|Merging! We're almost there…"
 msgstr ""
 
 msgid "mrWidget|More information"

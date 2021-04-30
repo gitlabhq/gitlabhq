@@ -1,4 +1,5 @@
 <script>
+import { MERGE_ACTIVE_STATUS_PHRASES } from '../../constants';
 import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
@@ -13,6 +14,13 @@ export default {
       default: () => ({}),
     },
   },
+  data() {
+    const statusCount = MERGE_ACTIVE_STATUS_PHRASES.length;
+
+    return {
+      mergeStatus: MERGE_ACTIVE_STATUS_PHRASES[Math.floor(Math.random() * statusCount)],
+    };
+  },
 };
 </script>
 <template>
@@ -20,8 +28,8 @@ export default {
     <status-icon status="loading" />
     <div class="media-body">
       <h4>
-        {{ s__('mrWidget|Merging! Drum roll, please…') }}
-        <gl-emoji data-name="drum" />
+        {{ mergeStatus.message }}
+        <gl-emoji :data-name="mergeStatus.emoji" />
       </h4>
       <section class="mr-info-list">
         <p>

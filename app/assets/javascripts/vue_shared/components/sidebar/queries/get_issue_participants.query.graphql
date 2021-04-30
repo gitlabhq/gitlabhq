@@ -13,12 +13,6 @@ query issueParticipants($fullPath: ID!, $iid: String!) {
           ...UserAvailability
         }
       }
-      assignees {
-        nodes {
-          ...User
-          ...UserAvailability
-        }
-      }
     }
   }
 }

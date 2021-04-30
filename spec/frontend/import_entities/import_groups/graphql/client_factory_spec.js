@@ -9,9 +9,12 @@ import {
   createResolvers,
 } from '~/import_entities/import_groups/graphql/client_factory';
 import importGroupMutation from '~/import_entities/import_groups/graphql/mutations/import_group.mutation.graphql';
+import setImportProgressMutation from '~/import_entities/import_groups/graphql/mutations/set_import_progress.mutation.graphql';
 import setNewNameMutation from '~/import_entities/import_groups/graphql/mutations/set_new_name.mutation.graphql';
 import setTargetNamespaceMutation from '~/import_entities/import_groups/graphql/mutations/set_target_namespace.mutation.graphql';
+import updateImportStatusMutation from '~/import_entities/import_groups/graphql/mutations/update_import_status.mutation.graphql';
 import availableNamespacesQuery from '~/import_entities/import_groups/graphql/queries/available_namespaces.query.graphql';
+import bulkImportSourceGroupQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_group.query.graphql';
 import bulkImportSourceGroupsQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_groups.query.graphql';
 import { StatusPoller } from '~/import_entities/import_groups/graphql/services/status_poller';
 
@@ -78,6 +81,31 @@ describe('Bulk import resolvers', () => {
       });
     });
 
+    describe('bulkImportSourceGroup', () => {
+      beforeEach(async () => {
+        axiosMockAdapter.onGet(FAKE_ENDPOINTS.status).reply(httpStatus.OK, statusEndpointFixture);
+        axiosMockAdapter
+          .onGet(FAKE_ENDPOINTS.availableNamespaces)
+          .reply(httpStatus.OK, availableNamespacesFixture);
+
+        return client.query({
+          query: bulkImportSourceGroupsQuery,
+        });
+      });
+
+      it('returns group', async () => {
+        const { id } = statusEndpointFixture.importable_data[0];
+        const {
+          data: { bulkImportSourceGroup: group },
+        } = await client.query({
+          query: bulkImportSourceGroupQuery,
+          variables: { id: id.toString() },
+        });
+
+        expect(group).toMatchObject(statusEndpointFixture.importable_data[0]);
+      });
+    });
+
     describe('bulkImportSourceGroups', () => {
       let results;
 
@@ -89,8 +117,12 @@ describe('Bulk import resolvers', () => {
       });
 
       it('respects cached import state when provided by group manager', async () => {
+        const FAKE_JOB_ID = '1';
         const FAKE_STATUS = 'DEMO_STATUS';
-        const FAKE_IMPORT_TARGET = {};
+        const FAKE_IMPORT_TARGET = {
+          new_name: 'test-name',
+          target_namespace: 'test-namespace',
+        };
         const TARGET_INDEX = 0;
 
         const clientWithMockedManager = createClient({
@@ -98,8 +130,11 @@ describe('Bulk import resolvers', () => {
             getImportStateFromStorageByGroupId(groupId) {
               if (groupId === statusEndpointFixture.importable_data[TARGET_INDEX].id) {
                 return {
-                  status: FAKE_STATUS,
-                  importTarget: FAKE_IMPORT_TARGET,
+                  jobId: FAKE_JOB_ID,
+                  importState: {
+                    status: FAKE_STATUS,
+                    importTarget: FAKE_IMPORT_TARGET,
+                  },
                 };
               }
 
@@ -113,8 +148,8 @@ describe('Bulk import resolvers', () => {
         });
         const clientResults = clientResponse.data.bulkImportSourceGroups.nodes;
 
-        expect(clientResults[TARGET_INDEX].import_target).toBe(FAKE_IMPORT_TARGET);
-        expect(clientResults[TARGET_INDEX].status).toBe(FAKE_STATUS);
+        expect(clientResults[TARGET_INDEX].import_target).toStrictEqual(FAKE_IMPORT_TARGET);
+        expect(clientResults[TARGET_INDEX].progress.status).toBe(FAKE_STATUS);
       });
 
       it('populates each result instance with empty import_target when there are no available namespaces', async () => {
@@ -143,8 +178,8 @@ describe('Bulk import resolvers', () => {
           ).toBe(true);
         });
 
-        it('populates each result instance with status field default to none', () => {
-          expect(results.every((r) => r.status === STATUSES.NONE)).toBe(true);
+        it('populates each result instance with status default to none', () => {
+          expect(results.every((r) => r.progress.status === STATUSES.NONE)).toBe(true);
         });
 
         it('populates each result instance with import_target defaulted to first available namespace', () => {
@@ -183,7 +218,6 @@ describe('Bulk import resolvers', () => {
   });
 
   describe('mutations', () => {
-    let results;
     const GROUP_ID = 1;
 
     beforeEach(() => {
@@ -195,7 +229,10 @@ describe('Bulk import resolvers', () => {
               {
                 __typename: clientTypenames.BulkImportSourceGroup,
                 id: GROUP_ID,
-                status: STATUSES.NONE,
+                progress: {
+                  id: `test-${GROUP_ID}`,
+                  status: STATUSES.NONE,
+                },
                 web_url: 'https://fake.host/1',
                 full_path: 'fake_group_1',
                 full_name: 'fake_name_1',
@@ -214,35 +251,42 @@ describe('Bulk import resolvers', () => {
           },
         },
       });
-
-      client
-        .watchQuery({
-          query: bulkImportSourceGroupsQuery,
-          fetchPolicy: 'cache-only',
-        })
-        .subscribe(({ data }) => {
-          results = data.bulkImportSourceGroups.nodes;
-        });
     });
 
     it('setTargetNamespaces updates group target namespace', async () => {
       const NEW_TARGET_NAMESPACE = 'target';
-      await client.mutate({
+      const {
+        data: {
+          setTargetNamespace: {
+            id: idInResponse,
+            import_target: { target_namespace: namespaceInResponse },
+          },
+        },
+      } = await client.mutate({
         mutation: setTargetNamespaceMutation,
         variables: { sourceGroupId: GROUP_ID, targetNamespace: NEW_TARGET_NAMESPACE },
       });
 
-      expect(results[0].import_target.target_namespace).toBe(NEW_TARGET_NAMESPACE);
+      expect(idInResponse).toBe(GROUP_ID);
+      expect(namespaceInResponse).toBe(NEW_TARGET_NAMESPACE);
     });
 
     it('setNewName updates group target name', async () => {
       const NEW_NAME = 'new';
-      await client.mutate({
+      const {
+        data: {
+          setNewName: {
+            id: idInResponse,
+            import_target: { new_name: nameInResponse },
+          },
+        },
+      } = await client.mutate({
         mutation: setNewNameMutation,
         variables: { sourceGroupId: GROUP_ID, newName: NEW_NAME },
       });
 
-      expect(results[0].import_target.new_name).toBe(NEW_NAME);
+      expect(idInResponse).toBe(GROUP_ID);
+      expect(nameInResponse).toBe(NEW_NAME);
     });
 
     describe('importGroup', () => {
@@ -261,33 +305,49 @@ describe('Bulk import resolvers', () => {
           query: bulkImportSourceGroupsQuery,
         });
 
-        expect(intermediateResults[0].status).toBe(STATUSES.SCHEDULING);
+        expect(intermediateResults[0].progress.status).toBe(STATUSES.SCHEDULING);
       });
 
-      it('sets import status to CREATED when request completes', async () => {
-        axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK, { id: 1 });
-        await client.mutate({
-          mutation: importGroupMutation,
-          variables: { sourceGroupId: GROUP_ID },
+      describe('when request completes', () => {
+        let results;
+
+        beforeEach(() => {
+          client
+            .watchQuery({
+              query: bulkImportSourceGroupsQuery,
+              fetchPolicy: 'cache-only',
+            })
+            .subscribe(({ data }) => {
+              results = data.bulkImportSourceGroups.nodes;
+            });
         });
 
-        expect(results[0].status).toBe(STATUSES.CREATED);
-      });
-
-      it('resets status to NONE if request fails', async () => {
-        axiosMockAdapter
-          .onPost(FAKE_ENDPOINTS.createBulkImport)
-          .reply(httpStatus.INTERNAL_SERVER_ERROR);
-
-        client
-          .mutate({
+        it('sets import status to CREATED when request completes', async () => {
+          axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK, { id: 1 });
+          await client.mutate({
             mutation: importGroupMutation,
             variables: { sourceGroupId: GROUP_ID },
-          })
-          .catch(() => {});
-        await waitForPromises();
+          });
+          await waitForPromises();
 
-        expect(results[0].status).toBe(STATUSES.NONE);
+          expect(results[0].progress.status).toBe(STATUSES.CREATED);
+        });
+
+        it('resets status to NONE if request fails', async () => {
+          axiosMockAdapter
+            .onPost(FAKE_ENDPOINTS.createBulkImport)
+            .reply(httpStatus.INTERNAL_SERVER_ERROR);
+
+          client
+            .mutate({
+              mutation: importGroupMutation,
+              variables: { sourceGroupId: GROUP_ID },
+            })
+            .catch(() => {});
+          await waitForPromises();
+
+          expect(results[0].progress.status).toBe(STATUSES.NONE);
+        });
       });
 
       it('shows default error message when server error is not provided', async () => {
@@ -322,6 +382,40 @@ describe('Bulk import resolvers', () => {
         await waitForPromises();
 
         expect(createFlash).toHaveBeenCalledWith({ message: CUSTOM_MESSAGE });
+      });
+    });
+
+    it('setImportProgress updates group progress', async () => {
+      const NEW_STATUS = 'dummy';
+      const FAKE_JOB_ID = 5;
+      const {
+        data: {
+          setImportProgress: { progress },
+        },
+      } = await client.mutate({
+        mutation: setImportProgressMutation,
+        variables: { sourceGroupId: GROUP_ID, status: NEW_STATUS, jobId: FAKE_JOB_ID },
+      });
+
+      expect(progress).toMatchObject({
+        id: FAKE_JOB_ID,
+        status: NEW_STATUS,
+      });
+    });
+
+    it('updateImportStatus returns new status', async () => {
+      const NEW_STATUS = 'dummy';
+      const FAKE_JOB_ID = 5;
+      const {
+        data: { updateImportStatus: statusInResponse },
+      } = await client.mutate({
+        mutation: updateImportStatusMutation,
+        variables: { id: FAKE_JOB_ID, status: NEW_STATUS },
+      });
+
+      expect(statusInResponse).toMatchObject({
+        id: FAKE_JOB_ID,
+        status: NEW_STATUS,
       });
     });
   });

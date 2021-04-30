@@ -57,4 +57,15 @@ RSpec.describe Groups::OpenIssuesCountService, :use_clean_rails_memory_store_cac
       it_behaves_like 'a counter caching service with threshold'
     end
   end
+
+  describe '#clear_all_cache_keys' do
+    it 'calls `Rails.cache.delete` with the correct keys' do
+      expect(Rails.cache).to receive(:delete)
+        .with(['groups', 'open_issues_count_service', 1, group.id, described_class::PUBLIC_COUNT_KEY])
+      expect(Rails.cache).to receive(:delete)
+        .with(['groups', 'open_issues_count_service', 1, group.id, described_class::TOTAL_COUNT_KEY])
+
+      subject.clear_all_cache_keys
+    end
+  end
 end

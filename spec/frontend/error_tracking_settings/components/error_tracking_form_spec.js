@@ -33,11 +33,12 @@ describe('error tracking settings form', () => {
 
   describe('an empty form', () => {
     it('is rendered', () => {
-      expect(wrapper.findAll(GlFormInput).length).toBe(2);
-      expect(wrapper.find(GlFormInput).attributes('id')).toBe('error-tracking-api-host');
-      expect(wrapper.findAll(GlFormInput).at(1).attributes('id')).toBe('error-tracking-token');
-
-      expect(wrapper.findAll(GlButton).exists()).toBe(true);
+      expect(wrapper.findAllComponents(GlFormInput).length).toBe(2);
+      expect(wrapper.findComponent(GlFormInput).attributes('id')).toBe('error-tracking-api-host');
+      expect(wrapper.findAllComponents(GlFormInput).at(1).attributes('id')).toBe(
+        'error-tracking-token',
+      );
+      expect(wrapper.findAllComponents(GlButton).exists()).toBe(true);
     });
 
     it('is rendered with labels and placeholders', () => {
@@ -51,7 +52,7 @@ describe('error tracking settings form', () => {
       );
 
       expect(pageText).not.toContain('Connection failed. Check Auth Token and try again.');
-      expect(wrapper.findAll(GlFormInput).at(0).attributes('placeholder')).toContain(
+      expect(wrapper.findAllComponents(GlFormInput).at(0).attributes('placeholder')).toContain(
         'https://mysentryserver.com',
       );
     });
@@ -63,7 +64,7 @@ describe('error tracking settings form', () => {
     });
 
     it('shows loading spinner', () => {
-      const buttonEl = wrapper.find(GlButton);
+      const buttonEl = wrapper.findComponent(GlButton);
 
       expect(buttonEl.props('loading')).toBe(true);
       expect(buttonEl.text()).toBe('Connecting');

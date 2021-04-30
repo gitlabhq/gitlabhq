@@ -1,0 +1,7 @@
+#import "../fragments/bulk_import_source_group_item.fragment.graphql"
+
+query bulkImportSourceGroup($id: ID!) {
+  bulkImportSourceGroup(id: $id) @client {
+    ...BulkImportSourceGroupItem
+  }
+}

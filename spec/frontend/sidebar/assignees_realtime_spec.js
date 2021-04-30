@@ -4,7 +4,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import AssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import issuableAssigneesSubscription from '~/sidebar/queries/issuable_assignees.subscription.graphql';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
-import getIssueParticipantsQuery from '~/vue_shared/components/sidebar/queries/get_issue_participants.query.graphql';
+import getIssueAssigneesQuery from '~/vue_shared/components/sidebar/queries/get_issue_assignees.query.graphql';
 import Mock, { issuableQueryResponse, subscriptionNullResponse } from './mock_data';
 
 const localVue = createLocalVue();
@@ -24,7 +24,7 @@ describe('Assignees Realtime', () => {
     subscriptionHandler = subscriptionInitialHandler,
   } = {}) => {
     fakeApollo = createMockApollo([
-      [getIssueParticipantsQuery, issuableQueryHandler],
+      [getIssueAssigneesQuery, issuableQueryHandler],
       [issuableAssigneesSubscription, subscriptionHandler],
     ]);
     wrapper = shallowMount(AssigneesRealtime, {

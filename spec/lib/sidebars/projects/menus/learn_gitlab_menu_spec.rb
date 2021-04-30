@@ -28,4 +28,32 @@ RSpec.describe Sidebars::Projects::Menus::LearnGitlabMenu do
       end
     end
   end
+
+  describe '#has_pill?' do
+    context 'when learn gitlab experiment is enabled' do
+      it 'returns true' do
+        expect(subject.has_pill?).to eq true
+      end
+    end
+
+    context 'when learn gitlab experiment is disabled' do
+      let(:experiment_enabled) { false }
+
+      it 'returns false' do
+        expect(subject.has_pill?).to eq false
+      end
+    end
+  end
+
+  describe '#pill_count' do
+    before do
+      expect_next_instance_of(LearnGitlab::Onboarding) do |onboarding|
+        expect(onboarding).to receive(:completed_percentage).and_return(20)
+      end
+    end
+
+    it 'returns pill count' do
+      expect(subject.pill_count).to eq '20%'
+    end
+  end
 end

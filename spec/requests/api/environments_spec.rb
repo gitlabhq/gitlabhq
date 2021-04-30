@@ -15,16 +15,6 @@ RSpec.describe API::Environments do
   describe 'GET /projects/:id/environments' do
     context 'as member of the project' do
       it 'returns project environments' do
-        project_data_keys = %w(
-          id description default_branch tag_list
-          ssh_url_to_repo http_url_to_repo web_url readme_url
-          name name_with_namespace
-          path path_with_namespace
-          star_count forks_count
-          created_at last_activity_at
-          avatar_url namespace
-        )
-
         get api("/projects/#{project.id}/environments", user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -33,7 +23,7 @@ RSpec.describe API::Environments do
         expect(json_response.size).to eq(1)
         expect(json_response.first['name']).to eq(environment.name)
         expect(json_response.first['external_url']).to eq(environment.external_url)
-        expect(json_response.first['project'].keys).to contain_exactly(*project_data_keys)
+        expect(json_response.first['project']).to match_schema('public_api/v4/project')
         expect(json_response.first['enable_advanced_logs_querying']).to eq(false)
         expect(json_response.first).not_to have_key('last_deployment')
       end

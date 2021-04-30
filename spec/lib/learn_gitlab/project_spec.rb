@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe LearnGitlab do
+RSpec.describe LearnGitlab::Project do
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:learn_gitlab_project) { create(:project, name: LearnGitlab::PROJECT_NAME) }
-  let_it_be(:learn_gitlab_board) { create(:board, project: learn_gitlab_project, name: LearnGitlab::BOARD_NAME) }
-  let_it_be(:learn_gitlab_label) { create(:label, project: learn_gitlab_project, name: LearnGitlab::LABEL_NAME) }
+  let_it_be(:learn_gitlab_project) { create(:project, name: LearnGitlab::Project::PROJECT_NAME) }
+  let_it_be(:learn_gitlab_board) { create(:board, project: learn_gitlab_project, name: LearnGitlab::Project::BOARD_NAME) }
+  let_it_be(:learn_gitlab_label) { create(:label, project: learn_gitlab_project, name: LearnGitlab::Project::LABEL_NAME) }
 
   before do
     learn_gitlab_project.add_developer(current_user)

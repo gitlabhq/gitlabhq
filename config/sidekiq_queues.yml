@@ -190,6 +190,8 @@
   - 1
 - - issuable_export_csv
   - 1
+- - issuables_clear_groups_issue_counter
+  - 1
 - - issue_placement
   - 2
 - - issue_rebalancing
