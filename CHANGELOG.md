@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.11.3 (2021-04-30)
+
+### Fixed (1 change)
+
+- Fix Instance-level Project Integration Management page for GitLab FOSS. !60354
+
+
 ## 13.11.2 (2021-04-27)
 
 ### Security (5 changes)
