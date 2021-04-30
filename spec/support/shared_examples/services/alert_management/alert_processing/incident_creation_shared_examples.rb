@@ -25,9 +25,9 @@ RSpec.shared_examples 'processes incident issues' do |with_issue: false|
   end
 
   specify do
-    expect(IncidentManagement::ProcessAlertWorker)
+    expect(IncidentManagement::ProcessAlertWorkerV2)
       .to receive(:perform_async)
-      .with(nil, nil, kind_of(Integer))
+      .with(kind_of(Integer))
 
     Sidekiq::Testing.inline! do
       expect(subject).to be_success
@@ -45,7 +45,7 @@ end
 
 RSpec.shared_examples 'does not process incident issues' do
   specify do
-    expect(IncidentManagement::ProcessAlertWorker).not_to receive(:perform_async)
+    expect(IncidentManagement::ProcessAlertWorkerV2).not_to receive(:perform_async)
 
     subject
   end

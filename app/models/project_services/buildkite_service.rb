@@ -68,7 +68,7 @@ class BuildkiteService < CiService
   end
 
   def description
-    'Buildkite is a platform for running fast, secure, and scalable continuous integration pipelines on your own infrastructure'
+    'Run CI/CD pipelines with Buildkite.'
   end
 
   def self.to_param

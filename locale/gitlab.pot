@@ -4349,7 +4349,7 @@ msgstr ""
 msgid "AsanaService|%{user} pushed to branch %{branch} of %{project_name} ( %{commit_url} ):"
 msgstr ""
 
-msgid "AsanaService|Add commit messages as comments to Asana tasks"
+msgid "AsanaService|Add commit messages as comments to Asana tasks."
 msgstr ""
 
 msgid "AsanaService|Comma-separated list of branches to be automatically inspected. Leave blank to include all branches."
@@ -17478,6 +17478,9 @@ msgstr ""
 msgid "Integrations|Default settings are inherited from the instance level."
 msgstr ""
 
+msgid "Integrations|Enable GitLab.com slash commands in a Slack workspace."
+msgstr ""
+
 msgid "Integrations|Enable comments"
 msgstr ""
 
@@ -17547,6 +17550,9 @@ msgstr ""
 msgid "Integrations|Search Jira issues"
 msgstr ""
 
+msgid "Integrations|Send notifications about project events to Unify Circuit."
+msgstr ""
+
 msgid "Integrations|Sign in to add namespaces"
 msgstr ""
 
@@ -17559,16 +17565,13 @@ msgstr ""
 msgid "Integrations|To keep this project going, create a new issue."
 msgstr ""
 
-msgid "Integrations|Update your projects on Packagist, the main Composer repository"
+msgid "Integrations|Update your Packagist projects."
 msgstr ""
 
 msgid "Integrations|Use custom settings"
 msgstr ""
 
 msgid "Integrations|Use default settings"
-msgstr ""
-
-msgid "Integrations|Use the GitLab Slack application"
 msgstr ""
 
 msgid "Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) is created."
@@ -18105,10 +18108,10 @@ msgstr ""
 msgid "IssueTracker|Use IBM Engineering Workflow Management as this project's issue tracker. %{docs_link}"
 msgstr ""
 
-msgid "IssueTracker|Use Redmine as the issue tracker."
+msgid "IssueTracker|Use Redmine as the issue tracker. %{docs_link}"
 msgstr ""
 
-msgid "IssueTracker|Use Redmine as the issue tracker. %{docs_link}"
+msgid "IssueTracker|Use Redmine as this project's issue tracker."
 msgstr ""
 
 msgid "IssueTracker|Use YouTrack as this project's issue tracker."
@@ -18117,10 +18120,10 @@ msgstr ""
 msgid "IssueTracker|Use YouTrack as this project's issue tracker. %{docs_link}"
 msgstr ""
 
-msgid "IssueTracker|Use a custom issue tracker that is not in the integration list. %{docs_link}"
+msgid "IssueTracker|Use a custom issue tracker as this project's issue tracker."
 msgstr ""
 
-msgid "IssueTracker|Use a custom issue tracker."
+msgid "IssueTracker|Use a custom issue tracker that is not in the integration list. %{docs_link}"
 msgstr ""
 
 msgid "Issues"
@@ -18411,13 +18414,13 @@ msgstr ""
 msgid "JiraService|This issue is synchronized with Jira"
 msgstr ""
 
-msgid "JiraService|Track issues in Jira"
-msgstr ""
-
 msgid "JiraService|Transition Jira issues to their final state:"
 msgstr ""
 
 msgid "JiraService|Upgrade your plan to enable this feature of the Jira Integration."
+msgstr ""
+
+msgid "JiraService|Use Jira as this project's issue tracker."
 msgstr ""
 
 msgid "JiraService|Use a password for server version and an API token for cloud version."
@@ -23998,13 +24001,13 @@ msgstr ""
 msgid "Pipeline|with stages"
 msgstr ""
 
+msgid "PivotalTrackerService|Add commit messages as comments to PivotalTracker stories."
+msgstr ""
+
 msgid "PivotalTrackerService|Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches."
 msgstr ""
 
 msgid "PivotalTrackerService|Pivotal Tracker API token."
-msgstr ""
-
-msgid "PivotalTrackerService|Project Management Software (Source Commits Endpoint)"
 msgstr ""
 
 msgid "Plain diff"
@@ -26350,6 +26353,9 @@ msgstr ""
 msgid "PushoverService|%{user_name} pushed new branch \"%{ref}\"."
 msgstr ""
 
+msgid "PushoverService|Get real-time notifications on your device."
+msgstr ""
+
 msgid "PushoverService|High Priority"
 msgstr ""
 
@@ -26363,9 +26369,6 @@ msgid "PushoverService|Lowest Priority"
 msgstr ""
 
 msgid "PushoverService|Normal Priority"
-msgstr ""
-
-msgid "PushoverService|Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop."
 msgstr ""
 
 msgid "PushoverService|See project %{project_full_name}"

@@ -13,7 +13,7 @@ class AsanaService < Service
   end
 
   def description
-    s_('AsanaService|Add commit messages as comments to Asana tasks')
+    s_('AsanaService|Add commit messages as comments to Asana tasks.')
   end
 
   def help

@@ -15,8 +15,7 @@ class IrkerService < Service
   end
 
   def description
-    'Send IRC messages, on update, to a list of recipients through an Irker '\
-    'gateway.'
+    'Send IRC messages.'
   end
 
   def self.to_param

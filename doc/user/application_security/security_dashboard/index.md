@@ -211,4 +211,4 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
-Read more on how to [address the vulnerabilities](../index.md#addressing-vulnerabilities).
+Read more on how to [address the vulnerabilities](../vulnerabilities/index.md).

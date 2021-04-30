@@ -9,7 +9,7 @@ class CustomIssueTrackerService < IssueTrackerService
   end
 
   def description
-    s_('IssueTracker|Use a custom issue tracker.')
+    s_("IssueTracker|Use a custom issue tracker as this project's issue tracker.")
   end
 
   def help

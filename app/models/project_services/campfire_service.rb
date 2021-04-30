@@ -9,7 +9,7 @@ class CampfireService < Service
   end
 
   def description
-    'Simple web-based real-time group chat'
+    'Send notifications about push events to Campfire chat rooms.'
   end
 
   def self.to_param

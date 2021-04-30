@@ -88,7 +88,7 @@ module AlertManagement
     def process_incident_issues
       return if alert.issue || alert.resolved?
 
-      ::IncidentManagement::ProcessAlertWorker.perform_async(nil, nil, alert.id)
+      ::IncidentManagement::ProcessAlertWorkerV2.perform_async(alert.id)
     end
 
     def send_alert_email

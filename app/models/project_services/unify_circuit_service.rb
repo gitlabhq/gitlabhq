@@ -6,7 +6,7 @@ class UnifyCircuitService < ChatNotificationService
   end
 
   def description
-    'Receive event notifications in Unify Circuit'
+    s_('Integrations|Send notifications about project events to Unify Circuit.')
   end
 
   def self.to_param

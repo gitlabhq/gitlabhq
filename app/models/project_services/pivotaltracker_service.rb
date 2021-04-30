@@ -11,7 +11,7 @@ class PivotaltrackerService < Service
   end
 
   def description
-    s_('PivotalTrackerService|Project Management Software (Source Commits Endpoint)')
+    s_('PivotalTrackerService|Add commit messages as comments to PivotalTracker stories.')
   end
 
   def self.to_param

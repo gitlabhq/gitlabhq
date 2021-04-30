@@ -157,6 +157,11 @@ on adding these events into GitLab:
 - [Group settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/475)
 - [Instance-level settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/476)
 
+Don't see the event you want in any of the epics linked above? You can use the **Audit Event
+Proposal** issue template to
+[create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Audit%20Event%20Proposal)
+to request it.
+
 ### Disabled events
 
 #### Repository push

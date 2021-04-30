@@ -116,7 +116,7 @@ class JiraService < IssueTrackerService
   end
 
   def description
-    s_('JiraService|Track issues in Jira')
+    s_("JiraService|Use Jira as this project's issue tracker.")
   end
 
   def self.to_param

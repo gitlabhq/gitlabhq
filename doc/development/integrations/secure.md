@@ -548,7 +548,7 @@ of the available SAST Analyzers and what data is currently available.
 
 The `remediations` field of the report is an array of remediation objects.
 Each remediation describes a patch that can be applied to
-[automatically fix](../../user/application_security/#apply-an-automatic-remediation-for-a-vulnerability)
+[automatically fix](../../user/application_security/vulnerabilities/index.md#remediate-a-vulnerability-automatically)
 a set of vulnerabilities.
 
 Here is an example of a report that contains remediations.

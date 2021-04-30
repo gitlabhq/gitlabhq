@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Each security vulnerability in a project's [Vulnerability Report](../vulnerability_report/index.md) has an individual page which includes:
 
 - Details of the vulnerability.
-- The status of the vulnerability within the project.
+- The status of the vulnerability in the project.
 - Available actions for the vulnerability.
 - Any issues related to the vulnerability.
 
@@ -21,8 +21,10 @@ On the vulnerability's page, you can:
 - [Change the vulnerability's status](#change-vulnerability-status).
 - [Create an issue](#create-an-issue-for-a-vulnerability).
 - [Link issues to the vulnerability](#link-gitlab-issues-to-the-vulnerability).
-- [Automatically remediate the vulnerability](#automatically-remediate-the-vulnerability), if an
+- [Remediate a vulnerability automatically](#remediate-a-vulnerability-automatically), if an
   automatic solution is available.
+- [Remediate a vulnerability manually](#remediate-a-vulnerability-manually), if a solution is
+  available.
 
 ## Change vulnerability status
 
@@ -60,7 +62,7 @@ To create a GitLab issue for a vulnerability:
 1. In GitLab, go to the vulnerability's page.
 1. Select **Create issue**.
 
-An issue is created in the project, prepopulated with information from the vulnerability report.
+An issue is created in the project, pre-populated with information from the vulnerability report.
 The issue is then opened so you can take further action.
 
 ### Create a Jira issue for a vulnerability
@@ -120,10 +122,59 @@ that the resolution of one issue would resolve multiple vulnerabilities.
 
 Linked issues are shown in the Vulnerability Report and the vulnerability's page.
 
-## Automatically remediate the vulnerability
+## Link to an existing issue
 
-You can fix some vulnerabilities by applying the solution that GitLab automatically
-generates for you. [Read more about the automatic remediation for vulnerabilities feature](../index.md#apply-an-automatic-remediation-for-a-vulnerability).
+If you already have an open issue, you can link to it from the vulnerability.
+
+- The vulnerability page shows related issues, but the issue page doesn't show the vulnerability it's related to.
+- An issue can only be related to one vulnerability at a time.
+- Issues can be linked across groups and projects.
+
+To link to an existing issue:
+
+1. Open the vulnerability.
+1. [Add a linked issue](../../project/issues/related_issues.md).
+
+## Remediate a vulnerability automatically
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5656) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.7.
+
+Some vulnerabilities can be fixed by applying the solution that GitLab automatically generates.
+The following scanners are supported:
+
+- [Dependency Scanning](../dependency_scanning/index.md).
+  Automatic Patch creation is only available for Node.js projects managed with
+  `yarn`.
+- [Container Scanning](../container_scanning/index.md).
+
+### Remediate a vulnerability manually
+
+To manually apply the patch that GitLab generated for a vulnerability:
+
+1. Select the **Resolve with merge request** dropdown, then select **Download patch to resolve**:
+
+   ![Resolve with Merge Request button dropdown](img/vulnerability_page_merge_request_button_dropdown_v13_1.png)
+
+1. Ensure your local project has the same commit checked out that was used to generate the patch.
+1. Run `git apply remediation.patch`.
+1. Verify and commit the changes to your branch.
+
+### Create a merge request with the suggested patch
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9224) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.9.
+
+In some cases, you can create a merge request that automatically remediates the
+vulnerability. Any vulnerability that has a
+[solution](#remediate-a-vulnerability-automatically) can have a merge
+request created to automatically solve the issue.
+
+If this action is available:
+
+1. Select the **Resolve with merge request** dropdown, then select **Resolve with merge request**.
+
+   ![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
+
+A merge request is created. It applies the solution to the source branch.
 
 ## Vulnerability scanner maintenance
 
