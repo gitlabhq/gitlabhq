@@ -237,13 +237,14 @@ export default {
     :data-testid="dataTestId"
     @open="openDatePicker"
   >
-    <template #title-extra>
+    <template v-if="canInherit" #title-extra>
       <gl-icon
         ref="epicDatePopover"
         name="question-o"
-        class="gl-ml-3 gl-cursor-pointer gl-text-blue-600"
+        class="gl-ml-3 gl-cursor-pointer gl-text-blue-600 hide-collapsed"
         tabindex="0"
         :aria-label="$options.i18n.help"
+        data-testid="inherit-date-popover"
       />
       <gl-popover
         :target="() => $refs.epicDatePopover.$el"

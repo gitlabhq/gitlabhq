@@ -22,6 +22,7 @@ describe('Sidebar date Widget', () => {
   const date = '2021-04-15';
 
   const findEditableItem = () => wrapper.findComponent(SidebarEditableItem);
+  const findPopoverIcon = () => wrapper.find('[data-testid="inherit-date-popover"]');
 
   const createComponent = ({
     dueDateQueryHandler = jest.fn().mockResolvedValue(issuableDueDateResponse()),
@@ -68,6 +69,12 @@ describe('Sidebar date Widget', () => {
     createComponent();
 
     expect(wrapper.text()).toContain('Due date');
+  });
+
+  it('does not display icon popover by default', () => {
+    createComponent();
+
+    expect(findPopoverIcon().exists()).toBe(false);
   });
 
   describe('when issuable has no due date', () => {
@@ -146,4 +153,10 @@ describe('Sidebar date Widget', () => {
       expect(wrapper.emitted(event)).toEqual([[date]]);
     },
   );
+
+  it('displays icon popover when issuable can inherit date', () => {
+    createComponent({ canInherit: true });
+
+    expect(findPopoverIcon().exists()).toBe(true);
+  });
 });
