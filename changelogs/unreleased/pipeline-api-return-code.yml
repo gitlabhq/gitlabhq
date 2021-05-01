@@ -1,0 +1,5 @@
+---
+title: Report pipeline creation success only when warranted
+merge_request: 60746
+author:
+type: security

@@ -3,6 +3,7 @@
 module Ci
   class PipelineTriggerService < BaseService
     include Gitlab::Utils::StrongMemoize
+    include Services::ReturnServiceResponses
 
     def execute
       if trigger_from_token
@@ -20,7 +21,7 @@ module Ci
     private
 
     PAYLOAD_VARIABLE_KEY = 'TRIGGER_PAYLOAD'
-    PAYLOAD_VARIABLE_HIDDEN_PARAMS = %i(token).freeze
+    PAYLOAD_VARIABLE_HIDDEN_PARAMS = %i[token].freeze
 
     def create_pipeline_from_trigger(trigger)
       # this check is to not leak the presence of the project if user cannot read it
@@ -32,10 +33,17 @@ module Ci
           pipeline.trigger_requests.build(trigger: trigger)
         end
 
-      if pipeline.persisted?
+      pipeline_service_response(pipeline)
+    end
+
+    def pipeline_service_response(pipeline)
+      if pipeline.created_successfully?
         success(pipeline: pipeline)
+      elsif pipeline.persisted?
+        err = pipeline.errors.messages.presence || pipeline.failure_reason.presence || 'Could not create pipeline'
+        error(err, :unprocessable_entity)
       else
-        error(pipeline.errors.messages, 400)
+        error(pipeline.errors.messages, :bad_request)
       end
     end
 
@@ -61,11 +69,7 @@ module Ci
           pipeline.source_pipeline = source
         end
 
-      if pipeline.persisted?
-        success(pipeline: pipeline)
-      else
-        error(pipeline.errors.messages, 400)
-      end
+      pipeline_service_response(pipeline)
     end
 
     def job_from_token

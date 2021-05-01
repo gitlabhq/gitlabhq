@@ -6,7 +6,7 @@ RSpec.describe Gitlab::I18n do
   let(:user) { create(:user, preferred_language: :es) }
 
   describe '.selectable_locales' do
-    it 'does not return languages with low translation levels' do
+    it 'does not return languages with low translation levels', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/329723' do
       stub_const(
         'Gitlab::I18n::TRANSLATION_LEVELS',
         'pt_BR' => 0,
