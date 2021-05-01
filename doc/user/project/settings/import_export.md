@@ -57,6 +57,12 @@ Note the following:
 
 ## Version history
 
+### 14.0+
+
+In GitLab 14.0, the JSON format is no longer supported for project and group exports. To allow for a
+transitional period, you can still import any JSON exports. The new format for imports and exports
+is NDJSON.
+
 ### 13.0+
 
 Starting with GitLab 13.0, GitLab can import bundles that were exported from a different GitLab deployment.

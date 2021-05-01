@@ -477,6 +477,9 @@ group :ed25519 do
   gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
+# Spamcheck GRPC protocol definitions
+gem 'spamcheck', '~> 0.0.5'
+
 # Gitaly GRPC protocol definitions
 gem 'gitaly', '~> 13.11.0.pre.rc1'
 

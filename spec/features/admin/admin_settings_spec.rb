@@ -425,7 +425,7 @@ RSpec.describe 'Admin updates settings' do
           check 'Enable reCAPTCHA for login'
           fill_in 'IPs per user', with: 15
           check 'Enable Spam Check via external API endpoint'
-          fill_in 'URL of the external Spam Check endpoint', with: 'https://www.example.com/spamcheck'
+          fill_in 'URL of the external Spam Check endpoint', with: 'grpc://www.example.com/spamcheck'
           fill_in 'Spam Check API Key', with: 'SPAM_CHECK_API_KEY'
           click_button 'Save changes'
         end
@@ -435,7 +435,7 @@ RSpec.describe 'Admin updates settings' do
         expect(current_settings.login_recaptcha_protection_enabled).to be true
         expect(current_settings.unique_ips_limit_per_user).to eq(15)
         expect(current_settings.spam_check_endpoint_enabled).to be true
-        expect(current_settings.spam_check_endpoint_url).to eq 'https://www.example.com/spamcheck'
+        expect(current_settings.spam_check_endpoint_url).to eq 'grpc://www.example.com/spamcheck'
       end
     end
 

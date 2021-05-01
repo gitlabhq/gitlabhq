@@ -216,7 +216,8 @@ RSpec.describe ApplicationSetting do
           setting.spam_check_endpoint_enabled = true
         end
 
-        it { is_expected.to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value('grpc://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value(nil).for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('').for(:spam_check_endpoint_url) }
@@ -227,7 +228,8 @@ RSpec.describe ApplicationSetting do
           setting.spam_check_endpoint_enabled = false
         end
 
-        it { is_expected.to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value('grpc://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
         it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
         it { is_expected.to allow_value(nil).for(:spam_check_endpoint_url) }
         it { is_expected.to allow_value('').for(:spam_check_endpoint_url) }

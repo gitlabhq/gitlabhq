@@ -109,6 +109,14 @@ on an existing group's page.
 
 ## Version history
 
+### 14.0+
+
+In GitLab 14.0, the JSON format is no longer supported for project and group exports. To allow for a
+transitional period, you can still import any JSON exports. The new format for imports and exports
+is NDJSON.
+
+### 13.0+
+
 GitLab can import bundles that were exported from a different GitLab deployment.
 This ability is limited to two previous GitLab [minor](../../../policy/maintenance.md#versioning)
 releases, which is similar to our process for [Security Releases](../../../policy/maintenance.md#security-releases).

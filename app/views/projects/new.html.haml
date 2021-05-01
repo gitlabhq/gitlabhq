@@ -51,12 +51,11 @@
             = render 'new_project_fields', f: f, project_name_id: "blank-project-name"
 
         #create-from-template-pane.tab-pane.js-toggle-container.px-0.pb-0{ class: active_when(active_tab == 'template'), role: 'tabpanel' }
-          .gl-card.gl-my-5
-            .gl-card-body
-              %div
-                - contributing_templates_url = 'https://gitlab.com/gitlab-org/project-templates/contributing'
-                - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: contributing_templates_url }
-                = _('Learn how to %{link_start}contribute to the built-in templates%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+          .card.card-slim.m-4.p-4
+            %div
+              - contributing_templates_url = 'https://gitlab.com/gitlab-org/project-templates/contributing'
+              - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: contributing_templates_url }
+              = _('Learn how to %{link_start}contribute to the built-in templates%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
           = form_for @project, html: { class: 'new_project' } do |f|
             .project-template
               .form-group

@@ -123,7 +123,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             issues_create_limit: 300,
             raw_blob_request_limit: 300,
             spam_check_endpoint_enabled: true,
-            spam_check_endpoint_url: 'https://example.com/spam_check',
+            spam_check_endpoint_url: 'grpc://example.com/spam_check',
             spam_check_api_key: 'SPAM_CHECK_API_KEY',
             disabled_oauth_sign_in_sources: 'unknown',
             import_sources: 'github,bitbucket',
@@ -169,7 +169,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['issues_create_limit']).to eq(300)
         expect(json_response['raw_blob_request_limit']).to eq(300)
         expect(json_response['spam_check_endpoint_enabled']).to be_truthy
-        expect(json_response['spam_check_endpoint_url']).to eq('https://example.com/spam_check')
+        expect(json_response['spam_check_endpoint_url']).to eq('grpc://example.com/spam_check')
         expect(json_response['spam_check_api_key']).to eq('SPAM_CHECK_API_KEY')
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w(github bitbucket))

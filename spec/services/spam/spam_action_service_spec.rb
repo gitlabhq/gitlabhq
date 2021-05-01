@@ -9,11 +9,11 @@ RSpec.describe Spam::SpamActionService do
   let(:issue) { create(:issue, project: project, author: user) }
   let(:fake_ip) { '1.2.3.4' }
   let(:fake_user_agent) { 'fake-user-agent' }
-  let(:fake_referrer) { 'fake-http-referrer' }
+  let(:fake_referer) { 'fake-http-referer' }
   let(:env) do
     { 'action_dispatch.remote_ip' => fake_ip,
       'HTTP_USER_AGENT' => fake_user_agent,
-      'HTTP_REFERRER' => fake_referrer }
+      'HTTP_REFERER' => fake_referer }
   end
 
   let_it_be(:project) { create(:project, :public) }
@@ -80,7 +80,7 @@ RSpec.describe Spam::SpamActionService do
       {
         ip_address: fake_ip,
         user_agent: fake_user_agent,
-        referrer: fake_referrer
+        referer: fake_referer
       }
     end
 
@@ -193,6 +193,38 @@ RSpec.describe Spam::SpamActionService do
         context 'when disallowed by the spam verdict service' do
           before do
             allow(fake_verdict_service).to receive(:execute).and_return(DISALLOW)
+          end
+
+          context 'when allow_possible_spam feature flag is false' do
+            before do
+              stub_feature_flags(allow_possible_spam: false)
+            end
+
+            it_behaves_like 'only checks for spam if a request is provided'
+
+            it 'marks as spam' do
+              response = subject
+
+              expect(response.message).to match(expected_service_check_response_message)
+              expect(issue).to be_spam
+            end
+          end
+
+          context 'when allow_possible_spam feature flag is true' do
+            it_behaves_like 'only checks for spam if a request is provided'
+
+            it 'does not mark as spam' do
+              response = subject
+
+              expect(response.message).to match(expected_service_check_response_message)
+              expect(issue).not_to be_spam
+            end
+          end
+        end
+
+        context 'spam verdict service advises to block the user' do
+          before do
+            allow(fake_verdict_service).to receive(:execute).and_return(BLOCK_USER)
           end
 
           context 'when allow_possible_spam feature flag is false' do

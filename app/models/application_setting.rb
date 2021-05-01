@@ -375,7 +375,7 @@ class ApplicationSetting < ApplicationRecord
             if: :external_authorization_service_enabled
 
   validates :spam_check_endpoint_url,
-            addressable_url: true, allow_blank: true
+            addressable_url: { schemes: %w(grpc) }, allow_blank: true
 
   validates :spam_check_endpoint_url,
             presence: true,
@@ -524,7 +524,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :lets_encrypt_private_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :eks_secret_access_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :akismet_api_key, encryption_options_base_32_aes_256_gcm
-  attr_encrypted :spam_check_api_key, encryption_options_base_32_aes_256_gcm
+  attr_encrypted :spam_check_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false)
   attr_encrypted :elasticsearch_aws_secret_access_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :recaptcha_private_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :recaptcha_site_key, encryption_options_base_32_aes_256_gcm

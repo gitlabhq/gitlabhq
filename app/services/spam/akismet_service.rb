@@ -20,7 +20,7 @@ module Spam
         created_at: DateTime.current,
         author: owner_name,
         author_email: owner_email,
-        referrer: options[:referrer]
+        referer: options[:referer]
       }
 
       begin
