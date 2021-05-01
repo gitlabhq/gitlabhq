@@ -35213,10 +35213,10 @@ msgstr ""
 msgid "ValueStreamAnalytics|Average number of deployments to production per day."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Median time from first commit to issue closed."
+msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
+msgid "ValueStreamAnalytics|Median time from issue first merge request created to issue closed."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Number of new issues created."
