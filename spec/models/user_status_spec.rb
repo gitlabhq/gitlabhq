@@ -15,7 +15,7 @@ RSpec.describe UserStatus do
   it 'is expected to be deleted when the user is deleted' do
     status = create(:user_status)
 
-    expect { status.user.destroy }.to change { described_class.count }.from(1).to(0)
+    expect { status.user.destroy! }.to change { described_class.count }.from(1).to(0)
   end
 
   describe '#clear_status_after=' do

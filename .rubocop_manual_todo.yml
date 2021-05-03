@@ -219,9 +219,6 @@ Rails/SaveBang:
     - 'spec/models/service_spec.rb'
     - 'spec/models/snippet_spec.rb'
     - 'spec/models/upload_spec.rb'
-    - 'spec/models/user_preference_spec.rb'
-    - 'spec/models/user_spec.rb'
-    - 'spec/models/user_status_spec.rb'
 
 Rails/TimeZone:
   Enabled: true

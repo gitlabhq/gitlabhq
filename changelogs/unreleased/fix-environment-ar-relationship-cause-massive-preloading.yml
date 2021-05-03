@@ -1,0 +1,5 @@
+---
+title: Fix EnvironmentSerializer preloads unrelated pipelines/builds
+merge_request: 60562
+author:
+type: fixed
