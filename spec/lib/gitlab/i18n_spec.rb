@@ -3,21 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::I18n do
-  let(:user) { create(:user, preferred_language: :es) }
+  let(:user) { create(:user, preferred_language: 'es') }
 
   describe '.selectable_locales' do
-    it 'does not return languages with low translation levels', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/329723' do
-      stub_const(
-        'Gitlab::I18n::TRANSLATION_LEVELS',
-        'pt_BR' => 0,
-        'en' => 100,
-        'es' => 65
-      )
-
-      expect(described_class.selectable_locales).to eq({
-        'en' => 'English',
-        'es' => 'Spanish - español'
-      })
+    it 'does not return languages that should not be available in the UI' do
+      Gitlab::I18n::NOT_AVAILABLE_IN_UI.each do |language|
+        expect(described_class.selectable_locales).not_to include(language)
+      end
     end
   end
 

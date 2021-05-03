@@ -37939,9 +37939,6 @@ msgstr ""
 msgid "https://your-bitbucket-server"
 msgstr ""
 
-msgid "i18n|%{language} (%{percent_translated}%% translated)"
-msgstr ""
-
 msgid "image diff"
 msgstr ""
 

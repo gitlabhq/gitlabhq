@@ -78,10 +78,3 @@ recreate it with the following steps:
 1. Select the `gitlab-org/gitlab` repository.
 1. In `Select Branches for Translation`, select `master`.
 1. Ensure the `Service Branch Name` is `master-i18n`.
-
-## Manually update the translation levels
-
-There's no automated way to pull the translation levels from CrowdIn, to display
-this information in the language selection dropdown. Therefore, the translation
-levels are hard-coded in the `TRANSLATION_LEVELS` constant in [`i18n.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/i18n.rb),
-and must be regularly updated.

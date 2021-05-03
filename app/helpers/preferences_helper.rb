@@ -4,8 +4,8 @@
 module PreferencesHelper
   def layout_choices
     [
-      ['Fixed', :fixed],
-      ['Fluid', :fluid]
+        ['Fixed', :fixed],
+        ['Fluid', :fluid]
     ]
   end
 
@@ -76,7 +76,7 @@ module PreferencesHelper
 
   def language_choices
     options_for_select(
-      selectable_locales_with_translation_level.sort,
+      Gitlab::I18n.selectable_locales.map(&:reverse).sort,
       current_user.preferred_language
     )
   end
@@ -106,18 +106,6 @@ module PreferencesHelper
 
   def default_first_day_of_week
     first_day_of_week_choices.rassoc(Gitlab::CurrentSettings.first_day_of_week).first
-  end
-
-  def selectable_locales_with_translation_level
-    Gitlab::I18n.selectable_locales.map do |code, language|
-      [
-        s_("i18n|%{language} (%{percent_translated}%% translated)") % {
-          language: language,
-          percent_translated: Gitlab::I18n.percentage_translated_for(code)
-        },
-        code
-      ]
-    end
   end
 end
 
