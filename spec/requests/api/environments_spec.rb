@@ -12,7 +12,7 @@ RSpec.describe API::Environments do
     project.add_maintainer(user)
   end
 
-  describe 'GET /projects/:id/environments' do
+  describe 'GET /projects/:id/environments', :aggregate_failures do
     context 'as member of the project' do
       it 'returns project environments' do
         get api("/projects/#{project.id}/environments", user)
@@ -26,17 +26,34 @@ RSpec.describe API::Environments do
         expect(json_response.first['project']).to match_schema('public_api/v4/project')
         expect(json_response.first['enable_advanced_logs_querying']).to eq(false)
         expect(json_response.first).not_to have_key('last_deployment')
+        expect(json_response.first).not_to have_key('gitlab_managed_apps_logs_path')
       end
 
-      context 'when elastic stack is available' do
-        before do
-          allow_next_found_instance_of(Environment) do |env|
-            allow(env).to receive(:elastic_stack_available?).and_return(true)
+      context 'when the user can read pod logs' do
+        context 'with successful deployment on cluster' do
+          let_it_be(:deployment) { create(:deployment, :on_cluster, :success, environment: environment, project: project) }
+
+          it 'returns environment with enable_advanced_logs_querying and logs_api_path' do
+            get api("/projects/#{project.id}/environments", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
+            expect(json_response.size).to eq(1)
+            expect(json_response.first['gitlab_managed_apps_logs_path']).to eq(
+              "/#{project.full_path}/-/logs/k8s.json?cluster_id=#{deployment.cluster_id}"
+            )
           end
         end
 
-        context 'when the user can read pod logs' do
-          it 'returns environment with enable_advanced_logs_querying' do
+        context 'when elastic stack is available' do
+          before do
+            allow_next_found_instance_of(Environment) do |env|
+              allow(env).to receive(:elastic_stack_available?).and_return(true)
+            end
+          end
+
+          it 'returns environment with enable_advanced_logs_querying and logs_api_path' do
             get api("/projects/#{project.id}/environments", user)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -44,26 +61,52 @@ RSpec.describe API::Environments do
             expect(json_response).to be_an Array
             expect(json_response.size).to eq(1)
             expect(json_response.first['enable_advanced_logs_querying']).to eq(true)
+            expect(json_response.first['logs_api_path']).to eq(
+              "/#{project.full_path}/-/logs/elasticsearch.json?environment_name=#{environment.name}"
+            )
           end
         end
 
-        context 'when the user cannot read pod logs' do
+        context 'when elastic stack is not available' do
           before do
-            allow_next_found_instance_of(User) do |user|
-              allow(user).to receive(:can?).and_call_original
-              allow(user).to receive(:can?).with(:read_pod_logs, project).and_return(false)
+            allow_next_found_instance_of(Environment) do |env|
+              allow(env).to receive(:elastic_stack_available?).and_return(false)
             end
           end
 
-          it 'does not contain enable_advanced_logs_querying' do
+          it 'returns environment with enable_advanced_logs_querying logs_api_path' do
             get api("/projects/#{project.id}/environments", user)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.size).to eq(1)
-            expect(json_response.first).not_to have_key('enable_advanced_logs_querying')
+            expect(json_response.first['enable_advanced_logs_querying']).to eq(false)
+            expect(json_response.first['logs_api_path']).to eq(
+              "/#{project.full_path}/-/logs/k8s.json?environment_name=#{environment.name}"
+            )
           end
+        end
+      end
+
+      context 'when the user cannot read pod logs' do
+        before do
+          allow_next_found_instance_of(User) do |user|
+            allow(user).to receive(:can?).and_call_original
+            allow(user).to receive(:can?).with(:read_pod_logs, project).and_return(false)
+          end
+        end
+
+        it 'does not contain enable_advanced_logs_querying' do
+          get api("/projects/#{project.id}/environments", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(1)
+          expect(json_response.first).not_to have_key('enable_advanced_logs_querying')
+          expect(json_response.first).not_to have_key('logs_api_path')
+          expect(json_response.first).not_to have_key('gitlab_managed_apps_logs_path')
         end
       end
 

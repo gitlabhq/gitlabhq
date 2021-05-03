@@ -31868,6 +31868,9 @@ msgstr ""
 msgid "The group will be placed in 'pending removal' state"
 msgstr ""
 
+msgid "The group_project_ids parameter is only allowed for a group"
+msgstr ""
+
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 

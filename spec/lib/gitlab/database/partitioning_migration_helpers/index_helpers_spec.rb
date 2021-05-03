@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
 
       def expect_add_concurrent_index_and_call_original(table, column, index)
         expect(migration).to receive(:add_concurrent_index).ordered.with(table, column, name: index)
-          .and_wrap_original { |_, table, column, options| connection.add_index(table, column, options) }
+          .and_wrap_original { |_, table, column, options| connection.add_index(table, column, **options) }
       end
     end
 

@@ -232,7 +232,7 @@
     "markdownlint-cli": "0.26.0",
     "md5": "^2.2.1",
     "miragejs": "^0.1.40",
-    "mock-apollo-client": "^0.5.0",
+    "mock-apollo-client": "^0.7.0",
     "nodemon": "^2.0.4",
     "postcss": "^7.0.14",
     "prettier": "2.2.1",

@@ -51,7 +51,7 @@ module Gitlab
               allow_null: options[:null]
             )
           else
-            add_column(table_name, column_name, :datetime_with_timezone, options)
+            add_column(table_name, column_name, :datetime_with_timezone, **options)
           end
         end
       end
@@ -143,13 +143,13 @@ module Gitlab
 
         options = options.merge({ algorithm: :concurrently })
 
-        if index_exists?(table_name, column_name, options)
+        if index_exists?(table_name, column_name, **options)
           Gitlab::AppLogger.warn "Index not created because it already exists (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
           return
         end
 
         disable_statement_timeout do
-          add_index(table_name, column_name, options)
+          add_index(table_name, column_name, **options)
         end
       end
 
@@ -169,13 +169,13 @@ module Gitlab
 
         options = options.merge({ algorithm: :concurrently })
 
-        unless index_exists?(table_name, column_name, options)
+        unless index_exists?(table_name, column_name, **options)
           Gitlab::AppLogger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
           return
         end
 
         disable_statement_timeout do
-          remove_index(table_name, options.merge({ column: column_name }))
+          remove_index(table_name, **options.merge({ column: column_name }))
         end
       end
 
@@ -205,7 +205,7 @@ module Gitlab
         end
 
         disable_statement_timeout do
-          remove_index(table_name, options.merge({ name: index_name }))
+          remove_index(table_name, **options.merge({ name: index_name }))
         end
       end
 
@@ -1194,8 +1194,8 @@ module Gitlab
         end
       end
 
-      def remove_foreign_key_without_error(*args)
-        remove_foreign_key(*args)
+      def remove_foreign_key_without_error(*args, **kwargs)
+        remove_foreign_key(*args, **kwargs)
       rescue ArgumentError
       end
 

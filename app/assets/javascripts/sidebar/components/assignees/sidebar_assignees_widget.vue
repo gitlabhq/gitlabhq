@@ -245,8 +245,8 @@ export default {
           @input="setDirtyState"
         >
           <template #footer>
-            <gl-dropdown-item>
-              <sidebar-invite-members v-if="directlyInviteMembers" />
+            <gl-dropdown-item v-if="directlyInviteMembers">
+              <sidebar-invite-members />
             </gl-dropdown-item> </template
         ></user-select>
       </template>
