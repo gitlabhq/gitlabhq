@@ -502,8 +502,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                   expect { request_job }.to exceed_all_query_limit(1).for_model(::Ci::JobArtifact)
                 end
 
-                it 'queries the ci_builds table more than five times' do
-                  expect { request_job }.to exceed_all_query_limit(5).for_model(::Ci::Build)
+                it 'queries the ci_builds table more than three times' do
+                  expect { request_job }.to exceed_all_query_limit(3).for_model(::Ci::Build)
                 end
               end
 

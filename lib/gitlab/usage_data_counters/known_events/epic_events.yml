@@ -9,20 +9,6 @@
   aggregation: daily
   feature_flag: track_epics_activity
 
-# content change events
-
-- name: project_management_users_unchecking_epic_task
-  category: epics_usage
-  redis_slot: project_management
-  aggregation: daily
-  feature_flag: track_epics_activity
-
-- name: project_management_users_checking_epic_task
-  category: epics_usage
-  redis_slot: project_management
-  aggregation: daily
-  feature_flag: track_epics_activity
-
 - name: g_project_management_users_updating_epic_titles
   category: epics_usage
   redis_slot: project_management

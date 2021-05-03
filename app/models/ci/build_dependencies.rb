@@ -14,30 +14,6 @@ module Ci
       (local + cross_pipeline + cross_project).uniq
     end
 
-    # Dependencies local to the given pipeline
-    def local
-      return [] if no_local_dependencies_specified?
-      return [] unless processable.pipeline_id # we don't have any dependency when creating the pipeline
-
-      deps = model_class.where(pipeline_id: processable.pipeline_id).latest
-      deps = from_previous_stages(deps)
-      deps = from_needs(deps)
-      from_dependencies(deps)
-    end
-
-    # Dependencies from the same parent-pipeline hierarchy excluding
-    # the current job's pipeline
-    def cross_pipeline
-      strong_memoize(:cross_pipeline) do
-        fetch_dependencies_in_hierarchy
-      end
-    end
-
-    # Dependencies that are defined by project and ref
-    def cross_project
-      []
-    end
-
     def invalid_local
       local.reject(&:valid_dependency?)
     end
@@ -52,6 +28,32 @@ module Ci
     # can create artifacts
     def model_class
       ::Ci::Build
+    end
+
+    # Dependencies local to the given pipeline
+    def local
+      strong_memoize(:local) do
+        next [] if no_local_dependencies_specified?
+        next [] unless processable.pipeline_id # we don't have any dependency when creating the pipeline
+
+        deps = model_class.where(pipeline_id: processable.pipeline_id).latest
+        deps = from_previous_stages(deps)
+        deps = from_needs(deps)
+        from_dependencies(deps).to_a
+      end
+    end
+
+    # Dependencies from the same parent-pipeline hierarchy excluding
+    # the current job's pipeline
+    def cross_pipeline
+      strong_memoize(:cross_pipeline) do
+        fetch_dependencies_in_hierarchy
+      end
+    end
+
+    # Dependencies that are defined by project and ref
+    def cross_project
+      []
     end
 
     def fetch_dependencies_in_hierarchy

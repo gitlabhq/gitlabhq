@@ -22,8 +22,8 @@ RSpec.describe Ci::BuildDependencies do
     stub_feature_flags(ci_validate_build_dependencies_override: false)
   end
 
-  describe '#local' do
-    subject { described_class.new(job).local }
+  context 'for local dependencies' do
+    subject { described_class.new(job).all }
 
     describe 'jobs from previous stages' do
       context 'when job is in the first stage' do
@@ -52,7 +52,7 @@ RSpec.describe Ci::BuildDependencies do
             project.add_developer(user)
           end
 
-          let(:retried_job) { Ci::Build.retry(rspec_test, user) }
+          let!(:retried_job) { Ci::Build.retry(rspec_test, user) }
 
           it 'contains the retried job instead of the original one' do
             is_expected.to contain_exactly(build, retried_job, rubocop_test)
@@ -150,7 +150,7 @@ RSpec.describe Ci::BuildDependencies do
     end
   end
 
-  describe '#cross_pipeline' do
+  context 'for cross_pipeline dependencies' do
     let!(:job) do
       create(:ci_build,
         pipeline: pipeline,
@@ -160,7 +160,7 @@ RSpec.describe Ci::BuildDependencies do
 
     subject { described_class.new(job) }
 
-    let(:cross_pipeline_deps) { subject.cross_pipeline }
+    let(:cross_pipeline_deps) { subject.all }
 
     context 'when dependency specifications are valid' do
       context 'when pipeline exists in the hierarchy' do

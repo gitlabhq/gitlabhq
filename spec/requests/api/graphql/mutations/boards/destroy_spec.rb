@@ -8,7 +8,8 @@ RSpec.describe Mutations::Boards::Destroy do
   let_it_be(:current_user, reload: true) { create(:user) }
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:board) { create(:board, project: project) }
-  let_it_be(:other_board) { create(:board, project: project) }
+  let_it_be(:other_board, refind: true) { create(:board, project: project) }
+
   let(:mutation) do
     variables = {
       id: GitlabSchema.id_from_object(board).to_s

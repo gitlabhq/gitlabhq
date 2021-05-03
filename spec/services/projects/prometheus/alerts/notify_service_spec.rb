@@ -7,7 +7,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:project) { create(:project) }
-  let_it_be_with_reload(:setting) do
+  let_it_be_with_refind(:setting) do
     create(:project_incident_management_setting, project: project, send_email: true, create_issue: true)
   end
 

@@ -10,9 +10,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Maintenance Mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state, including the PostgreSQL database, but especially files, Git repositories, Container repositories, etc.
 
-Once Maintenance Mode is enabled, in-progress actions will finish relatively quickly since no new actions are coming in, and internal state changes will be minimal.
+Once Maintenance Mode is enabled, in-progress actions finish relatively quickly since no new actions are coming in, and internal state changes are minimal.
 In that state, various maintenance tasks are easier, and services can be stopped completely or be
-further degraded for a much shorter period of time than might otherwise be needed, for example stopping cron jobs and draining queues should be fairly quick.
+further degraded for a much shorter period of time than might otherwise be needed. For example, stopping cron jobs and draining queues should be fairly quick.
 
 Maintenance Mode allows most external actions that do not change internal state. On a high-level, HTTP POST, PUT, PATCH, and DELETE requests are blocked and a detailed overview of [how special cases are handled](#rest-api) is available.
 
@@ -74,33 +74,33 @@ In some cases, the visual feedback from an action could be misleading, for examp
 
 ### Admin functions
 
-Systems administrators can edit the application settings. This will allow
+Systems administrators can edit the application settings. This allows
 them to disable Maintenance Mode after it's been enabled.
 
 ### Authentication
 
 All users can log in and out of the GitLab instance but no new users can be created.
 
-If there are [LDAP syncs](../auth/ldap/index.md) scheduled for that time, they will fail since user creation is disabled. Similarly, [user creations based on SAML](../../integration/saml.md#general-setup) will fail.
+If there are [LDAP syncs](../auth/ldap/index.md) scheduled for that time, they fail since user creation is disabled. Similarly, [user creations based on SAML](../../integration/saml.md#general-setup) fail.
 
 ### Git actions
 
-All read-only Git operations will continue to work, for example
-`git clone` and `git pull`. All write operations will fail, both through the CLI and Web IDE with the error message: `Git push is not allowed because this GitLab instance is currently in (read-only) maintenance mode.`
+All read-only Git operations continue to work, for example
+`git clone` and `git pull`. All write operations fail, both through the CLI and Web IDE with the error message: `Git push is not allowed because this GitLab instance is currently in (read-only) maintenance mode.`
 
-If Geo is enabled, Git pushes to both primary and secondaries will fail.
+If Geo is enabled, Git pushes to both primary and secondaries fail.
 
 ### Merge requests, issues, epics
 
-All write actions except those mentioned above will fail. For example, a user cannot update merge requests or issues.
+All write actions except those mentioned above fail. For example, a user cannot update merge requests or issues.
 
 ### Incoming email
 
-Creating new issue replies, issues (including new Service Desk issues), merge requests [by email](../incoming_email.md) will fail.
+Creating new issue replies, issues (including new Service Desk issues), merge requests [by email](../incoming_email.md) fail.
 
 ### Outgoing email
 
-Notification emails will continue to arrive, but emails that require database writes, like resetting the password, will not arrive.
+Notification emails continue to arrive, but emails that require database writes, like resetting the password, do not arrive.
 
 ### REST API
 

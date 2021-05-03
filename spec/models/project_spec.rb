@@ -2815,11 +2815,11 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#remove_import_data' do
-    let_it_be(:import_data) { ProjectImportData.new(data: { 'test' => 'some data' }) }
+    let(:import_data) { ProjectImportData.new(data: { 'test' => 'some data' }) }
 
     context 'when jira import' do
-      let_it_be(:project, reload: true) { create(:project, import_type: 'jira', import_data: import_data) }
-      let_it_be(:jira_import) { create(:jira_import_state, project: project) }
+      let!(:project) { create(:project, import_type: 'jira', import_data: import_data) }
+      let!(:jira_import) { create(:jira_import_state, project: project) }
 
       it 'does remove import data' do
         expect(project.mirror?).to be false
@@ -2829,8 +2829,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'when neither a mirror nor a jira import' do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:project) { create(:project, import_type: 'github', import_data: import_data) }
+      let!(:project) { create(:project, import_type: 'github', import_data: import_data) }
 
       it 'removes import data' do
         expect(project.mirror?).to be false

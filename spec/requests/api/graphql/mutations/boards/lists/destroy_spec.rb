@@ -10,7 +10,8 @@ RSpec.describe Mutations::Boards::Lists::Destroy do
   it_behaves_like 'board lists destroy request' do
     let_it_be(:group, reload: true) { create(:group) }
     let_it_be(:board) { create(:board, group: group) }
-    let_it_be(:list) { create(:list, board: board) }
+    let_it_be(:list, refind: true) { create(:list, board: board) }
+
     let(:variables) do
       {
         list_id: GitlabSchema.id_from_object(list).to_s

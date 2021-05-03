@@ -1335,6 +1335,7 @@ RSpec.describe API::Projects do
   describe 'GET /users/:user_id/starred_projects/' do
     before do
       user3.update!(starred_projects: [project, project2, project3])
+      user3.reload
     end
 
     it 'returns error when user not found' do

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
   let_it_be(:user) { create(:user) }
   let(:upstream_project) { create(:project, :repository) }
-  let_it_be(:downstream_project) { create(:project, :repository) }
+  let_it_be(:downstream_project, refind: true) { create(:project, :repository) }
 
   let!(:upstream_pipeline) do
     create(:ci_pipeline, :running, project: upstream_project)

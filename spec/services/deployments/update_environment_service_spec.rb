@@ -161,6 +161,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
         context 'when deployment was created by an external CD system' do
           before do
             deployment.update_column(:deployable_id, nil)
+            deployment.reload
           end
 
           it 'guesses the deployment tier' do
