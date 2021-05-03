@@ -9,9 +9,8 @@ export default {
     GlTab,
     PipelineCharts,
     DeploymentFrequencyCharts: () =>
-      import('ee_component/projects/pipelines/charts/components/deployment_frequency_charts.vue'),
-    LeadTimeCharts: () =>
-      import('ee_component/projects/pipelines/charts/components/lead_time_charts.vue'),
+      import('ee_component/dora/components/deployment_frequency_charts.vue'),
+    LeadTimeCharts: () => import('ee_component/dora/components/lead_time_charts.vue'),
   },
   inject: {
     shouldRenderDoraCharts: {

@@ -77,6 +77,10 @@ export default {
         <user-date :date="lastActivityOn" show-never />
       </template>
 
+      <template #cell(projectsCount)="{ item: { id, projectsCount } }">
+        <div :data-testid="`user-project-count-${id}`">{{ projectsCount }}</div>
+      </template>
+
       <template #cell(settings)="{ item: user }">
         <user-actions :user="user" :paths="paths" />
       </template>

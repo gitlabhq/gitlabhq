@@ -13,7 +13,7 @@ The settings for Merge Request Approvals are found by going to
 ## Prevent overriding default approvals
 
 Regardless of the approval rules you choose for your project, users can edit them in every merge
-request, overriding the [rules you set as default](rules.md#adding--editing-a-default-approval-rule).
+request, overriding the [rules you set as default](rules.md#add-an-approval-rule).
 To prevent that from happening:
 
 1. Select the **Prevent users from modifying MR approval rules in merge requests.** checkbox.

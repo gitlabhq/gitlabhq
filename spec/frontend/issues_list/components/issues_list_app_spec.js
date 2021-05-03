@@ -170,12 +170,14 @@ describe('IssuesListApp component', () => {
         expect(findGlButtons().filter((button) => button.text() === 'Edit issues')).toHaveLength(0);
       });
 
-      it('emits "issuables:enableBulkEdit" event to legacy bulk edit class', () => {
+      it('emits "issuables:enableBulkEdit" event to legacy bulk edit class', async () => {
         wrapper = mountComponent({ provide: { canBulkUpdate: true }, mountFn: mount });
 
         jest.spyOn(eventHub, '$emit');
 
         findGlButtonAt(2).vm.$emit('click');
+
+        await waitForPromises();
 
         expect(eventHub.$emit).toHaveBeenCalledWith('issuables:enableBulkEdit');
       });

@@ -70,7 +70,7 @@ RSpec.describe ProjectAutoDevops do
 
       it 'does not create a gitlab deploy token' do
         expect do
-          auto_devops.save
+          auto_devops.save!
         end.not_to change { DeployToken.count }
       end
     end
@@ -80,7 +80,7 @@ RSpec.describe ProjectAutoDevops do
 
       it 'creates a gitlab deploy token' do
         expect do
-          auto_devops.save
+          auto_devops.save!
         end.to change { DeployToken.count }.by(1)
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe ProjectAutoDevops do
 
       it 'creates a gitlab deploy token' do
         expect do
-          auto_devops.save
+          auto_devops.save!
         end.to change { DeployToken.count }.by(1)
       end
     end
@@ -101,7 +101,7 @@ RSpec.describe ProjectAutoDevops do
 
       it 'creates a deploy token' do
         expect do
-          auto_devops.save
+          auto_devops.save!
         end.to change { DeployToken.count }.by(1)
       end
     end
@@ -114,7 +114,7 @@ RSpec.describe ProjectAutoDevops do
         allow(Gitlab::CurrentSettings).to receive(:auto_devops_enabled?).and_return(true)
 
         expect do
-          auto_devops.save
+          auto_devops.save!
         end.to change { DeployToken.count }.by(1)
       end
     end
@@ -125,7 +125,7 @@ RSpec.describe ProjectAutoDevops do
 
       it 'does not create a deploy token' do
         expect do
-          auto_devops.save
+          auto_devops.save!
         end.not_to change { DeployToken.count }
       end
     end
@@ -137,7 +137,7 @@ RSpec.describe ProjectAutoDevops do
 
       it 'does not create a deploy token' do
         expect do
-          auto_devops.save
+          auto_devops.save!
         end.not_to change { DeployToken.count }
       end
     end
@@ -149,7 +149,7 @@ RSpec.describe ProjectAutoDevops do
 
       it 'does not create a deploy token' do
         expect do
-          auto_devops.save
+          auto_devops.save!
         end.not_to change { DeployToken.count }
       end
     end

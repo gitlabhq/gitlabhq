@@ -1,0 +1,1 @@
+export const CHART_CONTAINER_HEIGHT = 300;

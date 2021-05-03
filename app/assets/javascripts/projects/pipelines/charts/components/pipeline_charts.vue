@@ -4,6 +4,7 @@ import { GlColumnChart } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
+import CiCdAnalyticsCharts from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue';
 import {
   DEFAULT,
   CHART_CONTAINER_HEIGHT,
@@ -21,7 +22,6 @@ import {
 } from '../constants';
 import getPipelineCountByStatus from '../graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '../graphql/queries/get_project_pipeline_statistics.query.graphql';
-import CiCdAnalyticsCharts from './ci_cd_analytics_charts.vue';
 import StatisticsList from './statistics_list.vue';
 
 const defaultAnalyticsValues = {

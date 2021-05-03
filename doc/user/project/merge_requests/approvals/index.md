@@ -67,7 +67,7 @@ in your project's settings.
 
 If you enable [approval rule overrides](settings.md#prevent-overriding-default-approvals),
 merge requests created before a change to default approval rules are not affected.
-The only exceptions are changes to the [target branch](rules.md#scoped-to-protected-branch)
+The only exceptions are changes to the [target branch](rules.md#approvals-for-protected-branches)
 of the rule.
 
 ## Optional approvals
@@ -116,6 +116,11 @@ You can modify your external approval rules
 [by using the REST API](../../../../api/merge_request_approvals.md#external-project-level-mr-approvals).
 
 The lack of an external approval doesn't block the merging of a merge request.
+
+When [approval rule overrides](settings.md#prevent-overriding-default-approvals) are allowed,
+changes to default approval rules will **not** be applied to existing
+merge requests, except for changes to the [target branch](rules.md#approvals-for-protected-branches)
+of the rule.
 
 To learn more about use cases, feature discovery, and development timelines,
 see the [External API approval rules epic](https://gitlab.com/groups/gitlab-org/-/epics/3869).

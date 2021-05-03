@@ -53,12 +53,7 @@ module RelativePositioning
 
       return [size, starting_from] if size >= MIN_GAP
 
-      terminus =
-        if Feature.enabled?(:optimize_shifting_relative_positions, default_enabled: :yaml)
-          context.at_position(starting_from)
-        else
-          at_end ? context.max_sibling : context.min_sibling
-        end
+      terminus = context.at_position(starting_from)
 
       if at_end
         terminus.shift_left

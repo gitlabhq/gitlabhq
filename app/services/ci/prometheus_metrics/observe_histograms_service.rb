@@ -25,8 +25,6 @@ module Ci
       end
 
       def execute
-        return ServiceResponse.success(http_status: :accepted) unless enabled?
-
         params
           .fetch(:histograms, [])
           .each(&method(:observe))
@@ -47,10 +45,6 @@ module Ci
         self.class.available_histograms
           .fetch(name) { raise ActiveRecord::RecordNotFound }
           .call
-      end
-
-      def enabled?
-        ::Feature.enabled?(:ci_accept_frontend_prometheus_metrics, project, default_enabled: :yaml)
       end
     end
   end

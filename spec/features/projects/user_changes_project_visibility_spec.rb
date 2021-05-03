@@ -28,7 +28,9 @@ RSpec.describe 'User changes public project visibility', :js do
         click_button 'Reduce project visibility'
       end
 
-      expect(page).to have_text("Project '#{project.name}' was successfully updated")
+      wait_for_requests
+
+      expect(project.reload).to be_private
     end
   end
 

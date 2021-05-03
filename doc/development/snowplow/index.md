@@ -131,8 +131,8 @@ _** Property is usually the best place for variable strings._
 
 ```sql
 SELECT
+  session_id,
   event_id,
-  v_tracker,
   event_label,
   event_action,
   event_property,

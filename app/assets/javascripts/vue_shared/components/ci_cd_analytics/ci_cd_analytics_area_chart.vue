@@ -1,7 +1,7 @@
 <script>
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import ResizableChartContainer from '~/vue_shared/components/resizable_chart/resizable_chart_container.vue';
-import { CHART_CONTAINER_HEIGHT } from '../constants';
+import { CHART_CONTAINER_HEIGHT } from './constants';
 
 export default {
   name: 'CiCdAnalyticsAreaChart',

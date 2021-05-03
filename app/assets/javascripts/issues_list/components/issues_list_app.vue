@@ -353,7 +353,18 @@ export default {
         eventHub.$emit('issuables:updateBulkEdit');
       });
     },
-    handleBulkUpdateClick() {
+    async handleBulkUpdateClick() {
+      if (!this.hasInitBulkEdit) {
+        const initBulkUpdateSidebar = await import('~/issuable_init_bulk_update_sidebar');
+        initBulkUpdateSidebar.default.init('issuable_');
+
+        const usersSelect = await import('~/users_select');
+        const UsersSelect = usersSelect.default;
+        new UsersSelect(); // eslint-disable-line no-new
+
+        this.hasInitBulkEdit = true;
+      }
+
       eventHub.$emit('issuables:enableBulkEdit');
     },
     handleClickTab(state) {

@@ -7,7 +7,7 @@ import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_
 import IssuablesListApp from './components/issuables_list_app.vue';
 import JiraIssuesImportStatusRoot from './components/jira_issues_import_status_app.vue';
 
-function mountJiraIssuesListApp() {
+export function mountJiraIssuesListApp() {
   const el = document.querySelector('.js-jira-issues-import-status');
 
   if (!el) {
@@ -37,7 +37,7 @@ function mountJiraIssuesListApp() {
   });
 }
 
-function mountIssuablesListApp() {
+export function mountIssuablesListApp() {
   if (!gon.features?.vueIssuablesList) {
     return;
   }
@@ -66,7 +66,7 @@ function mountIssuablesListApp() {
   });
 }
 
-export function initIssuesListApp() {
+export function mountIssuesListApp() {
   const el = document.querySelector('.js-issues-list');
 
   if (!el) {
@@ -156,9 +156,4 @@ export function initIssuesListApp() {
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });
-}
-
-export default function initIssuablesList() {
-  mountJiraIssuesListApp();
-  mountIssuablesListApp();
 }

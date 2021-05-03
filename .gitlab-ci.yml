@@ -68,6 +68,7 @@ variables:
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
   DOCKER_VERSION: "20.10.1"
   CACHE_CLASSES: "true"
+  FF_USE_FASTZIP: "true"
 
   # Preparing custom clone path to reduce space used by all random forks
   # on GitLab.com's Shared Runners. Our main forks - especially the security

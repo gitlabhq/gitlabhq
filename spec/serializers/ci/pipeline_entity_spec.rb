@@ -155,7 +155,7 @@ RSpec.describe Ci::PipelineEntity do
 
       it 'has a correct failure reason' do
         expect(subject[:failure_reason])
-          .to eq 'CI/CD YAML configuration error!'
+          .to eq 'The pipeline failed due to an error on the CI/CD configuration file.'
       end
     end
 

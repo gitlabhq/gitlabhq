@@ -93,6 +93,9 @@
 
 .tab-content {
   overflow: visible;
+  @include media-breakpoint-down(sm) {
+    isolation: isolate;
+  }
 }
 
 pre {

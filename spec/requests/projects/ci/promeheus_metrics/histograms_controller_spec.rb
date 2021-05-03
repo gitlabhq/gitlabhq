@@ -24,20 +24,6 @@ RSpec.describe 'Projects::Ci::PrometheusMetrics::HistogramsController' do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
-
-    context 'with the feature flag disabled' do
-      before do
-        stub_feature_flags(ci_accept_frontend_prometheus_metrics: false)
-      end
-
-      it 'returns 202 Accepted' do
-        post histograms_route(histograms: [
-          { name: :pipeline_graph_link_calculation_duration_seconds, value: 1 }
-        ])
-
-        expect(response).to have_gitlab_http_status(:accepted)
-      end
-    end
   end
 
   def histograms_route(params = {})

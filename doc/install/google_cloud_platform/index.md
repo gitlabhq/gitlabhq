@@ -130,7 +130,7 @@ GitLab can be configured to authenticate with other OAuth providers, LDAP, SAML,
 Kerberos, etc. Here are some documents you might be interested in reading:
 
 - [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/)
-- [Integration documentation](../../integration/README.md)
+- [Integration documentation](../../integration/index.md)
 - [GitLab Pages configuration](../../administration/pages/index.md)
 - [GitLab Container Registry configuration](../../administration/packages/container_registry.md)
 

@@ -178,7 +178,7 @@ pages and accomplish tasks faster.
 
 ## Integrations
 
-[Integrate GitLab](../integration/README.md) with your preferred tool,
+[Integrate GitLab](../integration/index.md) with your preferred tool,
 such as Trello, Jira, etc.
 
 ## Webhooks

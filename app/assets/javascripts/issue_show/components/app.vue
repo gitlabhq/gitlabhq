@@ -418,6 +418,7 @@ export default {
     <div v-if="canUpdate && showForm">
       <form-component
         :form-state="formState"
+        :initial-description-text="initialDescriptionText"
         :can-destroy="canDestroy"
         :issuable-templates="issuableTemplates"
         :markdown-docs-path="markdownDocsPath"

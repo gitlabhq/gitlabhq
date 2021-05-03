@@ -29,7 +29,7 @@ export default {
         };
       },
       update({ project }) {
-        return project?.jobs;
+        return project?.jobs?.nodes || [];
       },
       error() {
         this.hasError = true;
@@ -80,6 +80,6 @@ export default {
       />
     </div>
 
-    <jobs-table v-else :jobs="jobs.nodes" />
+    <jobs-table v-else :jobs="jobs" />
   </div>
 </template>

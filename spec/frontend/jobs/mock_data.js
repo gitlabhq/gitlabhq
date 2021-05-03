@@ -1408,3 +1408,96 @@ export const mockJobsInTable = [
     __typename: 'CiJob',
   },
 ];
+
+export const mockJobsQueryResponse = {
+  data: {
+    project: {
+      jobs: {
+        pageInfo: {
+          endCursor: 'eyJpZCI6IjIzMTcifQ',
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'eyJpZCI6IjIzMzYifQ',
+          __typename: 'PageInfo',
+        },
+        nodes: [
+          {
+            artifacts: {
+              nodes: [
+                {
+                  downloadPath: '/root/ci-project/-/jobs/2336/artifacts/download?file_type=trace',
+                  __typename: 'CiJobArtifact',
+                },
+                {
+                  downloadPath:
+                    '/root/ci-project/-/jobs/2336/artifacts/download?file_type=metadata',
+                  __typename: 'CiJobArtifact',
+                },
+                {
+                  downloadPath: '/root/ci-project/-/jobs/2336/artifacts/download?file_type=archive',
+                  __typename: 'CiJobArtifact',
+                },
+              ],
+              __typename: 'CiJobArtifactConnection',
+            },
+            allowFailure: false,
+            status: 'SUCCESS',
+            scheduledAt: null,
+            manualJob: false,
+            triggered: null,
+            createdByTag: false,
+            detailedStatus: {
+              detailsPath: '/root/ci-project/-/jobs/2336',
+              group: 'success',
+              icon: 'status_success',
+              label: 'passed',
+              text: 'passed',
+              tooltip: 'passed',
+              action: {
+                buttonTitle: 'Retry this job',
+                icon: 'retry',
+                method: 'post',
+                path: '/root/ci-project/-/jobs/2336/retry',
+                title: 'Retry',
+                __typename: 'StatusAction',
+              },
+              __typename: 'DetailedStatus',
+            },
+            id: 'gid://gitlab/Ci::Build/2336',
+            refName: 'master',
+            refPath: '/root/ci-project/-/commits/master',
+            tags: [],
+            shortSha: '4408fa2a',
+            commitPath: '/root/ci-project/-/commit/4408fa2a27aaadfdf42d8dda3d6a9c01ce6cad78',
+            pipeline: {
+              id: 'gid://gitlab/Ci::Pipeline/473',
+              path: '/root/ci-project/-/pipelines/473',
+              user: {
+                webPath: '/root',
+                avatarUrl:
+                  'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                __typename: 'UserCore',
+              },
+              __typename: 'Pipeline',
+            },
+            stage: {
+              name: 'deploy',
+              __typename: 'CiStage',
+            },
+            name: 'artifact_job',
+            duration: 3,
+            finishedAt: '2021-04-29T14:19:50Z',
+            coverage: null,
+            retryable: true,
+            playable: false,
+            cancelable: false,
+            active: false,
+            __typename: 'CiJob',
+          },
+        ],
+        __typename: 'CiJobConnection',
+      },
+      __typename: 'Project',
+    },
+  },
+};

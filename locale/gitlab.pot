@@ -31740,6 +31740,9 @@ msgstr ""
 msgid "The collection of events added to the data gathered for that stage."
 msgstr ""
 
+msgid "The comment you are editing has been changed by another user. Would you like to keep your changes and overwrite the new description or discard your changes?"
+msgstr ""
+
 msgid "The commit does not exist"
 msgstr ""
 
