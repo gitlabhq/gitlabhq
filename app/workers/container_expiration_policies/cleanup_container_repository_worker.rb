@@ -10,6 +10,7 @@ module ContainerExpirationPolicies
 
     queue_namespace :container_repository
     feature_category :container_registry
+    tags :exclude_from_kubernetes
     urgency :low
     worker_resource_boundary :unknown
     idempotent!

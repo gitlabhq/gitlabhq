@@ -6,6 +6,7 @@ class MergeRequestCleanupRefsWorker
   sidekiq_options retry: 3
 
   feature_category :code_review
+  tags :exclude_from_kubernetes
   idempotent!
 
   def perform(merge_request_id)

@@ -11,6 +11,7 @@ module JiraConnect
 
     queue_namespace :jira_connect
     feature_category :integrations
+    tags :exclude_from_kubernetes
 
     def perform(deployment_id, sequence_id)
       deployment = Deployment.find_by_id(deployment_id)

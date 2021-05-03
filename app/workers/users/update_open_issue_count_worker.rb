@@ -5,6 +5,7 @@ module Users
     include ApplicationWorker
 
     feature_category :users
+    tags :exclude_from_kubernetes
     idempotent!
 
     def perform(target_user_ids)

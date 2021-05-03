@@ -23,9 +23,14 @@ RSpec.shared_examples 'updating a single task' do
       if try(:merge_request)
         expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
           .to receive(:track_task_item_status_changed).once.with(user: user)
+      elsif try(:epic)
+        expect(Gitlab::UsageDataCounters::EpicActivityUniqueCounter)
+          .to receive(:track_epic_task_checked).once.with(author: user)
       else
         expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
           .not_to receive(:track_task_item_status_changed)
+        expect(Gitlab::UsageDataCounters::EpicActivityUniqueCounter)
+          .not_to receive(:track_epic_task_checked)
       end
 
       update_issuable(

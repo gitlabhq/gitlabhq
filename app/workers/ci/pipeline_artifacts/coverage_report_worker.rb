@@ -9,6 +9,7 @@ module Ci
       include PipelineBackgroundQueue
 
       feature_category :code_testing
+      tags :exclude_from_kubernetes
 
       idempotent!
 

@@ -7,6 +7,7 @@ class RemoveUnacceptedMemberInvitesWorker # rubocop:disable Scalability/Idempote
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :authentication_and_authorization
+  tags :exclude_from_kubernetes
   urgency :low
   idempotent!
 

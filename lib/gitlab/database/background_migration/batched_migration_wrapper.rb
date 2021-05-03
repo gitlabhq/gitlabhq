@@ -67,6 +67,7 @@ module Gitlab
           metric_for(:counter_updated_tuples).increment(base_labels, tracking_record.batch_size)
           metric_for(:gauge_migrated_tuples).set(base_labels, tracking_record.batched_migration.migrated_tuple_count)
           metric_for(:gauge_total_tuple_count).set(base_labels, tracking_record.batched_migration.total_tuple_count)
+          metric_for(:gauge_last_update_time).set(base_labels, Time.current.to_i)
 
           if metrics = tracking_record.metrics
             metrics['timings']&.each do |key, timings|
@@ -120,6 +121,10 @@ module Gitlab
               gauge_total_tuple_count: Gitlab::Metrics.gauge(
                 :batched_migration_total_tuple_count,
                 'Total tuple count the migration needs to touch'
+              ),
+              gauge_last_update_time: Gitlab::Metrics.gauge(
+                :batched_migration_last_update_time_seconds,
+                'Unix epoch time in seconds'
               )
             }
           end

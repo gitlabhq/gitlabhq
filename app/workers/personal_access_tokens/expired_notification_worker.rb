@@ -8,6 +8,7 @@ module PersonalAccessTokens
     include CronjobQueue
 
     feature_category :authentication_and_authorization
+    tags :exclude_from_kubernetes
 
     def perform(*args)
       notification_service = NotificationService.new

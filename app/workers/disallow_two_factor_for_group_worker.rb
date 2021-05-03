@@ -7,6 +7,7 @@ class DisallowTwoFactorForGroupWorker
   include ExceptionBacktrace
 
   feature_category :subgroups
+  tags :exclude_from_kubernetes
   idempotent!
 
   def perform(group_id)

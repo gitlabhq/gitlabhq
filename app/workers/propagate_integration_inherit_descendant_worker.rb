@@ -6,6 +6,7 @@ class PropagateIntegrationInheritDescendantWorker
   sidekiq_options retry: 3
 
   feature_category :integrations
+  tags :exclude_from_kubernetes
   idempotent!
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -9,6 +9,7 @@ module Environments
       idempotent!
       worker_has_external_dependencies!
       feature_category :continuous_delivery
+      tags :exclude_from_kubernetes
 
       def perform(environment_id, params)
         Environment.find_by_id(environment_id).try do |environment|

@@ -8,6 +8,7 @@ module IncidentManagement
 
     queue_namespace :incident_management
     feature_category :incident_management
+    tags :exclude_from_kubernetes
 
     def perform(incident_id, user_id)
       return if incident_id.blank? || user_id.blank?

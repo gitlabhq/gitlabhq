@@ -7,6 +7,7 @@ class ScheduleMergeRequestCleanupRefsWorker
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :code_review
+  tags :exclude_from_kubernetes
   idempotent!
 
   # Based on existing data, MergeRequestCleanupRefsWorker can run 3 jobs per

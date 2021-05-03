@@ -5,6 +5,8 @@ module Gitlab
     class ImportPullRequestMergedByWorker # rubocop:disable Scalability/IdempotentWorker
       include ObjectImporter
 
+      tags :exclude_from_kubernetes
+
       def representation_class
         Gitlab::GithubImport::Representation::PullRequest
       end

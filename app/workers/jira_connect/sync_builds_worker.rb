@@ -11,6 +11,7 @@ module JiraConnect
 
     queue_namespace :jira_connect
     feature_category :integrations
+    tags :exclude_from_kubernetes
 
     def perform(pipeline_id, sequence_id)
       pipeline = Ci::Pipeline.find_by_id(pipeline_id)

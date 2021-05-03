@@ -11,6 +11,7 @@ module Packages
 
       queue_namespace :package_repositories
       feature_category :package_registry
+      tags :exclude_from_kubernetes
 
       def perform(package_file_id, user_id)
         @package_file_id = package_file_id

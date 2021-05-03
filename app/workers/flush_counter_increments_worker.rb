@@ -11,6 +11,7 @@ class FlushCounterIncrementsWorker
   sidekiq_options retry: 3
 
   feature_category_not_owned!
+  tags :exclude_from_kubernetes
   urgency :low
   deduplicate :until_executing, including_scheduled: true
 

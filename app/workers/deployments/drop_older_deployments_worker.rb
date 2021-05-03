@@ -8,6 +8,7 @@ module Deployments
 
     queue_namespace :deployment
     feature_category :continuous_delivery
+    tags :exclude_from_kubernetes
 
     def perform(deployment_id)
       Deployments::OlderDeploymentsDropService.new(deployment_id).execute

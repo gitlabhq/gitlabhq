@@ -8,6 +8,7 @@ module Ci
       include PipelineQueue
 
       urgency :low
+      tags :exclude_from_kubernetes
       idempotent!
 
       def perform(job_id)

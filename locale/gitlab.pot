@@ -6692,6 +6692,9 @@ msgstr ""
 msgid "CloudLicense|Free trial"
 msgstr ""
 
+msgid "CloudLicense|Get help for the most common connectivity issues by %{linkStart}troubleshooting the activation code%{linkEnd}."
+msgstr ""
+
 msgid "CloudLicense|I agree that my use of the GitLab Software is subject to the Subscription Agreement located at the %{linkStart}Terms of Service%{linkEnd}, unless otherwise agreed to in writing with GitLab."
 msgstr ""
 
@@ -6717,6 +6720,9 @@ msgid "CloudLicense|This is the highest peak of users on your installation since
 msgstr ""
 
 msgid "CloudLicense|This is the number of %{billableUsersLinkStart}billable users%{billableUsersLinkEnd} on your installation, and this is the minimum number you need to purchase when you renew your license."
+msgstr ""
+
+msgid "CloudLicense|To activate your subscription, connect to GitLab servers through the %{linkStart}Cloud Sync service%{linkEnd}, a hassle-free way to manage your subscription."
 msgstr ""
 
 msgid "CloudLicense|Users in subscription"
@@ -11271,7 +11277,7 @@ msgstr ""
 msgid "DevopsAdoption|DevOps adoption tracks the use of key features across your favorite groups. Add a group to the table to begin."
 msgstr ""
 
-msgid "DevopsAdoption|Feature adoption is based on usage in the last calendar month. Last updated: %{timestamp}."
+msgid "DevopsAdoption|Feature adoption is based on usage in the current calendar month. Last updated: %{timestamp}."
 msgstr ""
 
 msgid "DevopsAdoption|Filter by name"
@@ -32235,6 +32241,9 @@ msgid "There are pending advanced search migrations. Indexing must remain paused
 msgstr ""
 
 msgid "There are running deployments on the environment. Please retry later."
+msgstr ""
+
+msgid "There is a connectivity issue"
 msgstr ""
 
 msgid "There is a halted Elasticsearch migration"

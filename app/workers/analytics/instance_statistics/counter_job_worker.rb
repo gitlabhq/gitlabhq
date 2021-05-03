@@ -10,6 +10,7 @@ module Analytics
 
       feature_category :devops_reports
       urgency :low
+      tags :exclude_from_kubernetes
 
       idempotent!
 

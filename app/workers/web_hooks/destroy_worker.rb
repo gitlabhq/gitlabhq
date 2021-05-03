@@ -7,6 +7,7 @@ module WebHooks
     sidekiq_options retry: 3
 
     feature_category :integrations
+    tags :exclude_from_kubernetes
     urgency :low
     idempotent!
 

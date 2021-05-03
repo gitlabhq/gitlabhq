@@ -7,6 +7,7 @@ class MemberInvitationReminderEmailsWorker # rubocop:disable Scalability/Idempot
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :subgroups
+  tags :exclude_from_kubernetes
   urgency :low
 
   def perform

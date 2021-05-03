@@ -189,7 +189,7 @@ RSpec.describe 'Issue Sidebar' do
               click_link user2.name
             end
 
-            find('.js-right-sidebar').click
+            find('.participants').click
             wait_for_requests
 
             open_assignees_dropdown

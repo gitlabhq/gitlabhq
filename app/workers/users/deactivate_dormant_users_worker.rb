@@ -7,6 +7,7 @@ module Users
     include CronjobQueue
 
     feature_category :utilization
+    tags :exclude_from_kubernetes
 
     NUMBER_OF_BATCHES = 50
     BATCH_SIZE = 200

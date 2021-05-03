@@ -9,6 +9,7 @@ class DisallowTwoFactorForSubgroupsWorker
   INTERVAL = 2.seconds.to_i
 
   feature_category :subgroups
+  tags :exclude_from_kubernetes
   idempotent!
 
   def perform(group_id)

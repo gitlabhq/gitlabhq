@@ -8,6 +8,7 @@ class PagesTransferWorker # rubocop:disable Scalability/IdempotentWorker
   TransferFailedError = Class.new(StandardError)
 
   feature_category :pages
+  tags :exclude_from_kubernetes
   loggable_arguments 0, 1
 
   def perform(method, args)

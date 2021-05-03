@@ -9,6 +9,7 @@ module Packages
 
       queue_namespace :package_repositories
       feature_category :package_registry
+      tags :exclude_from_kubernetes
       deduplicate :until_executing
 
       idempotent!
