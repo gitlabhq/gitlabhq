@@ -13,10 +13,14 @@ export default {
       type: String,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
 
 <template>
-  <blob-content-viewer :path="path" />
+  <blob-content-viewer :path="path" :project-path="projectPath" />
 </template>

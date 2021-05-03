@@ -8,7 +8,7 @@ let wrapper;
 const mockData = {
   name: 'some_file.js',
   size: 123,
-  rawBlob: 'raw content',
+  rawTextBlob: 'raw content',
   type: 'text',
   fileType: 'text',
   tooLarge: false,
@@ -25,19 +25,24 @@ const mockData = {
   lockLink: 'some_file.js/lock',
   canModifyBlob: true,
   forkPath: 'some_file.js/fork',
-  simpleViewer: {},
-  richViewer: {},
+  simpleViewer: {
+    fileType: 'text',
+    tooLarge: false,
+    type: 'simple',
+  },
+  richViewer: null,
 };
 
 function factory(path, loading = false) {
   wrapper = shallowMount(BlobContentViewer, {
     propsData: {
       path,
+      projectPath: 'some/path',
     },
     mocks: {
       $apollo: {
         queries: {
-          blobInfo: {
+          project: {
             loading,
           },
         },
@@ -80,7 +85,7 @@ describe('Blob content viewer component', () => {
     expect(findBlobContent().props('activeViewer')).toEqual({
       fileType: 'text',
       tooLarge: false,
-      type: 'text',
+      type: 'simple',
     });
   });
 });

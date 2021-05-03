@@ -12,7 +12,7 @@
   - if @code_navigation_path
     #js-code-navigation{ data: { code_navigation_path: @code_navigation_path, blob_path: blob.path, definition_path_prefix: project_blob_path(@project, @ref) } }
   - if Feature.enabled?(:refactor_blob_viewer, @project, default_enabled: :yaml)
-    #js-view-blob-app{ data: { blob_path: blob.path } }
+    #js-view-blob-app{ data: { blob_path: blob.path, project_path: @project.full_path } }
       .gl-spinner-container
         = loading_icon(size: 'md')
   - else

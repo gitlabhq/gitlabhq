@@ -1,4 +1,4 @@
-- @can_bulk_update = can?(current_user, :admin_issue, @group) && @group.feature_available?(:group_bulk_edit)
+- @can_bulk_update = can?(current_user, :admin_issue, @group) && @group.licensed_feature_available?(:group_bulk_edit)
 
 - page_title _("Issues")
 - add_page_specific_style 'page_bundles/issues_list'

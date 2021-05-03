@@ -11,7 +11,7 @@ describe('Repository blob page component', () => {
   const path = 'file.js';
 
   beforeEach(() => {
-    wrapper = shallowMount(BlobPage, { propsData: { path } });
+    wrapper = shallowMount(BlobPage, { propsData: { path, projectPath: 'some/path' } });
   });
 
   afterEach(() => {

@@ -11,15 +11,19 @@ query getBlobInfo($projectPath: ID!, $filePath: String!) {
           fileType
           path
           editBlobPath
-          ideEditPath
           storedExternally
           rawPath
-          externalStorageUrl
           replacePath
-          canModifyBlob
-          forkPath
-          simpleViewer
-          richViewer
+          simpleViewer {
+            fileType
+            tooLarge
+            type
+          }
+          richViewer {
+            fileType
+            tooLarge
+            type
+          }
         }
       }
     }

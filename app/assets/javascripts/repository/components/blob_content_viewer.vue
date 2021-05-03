@@ -6,7 +6,6 @@ import BlobHeader from '~/blob/components/blob_header.vue';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
-import projectPathQuery from '../queries/project_path.query.graphql';
 
 export default {
   components: {
@@ -15,10 +14,7 @@ export default {
     GlLoadingIcon,
   },
   apollo: {
-    projectPath: {
-      query: projectPathQuery,
-    },
-    blobInfo: {
+    project: {
       query: blobInfoQuery,
       variables() {
         return {
@@ -41,41 +37,58 @@ export default {
       type: String,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
-      projectPath: '',
-      blobInfo: {
-        name: '',
-        size: '',
-        rawBlob: '',
-        type: '',
-        fileType: '',
-        tooLarge: false,
-        path: '',
-        editBlobPath: '',
-        ideEditPath: '',
-        storedExternally: false,
-        rawPath: '',
-        externalStorageUrl: '',
-        replacePath: '',
-        deletePath: '',
-        canLock: false,
-        isLocked: false,
-        lockLink: '',
-        canModifyBlob: true,
-        forkPath: '',
-        simpleViewer: '',
-        richViewer: '',
+      project: {
+        repository: {
+          blobs: {
+            nodes: [
+              {
+                name: '',
+                size: '',
+                rawTextBlob: '',
+                type: '',
+                fileType: '',
+                tooLarge: false,
+                path: '',
+                editBlobPath: '',
+                ideEditPath: '',
+                storedExternally: false,
+                rawPath: '',
+                externalStorageUrl: '',
+                replacePath: '',
+                deletePath: '',
+                canLock: false,
+                isLocked: false,
+                lockLink: '',
+                canModifyBlob: true,
+                forkPath: '',
+                simpleViewer: {},
+                richViewer: {},
+              },
+            ],
+          },
+        },
       },
     };
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.blobInfo.loading;
+      return this.$apollo.queries.project.loading;
+    },
+    blobInfo() {
+      const nodes = this.project?.repository?.blobs?.nodes;
+
+      return nodes[0] || {};
     },
     viewer() {
-      const { fileType, tooLarge, type } = this.blobInfo;
+      const viewer = this.blobInfo.richViewer || this.blobInfo.simpleViewer;
+      const { fileType, tooLarge, type } = viewer;
 
       return { fileType, tooLarge, type };
     },
@@ -90,7 +103,7 @@ export default {
       <blob-header :blob="blobInfo" />
       <blob-content
         :blob="blobInfo"
-        :content="blobInfo.rawBlob"
+        :content="blobInfo.rawTextBlob"
         :is-raw-content="true"
         :active-viewer="viewer"
         :loading="false"

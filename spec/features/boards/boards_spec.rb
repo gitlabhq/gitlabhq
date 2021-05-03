@@ -119,46 +119,21 @@ RSpec.describe 'Project issue boards', :js do
     end
 
     context 'search list negation queries' do
-      context 'with the NOT queries feature flag disabled' do
-        before do
-          stub_feature_flags(not_issuable_queries: false)
-
-          visit_project_board_path_without_query_limit(project, board)
-        end
-
-        it 'does not have the != option' do
-          find('.filtered-search').set('label:')
-
-          wait_for_requests
-          within('#js-dropdown-operator') do
-            tokens = all(:css, 'li.filter-dropdown-item')
-            expect(tokens.count).to eq(1)
-            button = tokens[0].find('button')
-            expect(button).to have_content('=')
-            expect(button).not_to have_content('!=')
-          end
-        end
+      before do
+        visit_project_board_path_without_query_limit(project, board)
       end
 
-      context 'with the NOT queries feature flag enabled' do
-        before do
-          stub_feature_flags(not_issuable_queries: true)
+      it 'does not have the != option' do
+        find('.filtered-search').set('label:')
 
-          visit_project_board_path_without_query_limit(project, board)
-        end
-
-        it 'does not have the != option' do
-          find('.filtered-search').set('label:')
-
-          wait_for_requests
-          within('#js-dropdown-operator') do
-            tokens = all(:css, 'li.filter-dropdown-item')
-            expect(tokens.count).to eq(2)
-            button = tokens[0].find('button')
-            expect(button).to have_content('=')
-            button = tokens[1].find('button')
-            expect(button).to have_content('!=')
-          end
+        wait_for_requests
+        within('#js-dropdown-operator') do
+          tokens = all(:css, 'li.filter-dropdown-item')
+          expect(tokens.count).to eq(2)
+          button = tokens[0].find('button')
+          expect(button).to have_content('=')
+          button = tokens[1].find('button')
+          expect(button).to have_content('!=')
         end
       end
     end
