@@ -145,7 +145,7 @@ export default {
         :keys="keys[currentTab]"
         :store="store"
         :endpoint="endpoint"
-        data-qa-selector="project_deploy_keys"
+        data-qa-selector="project_deploy_keys_container"
       />
     </template>
   </div>

@@ -19,7 +19,7 @@ RSpec.describe 'Project deploy keys', :js do
     it 'removes association between project and deploy key' do
       visit project_settings_repository_path(project)
 
-      page.within(find('.qa-deploy-keys-settings')) do
+      page.within(find('.rspec-deploy-keys-settings')) do
         expect(page).to have_selector('.deploy-key', count: 1)
 
         click_button 'Remove'

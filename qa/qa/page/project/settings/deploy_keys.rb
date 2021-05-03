@@ -6,59 +6,64 @@ module QA
       module Settings
         class DeployKeys < Page::Base
           view 'app/views/shared/deploy_keys/_form.html.haml' do
-            element :deploy_key_title, 'text_field :title' # rubocop:disable QA/ElementWithPattern
-            element :deploy_key_key, 'text_area :key' # rubocop:disable QA/ElementWithPattern
+            element :deploy_key_title_field
+            element :deploy_key_field
+          end
+
+          view 'app/views/shared/deploy_keys/_project_group_form.html.haml' do
+            element :deploy_key_title_field
+            element :deploy_key_field
+            element :add_deploy_key_button
           end
 
           view 'app/assets/javascripts/deploy_keys/components/app.vue' do
-            element :deploy_keys_section, /class=".*deploy\-keys.*"/ # rubocop:disable QA/ElementWithPattern
-            element :project_deploy_keys
+            element :project_deploy_keys_container
           end
 
           view 'app/assets/javascripts/deploy_keys/components/key.vue' do
-            element :key
-            element :key_title
-            element :key_md5_fingerprint
+            element :key_container
+            element :key_title_content
+            element :key_md5_fingerprint_content
           end
 
           def add_key
-            click_on 'Add key'
+            click_element(:add_deploy_key_button)
           end
 
           def fill_key_title(title)
-            fill_in 'deploy_key_title', with: title
+            fill_element(:deploy_key_title_field, title)
           end
 
           def fill_key_value(key)
-            fill_in 'deploy_key_key', with: key
+            fill_element(:deploy_key_field, key)
           end
 
           def find_md5_fingerprint(title)
             within_project_deploy_keys do
-              find_element(:key, text: title)
-                .find(element_selector_css(:key_md5_fingerprint)).text.delete_prefix('MD5:')
+              find_element(:key_container, text: title)
+                .find(element_selector_css(:key_md5_fingerprint_content)).text.delete_prefix('MD5:')
             end
           end
 
           def has_key?(title, md5_fingerprint)
             within_project_deploy_keys do
-              find_element(:key, text: title)
-                .has_css?(element_selector_css(:key_md5_fingerprint), text: "MD5:#{md5_fingerprint}")
+              find_element(:key_container, text: title)
+                .has_css?(element_selector_css(:key_md5_fingerprint_content), text: "MD5:#{md5_fingerprint}")
             end
           end
 
           def key_title
             within_project_deploy_keys do
-              find_element(:key_title).text
+              find_element(:key_title_content).text
             end
           end
 
           private
 
           def within_project_deploy_keys
-            has_element?(:project_deploy_keys, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+            has_element?(:project_deploy_keys_container, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
 
-            within_element(:project_deploy_keys) do
+            within_element(:project_deploy_keys_container) do
               yield
             end
           end

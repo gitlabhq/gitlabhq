@@ -1,11 +1,11 @@
-.qa-created-deploy-token-section.created-deploy-token-container.info-well
+.created-deploy-token-container.info-well{ data: { qa_selector: 'created_deploy_token_container' } }
   .well-segment
     %h5.gl-mt-0
       = s_('DeployTokens|Your new Deploy Token username')
 
     .form-group
       .input-group
-        = text_field_tag 'deploy-token-user', deploy_token.username, readonly: true, class: 'deploy-token-field form-control js-select-on-focus qa-deploy-token-user'
+        = text_field_tag 'deploy-token-user', deploy_token.username, readonly: true, class: 'deploy-token-field form-control js-select-on-focus', data: { qa_selector: 'deploy_token_user_field' }
         .input-group-append
           = clipboard_button(text: deploy_token.username, title: s_('DeployTokens|Copy username'), placement: 'left')
       %span.deploy-token-help-block.gl-mt-2.text-success
@@ -15,7 +15,7 @@
 
     .form-group
       .input-group
-        = text_field_tag 'deploy-token', deploy_token.token, readonly: true, class: 'deploy-token-field form-control js-select-on-focus qa-deploy-token'
+        = text_field_tag 'deploy-token', deploy_token.token, readonly: true, class: 'deploy-token-field form-control js-select-on-focus', data: { qa_selector: 'deploy_token_field' }
         .input-group-append
           = clipboard_button(text: deploy_token.token, title: s_('DeployTokens|Copy deploy token'), placement: 'left')
       %span.deploy-token-help-block.gl-mt-2.text-danger

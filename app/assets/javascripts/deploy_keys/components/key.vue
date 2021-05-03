@@ -113,9 +113,9 @@ export default {
   <div class="gl-responsive-table-row deploy-key">
     <div class="table-section section-40">
       <div role="rowheader" class="table-mobile-header">{{ s__('DeployKeys|Deploy key') }}</div>
-      <div class="table-mobile-content qa-key">
-        <strong class="title qa-key-title"> {{ deployKey.title }} </strong>
-        <div class="fingerprint" data-qa-selector="key_md5_fingerprint">
+      <div class="table-mobile-content" data-qa-selector="key_container">
+        <strong class="title" data-qa-selector="key_title_content"> {{ deployKey.title }} </strong>
+        <div class="fingerprint" data-qa-selector="key_md5_fingerprint_content">
           {{ __('MD5') }}:{{ deployKey.fingerprint }}
         </div>
         <div class="fingerprint">{{ __('SHA256') }}:{{ deployKey.fingerprint_sha256 }}</div>
