@@ -249,4 +249,4 @@ branch already exists, the patches are applied on top of it.
 
 ## Reviewing and managing Merge Requests
 
-Once you have submitted a merge request, it can be [reviewed and managed](reviewing_and_managing_merge_requests.md) through GitLab.
+Once you have submitted a merge request, it can be [reviewed and managed](reviews/index.md) through GitLab.

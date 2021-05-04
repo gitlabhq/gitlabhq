@@ -1,11 +1,23 @@
-import { GlAlert, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlSearchBoxByType, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { fetchGroups } from '~/jira_connect/api';
 import GroupsList from '~/jira_connect/components/groups_list.vue';
 import GroupsListItem from '~/jira_connect/components/groups_list_item.vue';
+import { DEFAULT_GROUPS_PER_PAGE } from '~/jira_connect/constants';
 import { mockGroup1, mockGroup2 } from '../mock_data';
+
+const createMockGroup = (groupId) => {
+  return {
+    ...mockGroup1,
+    id: groupId,
+  };
+};
+
+const createMockGroups = (count) => {
+  return [...new Array(count)].map((_, idx) => createMockGroup(idx));
+};
 
 jest.mock('~/jira_connect/api', () => {
   return {
@@ -42,6 +54,7 @@ describe('GroupsList', () => {
   const findSecondItem = () => findAllItems().at(1);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findGroupsList = () => wrapper.findByTestId('groups-list');
+  const findPagination = () => wrapper.findComponent(GlPagination);
 
   describe('when groups are loading', () => {
     it('renders loading icon', async () => {
@@ -163,6 +176,55 @@ describe('GroupsList', () => {
         it('renders new groups list', () => {
           expect(findAllItems()).toHaveLength(1);
           expect(findFirstItem().props('group')).toBe(mockGroup1);
+        });
+      });
+    });
+  });
+
+  describe('pagination', () => {
+    it.each`
+      scenario                        | totalItems                     | shouldShowPagination
+      ${'renders pagination'}         | ${DEFAULT_GROUPS_PER_PAGE + 1} | ${true}
+      ${'does not render pagination'} | ${DEFAULT_GROUPS_PER_PAGE}     | ${false}
+      ${'does not render pagination'} | ${2}                           | ${false}
+      ${'does not render pagination'} | ${0}                           | ${false}
+    `('$scenario with $totalItems groups', async ({ totalItems, shouldShowPagination }) => {
+      const mockGroups = createMockGroups(totalItems);
+      fetchGroups.mockResolvedValue({
+        headers: { 'X-TOTAL': totalItems, 'X-PAGE': 1 },
+        data: mockGroups,
+      });
+      createComponent();
+
+      await waitForPromises();
+
+      const paginationEl = findPagination();
+
+      expect(paginationEl.exists()).toBe(shouldShowPagination);
+      if (shouldShowPagination) {
+        expect(paginationEl.props('totalItems')).toBe(totalItems);
+      }
+    });
+
+    describe('when `input` event triggered', () => {
+      beforeEach(async () => {
+        const MOCK_TOTAL_ITEMS = DEFAULT_GROUPS_PER_PAGE + 1;
+        fetchGroups.mockResolvedValue({
+          headers: { 'X-TOTAL': MOCK_TOTAL_ITEMS, 'X-PAGE': 1 },
+          data: createMockGroups(MOCK_TOTAL_ITEMS),
+        });
+
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('executes `fetchGroups` with correct arguments', async () => {
+        const paginationEl = findPagination();
+        paginationEl.vm.$emit('input', 2);
+
+        expect(fetchGroups).toHaveBeenCalledWith(mockGroupsPath, {
+          page: 2,
+          perPage: 10,
         });
       });
     });

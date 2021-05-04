@@ -387,7 +387,7 @@ If a merge request is fundamentally ready, but needs only trivial fixes (such as
 typos), consider demonstrating a [bias for
 action](https://about.gitlab.com/handbook/values/#bias-for-action) by making
 those changes directly without going back to the author. You can do this by
-using the [suggest changes](../user/discussions/index.md#suggest-changes) feature to apply
+using the [suggest changes](../user/project/merge_requests/reviews/suggestions.md) feature to apply
 your own suggestions to the merge request. Note that:
 
 - If the changes are not straightforward, please prefer allowing the author to make the change.

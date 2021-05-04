@@ -507,7 +507,7 @@ Parameters:
 | `body`    | string  | yes  | The content of a note. Limited to 1,000,000 characters. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippet/11/notes?body=note"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/notes?body=note"
 ```
 
 ### Modify existing epic note
@@ -528,7 +528,7 @@ Parameters:
 | `body`    | string  | yes  | The content of a note. Limited to 1,000,000 characters. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippet/11/notes?body=note"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/notes?body=note"
 ```
 
 ### Delete an epic note
