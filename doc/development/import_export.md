@@ -284,6 +284,27 @@ methods:
     - :type
 ```
 
+Customize the export order of the model relationships:
+
+```yaml
+# Specify a custom export reordering for a given relationship
+# For example for issues we use a custom export reordering by relative_position, so that on import, we can reset the
+# relative position value, but still keep the issues order to the order in which issues were in the exported project.
+# By default the ordering of relations is done by PK.
+# column - specify the column by which to reorder, by default it is relation's PK
+# direction - specify the ordering direction :asc or :desc, default :asc
+# nulls_position - specify where would null values be positioned. Because custom ordering column can contain nulls we
+#                  need to also specify where would the nulls be placed. It can be :nulls_last or :nulls_first, defaults
+#                  to :nulls_last
+
+export_reorders:
+  project:
+    issues:
+      column: :relative_position
+      direction: :asc
+      nulls_position: :nulls_last
+```
+
 ### Import
 
 The import job status moves from `none` to `finished` or `failed` into different states:

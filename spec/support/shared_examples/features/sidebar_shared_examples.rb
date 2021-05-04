@@ -44,22 +44,24 @@ RSpec.shared_examples 'issue boards sidebar' do
   context 'in notifications subscription' do
     it 'displays notifications toggle', :aggregate_failures do
       page.within('[data-testid="sidebar-notifications"]') do
-        expect(page).to have_selector('[data-testid="notification-subscribe-toggle"]')
+        expect(page).to have_selector('[data-testid="subscription-toggle"]')
         expect(page).to have_content('Notifications')
-        expect(page).not_to have_content('Notifications have been disabled by the project or group owner')
+        expect(page).not_to have_content('Disabled by project owner')
       end
     end
 
     it 'shows toggle as on then as off as user toggles to subscribe and unsubscribe', :aggregate_failures do
-      toggle = find('[data-testid="notification-subscribe-toggle"]')
+      wait_for_requests
 
-      toggle.click
+      click_button 'Notifications'
 
-      expect(toggle).to have_css("button.is-checked")
+      expect(page).to have_button('Notifications', class: 'is-checked')
 
-      toggle.click
+      click_button 'Notifications'
 
-      expect(toggle).not_to have_css("button.is-checked")
+      wait_for_requests
+
+      expect(page).not_to have_button('Notifications', class: 'is-checked')
     end
 
     context 'when notifications have been disabled' do
@@ -71,8 +73,8 @@ RSpec.shared_examples 'issue boards sidebar' do
 
       it 'displays a message that notifications have been disabled' do
         page.within('[data-testid="sidebar-notifications"]') do
-          expect(page).not_to have_selector('[data-testid="notification-subscribe-toggle"]')
-          expect(page).to have_content('Notifications have been disabled by the project or group owner')
+          expect(page).to have_button('Notifications', class: 'is-disabled')
+          expect(page).to have_content('Disabled by project owner')
         end
       end
     end

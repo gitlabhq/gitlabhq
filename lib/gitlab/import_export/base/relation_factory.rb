@@ -44,8 +44,9 @@ module Gitlab
           relation_name.to_s.constantize
         end
 
-        def initialize(relation_sym:, relation_hash:, members_mapper:, object_builder:, user:, importable:, excluded_keys: [])
+        def initialize(relation_sym:, relation_index:, relation_hash:, members_mapper:, object_builder:, user:, importable:, excluded_keys: [])
           @relation_name = self.class.overrides[relation_sym]&.to_sym || relation_sym
+          @relation_index = relation_index
           @relation_hash = relation_hash.except('noteable_id')
           @members_mapper = members_mapper
           @object_builder = object_builder

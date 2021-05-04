@@ -1,6 +1,6 @@
 import { format } from 'timeago.js';
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
-import mrEventHub from '~/merge_request/eventhub';
+import { statusBoxState } from '~/issuable/components/status_box.vue';
 import { formatDate } from '../../lib/utils/datetime_utility';
 import { MTWPS_MERGE_STRATEGY, MT_MERGE_STRATEGY, MWPS_MERGE_STRATEGY } from '../constants';
 import { stateKey } from './state_maps';
@@ -22,6 +22,8 @@ export default class MergeRequestStore {
 
   setData(data, isRebased) {
     this.initApprovals();
+
+    this.updateStatusState(data.state);
 
     if (isRebased) {
       this.sha = data.diff_head_sha;
@@ -156,15 +158,13 @@ export default class MergeRequestStore {
     this.canRevertInCurrentMR = currentUser.can_revert_on_current_merge_request || false;
 
     this.setState();
-
-    if (!window.gon?.features?.mergeRequestWidgetGraphql) {
-      this.emitUpdatedState();
-    }
   }
 
   setGraphqlData(project) {
     const { mergeRequest } = project;
     const pipeline = mergeRequest.headPipeline;
+
+    this.updateStatusState(mergeRequest.state);
 
     this.projectArchived = project.archived;
     this.onlyAllowMergeIfPipelineSucceeds = project.onlyAllowMergeIfPipelineSucceeds;
@@ -190,8 +190,13 @@ export default class MergeRequestStore {
     this.workInProgress = mergeRequest.workInProgress;
     this.mergeRequestState = mergeRequest.state;
 
-    this.emitUpdatedState();
     this.setState();
+  }
+
+  updateStatusState(state) {
+    if (this.mergeRequestState !== state && statusBoxState.updateStatus) {
+      statusBoxState.updateStatus();
+    }
   }
 
   setState() {
@@ -214,12 +219,6 @@ export default class MergeRequestStore {
           this.state = null;
       }
     }
-  }
-
-  emitUpdatedState() {
-    mrEventHub.$emit('mr.state.updated', {
-      state: this.mergeRequestState,
-    });
   }
 
   setPaths(data) {

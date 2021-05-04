@@ -85,7 +85,7 @@ RSpec.describe Gitlab::TreeSummary do
               'long.txt',
               '',
               message: message,
-              branch_name: project.default_branch_or_master
+              branch_name: project.default_branch
             )
           end
 

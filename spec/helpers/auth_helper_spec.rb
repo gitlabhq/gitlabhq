@@ -313,4 +313,37 @@ RSpec.describe AuthHelper do
       it { is_expected.to be_falsey }
     end
   end
+
+  describe '#auth_app_owner_text' do
+    shared_examples 'generates text with the correct info' do
+      it 'includes the name of the application owner' do
+        auth_app_owner_text = helper.auth_app_owner_text(owner)
+
+        expect(auth_app_owner_text).to include(owner.name)
+        expect(auth_app_owner_text).to include(path_to_owner)
+      end
+    end
+
+    context 'when owner is a user' do
+      let_it_be(:owner) { create(:user) }
+
+      let(:path_to_owner) { user_path(owner) }
+
+      it_behaves_like 'generates text with the correct info'
+    end
+
+    context 'when owner is a group' do
+      let_it_be(:owner) { create(:group) }
+
+      let(:path_to_owner) { user_path(owner) }
+
+      it_behaves_like 'generates text with the correct info'
+    end
+
+    context 'when the user is missing' do
+      it 'returns nil' do
+        expect(helper.auth_app_owner_text(nil)).to be(nil)
+      end
+    end
+  end
 end

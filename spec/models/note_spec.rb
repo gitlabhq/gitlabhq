@@ -1384,6 +1384,16 @@ RSpec.describe Note do
         expect(notes.second.id).to eq(note2.id)
       end
     end
+
+    describe '.with_suggestions' do
+      it 'returns the correct note' do
+        note_with_suggestion = create(:note, suggestions: [create(:suggestion)])
+        note_without_suggestion = create(:note)
+
+        expect(described_class.with_suggestions).to include(note_with_suggestion)
+        expect(described_class.with_suggestions).not_to include(note_without_suggestion)
+      end
+    end
   end
 
   describe '#noteable_assignee_or_author?' do

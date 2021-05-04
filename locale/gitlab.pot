@@ -11337,16 +11337,31 @@ msgstr ""
 msgid "DevopsReport|Adoption"
 msgstr ""
 
-msgid "DevopsReport|DevOps"
-msgstr ""
-
 msgid "DevopsReport|DevOps Score"
 msgstr ""
 
 msgid "DevopsReport|DevOps score metrics are based on usage over the last 30 days. Last updated: %{timestamp}."
 msgstr ""
 
+msgid "DevopsReport|High"
+msgstr ""
+
+msgid "DevopsReport|Leader usage"
+msgstr ""
+
+msgid "DevopsReport|Low"
+msgstr ""
+
+msgid "DevopsReport|Moderate"
+msgstr ""
+
 msgid "DevopsReport|Score"
+msgstr ""
+
+msgid "DevopsReport|Your score"
+msgstr ""
+
+msgid "DevopsReport|Your usage"
 msgstr ""
 
 msgid "Didn't receive a confirmation email?"
@@ -11422,6 +11437,9 @@ msgid "Disable two-factor authentication"
 msgstr ""
 
 msgid "Disabled"
+msgstr ""
+
+msgid "Disabled by %{parent} owner"
 msgstr ""
 
 msgid "Disabled mirrors can only be enabled by instance owners. It is recommended that you delete them."
@@ -12828,9 +12846,6 @@ msgid "Error occurred when saving assignees"
 msgstr ""
 
 msgid "Error occurred when saving reviewers"
-msgstr ""
-
-msgid "Error occurred when toggling the notification subscription"
 msgstr ""
 
 msgid "Error occurred while updating the issue status"
@@ -18996,9 +19011,6 @@ msgid "Latest pipeline for the most recent commit on this branch"
 msgstr ""
 
 msgid "Launch a ready-to-code development environment for your project."
-msgstr ""
-
-msgid "Lead"
 msgstr ""
 
 msgid "Lead Time"
@@ -30044,6 +30056,9 @@ msgstr ""
 msgid "Something went wrong while setting %{issuableType} confidentiality."
 msgstr ""
 
+msgid "Something went wrong while setting %{issuableType} notifications."
+msgstr ""
+
 msgid "Something went wrong while stopping this environment. Please try again."
 msgstr ""
 
@@ -32585,7 +32600,10 @@ msgstr ""
 msgid "This also resolves this thread"
 msgstr ""
 
-msgid "This application was created by %{link_to_owner}."
+msgid "This application was created by %{user_link}."
+msgstr ""
+
+msgid "This application was created for group %{group_link}."
 msgstr ""
 
 msgid "This application will be able to:"

@@ -146,6 +146,7 @@
     "pdfjs-dist": "^2.0.943",
     "pikaday": "^1.8.0",
     "popper.js": "^1.16.1",
+    "portal-vue": "^2.1.7",
     "prismjs": "^1.21.0",
     "prosemirror-markdown": "^1.5.1",
     "prosemirror-model": "^1.13.3",

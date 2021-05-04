@@ -30,7 +30,7 @@ module Ci
     end
 
     def should_track_failures?
-      return false unless project.default_branch_or_master == pipeline.ref
+      return false unless project.default_branch_or_main == pipeline.ref
 
       # We fetch for up to MAX_TRACKABLE_FAILURES + 1 builds. So if ever we get
       # 201 total number of builds with the assumption that each job has at least

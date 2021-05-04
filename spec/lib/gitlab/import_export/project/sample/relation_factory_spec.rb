@@ -17,6 +17,7 @@ RSpec.describe Gitlab::ImportExport::Project::Sample::RelationFactory do
     described_class.create( # rubocop:disable Rails/SaveBang
       relation_sym: relation_sym,
       relation_hash: relation_hash,
+      relation_index: 1,
       object_builder: Gitlab::ImportExport::Project::ObjectBuilder,
       members_mapper: members_mapper,
       user: importer_user,

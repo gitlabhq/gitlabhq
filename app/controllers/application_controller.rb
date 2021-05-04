@@ -207,13 +207,13 @@ class ApplicationController < ActionController::Base
       end
 
     respond_to do |format|
-      format.any { head status }
       format.html do
         render template,
                layout: "errors",
                status: status,
                locals: { message: message }
       end
+      format.any { head status }
     end
   end
 
@@ -223,8 +223,8 @@ class ApplicationController < ActionController::Base
 
   def render_403
     respond_to do |format|
-      format.any { head :forbidden }
       format.html { render "errors/access_denied", layout: "errors", status: :forbidden }
+      format.any { head :forbidden }
     end
   end
 

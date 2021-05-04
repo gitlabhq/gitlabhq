@@ -53,7 +53,7 @@ To compare branches in a repository:
 1. Select branches to compare using the [branch filter search box](#branch-filter-search-box).
 1. Click **Compare** to view the changes inline:
 
-   ![compare branches](img/compare_branches_v13_10.png)
+   ![compare branches](img/compare_branches_v13_12.png)
 
 ## Delete merged branches
 
@@ -74,7 +74,7 @@ automatically when a merge request was merged.
 
 This feature allows you to search and select a repository quickly when [comparing branches](#compare).
 
-![Repository filter search box](img/repository_filter_search_box_v13_10.png)
+![Repository filter search box](img/repository_filter_search_box_v13_12.png)
 
 Search results appear in the following order:
 
@@ -85,7 +85,7 @@ Search results appear in the following order:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22166) in GitLab 11.5.
 
-![Branch filter search box](img/branch_filter_search_box_v13_10.png)
+![Branch filter search box](img/branch_filter_search_box_v13_12.png)
 
 This feature allows you to search and select branches quickly. Search results appear in the following order:
 
@@ -96,6 +96,16 @@ Sometimes when you have hundreds of branches you may want a more flexible matchi
 
 - `^feature` matches only branch names that begin with 'feature'.
 - `feature$` matches only branch names that end with 'feature'.
+
+## Swap revisions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60491) in GitLab 13.12.
+
+![Before swap revisions](img/swap_revisions_before_v13_12.png)
+
+The Swap revisions feature allows you to swap the Source and Target revisions. When the Swap revisions button is clicked, the selected revisions for Source and Targed will be swapped.
+
+![After swap revisions](img/swap_revisions_after_v13_12.png)
 
 <!-- ## Troubleshooting
 

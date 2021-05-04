@@ -1,0 +1,11 @@
+mutation issueSetSubscription($fullPath: ID!, $iid: String!, $subscribedState: Boolean!) {
+  updateIssuableSubscription: issueSetSubscription(
+    input: { projectPath: $fullPath, iid: $iid, subscribedState: $subscribedState }
+  ) {
+    issuable: issue {
+      id
+      subscribed
+    }
+    errors
+  }
+}

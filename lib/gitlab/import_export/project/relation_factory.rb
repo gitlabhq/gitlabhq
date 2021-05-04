@@ -80,6 +80,7 @@ module Gitlab
           when :notes then setup_note
           when :'Ci::Pipeline' then setup_pipeline
           when *BUILD_MODELS then setup_build
+          when :issues then setup_issue
           end
 
           update_project_references
@@ -132,6 +133,22 @@ module Gitlab
             stage.statuses.each do |status|
               status.pipeline = imported_object
             end
+          end
+        end
+
+        def setup_issue
+          @relation_hash['relative_position'] = compute_relative_position
+        end
+
+        def compute_relative_position
+          return unless max_relative_position
+
+          max_relative_position + (@relation_index + 1) * Gitlab::RelativePositioning::IDEAL_DISTANCE
+        end
+
+        def max_relative_position
+          Rails.cache.fetch("import:#{@importable.model_name.plural}:#{@importable.id}:hierarchy_max_issues_relative_position", expires_in: 24.hours) do
+            ::RelativePositioning.mover.context(Issue.in_projects(@importable.root_ancestor.all_projects).first)&.max_relative_position || ::Gitlab::RelativePositioning::START_POSITION
           end
         end
 

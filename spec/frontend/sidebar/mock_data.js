@@ -275,6 +275,20 @@ export const issueReferenceResponse = (reference) => ({
   },
 });
 
+export const issueSubscriptionsResponse = (subscribed = false, emailsDisabled = false) => ({
+  data: {
+    workspace: {
+      __typename: 'Project',
+      issuable: {
+        __typename: 'Issue',
+        id: 'gid://gitlab/Issue/4',
+        subscribed,
+        emailsDisabled,
+      },
+    },
+  },
+});
+
 export const issuableQueryResponse = {
   data: {
     workspace: {

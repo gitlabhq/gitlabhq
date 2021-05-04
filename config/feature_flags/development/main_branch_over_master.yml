@@ -1,0 +1,8 @@
+---
+name: main_branch_over_master
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60258
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329190
+milestone: '13.12'
+type: development
+group: group::source code
+default_enabled: false

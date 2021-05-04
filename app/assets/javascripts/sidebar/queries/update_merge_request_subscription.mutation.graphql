@@ -1,0 +1,11 @@
+mutation mergeRequestSetSubscription($fullPath: ID!, $iid: String!, $subscribedState: Boolean!) {
+  updateIssuableSubscription: mergeRequestSetSubscription(
+    input: { projectPath: $fullPath, iid: $iid, subscribedState: $subscribedState }
+  ) {
+    issuable: mergeRequest {
+      id
+      subscribed
+    }
+    errors
+  }
+}

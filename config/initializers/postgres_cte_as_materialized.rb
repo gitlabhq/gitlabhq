@@ -6,7 +6,7 @@ module Arel
     class Arel::Visitors::PostgreSQL
       def visit_Gitlab_Database_AsWithMaterialized(obj, collector) # rubocop:disable Naming/MethodName
         collector = visit obj.left, collector
-        collector << " AS#{obj.expr} "
+        collector << " AS "
         visit obj.right, collector
       end
     end

@@ -437,6 +437,7 @@ describe('issue_comment_form component', () => {
               await findCloseReopenButton().trigger('click');
 
               await wrapper.vm.$nextTick;
+              await wrapper.vm.$nextTick;
 
               expect(flash).toHaveBeenCalledWith(
                 `Something went wrong while closing the ${type}. Please try again later.`,
@@ -472,6 +473,7 @@ describe('issue_comment_form component', () => {
             await findCloseReopenButton().trigger('click');
 
             await wrapper.vm.$nextTick;
+            await wrapper.vm.$nextTick;
 
             expect(flash).toHaveBeenCalledWith(
               `Something went wrong while reopening the ${type}. Please try again later.`,
@@ -488,6 +490,8 @@ describe('issue_comment_form component', () => {
           jest.spyOn(wrapper.vm, 'closeIssuable').mockResolvedValue();
 
           await findCloseReopenButton().trigger('click');
+
+          await wrapper.vm.$nextTick();
 
           expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
         });

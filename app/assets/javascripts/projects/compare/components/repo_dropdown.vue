@@ -1,57 +1,51 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 
-const SOURCE_PARAM_NAME = 'to';
-
 export default {
   components: {
     GlDropdown,
     GlDropdownItem,
     GlSearchBoxByType,
   },
-  inject: ['projectTo', 'projectsFrom'],
   props: {
     paramsName: {
       type: String,
+      required: true,
+    },
+    projects: {
+      type: Array,
+      required: false,
+      default: null,
+    },
+    selectedProject: {
+      type: Object,
       required: true,
     },
   },
   data() {
     return {
       searchTerm: '',
-      selectedRepo: {},
     };
   },
   computed: {
+    disableRepoDropdown() {
+      return this.projects === null;
+    },
     filteredRepos() {
       const lowerCaseSearchTerm = this.searchTerm.toLowerCase();
 
-      return this?.projectsFrom.filter(({ name }) =>
-        name.toLowerCase().includes(lowerCaseSearchTerm),
-      );
-    },
-    isSourceRevision() {
-      return this.paramsName === SOURCE_PARAM_NAME;
+      return this?.projects.filter(({ name }) => name.toLowerCase().includes(lowerCaseSearchTerm));
     },
     inputName() {
       return `${this.paramsName}_project_id`;
     },
   },
-  mounted() {
-    this.setDefaultRepo();
-  },
   methods: {
-    onClick(repo) {
-      this.selectedRepo = repo;
-      this.emitTargetProject(repo.name);
+    onClick(project) {
+      this.emitTargetProject(project);
     },
-    setDefaultRepo() {
-      this.selectedRepo = this.projectTo;
-    },
-    emitTargetProject(name) {
-      if (!this.isSourceRevision) {
-        this.$emit('changeTargetProject', name);
-      }
+    emitTargetProject(project) {
+      this.$emit('selectProject', { direction: this.paramsName, project });
     },
   },
 };
@@ -59,23 +53,23 @@ export default {
 
 <template>
   <div>
-    <input type="hidden" :name="inputName" :value="selectedRepo.id" />
+    <input type="hidden" :name="inputName" :value="selectedProject.id" />
     <gl-dropdown
-      :text="selectedRepo.name"
+      :text="selectedProject.name"
       :header-text="s__(`CompareRevisions|Select target project`)"
       class="gl-w-full gl-font-monospace gl-sm-pr-3"
       toggle-class="gl-min-w-0"
-      :disabled="isSourceRevision"
+      :disabled="disableRepoDropdown"
     >
       <template #header>
-        <gl-search-box-by-type v-if="!isSourceRevision" v-model.trim="searchTerm" />
+        <gl-search-box-by-type v-if="!disableRepoDropdown" v-model.trim="searchTerm" />
       </template>
-      <template v-if="!isSourceRevision">
+      <template v-if="!disableRepoDropdown">
         <gl-dropdown-item
           v-for="repo in filteredRepos"
           :key="repo.id"
           is-check-item
-          :is-checked="selectedRepo.id === repo.id"
+          :is-checked="selectedProject.id === repo.id"
           @click="onClick(repo)"
         >
           {{ repo.name }}

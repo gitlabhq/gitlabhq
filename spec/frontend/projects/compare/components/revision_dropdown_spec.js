@@ -1,15 +1,10 @@
-import { GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
-
-const defaultProps = {
-  refsProjectPath: 'some/refs/path',
-  paramsName: 'from',
-  paramsBranch: 'master',
-};
+import { revisionDropdownDefaultProps as defaultProps } from './mock_data';
 
 jest.mock('~/flash');
 
@@ -140,6 +135,19 @@ describe('RevisionDropdown component', () => {
     it('display params branch text', () => {
       createComponent();
       expect(findGlDropdown().props('text')).toBe(defaultProps.paramsBranch);
+    });
+  });
+
+  it('emits `selectRevision` event when another revision is selected', async () => {
+    createComponent();
+    wrapper.vm.branches = ['some-branch'];
+    await wrapper.vm.$nextTick();
+
+    findGlDropdown().findAll(GlDropdownItem).at(0).vm.$emit('click');
+
+    expect(wrapper.emitted('selectRevision')[0][0]).toEqual({
+      direction: 'to',
+      revision: 'some-branch',
     });
   });
 });

@@ -160,7 +160,7 @@ RSpec.describe UsersHelper do
       it 'returns the "It\'s You" badge' do
         badges = helper.user_badges_in_admin_section(user)
 
-        expect(filter_ee_badges(badges)).to eq([text: "It's you!", variant: nil])
+        expect(filter_ee_badges(badges)).to eq([text: "It's you!", variant: "muted"])
       end
     end
 

@@ -275,6 +275,15 @@ RSpec.configure do |config|
       # https://gitlab.com/groups/gitlab-org/-/epics/5531
       stub_feature_flags(refactor_blob_viewer: false)
 
+      # Disable `main_branch_over_master` as we migrate
+      # from `master` to `main` accross our codebase.
+      # It's done in order to preserve the concistency in tests
+      # As we're ready to change `master` usages to `main`, let's enable it
+      stub_feature_flags(main_branch_over_master: false)
+
+      # Selectively disable by actor https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
+      stub_feature_flags(remove_description_html_in_release_api_override: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

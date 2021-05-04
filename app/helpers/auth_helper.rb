@@ -176,6 +176,18 @@ module AuthHelper
       !current_user
   end
 
+  def auth_app_owner_text(owner)
+    return unless owner
+
+    if owner.is_a?(Group)
+      group_link = link_to(owner.name, group_path(owner))
+      _("This application was created for group %{group_link}.").html_safe % { group_link: group_link }
+    else
+      user_link = link_to(owner.name, user_path(owner))
+      _("This application was created by %{user_link}.").html_safe % { user_link: user_link }
+    end
+  end
+
   extend self
 end
 

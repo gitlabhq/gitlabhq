@@ -2532,8 +2532,10 @@ class Project < ApplicationRecord
       .exists?
   end
 
-  def default_branch_or_master
-    default_branch || 'master'
+  def default_branch_or_main
+    return default_branch if default_branch
+
+    Feature.enabled?(:main_branch_over_master, self, default_enabled: :yaml) ? 'main' : 'master'
   end
 
   def ci_config_path_or_default

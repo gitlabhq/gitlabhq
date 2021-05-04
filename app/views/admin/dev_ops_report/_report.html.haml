@@ -8,25 +8,5 @@
 - elsif @metric.blank?
   = render 'no_data'
 - else
-  .devops
-    .gl-my-3.gl-text-gray-400{ data: { testid: 'devops-score-note-text' } }
-      = s_('DevopsReport|DevOps score metrics are based on usage over the last 30 days. Last updated: %{timestamp}.').html_safe % { timestamp: @metric.created_at.strftime('%Y-%m-%d %H:%M') }
-    .devops-header
-      %h2.devops-header-title{ class: "devops-#{score_level(@metric.average_percentage_score)}-score" }
-        = number_to_percentage(@metric.average_percentage_score, precision: 1)
-      .devops-header-subtitle
-        = s_('DevopsReport|DevOps')
-        %br
-        = s_('DevopsReport|Score')
-        = link_to sprite_icon('question-o', css_class: 'devops-header-icon'), help_page_path('user/admin_area/analytics/dev_ops_report')
+  #js-devops-score{ data: { devops_score_metrics: devops_score_metrics(@metric).to_json } }
 
-    .devops-cards.board-card-container
-      - @metric.cards.each do |card|
-        = render 'card', card: card
-
-    .devops-steps.d-none.d-lg-block
-      - @metric.idea_to_production_steps.each_with_index do |step, index|
-        .devops-step{ class: "devops-#{score_level(step.percentage_score)}-score" }
-          = custom_icon("i2p_step_#{index + 1}")
-          %h4.devops-step-title
-            = step.title

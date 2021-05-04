@@ -30,12 +30,14 @@ RSpec.describe Gitlab::ImportExport::JSON::StreamingSerializer do
   let(:json_writer) { instance_double('Gitlab::ImportExport::JSON::LegacyWriter') }
   let(:hash) { { name: exportable.name, description: exportable.description }.stringify_keys }
   let(:include) { [] }
+  let(:custom_orderer) { nil }
 
   let(:relations_schema) do
     {
       only: [:name, :description],
       include: include,
-      preload: { issues: nil }
+      preload: { issues: nil },
+      export_reorder: custom_orderer
     }
   end
 
@@ -57,19 +59,63 @@ RSpec.describe Gitlab::ImportExport::JSON::StreamingSerializer do
         [{ issues: { include: [] } }]
       end
 
+      before do
+        create_list(:issue, 3, project: exportable, relative_position: 10000) # ascending ids, same position positive
+        create_list(:issue, 3, project: exportable, relative_position: -5000) # ascending ids, same position negative
+        create_list(:issue, 3, project: exportable, relative_position: 0) # ascending ids, duplicate positions
+        create_list(:issue, 3, project: exportable, relative_position: nil) # no position
+        create_list(:issue, 3, :with_desc_relative_position, project: exportable ) # ascending ids, descending position
+      end
+
       it 'calls json_writer.write_relation_array with proper params' do
         expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, array_including(issue.to_json))
 
         subject.execute
       end
 
-      context 'relation ordering' do
-        before do
-          create_list(:issue, 5, project: exportable)
+      context 'default relation ordering' do
+        it 'orders exported issues by primary key(:id)' do
+          expected_issues = exportable.issues.reorder(:id).map(&:to_json)
+
+          expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, expected_issues)
+
+          subject.execute
+        end
+      end
+
+      context 'custom relation ordering ascending' do
+        let(:custom_orderer) do
+          {
+            issues: {
+              column: :relative_position,
+              direction: :asc,
+              nulls_position: :nulls_last
+            }
+          }
         end
 
-        it 'orders exported issues by primary key' do
-          expected_issues = exportable.issues.reorder(:id).map(&:to_json)
+        it 'orders exported issues by custom column(relative_position)' do
+          expected_issues = exportable.issues.reorder(:relative_position, :id).map(&:to_json)
+
+          expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, expected_issues)
+
+          subject.execute
+        end
+      end
+
+      context 'custom relation ordering descending' do
+        let(:custom_orderer) do
+          {
+            issues: {
+              column: :relative_position,
+              direction: :desc,
+              nulls_position: :nulls_first
+            }
+          }
+        end
+
+        it 'orders exported issues by custom column(relative_position)' do
+          expected_issues = exportable.issues.order_relative_position_desc.order(id: :desc).map(&:to_json)
 
           expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, expected_issues)
 

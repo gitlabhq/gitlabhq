@@ -1,8 +1,6 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
-import StatusBox from '~/merge_request/components/status_box.vue';
-import mrEventHub from '~/merge_request/eventhub';
+import StatusBox from '~/issuable/components/status_box.vue';
 
 let wrapper;
 
@@ -69,19 +67,5 @@ describe('Merge request status box component', () => {
         expect(wrapper.find('[data-testid="status-icon"]').props('name')).toBe(testCase.icon);
       });
     });
-  });
-
-  it('updates with eventhub event', async () => {
-    factory({
-      initialState: 'opened',
-    });
-
-    expect(wrapper.text()).toContain('Open');
-
-    mrEventHub.$emit('mr.state.updated', { state: 'closed' });
-
-    await nextTick();
-
-    expect(wrapper.text()).toContain('Closed');
   });
 });

@@ -155,7 +155,7 @@ module Gitlab
           transform_sub_relations!(data_hash, sub_relation_key, sub_relation_definition, relation_index)
         end
 
-        relation = @relation_factory.create(**relation_factory_params(relation_key, data_hash))
+        relation = @relation_factory.create(**relation_factory_params(relation_key, relation_index, data_hash))
 
         if relation && !relation.valid?
           @shared.logger.warn(
@@ -221,8 +221,9 @@ module Gitlab
         importable_class.to_s.downcase.to_sym
       end
 
-      def relation_factory_params(relation_key, data_hash)
+      def relation_factory_params(relation_key, relation_index, data_hash)
         {
+          relation_index: relation_index,
           relation_sym: relation_key.to_sym,
           relation_hash: data_hash,
           importable: @importable,

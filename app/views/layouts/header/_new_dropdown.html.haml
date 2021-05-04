@@ -1,3 +1,4 @@
+- new_repo_experiment_text = content_for(:new_repo_experiment)
 %li.header-new.dropdown{ data: { track_label: "new_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" } }
   = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip qa-new-menu-toggle", id: "js-onboarding-new-project-link", title: _("New..."), ref: 'tooltip', aria: { label: _("New...") }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body', display: 'static' } do
     = sprite_icon('plus-square')
@@ -12,9 +13,9 @@
           %li.dropdown-bold-header
             = _('This group')
           - if create_group_project
-            %li= link_to _('New project'), new_project_path(namespace_id: @group.id)
+            %li= link_to new_repo_experiment_text, new_project_path(namespace_id: @group.id), data: { track_experiment: 'new_repo', track_event: 'click_link_new_project_group', track_label: 'plus_menu_dropdown' }
           - if create_group_subgroup
-            %li= link_to _('New subgroup'), new_group_path(parent_id: @group.id)
+            %li= link_to _('New subgroup'), new_group_path(parent_id: @group.id), data: { track_event: 'click_link_new_subgroup', track_label: 'plus_menu_dropdown' }
           = render_if_exists 'layouts/header/create_epic_new_dropdown_item'
           = render 'layouts/header/group_invite_members_new_dropdown_item'
           %li.divider
@@ -29,16 +30,18 @@
           %li.dropdown-bold-header
             = _('This project')
           - if create_project_issue
-            %li= link_to _('New issue'), new_project_issue_path(@project)
+            %li= link_to _('New issue'), new_project_issue_path(@project), data: { track_event: 'click_link_new_issue', track_label: 'plus_menu_dropdown' }
           - if merge_project
-            %li= link_to _('New merge request'), project_new_merge_request_path(merge_project)
+            %li= link_to _('New merge request'), project_new_merge_request_path(merge_project), data: { track_event: 'click_link_new_mr', track_label: 'plus_menu_dropdown' }
+
           - if create_project_snippet
-            %li= link_to _('New snippet'), new_project_snippet_path(@project)
+            %li= link_to _('New snippet'), new_project_snippet_path(@project), data: { track_event: 'click_link_new_snippet_project', track_label: 'plus_menu_dropdown' }
           = render 'layouts/header/project_invite_members_new_dropdown_item'
           %li.divider
           %li.dropdown-bold-header GitLab
-      = content_for :new_repo_experiment
+      - if current_user.can_create_project?
+        %li= link_to new_repo_experiment_text, new_project_path, class: 'qa-global-new-project-link', data: { track_experiment: 'new_repo', track_event: 'click_link_new_project', track_label: 'plus_menu_dropdown' }
       - if current_user.can_create_group?
-        %li= link_to _('New group'), new_group_path
+        %li= link_to _('New group'), new_group_path, data: { track_event: 'click_link_new_group', track_label: 'plus_menu_dropdown' }
       - if current_user.can?(:create_snippet)
-        %li= link_to _('New snippet'), new_snippet_path, class: 'qa-global-new-snippet-link'
+        %li= link_to _('New snippet'), new_snippet_path, data: { track_event: 'click_link_new_snippet_parent', track_label: 'plus_menu_dropdown' }, class: 'qa-global-new-snippet-link'

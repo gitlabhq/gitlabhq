@@ -29,16 +29,6 @@ module MergeRequestsHelper
     classes.join(' ')
   end
 
-  def state_name_with_icon(merge_request)
-    if merge_request.merged?
-      [_("Merged"), "git-merge"]
-    elsif merge_request.closed?
-      [_("Closed"), "close"]
-    else
-      [_("Open"), "issue-open-m"]
-    end
-  end
-
   def merge_path_description(merge_request, separator)
     if merge_request.for_fork?
       "Project:Branches: #{@merge_request.source_project_path}:#{@merge_request.source_branch} #{separator} #{@merge_request.target_project.full_path}:#{@merge_request.target_branch}"

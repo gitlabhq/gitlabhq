@@ -112,6 +112,13 @@ module Types
     field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver
     field :runner_setup, resolver: Resolvers::Ci::RunnerSetupResolver
 
+    field :runner, Types::Ci::RunnerType,
+          null: true,
+          resolver: Resolvers::Ci::RunnerResolver,
+          extras: [:lookahead],
+          description: "Find a runner.",
+          feature_flag: :runner_graphql_query
+
     field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126 # AUTHENTICATED_COMPLEXITY / 2 + 1
 
     def design_management

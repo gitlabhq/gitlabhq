@@ -100,7 +100,7 @@ module UsersHelper
       badges << blocked_user_badge(user) if user.blocked?
       badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin?
       badges << { text: s_('AdminUsers|External'), variant: 'secondary' } if user.external?
-      badges << { text: s_("AdminUsers|It's you!"), variant: nil } if current_user == user
+      badges << { text: s_("AdminUsers|It's you!"), variant: 'muted' } if current_user == user
     end
   end
 

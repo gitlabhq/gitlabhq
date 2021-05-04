@@ -1,0 +1,6 @@
+- state_human_name, state_icon_name = state_name_with_icon(issuable)
+
+.issuable-status-box.status-box.js-mr-status-box{ class: status_box_class(issuable), data: { project_path: issuable.project.path_with_namespace, iid: issuable.iid, state: issuable.state } }
+  = sprite_icon(state_icon_name, css_class: 'gl-display-block gl-sm-display-none!')
+  %span.gl-display-none.gl-sm-display-block
+    = state_human_name

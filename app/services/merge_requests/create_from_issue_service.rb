@@ -73,7 +73,7 @@ module MergeRequests
     end
 
     def default_branch
-      target_project.default_branch || 'master'
+      target_project.default_branch_or_main
     end
 
     def merge_request

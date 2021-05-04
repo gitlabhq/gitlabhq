@@ -149,7 +149,7 @@ module Projects
 
     def create_readme
       commit_attrs = {
-        branch_name: @project.default_branch || 'master',
+        branch_name: @project.default_branch_or_main,
         commit_message: 'Initial commit',
         file_path: 'README.md',
         file_content: "# #{@project.name}\n\n#{@project.description}"

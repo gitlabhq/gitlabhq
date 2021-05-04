@@ -1,7 +1,6 @@
 - @no_breadcrumb_border = true
 - can_update_merge_request = can?(current_user, :update_merge_request, @merge_request)
 - can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
-- state_human_name, state_icon_name = state_name_with_icon(@merge_request)
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
 
 - if @merge_request.closed_or_merged_without_fork?
@@ -12,10 +11,7 @@
 
 .detail-page-header.border-bottom-0.pt-0.pb-0
   .detail-page-header-body
-    .issuable-status-box.status-box.js-mr-status-box{ class: status_box_class(@merge_request), data: { state: @merge_request.state } }
-      = sprite_icon(state_icon_name, css_class: 'gl-display-block gl-sm-display-none!')
-      %span.gl-display-none.gl-sm-display-block
-        = state_human_name
+    = render "shared/issuable/status_box", issuable: @merge_request
 
     .issuable-meta
       #js-issuable-header-warnings

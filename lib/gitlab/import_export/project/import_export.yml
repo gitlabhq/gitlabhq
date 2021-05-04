@@ -395,6 +395,8 @@ methods:
     - :state
 
 preloads:
+  issues:
+    project: :route
   statuses:
     # TODO: We cannot preload tags, as they are not part of `GenericCommitStatus`
     # tags: # needed by tag_list
@@ -403,6 +405,29 @@ preloads:
     source_project: # needed by source_branch_sha and diff_head_sha
     target_project: # needed by target_branch_sha
     assignees: # needed by assigne_id that is implemented by DeprecatedAssignee
+
+# Specify a custom export reordering for a given relationship
+# For example for issues we use a custom export reordering by relative_position, so that on import, we can reset the
+# relative position value, but still keep the issues order to the order in which issues were in the exported project.
+# By default the ordering of relations is done by PK.
+# column - specify the column by which to reorder, by default it is relation's PK
+# direction - specify the ordering direction :asc or :desc, default :asc
+# nulls_position - specify where would null values be positioned. Because custom ordering column can contain nulls we
+#                  need to also specify where would the nulls be placed. It can be :nulls_last or :nulls_first, defaults
+#                  to :nulls_last
+# Example:
+# export_reorders:
+#   project:
+#     issues:
+#       column: :relative_position
+#       direction: :asc
+#       nulls_position: :nulls_last
+export_reorders:
+  project:
+    issues:
+      column: :relative_position
+      direction: :asc
+      nulls_position: :nulls_last
 
 # EE specific relationships and settings to include. All of this will be merged
 # into the previous structures if EE is used.

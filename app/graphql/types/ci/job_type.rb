@@ -8,6 +8,8 @@ module Types
 
       connection_type_class(Types::CountableConnectionType)
 
+      expose_permissions Types::PermissionTypes::Ci::Job
+
       field :id, ::Types::GlobalIDType[::CommitStatus].as('JobID'), null: true,
             description: 'ID of the job.'
       field :pipeline, Types::Ci::PipelineType, null: true,

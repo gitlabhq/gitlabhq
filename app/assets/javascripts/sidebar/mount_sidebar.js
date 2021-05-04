@@ -24,7 +24,7 @@ import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import sidebarParticipants from './components/participants/sidebar_participants.vue';
 import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
-import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptions.vue';
+import SidebarSubscriptionsWidget from './components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking.vue';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
 
@@ -334,21 +334,32 @@ function mountParticipantsComponent(mediator) {
   });
 }
 
-function mountSubscriptionsComponent(mediator) {
+function mountSubscriptionsComponent() {
   const el = document.querySelector('.js-sidebar-subscriptions-entry-point');
 
   if (!el) return;
 
+  const { fullPath, iid, editable } = getSidebarOptions();
+
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    apolloProvider,
     components: {
-      sidebarSubscriptions,
+      SidebarSubscriptionsWidget,
+    },
+    provide: {
+      canUpdate: editable,
     },
     render: (createElement) =>
-      createElement('sidebar-subscriptions', {
+      createElement('sidebar-subscriptions-widget', {
         props: {
-          mediator,
+          iid: String(iid),
+          fullPath,
+          issuableType:
+            isInIssuePage() || isInIncidentPage() || isInDesignPage()
+              ? IssuableType.Issue
+              : IssuableType.MergeRequest,
         },
       }),
   });
@@ -425,7 +436,7 @@ export function mountSidebar(mediator) {
   mountReferenceComponent(mediator);
   mountLockComponent();
   mountParticipantsComponent(mediator);
-  mountSubscriptionsComponent(mediator);
+  mountSubscriptionsComponent();
   mountCopyEmailComponent();
 
   new SidebarMoveIssue(

@@ -1,0 +1,7 @@
+query getMergeRequestState($projectPath: ID!, $iid: String!) {
+  workspace: project(fullPath: $projectPath) {
+    issuable: mergeRequest(iid: $iid) {
+      state
+    }
+  }
+}

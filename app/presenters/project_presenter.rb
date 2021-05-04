@@ -108,7 +108,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def add_license_ide_path
-    ide_edit_path(project, default_branch_or_master, 'LICENSE')
+    ide_edit_path(project, default_branch_or_main, 'LICENSE')
   end
 
   def add_changelog_path
@@ -116,7 +116,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def add_changelog_ide_path
-    ide_edit_path(project, default_branch_or_master, 'CHANGELOG')
+    ide_edit_path(project, default_branch_or_main, 'CHANGELOG')
   end
 
   def add_contribution_guide_path
@@ -124,7 +124,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def add_contribution_guide_ide_path
-    ide_edit_path(project, default_branch_or_master, 'CONTRIBUTING.md')
+    ide_edit_path(project, default_branch_or_main, 'CONTRIBUTING.md')
   end
 
   def add_readme_path
@@ -132,7 +132,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def add_readme_ide_path
-    ide_edit_path(project, default_branch_or_master, 'README.md')
+    ide_edit_path(project, default_branch_or_main, 'README.md')
   end
 
   def add_ci_yml_path
@@ -249,10 +249,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                          nil,
                          nil,
                          {
-                           'target_branch' => default_branch_or_master,
-                           'original_branch' => default_branch_or_master,
+                           'target_branch' => default_branch_or_main,
+                           'original_branch' => default_branch_or_main,
                            'can_push_code' => 'true',
-                           'path' => project_create_blob_path(project, default_branch_or_master),
+                           'path' => project_create_blob_path(project, default_branch_or_main),
                            'project_path' => project.path
                          }
                         )
@@ -268,7 +268,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def new_file_anchor_data
     if can_current_user_push_to_default_branch?
-      new_file_path = empty_repo? ? ide_edit_path(project, default_branch_or_master) : project_new_blob_path(project, default_branch_or_master)
+      new_file_path = empty_repo? ? ide_edit_path(project, default_branch_or_main) : project_new_blob_path(project, default_branch_or_main)
 
       AnchorData.new(false,
                      statistic_icon + _('New file'),
@@ -472,7 +472,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name }
     project_new_blob_path(
       project,
-      default_branch_or_master,
+      default_branch_or_main,
       file_name:      file_name,
       commit_message: commit_message,
       branch_name:    branch_name
