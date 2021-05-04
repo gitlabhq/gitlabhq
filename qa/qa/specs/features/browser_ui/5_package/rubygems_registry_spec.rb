@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages do
+  RSpec.describe 'Package', :orchestrated, :requires_admin, :packages do
     describe 'RubyGems Repository' do
       include Runtime::Fixtures
 

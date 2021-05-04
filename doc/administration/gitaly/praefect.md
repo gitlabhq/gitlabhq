@@ -1012,10 +1012,7 @@ virtual storage.
 ### Configure replication factor
 
 WARNING:
-The feature is not production ready yet. After you set a replication factor, you can't unset it
-without manually modifying database state. Variable replication factor requires you to enable
-repository-specific primaries by configuring the `per_repository` primary election strategy. The election
-strategy is not production ready yet.
+Configurable replication factors require [repository-specific primary nodes](#repository-specific-primary-nodes) to be used.
 
 Praefect supports configuring a replication factor on a per-repository basis, by assigning
 specific storage nodes to host a repository.
@@ -1067,7 +1064,100 @@ Praefect regularly checks the health of each backend Gitaly node. This
 information can be used to automatically failover to a new primary node if the
 current primary node is found to be unhealthy.
 
-- **PostgreSQL (recommended):** Enabled by default, and equivalent to:
+### Election strategies
+
+We recommend using [repository-specific primary nodes](#repository-specific-primary-nodes),
+which is [planned to be the only available election strategy](https://gitlab.com/gitlab-org/gitaly/-/issues/3574)
+from GitLab 14.0.
+
+In the future, we are likely to implement support for:
+
+- A [Consul](../consul.md) strategy.
+- A cloud-native strategy.
+
+#### Repository-specific primary nodes
+
+Praefect's earlier election strategies elected a primary for each virtual storage, which was used as the
+primary for each repository in the virtual storage. This model prevented horizontal scaling of a virtual
+storage. The primary Gitaly node needed a replica of each repository and thus became the bottleneck.
+
+The `per_repository` election strategy solves this problem by electing a primary separately for each repository.
+Combined with [configurable replication factors](#configure-replication-factor), you can horizontally
+scale storage capacity and distribute write load across Gitaly nodes.
+
+Primary elections are run when:
+
+- Praefect starts up.
+- The cluster's consensus of a Gitaly node's health changes.
+
+A Gitaly node is considered:
+
+- Healthy if `>=50%` Praefect nodes have successfully health checked the Gitaly node in the
+  previous ten seconds.
+- Unhealthy otherwise.
+
+During an election run, Praefect elects a new primary Gitaly node for each repository that has
+an unhealthy primary Gitaly node. The election is made:
+
+- Randomly from healthy secondary Gitaly nodes that are the most up to date.
+- Only from Gitaly nodes assigned to the host repository.
+
+If there are no healthy secondary nodes for a repository:
+
+- The unhealthy primary node is demoted and the repository is left without a primary node.
+- Operations that require a primary node fail until a primary is successfully elected.
+
+Repository-specific primaries are enabled in `/etc/gitlab/gitlab.rb` by setting
+`praefect['failover_election_strategy'] = 'per_repository'`.
+
+##### Migrate to repository-specific primary nodes
+
+New Gitaly clusters can start using the `per_repository` election strategy immediately.
+
+To migrate existing clusters:
+
+1. Praefect didn't historically keep database records of every repository stored on the cluster. When
+   the `per_repository` election strategy is configured, Praefect expects to have database records of
+   each repository. A [background migration](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2749) is
+   included in GitLab 13.6 and later to create any missing database records for repositories. Before migrating
+   you should verify the migration has run by checking Praefect's logs:
+
+   Check Praefect's logs for `repository importer finished` message. The `virtual_storages` field contains
+   the names of virtual storages and whether they've had any missing database records created.
+
+   For example, the `default` virtual storage has been successfully migrated:
+
+   ```json
+   {"level":"info","msg":"repository importer finished","pid":19752,"time":"2021-04-28T11:41:36.743Z","virtual_storages":{"default":true}}
+   ```
+
+   If a virtual storage has not been successfully migrated, it would have `false` next to it:
+
+   ```json
+   {"level":"info","msg":"repository importer finished","pid":19752,"time":"2021-04-28T11:41:36.743Z","virtual_storages":{"default":false}}
+   ```
+
+   The migration is ran when Praefect starts up. If the migration is unsuccessful, you can restart
+   a Praefect node to reattempt it. The migration only runs with `sql` election strategy configured.
+
+1. Running two different election strategies side by side can cause a split brain, where different Praefects
+   consider repositories to have different primaries. To avoid this, all Praefects should be shut down prior
+   to changing the election strategy.
+
+   This can be done by running `gitlab-ctl stop praefect` on the Praefect nodes.
+
+1. On the Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with
+   `praefect['failover_election_strategy'] = 'per_repository'`.
+
+1. Finally, run `gitlab-ctl reconfigure` to reconfigure and restart the Praefects.
+
+#### Deprecated election strategies
+
+WARNING:
+The below election strategies are deprecated and are scheduled for removal in GitLab 14.0.
+Migrate to [repository-specific primary nodes](#repository-specific-primary-nodes).
+
+- **PostgreSQL:** Enabled by default until GitLab 14.0, and equivalent to:
   `praefect['failover_election_strategy'] = 'sql'`. This configuration
   option allows multiple Praefect nodes to coordinate via the
   PostgreSQL database to elect a primary Gitaly node. This configuration
@@ -1079,8 +1169,6 @@ current primary node is found to be unhealthy.
   checks fail for the current primary backend Gitaly node, and new primary will
   be elected. **Do not use with multiple Praefect nodes!** Using with multiple
   Praefect nodes is likely to result in a split brain.
-
-We are likely to implement support for Consul, and a cloud native, strategy in the future.
 
 ## Primary Node Failure
 
