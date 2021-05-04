@@ -57,7 +57,7 @@ describe('Merge Conflict Resolver App', () => {
     const title = findConflictsCount();
 
     expect(title.exists()).toBe(true);
-    expect(title.text().trim()).toBe('Showing 3 conflicts between test-conflicts and master');
+    expect(title.text().trim()).toBe('Showing 3 conflicts between test-conflicts and main');
   });
 
   describe('files', () => {

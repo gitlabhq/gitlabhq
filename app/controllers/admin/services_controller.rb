@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Admin::ServicesController < Admin::ApplicationController
-  include ServiceParams
+  include Integrations::Params
 
-  before_action :service, only: [:edit, :update]
+  before_action :integration, only: [:edit, :update]
   before_action :disable_query_limiting, only: [:index]
 
   feature_category :integrations
@@ -14,15 +14,15 @@ class Admin::ServicesController < Admin::ApplicationController
   end
 
   def edit
-    if service.nil? || Service.instance_exists_for?(service.type)
+    if integration.nil? || Service.instance_exists_for?(integration.type)
       redirect_to admin_application_settings_services_path,
         alert: "Service is unknown or it doesn't exist"
     end
   end
 
   def update
-    if service.update(service_params[:service])
-      PropagateServiceTemplateWorker.perform_async(service.id) if service.active? # rubocop:disable CodeReuse/Worker
+    if integration.update(integration_params[:integration])
+      PropagateServiceTemplateWorker.perform_async(integration.id) if integration.active? # rubocop:disable CodeReuse/Worker
 
       redirect_to admin_application_settings_services_path,
         notice: 'Application settings saved successfully'
@@ -34,9 +34,11 @@ class Admin::ServicesController < Admin::ApplicationController
   private
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def service
-    @service ||= Service.find_by(id: params[:id], template: true)
+  def integration
+    @integration ||= Service.find_by(id: params[:id], template: true)
+    @service ||= @integration # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/329759
   end
+  alias_method :service, :integration
   # rubocop: enable CodeReuse/ActiveRecord
 
   def disable_query_limiting
