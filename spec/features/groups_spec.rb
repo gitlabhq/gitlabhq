@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group' do
-  let_it_be(:user) { create(:user) }
+  let(:user) { create(:user) }
 
   before do
     sign_in(user)

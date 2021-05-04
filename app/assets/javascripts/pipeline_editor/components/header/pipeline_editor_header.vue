@@ -1,5 +1,4 @@
 <script>
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PipelineStatus from './pipeline_status.vue';
 import ValidationSegment from './validation_segment.vue';
 
@@ -29,7 +28,6 @@ export default {
     PipelineStatus,
     ValidationSegment,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     ciConfigData: {
       type: Object,
@@ -42,7 +40,7 @@ export default {
   },
   computed: {
     showPipelineStatus() {
-      return this.glFeatures.pipelineStatusForPipelineEditor && !this.isNewCiConfigFile;
+      return !this.isNewCiConfigFile;
     },
     // make sure corners are rounded correctly depending on if
     // pipeline status is rendered

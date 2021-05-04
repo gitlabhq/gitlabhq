@@ -186,3 +186,5 @@ module MembershipActions
     end
   end
 end
+
+MembershipActions.prepend_if_ee('EE::MembershipActions')

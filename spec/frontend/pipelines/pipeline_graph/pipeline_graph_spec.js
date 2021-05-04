@@ -1,17 +1,20 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { setHTMLFixture } from 'helpers/fixtures';
 import { CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
 import LinksInner from '~/pipelines/components/graph_shared/links_inner.vue';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import JobPill from '~/pipelines/components/pipeline_graph/job_pill.vue';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import StagePill from '~/pipelines/components/pipeline_graph/stage_pill.vue';
-import { DRAW_FAILURE } from '~/pipelines/constants';
-import { invalidNeedsData, pipelineData, singleStageData } from './mock_data';
+import { pipelineData, singleStageData } from './mock_data';
 
 describe('pipeline graph component', () => {
   const defaultProps = { pipelineData };
   let wrapper;
+
+  const containerId = 'pipeline-graph-container-0';
+  setHTMLFixture(`<div id="${containerId}"></div>`);
 
   const createComponent = (props = defaultProps) => {
     return shallowMount(PipelineGraph, {
@@ -55,18 +58,7 @@ describe('pipeline graph component', () => {
     it('renders the graph with no status error', () => {
       expect(findAlert().exists()).toBe(false);
       expect(findPipelineGraph().exists()).toBe(true);
-    });
-  });
-
-  describe('with error while rendering the links with needs', () => {
-    beforeEach(() => {
-      wrapper = createComponent({ pipelineData: invalidNeedsData });
-    });
-
-    it('renders the error that link could not be drawn', () => {
       expect(findLinksLayer().exists()).toBe(true);
-      expect(findAlert().exists()).toBe(true);
-      expect(findAlert().text()).toBe(wrapper.vm.$options.errorTexts[DRAW_FAILURE]);
     });
   });
 

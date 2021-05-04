@@ -43,6 +43,7 @@ export default {
   data() {
     return {
       alertDismissed: false,
+      parsedData: {},
       showLinksOverride: false,
     };
   },
@@ -72,14 +73,7 @@ export default {
     reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   mounted() {
-    /*
-      This is code to get metrics for the graph (to observe links performance).
-      It is currently here because we want values for links without drawing them.
-      It can be removed when https://gitlab.com/gitlab-org/gitlab/-/issues/298930
-      is closed and functionality is enabled by default.
-    */
-
-    if (!this.showLinks && !isEmpty(this.pipelineData)) {
+    if (!isEmpty(this.pipelineData)) {
       window.requestAnimationFrame(() => {
         this.prepareLinkData();
       });
@@ -132,7 +126,8 @@ export default {
       let numLinks;
       try {
         const arrayOfJobs = this.pipelineData.flatMap(({ groups }) => groups);
-        numLinks = parseData(arrayOfJobs).links.length;
+        this.parsedData = parseData(arrayOfJobs);
+        numLinks = this.parsedData.links.length;
       } catch (err) {
         reportToSentry(this.$options.name, err);
       }
@@ -145,9 +140,9 @@ export default {
   <links-inner
     v-if="showLinkedLayers"
     :container-measurements="containerMeasurements"
+    :parsed-data="parsedData"
     :pipeline-data="pipelineData"
     :total-groups="numGroups"
-    :metrics-config="metricsConfig"
     v-bind="$attrs"
     v-on="$listeners"
   >

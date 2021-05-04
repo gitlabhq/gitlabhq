@@ -1,19 +1,8 @@
 <script>
 import { isEmpty } from 'lodash';
-import {
-  PIPELINES_DETAIL_LINKS_MARK_CALCULATE_START,
-  PIPELINES_DETAIL_LINKS_MARK_CALCULATE_END,
-  PIPELINES_DETAIL_LINKS_MEASURE_CALCULATION,
-  PIPELINES_DETAIL_LINK_DURATION,
-  PIPELINES_DETAIL_LINKS_TOTAL,
-  PIPELINES_DETAIL_LINKS_JOB_RATIO,
-} from '~/performance/constants';
-import { performanceMarkAndMeasure } from '~/performance/utils';
 import { DRAW_FAILURE } from '../../constants';
 import { createJobsHash, generateJobNeedsDict, reportToSentry } from '../../utils';
 import { STAGE_VIEW } from '../graph/constants';
-import { parseData } from '../parsing_utils';
-import { reportPerformance } from './api';
 import { generateLinksData } from './drawing_utils';
 
 export default {
@@ -28,6 +17,10 @@ export default {
       type: Object,
       required: true,
     },
+    parsedData: {
+      type: Object,
+      required: true,
+    },
     pipelineId: {
       type: Number,
       required: true,
@@ -35,15 +28,6 @@ export default {
     pipelineData: {
       type: Array,
       required: true,
-    },
-    totalGroups: {
-      type: Number,
-      required: true,
-    },
-    metricsConfig: {
-      type: Object,
-      required: false,
-      default: () => ({}),
     },
     defaultLinkColor: {
       type: String,
@@ -65,13 +49,9 @@ export default {
     return {
       links: [],
       needsObject: null,
-      parsedData: {},
     };
   },
   computed: {
-    shouldCollectMetrics() {
-      return this.metricsConfig.collectMetrics && this.metricsConfig.path;
-    },
     hasHighlightedJob() {
       return Boolean(this.highlightedJob);
     },
@@ -115,13 +95,16 @@ export default {
     highlightedJobs(jobs) {
       this.$emit('highlightedJobsChange', jobs);
     },
+    parsedData() {
+      this.calculateLinkData();
+    },
     viewType() {
       /*
         We need to wait a tick so that the layout reflows
         before the links refresh.
       */
       this.$nextTick(() => {
-        this.refreshLinks();
+        this.calculateLinkData();
       });
     },
   },
@@ -129,69 +112,21 @@ export default {
     reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   mounted() {
-    if (!isEmpty(this.pipelineData)) {
-      this.prepareLinkData();
+    if (!isEmpty(this.parsedData)) {
+      this.calculateLinkData();
     }
   },
   methods: {
-    beginPerfMeasure() {
-      if (this.shouldCollectMetrics) {
-        performanceMarkAndMeasure({ mark: PIPELINES_DETAIL_LINKS_MARK_CALCULATE_START });
-      }
-    },
-    finishPerfMeasureAndSend() {
-      if (this.shouldCollectMetrics) {
-        performanceMarkAndMeasure({
-          mark: PIPELINES_DETAIL_LINKS_MARK_CALCULATE_END,
-          measures: [
-            {
-              name: PIPELINES_DETAIL_LINKS_MEASURE_CALCULATION,
-              start: PIPELINES_DETAIL_LINKS_MARK_CALCULATE_START,
-            },
-          ],
-        });
-      }
-
-      window.requestAnimationFrame(() => {
-        const duration = window.performance.getEntriesByName(
-          PIPELINES_DETAIL_LINKS_MEASURE_CALCULATION,
-        )[0]?.duration;
-
-        if (!duration) {
-          return;
-        }
-
-        const data = {
-          histograms: [
-            { name: PIPELINES_DETAIL_LINK_DURATION, value: duration / 1000 },
-            { name: PIPELINES_DETAIL_LINKS_TOTAL, value: this.links.length },
-            {
-              name: PIPELINES_DETAIL_LINKS_JOB_RATIO,
-              value: this.links.length / this.totalGroups,
-            },
-          ],
-        };
-
-        reportPerformance(this.metricsConfig.path, data);
-      });
-    },
     isLinkHighlighted(linkRef) {
       return this.highlightedLinks.includes(linkRef);
     },
-    prepareLinkData() {
-      this.beginPerfMeasure();
+    calculateLinkData() {
       try {
-        const arrayOfJobs = this.pipelineData.flatMap(({ groups }) => groups);
-        this.parsedData = parseData(arrayOfJobs);
-        this.refreshLinks();
+        this.links = generateLinksData(this.parsedData, this.containerId, `-${this.pipelineId}`);
       } catch (err) {
         this.$emit('error', { type: DRAW_FAILURE, reportToSentry: false });
         reportToSentry(this.$options.name, err);
       }
-      this.finishPerfMeasureAndSend();
-    },
-    refreshLinks() {
-      this.links = generateLinksData(this.parsedData, this.containerId, `-${this.pipelineId}`);
     },
     getLinkClasses(link) {
       return [

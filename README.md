@@ -88,7 +88,7 @@ For more information please see the [architecture](https://docs.gitlab.com/ee/de
 
 ## UX design
 
-Please adhere to the [UX Guide](doc/development/ux_guide/index.md) when creating designs and implementing code.
+Please adhere to the [UX Guide](https://design.gitlab.com/) when creating designs and implementing code.
 
 ## Third-party applications
 
