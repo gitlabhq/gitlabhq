@@ -6,7 +6,7 @@ module Types
       graphql_name 'PackageMetadata'
       description 'Represents metadata associated with a Package'
 
-      possible_types ::Types::Packages::Composer::MetadatumType, ::Types::Packages::Conan::MetadatumType
+      possible_types ::Types::Packages::Composer::MetadatumType, ::Types::Packages::Conan::MetadatumType, ::Types::Packages::Maven::MetadatumType
 
       def self.resolve_type(object, context)
         case object
@@ -14,6 +14,8 @@ module Types
           ::Types::Packages::Composer::MetadatumType
         when ::Packages::Conan::Metadatum
           ::Types::Packages::Conan::MetadatumType
+        when ::Packages::Maven::Metadatum
+          ::Types::Packages::Maven::MetadatumType
         else
           # NOTE: This method must be kept in sync with `PackageWithoutVersionsType#metadata`,
           # which must never produce data that this discriminator cannot handle.

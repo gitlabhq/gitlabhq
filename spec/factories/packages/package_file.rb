@@ -201,6 +201,23 @@ FactoryBot.define do
       end
     end
 
+    factory :helm_package_file do
+      package { association(:helm_package, without_package_files: true) }
+      file_name { "#{package.name}-#{package.version}.tgz" }
+      file_fixture { "spec/fixtures/packages/helm/rook-ceph-v1.5.8.tgz" }
+
+      transient do
+        without_loaded_metadatum { false }
+        channel { 'stable' }
+      end
+
+      after :create do |package_file, evaluator|
+        unless evaluator.without_loaded_metadatum
+          create :helm_file_metadatum, package_file: package_file, channel: evaluator.channel
+        end
+      end
+    end
+
     trait(:jar) do
       file_fixture { 'spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.jar' }
       file_name { 'my-app-1.0-20180724.124855-1.jar' }

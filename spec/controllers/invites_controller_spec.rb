@@ -15,10 +15,11 @@ RSpec.describe InvitesController do
     context 'when invite token is not valid' do
       let(:raw_invite_token) { '_bogus_token_' }
 
-      it 'renders the 404 page' do
+      it 'redirects to root' do
         request
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to redirect_to(root_path)
+        expect(controller).to set_flash[:alert].to('The invitation can not be found with the provided invite token.')
       end
     end
   end

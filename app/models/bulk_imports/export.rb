@@ -36,6 +36,15 @@ module BulkImports
       end
     end
 
+    def self.config(exportable)
+      case exportable
+      when ::Project
+        Exports::ProjectConfig.new(exportable)
+      when ::Group
+        Exports::GroupConfig.new(exportable)
+      end
+    end
+
     def exportable_relation?
       return unless exportable
 
@@ -54,12 +63,7 @@ module BulkImports
 
     def config
       strong_memoize(:config) do
-        case exportable
-        when ::Project
-          Exports::ProjectConfig.new(exportable)
-        when ::Group
-          Exports::GroupConfig.new(exportable)
-        end
+        self.class.config(exportable)
       end
     end
   end

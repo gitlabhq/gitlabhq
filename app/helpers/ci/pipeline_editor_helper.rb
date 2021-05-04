@@ -18,7 +18,7 @@ module Ci
         "initial-branch-name": params[:branch_name],
         "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
         "new-merge-request-path" => namespace_project_new_merge_request_path,
-        "pipeline_etag" => graphql_etag_pipeline_sha_path(project.commit.sha),
+        "pipeline_etag" => project.commit ? graphql_etag_pipeline_sha_path(commit_sha) : '',
         "project-path" => project.path,
         "project-full-path" => project.full_path,
         "project-namespace" => project.namespace.full_path,

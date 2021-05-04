@@ -30,24 +30,6 @@ RSpec.describe BulkImports::Exports::GroupConfig do
     end
   end
 
-  describe '#validate_user_permissions' do
-    let_it_be(:user) { create(:user) }
-
-    context 'when user cannot admin project' do
-      it 'returns false' do
-        expect { subject.validate_user_permissions!(user) }.to raise_error(Gitlab::ImportExport::Error)
-      end
-    end
-
-    context 'when user can admin project' do
-      it 'returns true' do
-        exportable.add_owner(user)
-
-        expect(subject.validate_user_permissions!(user)).to eq(true)
-      end
-    end
-  end
-
   describe '#exportable_relations' do
     it 'returns a list of top level exportable relations' do
       expect(subject.exportable_relations).to include('milestones', 'badges', 'boards', 'labels')

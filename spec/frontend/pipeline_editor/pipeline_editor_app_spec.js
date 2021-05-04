@@ -301,20 +301,35 @@ describe('Pipeline editor app component', () => {
   });
 
   describe('when refetching content', () => {
-    beforeEach(async () => {
+    it('refetches blob content', async () => {
       await createComponentWithApollo();
-
       jest
         .spyOn(wrapper.vm.$apollo.queries.initialCiFileContent, 'refetch')
         .mockImplementation(jest.fn());
-    });
 
-    it('refetches blob content', async () => {
       expect(wrapper.vm.$apollo.queries.initialCiFileContent.refetch).toHaveBeenCalledTimes(0);
 
       await wrapper.vm.refetchContent();
 
       expect(wrapper.vm.$apollo.queries.initialCiFileContent.refetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('hides start screen when refetch fetches CI file', async () => {
+      mockBlobContentData.mockRejectedValue({
+        response: {
+          status: httpStatusCodes.NOT_FOUND,
+        },
+      });
+      await createComponentWithApollo();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findEditorHome().exists()).toBe(false);
+
+      mockBlobContentData.mockResolvedValue(mockCiYml);
+      await wrapper.vm.$apollo.queries.initialCiFileContent.refetch();
+
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findEditorHome().exists()).toBe(true);
     });
   });
 });

@@ -80,6 +80,12 @@ export default {
 
         this.lastCommittedContent = fileContent;
         this.currentCiFileContent = fileContent;
+
+        // make sure to reset the start screen flag during a refetch
+        // e.g. when switching branches
+        if (fileContent.length) {
+          this.showStartScreen = false;
+        }
       },
       error(error) {
         this.handleBlobContentError(error);
@@ -236,6 +242,7 @@ export default {
     <pipeline-editor-empty-state
       v-else-if="showStartScreen"
       @createEmptyConfigFile="setNewEmptyCiConfigFile"
+      @refetchContent="refetchContent"
     />
     <div v-else>
       <pipeline-editor-messages

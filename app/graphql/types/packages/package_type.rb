@@ -44,6 +44,8 @@ module Types
           object.composer_metadatum
         when 'conan'
           object.conan_metadatum
+        when 'maven'
+          object.maven_metadatum
         else
           nil
         end

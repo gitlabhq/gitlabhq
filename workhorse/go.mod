@@ -13,32 +13,30 @@ require (
 	github.com/disintegration/imaging v1.6.2
 	github.com/getsentry/raven-go v0.2.0
 	github.com/golang/gddo v0.0.0-20190419222130-af0f2af80721
-	github.com/golang/protobuf v1.4.3
+	github.com/golang/protobuf v1.5.2
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/gorilla/websocket v1.4.1
-	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20200510090907-02d71f533bec
 	github.com/jpillora/backoff v1.0.0
 	github.com/mitchellh/copystructure v1.0.0
-	github.com/prometheus/client_golang v1.8.0
+	github.com/prometheus/client_golang v1.10.0
 	github.com/rafaeljusto/redigomock v0.0.0-20190202135759-257e089e14a1
-	github.com/sebest/xff v0.0.0-20160910043805-6c115e0ffa35
+	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/shabbyrobe/gocovmerge v0.0.0-20190829150210-3e036491d500 // indirect
-	github.com/sirupsen/logrus v1.7.0
+	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.6.4
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	gitlab.com/gitlab-org/gitaly v1.74.0
-	gitlab.com/gitlab-org/labkit v1.0.0
+	gitlab.com/gitlab-org/labkit v1.4.0
 	gocloud.dev v0.21.1-0.20201223184910-5094f54ed8bb
+	golang.org/x/exp v0.0.0-20200331195152-e8c3332aa8e5 // indirect
 	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8
-	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
-	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
-	golang.org/x/text v0.3.5 // indirect
+	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5
+	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4
 	golang.org/x/tools v0.1.0
-	google.golang.org/genproto v0.0.0-20210111234610-22ae2b108f89 // indirect
-	google.golang.org/grpc v1.34.1
-	google.golang.org/grpc/examples v0.0.0-20201226181154-53788aa5dcb4 // indirect
+	google.golang.org/grpc v1.37.0
 	honnef.co/go/tools v0.1.3
 )
 

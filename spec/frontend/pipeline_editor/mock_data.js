@@ -4,7 +4,7 @@ import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 export const mockProjectNamespace = 'user1';
 export const mockProjectPath = 'project1';
 export const mockProjectFullPath = `${mockProjectNamespace}/${mockProjectPath}`;
-export const mockDefaultBranch = 'master';
+export const mockDefaultBranch = 'main';
 export const mockNewMergeRequestPath = '/-/merge_requests/new';
 export const mockCommitSha = 'aabbccdd';
 export const mockCommitNextSha = 'eeffgghh';
@@ -143,7 +143,6 @@ export const mockProjectBranches = {
   repository: {
     __typename: 'Repository',
     branches: [
-      { __typename: 'Branch', name: 'master' },
       { __typename: 'Branch', name: 'main' },
       { __typename: 'Branch', name: 'develop' },
       { __typename: 'Branch', name: 'production' },
@@ -186,7 +185,7 @@ export const mockLintResponse = {
       when: 'on_success',
       allow_failure: false,
       only: null,
-      except: { refs: ['master@gitlab-org/gitlab', '/^release/.*$/@gitlab-org/gitlab'] },
+      except: { refs: ['main@gitlab-org/gitlab', '/^release/.*$/@gitlab-org/gitlab'] },
     },
     {
       name: 'job_2',
@@ -199,7 +198,7 @@ export const mockLintResponse = {
       when: 'on_success',
       allow_failure: true,
       only: { refs: ['web', 'chat', 'pushes'] },
-      except: { refs: ['master@gitlab-org/gitlab', '/^release/.*$/@gitlab-org/gitlab'] },
+      except: { refs: ['main@gitlab-org/gitlab', '/^release/.*$/@gitlab-org/gitlab'] },
     },
   ],
 };
@@ -242,7 +241,7 @@ export const mockJobs = [
     when: 'on_success',
     allowFailure: false,
     only: { refs: ['branches@gitlab-org/gitlab'] },
-    except: { refs: ['master@gitlab-org/gitlab', '/^release/.*$/@gitlab-org/gitlab'] },
+    except: { refs: ['main@gitlab-org/gitlab', '/^release/.*$/@gitlab-org/gitlab'] },
   },
 ];
 

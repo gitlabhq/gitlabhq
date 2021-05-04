@@ -2390,4 +2390,12 @@ RSpec.describe Group do
 
     it { is_expected.to eq(Set.new([child_1.id])) }
   end
+
+  describe '#to_ability_name' do
+    it 'returns group' do
+      group = build(:group)
+
+      expect(group.to_ability_name).to eq('group')
+    end
+  end
 end

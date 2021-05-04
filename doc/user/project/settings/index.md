@@ -32,38 +32,19 @@ Adjust your project's name, description, avatar, [default branch](../repository/
 
 The project description also partially supports [standard Markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
-#### Compliance framework **(PREMIUM)**
-
-You can select a framework label to identify that your project has certain compliance requirements or needs additional oversight. Available labels include:
-
-- GDPR (General Data Protection Regulation)
-- HIPAA (Health Insurance Portability and Accountability Act)
-- PCI-DSS (Payment Card Industry-Data Security Standard)
-- SOC 2 (Service Organization Control 2)
-- SOX (Sarbanes-Oxley)
-
-NOTE:
-Compliance framework labels do not affect your project settings.
-
-#### Custom compliance frameworks
+#### Compliance frameworks **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
-> - [Deployed behind a feature flag](../../feature_flags.md).
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/287779) in GitLab 13.11.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/287779) in GitLab 13.12.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+You can create a framework label to identify that your project has certain compliance requirements or needs additional oversight.
 
-GitLab 13.9 introduces custom compliance frameworks at the group-level. A group owner can create a compliance framework label
-and assign it to any number of projects within that group or subgroups. When this feature is enabled, projects can only
-be assigned compliance framework labels that already exist within that group.
+Group owners can create, edit and delete compliance frameworks by going to **Settings** > **General** and expanding the **Compliance frameworks** section.
+Compliance frameworks created can then be assigned to any number of projects via the project settings page inside the group or subgroups. 
 
-If existing [Compliance frameworks](#compliance-framework) are not sufficient, project and group owners
-can now create their own.
-
-New compliance framework labels can be created and updated using GraphQL.
+NOTE:
+Attempting to create compliance frameworks on subgroups via GraphQL will cause the framework to be created on the root ancestor if the user has the correct permissions.
+The web UI presents a read-only view to discourage this behavior.
 
 #### Compliance pipeline configuration **(ULTIMATE)**
 
@@ -79,7 +60,7 @@ This feature might not be available to you. Check the **version history** note a
 Group owners can use the compliance pipeline configuration to define compliance requirements
 such as scans or tests, and enforce them in individual projects.
 
-The [custom compliance framework](#custom-compliance-frameworks) feature allows group owners to specify the location
+The [custom compliance framework](#compliance-frameworks) feature allows group owners to specify the location
 of a compliance pipeline configuration stored and managed in a dedicated project, distinct from a developer's project.
 
 When you set up the compliance pipeline configuration field, use the
@@ -387,22 +368,3 @@ Add the URL of a Jaeger server to allow your users to [easily access the Jaeger 
 
 [Add Storage credentials](../../../operations/incident_management/status_page.md#sync-incidents-to-the-status-page)
 to enable the syncing of public Issues to a [deployed status page](../../../operations/incident_management/status_page.md#create-a-status-page-project).
-
-### Enable or disable custom compliance frameworks **(PREMIUM)**
-
-Enabling or disabling custom compliance frameworks is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ff_custom_compliance_frameworks, Group.find(<group id>))
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ff_custom_compliance_frameworks, Group.find(<group id>))
-```

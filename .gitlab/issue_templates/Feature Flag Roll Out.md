@@ -59,7 +59,7 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 <!-- Please check which steps are needed and remove those which don't apply -->
 
-**Initial Rollout**
+**Rollout Steps**
 
 *Preparation Phase*
 - [ ] Enable on staging (`/chatops run feature set feature_name true --staging`)
@@ -85,28 +85,14 @@ Are there any other stages or teams involved that need to be kept in the loop?
   - For actor-based rollout: `/chatops run feature set feature_name 10 --actors`
   - For time-based rollout: `/chatops run feature set feature_name 10`
 
+*Full Rollout Phase*
 - [ ] Make the feature flag enabled by default i.e. Change `default_enabled` to `true`
 
 - [ ] Cross post chatops slack command to `#support_gitlab-com` ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#where-to-run-commands)) and in your team channel
 
-
-**Cleanup**
-
-This is an __important__ phase, that should be either done in the next Milestone or as soon as possible. For the cleanup phase, please follow our documentation on how to  [clean up the feature flag](https://docs.gitlab.com/ee/development/feature_flags/controls.html#cleaning-up).
-
-<!-- The checklist here is to keep track of it's status for stakeholders -->
 - [ ] Announce on the issue that the flag has been enabled
 
-- [ ] Remove `:feature_name` feature flag
-    - [ ] Remove all references to the feature flag from the codebase
-    - [ ] Remove the YAML definitions for the feature from the repository
-    - [ ] Create a Changelog Entry
-
-- [ ] Clean up the feature flag from all environments by running this chatops command in `#production` channel `/chatops run feature delete some_feature`.
-
-**Final Step**
-
-- [ ] Close this rollout issue for the feature flag after the feature flag is removed from the codebase.
+- [ ] Create a cleanup issue using the "Feature Flag Removal" template
 
 ## Rollback Steps
 

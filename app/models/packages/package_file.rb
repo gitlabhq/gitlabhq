@@ -6,6 +6,7 @@ class Packages::PackageFile < ApplicationRecord
   delegate :project, :project_id, to: :package
   delegate :conan_file_type, to: :conan_file_metadatum
   delegate :file_type, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
+  delegate :channel, :metadata, to: :helm_file_metadatum, prefix: :helm
 
   belongs_to :package
 
@@ -13,9 +14,11 @@ class Packages::PackageFile < ApplicationRecord
   has_many :package_file_build_infos, inverse_of: :package_file, class_name: 'Packages::PackageFileBuildInfo'
   has_many :pipelines, through: :package_file_build_infos
   has_one :debian_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Debian::FileMetadatum'
+  has_one :helm_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Helm::FileMetadatum'
 
   accepts_nested_attributes_for :conan_file_metadatum
   accepts_nested_attributes_for :debian_file_metadatum
+  accepts_nested_attributes_for :helm_file_metadatum
 
   validates :package, presence: true
   validates :file, presence: true

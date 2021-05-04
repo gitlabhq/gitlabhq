@@ -14,6 +14,19 @@ module Gitlab
         untar_with_options(archive: archive, dir: dir, options: 'zxf')
       end
 
+      def gzip(dir:, filename:)
+        filepath = File.join(dir, filename)
+        cmd = %W(gzip #{filepath})
+
+        _, status = Gitlab::Popen.popen(cmd)
+
+        if status == 0
+          status
+        else
+          raise Gitlab::ImportExport::Error.file_compression_error
+        end
+      end
+
       def mkdir_p(path)
         FileUtils.mkdir_p(path, mode: DEFAULT_DIR_MODE)
         FileUtils.chmod(DEFAULT_DIR_MODE, path)

@@ -628,6 +628,50 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('hé') }
   end
 
+  describe '.helm_channel_regex' do
+    subject { described_class.helm_channel_regex }
+
+    it { is_expected.to match('release') }
+    it { is_expected.to match('my-repo') }
+    it { is_expected.to match('my-repo42') }
+
+    # Do not allow empty
+    it { is_expected.not_to match('') }
+
+    # Do not allow Unicode
+    it { is_expected.not_to match('hé') }
+  end
+
+  describe '.helm_package_regex' do
+    subject { described_class.helm_package_regex }
+
+    it { is_expected.to match('release') }
+    it { is_expected.to match('my-repo') }
+    it { is_expected.to match('my-repo42') }
+
+    # Do not allow empty
+    it { is_expected.not_to match('') }
+
+    # Do not allow Unicode
+    it { is_expected.not_to match('hé') }
+
+    it { is_expected.not_to match('my/../repo') }
+    it { is_expected.not_to match('me%2f%2e%2e%2f') }
+  end
+
+  describe '.helm_version_regex' do
+    subject { described_class.helm_version_regex }
+
+    it { is_expected.to match('v1.2.3') }
+    it { is_expected.to match('v1.2.3-beta') }
+    it { is_expected.to match('v1.2.3-alpha.3') }
+    it { is_expected.not_to match('v1') }
+    it { is_expected.not_to match('v1.2') }
+    it { is_expected.not_to match('v1./2.3') }
+    it { is_expected.not_to match('v../../../../../1.2.3') }
+    it { is_expected.not_to match('v%2e%2e%2f1.2.3') }
+  end
+
   describe '.semver_regex' do
     subject { described_class.semver_regex }
 

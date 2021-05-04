@@ -8,6 +8,7 @@ RSpec.describe Packages::PackageFile, type: :model do
     it { is_expected.to have_many(:package_file_build_infos).inverse_of(:package_file) }
     it { is_expected.to have_many(:pipelines).through(:package_file_build_infos) }
     it { is_expected.to have_one(:debian_file_metadatum).inverse_of(:package_file).class_name('Packages::Debian::FileMetadatum') }
+    it { is_expected.to have_one(:helm_file_metadatum).inverse_of(:package_file).class_name('Packages::Helm::FileMetadatum') }
   end
 
   describe 'validations' do

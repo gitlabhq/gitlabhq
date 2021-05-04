@@ -1,0 +1,128 @@
+{
+  "description": "Helm metadata",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "home": {
+      "type": "string"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "maintainers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "icon": {
+      "type": "string"
+    },
+    "apiVersion": {
+      "type": "string"
+    },
+    "condition": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "string"
+    },
+    "appVersion": {
+      "type": "string"
+    },
+    "deprecated": {
+      "type": "boolean"
+    },
+    "annotations": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "type": "string"
+        },
+        "additionalProperties": false
+      }
+    },
+    "kubeVersion": {
+      "type": "string"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "repository": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "import-values": {
+            "type": "array",
+            "items": {
+
+            }
+          },
+          "alias": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]+$"
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "type": {
+      "type": "string",
+      "enum": ["application", "library"]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "version",
+    "apiVersion"
+  ]
+}

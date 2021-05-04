@@ -80,6 +80,7 @@
       "anyOf": [
         { "$ref": "./package_composer_metadata.json" },
         { "$ref": "./package_conan_metadata.json" },
+        { "$ref": "./package_maven_metadata.json" },
         { "type": "null" }
       ]
     },

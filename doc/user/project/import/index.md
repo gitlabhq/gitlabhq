@@ -20,7 +20,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 1. [From TFVC](tfvc.md)
 1. [From repository by URL](repo_by_url.md)
 1. [By uploading a manifest file (AOSP)](manifest.md)
-1. [From Gemnasium](gemnasium.md)
 1. [From Phabricator](phabricator.md)
 1. [From Jira (issues only)](jira.md)
 

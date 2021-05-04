@@ -36,21 +36,44 @@ RSpec.describe Ci::PipelineEditorHelper do
 
     subject(:pipeline_editor_data) { helper.js_pipeline_editor_data(project) }
 
-    it 'returns pipeline editor data' do
-      expect(pipeline_editor_data).to eq({
-        "ci-config-path": project.ci_config_path_or_default,
-        "commit-sha" => project.commit.sha,
-        "default-branch" => project.default_branch,
-        "empty-state-illustration-path" => 'foo',
-        "initial-branch-name": nil,
-        "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
-        "new-merge-request-path" => '/mock/project/-/merge_requests/new',
-        "pipeline_etag" => graphql_etag_pipeline_sha_path(project.commit.sha),
-        "project-path" => project.path,
-        "project-full-path" => project.full_path,
-        "project-namespace" => project.namespace.full_path,
-        "yml-help-page-path" => help_page_path('ci/yaml/README')
-      })
+    context 'with a project with commits' do
+      it 'returns pipeline editor data' do
+        expect(pipeline_editor_data).to eq({
+          "ci-config-path": project.ci_config_path_or_default,
+          "commit-sha" => project.commit.sha,
+          "default-branch" => project.default_branch,
+          "empty-state-illustration-path" => 'foo',
+          "initial-branch-name": nil,
+          "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
+          "new-merge-request-path" => '/mock/project/-/merge_requests/new',
+          "pipeline_etag" => graphql_etag_pipeline_sha_path(project.commit.sha),
+          "project-path" => project.path,
+          "project-full-path" => project.full_path,
+          "project-namespace" => project.namespace.full_path,
+          "yml-help-page-path" => help_page_path('ci/yaml/README')
+        })
+      end
+    end
+
+    context 'with an empty project' do
+      let(:project) { create(:project, :empty_repo) }
+
+      it 'returns pipeline editor data' do
+        expect(pipeline_editor_data).to eq({
+          "ci-config-path": project.ci_config_path_or_default,
+          "commit-sha" => '',
+          "default-branch" => project.default_branch,
+          "empty-state-illustration-path" => 'foo',
+          "initial-branch-name": nil,
+          "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
+          "new-merge-request-path" => '/mock/project/-/merge_requests/new',
+          "pipeline_etag" => '',
+          "project-path" => project.path,
+          "project-full-path" => project.full_path,
+          "project-namespace" => project.namespace.full_path,
+          "yml-help-page-path" => help_page_path('ci/yaml/README')
+        })
+      end
     end
   end
 end

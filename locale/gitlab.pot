@@ -8182,9 +8182,6 @@ msgstr ""
 msgid "Compliance framework"
 msgstr ""
 
-msgid "Compliance framework  (optional)"
-msgstr ""
-
 msgid "Compliance framework (optional)"
 msgstr ""
 
@@ -21915,7 +21912,7 @@ msgstr ""
 msgid "No compliance frameworks are in use."
 msgstr ""
 
-msgid "No compliance frameworks are in use. Create one using the GraphQL API."
+msgid "No compliance frameworks are in use. Create one from the %{link} section in Group Settings."
 msgstr ""
 
 msgid "No confirmation email received? Please check your spam folder or"
@@ -23024,6 +23021,9 @@ msgid "Package type must be Conan"
 msgstr ""
 
 msgid "Package type must be Debian"
+msgstr ""
+
+msgid "Package type must be Helm"
 msgstr ""
 
 msgid "Package type must be Maven"
@@ -31893,6 +31893,9 @@ msgid "The import will time out after %{timeout}. For repositories that take lon
 msgstr ""
 
 msgid "The interval must be one of %{intervals}."
+msgstr ""
+
+msgid "The invitation can not be found with the provided invite token."
 msgstr ""
 
 msgid "The invitation could not be accepted."

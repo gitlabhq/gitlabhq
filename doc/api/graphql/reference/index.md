@@ -8667,7 +8667,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Group.complianceFrameworks`
 
-Compliance frameworks available to projects in this namespace. Available only when feature flag `ff_custom_compliance_frameworks` is enabled.
+Compliance frameworks available to projects in this namespace.
 
 Returns [`ComplianceFrameworkConnection`](#complianceframeworkconnection).
 
@@ -9551,6 +9551,22 @@ Represents an entry from the Cloud License history.
 | <a id="licensehistoryentrytype"></a>`type` | [`String!`](#string) | Type of the license. |
 | <a id="licensehistoryentryusersinlicensecount"></a>`usersInLicenseCount` | [`Int`](#int) | Number of paid users in the license. |
 
+### `MavenMetadata`
+
+Maven metadata.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenmetadataappgroup"></a>`appGroup` | [`String!`](#string) | App group of the Maven package. |
+| <a id="mavenmetadataappname"></a>`appName` | [`String!`](#string) | App name of the Maven package. |
+| <a id="mavenmetadataappversion"></a>`appVersion` | [`String`](#string) | App version of the Maven package. |
+| <a id="mavenmetadatacreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mavenmetadataid"></a>`id` | [`PackagesMavenMetadatumID!`](#packagesmavenmetadatumid) | ID of the metadatum. |
+| <a id="mavenmetadatapath"></a>`path` | [`String!`](#string) | Path of the Maven package. |
+| <a id="mavenmetadataupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+
 ### `MergeRequest`
 
 #### Fields
@@ -10207,7 +10223,7 @@ Contains statistics about a milestone.
 
 ##### `Namespace.complianceFrameworks`
 
-Compliance frameworks available to projects in this namespace. Available only when feature flag `ff_custom_compliance_frameworks` is enabled.
+Compliance frameworks available to projects in this namespace.
 
 Returns [`ComplianceFrameworkConnection`](#complianceframeworkconnection).
 
@@ -13999,6 +14015,7 @@ Values for sorting package.
 | <a id="packagetypeenumdebian"></a>`DEBIAN` | Packages from the Debian package manager. |
 | <a id="packagetypeenumgeneric"></a>`GENERIC` | Packages from the Generic package manager. |
 | <a id="packagetypeenumgolang"></a>`GOLANG` | Packages from the Golang package manager. |
+| <a id="packagetypeenumhelm"></a>`HELM` | Packages from the Helm package manager. |
 | <a id="packagetypeenummaven"></a>`MAVEN` | Packages from the Maven package manager. |
 | <a id="packagetypeenumnpm"></a>`NPM` | Packages from the npm package manager. |
 | <a id="packagetypeenumnuget"></a>`NUGET` | Packages from the Nuget package manager. |
@@ -14780,6 +14797,12 @@ A `PackagesConanMetadatumID` is a global ID. It is encoded as a string.
 
 An example `PackagesConanMetadatumID` is: `"gid://gitlab/Packages::Conan::Metadatum/1"`.
 
+### `PackagesMavenMetadatumID`
+
+A `PackagesMavenMetadatumID` is a global ID. It is encoded as a string.
+
+An example `PackagesMavenMetadatumID` is: `"gid://gitlab/Packages::Maven::Metadatum/1"`.
+
 ### `PackagesPackageFileID`
 
 A `PackagesPackageFileID` is a global ID. It is encoded as a string.
@@ -14915,6 +14938,7 @@ One of:
 
 - [`ComposerMetadata`](#composermetadata)
 - [`ConanMetadata`](#conanmetadata)
+- [`MavenMetadata`](#mavenmetadata)
 
 #### `VulnerabilityDetail`
 

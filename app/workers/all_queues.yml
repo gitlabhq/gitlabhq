@@ -1837,6 +1837,16 @@
   :idempotent:
   :tags:
   - :exclude_from_kubernetes
+- :name: bulk_imports_relation_export
+  :worker_name: BulkImports::RelationExportWorker
+  :feature_category: :importers
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags:
+  - :exclude_from_kubernetes
 - :name: chat_notification
   :worker_name: ChatNotificationWorker
   :feature_category: :chatops

@@ -18,7 +18,6 @@ export const resolvers = {
         repository: {
           __typename: 'Repository',
           branches: [
-            { __typename: 'Branch', name: 'master' },
             { __typename: 'Branch', name: 'main' },
             { __typename: 'Branch', name: 'develop' },
             { __typename: 'Branch', name: 'production' },

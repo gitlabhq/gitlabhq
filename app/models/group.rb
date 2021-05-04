@@ -704,6 +704,10 @@ class Group < Namespace
     Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
   end
 
+  def to_ability_name
+    model_name.singular
+  end
+
   private
 
   def update_two_factor_requirement

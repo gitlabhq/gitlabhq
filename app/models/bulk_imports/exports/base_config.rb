@@ -13,11 +13,6 @@ module BulkImports
         attributes_finder.find_root(exportable_class_sym)
       end
 
-      def validate_user_permissions!(user)
-        user.can?(ability, exportable) ||
-          raise(::Gitlab::ImportExport::Error.permission_error(user, exportable))
-      end
-
       def export_path
         strong_memoize(:export_path) do
           relative_path = File.join(base_export_path, SecureRandom.hex)
@@ -53,10 +48,6 @@ module BulkImports
       end
 
       def import_export_yaml
-        raise NotImplementedError
-      end
-
-      def ability
         raise NotImplementedError
       end
 

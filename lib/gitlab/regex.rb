@@ -125,6 +125,18 @@ module Gitlab
         @debian_component_regex ||= %r{#{debian_distribution_regex}}.freeze
       end
 
+      def helm_channel_regex
+        @helm_channel_regex ||= %r{\A[-\.\_a-zA-Z0-9]+\z}.freeze
+      end
+
+      def helm_package_regex
+        @helm_package_regex ||= %r{#{helm_channel_regex}}.freeze
+      end
+
+      def helm_version_regex
+        @helm_version_regex ||= %r{#{prefixed_semver_regex}}.freeze
+      end
+
       def unbounded_semver_regex
         # See the official regex: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 

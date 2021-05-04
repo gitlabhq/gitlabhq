@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "createdAt", "updatedAt", "path", "appGroup", "appName"],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "appGroup": {
+      "type": "string"
+    },
+    "appVersion": {
+      "type": ["string", "null"]
+    },
+    "appName": {
+      "type": "string"
+    }
+  }
+}
