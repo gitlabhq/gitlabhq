@@ -19,11 +19,7 @@ module AlertManagement
     # Updates or creates alert from payload for project
     # including system notes
     def process_alert
-      if alert.persisted?
-        process_existing_alert
-      else
-        process_new_alert
-      end
+      alert.persisted? ? process_existing_alert : process_new_alert
     end
 
     # Creates or closes issue for alert and notifies stakeholders
@@ -33,22 +29,16 @@ module AlertManagement
     end
 
     def process_existing_alert
-      if resolving_alert?
-        process_resolved_alert
-      else
-        process_firing_alert
-      end
+      resolving_alert? ? process_resolved_alert : process_firing_alert
     end
 
     def process_resolved_alert
       SystemNoteService.log_resolving_alert(alert, alert_source)
 
-      return unless auto_close_incident?
-
       if alert.resolve(incoming_payload.ends_at)
         SystemNoteService.change_alert_status(alert, User.alert_bot)
 
-        close_issue(alert.issue)
+        close_issue(alert.issue) if auto_close_incident?
       else
         logger.warn(
           message: 'Unable to update AlertManagement::Alert status to resolved',
@@ -76,6 +66,8 @@ module AlertManagement
       if alert.save
         alert.execute_services
         SystemNoteService.create_new_alert(alert, alert_source)
+
+        process_resolved_alert if resolving_alert?
       else
         logger.warn(
           message: "Unable to create AlertManagement::Alert from #{alert_source}",
@@ -128,7 +120,7 @@ module AlertManagement
     end
 
     def alert_source
-      alert.monitoring_tool
+      incoming_payload.monitoring_tool
     end
 
     def logger

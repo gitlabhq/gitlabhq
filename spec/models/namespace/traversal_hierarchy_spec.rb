@@ -86,7 +86,7 @@ RSpec.describe Namespace::TraversalHierarchy, type: :model do
         connection_double = double(:connection)
 
         allow(Namespace).to receive(:connection).and_return(connection_double)
-        allow(connection_double).to receive(:exec_query) { raise ActiveRecord::Deadlocked.new }
+        allow(connection_double).to receive(:exec_query) { raise ActiveRecord::Deadlocked }
       end
 
       it { expect { subject }.to raise_error(ActiveRecord::Deadlocked) }

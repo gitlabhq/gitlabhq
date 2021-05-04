@@ -94,7 +94,7 @@ module Terraform
     end
 
     def find_state!(find_params)
-      find_state(find_params) || raise(ActiveRecord::RecordNotFound.new("Couldn't find state"))
+      find_state(find_params) || raise(ActiveRecord::RecordNotFound, "Couldn't find state")
     end
   end
 end

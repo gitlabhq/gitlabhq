@@ -48,7 +48,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
       context 'with resolving payload' do
         let(:prometheus_status) { 'resolved' }
 
-        it_behaves_like 'processes prometheus recovery alert'
+        it_behaves_like 'processes recovery alert'
       end
 
       context 'environment given' do

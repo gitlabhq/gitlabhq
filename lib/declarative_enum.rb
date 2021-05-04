@@ -64,7 +64,7 @@ module DeclarativeEnum
   end
 
   def define(&block)
-    raise LocalJumpError.new('No block given') unless block
+    raise LocalJumpError, 'No block given' unless block
 
     @definition = Builder.new(definition, block).build
   end

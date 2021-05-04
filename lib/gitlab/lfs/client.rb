@@ -43,7 +43,7 @@ module Gitlab
         body = Gitlab::Json.parse(rsp.body)
         transfer = body.fetch('transfer', 'basic')
 
-        raise UnsupportedTransferError.new(transfer.inspect) unless transfer == 'basic'
+        raise UnsupportedTransferError, transfer.inspect unless transfer == 'basic'
 
         body
       end

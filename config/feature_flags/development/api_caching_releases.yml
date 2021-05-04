@@ -1,0 +1,8 @@
+---
+name: api_caching_releases
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60194
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329861
+milestone: '13.12'
+type: development
+group: group::release
+default_enabled: false

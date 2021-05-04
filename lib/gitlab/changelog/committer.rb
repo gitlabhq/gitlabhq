@@ -55,7 +55,7 @@ module Gitlab
 
           result = service.execute
 
-          raise Error.new(result[:message]) if result[:status] != :success
+          raise Error, result[:message] if result[:status] != :success
         end
       end
 

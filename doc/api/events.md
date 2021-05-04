@@ -71,10 +71,10 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `action` | string | no | Include only events of a particular [action type](#action-types) |
 | `target_type` | string | no | Include only events of a particular [target type](#target-types) |
-| `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format](#date-formatting) |
-| `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format](#date-formatting)  |
+| `before` | date | no |  Include only events created before a particular date. [View how to format dates](#date-formatting). |
+| `after` | date | no |  Include only events created after a particular date. [View how to format dates](#date-formatting).  |
 | `scope` | string | no | Include all events across a user's projects. |
-| `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc` |
+| `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc`. |
 
 Example request:
 
@@ -148,9 +148,9 @@ Parameters:
 | `id` | integer | yes | The ID or Username of the user |
 | `action` | string | no | Include only events of a particular [action type](#action-types) |
 | `target_type` | string | no | Include only events of a particular [target type](#target-types) |
-| `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format](#date-formatting) |
-| `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format](#date-formatting)  |
-| `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc` |
+| `before` | date | no |  Include only events created before a particular date. [View how to format dates](#date-formatting). |
+| `after` | date | no |  Include only events created after a particular date. [View how to format dates](#date-formatting). |
+| `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc`. |
 | `page` | integer | no | The page of results to return. Defaults to 1. |
 | `per_page` | integer | no | The number of results per page. Defaults to 20. |
 
@@ -286,9 +286,9 @@ Parameters:
 | `project_id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `action` | string | no | Include only events of a particular [action type](#action-types) |
 | `target_type` | string | no | Include only events of a particular [target type](#target-types) |
-| `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format](#date-formatting) |
-| `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format](#date-formatting)  |
-| `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc` |
+| `before` | date | no |  Include only events created before a particular date. [View how to format dates](#date-formatting). |
+| `after` | date | no |  Include only events created after a particular date. [View how to format dates](#date-formatting).  |
+| `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc`. |
 
 Example request:
 

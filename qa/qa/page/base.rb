@@ -404,7 +404,7 @@ module QA
       end
 
       def visible?
-        raise NoRequiredElementsError.new(self.class) if self.class.required_elements.empty?
+        raise NoRequiredElementsError, self.class if self.class.required_elements.empty?
 
         self.class.required_elements.each do |required_element|
           return false if has_no_element? required_element

@@ -10,7 +10,7 @@ class CronValidator < ActiveModel::EachValidator
       cron_parser = Gitlab::Ci::CronParser.new(record.public_send(attribute), record.cron_timezone) # rubocop:disable GitlabSecurity/PublicSend
       record.errors.add(attribute, " is invalid syntax") unless cron_parser.cron_valid?
     else
-      raise NonWhitelistedAttributeError.new "Non-whitelisted attribute"
+      raise NonWhitelistedAttributeError, "Non-whitelisted attribute"
     end
   end
 end

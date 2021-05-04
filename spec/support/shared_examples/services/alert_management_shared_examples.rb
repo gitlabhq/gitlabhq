@@ -48,9 +48,19 @@ end
 
 RSpec.shared_examples 'processes never-before-seen recovery alert' do
   it_behaves_like 'creates an alert management alert or errors'
-  it_behaves_like 'creates expected system notes for alert', :new_alert
+  it_behaves_like 'creates expected system notes for alert', :new_alert, :recovery_alert, :resolve_alert
   it_behaves_like 'sends alert notification emails if enabled'
-  it_behaves_like 'processes incident issues if enabled'
+  it_behaves_like 'does not process incident issues'
+  it_behaves_like 'writes a warning to the log for a failed alert status update' do
+    let(:alert) { nil } # Ensure the next alert id is used
+  end
+
+  it 'resolves the alert' do
+    subject
+
+    expect(AlertManagement::Alert.last.ended_at).to be_present
+    expect(AlertManagement::Alert.last.resolved?).to be(true)
+  end
 end
 
 RSpec.shared_examples 'processes one firing and one resolved prometheus alerts' do
@@ -58,10 +68,10 @@ RSpec.shared_examples 'processes one firing and one resolved prometheus alerts' 
     expect(Gitlab::AppLogger).not_to receive(:warn)
 
     expect { subject }
-      .to change(AlertManagement::Alert, :count).by(1)
-      .and change(Note, :count).by(1)
+      .to change(AlertManagement::Alert, :count).by(2)
+      .and change(Note, :count).by(4)
   end
 
   it_behaves_like 'processes incident issues'
-  it_behaves_like 'sends alert notification emails', count: 1
+  it_behaves_like 'sends alert notification emails', count: 2
 end

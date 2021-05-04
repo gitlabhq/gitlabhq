@@ -5,7 +5,7 @@ module Releases
     include ShaAttribute
     include Presentable
 
-    belongs_to :release, inverse_of: :evidences
+    belongs_to :release, inverse_of: :evidences, touch: true
 
     default_scope { order(created_at: :asc) } # rubocop:disable Cop/DefaultScope
 

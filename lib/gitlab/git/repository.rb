@@ -89,9 +89,9 @@ module Gitlab
       def root_ref
         gitaly_ref_client.default_branch_name
       rescue GRPC::NotFound => e
-        raise NoRepository.new(e.message)
+        raise NoRepository, e.message
       rescue GRPC::Unknown => e
-        raise Gitlab::Git::CommandError.new(e.message)
+        raise Gitlab::Git::CommandError, e.message
       end
 
       def exists?
@@ -348,7 +348,7 @@ module Gitlab
 
         limit = options[:limit]
         if limit == 0 || !limit.is_a?(Integer)
-          raise ArgumentError.new("invalid Repository#log limit: #{limit.inspect}")
+          raise ArgumentError, "invalid Repository#log limit: #{limit.inspect}"
         end
 
         wrapped_gitaly_errors do
@@ -414,7 +414,7 @@ module Gitlab
             end
           end
       rescue ArgumentError => e
-        raise Gitlab::Git::Repository::GitError.new(e)
+        raise Gitlab::Git::Repository::GitError, e
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
@@ -836,7 +836,7 @@ module Gitlab
       def fsck
         msg, status = gitaly_repository_client.fsck
 
-        raise GitError.new("Could not fsck repository: #{msg}") unless status == 0
+        raise GitError, "Could not fsck repository: #{msg}" unless status == 0
       end
 
       def create_from_bundle(bundle_path)

@@ -8,7 +8,7 @@ module Gitlab
           VARIABLE_TYPE_METRIC_LABEL_VALUES = 'metric_label_values'
 
           def transform!
-            raise Errors::DashboardProcessingError.new(_('Environment is required for Stages::VariableEndpointInserter')) unless params[:environment]
+            raise Errors::DashboardProcessingError, _('Environment is required for Stages::VariableEndpointInserter') unless params[:environment]
 
             for_variables do |variable_name, variable|
               if variable.is_a?(Hash) && variable[:type] == VARIABLE_TYPE_METRIC_LABEL_VALUES

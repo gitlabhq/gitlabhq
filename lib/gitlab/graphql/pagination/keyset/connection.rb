@@ -114,7 +114,7 @@ module Gitlab
           def limited_nodes
             strong_memoize(:limited_nodes) do
               if first && last
-                raise Gitlab::Graphql::Errors::ArgumentError.new("Can only provide either `first` or `last`, not both")
+                raise Gitlab::Graphql::Errors::ArgumentError, "Can only provide either `first` or `last`, not both"
               end
 
               if last
@@ -158,7 +158,7 @@ module Gitlab
           def ordered_items
             strong_memoize(:ordered_items) do
               unless items.primary_key.present?
-                raise ArgumentError.new('Relation must have a primary key')
+                raise ArgumentError, 'Relation must have a primary key'
               end
 
               list = OrderInfo.build_order_list(items)

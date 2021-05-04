@@ -74,7 +74,7 @@ module Gitlab
             json = IO.read(lfs_json_path)
             ActiveSupport::JSON.decode(json)
           rescue StandardError
-            raise Gitlab::ImportExport::Error.new('Incorrect JSON format')
+            raise Gitlab::ImportExport::Error, 'Incorrect JSON format'
           end
       end
 

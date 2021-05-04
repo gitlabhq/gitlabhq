@@ -21,7 +21,6 @@ import {
   MAX_LIST_SIZE,
   PAGE_SIZE,
   RELATIVE_POSITION_ASC,
-  sortOptions,
   sortParams,
 } from '~/issues_list/constants';
 import {
@@ -30,6 +29,7 @@ import {
   convertToUrlParams,
   getFilterTokens,
   getSortKey,
+  getSortOptions,
 } from '~/issues_list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase, getParameterByName } from '~/lib/utils/common_utils';
@@ -48,7 +48,6 @@ export default {
   i18n,
   IssuableListTabs,
   PAGE_SIZE,
-  sortOptions,
   sortParams,
   components: {
     CsvImportExportButtons,
@@ -86,6 +85,9 @@ export default {
     },
     exportCsvPath: {
       default: '',
+    },
+    hasBlockedIssuesFeature: {
+      default: false,
     },
     hasIssues: {
       default: false,
@@ -147,6 +149,9 @@ export default {
     };
   },
   computed: {
+    isBulkEditButtonDisabled() {
+      return this.showBulkEditSidebar || !this.issues.length;
+    },
     isManualOrdering() {
       return this.sortKey === RELATIVE_POSITION_ASC;
     },
@@ -252,6 +257,9 @@ export default {
     showPaginationControls() {
       return this.issues.length > 0;
     },
+    sortOptions() {
+      return getSortOptions(this.hasIssueWeightsFeature, this.hasBlockedIssuesFeature);
+    },
     tabCounts() {
       return Object.values(IssuableStates).reduce(
         (acc, state) => ({
@@ -346,6 +354,15 @@ export default {
     getExportCsvPathWithQuery() {
       return `${this.exportCsvPath}${window.location.search}`;
     },
+    getStatus(issue) {
+      if (issue.closedAt && issue.movedToId) {
+        return __('CLOSED (MOVED)');
+      }
+      if (issue.closedAt) {
+        return __('CLOSED');
+      }
+      return undefined;
+    },
     handleUpdateLegacyBulkEdit() {
       // If "select all" checkbox was checked, wait for all checkboxes
       // to be checked before updating IssuableBulkUpdateSidebar class
@@ -434,7 +451,7 @@ export default {
       :search-input-placeholder="__('Search or filter results…')"
       :search-tokens="searchTokens"
       :initial-filter-value="filterTokens"
-      :sort-options="$options.sortOptions"
+      :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :issuables="issues"
       :tabs="$options.IssuableListTabs"
@@ -472,13 +489,14 @@ export default {
           :aria-label="$options.i18n.calendarLabel"
         />
         <csv-import-export-buttons
+          v-if="isSignedIn"
           class="gl-mr-3"
           :export-csv-path="exportCsvPathWithQuery"
           :issuable-count="totalIssues"
         />
         <gl-button
           v-if="canBulkUpdate"
-          :disabled="showBulkEditSidebar"
+          :disabled="isBulkEditButtonDisabled"
           @click="handleBulkUpdateClick"
         >
           {{ __('Edit issues') }}
@@ -490,6 +508,10 @@ export default {
 
       <template #timeframe="{ issuable = {} }">
         <issue-card-time-info :issue="issuable" />
+      </template>
+
+      <template #status="{ issuable = {} }">
+        {{ getStatus(issuable) }}
       </template>
 
       <template #statistics="{ issuable = {} }">

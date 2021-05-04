@@ -109,7 +109,7 @@ module Grafana
       def from_ms_since_epoch(time)
         return if time.nil?
 
-        raise Error.new('Expected milliseconds since epoch') unless ms_since_epoch?(time)
+        raise Error, 'Expected milliseconds since epoch' unless ms_since_epoch?(time)
 
         new(cast_ms_to_time(time))
       end

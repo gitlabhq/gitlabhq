@@ -16,7 +16,7 @@ module Gitlab
       path_regex = /(\A(\.{1,2})\z|\A\.\.[\/\\]|[\/\\]\.\.\z|[\/\\]\.\.[\/\\]|\n)/
 
       if path.match?(path_regex)
-        raise PathTraversalAttackError.new('Invalid path')
+        raise PathTraversalAttackError, 'Invalid path'
       end
 
       path

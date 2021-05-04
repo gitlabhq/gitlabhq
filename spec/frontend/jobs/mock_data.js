@@ -1501,3 +1501,11 @@ export const mockJobsQueryResponse = {
     },
   },
 };
+
+export const mockJobsQueryEmptyResponse = {
+  data: {
+    project: {
+      jobs: [],
+    },
+  },
+};

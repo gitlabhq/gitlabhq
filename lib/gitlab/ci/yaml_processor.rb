@@ -141,7 +141,7 @@ module Gitlab
       end
 
       def error!(message)
-        raise ValidationError.new(message)
+        raise ValidationError, message
       end
     end
   end

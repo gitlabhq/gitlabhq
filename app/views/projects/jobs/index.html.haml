@@ -2,7 +2,7 @@
 - add_page_specific_style 'page_bundles/ci_status'
 
 - if Feature.enabled?(:jobs_table_vue, @project, default_enabled: :yaml)
-  #js-jobs-table{ data: { full_path: @project.full_path, job_counts: job_counts.to_json, job_statuses: job_statuses.to_json } }
+  #js-jobs-table{ data: { full_path: @project.full_path, job_counts: job_counts.to_json, job_statuses: job_statuses.to_json, pipeline_editor_path: project_ci_pipeline_editor_path(@project), empty_state_svg_path: image_path('jobs-empty-state.svg') } }
 - else
   .top-area
     - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }

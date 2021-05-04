@@ -65,7 +65,7 @@ Let's see how we can handle them safely.
 ### Route changes
 
 When changing routing we should pay attention to make sure a route generated from the new version can be served by the old one and vice versa.
-As you can see in [this page](#some-links-to-issues-and-mrs-were-broken), not doing it can lead to an outage.
+[As you can see](#some-links-to-issues-and-mrs-were-broken), not doing it can lead to an outage.
 This type of change may look like an immediate switch between the two implementations. However,
 especially with the canary stage, there is an extended period of time where both version of the code
 coexists in production.

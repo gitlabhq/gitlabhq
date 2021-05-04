@@ -15,10 +15,10 @@ import {
   PAGE_SIZE,
   PAGE_SIZE_MANUAL,
   RELATIVE_POSITION_ASC,
-  sortOptions,
   sortParams,
 } from '~/issues_list/constants';
 import eventHub from '~/issues_list/eventhub';
+import { getSortOptions } from '~/issues_list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
 
@@ -35,7 +35,9 @@ describe('IssuesListApp component', () => {
     emptyStateSvgPath: 'empty-state.svg',
     endpoint: 'api/endpoint',
     exportCsvPath: 'export/csv/path',
+    hasBlockedIssuesFeature: true,
     hasIssues: true,
+    hasIssueWeightsFeature: true,
     isSignedIn: false,
     issuesPath: 'path/to/issues',
     jiraIntegrationPath: 'jira/integration/path',
@@ -43,7 +45,6 @@ describe('IssuesListApp component', () => {
     projectLabelsPath: 'project/labels/path',
     projectPath: 'path/to/project',
     rssPath: 'rss/path',
-    showImportButton: true,
     showNewIssueLink: true,
     signInPath: 'sign/in/path',
   };
@@ -105,7 +106,7 @@ describe('IssuesListApp component', () => {
         namespace: defaultProvide.projectPath,
         recentSearchesStorageKey: 'issues',
         searchInputPlaceholder: 'Search or filter results…',
-        sortOptions,
+        sortOptions: getSortOptions(true, true),
         initialSortBy: CREATED_DESC,
         tabs: IssuableListTabs,
         currentTab: IssuableStates.Opened,
@@ -142,18 +143,33 @@ describe('IssuesListApp component', () => {
       });
     });
 
-    it('renders csv import/export component', async () => {
-      const search = '?page=1&search=refactor&state=opened&order_by=created_at&sort=desc';
+    describe('csv import/export component', () => {
+      describe('when user is signed in', () => {
+        it('renders', async () => {
+          const search = '?page=1&search=refactor&state=opened&order_by=created_at&sort=desc';
 
-      global.jsdom.reconfigure({ url: `${TEST_HOST}${search}` });
+          global.jsdom.reconfigure({ url: `${TEST_HOST}${search}` });
 
-      wrapper = mountComponent({ mountFn: mount });
+          wrapper = mountComponent({
+            provide: { ...defaultProvide, isSignedIn: true },
+            mountFn: mount,
+          });
 
-      await waitForPromises();
+          await waitForPromises();
 
-      expect(findCsvImportExportButtons().props()).toMatchObject({
-        exportCsvPath: `${defaultProvide.exportCsvPath}${search}`,
-        issuableCount: xTotal,
+          expect(findCsvImportExportButtons().props()).toMatchObject({
+            exportCsvPath: `${defaultProvide.exportCsvPath}${search}`,
+            issuableCount: xTotal,
+          });
+        });
+      });
+
+      describe('when user is not signed in', () => {
+        it('does not render', () => {
+          wrapper = mountComponent({ provide: { ...defaultProvide, isSignedIn: false } });
+
+          expect(findCsvImportExportButtons().exists()).toBe(false);
+        });
       });
     });
 
@@ -369,11 +385,11 @@ describe('IssuesListApp component', () => {
 
         it('shows Jira integration information', () => {
           const paragraphs = wrapper.findAll('p');
-          expect(paragraphs.at(2).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
-          expect(paragraphs.at(3).text()).toContain(
+          expect(paragraphs.at(1).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
+          expect(paragraphs.at(2).text()).toContain(
             'Enable the Jira integration to view your Jira issues in GitLab.',
           );
-          expect(paragraphs.at(4).text()).toContain(
+          expect(paragraphs.at(3).text()).toContain(
             IssuesListApp.i18n.jiraIntegrationSecondaryMessage,
           );
           expect(findGlLink().text()).toBe('Enable the Jira integration');

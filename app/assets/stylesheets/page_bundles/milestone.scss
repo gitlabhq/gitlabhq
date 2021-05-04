@@ -38,18 +38,6 @@ $status-box-line-height: 26px;
         color: var(--blue-600, $blue-600);
       }
     }
-
-    .status-box {
-      font-size: $tooltip-font-size;
-      margin-top: 0;
-      margin-right: $gl-padding-4;
-      line-height: $status-box-line-height;
-
-      @include media-breakpoint-down(xs) {
-        line-height: unset;
-        padding: $gl-padding-4 $gl-input-padding;
-      }
-    }
   }
 }
 
@@ -198,11 +186,6 @@ $status-box-line-height: 26px;
   flex-flow: row;
   align-items: center;
   flex-wrap: wrap;
-
-  .status-box {
-    margin-top: 0;
-    order: 1;
-  }
 
   .milestone-buttons {
     margin-left: auto;

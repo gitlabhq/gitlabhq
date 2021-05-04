@@ -6,7 +6,7 @@ module Gitlab
       module Stages
         class MetricEndpointInserter < BaseStage
           def transform!
-            raise Errors::DashboardProcessingError.new(_('Environment is required for Stages::MetricEndpointInserter')) unless params[:environment]
+            raise Errors::DashboardProcessingError, _('Environment is required for Stages::MetricEndpointInserter') unless params[:environment]
 
             for_metrics do |metric|
               metric[:prometheus_endpoint_path] = endpoint_for_metric(metric)
@@ -43,7 +43,7 @@ module Gitlab
           def query_for_metric(metric)
             query = metric[query_type(metric)]
 
-            raise Errors::MissingQueryError.new('Each "metric" must define one of :query or :query_range') unless query
+            raise Errors::MissingQueryError, 'Each "metric" must define one of :query or :query_range' unless query
 
             # We need to remove any newlines since our UrlBlocker does not allow
             # multiline URLs.

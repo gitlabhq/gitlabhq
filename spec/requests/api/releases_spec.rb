@@ -18,7 +18,7 @@ RSpec.describe API::Releases do
     project.add_developer(developer)
   end
 
-  describe 'GET /projects/:id/releases' do
+  describe 'GET /projects/:id/releases', :use_clean_rails_redis_caching do
     context 'when there are two releases' do
       let!(:release_1) do
         create(:release,
@@ -147,6 +147,60 @@ RSpec.describe API::Releases do
       end.not_to exceed_all_query_limit(control_count)
     end
 
+    it 'serializes releases for the first time and read cached data from the second time' do
+      create_list(:release, 2, project: project)
+
+      expect(API::Entities::Release)
+        .to receive(:represent).with(instance_of(Release), any_args)
+        .twice
+
+      5.times { get api("/projects/#{project.id}/releases", maintainer) }
+    end
+
+    it 'increments the cache key when link is updated' do
+      releases = create_list(:release, 2, project: project)
+
+      expect(API::Entities::Release)
+        .to receive(:represent).with(instance_of(Release), any_args)
+        .exactly(4).times
+
+      2.times { get api("/projects/#{project.id}/releases", maintainer) }
+
+      releases.each { |release| create(:release_link, release: release) }
+
+      3.times { get api("/projects/#{project.id}/releases", maintainer) }
+    end
+
+    it 'increments the cache key when evidence is updated' do
+      releases = create_list(:release, 2, project: project)
+
+      expect(API::Entities::Release)
+        .to receive(:represent).with(instance_of(Release), any_args)
+        .exactly(4).times
+
+      2.times { get api("/projects/#{project.id}/releases", maintainer) }
+
+      releases.each { |release| create(:evidence, release: release) }
+
+      3.times { get api("/projects/#{project.id}/releases", maintainer) }
+    end
+
+    context 'when api_caching_releases feature flag is disabled' do
+      before do
+        stub_feature_flags(api_caching_releases: false)
+      end
+
+      it 'serializes releases everytime' do
+        create_list(:release, 2, project: project)
+
+        expect(API::Entities::Release)
+          .to receive(:represent).with(kind_of(ActiveRecord::Relation), any_args)
+          .exactly(5).times
+
+        5.times { get api("/projects/#{project.id}/releases", maintainer) }
+      end
+    end
+
     context 'when tag does not exist in git repository' do
       let!(:release) { create(:release, project: project, tag: 'v1.1.5') }
 
@@ -228,6 +282,20 @@ RSpec.describe API::Releases do
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+      end
+    end
+
+    context 'when releases are public and request user is absent' do
+      let(:project) { create(:project, :repository, :public) }
+
+      it 'returns the releases' do
+        create(:release, project: project, tag: 'v0.1')
+
+        get api("/projects/#{project.id}/releases")
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.count).to eq(1)
+        expect(json_response.first['tag_name']).to eq('v0.1')
       end
     end
   end

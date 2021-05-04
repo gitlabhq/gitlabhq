@@ -94,7 +94,7 @@ RSpec.describe MergeRequests::MergeToRefService do
 
     it 'returns an error when Gitlab::Git::CommandError is raised during merge' do
       allow(project.repository).to receive(:merge_to_ref) do
-        raise Gitlab::Git::CommandError.new('Failed to create merge commit')
+        raise Gitlab::Git::CommandError, 'Failed to create merge commit'
       end
 
       result = service.execute(merge_request)

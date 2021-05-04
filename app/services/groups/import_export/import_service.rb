@@ -114,7 +114,7 @@ module Groups
       def notify_error!
         notify_error
 
-        raise Gitlab::ImportExport::Error.new(shared.errors.to_sentence)
+        raise Gitlab::ImportExport::Error, shared.errors.to_sentence
       end
 
       def remove_base_tmp_dir

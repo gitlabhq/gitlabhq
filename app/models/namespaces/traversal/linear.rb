@@ -85,7 +85,7 @@ module Namespaces
 
       # Search this namespace's lineage. Bound inclusively by top node.
       def lineage(top)
-        raise UnboundedSearch.new('Must bound search by a top') unless top
+        raise UnboundedSearch, 'Must bound search by a top' unless top
 
         without_sti_condition
           .traversal_ids_contains("{#{top.id}}")

@@ -12,7 +12,7 @@ module Packages
       end
 
       def execute
-        raise ExtractionError.new('invalid package file') unless valid_package_file?
+        raise ExtractionError, 'invalid package file' unless valid_package_file?
 
         extract_metadata
       end

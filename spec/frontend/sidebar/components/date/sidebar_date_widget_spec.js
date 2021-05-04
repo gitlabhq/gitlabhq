@@ -1,3 +1,4 @@
+import { GlDatepicker } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -23,6 +24,7 @@ describe('Sidebar date Widget', () => {
 
   const findEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findPopoverIcon = () => wrapper.find('[data-testid="inherit-date-popover"]');
+  const findDatePicker = () => wrapper.find(GlDatepicker);
 
   const createComponent = ({
     dueDateQueryHandler = jest.fn().mockResolvedValue(issuableDueDateResponse()),
@@ -50,6 +52,7 @@ describe('Sidebar date Widget', () => {
       },
       stubs: {
         SidebarEditableItem,
+        GlDatepicker,
       },
     });
   };
@@ -108,6 +111,11 @@ describe('Sidebar date Widget', () => {
 
     it('emits `dueDateUpdated` event with the date payload', () => {
       expect(wrapper.emitted('dueDateUpdated')).toEqual([[date]]);
+    });
+
+    it('uses a correct prop to set the initial date for GlDatePicker', () => {
+      expect(findDatePicker().props('value')).toBe(null);
+      expect(findDatePicker().props('defaultDate')).toEqual(wrapper.vm.parsedDate);
     });
   });
 

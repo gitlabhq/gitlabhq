@@ -21,7 +21,7 @@ module Gitlab
         if import_file && check_version! && restorers.all?(&:restore) && overwrite_project
           project
         else
-          raise Projects::ImportService::Error.new(shared.errors.to_sentence)
+          raise Projects::ImportService::Error, shared.errors.to_sentence
         end
       rescue StandardError => e
         # If some exception was raised could mean that the SnippetsRepoRestorer
@@ -29,7 +29,7 @@ module Gitlab
         # This is a state we don't want them to be, so we better delete them.
         remove_non_migrated_snippets
 
-        raise Projects::ImportService::Error.new(e.message)
+        raise Projects::ImportService::Error, e.message
       ensure
         remove_base_tmp_dir
         remove_import_file

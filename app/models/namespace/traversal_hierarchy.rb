@@ -20,7 +20,7 @@ class Namespace
     end
 
     def initialize(root)
-      raise StandardError.new('Must specify a root node') if root.parent_id
+      raise StandardError, 'Must specify a root node' if root.parent_id
 
       @root = root
     end

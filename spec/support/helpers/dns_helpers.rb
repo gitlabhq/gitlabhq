@@ -18,7 +18,7 @@ module DnsHelpers
 
   def stub_invalid_dns!
     allow(Addrinfo).to receive(:getaddrinfo).with(/\Afoobar\.\w|(\d{1,3}\.){4,}\d{1,3}\z/i, anything, nil, :STREAM) do
-      raise SocketError.new("getaddrinfo: Name or service not known")
+      raise SocketError, "getaddrinfo: Name or service not known"
     end
   end
 

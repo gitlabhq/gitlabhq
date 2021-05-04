@@ -32,8 +32,8 @@ module Gitlab
     def rotate!(old_key:, new_key:)
       old_key ||= Gitlab::Application.secrets.otp_key_base
 
-      raise ArgumentError.new("Old key is the same as the new key") if old_key == new_key
-      raise ArgumentError.new("New key is too short! Must be 256 bits") if new_key.size < 64
+      raise ArgumentError, "Old key is the same as the new key" if old_key == new_key
+      raise ArgumentError, "New key is too short! Must be 256 bits" if new_key.size < 64
 
       write_csv do |csv|
         ActiveRecord::Base.transaction do

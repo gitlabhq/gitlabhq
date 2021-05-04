@@ -26,13 +26,9 @@ module Gitlab
         if matches.one?
           matches.first
         elsif matches.none?
-          raise UnknownProcessError.new(
-            "Failed to identify runtime for process #{Process.pid} (#{$0})"
-          )
+          raise UnknownProcessError, "Failed to identify runtime for process #{Process.pid} (#{$0})"
         else
-          raise AmbiguousProcessError.new(
-            "Ambiguous runtime #{matches} for process #{Process.pid} (#{$0})"
-          )
+          raise AmbiguousProcessError, "Ambiguous runtime #{matches} for process #{Process.pid} (#{$0})"
         end
       end
 

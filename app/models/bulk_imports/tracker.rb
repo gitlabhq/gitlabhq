@@ -35,7 +35,7 @@ class BulkImports::Tracker < ApplicationRecord
 
   def pipeline_class
     unless BulkImports::Stage.pipeline_exists?(pipeline_name)
-      raise NameError.new("'#{pipeline_name}' is not a valid BulkImport Pipeline")
+      raise NameError, "'#{pipeline_name}' is not a valid BulkImport Pipeline"
     end
 
     pipeline_name.constantize

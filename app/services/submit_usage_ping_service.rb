@@ -22,7 +22,7 @@ class SubmitUsagePingService
 
     usage_data = Gitlab::UsageData.data(force_refresh: true)
 
-    raise SubmissionError.new('Usage data is blank') if usage_data.blank?
+    raise SubmissionError, 'Usage data is blank' if usage_data.blank?
 
     raw_usage_data = save_raw_usage_data(usage_data)
 
@@ -33,12 +33,12 @@ class SubmitUsagePingService
       headers: { 'Content-type' => 'application/json' }
     )
 
-    raise SubmissionError.new("Unsuccessful response code: #{response.code}") unless response.success?
+    raise SubmissionError, "Unsuccessful response code: #{response.code}" unless response.success?
 
     version_usage_data_id = response.dig('conv_index', 'usage_data_id') || response.dig('dev_ops_score', 'usage_data_id')
 
     unless version_usage_data_id.is_a?(Integer) && version_usage_data_id > 0
-      raise SubmissionError.new("Invalid usage_data_id in response: #{version_usage_data_id}")
+      raise SubmissionError, "Invalid usage_data_id in response: #{version_usage_data_id}"
     end
 
     raw_usage_data.update_version_metadata!(usage_data_id: version_usage_data_id)

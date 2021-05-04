@@ -20,7 +20,7 @@ module Gitlab
         service = ::Labels::FindOrCreateService.new(nil, project, params)
         label   = service.execute(skip_authorization: true)
 
-        raise ActiveRecord::RecordInvalid.new(label) unless label.persisted?
+        raise ActiveRecord::RecordInvalid, label unless label.persisted?
 
         label
       end

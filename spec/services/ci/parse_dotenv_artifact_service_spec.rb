@@ -25,7 +25,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
 
       context 'when parse error happens' do
         before do
-          allow(service).to receive(:scan_line!) { raise described_class::ParserError.new('Invalid Format') }
+          allow(service).to receive(:scan_line!) { raise described_class::ParserError, 'Invalid Format' }
         end
 
         it 'returns error' do

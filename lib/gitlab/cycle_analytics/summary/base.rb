@@ -11,11 +11,11 @@ module Gitlab
         end
 
         def title
-          raise NotImplementedError.new("Expected #{self.name} to implement title")
+          raise NotImplementedError, "Expected #{self.name} to implement title"
         end
 
         def value
-          raise NotImplementedError.new("Expected #{self.name} to implement value")
+          raise NotImplementedError, "Expected #{self.name} to implement value"
         end
       end
     end

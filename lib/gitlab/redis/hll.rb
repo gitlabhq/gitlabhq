@@ -46,7 +46,7 @@ module Gitlab
       def validate_key!(key)
         return if KEY_REGEX.match?(key)
 
-        raise KeyFormatError.new("Invalid key format. #{key} key should have changeable parts in curly braces. See https://docs.gitlab.com/ee/development/redis.html#multi-key-commands")
+        raise KeyFormatError, "Invalid key format. #{key} key should have changeable parts in curly braces. See https://docs.gitlab.com/ee/development/redis.html#multi-key-commands"
       end
     end
   end

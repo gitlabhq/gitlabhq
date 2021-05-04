@@ -43,12 +43,12 @@ module Gitlab
             instance_method_defined?(parent, method_name)
           end
 
-          raise NotImplementedError.new("#{klass}\##{method_name} doesn't exist!") unless overridden_parent
+          raise NotImplementedError, "#{klass}\##{method_name} doesn't exist!" unless overridden_parent
 
           super_method_arity = find_direct_method(overridden_parent, method_name).arity
 
           unless arity_compatible?(sub_method_arity, super_method_arity)
-            raise NotImplementedError.new("#{subject}\##{method_name} has arity of #{sub_method_arity}, but #{overridden_parent}\##{method_name} has arity of #{super_method_arity}")
+            raise NotImplementedError, "#{subject}\##{method_name} has arity of #{sub_method_arity}, but #{overridden_parent}\##{method_name} has arity of #{super_method_arity}"
           end
         end
 

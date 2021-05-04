@@ -174,7 +174,7 @@ module Projects
     end
 
     def raise_error(message)
-      raise DestroyError.new(message)
+      raise DestroyError, message
     end
 
     def flush_caches(project)

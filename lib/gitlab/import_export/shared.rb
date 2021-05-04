@@ -90,7 +90,7 @@ module Gitlab
         when 'Group'
           @exportable.full_path
         else
-          raise Gitlab::ImportExport::Error.new("Unsupported Exportable Type #{@exportable&.class}")
+          raise Gitlab::ImportExport::Error, "Unsupported Exportable Type #{@exportable&.class}"
         end
       end
 

@@ -9,7 +9,7 @@ module Todos
 
       def initialize(user_id, entity_id, entity_type)
         unless %w(Group Project).include?(entity_type)
-          raise ArgumentError.new("#{entity_type} is not an entity user can leave")
+          raise ArgumentError, "#{entity_type} is not an entity user can leave"
         end
 
         @user = UserFinder.new(user_id).find_by_id

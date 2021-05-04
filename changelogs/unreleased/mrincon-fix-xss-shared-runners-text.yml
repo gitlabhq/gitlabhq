@@ -1,0 +1,5 @@
+---
+title: Fix XSS vulnerability in shared runner description
+merge_request: 60891
+author:
+type: security

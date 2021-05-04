@@ -18,7 +18,7 @@ module Gitlab
 
           response
         rescue JSON::JSONError => e
-          raise ResponseError.new(e)
+          raise ResponseError, e
         end
 
         def initialize(json)

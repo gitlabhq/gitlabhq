@@ -94,7 +94,7 @@ module Gitlab
         elsif column.is_a?(Arel::Attributes::Attribute)
           column
         else
-          raise ColumnConfigurationError.new("Cannot transform the column: #{column.inspect}, please provide the column name as string")
+          raise ColumnConfigurationError, "Cannot transform the column: #{column.inspect}, please provide the column name as string"
         end
       end
     end

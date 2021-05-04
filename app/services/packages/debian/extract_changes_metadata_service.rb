@@ -20,7 +20,7 @@ module Packages
           files: files
         }
       rescue ActiveModel::ValidationError => e
-        raise ExtractionError.new(e.message)
+        raise ExtractionError, e.message
       end
 
       private
@@ -41,10 +41,10 @@ module Packages
 
       def files
         strong_memoize(:files) do
-          raise ExtractionError.new("is not a changes file") unless file_type == :changes
-          raise ExtractionError.new("Files field is missing") if fields['Files'].blank?
-          raise ExtractionError.new("Checksums-Sha1 field is missing") if fields['Checksums-Sha1'].blank?
-          raise ExtractionError.new("Checksums-Sha256 field is missing") if fields['Checksums-Sha256'].blank?
+          raise ExtractionError, "is not a changes file" unless file_type == :changes
+          raise ExtractionError, "Files field is missing" if fields['Files'].blank?
+          raise ExtractionError, "Checksums-Sha1 field is missing" if fields['Checksums-Sha1'].blank?
+          raise ExtractionError, "Checksums-Sha256 field is missing" if fields['Checksums-Sha256'].blank?
 
           init_entries_from_files
           entries_from_checksums_sha1
@@ -73,8 +73,8 @@ module Packages
         each_lines_for('Checksums-Sha1') do |line|
           sha1sum, size, filename = line.split
           entry = @entries[filename]
-          raise ExtractionError.new("#{filename} is listed in Checksums-Sha1 but not in Files") unless entry
-          raise ExtractionError.new("Size for #{filename} in Files and Checksums-Sha1 differ") unless entry.size == size.to_i
+          raise ExtractionError, "#{filename} is listed in Checksums-Sha1 but not in Files" unless entry
+          raise ExtractionError, "Size for #{filename} in Files and Checksums-Sha1 differ" unless entry.size == size.to_i
 
           entry.sha1sum = sha1sum
         end
@@ -84,8 +84,8 @@ module Packages
         each_lines_for('Checksums-Sha256') do |line|
           sha256sum, size, filename = line.split
           entry = @entries[filename]
-          raise ExtractionError.new("#{filename} is listed in Checksums-Sha256 but not in Files") unless entry
-          raise ExtractionError.new("Size for #{filename} in Files and Checksums-Sha256 differ") unless entry.size == size.to_i
+          raise ExtractionError, "#{filename} is listed in Checksums-Sha256 but not in Files" unless entry
+          raise ExtractionError, "Size for #{filename} in Files and Checksums-Sha256 differ" unless entry.size == size.to_i
 
           entry.sha256sum = sha256sum
         end
@@ -104,7 +104,7 @@ module Packages
           entry.package_file = ::Packages::PackageFileFinder.new(@package_file.package, filename).execute!
           entry.validate!
         rescue ActiveRecord::RecordNotFound
-          raise ExtractionError.new("#{filename} is listed in Files but was not uploaded")
+          raise ExtractionError, "#{filename} is listed in Files but was not uploaded"
         end
       end
     end

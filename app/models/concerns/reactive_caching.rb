@@ -168,7 +168,7 @@ module ReactiveCaching
 
       data_deep_size = Gitlab::Utils::DeepSize.new(data, max_size: self.class.reactive_cache_hard_limit)
 
-      raise ExceededReactiveCacheLimit.new unless data_deep_size.valid?
+      raise ExceededReactiveCacheLimit unless data_deep_size.valid?
     end
   end
 end

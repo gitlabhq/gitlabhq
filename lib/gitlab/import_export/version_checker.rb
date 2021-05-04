@@ -27,7 +27,7 @@ module Gitlab
 
       def verify_version!(version)
         if different_version?(version)
-          raise Gitlab::ImportExport::Error.new("Import version mismatch: Required #{Gitlab::ImportExport.version} but was #{version}")
+          raise Gitlab::ImportExport::Error, "Import version mismatch: Required #{Gitlab::ImportExport.version} but was #{version}"
         else
           true
         end
@@ -41,7 +41,7 @@ module Gitlab
           error: e.message
         )
 
-        raise Gitlab::ImportExport::Error.new('Incorrect VERSION format')
+        raise Gitlab::ImportExport::Error, 'Incorrect VERSION format'
       end
     end
   end

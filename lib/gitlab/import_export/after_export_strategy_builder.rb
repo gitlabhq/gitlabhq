@@ -12,7 +12,7 @@ module Gitlab
         klass = strategy_klass.constantize rescue nil
 
         unless klass && klass < AfterExportStrategies::BaseAfterExportStrategy
-          raise StrategyNotFoundError.new("Strategy #{strategy_klass} not found")
+          raise StrategyNotFoundError, "Strategy #{strategy_klass} not found"
         end
 
         klass.new(**attributes.symbolize_keys)

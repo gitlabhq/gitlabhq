@@ -51,7 +51,7 @@ module Gitlab
       def predicate_for_term(term)
         match = term.match(QUERY_TERM_REGEX)
 
-        raise InvalidTerm.new("Invalid term: #{term}") unless match
+        raise InvalidTerm, "Invalid term: #{term}" unless match
 
         _, lhs, op, rhs = *match
 
@@ -67,14 +67,14 @@ module Gitlab
         else
           # This is unreachable because InvalidTerm will be raised instead, but
           # keeping it allows to guard against that changing in future.
-          raise UnknownOperator.new("Unknown operator: #{op}")
+          raise UnknownOperator, "Unknown operator: #{op}"
         end
       end
 
       def predicate_factory(lhs, values)
         values_block = QUERY_PREDICATES[lhs.to_sym]
 
-        raise UnknownPredicate.new("Unknown predicate: #{lhs}") unless values_block
+        raise UnknownPredicate, "Unknown predicate: #{lhs}" unless values_block
 
         lambda do |queue|
           comparator = Array(queue[lhs.to_sym]).to_set

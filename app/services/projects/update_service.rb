@@ -49,11 +49,11 @@ module Projects
 
     def validate!
       unless valid_visibility_level_change?(project, params[:visibility_level])
-        raise ValidationError.new(s_('UpdateProject|New visibility level not allowed!'))
+        raise ValidationError, s_('UpdateProject|New visibility level not allowed!')
       end
 
       if renaming_project_with_container_registry_tags?
-        raise ValidationError.new(s_('UpdateProject|Cannot rename project because it contains container registry tags!'))
+        raise ValidationError, s_('UpdateProject|Cannot rename project because it contains container registry tags!')
       end
 
       validate_default_branch_change
@@ -67,7 +67,7 @@ module Projects
       if project.change_head(params[:default_branch])
         after_default_branch_change(previous_default_branch)
       else
-        raise ValidationError.new(s_("UpdateProject|Could not set the default branch"))
+        raise ValidationError, s_("UpdateProject|Could not set the default branch")
       end
     end
 

@@ -14,7 +14,7 @@ module Clusters
       end
 
       def execute
-        raise MissingRoleError.new('AWS provisioning role not configured') unless provision_role.present?
+        raise MissingRoleError, 'AWS provisioning role not configured' unless provision_role.present?
 
         ::Aws::AssumeRoleCredentials.new(
           client: client,

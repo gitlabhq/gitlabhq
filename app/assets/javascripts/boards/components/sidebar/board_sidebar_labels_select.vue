@@ -77,7 +77,12 @@ export default {
 </script>
 
 <template>
-  <board-editable-item ref="sidebarItem" :title="__('Labels')" :loading="loading">
+  <board-editable-item
+    ref="sidebarItem"
+    :title="__('Labels')"
+    :loading="loading"
+    data-testid="sidebar-labels"
+  >
     <template #collapsed>
       <gl-label
         v-for="label in issueLabels"

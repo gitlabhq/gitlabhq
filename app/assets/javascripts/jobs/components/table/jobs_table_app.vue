@@ -3,6 +3,7 @@ import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import { __ } from '~/locale';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
 import JobsTable from './jobs_table.vue';
+import JobsTableEmptyState from './jobs_table_empty_state.vue';
 import JobsTableTabs from './jobs_table_tabs.vue';
 
 export default {
@@ -13,6 +14,7 @@ export default {
     GlAlert,
     GlSkeletonLoader,
     JobsTable,
+    JobsTableEmptyState,
     JobsTableTabs,
   },
   inject: {
@@ -41,15 +43,21 @@ export default {
       jobs: null,
       hasError: false,
       isAlertDismissed: false,
+      scope: null,
     };
   },
   computed: {
     shouldShowAlert() {
       return this.hasError && !this.isAlertDismissed;
     },
+    showEmptyState() {
+      return this.jobs.length === 0 && !this.scope;
+    },
   },
   methods: {
     fetchJobsByStatus(scope) {
+      this.scope = scope;
+
       this.$apollo.queries.jobs.refetch({ statuses: scope });
     },
   },
@@ -79,6 +87,8 @@ export default {
         :height="66"
       />
     </div>
+
+    <jobs-table-empty-state v-else-if="showEmptyState" />
 
     <jobs-table v-else :jobs="jobs" />
   </div>

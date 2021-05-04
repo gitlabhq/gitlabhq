@@ -14,7 +14,7 @@ module Gitlab
     # descendants_base - An instance of ActiveRecord::Relation for which to
     #                    get child objects. If omitted, ancestors_base is used.
     def initialize(ancestors_base, descendants_base = ancestors_base, options: {})
-      raise ArgumentError.new("Model of ancestors_base does not match model of descendants_base") if ancestors_base.model != descendants_base.model
+      raise ArgumentError, "Model of ancestors_base does not match model of descendants_base" if ancestors_base.model != descendants_base.model
 
       @ancestors_base = ancestors_base
       @descendants_base = descendants_base

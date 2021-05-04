@@ -453,5 +453,31 @@ describe('IssuableItem', () => {
       expect(updatedAtEl.find('span').attributes('title')).toBe('Sep 10, 2020 11:41am GMT+0000');
       expect(updatedAtEl.text()).toBe(wrapper.vm.updatedAt);
     });
+
+    describe('when issuable is closed', () => {
+      it('renders issuable card with a closed style', () => {
+        wrapper = createComponent({ issuable: { ...mockIssuable, closedAt: '2020-12-10' } });
+
+        expect(wrapper.classes()).toContain('closed');
+      });
+    });
+
+    describe('when issuable was created within the past 24 hours', () => {
+      it('renders issuable card with a recently-created style', () => {
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, createdAt: '2020-12-10T12:34:56' },
+        });
+
+        expect(wrapper.classes()).toContain('today');
+      });
+    });
+
+    describe('when issuable was created earlier than the past 24 hours', () => {
+      it('renders issuable card without a recently-created style', () => {
+        wrapper = createComponent({ issuable: { ...mockIssuable, createdAt: '2020-12-09' } });
+
+        expect(wrapper.classes()).not.toContain('today');
+      });
+    });
   });
 });

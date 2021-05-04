@@ -31,7 +31,7 @@ Cloudwatch exporter retrieves and parses the specified Cloudwatch metrics, and
 translates them into a Prometheus monitoring endpoint.
 
 The only supported AWS resource is the Elastic Load Balancer, whose Cloudwatch
-metrics are [documented here](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-cloudwatch-metrics.html).
+metrics are listed in [this AWS documentation](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-cloudwatch-metrics.html).
 
 You can [download a sample Cloudwatch Exporter configuration file](../samples/cloudwatch.yml)
 that's configured for basic AWS ELB monitoring.

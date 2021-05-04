@@ -820,14 +820,6 @@ Style/NumericLiteralPrefix:
 Style/PercentLiteralDelimiters:
   Enabled: false
 
-# Offense count: 247
-# Cop supports --auto-correct.
-# Configuration parameters: .
-# SupportedStyles: compact, exploded
-Style/RaiseArgs:
-  Enabled: false
-  EnforcedStyle: exploded
-
 # Offense count: 26
 # Cop supports --auto-correct.
 # Configuration parameters: SafeForConstants.

@@ -178,7 +178,7 @@ RSpec.describe Ci::PipelineSchedule do
 
     context 'when record is invalid' do
       before do
-        allow(pipeline_schedule).to receive(:save!) { raise ActiveRecord::RecordInvalid.new(pipeline_schedule) }
+        allow(pipeline_schedule).to receive(:save!) { raise ActiveRecord::RecordInvalid, pipeline_schedule }
       end
 
       it 'nullifies the next run at' do

@@ -82,20 +82,20 @@ describe('Merge Conflict Resolver App', () => {
         const interactiveButton = findFileInteractiveButton(findFiles().at(0));
         const inlineButton = findFileInlineButton(findFiles().at(0));
 
-        expect(interactiveButton.classes('active')).toBe(true);
-        expect(inlineButton.classes('active')).toBe(false);
+        expect(interactiveButton.props('selected')).toBe(true);
+        expect(inlineButton.props('selected')).toBe(false);
       });
 
       it('clicking inline set inline as default', async () => {
         mountComponent();
 
         const inlineButton = findFileInlineButton(findFiles().at(0));
-        expect(inlineButton.classes('active')).toBe(false);
+        expect(inlineButton.props('selected')).toBe(false);
 
-        inlineButton.trigger('click');
+        inlineButton.vm.$emit('click');
         await wrapper.vm.$nextTick();
 
-        expect(inlineButton.classes('active')).toBe(true);
+        expect(inlineButton.props('selected')).toBe(true);
       });
 
       it('inline mode shows a inline-conflict-lines', () => {
@@ -110,7 +110,7 @@ describe('Merge Conflict Resolver App', () => {
       it('parallel mode shows a parallel-conflict-lines', async () => {
         mountComponent();
 
-        findSideBySideButton().trigger('click');
+        findSideBySideButton().vm.$emit('click');
         await wrapper.vm.$nextTick();
 
         const parallelConflictLinesComponent = findParallelConflictLines(findFiles().at(0));

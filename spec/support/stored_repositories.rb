@@ -3,7 +3,7 @@
 RSpec.configure do |config|
   config.before(:each, :broken_storage) do
     allow(Gitlab::GitalyClient).to receive(:call) do
-      raise GRPC::Unavailable.new('Gitaly broken in this spec')
+      raise GRPC::Unavailable, 'Gitaly broken in this spec'
     end
   end
 end

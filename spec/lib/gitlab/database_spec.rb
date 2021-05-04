@@ -176,7 +176,7 @@ RSpec.describe Gitlab::Database do
 
           closed_pool = pool
 
-          raise error.new('boom')
+          raise error, 'boom'
         end
       rescue error
       end

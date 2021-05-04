@@ -232,8 +232,8 @@ module Gitlab
 
         # Compose the key in order to store events daily or weekly
         def redis_key(event, time, context = '')
-          raise UnknownEvent.new("Unknown event #{event[:name]}") unless known_events_names.include?(event[:name].to_s)
-          raise UnknownAggregation.new("Use :daily or :weekly aggregation") unless ALLOWED_AGGREGATIONS.include?(event[:aggregation].to_sym)
+          raise UnknownEvent, "Unknown event #{event[:name]}" unless known_events_names.include?(event[:name].to_s)
+          raise UnknownAggregation, "Use :daily or :weekly aggregation" unless ALLOWED_AGGREGATIONS.include?(event[:aggregation].to_sym)
 
           key = apply_slot(event)
           key = apply_time_aggregation(key, time, event)

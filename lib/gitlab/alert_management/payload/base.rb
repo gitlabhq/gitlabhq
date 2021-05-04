@@ -193,7 +193,7 @@ module Gitlab
 
         def parse_time(value)
           Time.parse(value).utc
-        rescue ArgumentError
+        rescue ArgumentError, TypeError
         end
 
         def parse_integer(value)

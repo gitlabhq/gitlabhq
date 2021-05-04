@@ -62,8 +62,7 @@ must disable the **primary** node.
 
 - If you do not have SSH access to the **primary** node, take the machine offline and
   prevent it from rebooting by any means at your disposal.
-  Since there are many ways you may prefer to accomplish this, we will avoid a
-  single recommendation. You may need to:
+  You might need to:
 
   - Reconfigure the load balancers.
   - Change DNS records (for example, point the primary DNS record to the
@@ -240,11 +239,11 @@ an external PostgreSQL database, as it can only perform changes on a **secondary
 node with GitLab and the database on the same machine. As a result, a manual process is
 required:
 
-1. Promote the replica database associated with the **secondary** site. This will
-   set the database to read-write. The instructions vary depending on where your database is hosted:
+1. Promote the replica database associated with the **secondary** site. This
+   sets the database to read-write. The instructions vary depending on where your database is hosted:
    - [Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.Promote)
    - [Azure PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/howto-read-replicas-portal#stop-replication)
-   - For other external PostgreSQL databases, save the following script in you
+   - For other external PostgreSQL databases, save the following script in your
      secondary node, for example `/tmp/geo_promote.sh`, and modify the connection
      parameters to match your environment. Then, execute it to promote the replica:
 
@@ -292,7 +291,7 @@ required:
 ### Step 4. (Optional) Updating the primary domain DNS record
 
 Updating the DNS records for the primary domain to point to the **secondary** node
-will prevent the need to update all references to the primary domain to the
+to prevent the need to update all references to the primary domain to the
 secondary domain, like changing Git remotes and API URLs.
 
 1. SSH into the **secondary** node and login as root:
@@ -311,7 +310,7 @@ secondary domain, like changing Git remotes and API URLs.
    ```
 
    NOTE:
-   Changing `external_url` won't prevent access via the old secondary URL, as
+   Changing `external_url` does not prevent access via the old secondary URL, as
    long as the secondary DNS records are still intact.
 
 1. Reconfigure the **secondary** node for the change to take effect:
@@ -326,7 +325,7 @@ secondary domain, like changing Git remotes and API URLs.
    gitlab-rake geo:update_primary_node_url
    ```
 
-   This command will use the changed `external_url` configuration defined
+   This command uses the changed `external_url` configuration defined
    in `/etc/gitlab/gitlab.rb`.
 
 1. For GitLab 11.11 through 12.7 only, you may need to update the **primary**
@@ -334,7 +333,7 @@ secondary domain, like changing Git remotes and API URLs.
 
    To determine if you need to do this, search for the
    `gitlab_rails["geo_node_name"]` setting in your `/etc/gitlab/gitlab.rb`
-   file. If it is commented out with `#` or not found at all, then you will
+   file. If it is commented out with `#` or not found at all, then you
    need to update the **primary** node's name in the database. You can search for it
    like so:
 
@@ -444,7 +443,7 @@ and after that you also need two extra steps.
 
 Now we need to make each **secondary** node listen to changes on the new **primary** node. To do that you need
 to [initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process) again but this time
-for another **primary** node. All the old replication settings will be overwritten.
+for another **primary** node. All the old replication settings are overwritten.
 
 ## Promoting a secondary Geo cluster in GitLab Cloud Native Helm Charts
 
@@ -479,8 +478,7 @@ must disable the **primary** site:
 
 - If you do not have access to the **primary** Kubernetes cluster, take the cluster offline and
   prevent it from coming back online by any means at your disposal.
-  Since there are many ways you may prefer to accomplish this, we will avoid a
-  single recommendation. You may need to:
+  You might need to:
 
   - Reconfigure the load balancers.
   - Change DNS records (for example, point the primary DNS record to the

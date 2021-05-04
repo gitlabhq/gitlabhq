@@ -30,7 +30,7 @@ module Gitlab
             ActiveSupport::JSON.decode(IO.read(@path))
           rescue StandardError => e
             Gitlab::ErrorTracking.log_exception(e)
-            raise Gitlab::ImportExport::Error.new('Incorrect JSON format')
+            raise Gitlab::ImportExport::Error, 'Incorrect JSON format'
           end
         end
 

@@ -292,7 +292,7 @@ module Gitlab
       end
 
       def invalid_ref!(message)
-        raise Gitlab::Git::Repository::InvalidRef.new(message)
+        raise Gitlab::Git::Repository::InvalidRef, message
       end
     end
   end

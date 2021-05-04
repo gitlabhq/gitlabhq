@@ -57,7 +57,7 @@ module Gitlab
       def decompress_archive
         result = untar_zxf(archive: @archive_file, dir: @shared.export_path)
 
-        raise ImporterError.new("Unable to decompress #{@archive_file} into #{@shared.export_path}") unless result
+        raise ImporterError, "Unable to decompress #{@archive_file} into #{@shared.export_path}" unless result
 
         result
       end
@@ -87,7 +87,7 @@ module Gitlab
       end
 
       def validate_decompressed_archive_size
-        raise ImporterError.new(_('Decompressed archive size validation failed.')) unless size_validator.valid?
+        raise ImporterError, _('Decompressed archive size validation failed.') unless size_validator.valid?
       end
 
       def size_validator

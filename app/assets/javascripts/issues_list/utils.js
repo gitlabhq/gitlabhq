@@ -1,9 +1,126 @@
-import { FILTERED_SEARCH_TERM, filters, sortParams } from '~/issues_list/constants';
+import {
+  BLOCKING_ISSUES_ASC,
+  BLOCKING_ISSUES_DESC,
+  CREATED_ASC,
+  CREATED_DESC,
+  DUE_DATE_ASC,
+  DUE_DATE_DESC,
+  FILTERED_SEARCH_TERM,
+  filters,
+  LABEL_PRIORITY_ASC,
+  LABEL_PRIORITY_DESC,
+  MILESTONE_DUE_ASC,
+  MILESTONE_DUE_DESC,
+  POPULARITY_ASC,
+  POPULARITY_DESC,
+  PRIORITY_ASC,
+  PRIORITY_DESC,
+  RELATIVE_POSITION_ASC,
+  sortParams,
+  UPDATED_ASC,
+  UPDATED_DESC,
+  WEIGHT_ASC,
+  WEIGHT_DESC,
+} from '~/issues_list/constants';
+import { __ } from '~/locale';
 
 export const getSortKey = (orderBy, sort) =>
   Object.keys(sortParams).find(
     (key) => sortParams[key].order_by === orderBy && sortParams[key].sort === sort,
   );
+
+export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) => {
+  const sortOptions = [
+    {
+      id: 1,
+      title: __('Priority'),
+      sortDirection: {
+        ascending: PRIORITY_ASC,
+        descending: PRIORITY_DESC,
+      },
+    },
+    {
+      id: 2,
+      title: __('Created date'),
+      sortDirection: {
+        ascending: CREATED_ASC,
+        descending: CREATED_DESC,
+      },
+    },
+    {
+      id: 3,
+      title: __('Last updated'),
+      sortDirection: {
+        ascending: UPDATED_ASC,
+        descending: UPDATED_DESC,
+      },
+    },
+    {
+      id: 4,
+      title: __('Milestone due date'),
+      sortDirection: {
+        ascending: MILESTONE_DUE_ASC,
+        descending: MILESTONE_DUE_DESC,
+      },
+    },
+    {
+      id: 5,
+      title: __('Due date'),
+      sortDirection: {
+        ascending: DUE_DATE_ASC,
+        descending: DUE_DATE_DESC,
+      },
+    },
+    {
+      id: 6,
+      title: __('Popularity'),
+      sortDirection: {
+        ascending: POPULARITY_ASC,
+        descending: POPULARITY_DESC,
+      },
+    },
+    {
+      id: 7,
+      title: __('Label priority'),
+      sortDirection: {
+        ascending: LABEL_PRIORITY_ASC,
+        descending: LABEL_PRIORITY_DESC,
+      },
+    },
+    {
+      id: 8,
+      title: __('Manual'),
+      sortDirection: {
+        ascending: RELATIVE_POSITION_ASC,
+        descending: RELATIVE_POSITION_ASC,
+      },
+    },
+  ];
+
+  if (hasIssueWeightsFeature) {
+    sortOptions.push({
+      id: 9,
+      title: __('Weight'),
+      sortDirection: {
+        ascending: WEIGHT_ASC,
+        descending: WEIGHT_DESC,
+      },
+    });
+  }
+
+  if (hasBlockedIssuesFeature) {
+    sortOptions.push({
+      id: 10,
+      title: __('Blocking'),
+      sortDirection: {
+        ascending: BLOCKING_ISSUES_ASC,
+        descending: BLOCKING_ISSUES_DESC,
+      },
+    });
+  }
+
+  return sortOptions;
+};
 
 const tokenTypes = Object.keys(filters);
 

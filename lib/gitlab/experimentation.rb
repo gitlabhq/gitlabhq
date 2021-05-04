@@ -150,7 +150,7 @@ module Gitlab
         elsif subject.respond_to?(:to_s)
           subject.to_s
         else
-          raise ArgumentError.new('Subject must respond to `to_global_id` or `to_s`')
+          raise ArgumentError, 'Subject must respond to `to_global_id` or `to_s`'
         end
       end
     end

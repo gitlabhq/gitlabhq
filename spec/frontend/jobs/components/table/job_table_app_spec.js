@@ -1,5 +1,5 @@
-import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { GlSkeletonLoader, GlAlert, GlEmptyState } from '@gitlab/ui';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -7,7 +7,7 @@ import getJobsQuery from '~/jobs/components/table/graphql/queries/get_jobs.query
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import JobsTableApp from '~/jobs/components/table/jobs_table_app.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
-import { mockJobsQueryResponse } from '../../mock_data';
+import { mockJobsQueryResponse, mockJobsQueryEmptyResponse } from '../../mock_data';
 
 const projectPath = 'gitlab-org/gitlab';
 const localVue = createLocalVue();
@@ -18,11 +18,13 @@ describe('Job table app', () => {
 
   const successHandler = jest.fn().mockResolvedValue(mockJobsQueryResponse);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+  const emptyHandler = jest.fn().mockResolvedValue(mockJobsQueryEmptyResponse);
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findTable = () => wrapper.findComponent(JobsTable);
   const findTabs = () => wrapper.findComponent(JobsTableTabs);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   const createMockApolloProvider = (handler) => {
     const requestHandlers = [[getJobsQuery, handler]];
@@ -30,8 +32,8 @@ describe('Job table app', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = (handler = successHandler) => {
-    wrapper = shallowMount(JobsTableApp, {
+  const createComponent = (handler = successHandler, mountFn = shallowMount) => {
+    wrapper = mountFn(JobsTableApp, {
       provide: {
         projectPath,
       },
@@ -83,6 +85,26 @@ describe('Job table app', () => {
       await waitForPromises();
 
       expect(findAlert().exists()).toBe(true);
+    });
+  });
+
+  describe('empty state', () => {
+    it('should display empty state if there are no jobs and tab scope is null', async () => {
+      createComponent(emptyHandler, mount);
+
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findTable().exists()).toBe(false);
+    });
+
+    it('should not display empty state if there are jobs and tab scope is not null', async () => {
+      createComponent(successHandler, mount);
+
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findTable().exists()).toBe(true);
     });
   });
 });

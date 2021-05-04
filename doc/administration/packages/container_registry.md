@@ -1304,8 +1304,8 @@ GitLab Rails application, the Docker Registry, or something else. In this
 case, since we know that since the login succeeded, we probably need to look
 at the communication between the client and the Registry.
 
-The REST API between the Docker client and Registry is [described
-here](https://docs.docker.com/registry/spec/api/). Normally, one would just
+The REST API between the Docker client and Registry is described
+[in the Docker documentation](https://docs.docker.com/registry/spec/api/). Normally, one would just
 use Wireshark or tcpdump to capture the traffic and see where things went
 wrong. However, since all communications between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even

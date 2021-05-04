@@ -13,7 +13,7 @@ RSpec.describe API::APIGuard::AdminModeMiddleware, :request_store do
     let(:app) do
       Class.new(API::API) do
         get 'willfail' do
-          raise StandardError.new('oh noes!')
+          raise StandardError, 'oh noes!'
         end
       end
     end

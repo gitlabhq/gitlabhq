@@ -63,7 +63,7 @@ module BulkImports
       def with_error_handling
         response = yield
 
-        raise ConnectionError.new("Error #{response.code}") unless response.success?
+        raise ConnectionError, "Error #{response.code}" unless response.success?
 
         response
       rescue *Gitlab::HTTP::HTTP_ERRORS => e

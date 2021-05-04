@@ -13,7 +13,7 @@ module Gitlab
         repos_to_import = Dir.glob(import_path + '**/*.git')
 
         unless user = User.admins.order_id_asc.first
-          raise NoAdminError.new('No admin user found to import repositories')
+          raise NoAdminError, 'No admin user found to import repositories'
         end
 
         repos_to_import.each do |repo_path|

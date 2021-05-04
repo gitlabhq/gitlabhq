@@ -30,7 +30,7 @@ module Gitlab
       rescue URI::InvalidURIError => e
         # If url is invalid, raise custom error,
         # which can be ignored by monitoring tools.
-        raise ActionController::RoutingError.new(e.message)
+        raise ActionController::RoutingError, e.message
       end
     end
 

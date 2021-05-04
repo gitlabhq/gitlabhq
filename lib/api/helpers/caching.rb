@@ -119,8 +119,11 @@ module API
         objs.flatten!
         map = multi_key_map(objs, context: context)
 
-        cache.fetch_multi(*map.keys, **kwargs) do |key|
-          yield map[key]
+        # TODO: `contextual_cache_key` should be constructed based on the guideline https://docs.gitlab.com/ee/development/redis.html#multi-key-commands.
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          cache.fetch_multi(*map.keys, **kwargs) do |key|
+            yield map[key]
+          end
         end
       end
 

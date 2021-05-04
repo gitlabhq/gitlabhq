@@ -33,10 +33,10 @@ module Packages
           if result.success?
             log_extra_metadata_on_done(:message, result.message)
           else
-            raise SyncError.new(result.message)
+            raise SyncError, result.message
           end
 
-          raise SyncError.new(result.message) unless result.success?
+          raise SyncError, result.message unless result.success?
         end
 
         private

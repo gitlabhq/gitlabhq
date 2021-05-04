@@ -451,7 +451,7 @@ module ObjectStorage
     def with_exclusive_lease
       lease_key = exclusive_lease_key
       uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.hour.to_i).try_obtain
-      raise ExclusiveLeaseTaken.new(lease_key) unless uuid
+      raise ExclusiveLeaseTaken, lease_key unless uuid
 
       yield uuid
     ensure

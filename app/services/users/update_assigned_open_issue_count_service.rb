@@ -8,7 +8,7 @@ module Users
     def initialize(target_user:)
       @target_user = target_user
 
-      raise ArgumentError.new("Please provide a target user") unless target_user.is_a?(User)
+      raise ArgumentError, "Please provide a target user" unless target_user.is_a?(User)
     end
 
     def execute

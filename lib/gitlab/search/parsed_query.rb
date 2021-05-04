@@ -50,7 +50,7 @@ module Gitlab
         when :including then including
         when :excluding then excluding
         else
-          raise ArgumentError.new(type)
+          raise ArgumentError, type
         end
       end
     end

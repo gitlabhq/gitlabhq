@@ -65,7 +65,10 @@ For an existing project, you can set up push mirroring as follows:
 ![Repository mirroring push settings screen](img/repository_mirroring_push_settings.png)
 
 When push mirroring is enabled, only push commits directly to the mirrored repository to prevent the
-mirror diverging. The mirrored repository receives all changes when:
+mirror diverging. 
+
+Unlike [pull mirroring](#how-it-works), the mirrored repository is not periodically auto-synced. 
+The mirrored repository receives all changes only when:
 
 - Commits are pushed to GitLab.
 - A [forced update](#forcing-an-update) is initiated.

@@ -172,6 +172,8 @@ module NotificationRecipients
       # Get project users with WATCH notification level
       # rubocop: disable CodeReuse/ActiveRecord
       def project_watchers
+        return new_project_watchers if Feature.enabled?(:notification_setting_recipient_refactor, project)
+
         project_members_ids = user_ids_notifiable_on(project)
 
         user_ids_with_project_global = user_ids_notifiable_on(project, :global)
@@ -184,15 +186,37 @@ module NotificationRecipients
 
         user_scope.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq)
       end
+
+      def new_project_watchers
+        notification_by_sources = related_notification_settings_sources(:watch)
+
+        return if notification_by_sources.blank?
+
+        user_ids = NotificationSetting.from_union(notification_by_sources).select(:user_id)
+
+        user_scope.where(id: user_ids)
+      end
       # rubocop: enable CodeReuse/ActiveRecord
 
       # rubocop: disable CodeReuse/ActiveRecord
       def group_watchers
+        return new_group_watchers if Feature.enabled?(:notification_setting_recipient_refactor, project)
+
         user_ids_with_group_global = user_ids_notifiable_on(group, :global)
         user_ids = user_ids_with_global_level_watch(user_ids_with_group_global)
         user_ids_with_group_setting = select_group_members_ids(group, [], user_ids_with_group_global, user_ids)
 
         user_scope.where(id: user_ids_with_group_setting)
+      end
+
+      def new_group_watchers
+        return [] unless group
+
+        user_ids = group
+          .notification_settings
+          .where(source_or_global_setting_by_level_query(:watch)).select(:user_id)
+
+        user_scope.where(id: user_ids)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

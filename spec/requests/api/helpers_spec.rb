@@ -39,7 +39,7 @@ RSpec.describe API::Helpers do
   end
 
   def error!(message, status, header)
-    raise StandardError.new("#{status} - #{message}")
+    raise StandardError, "#{status} - #{message}"
   end
 
   def set_param(key, value)

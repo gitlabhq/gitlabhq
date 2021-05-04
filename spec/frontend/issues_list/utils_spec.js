@@ -6,6 +6,7 @@ import {
   convertToUrlParams,
   getFilterTokens,
   getSortKey,
+  getSortOptions,
 } from '~/issues_list/utils';
 
 describe('getSortKey', () => {
@@ -13,6 +14,39 @@ describe('getSortKey', () => {
     const { order_by, sort } = sortParams[sortKey];
     expect(getSortKey(order_by, sort)).toBe(sortKey);
   });
+});
+
+describe('getSortOptions', () => {
+  describe.each`
+    hasIssueWeightsFeature | hasBlockedIssuesFeature | length | containsWeight | containsBlocking
+    ${false}               | ${false}                | ${8}   | ${false}       | ${false}
+    ${true}                | ${false}                | ${9}   | ${true}        | ${false}
+    ${false}               | ${true}                 | ${9}   | ${false}       | ${true}
+    ${true}                | ${true}                 | ${10}  | ${true}        | ${true}
+  `(
+    'when hasIssueWeightsFeature=$hasIssueWeightsFeature and hasBlockedIssuesFeature=$hasBlockedIssuesFeature',
+    ({
+      hasIssueWeightsFeature,
+      hasBlockedIssuesFeature,
+      length,
+      containsWeight,
+      containsBlocking,
+    }) => {
+      const sortOptions = getSortOptions(hasIssueWeightsFeature, hasBlockedIssuesFeature);
+
+      it('returns the correct length of sort options', () => {
+        expect(sortOptions).toHaveLength(length);
+      });
+
+      it(`${containsWeight ? 'contains' : 'does not contain'} weight option`, () => {
+        expect(sortOptions.some((option) => option.title === 'Weight')).toBe(containsWeight);
+      });
+
+      it(`${containsBlocking ? 'contains' : 'does not contain'} blocking option`, () => {
+        expect(sortOptions.some((option) => option.title === 'Blocking')).toBe(containsBlocking);
+      });
+    },
+  );
 });
 
 describe('getFilterTokens', () => {

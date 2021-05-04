@@ -100,7 +100,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch gl-h-full">
     <frequent-items-search-input :namespace="namespace" />
     <gl-loading-icon
       v-if="isLoadingItems"

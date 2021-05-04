@@ -173,22 +173,5 @@
     text-align: right;
     padding: $gl-padding-top $gl-padding;
     color: var(--gl-text-color, $gl-text-color);
-
-    .discard-actions {
-      display: inline-block;
-      margin-left: 10px;
-    }
-  }
-
-  .resolve-conflicts-form {
-    h4 {
-      margin-top: 0;
-    }
-
-    .resolve-info {
-      @media(max-width: map-get($grid-breakpoints, lg)-1) {
-        margin-bottom: $gl-padding;
-      }
-    }
   }
 }

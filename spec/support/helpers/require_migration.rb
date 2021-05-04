@@ -20,7 +20,7 @@ class RequireMigration
   class << self
     def require_migration!(file_name)
       file_paths = search_migration_file(file_name)
-      raise AutoLoadError.new(file_name) unless file_paths.first
+      raise AutoLoadError, file_name unless file_paths.first
 
       require file_paths.first
     end

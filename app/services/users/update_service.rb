@@ -34,7 +34,7 @@ module Users
     def execute!(*args, &block)
       result = execute(*args, &block)
 
-      raise ActiveRecord::RecordInvalid.new(@user) unless result[:status] == :success
+      raise ActiveRecord::RecordInvalid, @user unless result[:status] == :success
 
       true
     end

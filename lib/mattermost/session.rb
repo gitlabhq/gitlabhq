@@ -174,9 +174,9 @@ module Mattermost
     def handle_exceptions
       yield
     rescue Gitlab::HTTP::Error => e
-      raise Mattermost::ConnectionError.new(e.message)
+      raise Mattermost::ConnectionError, e.message
     rescue Errno::ECONNREFUSED => e
-      raise Mattermost::ConnectionError.new(e.message)
+      raise Mattermost::ConnectionError, e.message
     end
 
     def parse_cookie(response)

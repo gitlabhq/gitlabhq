@@ -107,7 +107,7 @@ module Packages
           Gem::Package.new(File.open(file_path))
         end
       rescue StandardError
-        raise ExtractionError.new('Unable to read gem file')
+        raise ExtractionError, 'Unable to read gem file'
       end
 
       # used by ExclusiveLeaseGuard
