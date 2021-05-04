@@ -7,19 +7,11 @@ module QA
         module Packages
           extend QA::Page::PageConcern
 
-          def self.included(base)
-            super
-
-            base.class_eval do
-              view 'app/views/layouts/nav/sidebar/_project_packages_link.html.haml' do
-                element :packages_link
-              end
-            end
-          end
-
           def click_packages_link
-            within_sidebar do
-              click_element :packages_link
+            hover_registry do
+              within_submenu do
+                click_element(:sidebar_menu_item_link, menu_item: 'Package Registry')
+              end
             end
           end
 
@@ -35,8 +27,8 @@ module QA
 
           def hover_registry
             within_sidebar do
-              scroll_to_element(:packages_link)
-              find_element(:packages_link).hover
+              scroll_to_element(:sidebar_menu_link, menu_item: 'Packages & Registries')
+              find_element(:sidebar_menu_link, menu_item: 'Packages & Registries').hover
 
               yield
             end

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Services API **(FREE)**
 
 NOTE:
-This API requires an access token with Maintainer or Owner permissions
+This API requires an access token with Maintainer or Owner permissions.
 
 ## List all active services
 
@@ -1253,7 +1253,7 @@ Parameters:
 | `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
 | `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications |
 | `note_channel` | string | false | The name of the channel to receive note events notifications |
-| `confidential_note_channel` | boolean | The name of the channel to receive confidential note events notifications |
+| `confidential_note_channel` | string | false | The name of the channel to receive confidential note events notifications |
 | `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications |
 | `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications |
 | `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |

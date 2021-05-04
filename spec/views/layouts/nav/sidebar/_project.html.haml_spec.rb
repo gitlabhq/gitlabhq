@@ -580,78 +580,72 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
-  describe 'packages tab' do
-    before do
-      stub_container_registry_config(enabled: true)
-
-      allow(controller).to receive(:controller_name)
-        .and_return('repositories')
-      allow(controller).to receive(:controller_path)
-        .and_return('projects/registry/repositories')
-    end
-
-    it 'highlights sidebar item and flyout' do
-      render
-
-      expect(rendered).to have_css('.sidebar-top-level-items > li.active', count: 1)
-      expect(rendered).to have_css('.sidebar-sub-level-items > li.fly-out-top-item.active', count: 1)
-    end
-
-    it 'highlights container registry tab' do
-      render
-
-      expect(rendered).to have_css('.sidebar-sub-level-items > li:not(.fly-out-top-item).active', text: 'Container Registry')
-    end
-  end
-
-  describe 'Packages' do
-    let_it_be(:user) { create(:user) }
-
-    let_it_be(:package_menu_name) { 'Packages & Registries' }
-    let_it_be(:package_entry_name) { 'Package Registry' }
+  describe 'Packages and Registries' do
+    let(:registry_enabled) { true }
+    let(:packages_enabled) { true }
 
     before do
-      project.team.add_developer(user)
-      sign_in(user)
-      stub_container_registry_config(enabled: true)
+      stub_container_registry_config(enabled: registry_enabled)
+      stub_config(packages: { enabled: packages_enabled })
     end
 
-    context 'when packages is enabled' do
-      it 'packages link is visible' do
+    it 'top level navigation link is visible and points to package registry page' do
+      render
+
+      expect(rendered).to have_link('Packages & Registries', href: project_packages_path(project))
+    end
+
+    describe 'Packages Registry' do
+      it 'shows link to package registry page' do
         render
 
-        expect(rendered).to have_link(package_menu_name, href: project_packages_path(project))
+        expect(rendered).to have_link('Package Registry', href: project_packages_path(project))
       end
 
-      it 'packages list link is visible' do
-        render
+      context 'when packages config setting is not enabled' do
+        let(:packages_enabled) { false }
 
-        expect(rendered).to have_link(package_entry_name, href: project_packages_path(project))
+        it 'does not show link to package registry page' do
+          render
+
+          expect(rendered).not_to have_link('Package Registry', href: project_packages_path(project))
+        end
       end
+    end
 
-      it 'container registry link is visible' do
+    describe 'Container Registry' do
+      it 'shows link to container registry page' do
         render
 
         expect(rendered).to have_link('Container Registry', href: project_container_registry_index_path(project))
       end
+
+      context 'when container config setting is not enabled' do
+        let(:registry_enabled) { false }
+
+        it 'does not show link to package registry page' do
+          render
+
+          expect(rendered).not_to have_link('Container Registry', href: project_container_registry_index_path(project))
+        end
+      end
     end
 
-    context 'when container registry is disabled' do
-      before do
-        stub_container_registry_config(enabled: false)
-      end
-
-      it 'packages top level and list link are visible' do
+    describe 'Infrastructure Registry' do
+      it 'shows link to infrastructure registry page' do
         render
 
-        expect(rendered).to have_link(package_menu_name, href: project_packages_path(project))
-        expect(rendered).to have_link(package_entry_name, href: project_packages_path(project))
+        expect(rendered).to have_link('Infrastructure Registry', href: project_infrastructure_registry_index_path(project))
       end
 
-      it 'container registry link is not visible' do
-        render
+      context 'when feature flag :infrastructure_registry_page is disabled' do
+        it 'does not show link to package registry page' do
+          stub_feature_flags(infrastructure_registry_page: false)
 
-        expect(rendered).not_to have_link('Container Registry', href: project_container_registry_index_path(project))
+          render
+
+          expect(rendered).not_to have_link('Infrastructure Registry', href: project_infrastructure_registry_index_path(project))
+        end
       end
     end
   end

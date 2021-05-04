@@ -37,6 +37,7 @@ import {
 import { __ } from '~/locale';
 import sidebarEventHub from '~/sidebar/event_hub';
 import introspectionQueryResultData from '~/sidebar/fragmentTypes.json';
+import { fullBoardId } from './boards_util';
 import boardConfigToggle from './config_toggle';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
 
@@ -135,6 +136,7 @@ export default () => {
     created() {
       this.setInitialBoardData({
         boardId: $boardApp.dataset.boardId,
+        fullBoardId: fullBoardId($boardApp.dataset.boardId),
         fullPath: $boardApp.dataset.fullPath,
         boardType: this.parent,
         disabled: this.disabled,

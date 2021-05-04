@@ -9,10 +9,11 @@ import {
   subscriptionQueries,
   SupportedFilters,
   deleteListQueries,
+  listsQuery,
   updateListQueries,
+  issuableTypes,
 } from 'ee_else_ce/boards/constants';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
-import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
@@ -21,7 +22,6 @@ import { s__ } from '~/locale';
 import {
   formatBoardLists,
   formatListIssues,
-  fullBoardId,
   formatListsPageInfo,
   formatIssue,
   formatIssueInput,
@@ -86,24 +86,22 @@ export default {
     }
   },
 
-  fetchLists: ({ dispatch }) => {
-    dispatch('fetchIssueLists');
-  },
-
-  fetchIssueLists: ({ commit, state, dispatch }) => {
-    const { boardType, filterParams, fullPath, boardId } = state;
+  fetchLists: ({ commit, state, dispatch }) => {
+    const { boardType, filterParams, fullPath, fullBoardId, issuableType } = state;
 
     const variables = {
       fullPath,
-      boardId: fullBoardId(boardId),
+      boardId: fullBoardId,
       filters: filterParams,
-      isGroup: boardType === BoardType.group,
-      isProject: boardType === BoardType.project,
+      ...(issuableType === issuableTypes.issue && {
+        isGroup: boardType === BoardType.group,
+        isProject: boardType === BoardType.project,
+      }),
     };
 
     return gqlClient
       .query({
-        query: boardListsQuery,
+        query: listsQuery[issuableType].query,
         variables,
       })
       .then(({ data }) => {
@@ -137,7 +135,7 @@ export default {
     { state, commit, dispatch, getters },
     { backlog, labelId, milestoneId, assigneeId, iterationId },
   ) => {
-    const { boardId } = state;
+    const { fullBoardId } = state;
 
     const existingList = getters.getListByLabelId(labelId);
 
@@ -150,7 +148,7 @@ export default {
       .mutate({
         mutation: createBoardListMutation,
         variables: {
-          boardId: fullBoardId(boardId),
+          boardId: fullBoardId,
           backlog,
           labelId,
           milestoneId,
@@ -296,11 +294,11 @@ export default {
   fetchItemsForList: ({ state, commit }, { listId, fetchNext = false }) => {
     commit(types.REQUEST_ITEMS_FOR_LIST, { listId, fetchNext });
 
-    const { fullPath, boardId, boardType, filterParams } = state;
+    const { fullPath, fullBoardId, boardType, filterParams } = state;
 
     const variables = {
       fullPath,
-      boardId: fullBoardId(boardId),
+      boardId: fullBoardId,
       id: listId,
       filters: filterParams,
       isGroup: boardType === BoardType.group,
@@ -429,7 +427,7 @@ export default {
     try {
       const { itemId, fromListId, toListId, moveBeforeId, moveAfterId } = moveData;
       const {
-        boardId,
+        fullBoardId,
         boardItems: {
           [itemId]: { iid, referencePath },
         },
@@ -440,7 +438,7 @@ export default {
         variables: {
           iid,
           projectPath: referencePath.split(/[#]/)[0],
-          boardId: fullBoardId(boardId),
+          boardId: fullBoardId,
           fromListId: getIdFromGraphQLId(fromListId),
           toListId: getIdFromGraphQLId(toListId),
           moveBeforeId,
