@@ -17,7 +17,7 @@ variables:
     bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python,
     klar, clair-vulnerabilities-db,
     license-finder,
-    dast
+    dast, api-fuzzing
 
   SECURE_BINARIES_DOWNLOAD_IMAGES: "true"
   SECURE_BINARIES_PUSH_IMAGES: "true"
@@ -241,3 +241,12 @@ dast:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bdast\b/
+
+api-fuzzing:
+  extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "1"
+  only:
+    variables:
+      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
+          $SECURE_BINARIES_ANALYZERS =~ /\bapi-fuzzing\b/

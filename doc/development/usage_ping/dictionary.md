@@ -7466,7 +7466,7 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216174956_i_analytics_cohorts_monthly.yml)
 
-Group: `group::optimize`
+Group: `group::utilization`
 
 Status: `data_available`
 
@@ -7478,7 +7478,7 @@ Missing description
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216174955_i_analytics_cohorts_weekly.yml)
 
-Group: `group::optimize`
+Group: `group::utilization`
 
 Status: `data_available`
 

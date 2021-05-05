@@ -1270,6 +1270,10 @@ production: &base
     # matomo_site_id: '_your_matomo_site_id'
     # matomo_disable_cookies: false
 
+    ## Maximum file size for syntax highlighting
+    ## https://docs.gitlab.com/ee/user/project/highlighting.html
+    # maximum_text_highlight_size_kilobytes: 512
+
   rack_attack:
     git_basic_auth:
       # Rack Attack IP banning enabled

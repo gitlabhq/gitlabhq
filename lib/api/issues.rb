@@ -74,6 +74,7 @@ module API
                  desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :due_date, type: String, values: %w[0 overdue week month next_month_and_previous_two_weeks] << '',
                  desc: 'Return issues that have no due date (`0`), or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`, `0`'
+        optional :issue_type, type: String, values: Issue.issue_types.keys, desc: "The type of the issue. Accepts: #{Issue.issue_types.keys.join(', ')}"
 
         use :issues_stats_params
         use :pagination
@@ -90,6 +91,7 @@ module API
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
+        optional :issue_type, type: String, values: Issue.issue_types.keys, desc: "The type of the issue. Accepts: #{Issue.issue_types.keys.join(', ')}"
 
         use :optional_issue_params_ee
       end

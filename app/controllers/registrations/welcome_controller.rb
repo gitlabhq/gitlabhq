@@ -18,8 +18,10 @@ module Registrations
       if result[:status] == :success
         return redirect_to new_users_sign_up_group_path if show_signup_onboarding?
 
-        if current_user.members.count == 1
-          redirect_to path_for_signed_in_user(current_user), notice: helpers.invite_accepted_notice(current_user.members.last)
+        members = current_user.members
+
+        if members.count == 1 && members.last.source.present?
+          redirect_to members_activity_path(members), notice: helpers.invite_accepted_notice(members.last)
         else
           redirect_to path_for_signed_in_user(current_user)
         end
@@ -52,20 +54,14 @@ module Registrations
     def path_for_signed_in_user(user)
       return users_almost_there_path if requires_confirmation?(user)
 
-      stored_location_for(user) || members_activity_path(user)
+      stored_location_for(user) || members_activity_path(user.members)
     end
 
-    def members_activity_path(user)
-      return dashboard_projects_path unless user.members.count >= 1
+    def members_activity_path(members)
+      return dashboard_projects_path unless members.any?
+      return dashboard_projects_path unless members.last.source.present?
 
-      case user.members.last.source
-      when Project
-        activity_project_path(user.members.last.source)
-      when Group
-        activity_group_path(user.members.last.source)
-      else
-        dashboard_projects_path
-      end
+      members.last.source.activity_path
     end
 
     def show_signup_onboarding?

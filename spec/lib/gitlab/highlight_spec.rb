@@ -47,8 +47,9 @@ RSpec.describe Gitlab::Highlight do
     end
 
     it 'returns plain version for long content' do
-      stub_const('Gitlab::Highlight::MAXIMUM_TEXT_HIGHLIGHT_SIZE', 1)
-      result = described_class.highlight(file_name, content)
+      stub_config(extra: { 'maximum_text_highlight_size_kilobytes' => 0.0001 } ) # 1.024 bytes
+
+      result = described_class.highlight(file_name, content) # content is 44 bytes
 
       expect(result).to eq(%[<span id="LC1" class="line" lang="">(make-pathname :defaults name</span>\n<span id="LC2" class="line" lang="">:type "assem")</span>])
     end

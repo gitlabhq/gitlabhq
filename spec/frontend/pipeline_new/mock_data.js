@@ -46,16 +46,16 @@ export const mockTagRefs = ['1.0.0', '1.1.0', '1.2.0'];
 
 export const mockVariables = [
   {
-    uniqueId: 'var-refs/heads/master2',
+    uniqueId: 'var-refs/heads/main2',
     variable_type: 'env_var',
     key: 'var_without_value',
     value: '',
   },
   {
-    uniqueId: 'var-refs/heads/master3',
+    uniqueId: 'var-refs/heads/main3',
     variable_type: 'env_var',
     key: 'var_with_value',
     value: 'test_value',
   },
-  { uniqueId: 'var-refs/heads/master4', variable_type: 'env_var', key: '', value: '' },
+  { uniqueId: 'var-refs/heads/main4', variable_type: 'env_var', key: '', value: '' },
 ];

@@ -17,6 +17,9 @@ module Types
       #     declarative_enum MyDeclarativeEnum
       #   end
       #
+      # Disabling descriptions rubocop for a false positive here
+      # rubocop: disable Graphql/Descriptions
+      #
       def declarative_enum(enum_mod, use_name: true, use_description: true)
         graphql_name(enum_mod.name) if use_name
         description(enum_mod.description) if use_description
@@ -25,6 +28,7 @@ module Types
           value(key.to_s.upcase, **content)
         end
       end
+      # rubocop: enable Graphql/Descriptions
 
       # Helper to define an enum member for each element of a Rails AR enum
       def from_rails_enum(enum, description:)

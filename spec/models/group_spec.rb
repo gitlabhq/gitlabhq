@@ -2398,4 +2398,12 @@ RSpec.describe Group do
       expect(group.to_ability_name).to eq('group')
     end
   end
+
+  describe '#activity_path' do
+    it 'returns the group activity_path' do
+      expected_path = "/groups/#{group.name}/-/activity"
+
+      expect(group.activity_path).to eq(expected_path)
+    end
+  end
 end

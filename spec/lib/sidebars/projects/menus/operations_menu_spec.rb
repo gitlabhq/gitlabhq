@@ -131,36 +131,66 @@ RSpec.describe Sidebars::Projects::Menus::OperationsMenu do
     describe 'Serverless' do
       let(:item_id) { :serverless }
 
-      specify { is_expected.not_to be_nil }
-
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
+      context 'when feature flag :sidebar_refactor is enabled' do
         specify { is_expected.to be_nil }
+      end
+
+      context 'when feature flag :sidebar_refactor is disabled' do
+        before do
+          stub_feature_flags(sidebar_refactor: false)
+        end
+
+        specify { is_expected.not_to be_nil }
+
+        describe 'when the user does not have access' do
+          let(:user) { nil }
+
+          specify { is_expected.to be_nil }
+        end
       end
     end
 
     describe 'Terraform' do
       let(:item_id) { :terraform }
 
-      specify { is_expected.not_to be_nil }
-
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
+      context 'when feature flag :sidebar_refactor is enabled' do
         specify { is_expected.to be_nil }
+      end
+
+      context 'when feature flag :sidebar_refactor is disabled' do
+        before do
+          stub_feature_flags(sidebar_refactor: false)
+        end
+
+        specify { is_expected.not_to be_nil }
+
+        describe 'when the user does not have access' do
+          let(:user) { nil }
+
+          specify { is_expected.to be_nil }
+        end
       end
     end
 
     describe 'Kubernetes' do
       let(:item_id) { :kubernetes }
 
-      specify { is_expected.not_to be_nil }
-
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
+      context 'when feature flag :sidebar_refactor is enabled' do
         specify { is_expected.to be_nil }
+      end
+
+      context 'when feature flag :sidebar_refactor is disabled' do
+        before do
+          stub_feature_flags(sidebar_refactor: false)
+        end
+
+        specify { is_expected.not_to be_nil }
+
+        describe 'when the user does not have access' do
+          let(:user) { nil }
+
+          specify { is_expected.to be_nil }
+        end
       end
     end
 

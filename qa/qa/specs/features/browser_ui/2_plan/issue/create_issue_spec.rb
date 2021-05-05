@@ -9,7 +9,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1167' do
+      it 'creates an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1793' do
         issue = Resource::Issue.fabricate_via_browser_ui!
 
         Page::Project::Menu.perform(&:click_issues)
@@ -19,7 +19,7 @@ module QA
         end
       end
 
-      it 'closes an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1085' do
+      it 'closes an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1792' do
         closed_issue.visit!
 
         Page::Project::Issue::Show.perform do |issue_page|

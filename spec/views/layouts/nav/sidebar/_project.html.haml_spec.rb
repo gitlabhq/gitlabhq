@@ -471,56 +471,71 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       end
     end
 
-    describe 'Serverless' do
-      it 'has a link to the serverless page' do
-        render
-
-        expect(rendered).to have_link('Serverless', href: project_serverless_functions_path(project))
+    context 'when feature flag :sidebar_refactor is disabled' do
+      before do
+        stub_feature_flags(sidebar_refactor: false)
       end
 
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
-        it 'does not have a link to the serverless page' do
+      describe 'Serverless' do
+        it 'has a link to the serverless page' do
           render
 
-          expect(rendered).not_to have_link('Serverless')
+          page = Nokogiri::HTML.parse(rendered)
+
+          expect(page.at_css('.shortcuts-operations').parent.css('[aria-label="Serverless"]')).not_to be_empty
+          expect(rendered).to have_link('Serverless', href: project_serverless_functions_path(project))
+        end
+
+        describe 'when the user does not have access' do
+          let(:user) { nil }
+
+          it 'does not have a link to the serverless page' do
+            render
+
+            expect(rendered).not_to have_link('Serverless')
+          end
         end
       end
-    end
 
-    describe 'Terraform' do
-      it 'has a link to the terraform page' do
-        render
-
-        expect(rendered).to have_link('Terraform', href: project_terraform_index_path(project))
-      end
-
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
-        it 'does not have a link to the terraform page' do
+      describe 'Terraform' do
+        it 'has a link to the terraform page' do
           render
 
-          expect(rendered).not_to have_link('Terraform')
+          page = Nokogiri::HTML.parse(rendered)
+
+          expect(page.at_css('.shortcuts-operations').parent.css('[aria-label="Terraform"]')).not_to be_empty
+          expect(rendered).to have_link('Terraform', href: project_terraform_index_path(project))
+        end
+
+        describe 'when the user does not have access' do
+          let(:user) { nil }
+
+          it 'does not have a link to the terraform page' do
+            render
+
+            expect(rendered).not_to have_link('Terraform')
+          end
         end
       end
-    end
 
-    describe 'Kubernetes' do
-      it 'has a link to the kubernetes page' do
-        render
-
-        expect(rendered).to have_link('Kubernetes', href: project_clusters_path(project))
-      end
-
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
-        it 'does not have a link to the kubernetes page' do
+      describe 'Kubernetes' do
+        it 'has a link to the kubernetes page' do
           render
 
-          expect(rendered).not_to have_link('Kubernetes')
+          page = Nokogiri::HTML.parse(rendered)
+
+          expect(page.at_css('.shortcuts-operations').parent.css('[aria-label="Kubernetes"]')).not_to be_empty
+          expect(rendered).to have_link('Kubernetes', href: project_clusters_path(project))
+        end
+
+        describe 'when the user does not have access' do
+          let(:user) { nil }
+
+          it 'does not have a link to the kubernetes page' do
+            render
+
+            expect(rendered).not_to have_link('Kubernetes')
+          end
         end
       end
     end
@@ -575,6 +590,62 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
           render
 
           expect(rendered).not_to have_link('Product Analytics')
+        end
+      end
+    end
+  end
+
+  describe 'Infrastructure' do
+    describe 'Serverless platform' do
+      it 'has a link to the serverless page' do
+        render
+
+        expect(rendered).to have_link('Serverless platform', href: project_serverless_functions_path(project))
+      end
+
+      describe 'when the user does not have access' do
+        let(:user) { nil }
+
+        it 'does not have a link to the serverless page' do
+          render
+
+          expect(rendered).not_to have_link('Serverless platform')
+        end
+      end
+    end
+
+    describe 'Terraform' do
+      it 'has a link to the terraform page' do
+        render
+
+        expect(rendered).to have_link('Terraform', href: project_terraform_index_path(project))
+      end
+
+      describe 'when the user does not have access' do
+        let(:user) { nil }
+
+        it 'does not have a link to the terraform page' do
+          render
+
+          expect(rendered).not_to have_link('Terraform')
+        end
+      end
+    end
+
+    describe 'Kubernetes clusters' do
+      it 'has a link to the kubernetes page' do
+        render
+
+        expect(rendered).to have_link('Kubernetes clusters', href: project_clusters_path(project))
+      end
+
+      describe 'when the user does not have access' do
+        let(:user) { nil }
+
+        it 'does not have a link to the kubernetes page' do
+          render
+
+          expect(rendered).not_to have_link('Kubernetes clusters')
         end
       end
     end

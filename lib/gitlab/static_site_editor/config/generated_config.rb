@@ -42,11 +42,11 @@ module Gitlab
         end
 
         def supported_content?
-          master_branch? && extension_supported? && file_exists?
+          branch_supported? && extension_supported? && file_exists?
         end
 
-        def master_branch?
-          ref == 'master'
+        def branch_supported?
+          ref.in?(%w[master main])
         end
 
         def extension_supported?

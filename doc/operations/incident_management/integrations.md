@@ -97,17 +97,17 @@ to configure alerts for this integration.
 
 ## Customize the alert payload outside of GitLab
 
-For all integration types, you can customize the payload by sending the following
+For HTTP Endpoints without [custom mappings](#map-fields-in-custom-alerts), you can customize the payload by sending the following
 parameters. All fields are optional. If the incoming alert does not contain a value for the `Title` field, a default value of `New: Alert` will be applied.
 
 | Property                  | Type            | Description |
 | ------------------------- | --------------- | ----------- |
-| `title`                   | String          | The title of the incident. |
+| `title`                   | String          | The title of the alert.|
 | `description`             | String          | A high-level summary of the problem. |
-| `start_time`              | DateTime        | The time of the incident. If none is provided, a timestamp of the issue is used. |
-| `end_time`                | DateTime        | For existing alerts only. When provided, the alert is resolved and the associated incident is closed. |
+| `start_time`              | DateTime        | The time of the alert. If none is provided, a current time is used. |
+| `end_time`                | DateTime        | The resolution time of the alert. If provided, the alert is resolved. |
 | `service`                 | String          | The affected service. |
-| `monitoring_tool`         | String          |  The name of the associated monitoring tool. |
+| `monitoring_tool`         | String          | The name of the associated monitoring tool. |
 | `hosts`                   | String or Array | One or more hosts, as to where this incident occurred. |
 | `severity`                | String          | The severity of the alert. Case-insensitive. Can be one of: `critical`, `high`, `medium`, `low`, `info`, `unknown`. Defaults to `critical` if missing or value is not in this list. |
 | `fingerprint`             | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. |
@@ -188,6 +188,17 @@ and details pages.
 If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
 ![Alert Management List](img/alert_list_v13_1.png)
+
+## Recovery alerts
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
+
+The alert in GitLab will be automatically resolved when an HTTP Endpoint
+receives a payload with the end time of the alert set. For HTTP Endpoints
+without [custom mappings](#map-fields-in-custom-alerts), the expected
+field is `end_time`. With custom mappings, you can select the expected field.
+
+You can also configure the associated [incident to be closed automatically](../incident_management/incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
 
 ## Link to your Opsgenie Alerts
 

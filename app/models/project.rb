@@ -2570,6 +2570,10 @@ class Project < ApplicationRecord
     Feature.enabled?(:inherited_issuable_templates, self, default_enabled: :yaml)
   end
 
+  def activity_path
+    Gitlab::Routing.url_helpers.activity_project_path(self)
+  end
+
   private
 
   def set_container_registry_access_level

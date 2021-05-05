@@ -13,7 +13,6 @@
 # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/322903
 Graphql/Descriptions:
   Exclude:
-    - 'app/graphql/types/base_enum.rb'
     - 'app/graphql/types/container_expiration_policy_cadence_enum.rb'
     - 'app/graphql/types/container_expiration_policy_keep_enum.rb'
     - 'app/graphql/types/container_expiration_policy_older_than_enum.rb'

@@ -24,6 +24,23 @@ RSpec.shared_context 'project navbar structure' do
     }
   end
 
+  let(:operations_menu_items) do
+    [
+      _('Metrics'),
+      _('Logs'),
+      _('Tracing'),
+      _('Error Tracking'),
+      _('Alerts'),
+      _('Incidents'),
+      _('Serverless'),
+      _('Terraform'),
+      _('Kubernetes'),
+      _('Environments'),
+      _('Feature Flags'),
+      _('Product Analytics')
+    ]
+  end
+
   let(:structure) do
     [
       {
@@ -75,20 +92,7 @@ RSpec.shared_context 'project navbar structure' do
       security_and_compliance_nav_item,
       {
         nav_item: _('Operations'),
-        nav_sub_items: [
-          _('Metrics'),
-          _('Logs'),
-          _('Tracing'),
-          _('Error Tracking'),
-          _('Alerts'),
-          _('Incidents'),
-          _('Serverless'),
-          _('Terraform'),
-          _('Kubernetes'),
-          _('Environments'),
-          _('Feature Flags'),
-          _('Product Analytics')
-        ]
+        nav_sub_items: operations_menu_items
       },
       analytics_nav_item,
       {

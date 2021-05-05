@@ -72,6 +72,20 @@ RSpec.describe 'Project navbar' do
   end
 
   context 'when sidebar refactor feature flag is on' do
+    let(:operations_menu_items) do
+      [
+        _('Metrics'),
+        _('Logs'),
+        _('Tracing'),
+        _('Error Tracking'),
+        _('Alerts'),
+        _('Incidents'),
+        _('Environments'),
+        _('Feature Flags'),
+        _('Product Analytics')
+      ]
+    end
+
     before do
       stub_feature_flags(sidebar_refactor: true)
       stub_config(registry: { enabled: true })
@@ -82,6 +96,18 @@ RSpec.describe 'Project navbar' do
         _('Operations'),
         within: _('Settings'),
         new_sub_nav_item_name: _('Packages & Registries')
+      )
+
+      insert_after_nav_item(
+        _('Operations'),
+        new_nav_item: {
+          nav_item: _('Infrastructure'),
+          nav_sub_items: [
+            _('Kubernetes clusters'),
+            _('Serverless platform'),
+            _('Terraform')
+          ]
+        }
       )
 
       visit project_path(project)

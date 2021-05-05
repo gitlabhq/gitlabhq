@@ -260,7 +260,7 @@ These modules must:
 These steps ensure the sanity selectors check detect problems properly.
 
 For example, `qa/qa/ee/page/merge_request/show.rb` adds EE-specific methods to `qa/qa/page/merge_request/show.rb` (with
-`QA::Page::MergeRequest::Show.prepend_if_ee('QA::EE::Page::MergeRequest::Show')`) and following is how it's implemented
+`QA::Page::MergeRequest::Show.prepend_if_ee('Page::MergeRequest::Show', namespace: QA)`) and following is how it's implemented
 (only showing the relevant part and referring to the 4 steps described above with inline comments):
 
 ```ruby

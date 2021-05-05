@@ -172,6 +172,10 @@ module ServicesHelper
       name: integration.to_param
     }
   end
+
+  def show_service_templates_nav_link?
+    Feature.disabled?(:disable_service_templates, type: :development, default_enabled: :yaml)
+  end
 end
 
 ServicesHelper.prepend_if_ee('EE::ServicesHelper')

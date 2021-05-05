@@ -4,7 +4,6 @@ module Gitlab
   class Highlight
     TIMEOUT_BACKGROUND = 30.seconds
     TIMEOUT_FOREGROUND = 1.5.seconds
-    MAXIMUM_TEXT_HIGHLIGHT_SIZE = 512.kilobytes
 
     def self.highlight(blob_name, blob_content, language: nil, plain: false)
       new(blob_name, blob_content, language: language)
@@ -23,7 +22,7 @@ module Gitlab
     def highlight(text, continue: false, plain: false, context: {})
       @context = context
 
-      plain ||= text.length > MAXIMUM_TEXT_HIGHLIGHT_SIZE
+      plain ||= text.length > maximum_text_highlight_size
 
       highlighted_text = highlight_text(text, continue: continue, plain: plain)
       highlighted_text = link_dependencies(text, highlighted_text) if blob_name
@@ -77,6 +76,10 @@ module Gitlab
 
     def link_dependencies(text, highlighted_text)
       Gitlab::DependencyLinker.link(blob_name, text, highlighted_text)
+    end
+
+    def maximum_text_highlight_size
+      Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
     end
   end
 end

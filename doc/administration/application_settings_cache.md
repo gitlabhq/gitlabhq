@@ -4,16 +4,15 @@ group: Memory
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Changing application settings cache expiry interval **(FREE SELF)**
+# Change the expiration interval for application cache **(FREE SELF)**
 
-Application settings are cached for 60 seconds by default which should work
-for most installations. A higher value would mean a greater delay between
-changing an application setting and noticing that change come into effect.
-A value of `0` would result in the `application_settings` table being
-loaded for every request causing extra load on Redis and/or PostgreSQL.
-It is therefore recommended to keep the value above zero.
+By default, GitLab caches application settings for 60 seconds. Occasionally,
+you may need to increase that interval to have more delay between application
+setting changes and when users notice those changes in the application.
 
-## Change the application settings cache expiry
+We recommend you set this value to greater than `0` seconds. Setting it to `0`
+causes the `application_settings` table to load for every request. This causes
+extra load for Redis and PostgreSQL.
 
 To change the expiry value:
 
@@ -25,7 +24,8 @@ To change the expiry value:
    gitlab_rails['application_settings_cache_seconds'] = 60
    ```
 
-1. Save the file, and reconfigure and restart GitLab for the changes to take effect:
+1. Save the file, and then reconfigure and restart GitLab for the changes to
+   take effect:
 
    ```shell
    gitlab-ctl reconfigure
@@ -43,5 +43,5 @@ To change the expiry value:
      application_settings_cache_seconds: 60
    ```
 
-1. Save the file and [restart](restart_gitlab.md#installations-from-source)
+1. Save the file, and then [restart](restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.

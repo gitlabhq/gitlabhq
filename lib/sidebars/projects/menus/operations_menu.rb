@@ -47,7 +47,7 @@ module Sidebars
 
         override :sprite_icon
         def sprite_icon
-          'cloud-gear'
+          Feature.enabled?(:sidebar_refactor, context.current_user) ? 'monitor' : 'cloud-gear'
         end
 
         override :active_routes
@@ -127,6 +127,7 @@ module Sidebars
         end
 
         def serverless_menu_item
+          return if Feature.enabled?(:sidebar_refactor, context.current_user)
           return unless can?(context.current_user, :read_cluster, context.project)
 
           ::Sidebars::MenuItem.new(
@@ -138,6 +139,7 @@ module Sidebars
         end
 
         def terraform_menu_item
+          return if Feature.enabled?(:sidebar_refactor, context.current_user)
           return unless can?(context.current_user, :read_terraform_state, context.project)
 
           ::Sidebars::MenuItem.new(
@@ -149,6 +151,7 @@ module Sidebars
         end
 
         def kubernetes_menu_item
+          return if Feature.enabled?(:sidebar_refactor, context.current_user)
           return unless can?(context.current_user, :read_cluster, context.project)
 
           ::Sidebars::MenuItem.new(

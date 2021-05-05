@@ -62,6 +62,7 @@ GET /issues?state=opened
 | `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                                       |
 | `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`             |
+| `issue_type`        | string           | no         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. _(Introduced in [GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/260375))_ |
 | `iteration_id` **(PREMIUM)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
 | `iteration_title` **(PREMIUM)** | string | no       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
@@ -158,6 +159,7 @@ Example response:
       "task_status": "10 of 15 tasks completed",
       "confidential": false,
       "discussion_locked": false,
+      "issue_type": "issue",
       "_links":{
          "self":"http://gitlab.example.com/api/v4/projects/1/issues/76",
          "notes":"http://gitlab.example.com/api/v4/projects/1/issues/76/notes",
@@ -267,6 +269,7 @@ GET /groups/:id/issues?state=opened
 | `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                 |
+| `issue_type`        | string           | no         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. _(Introduced in [GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/260375))_ |
 | `iteration_id` **(PREMIUM)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
 | `iteration_title` **(PREMIUM)** | string | no       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
@@ -361,6 +364,7 @@ Example response:
       "task_status": "10 of 15 tasks completed",
       "confidential": false,
       "discussion_locked": false,
+      "issue_type": "issue",
       "_links":{
          "self":"http://gitlab.example.com/api/v4/projects/4/issues/41",
          "notes":"http://gitlab.example.com/api/v4/projects/4/issues/41/notes",
@@ -469,6 +473,7 @@ GET /projects/:id/issues?state=opened
 | `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user               |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                              |
+| `issue_type`        | string           | no         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. _(Introduced in [GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/260375))_ |
 | `iteration_id` **(PREMIUM)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
 | `iteration_title` **(PREMIUM)** | string | no       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
@@ -569,6 +574,7 @@ Example response:
       "task_status": "10 of 15 tasks completed",
       "confidential": false,
       "discussion_locked": false,
+      "issue_type": "issue",
       "_links":{
          "self":"http://gitlab.example.com/api/v4/projects/4/issues/41",
          "notes":"http://gitlab.example.com/api/v4/projects/4/issues/41/notes",
@@ -729,6 +735,7 @@ Example response:
   },
   "confidential": false,
   "discussion_locked": false,
+  "issue_type": "issue",
   "task_completion_status": {
     "count": 0,
     "completed_count": 0
@@ -895,6 +902,7 @@ Example response:
    },
    "confidential": false,
    "discussion_locked": false,
+   "issue_type": "issue",
    "_links": {
       "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
       "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
@@ -985,6 +993,7 @@ POST /projects/:id/issues
 | `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal in API version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires administrator or project owner rights) |
+| `issue_type`                              | string         | no       | The type of issue. One of `issue`, `incident`, or `test_case`. Default is `issue`. |
 | `labels`                                  | string         | no       | Comma-separated label names for an issue  |
 | `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and mark all discussions as resolved. When passing a description or title, these values take precedence over the default values.|
 | `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue  |
@@ -1044,6 +1053,7 @@ Example response:
    },
    "confidential": false,
    "discussion_locked": false,
+   "issue_type": "issue",
    "_links": {
       "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
       "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
@@ -1131,6 +1141,7 @@ At least one of the following parameters is required for the request to be succe
 - `:description`
 - `:discussion_locked`
 - `:due_date`
+- `:issue_type`
 - `:labels`
 - `:milestone_id`
 - `:state_event`
@@ -1152,6 +1163,7 @@ PUT /projects/:id/issues/:issue_iid
 | `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal in API version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
 | `id`           | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid`    | integer | yes      | The internal ID of a project's issue                                                                       |
+| `issue_type`   | string  | no       | Updates the type of issue. One of `issue`, `incident`, or `test_case`. |
 | `labels`       | string  | no       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
 | `milestone_id` | integer | no       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
 | `remove_labels`| string  | no       | Comma-separated label names to remove from an issue.                                                       |
@@ -1219,6 +1231,7 @@ Example response:
    },
    "confidential": false,
    "discussion_locked": false,
+   "issue_type": "issue",
    "_links": {
       "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
       "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
@@ -1405,6 +1418,7 @@ Example response:
   },
   "confidential": false,
   "discussion_locked": false,
+  "issue_type": "issue",
   "_links": {
     "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
     "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
@@ -1549,6 +1563,7 @@ Example response:
   },
   "confidential": false,
   "discussion_locked": false,
+  "issue_type": "issue",
   "_links": {
     "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
     "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
@@ -1680,6 +1695,7 @@ Example response:
   },
   "confidential": false,
   "discussion_locked": false,
+  "issue_type": "issue",
   "task_completion_status":{
      "count":0,
      "completed_count":0
@@ -1788,6 +1804,7 @@ Example response:
     },
     "confidential": false,
     "discussion_locked": false,
+    "issue_type": "issue",
     "task_completion_status":{
        "count":0,
        "completed_count":0
@@ -2013,7 +2030,7 @@ If the project is private or the issue is confidential, you need to provide cred
 The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
-GET /projects/:id/issues/:issue_id/related_merge_requests
+GET /projects/:id/issues/:issue_iid/related_merge_requests
 ```
 
 | Attribute   | Type    | Required | Description                          |

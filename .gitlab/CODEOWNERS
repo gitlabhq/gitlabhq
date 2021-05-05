@@ -22,12 +22,14 @@
 /doc/administration/reference_architectures/ @axil
 /doc/administration/snippets/ @aqualls
 /doc/administration/troubleshooting @axil @marcia @mjang1
+/doc/api/group_activity_analytics.md @msedlakjakubowski
 /doc/ci/ @marcel.amirault @sselhorn
 /doc/ci/environments/ @axil
 /doc/ci/services/ @sselhorn
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/development/ @marcia @mjang1
 /doc/development/documentation/ @cnorris
+/doc/development/value_stream_analytics.md @msedlakjakubowski
 /doc/gitlab-basics/ @marcia
 /doc/install/ @axil
 /doc/integration/ @aqualls @mjang1
@@ -38,15 +40,18 @@
 /doc/topics/autodevops/ @ngaskill @marcia
 /doc/topics/git/ @aqualls
 /doc/update/ @axil @marcia
-/doc/user/analytics/ @mjang1 @ngaskill
+/doc/user/analytics/ @msedlakjakubowski @ngaskill
 /doc/user/application_security @rdickenson
 /doc/user/clusters/ @marcia
 /doc/user/compliance/ @mjang1 @rdickenson
-/doc/user/group/ @mjang1 @msedlakjakubowski
+/doc/user/group/ @msedlakjakubowski
 /doc/user/group/bulk_editing/ @msedlakjakubowski
+/doc/user/group/devops_adoption/ @msedlakjakubowski
 /doc/user/group/epics/ @msedlakjakubowski
+/doc/user/group/insights/ @msedlakjakubowski
 /doc/user/group/iterations/ @msedlakjakubowski
 /doc/user/group/roadmap/ @msedlakjakubowski
+/doc/user/group/value_stream_analytics/ @msedlakjakubowski
 /doc/user/infrastructure/ @marcia
 /doc/user/packages/ @ngaskill
 /doc/user/profile/ @mjang1 @msedlakjakubowski
@@ -133,7 +138,7 @@
 [Docs Growth]
 /doc/administration/instance_review.md @aqualls
 /doc/api/invitations.md @aqualls
-/doc/api/experiments.md @aqualls 
+/doc/api/experiments.md @aqualls
 /doc/development/experiment_guide/ @aqualls
 /doc/development/snowplow/ @aqualls
 /doc/development/usage_ping/ @aqualls
@@ -181,9 +186,9 @@ Dangerfile @gl-quality/eng-prod
 .editorconfig @gl-quality/eng-prod
 
 [Backend Static Code Analysis]
-.rubocop*.yml @dstull @splattael @gl-quality/eng-prod 
-/rubocop/ @dstull @splattael @gl-quality/eng-prod 
-/spec/rubocop/ @dstull @splattael @gl-quality/eng-prod 
+.rubocop*.yml @dstull @splattael @gl-quality/eng-prod
+/rubocop/ @dstull @splattael @gl-quality/eng-prod
+/spec/rubocop/ @dstull @splattael @gl-quality/eng-prod
 
 [End-to-end]
 /qa/ @gl-quality
@@ -291,4 +296,4 @@ Dangerfile @gl-quality/eng-prod
 /config/dependency_decisions.yml @gitlab-org/legal-reviewers
 
 [Workhorse]
-/workhorse/ @jacobvosmaer-gitlab @nick.thomas @nolith @patrickbajao 
+/workhorse/ @jacobvosmaer-gitlab @nick.thomas @nolith @patrickbajao

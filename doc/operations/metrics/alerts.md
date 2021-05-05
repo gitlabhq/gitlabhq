@@ -96,7 +96,6 @@ Prometheus server to use the
 ## Trigger actions from alerts **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
-> - [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it automatically closes the associated issue.
 
 Alerts can be used to trigger actions, like opening an issue automatically
 (disabled by default since `13.1`). To configure the actions:
@@ -127,10 +126,6 @@ values extracted from the [`alerts` field in webhook payload](https://prometheus
   - **Low**: `low`, `s4`, `p4`, `warn`, `warning`
   - **Info**: `info`, `s5`, `p5`, `debug`, `information`, `notice`
 
-When GitLab receives a **Recovery Alert**, it closes the associated issue.
-This action is recorded as a system message on the issue indicating that it
-was closed automatically by the GitLab Alert bot.
-
 To further customize the issue, you can add labels, mentions, or any other supported
 [quick action](../../user/project/quick_actions.md) in the selected issue template,
 which applies to all incidents. To limit quick actions or other information to
@@ -143,3 +138,12 @@ does not yet exist, it is also created automatically.
 If the metric exceeds the threshold of the alert for over 5 minutes, GitLab sends
 an email to all [Maintainers and Owners](../../user/permissions.md#project-members-permissions)
 of the project.
+
+### Recovery alerts
+
+> - [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it automatically closes the associated issue.
+
+The alert in GitLab will be automatically resolved when Prometheus
+sends a payload with the field `status` set to `resolved`.
+
+You can also configure the associated [incident to be closed automatically](../incident_management/incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.

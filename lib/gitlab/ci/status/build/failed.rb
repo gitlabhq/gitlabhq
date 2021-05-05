@@ -28,7 +28,8 @@ module Gitlab
             secrets_provider_not_found: 'secrets provider can not be found',
             reached_max_descendant_pipelines_depth: 'reached maximum depth of child pipelines',
             project_deleted: 'pipeline project was deleted',
-            user_blocked: 'pipeline user was blocked'
+            user_blocked: 'pipeline user was blocked',
+            ci_quota_exceeded: 'no more CI minutes available'
           }.freeze
 
           private_constant :REASONS

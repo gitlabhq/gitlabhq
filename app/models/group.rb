@@ -708,6 +708,10 @@ class Group < Namespace
     model_name.singular
   end
 
+  def activity_path
+    Gitlab::Routing.url_helpers.activity_group_path(self)
+  end
+
   private
 
   def update_two_factor_requirement

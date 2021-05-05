@@ -182,11 +182,25 @@ RSpec.describe 'User uses shortcuts', :js do
       expect(page).to have_active_sub_navigation('Environments')
     end
 
+    context 'when feature flag :sidebar_refactor is disabled' do
+      it 'redirects to the Kubernetes page with active Operations' do
+        stub_feature_flags(sidebar_refactor: false)
+
+        find('body').native.send_key('g')
+        find('body').native.send_key('k')
+
+        expect(page).to have_active_navigation('Operations')
+        expect(page).to have_active_sub_navigation('Kubernetes')
+      end
+    end
+  end
+
+  context 'when navigating to the Infrastructure pages' do
     it 'redirects to the Kubernetes page' do
       find('body').native.send_key('g')
       find('body').native.send_key('k')
 
-      expect(page).to have_active_navigation('Operations')
+      expect(page).to have_active_navigation('Infrastructure')
       expect(page).to have_active_sub_navigation('Kubernetes')
     end
   end

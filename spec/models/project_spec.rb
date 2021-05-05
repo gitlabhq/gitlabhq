@@ -6890,6 +6890,14 @@ RSpec.describe Project, factory_default: :keep do
         end
       end
     end
+
+    describe '#activity_path' do
+      it 'returns the project activity_path' do
+        expected_path = "/#{project.namespace.path}/#{project.name}/activity"
+
+        expect(project.activity_path).to eq(expected_path)
+      end
+    end
   end
 
   describe '#default_branch_or_main' do

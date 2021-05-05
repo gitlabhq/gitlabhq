@@ -356,6 +356,24 @@ to remove a fork relationship.
 
 ## Operations settings
 
+### Alerts
+
+Configure [alert integrations](../../../operations/incident_management/integrations.md#configuration) to triage and manage critical problems in your application as [alerts](../../../operations/incident_management/alerts.md).
+
+### Incidents
+
+#### Alert integration
+
+Automatically [create](../../../operations/incident_management/incidents.md#create-incidents-automatically), [notify on](../../../operations/incident_management/paging.md#email-notifications), and [resolve](../../../operations/incident_management/incidents.md#automatically-close-incidents-via-recovery-alerts) incidents based on GitLab alerts.
+
+#### PagerDuty integration
+
+[Create incidents in GitLab for each PagerDuty incident](../../../operations/incident_management/incidents.md#create-incidents-via-the-pagerduty-webhook).
+
+#### Incident settings
+
+[Manage Service Level Agreements for incidents](../../../operations/incident_management/incidents.md#service-level-agreement-countdown-timer) with an SLA countdown timer.
+
 ### Error Tracking
 
 Configure Error Tracking to discover and view [Sentry errors within GitLab](../../../operations/error_tracking.md).

@@ -185,8 +185,11 @@ Example for Omnibus installs:
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
 
-# The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-# The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+# The email address including the %{key} placeholder that will be replaced to reference the
+# item being replied to. This %{key} should be included in its entirety within the email
+# address and not replaced by another value.
+# For example: emailaddress+%{key}@gitlab.example.com.
+# The placeholder must appear in the "user" part of the address (before the `@`).
 gitlab_rails['incoming_email_address'] = "incoming+%{key}@gitlab.example.com"
 
 # Email account username
@@ -223,7 +226,7 @@ incoming_email:
     # The email address including the %{key} placeholder that will be replaced to reference the
     # item being replied to. This %{key} should be included in its entirety within the email
     # address and not replaced by another value.
-    # For example: emailadress+%{key}@gmail.com.
+    # For example: emailaddress+%{key}@gitlab.example.com.
     # The placeholder must appear in the "user" part of the address (before the `@`).
     address: "incoming+%{key}@gitlab.example.com"
 
@@ -264,8 +267,11 @@ Example for Omnibus installs:
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
 
-# The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-# The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+# The email address including the %{key} placeholder that will be replaced to reference the
+# item being replied to. This %{key} should be included in its entirety within the email
+# address and not replaced by another value.
+# For example: emailaddress+%{key}@gmail.com.
+# The placeholder must appear in the "user" part of the address (before the `@`).
 gitlab_rails['incoming_email_address'] = "gitlab-incoming+%{key}@gmail.com"
 
 # Email account username
@@ -299,8 +305,11 @@ Example for source installs:
 incoming_email:
     enabled: true
 
-    # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+    # The email address including the %{key} placeholder that will be replaced to reference the
+    # item being replied to. This %{key} should be included in its entirety within the email
+    # address and not replaced by another value.
+    # For example: emailaddress+%{key}@gmail.com.
+    # The placeholder must appear in the "user" part of the address (before the `@`).
     address: "gitlab-incoming+%{key}@gmail.com"
 
     # Email account username
@@ -345,8 +354,11 @@ Example for Omnibus installs:
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
 
-# The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-# The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+# The email address including the %{key} placeholder that will be replaced to reference the
+# item being replied to. This %{key} should be included in its entirety within the email
+# address and not replaced by another value.
+# For example: emailaddress-%{key}@exchange.example.com.
+# The placeholder must appear in the "user" part of the address (before the `@`).
 # Exchange does not support sub-addressing, so a catch-all mailbox must be used.
 gitlab_rails['incoming_email_address'] = "incoming-%{key}@exchange.example.com"
 
@@ -370,8 +382,11 @@ Example for source installs:
 incoming_email:
     enabled: true
 
-    # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+    # The email address including the %{key} placeholder that will be replaced to reference the
+    # item being replied to. This %{key} should be included in its entirety within the email
+    # address and not replaced by another value.
+    # For example: emailaddress-%{key}@exchange.example.com.
+    # The placeholder must appear in the "user" part of the address (before the `@`).
     # Exchange does not support sub-addressing, so a catch-all mailbox must be used.
     address: "incoming-%{key}@exchange.example.com"
 
@@ -476,9 +491,11 @@ This example for Omnibus GitLab assumes the mailbox `incoming@office365.example.
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
 
-# The email address including the `%{key}` placeholder that will be replaced
-# to reference the item being replied to. The placeholder can be omitted, but if
-# present, it must appear in the "user" part of the address (before the `@`).
+# The email address including the %{key} placeholder that will be replaced to reference the
+# item being replied to. This %{key} should be included in its entirety within the email
+# address and not replaced by another value.
+# For example: emailaddress+%{key}@office365.example.com.
+# The placeholder must appear in the "user" part of the address (before the `@`).
 gitlab_rails['incoming_email_address'] = "incoming+%{key}@office365.example.com"
 
 # Email account username
@@ -501,9 +518,11 @@ This example for source installs assumes the mailbox `incoming@office365.example
 incoming_email:
     enabled: true
 
-    # The email address including the `%{key}` placeholder that will be replaced
-    # to reference the item being replied to. The placeholder can be omitted, but
-    # if present, it must appear in the "user" part of the address (before the `@`).
+    # The email address including the %{key} placeholder that will be replaced to reference the
+    # item being replied to. This %{key} should be included in its entirety within the email
+    # address and not replaced by another value.
+    # For example: emailaddress+%{key}@office365.example.com.
+    # The placeholder must appear in the "user" part of the address (before the `@`).
     address: "incoming+%{key}@office365.example.comm"
 
     # Email account username
@@ -527,9 +546,11 @@ This example for Omnibus installs assumes the catch-all mailbox `incoming@office
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
 
-# The email address including the `%{key}` placeholder that will be replaced to
-# reference the item being replied to. The placeholder can be omitted, but if present,
-# it must appear in the "user" part of the address (before the `@`).
+# The email address including the %{key} placeholder that will be replaced to reference the
+# item being replied to. This %{key} should be included in its entirety within the email
+# address and not replaced by another value.
+# For example: emailaddress-%{key}@office365.example.com.
+# The placeholder must appear in the "user" part of the address (before the `@`).
 gitlab_rails['incoming_email_address'] = "incoming-%{key}@office365.example.com"
 
 # Email account username
@@ -552,9 +573,11 @@ This example for source installs assumes the catch-all mailbox `incoming@office3
 incoming_email:
     enabled: true
 
-    # The email address including the `%{key}` placeholder that will be replaced
-    # to reference the item being replied to. The placeholder can be omitted, but
-    # if present, it must appear in the "user" part of the address (before the `@`).
+    # The email address including the %{key} placeholder that will be replaced to reference the
+    # item being replied to. This %{key} should be included in its entirety within the email
+    # address and not replaced by another value.
+    # For example: emailaddress+%{key}@office365.example.com.
+    # The placeholder must appear in the "user" part of the address (before the `@`).
     address: "incoming-%{key}@office365.example.com"
 
     # Email account username
@@ -653,9 +676,11 @@ This example for Omnibus GitLab assumes you're using the following mailbox: `inc
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
 
-# The email address including the `%{key}` placeholder that will be replaced
-# to reference the item being replied to. The placeholder can be omitted, but if
-# present, it must appear in the "user" part of the address (before the `@`).
+# The email address including the %{key} placeholder that will be replaced to reference the
+# item being replied to. This %{key} should be included in its entirety within the email
+# address and not replaced by another value.
+# For example: emailaddress+%{key}@example.onmicrosoft.com.
+# The placeholder must appear in the "user" part of the address (before the `@`).
 gitlab_rails['incoming_email_address'] = "incoming+%{key}@example.onmicrosoft.com"
 
 # Email account username

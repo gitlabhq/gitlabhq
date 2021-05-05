@@ -3,7 +3,7 @@
 RSpec.shared_examples 'issuable update endpoint' do
   let(:area) { entity.class.name.underscore.pluralize }
 
-  describe 'PUT /projects/:id/issues/:issue_id' do
+  describe 'PUT /projects/:id/issues/:issue_iid' do
     let(:url) { "/projects/#{project.id}/#{area}/#{entity.iid}" }
 
     it 'clears labels when labels param is nil' do

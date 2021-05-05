@@ -856,6 +856,7 @@ Settings['extra'] ||= Settingslogic.new({})
 Settings.extra['matomo_site_id'] ||= Settings.extra['piwik_site_id'] if Settings.extra['piwik_site_id'].present?
 Settings.extra['matomo_url'] ||= Settings.extra['piwik_url'] if Settings.extra['piwik_url'].present?
 Settings.extra['matomo_disable_cookies'] = false if Settings.extra['matomo_disable_cookies'].nil?
+Settings.extra['maximum_text_highlight_size_kilobytes'] = Settings.extra.fetch('maximum_text_highlight_size_kilobytes', 512).kilobytes
 
 #
 # Rack::Attack settings

@@ -25,7 +25,7 @@
 #     updated_after: datetime
 #     updated_before: datetime
 #     confidential: boolean
-#     issue_type: array of strings (one of Issue.issue_types)
+#     issue_types: array of strings (one of Issue.issue_types)
 #
 class IssuesFinder < IssuableFinder
   CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER

@@ -87,6 +87,10 @@ module API
           project: -> { current_job.project }
         )
       end
+
+      def track_ci_minutes_usage!(_build, _runner)
+        # noop: overridden in EE
+      end
     end
   end
 end
