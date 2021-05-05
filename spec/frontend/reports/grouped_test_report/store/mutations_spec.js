@@ -52,7 +52,7 @@ describe('Reports Store Mutations', () => {
               system_output: "Failure/Error: is_expected.to eq('gitlab')",
               recent_failures: {
                 count: 4,
-                base_branch: 'master',
+                base_branch: 'main',
               },
             },
           ],

@@ -10,7 +10,7 @@ let mock;
 let store;
 const Component = Vue.extend(ContributorsCharts);
 const endpoint = 'contributors';
-const branch = 'master';
+const branch = 'main';
 const chartData = [
   { author_name: 'John', author_email: 'jawnnypoo@gmail.com', date: '2019-05-05' },
   { author_name: 'John', author_email: 'jawnnypoo@gmail.com', date: '2019-03-03' },

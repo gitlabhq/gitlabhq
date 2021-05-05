@@ -10,7 +10,7 @@ describe('Commits List', () => {
 
   beforeEach(() => {
     setFixtures(`
-      <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/master">
+      <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/main">
         <input id="commits-search">
       </form>
       <ol id="commits-list"></ol>
@@ -59,7 +59,7 @@ describe('Commits List', () => {
       jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
       mock = new MockAdapter(axios);
 
-      mock.onGet('/h5bp/html5-boilerplate/commits/master').reply(200, {
+      mock.onGet('/h5bp/html5-boilerplate/commits/main').reply(200, {
         html: '<li>Result</li>',
       });
 

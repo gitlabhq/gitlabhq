@@ -12,7 +12,7 @@
           "system_output": "Failure/Error: is_expected.to eq(3)\n\n  expected: 3\n       got: -1\n\n  (compared using ==)\n./spec/test_spec.rb:12:in `block (4 levels) in <top (required)>'",
           "recent_failures": {
             "count": 8,
-            "base_branch": "master"
+            "base_branch": "main"
           }
         },
         {
@@ -38,7 +38,7 @@
           "execution_time": 0.000562,
           "recent_failures": {
             "count": 3,
-            "base_branch": "master"
+            "base_branch": "main"
           }
         }
       ],

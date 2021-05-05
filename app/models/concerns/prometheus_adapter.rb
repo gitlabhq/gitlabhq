@@ -33,7 +33,7 @@ module PrometheusAdapter
 
     # This is a light-weight check if a prometheus client is properly configured.
     def configured?
-      raise NotImplemented
+      raise NotImplementedError
     end
 
     # This is a heavy-weight check if a prometheus is properly configured and accessible from GitLab.

@@ -8,7 +8,7 @@ exports[`Contributors charts should render charts when loading completed and the
     <h4
       class="gl-mb-2 gl-mt-5"
     >
-      Commits to master
+      Commits to main
     </h4>
      
     <span>

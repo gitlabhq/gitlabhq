@@ -3,7 +3,7 @@ export const diffMetadata = {
   size: 1,
   branch_name: 'update-changelog',
   source_branch_exists: true,
-  target_branch_name: 'master',
+  target_branch_name: 'main',
   commit: null,
   context_commits: null,
   merge_request_diff: {

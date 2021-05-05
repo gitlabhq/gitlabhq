@@ -7,6 +7,7 @@ module BoardsActions
   included do
     include BoardsResponses
 
+    before_action :authorize_read_board!, only: [:index, :show]
     before_action :boards, only: :index
     before_action :board, only: :show
     before_action :push_licensed_features, only: [:index, :show]

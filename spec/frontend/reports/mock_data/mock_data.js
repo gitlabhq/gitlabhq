@@ -7,7 +7,7 @@ export const failedIssue = {
     "Failure/Error: is_expected.to eq(3)\n\n  expected: 3\n       got: -1\n\n  (compared using ==)\n./spec/test_spec.rb:12:in `block (4 levels) in \u003ctop (required)\u003e'",
   recent_failures: {
     count: 3,
-    base_branch: 'master',
+    base_branch: 'main',
   },
 };
 

@@ -83,6 +83,7 @@ RSpec.describe User do
     it { is_expected.to have_one(:user_detail) }
     it { is_expected.to have_one(:atlassian_identity) }
     it { is_expected.to have_one(:user_highest_role) }
+    it { is_expected.to have_one(:credit_card_validation) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:project_members) }
@@ -1383,6 +1384,26 @@ RSpec.describe User do
             )
           end
         end
+      end
+    end
+  end
+
+  describe '#credit_card_validated_at' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when credit_card_validation does not exist' do
+      it 'returns nil' do
+        expect(user.credit_card_validated_at).to be nil
+      end
+    end
+
+    context 'when credit_card_validation exists' do
+      it 'returns the credit card validated time' do
+        credit_card_validated_time = Time.current - 1.day
+
+        create(:credit_card_validation, credit_card_validated_at: credit_card_validated_time, user: user)
+
+        expect(user.credit_card_validated_at).to eq(credit_card_validated_time)
       end
     end
   end
@@ -5287,6 +5308,26 @@ RSpec.describe User do
         email: user.email
       }
       expect(user.hook_attrs).to eq(user_attributes)
+    end
+  end
+
+  describe 'user credit card validation' do
+    context 'when user is initialized' do
+      let(:user) { build(:user) }
+
+      it { expect(user.credit_card_validation).not_to be_present }
+    end
+
+    context 'when create user without credit card validation' do
+      let(:user) { create(:user) }
+
+      it { expect(user.credit_card_validation).not_to be_present }
+    end
+
+    context 'when user credit card validation exists' do
+      let(:user) { create(:user, :with_credit_card_validation) }
+
+      it { expect(user.credit_card_validation).to be_persisted }
     end
   end
 

@@ -12,11 +12,11 @@ describe('Code navigation mutations', () => {
     it('sets initial data', () => {
       mutations.SET_INITIAL_DATA(state, {
         blobs: ['test'],
-        definitionPathPrefix: 'https://test.com/blob/master',
+        definitionPathPrefix: 'https://test.com/blob/main',
       });
 
       expect(state.blobs).toEqual(['test']);
-      expect(state.definitionPathPrefix).toBe('https://test.com/blob/master');
+      expect(state.definitionPathPrefix).toBe('https://test.com/blob/main');
     });
   });
 

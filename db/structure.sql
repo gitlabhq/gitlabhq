@@ -18282,6 +18282,11 @@ CREATE SEQUENCE user_canonical_emails_id_seq
 
 ALTER SEQUENCE user_canonical_emails_id_seq OWNED BY user_canonical_emails.id;
 
+CREATE TABLE user_credit_card_validations (
+    user_id bigint NOT NULL,
+    credit_card_validated_at timestamp with time zone NOT NULL
+);
+
 CREATE TABLE user_custom_attributes (
     id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -21654,6 +21659,9 @@ ALTER TABLE ONLY user_callouts
 
 ALTER TABLE ONLY user_canonical_emails
     ADD CONSTRAINT user_canonical_emails_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_credit_card_validations
+    ADD CONSTRAINT user_credit_card_validations_pkey PRIMARY KEY (user_id);
 
 ALTER TABLE ONLY user_custom_attributes
     ADD CONSTRAINT user_custom_attributes_pkey PRIMARY KEY (id);
@@ -25941,6 +25949,9 @@ ALTER TABLE ONLY lfs_file_locks
 ALTER TABLE ONLY project_alerting_settings
     ADD CONSTRAINT fk_rails_27a84b407d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY user_credit_card_validations
+    ADD CONSTRAINT fk_rails_27ebc03cbf FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY dast_site_validations
     ADD CONSTRAINT fk_rails_285c617324 FOREIGN KEY (dast_site_token_id) REFERENCES dast_site_tokens(id) ON DELETE CASCADE;
 
@@ -26923,7 +26934,7 @@ ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT fk_rails_d2711daad4 FOREIGN KEY (source_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY web_hooks
-    ADD CONSTRAINT fk_rails_d35697648e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_rails_d35697648e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_group_links
     ADD CONSTRAINT fk_rails_d3a0488427 FOREIGN KEY (shared_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

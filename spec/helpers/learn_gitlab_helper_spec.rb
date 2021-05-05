@@ -85,10 +85,14 @@ RSpec.describe LearnGitlabHelper do
 
         it { is_expected.to eq(result) }
       end
+    end
 
-      context 'when not signed in' do
-        it { is_expected.to eq(false) }
+    context 'when not signed in' do
+      before do
+        stub_experiment_for_subject(learn_gitlab_a: true, learn_gitlab_b: true)
       end
+
+      it { is_expected.to eq(false) }
     end
   end
 
@@ -118,10 +122,14 @@ RSpec.describe LearnGitlabHelper do
 
         it { is_expected.to eq(result) }
       end
+    end
 
-      context 'when not signed in' do
-        it { is_expected.to eq(nil) }
+    context 'when not signed in' do
+      before do
+        stub_experiment_for_subject(learn_gitlab_a: true, learn_gitlab_b: true)
       end
+
+      it { is_expected.to eq(nil) }
     end
   end
 end
