@@ -38,6 +38,14 @@ module GroupsHelper
     ]
   end
 
+  def group_information_title(group)
+    if Feature.enabled?(:sidebar_refactor, current_user)
+      group.subgroup? ? _('Subgroup information') : _('Group information')
+    else
+      group.subgroup? ? _('Subgroup overview') : _('Group overview')
+    end
+  end
+
   def group_container_registry_nav?
     Gitlab.config.registry.enabled &&
       can?(current_user, :read_container_image, @group)

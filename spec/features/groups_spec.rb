@@ -368,14 +368,14 @@ RSpec.describe 'Group' do
 
       expect(page).to have_content(nested_group.name)
       expect(page).to have_content(project.name)
-      expect(page).to have_link('Group overview')
+      expect(page).to have_link('Group information')
     end
 
-    it 'renders subgroup page with the text "Subgroup overview"' do
+    it 'renders subgroup page with the text "Subgroup information"' do
       visit group_path(nested_group)
       wait_for_requests
 
-      expect(page).to have_link('Subgroup overview')
+      expect(page).to have_link('Subgroup information')
     end
 
     it 'renders project page with the text "Project overview"' do

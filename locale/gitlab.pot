@@ -15477,6 +15477,9 @@ msgstr ""
 msgid "Group info:"
 msgstr ""
 
+msgid "Group information"
+msgstr ""
+
 msgid "Group is required when cluster_type is :group"
 msgstr ""
 
@@ -30723,6 +30726,9 @@ msgid "Storage:"
 msgstr ""
 
 msgid "StorageSize|Unknown"
+msgstr ""
+
+msgid "Subgroup information"
 msgstr ""
 
 msgid "Subgroup milestone"

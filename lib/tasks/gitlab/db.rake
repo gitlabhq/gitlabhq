@@ -217,9 +217,11 @@ namespace :gitlab do
     end
 
     desc 'Run migrations with instrumentation'
-    task :migration_testing, [:result_file] => :environment do |_, args|
-      result_file = args[:result_file] || raise("Please specify result_file argument")
-      raise "File exists already, won't overwrite: #{result_file}" if File.exist?(result_file)
+    task migration_testing: :environment do
+      result_dir = Gitlab::Database::Migrations::Instrumentation::RESULT_DIR
+      raise "Directory exists already, won't overwrite: #{result_dir}" if File.exist?(result_dir)
+
+      Dir.mkdir(result_dir)
 
       verbose_was = ActiveRecord::Migration.verbose
       ActiveRecord::Migration.verbose = true
@@ -240,7 +242,7 @@ namespace :gitlab do
       end
     ensure
       if instrumentation
-        File.open(result_file, 'wb+') do |io|
+        File.open(File.join(result_dir, Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME), 'wb+') do |io|
           io << instrumentation.observations.to_json
         end
       end

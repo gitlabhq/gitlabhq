@@ -14,9 +14,8 @@ RSpec.describe 'Group navbar' do
   let(:structure) do
     [
       {
-        nav_item: _('Group overview'),
+        nav_item: _('Group information'),
         nav_sub_items: [
-          _('Details'),
           _('Activity')
         ]
       },

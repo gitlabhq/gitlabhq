@@ -8,16 +8,48 @@ RSpec.describe 'getting project information' do
   let(:query) { graphql_query_for('metadata', {}, all_graphql_fields_for('Metadata')) }
 
   context 'logged in' do
-    it 'returns version and revision' do
-      post_graphql(query, current_user: create(:user))
-
-      expect(graphql_errors).to be_nil
-      expect(graphql_data).to eq(
+    let(:expected_data) do
+      {
         'metadata' => {
           'version' => Gitlab::VERSION,
-          'revision' => Gitlab.revision
+          'revision' => Gitlab.revision,
+          'kas' => {
+            'enabled' => Gitlab::Kas.enabled?,
+            'version' => expected_kas_version,
+            'externalUrl' => expected_kas_external_url
+          }
         }
-      )
+      }
+    end
+
+    context 'kas is enabled' do
+      let(:expected_kas_version) { Gitlab::Kas.version }
+      let(:expected_kas_external_url) { Gitlab::Kas.external_url }
+
+      before do
+        allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
+        post_graphql(query, current_user: create(:user))
+      end
+
+      it 'returns version, revision, kas_enabled, kas_version, kas_external_url' do
+        expect(graphql_errors).to be_nil
+        expect(graphql_data).to eq(expected_data)
+      end
+    end
+
+    context 'kas is disabled' do
+      let(:expected_kas_version) { nil }
+      let(:expected_kas_external_url) { nil }
+
+      before do
+        allow(Gitlab::Kas).to receive(:enabled?).and_return(false)
+        post_graphql(query, current_user: create(:user))
+      end
+
+      it 'returns version and revision' do
+        expect(graphql_errors).to be_nil
+        expect(graphql_data).to eq(expected_data)
+      end
     end
   end
 

@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import BoardCardInner from './board_card_inner.vue';
 
 export default {
@@ -31,7 +31,6 @@ export default {
   },
   computed: {
     ...mapState(['selectedBoardItems', 'activeId']),
-    ...mapGetters(['isSwimlanesOn']),
     isActive() {
       return this.item.id === this.activeId;
     },

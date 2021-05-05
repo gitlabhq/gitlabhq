@@ -15,8 +15,7 @@ RSpec.describe 'The group page' do
 
   def expect_all_sidebar_links
     within('.nav-sidebar') do
-      expect(page).to have_link('Group overview')
-      expect(page).to have_link('Details')
+      expect(page).to have_link('Group information')
       expect(page).to have_link('Activity')
       expect(page).to have_link('Issues')
       expect(page).to have_link('Merge requests')
@@ -44,8 +43,7 @@ RSpec.describe 'The group page' do
       visit group_path(group)
 
       within('.nav-sidebar') do
-        expect(page).to have_link('Group overview')
-        expect(page).to have_link('Details')
+        expect(page).to have_link('Group information')
         expect(page).not_to have_link('Activity')
         expect(page).not_to have_link('Contribution')
 

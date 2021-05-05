@@ -1,7 +1,6 @@
 - issues_count = cached_issuables_count(@group, type: :issues)
 - merge_requests_count = group_open_merge_requests_count(@group)
 - aside_title = @group.subgroup? ? _('Subgroup navigation') : _('Group navigation')
-- overview_title = @group.subgroup? ? _('Subgroup overview') : _('Group overview')
 
 %aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **sidebar_tracking_attributes_by_object(@group), 'aria-label': aside_title }
   .nav-sidebar-inner-scroll
@@ -19,21 +18,23 @@
         = nav_link(path: paths, unless: -> { current_path?('groups/contribution_analytics#show') }, html_options: { class: 'home' }) do
           = link_to group_path(@group) do
             .nav-icon-container
-              = sprite_icon('home')
+              - sprite = Feature.enabled?(:sidebar_refactor, current_user) ? 'group' : 'home'
+              = sprite_icon(sprite)
             %span.nav-item-name
-              = overview_title
+              = group_information_title(@group)
 
           %ul.sidebar-sub-level-items
             = nav_link(path: ['groups#show', 'groups#details', 'groups#activity', 'groups#subgroups'], html_options: { class: "fly-out-top-item" } ) do
               = link_to group_path(@group) do
                 %strong.fly-out-top-item-name
-                  = overview_title
+                  = group_information_title(@group)
             %li.divider.fly-out-top-item
 
-            = nav_link(path: ['groups#show', 'groups#details', 'groups#subgroups'], html_options: { class: 'home' }) do
-              = link_to details_group_path(@group), title: _('Group details') do
-                %span
-                  = _('Details')
+            - if Feature.disabled?(:sidebar_refactor, current_user)
+              = nav_link(path: ['groups#show', 'groups#details', 'groups#subgroups'], html_options: { class: 'home' }) do
+                = link_to details_group_path(@group), title: _('Group details') do
+                  %span
+                    = _('Details')
 
             - if group_sidebar_link?(:activity)
               = nav_link(path: 'groups#activity') do

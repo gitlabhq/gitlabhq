@@ -227,7 +227,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def render_show
-    @stages = @pipeline.stages.with_latest_and_retried_statuses
+    @stages = @pipeline.stages
 
     respond_to do |format|
       format.html do

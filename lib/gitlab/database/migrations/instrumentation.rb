@@ -4,6 +4,9 @@ module Gitlab
   module Database
     module Migrations
       class Instrumentation
+        RESULT_DIR = Rails.root.join('tmp', 'migration-testing').freeze
+        STATS_FILENAME = 'migration-stats.json'
+
         attr_reader :observations
 
         def initialize(observers = ::Gitlab::Database::Migrations::Observers.all_observers)

@@ -126,6 +126,18 @@ Examples:
 - `index_projects_on_id_service_desk_enabled`
 - `index_clusters_on_enabled_cluster_type_id_and_created_at`
 
+### Truncate long index names
+
+PostgreSQL [limits the length of identifiers](https://www.postgresql.org/docs/current/limits.html),
+like column or index names. Column names are not usually a problem, but index names tend
+to be longer. Some methods for shortening a name that's too long:
+
+- Prefix it with `i_` instead of `index_`.
+- Skip redundant prefixes. For example,
+  `index_vulnerability_findings_remediations_on_vulnerability_remediation_id` becomes
+  `index_vulnerability_findings_remediations_on_remediation_id`.
+- Instead of columns, specify the purpose of the index, such as `index_users_for_unconfirmation_notification`.
+
 ## Heavy operations in a single transaction
 
 When using a single-transaction migration, a transaction holds a database connection

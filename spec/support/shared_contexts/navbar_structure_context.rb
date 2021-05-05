@@ -170,15 +170,18 @@ RSpec.shared_context 'group navbar structure' do
     }
   end
 
+  let(:group_information_nav_item) do
+    {
+      nav_item: _('Group information'),
+      nav_sub_items: [
+        _('Activity')
+      ]
+    }
+  end
+
   let(:structure) do
     [
-      {
-        nav_item: _('Group overview'),
-        nav_sub_items: [
-          _('Details'),
-          _('Activity')
-        ]
-      },
+      group_information_nav_item,
       {
         nav_item: _('Issues'),
         nav_sub_items: [

@@ -15,7 +15,7 @@ describe('Board card', () => {
   const localVue = createLocalVue();
   localVue.use(Vuex);
 
-  const createStore = ({ initialState = {}, isSwimlanesOn = false } = {}) => {
+  const createStore = ({ initialState = {} } = {}) => {
     mockActions = {
       toggleBoardItem: jest.fn(),
       toggleBoardItemMultiSelection: jest.fn(),
@@ -30,7 +30,6 @@ describe('Board card', () => {
       },
       actions: mockActions,
       getters: {
-        isSwimlanesOn: () => isSwimlanesOn,
         isEpicBoard: () => false,
       },
     });
@@ -90,72 +89,65 @@ describe('Board card', () => {
     });
   });
 
-  describe.each`
-    isSwimlanesOn
-    ${true}       | ${false}
-  `('when isSwimlanesOn is $isSwimlanesOn', ({ isSwimlanesOn }) => {
-    it('should not highlight the card by default', async () => {
-      createStore({ isSwimlanesOn });
-      mountComponent();
+  it('should not highlight the card by default', async () => {
+    createStore();
+    mountComponent();
 
-      expect(wrapper.classes()).not.toContain('is-active');
-      expect(wrapper.classes()).not.toContain('multi-select');
+    expect(wrapper.classes()).not.toContain('is-active');
+    expect(wrapper.classes()).not.toContain('multi-select');
+  });
+
+  it('should highlight the card with a correct style when selected', async () => {
+    createStore({
+      initialState: {
+        activeId: mockIssue.id,
+      },
+    });
+    mountComponent();
+
+    expect(wrapper.classes()).toContain('is-active');
+    expect(wrapper.classes()).not.toContain('multi-select');
+  });
+
+  it('should highlight the card with a correct style when multi-selected', async () => {
+    createStore({
+      initialState: {
+        activeId: inactiveId,
+        selectedBoardItems: [mockIssue],
+      },
+    });
+    mountComponent();
+
+    expect(wrapper.classes()).toContain('multi-select');
+    expect(wrapper.classes()).not.toContain('is-active');
+  });
+
+  describe('when mouseup event is called on the card', () => {
+    beforeEach(() => {
+      createStore();
+      mountComponent();
     });
 
-    it('should highlight the card with a correct style when selected', async () => {
-      createStore({
-        initialState: {
-          activeId: mockIssue.id,
-        },
-        isSwimlanesOn,
-      });
-      mountComponent();
+    describe('when not using multi-select', () => {
+      it('should call vuex action "toggleBoardItem" with correct parameters', async () => {
+        await selectCard();
 
-      expect(wrapper.classes()).toContain('is-active');
-      expect(wrapper.classes()).not.toContain('multi-select');
-    });
-
-    it('should highlight the card with a correct style when multi-selected', async () => {
-      createStore({
-        initialState: {
-          activeId: inactiveId,
-          selectedBoardItems: [mockIssue],
-        },
-        isSwimlanesOn,
-      });
-      mountComponent();
-
-      expect(wrapper.classes()).toContain('multi-select');
-      expect(wrapper.classes()).not.toContain('is-active');
-    });
-
-    describe('when mouseup event is called on the card', () => {
-      beforeEach(() => {
-        createStore({ isSwimlanesOn });
-        mountComponent();
-      });
-
-      describe('when not using multi-select', () => {
-        it('should call vuex action "toggleBoardItem" with correct parameters', async () => {
-          await selectCard();
-
-          expect(mockActions.toggleBoardItem).toHaveBeenCalledTimes(1);
-          expect(mockActions.toggleBoardItem).toHaveBeenCalledWith(expect.any(Object), {
-            boardItem: mockIssue,
-          });
+        expect(mockActions.toggleBoardItem).toHaveBeenCalledTimes(1);
+        expect(mockActions.toggleBoardItem).toHaveBeenCalledWith(expect.any(Object), {
+          boardItem: mockIssue,
         });
       });
+    });
 
-      describe('when using multi-select', () => {
-        it('should call vuex action "multiSelectBoardItem" with correct parameters', async () => {
-          await multiSelectCard();
+    describe('when using multi-select', () => {
+      it('should call vuex action "multiSelectBoardItem" with correct parameters', async () => {
+        await multiSelectCard();
 
-          expect(mockActions.toggleBoardItemMultiSelection).toHaveBeenCalledTimes(1);
-          expect(mockActions.toggleBoardItemMultiSelection).toHaveBeenCalledWith(
-            expect.any(Object),
-            mockIssue,
-          );
-        });
+        expect(mockActions.toggleBoardItemMultiSelection).toHaveBeenCalledTimes(1);
+        expect(mockActions.toggleBoardItemMultiSelection).toHaveBeenCalledWith(
+          expect.any(Object),
+          mockIssue,
+        );
       });
     });
   });

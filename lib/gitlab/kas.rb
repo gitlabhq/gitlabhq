@@ -3,6 +3,7 @@
 module Gitlab
   module Kas
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Kas-Api-Request'
+    VERSION_FILE = 'GITLAB_KAS_VERSION'
     JWT_ISSUER = 'gitlab-kas'
 
     include JwtAuthenticatable
@@ -28,6 +29,27 @@ module Gitlab
         return true unless ::Gitlab.com?
 
         Feature.enabled?(:kubernetes_agent_on_gitlab_com, project, default_enabled: :yaml)
+      end
+
+      # Return GitLab KAS version
+      #
+      # @return [String] version
+      def version
+        @_version ||= Rails.root.join(VERSION_FILE).read.chomp
+      end
+
+      # Return GitLab KAS external_url
+      #
+      # @return [String] external_url
+      def external_url
+        Gitlab.config.gitlab_kas.external_url
+      end
+
+      # Return whether GitLab KAS is enabled
+      #
+      # @return [Boolean] external_url
+      def enabled?
+        !!Gitlab.config['gitlab_kas']&.fetch('enabled', false)
       end
     end
   end

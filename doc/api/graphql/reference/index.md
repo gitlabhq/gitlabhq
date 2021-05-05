@@ -9511,6 +9511,16 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="jobpermissionsreadjobartifacts"></a>`readJobArtifacts` | [`Boolean!`](#boolean) | Indicates the user can perform `read_job_artifacts` on this resource. |
 | <a id="jobpermissionsupdatebuild"></a>`updateBuild` | [`Boolean!`](#boolean) | Indicates the user can perform `update_build` on this resource. |
 
+### `Kas`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="kasenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the Kubernetes Agent Server is enabled. |
+| <a id="kasexternalurl"></a>`externalUrl` | [`String`](#string) | The URL used by the Agents to communicate with KAS. |
+| <a id="kasversion"></a>`version` | [`String`](#string) | KAS version. |
+
 ### `Label`
 
 #### Fields
@@ -10110,6 +10120,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="metadatakas"></a>`kas` | [`Kas!`](#kas) | Metadata about KAS. |
 | <a id="metadatarevision"></a>`revision` | [`String!`](#string) | Revision. |
 | <a id="metadataversion"></a>`version` | [`String!`](#string) | Version. |
 

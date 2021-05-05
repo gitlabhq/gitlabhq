@@ -33,6 +33,46 @@ RSpec.describe Gitlab::Kas do
     end
   end
 
+  describe '.enabled?' do
+    before do
+      allow(Gitlab).to receive(:config).and_return(gitlab_config)
+    end
+
+    subject { described_class.enabled? }
+
+    context 'gitlab_config is not enabled' do
+      let(:gitlab_config) { { 'gitlab_kas' => { 'enabled' => false } } }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'gitlab_config is enabled' do
+      let(:gitlab_config) { { 'gitlab_kas' => { 'enabled' => true } } }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'enabled is unset' do
+      let(:gitlab_config) { { 'gitlab_kas' => {} } }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '.external_url' do
+    it 'returns gitlab_kas external_url config' do
+      expect(described_class.external_url).to eq(Gitlab.config.gitlab_kas.external_url)
+    end
+  end
+
+  describe '.version' do
+    it 'returns gitlab_kas version config' do
+      version_file = Rails.root.join(described_class::VERSION_FILE)
+
+      expect(described_class.version).to eq(version_file.read.chomp)
+    end
+  end
+
   describe '.ensure_secret!' do
     context 'secret file exists' do
       before do

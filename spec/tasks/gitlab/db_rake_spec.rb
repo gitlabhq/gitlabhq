@@ -298,15 +298,15 @@ RSpec.describe 'gitlab:db namespace rake task' do
   end
 
   describe '#migrate_with_instrumentation' do
-    subject { run_rake_task('gitlab:db:migration_testing', "[#{filename}]") }
+    subject { run_rake_task('gitlab:db:migration_testing') }
 
     let(:ctx) { double('ctx', migrations: all_migrations, schema_migration: double, get_all_versions: existing_versions) }
     let(:instrumentation) { instance_double(Gitlab::Database::Migrations::Instrumentation, observations: observations) }
     let(:existing_versions) { [1] }
     let(:all_migrations) { [double('migration1', version: 1), pending_migration] }
     let(:pending_migration) { double('migration2', version: 2) }
-    let(:filename) { 'results-file.json'}
-    let(:buffer) { StringIO.new }
+    let(:filename) { Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME }
+    let!(:directory) { Dir.mktmpdir }
     let(:observations) { %w[some data] }
 
     before do
@@ -316,17 +316,19 @@ RSpec.describe 'gitlab:db namespace rake task' do
 
       allow(instrumentation).to receive(:observe).and_yield
 
-      allow(File).to receive(:open).with(filename, 'wb+').and_yield(buffer)
+      allow(Dir).to receive(:mkdir)
+      allow(File).to receive(:exist?).with(directory).and_return(false)
+      stub_const('Gitlab::Database::Migrations::Instrumentation::RESULT_DIR', directory)
     end
 
-    it 'fails when given no filename argument' do
-      expect { run_rake_task('gitlab:db:migration_testing') }.to raise_error(/specify result_file/)
+    after do
+      FileUtils.rm_rf([directory])
     end
 
-    it 'fails when the given file already exists' do
-      expect(File).to receive(:exist?).with(filename).and_return(true)
+    it 'fails when the directory already exists' do
+      expect(File).to receive(:exist?).with(directory).and_return(true)
 
-      expect { subject }.to raise_error(/File exists/)
+      expect { subject }.to raise_error(/Directory exists/)
     end
 
     it 'instruments the pending migration' do
@@ -344,7 +346,7 @@ RSpec.describe 'gitlab:db namespace rake task' do
     it 'writes observations out to JSON file' do
       subject
 
-      expect(buffer.string).to eq(observations.to_json)
+      expect(File.read(File.join(directory, filename))).to eq(observations.to_json)
     end
   end
 

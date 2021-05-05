@@ -6,7 +6,8 @@ RSpec.describe InstanceMetadata do
   it 'has the correct properties' do
     expect(subject).to have_attributes(
       version: Gitlab::VERSION,
-      revision: Gitlab.revision
+      revision: Gitlab.revision,
+      kas: kind_of(::InstanceMetadata::Kas)
     )
   end
 end
