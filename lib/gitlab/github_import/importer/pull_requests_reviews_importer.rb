@@ -22,17 +22,22 @@ module Gitlab
           :pull_request_reviews
         end
 
-        def id_for_already_imported_cache(review)
-          review.github_id
+        def id_for_already_imported_cache(merge_request)
+          merge_request.id
         end
 
         def each_object_to_import
           project.merge_requests.find_each do |merge_request|
-            reviews = client.pull_request_reviews(project.import_source, merge_request.iid)
-            reviews.each do |review|
-              review.merge_request_id = merge_request.id
-              yield(review)
-            end
+            next if already_imported?(merge_request)
+
+            client
+              .pull_request_reviews(project.import_source, merge_request.iid)
+              .each do |review|
+                review.merge_request_id = merge_request.id
+                yield(review)
+              end
+
+            mark_as_imported(merge_request)
           end
         end
       end

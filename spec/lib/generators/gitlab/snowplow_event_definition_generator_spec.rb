@@ -32,6 +32,30 @@ RSpec.describe Gitlab::SnowplowEventDefinitionGenerator do
       expect(::Gitlab::Config::Loader::Yaml.new(File.read(event_definition_path)).load_raw!).to eq(sample_event)
     end
 
+    context 'event definition already exists' do
+      before do
+        stub_const('Gitlab::VERSION', '12.11.0-pre')
+        described_class.new([], generator_options).invoke_all
+      end
+
+      it 'overwrites event definition --force flag set to true' do
+        sample_event = ::Gitlab::Config::Loader::Yaml.new(fixture_file(File.join(sample_event_dir, 'sample_event.yml'))).load_raw!
+
+        stub_const('Gitlab::VERSION', '13.11.0-pre')
+        described_class.new([], generator_options.merge('force' => true)).invoke_all
+
+        event_definition_path = File.join(ce_temp_dir, 'groups__email_campaigns_controller_click.yml')
+        event_data = ::Gitlab::Config::Loader::Yaml.new(File.read(event_definition_path)).load_raw!
+
+        expect(event_data).to eq(sample_event)
+      end
+
+      it 'raises error when --force flag set to false' do
+        expect { described_class.new([], generator_options.merge('force' => false)).invoke_all }
+          .to raise_error(StandardError, /Event definition already exists at/)
+      end
+    end
+
     it 'creates EE event definition file using the template' do
       sample_event = ::Gitlab::Config::Loader::Yaml.new(fixture_file(File.join(sample_event_dir, 'sample_event_ee.yml'))).load_raw!
 

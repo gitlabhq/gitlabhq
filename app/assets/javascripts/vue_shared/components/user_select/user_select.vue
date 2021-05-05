@@ -88,6 +88,9 @@ export default {
       },
     },
     searchUsers: {
+      // TODO Remove error policy
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/329750
+      errorPolicy: 'all',
       query: searchUsers,
       variables() {
         return {
@@ -97,10 +100,26 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.users?.nodes.map(({ user }) => user) || [];
+        // TODO Remove null filter (BE fix required)
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/329750
+        return data.workspace?.users?.nodes.filter((x) => x).map(({ user }) => user) || [];
       },
       debounce: ASSIGNEES_DEBOUNCE_DELAY,
-      error() {
+      error({ graphQLErrors }) {
+        // TODO This error suppression is temporary (BE fix required)
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/329750
+        if (
+          graphQLErrors.length === 1 &&
+          graphQLErrors[0]?.message === 'Cannot return null for non-nullable field GroupMember.user'
+        ) {
+          // eslint-disable-next-line no-console
+          console.error(
+            "Suppressing the error 'Cannot return null for non-nullable field GroupMember.user'. Please see https://gitlab.com/gitlab-org/gitlab/-/issues/329750",
+          );
+          this.isSearching = false;
+          return;
+        }
+
         this.$emit('error');
         this.isSearching = false;
       },
@@ -117,15 +136,20 @@ export default {
       if (!this.participants) {
         return [];
       }
-      const mergedSearchResults = this.participants.reduce((acc, current) => {
-        if (
-          !acc.some((user) => current.username === user.username) &&
-          (current.name.includes(this.search) || current.username.includes(this.search))
-        ) {
-          acc.push(current);
-        }
-        return acc;
-      }, this.searchUsers);
+
+      const filteredParticipants = this.participants.filter(
+        (user) => user.name.includes(this.search) || user.username.includes(this.search),
+      );
+
+      // TODO this de-duplication is temporary (BE fix required)
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/327822
+      const mergedSearchResults = filteredParticipants
+        .concat(this.searchUsers)
+        .reduce(
+          (acc, current) => (acc.some((user) => current.id === user.id) ? acc : [...acc, current]),
+          [],
+        );
+
       return this.moveCurrentUserToStart(mergedSearchResults);
     },
     isSearchEmpty() {

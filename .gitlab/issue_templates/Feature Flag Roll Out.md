@@ -70,7 +70,7 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 - [ ] Announce on the issue an estimated time this will be enabled on GitLab.com
 
-- [ ] Check if the feature flag change needs to be accompagnied with a
+- [ ] Check if the feature flag change needs to be accompanied with a
       [change management
       issue](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process). Cross
       link the issue here if it does.

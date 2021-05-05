@@ -23,12 +23,18 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsReviewsImporter do
   end
 
   describe '#id_for_already_imported_cache' do
-    it { expect(subject.id_for_already_imported_cache(double(github_id: 1))).to eq(1) }
+    it { expect(subject.id_for_already_imported_cache(double(id: 1))).to eq(1) }
   end
 
-  describe '#each_object_to_import' do
+  describe '#each_object_to_import', :clean_gitlab_redis_cache do
     it 'fetchs the merged pull requests data' do
-      merge_request = create(:merge_request, source_project: project)
+      merge_request = create(
+        :merged_merge_request,
+        iid: 999,
+        source_project: project,
+        target_project: project
+      )
+
       review = double
 
       expect(review)
@@ -37,10 +43,14 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsReviewsImporter do
 
       allow(client)
         .to receive(:pull_request_reviews)
+        .exactly(:once) # ensure to be cached on the second call
         .with('github/repo', merge_request.iid)
         .and_return([review])
 
-      expect { |b| subject.each_object_to_import(&b) }.to yield_with_args(review)
+      expect { |b| subject.each_object_to_import(&b) }
+        .to yield_with_args(review)
+
+      subject.each_object_to_import {}
     end
   end
 end

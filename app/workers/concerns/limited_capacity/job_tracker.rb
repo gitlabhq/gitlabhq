@@ -3,21 +3,30 @@ module LimitedCapacity
   class JobTracker # rubocop:disable Scalability/IdempotentWorker
     include Gitlab::Utils::StrongMemoize
 
+    LUA_REGISTER_SCRIPT = <<~EOS
+      local set_key, element, max_elements = KEYS[1], ARGV[1], ARGV[2]
+
+      if redis.call("scard", set_key) < tonumber(max_elements) then
+        redis.call("sadd", set_key, element)
+        return true
+      end
+
+      return false
+    EOS
+
     def initialize(namespace)
       @namespace = namespace
     end
 
-    def register(jid)
-      _added, @count = with_redis_pipeline do |redis|
-        register_job_keys(redis, jid)
-        get_job_count(redis)
-      end
+    def register(jid, max_jids)
+      with_redis do |redis|
+        redis.eval(LUA_REGISTER_SCRIPT, keys: [counter_key], argv: [jid, max_jids])
+      end.present?
     end
 
     def remove(jid)
-      _removed, @count = with_redis_pipeline do |redis|
+      with_redis do |redis|
         remove_job_keys(redis, jid)
-        get_job_count(redis)
       end
     end
 
@@ -25,14 +34,13 @@ module LimitedCapacity
       completed_jids = Gitlab::SidekiqStatus.completed_jids(running_jids)
       return unless completed_jids.any?
 
-      _removed, @count = with_redis_pipeline do |redis|
+      with_redis do |redis|
         remove_job_keys(redis, completed_jids)
-        get_job_count(redis)
       end
     end
 
     def count
-      @count ||= with_redis { |redis| get_job_count(redis) }
+      with_redis { |redis| redis.scard(counter_key) }
     end
 
     def running_jids
@@ -49,26 +57,12 @@ module LimitedCapacity
       "worker:#{namespace.to_s.underscore}:running"
     end
 
-    def get_job_count(redis)
-      redis.scard(counter_key)
-    end
-
-    def register_job_keys(redis, keys)
-      redis.sadd(counter_key, keys)
-    end
-
     def remove_job_keys(redis, keys)
       redis.srem(counter_key, keys)
     end
 
     def with_redis(&block)
       Gitlab::Redis::Queues.with(&block) # rubocop: disable CodeReuse/ActiveRecord
-    end
-
-    def with_redis_pipeline(&block)
-      with_redis do |redis|
-        redis.pipelined(&block)
-      end
     end
   end
 end

@@ -1,0 +1,6 @@
+query getRunner($id: CiRunnerID!) {
+  runner(id: $id) {
+    id
+    runnerType
+  }
+}

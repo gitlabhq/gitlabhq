@@ -55,6 +55,14 @@
   aggregation: daily
   feature_flag: track_epics_activity
 
+# emoji
+
+- name: g_project_management_users_awarding_epic_emoji
+  category: epics_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epics_activity
+
 # start date events
 
 - name: g_project_management_users_setting_epic_start_date_as_fixed

@@ -10460,6 +10460,30 @@ Status: `implemented`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.g_project_management_users_awarding_epic_emoji_monthly`
+
+Counts of MAU awarding emoji on epic
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210503011217_g_project_management_users_awarding_epic_emoji_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_awarding_epic_emoji_weekly`
+
+Counts of WAU awarding emoji on epic
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210503011355_g_project_management_users_awarding_epic_emoji_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.g_project_management_users_creating_epic_notes_monthly`
 
 Counts of MAU adding epic notes

@@ -32,8 +32,9 @@ RSpec.describe Gitlab::GithubImport::Client do
     it 'returns the pull request reviews' do
       client = described_class.new('foo')
 
-      expect(client.octokit).to receive(:pull_request_reviews).with('foo/bar', 999)
-      expect(client).to receive(:with_rate_limit).and_yield
+      expect(client)
+        .to receive(:each_object)
+        .with(:pull_request_reviews, 'foo/bar', 999)
 
       client.pull_request_reviews('foo/bar', 999)
     end

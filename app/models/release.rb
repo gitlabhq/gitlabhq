@@ -24,7 +24,7 @@ class Release < ApplicationRecord
   before_create :set_released_at
 
   validates :project, :tag, presence: true
-  validates :description, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }, if: :should_validate_description_length?
+  validates :description, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }, if: :description_changed?
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
   validates :links, nested_attributes_duplicates: { scope: :release, child_attributes: %i[name url filepath] }
 
@@ -101,11 +101,6 @@ class Release < ApplicationRecord
   end
 
   private
-
-  def should_validate_description_length?
-    description_changed? &&
-      ::Feature.enabled?(:validate_release_description_length, project, default_enabled: :yaml)
-  end
 
   def actual_sha
     sha || actual_tag&.dereferenced_target
