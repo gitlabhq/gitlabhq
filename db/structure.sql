@@ -13565,7 +13565,9 @@ CREATE TABLE import_export_uploads (
     project_id integer,
     import_file text,
     export_file text,
-    group_id bigint
+    group_id bigint,
+    remote_import_url text,
+    CONSTRAINT check_58f0d37481 CHECK ((char_length(remote_import_url) <= 512))
 );
 
 CREATE SEQUENCE import_export_uploads_id_seq
@@ -13993,6 +13995,9 @@ CREATE TABLE iterations_cadences (
     active boolean DEFAULT true NOT NULL,
     automatic boolean DEFAULT true NOT NULL,
     title text NOT NULL,
+    roll_over boolean DEFAULT false NOT NULL,
+    description text,
+    CONSTRAINT check_5c5d2b44bd CHECK ((char_length(description) <= 5000)),
     CONSTRAINT check_fedff82d3b CHECK ((char_length(title) <= 255))
 );
 
@@ -16025,7 +16030,9 @@ CREATE TABLE plan_limits (
     daily_invites integer DEFAULT 0 NOT NULL,
     rubygems_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL,
     terraform_module_max_file_size bigint DEFAULT 1073741824 NOT NULL,
-    helm_max_file_size bigint DEFAULT 5242880 NOT NULL
+    helm_max_file_size bigint DEFAULT 5242880 NOT NULL,
+    ci_registered_group_runners integer DEFAULT 1000 NOT NULL,
+    ci_registered_project_runners integer DEFAULT 1000 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

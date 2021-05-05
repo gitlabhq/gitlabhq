@@ -5,61 +5,95 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Reviewing and managing merge requests **(FREE)**
+# Review and manage merge requests **(FREE)**
 
-Merge requests are the primary method of making changes to files in a GitLab project.
-Changes are proposed by [creating and submitting a merge request](../creating_merge_requests.md),
-which is then reviewed, and accepted (or rejected).
+[Merge requests](../index.md) are the primary method of making changes to files in a
+GitLab project. [Create and submit a merge request](../creating_merge_requests.md)
+to propose changes. Your team makes [suggestions](suggestions.md) and leaves
+[comments](../../../discussions/index.md). When your work is reviewed, your team
+members can choose to accept or reject it.
 
-## View project merge requests
+## View merge requests
 
-View all the merge requests in a project by navigating to **Project > Merge Requests**.
+You can view merge requests for a specific project, or for all projects in a group:
 
-When you access your project's merge requests, GitLab displays them in a list.
-Use the tabs to quickly filter by open and closed. You can also [search and filter the results](../../../search/index.md#filtering-issue-and-merge-request-lists).
+- **Specific project**: Go to your project and select **Merge Requests**.
+- **All projects in a group**: Go to your group and select **Merge Requests**.
+  If your group contains subgroups, this view also displays merge requests from the subgroup projects.
+  GitLab displays a count of open merge requests in the left sidebar, but
+  [caches the value](#cached-merge-request-count) for groups with a large number of
+  open merge requests.
+
+GitLab displays open merge requests, with tabs to filter the list by open and closed status:
 
 ![Project merge requests list view](img/project_merge_requests_list_view_v13_5.png)
 
-## View merge requests for all projects in a group
+You can [search and filter](../../../search/index.md#filtering-issue-and-merge-request-lists),
+the results, or select a merge request to begin a review.
 
-View merge requests in all projects in the group, including all projects of all descendant subgroups of the group. Navigate to **Group > Merge Requests** to view these merge requests. This view also has the open and closed merge requests tabs.
+## Review a merge request
 
-You can [search and filter the results](../../../search/index.md#filtering-issue-and-merge-request-lists) from here.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab Premium 11.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) to GitLab Free in 13.1.
 
-![Group Issues list view](img/group_merge_requests_list_view.png)
+When you review a merge request, you can create comments that are visible only
+to you. When you're ready, you can publish them together in a single action.
+To start your review:
 
-## Cached merge request count
+1. Go to the merge request you want to review, and select the **Changes** tab.
+   To learn more about navigating the diffs displayed in this tab, read
+   [Changes tab in merge requests](../changes.md).
+1. Select a line of code. In GitLab version 13.2 and later, you can [highlight a set of lines](#comment-on-multiple-lines).
+1. Write your first comment, and select **Start a review** below your comment:
+   ![Starting a review](img/mr_review_start.png)
+1. Continue adding comments to lines of code, and select the appropriate button after
+   you write a comment:
+   - **Add to review**: Keep this comment private and add to the current review.
+     These review comments are marked **Pending** and are visible only to you.
+   - **Add comment now**: Submits the specific comment as a regular comment instead of as part of the review.
+1. (Optional) You can use [quick actions](../../quick_actions.md) inside review comments.
+   The comment shows the actions to perform after publication, but does not perform them
+   until you submit your review.
+1. When your review is complete, you can [submit the review](#submit-a-review). Your comments
+   are now visible, and any quick actions included your comments are performed.
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299542) in GitLab 13.11.
-> - It's [deployed behind a feature flag](../../../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-cached-merge-request-count).
+### Submit a review
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+You can submit your completed review in multiple ways:
 
-In a group, the sidebar displays the total count of open merge requests and this value is cached if higher
-than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
+- Use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
+- When creating a review comment, select **Submit review**.
+- Scroll to the bottom of the screen and select **Submit review**.
 
-### Enable or disable cached merge request count **(FREE SELF)**
+When you submit your review, GitLab:
 
-Cached merge request count in the left sidebar is under development but ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../../administration/feature_flags.md)
-can disable it.
+- Publishes the comments in your review.
+- Sends a single email to every notifiable user of the merge request, with your
+  review comments attached. Replying to this email creates a new comment on the merge request.
+- Perform any quick actions you added to your review comments.
 
-To disable it:
+### Resolving/Unresolving threads
 
-```ruby
-Feature.disable(:cached_sidebar_merge_requests_count)
-```
+Review comments can also resolve or unresolve [resolvable threads](../../../discussions/index.md#resolvable-comments-and-threads).
+When replying to a comment, a checkbox is displayed to resolve or unresolve
+the thread after publication.
 
-To enable it:
+![Resolve checkbox](img/mr_review_resolve.png)
 
-```ruby
-Feature.enable(:cached_sidebar_merge_requests_count)
-```
+If a particular pending comment resolves or unresolves the thread, this is shown on the pending
+comment itself.
+
+![Resolve status](img/mr_review_resolve2.png)
+
+![Unresolve status](img/mr_review_unresolve.png)
+
+### Adding a new comment
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8225) in GitLab 13.10.
+
+If you have a review in progress, you will be presented with the option to **Add to review**:
+
+![New thread](img/mr_review_new_comment_v13_11.png)
 
 ## Semi-linear history merge requests
 
@@ -70,151 +104,6 @@ succeeded, the target branch build also succeeds after the merge.
 Navigate to a project's settings, select the **Merge commit with semi-linear history**
 option under **Merge Requests: Merge method** and save your changes.
 
-## View changes between file versions
-
-The **Changes** tab, below the main merge request details and next to the discussion tab,
-shows the changes to files between branches or commits. This view of changes to a
-file is also known as a **diff**. By default, the diff view compares the file in the
-merge request branch and the file in the target branch.
-
-The diff view includes the following:
-
-- The file's name and path.
-- The number of lines added and deleted.
-- Buttons for the following options:
-  - Toggle comments for this file; useful for inline reviews.
-  - Edit the file in the merge request's branch.
-  - Show full file, in case you want to look at the changes in context with the rest of the file.
-  - View file at the current commit.
-  - Preview the changes with [Review Apps](../../../../ci/review_apps/index.md).
-- The changed lines, with the specific changes highlighted.
-
-![Example screenshot of a source code diff](img/merge_request_diff_v12_2.png)
-
-### Merge request diff file navigation
-
-When reviewing changes in the **Changes** tab the diff can be navigated using
-the file tree or file list. As you scroll through large diffs with many
-changes, you can quickly jump to any changed file using the file tree or file
-list.
-
-![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
-
-### Collapsed files in the Changes view
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232820) in GitLab 13.4.
-
-When you review changes in the **Changes** tab, files with a large number of changes are collapsed
-to improve performance. When files are collapsed, a warning appears at the top of the changes.
-Click **Expand file** on any file to view the changes for that file.
-
-### File-by-file diff navigation
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222790) in GitLab 13.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229848) in GitLab 13.7.
-
-For larger merge requests, consider reviewing one file at a time. To enable this feature:
-
-1. In the top-right corner, select your avatar.
-1. Select **Preferences**.
-1. Scroll to the **Behavior** section and select **Show one file at a time on merge request's Changes tab**.
-1. Select **Save changes**.
-
-After you enable this setting, GitLab displays only one file at a time in the **Changes** tab when you review merge requests. You can click **Prev** and **Next** to view other changed files.
-
-![File-by-file diff navigation](img/file_by_file_v13_2.png)
-
-In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/233898) and later, if you want to change
-this behavior, you can do so from your **User preferences** (as explained above) or directly in a
-merge request:
-
-1. Go to the merge request's **Changes** tab.
-1. Select the cog icon (**{settings}**) to reveal the merge request's settings dropdown.
-1. Select or deselect the checkbox **Show one file at a time** to change the setting accordingly.
-
-This change overrides the choice you made in your user preferences and persists until you clear your
-browser's cookies or change this behavior again.
-
-### Merge requests commit navigation
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18140) in GitLab 13.0.
-
-To seamlessly navigate among commits in a merge request:
-
-1. Select the **Commits** tab.
-1. Select a commit to open it in the single-commit view.
-1. Navigate through the commits by either:
-
-   - Selecting **Prev** and **Next** buttons below the tab buttons.
-   - Using the <kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
-
-![Merge requests commit navigation](img/commit_nav_v13_11.png)
-
-### Incrementally expand merge request diffs
-
-By default, the diff shows only the parts of a file which are changed.
-To view more unchanged lines above or below a change click on the
-**Expand up** or **Expand down** icons. You can also click on **Show unchanged lines**
-to expand the entire file.
-
-![Incrementally expand merge request diffs](img/incrementally_expand_merge_request_diffs_v12_2.png)
-
-In GitLab [versions 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/205401), when viewing a
-merge request's **Changes** tab, if a certain file was only renamed, you can expand it to see the
-entire content by clicking **Show file contents**.
-
-### Ignore whitespace changes in Merge Request diff view
-
-If you click the **Hide whitespace changes** button, you can see the diff
-without whitespace changes (if there are any). This is also working when on a
-specific commit page.
-
-![MR diff](img/merge_request_diff.png)
-
-NOTE:
-You can append `?w=1` while on the diffs page of a merge request to ignore any
-whitespace changes.
-
-## Mark files as viewed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51513) in GitLab 13.9.
-> - It's deployed behind a feature flag, enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-file-views). **(FREE SELF)**
-
-When reviewing a merge request with many files multiple times, it may be useful to the reviewer
-to focus on new changes and ignore the files that they have already reviewed and don't want to
-see anymore unless they are changed again.
-
-To mark a file as viewed:
-
-1. Go to the merge request's **Diffs** tab.
-1. On the right-top of the file, locate the **Viewed** checkbox.
-1. Check it to mark the file as viewed.
-
-Once checked, the file remains marked for that reviewer unless there are newly introduced
-changes to its content or the checkbox is unchecked.
-
-### Enable or disable file views **(FREE SELF)**
-
-The file view feature is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../../administration/feature_flags.md)
-can opt to enable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:local_file_reviews)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:local_file_reviews)
-```
-
 ## Perform inline code reviews
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13950) in GitLab 11.5.
@@ -222,11 +111,11 @@ Feature.disable(:local_file_reviews)
 In a merge request, you can leave comments in any part of the file being changed.
 In the Merge Request Diff UI, you can:
 
-- **Comment on a single line**: Click the **{comment}** **comment** icon in the
+- **Comment on a single line**: Select the **{comment}** **comment** icon in the
   gutter to expand the diff lines and display a comment box.
-- [**Comment on multiple lines**](#commenting-on-multiple-lines).
+- [**Comment on multiple lines**](#comment-on-multiple-lines).
 
-### Commenting on multiple lines
+### Comment on multiple lines
 
 > - [Introduced](https://gitlab.com/gitlab-org/ux-research/-/issues/870) in GitLab 13.2.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49875) click-and-drag features in GitLab 13.8.
@@ -237,9 +126,9 @@ to by either:
 
 ![Comment on any diff file line](img/comment-on-any-diff-line_v13_10.png)
 
-- Clicking and dragging the **{comment}** **comment** icon in the gutter to highlight
+- Dragging the **{comment}** **comment** icon in the gutter to highlight
   lines in the diff. GitLab expands the diff lines and displays a comment box.
-- After starting a comment by clicking the **{comment}** **comment** icon in the
+- After starting a comment by selecting the **{comment}** **comment** icon in the
   gutter, select the first line number your comment refers to in the **Commenting on lines**
   select box. New comments default to single-line comments, unless you select
   a different starting line.
@@ -305,7 +194,7 @@ These features are associated with merge requests:
 - [Bulk editing merge requests](../../../project/bulk_editing.md):
   Update the attributes of multiple merge requests simultaneously.
 - [Cherry-pick changes](../cherry_pick_changes.md):
-  Cherry-pick any commit in the UI by clicking the **Cherry-pick** button in a merged merge requests or a commit.
+  Cherry-pick any commit in the UI by selecting the **Cherry-pick** button in a merged merge requests or a commit.
 - [Fast-forward merge requests](../fast_forward_merge.md):
   For a linear Git history and a way to accept merge requests without creating merge commits
 - [Find the merge request that introduced a change](../versions.md):
@@ -355,27 +244,27 @@ the command line.
 The merge request sidebar contains the branch reference for the source branch
 used to contribute changes for this merge request.
 
-To copy the branch reference into your clipboard, click the **Copy branch name** button
+To copy the branch reference into your clipboard, select the **Copy branch name** button
 (**{copy-to-clipboard}**) in the right sidebar. Use it to checkout the branch locally
-via command line by running `git checkout <branch-name>`.
+from the command line by running `git checkout <branch-name>`.
 
 ### Checkout merge requests locally through the `head` ref
 
 A merge request contains all the history from a repository, plus the additional
 commits added to the branch associated with the merge request. Here's a few
-ways to checkout a merge request locally.
+ways to check out a merge request locally.
 
-You can checkout a merge request locally even if the source
+You can check out a merge request locally even if the source
 project is a fork (even a private fork) of the target project.
 
 This relies on the merge request `head` ref (`refs/merge-requests/:iid/head`)
 that is available for each merge request. It allows checking out a merge
-request via its ID instead of its branch.
+request by using its ID instead of its branch.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223156) in GitLab
 13.4, 14 days after a merge request gets closed or merged, the merge request
-`head` ref is deleted. This means that the merge request is not available
-for local checkout via the merge request `head` ref anymore. The merge request
+`head` ref is deleted. This means that the merge request isn't available
+for local checkout from the merge request `head` ref anymore. The merge request
 can still be re-opened. If the merge request's branch
 exists, you can still check out the branch, as it isn't affected.
 
@@ -450,3 +339,36 @@ git checkout origin/merge-requests/1
 ```
 
 All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
+
+## Cached merge request count
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299542) in GitLab 13.11.
+> - It's [deployed behind a feature flag](../../../feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-cached-merge-request-count).
+
+WARNING:
+This feature might not be available to you. Refer to the previous **version history** note for details.
+
+In a group, the sidebar displays the total count of open merge requests. This value is cached if it's greater than
+than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
+
+### Enable or disable cached merge request count **(FREE SELF)**
+
+Cached merge request count in the left sidebar is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../../administration/feature_flags.md)
+can disable it.
+
+To disable it:
+
+```ruby
+Feature.disable(:cached_sidebar_merge_requests_count)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:cached_sidebar_merge_requests_count)
+```

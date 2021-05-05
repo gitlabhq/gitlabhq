@@ -9,7 +9,7 @@ type: reference
 
 You can set a maximum size for display of diff files (patches).
 
-For details about diff files, [View changes between files](../project/merge_requests/reviews/index.md#view-changes-between-file-versions).
+For details about diff files, [view changes between files](../project/merge_requests/changes.md).
 
 ## Maximum diff patch size
 
@@ -23,10 +23,10 @@ This affects merge requests and branch comparison views.
 
 To set the maximum diff patch size:
 
-1. Go to **Admin Area > Settings > General**.
+1. Go to the Admin Area (**{admin}**) and select **Settings > General**.
 1. Expand **Diff limits**.
 1. Enter a value for **Maximum diff patch size**, measured in bytes.
-1. Click on **Save changes**.
+1. Select **Save changes**.
 
 WARNING:
 This setting is experimental. An increased maximum increases resource

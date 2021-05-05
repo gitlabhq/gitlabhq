@@ -435,6 +435,32 @@ installation, run the following in the [GitLab Rails console](operations/rails_c
 Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 ```
 
+### Number of registered runners per scope
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321368) in GitLab 13.12.
+
+The total number of registered runners is limited at the group and project
+levels. Each time a new runner is registered, GitLab checks these limits. A
+runner's registration fails if it exceeds the limit for the scope determined by
+the runner registration token.
+
+- GitLab SaaS subscribers have different limits defined per plan, affecting all projects using that plan.
+- Self-managed GitLab Premium and Ultimate limits are defined by a default plan that affects all projects:
+
+    | Runner scope                                | Default value |
+    |---------------------------------------------|---------------|
+    | `ci_registered_group_runners`               | 1000          |
+    | `ci_registered_project_runners`             | 1000          |
+
+    To update these limits, run the following in the
+    [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+    ```ruby
+    # Use ci_registered_group_runners or ci_registered_project_runners
+    # depending on desired scope
+    Plan.default.actual_limits.update!(ci_registered_project_runners: 100)
+    ```
+
 ## Instance monitoring and metrics
 
 ### Incident Management inbound alert limits

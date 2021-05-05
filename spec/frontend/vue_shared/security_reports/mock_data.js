@@ -339,7 +339,7 @@ export const securityReportDownloadPathsQueryNoArtifactsResponse = {
   },
 };
 
-export const securityReportDownloadPathsQueryResponse = {
+export const securityReportMergeRequestDownloadPathsQueryResponse = {
   project: {
     mergeRequest: {
       headPipeline: {
@@ -445,6 +445,114 @@ export const securityReportDownloadPathsQueryResponse = {
     },
     __typename: 'Project',
   },
+};
+
+export const securityReportDownloadPathsQueryResponse = securityReportMergeRequestDownloadPathsQueryResponse;
+
+export const securityReportPipelineDownloadPathsQueryResponse = {
+  project: {
+    pipeline: {
+      id: 'gid://gitlab/Ci::Pipeline/176',
+      jobs: {
+        nodes: [
+          {
+            name: 'secret_detection',
+            artifacts: {
+              nodes: [
+                {
+                  downloadPath:
+                    '/gitlab-org/secrets-detection-test/-/jobs/1399/artifacts/download?file_type=trace',
+                  fileType: 'TRACE',
+                  __typename: 'CiJobArtifact',
+                },
+                {
+                  downloadPath:
+                    '/gitlab-org/secrets-detection-test/-/jobs/1399/artifacts/download?file_type=secret_detection',
+                  fileType: 'SECRET_DETECTION',
+                  __typename: 'CiJobArtifact',
+                },
+              ],
+              __typename: 'CiJobArtifactConnection',
+            },
+            __typename: 'CiJob',
+          },
+          {
+            name: 'bandit-sast',
+            artifacts: {
+              nodes: [
+                {
+                  downloadPath:
+                    '/gitlab-org/secrets-detection-test/-/jobs/1400/artifacts/download?file_type=trace',
+                  fileType: 'TRACE',
+                  __typename: 'CiJobArtifact',
+                },
+                {
+                  downloadPath:
+                    '/gitlab-org/secrets-detection-test/-/jobs/1400/artifacts/download?file_type=sast',
+                  fileType: 'SAST',
+                  __typename: 'CiJobArtifact',
+                },
+              ],
+              __typename: 'CiJobArtifactConnection',
+            },
+            __typename: 'CiJob',
+          },
+          {
+            name: 'eslint-sast',
+            artifacts: {
+              nodes: [
+                {
+                  downloadPath:
+                    '/gitlab-org/secrets-detection-test/-/jobs/1401/artifacts/download?file_type=trace',
+                  fileType: 'TRACE',
+                  __typename: 'CiJobArtifact',
+                },
+                {
+                  downloadPath:
+                    '/gitlab-org/secrets-detection-test/-/jobs/1401/artifacts/download?file_type=sast',
+                  fileType: 'SAST',
+                  __typename: 'CiJobArtifact',
+                },
+              ],
+              __typename: 'CiJobArtifactConnection',
+            },
+            __typename: 'CiJob',
+          },
+          {
+            name: 'all_artifacts',
+            artifacts: {
+              nodes: [
+                {
+                  downloadPath:
+                    '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=archive',
+                  fileType: 'ARCHIVE',
+                  __typename: 'CiJobArtifact',
+                },
+                {
+                  downloadPath:
+                    '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=trace',
+                  fileType: 'TRACE',
+                  __typename: 'CiJobArtifact',
+                },
+                {
+                  downloadPath:
+                    '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=metadata',
+                  fileType: 'METADATA',
+                  __typename: 'CiJobArtifact',
+                },
+              ],
+              __typename: 'CiJobArtifactConnection',
+            },
+            __typename: 'CiJob',
+          },
+        ],
+        __typename: 'CiJobConnection',
+      },
+      __typename: 'Pipeline',
+    },
+    __typename: 'MergeRequest',
+  },
+  __typename: 'Project',
 };
 
 /**

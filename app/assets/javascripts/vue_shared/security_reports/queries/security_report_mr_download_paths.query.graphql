@@ -1,0 +1,24 @@
+query securityReportDownloadPaths(
+  $projectPath: ID!
+  $iid: String!
+  $reportTypes: [SecurityReportTypeEnum!]
+) {
+  project(fullPath: $projectPath) {
+    mergeRequest(iid: $iid) {
+      headPipeline {
+        id
+        jobs(securityReportTypes: $reportTypes) {
+          nodes {
+            name
+            artifacts {
+              nodes {
+                downloadPath
+                fileType
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

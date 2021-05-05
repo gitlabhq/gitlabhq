@@ -16,7 +16,7 @@ import {
 import securityReportDownloadPathsQuery from './queries/security_report_download_paths.query.graphql';
 import store from './store';
 import { MODULE_SAST, MODULE_SECRET_DETECTION } from './store/constants';
-import { extractSecurityReportArtifacts } from './utils';
+import { extractSecurityReportArtifactsFromMergeRequest } from './utils';
 
 export default {
   store,
@@ -97,7 +97,7 @@ export default {
         };
       },
       update(data) {
-        return extractSecurityReportArtifacts(this.$options.reportTypes, data);
+        return extractSecurityReportArtifactsFromMergeRequest(this.$options.reportTypes, data);
       },
       error(error) {
         this.showError(error);

@@ -355,6 +355,8 @@ export default class MergeRequestTabs {
 
     this.commitPipelinesTable = new Vue({
       provide: {
+        artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
+        artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
         targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
       },
       render(createElement) {

@@ -67,7 +67,17 @@ module Gitlab
 
         @archive_file = File.join(@shared.archive_path, Gitlab::ImportExport.export_filename(exportable: @importable))
 
-        download_or_copy_upload(@importable.import_export_upload.import_file, @archive_file)
+        remote_download_or_download_or_copy_upload
+      end
+
+      def remote_download_or_download_or_copy_upload
+        import_export_upload = @importable.import_export_upload
+
+        if import_export_upload.remote_import_url.present?
+          download(remote_import_url, @archive_file)
+        else
+          download_or_copy_upload(import_export_upload.import_file, @archive_file)
+        end
       end
 
       def remove_symlinks

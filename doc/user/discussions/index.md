@@ -91,7 +91,7 @@ current merge request.
 
 ### Marking a comment or thread as resolved
 
-You can mark a thread as resolved by clicking the **Resolve thread**
+You can mark a thread as resolved by selecting the **Resolve thread**
 button at the bottom of the thread.
 
 !["Resolve thread" button](img/resolve_thread_button_v13_3.png)
@@ -102,8 +102,8 @@ Alternatively, you can mark each comment as resolved individually.
 
 ### Move all unresolved threads in a merge request to an issue
 
-To continue all open threads from a merge request in a new issue, click the
-**Resolve all threads in new issue** button.
+To continue all open threads from a merge request in a new issue, select
+**Resolve all threads in new issue**.
 
 ![Open new issue for all unresolved threads](img/btn_new_issue_for_all_threads.png)
 
@@ -283,85 +283,6 @@ To create a confidential comment, select the **Make this comment confidential** 
 
 ![Confidential comments](img/confidential_comments_v13_9.png)
 
-## Merge request reviews
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab Premium 11.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) to GitLab Free in 13.1.
-
-When looking at a merge request diff, you are able to start a review.
-This allows you to create comments inside a merge request that are **only visible to you** until published,
-in order to allow you to submit them all as a single action.
-
-### Starting a review
-
-To start a review, write a comment on a diff as normal under the **Changes** tab
-in a merge request, and then select **Start a review**.
-
-![Starting a review](img/mr_review_start.png)
-
-After a review is started, any comments that are part of this review are marked `Pending`.
-All comments that are part of a review show two buttons:
-
-- **Finish review**: Submits all comments that are part of the review, making them visible to other users.
-- **Add comment now**: Submits the specific comment as a regular comment instead of as part of the review.
-
-![A comment that is part of a review](img/pending_review_comment.png)
-
-You can use [quick actions](../project/quick_actions.md) inside review comments. The comment shows the actions to perform after publication.
-
-![A review comment with quick actions](img/review_comment_quickactions.png)
-
-To add more comments to a review, start writing a comment as normal and click the **Add to review** button.
-
-![Adding a second comment to a review](img/mr_review_second_comment.png)
-
-This adds the comment to the review.
-
-![Second review comment](img/mr_review_second_comment_added.png)
-
-### Resolving/Unresolving threads
-
-Review comments can also resolve/unresolve [resolvable threads](#resolvable-comments-and-threads).
-When replying to a comment, a checkbox is displayed that you can click to resolve or unresolve
-the thread after publication.
-
-![Resolve checkbox](img/mr_review_resolve.png)
-
-If a particular pending comment resolves or unresolves the thread, this is shown on the pending
-comment itself.
-
-![Resolve status](img/mr_review_resolve2.png)
-
-![Unresolve status](img/mr_review_unresolve.png)
-
-### Adding a new comment
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8225) in GitLab 13.10.
-
-If you have a review in progress, you will be presented with the option to **Add to review**:
-
-![New thread](img/mr_review_new_comment_v13_11.png)
-
-### Submitting a review
-
-If you have any comments that have not been submitted, a bar displays at the
-bottom of the screen with two buttons:
-
-- **Pending comments**: Opens a list of comments ready to be submitted for review.
-- **Submit review**: Publishes all comments. Any quick actions submitted are performed at this time.
-
-Alternatively, to finish the entire review from a pending comment:
-
-- Click the **Submit review** button on the comment.
-- Use the `/submit_review` [quick action](../project/quick_actions.md) in the text of non-review comment.
-
-![Review submission](img/review_preview_v13_11.png)
-
-Submitting the review sends a single email to every notifiable user of the
-merge request with all the comments associated to it.
-
-Replying to this email will, consequentially, create a new comment on the associated merge request.
-
 ## Filtering notes
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26723) in GitLab 11.5.
@@ -392,7 +313,7 @@ To reply to a standard (non-thread) comment, you can use the **Reply to comment*
 
 The **Reply to comment** button is only displayed if you have permissions to reply to an existing thread, or start a thread from a standard comment.
 
-Clicking on the **Reply to comment** button brings the reply area into focus and you can type your reply.
+Selecting the **Reply to comment** button brings the reply area into focus and you can type your reply.
 
 ![Reply to comment feature](img/reply_to_comment.gif)
 
@@ -409,9 +330,9 @@ not supported yet.
 
 You can assign an issue to a user who made a comment.
 
-In the comment, click the **More Actions** menu and click **Assign to commenting user**.
+In the comment, select the **More Actions** menu, and then select **Assign to commenting user**.
 
-  Click the button again to unassign the commenter.
+Select the button again to unassign the commenter.
 
 ![Assign to commenting user](img/quickly_assign_commenter_v13_1.png)
 
