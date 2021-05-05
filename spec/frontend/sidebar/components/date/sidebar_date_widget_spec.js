@@ -80,6 +80,12 @@ describe('Sidebar date Widget', () => {
     expect(findPopoverIcon().exists()).toBe(false);
   });
 
+  it('does not render GlDatePicker', () => {
+    createComponent();
+
+    expect(findDatePicker().exists()).toBe(false);
+  });
+
   describe('when issuable has no due date', () => {
     beforeEach(async () => {
       createComponent({
@@ -114,8 +120,15 @@ describe('Sidebar date Widget', () => {
     });
 
     it('uses a correct prop to set the initial date for GlDatePicker', () => {
-      expect(findDatePicker().props('value')).toBe(null);
-      expect(findDatePicker().props('defaultDate')).toEqual(wrapper.vm.parsedDate);
+      expect(findDatePicker().props()).toMatchObject({
+        value: null,
+        autocomplete: 'off',
+        defaultDate: expect.any(Object),
+      });
+    });
+
+    it('renders GlDatePicker', async () => {
+      expect(findDatePicker().exists()).toBe(true);
     });
   });
 

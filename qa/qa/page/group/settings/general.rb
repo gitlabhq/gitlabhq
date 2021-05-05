@@ -129,4 +129,4 @@ module QA
   end
 end
 
-QA::Page::Group::Settings::General.prepend_if_ee('QA::EE::Page::Group::Settings::General')
+QA::Page::Group::Settings::General.prepend_if_ee('Page::Group::Settings::General', namespace: QA)

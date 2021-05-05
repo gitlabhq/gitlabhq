@@ -21,6 +21,23 @@ RSpec.describe Ci::CreateWebIdeTerminalService do
           expect(subject[:pipeline].stages.count).to eq(1)
           expect(subject[:pipeline].builds.count).to eq(1)
         end
+
+        it 'calls ensure_project_iid explicitly' do
+          expect_next_instance_of(Ci::Pipeline) do |instance|
+            expect(instance).to receive(:ensure_project_iid!).twice
+          end
+          subject
+        end
+
+        context 'when the ci_pipeline_ensure_iid_on_save feature flag is off' do
+          it 'does not call ensure_project_iid explicitly' do
+            stub_feature_flags(ci_pipeline_ensure_iid_on_save: false)
+            expect_next_instance_of(Ci::Pipeline) do |instance|
+              expect(instance).to receive(:ensure_project_iid!).once
+            end
+            subject
+          end
+        end
       end
 
       before do

@@ -180,4 +180,4 @@ module QA
   end
 end
 
-QA::Page::Project::Show.prepend_if_ee('QA::EE::Page::Project::Show')
+QA::Page::Project::Show.prepend_if_ee('Page::Project::Show', namespace: QA)

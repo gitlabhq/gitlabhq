@@ -20,4 +20,4 @@ module QA
   end
 end
 
-QA::Page::Admin::Overview::Groups::Edit.prepend_if_ee('QA::EE::Page::Admin::Overview::Groups::Edit')
+QA::Page::Admin::Overview::Groups::Edit.prepend_if_ee('Page::Admin::Overview::Groups::Edit', namespace: QA)

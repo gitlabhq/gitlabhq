@@ -43,4 +43,4 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::ProtectedTags.prepend_if_ee('QA::EE::Page::Project::Settings::ProtectedTags')
+QA::Page::Project::Settings::ProtectedTags.prepend_if_ee('Page::Project::Settings::ProtectedTags', namespace: QA)

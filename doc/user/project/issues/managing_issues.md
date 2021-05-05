@@ -122,21 +122,16 @@ older format is still supported, allowing existing aliases or contacts to contin
 
 To link directly to the new issue page with prefilled fields, use query
 string parameters in a URL. You can embed a URL in an external
-HTML page, or create issues with certain
+HTML page to create issues with certain
 fields prefilled.
-
-The title, description, description template, and confidential fields can be prefilled
-using this method. You cannot pre-fill both the description and description template
-fields in the same URL because a description template also populates the description
-field.
 
 | Field                | URL Parameter Name    | Notes                                                 |
 |----------------------|-----------------------|-------------------------------------------------------|
 | title                | `issue[title]`        |                                                       |
-| description          | `issue[description]`  |                                                       |
-| description template | `issuable_template`   |                                                       |
-| issue type           | `issue[issue_type]`   | Either `incident` or `issue`                                     |
-| confidential         | `issue[confidential]` | Parameter value must be `true` to set to confidential |
+| description          | `issue[description]`  | Cannot be used at the same time as `issuable_template`. |
+| description template | `issuable_template`   | Cannot be used at the same time as `issue[description]`.  |
+| issue type           | `issue[issue_type]`   | Either `incident` or `issue`.                         |
+| confidential         | `issue[confidential]` | Parameter value must be `true` to set to confidential. |
 
 Follow these examples to form your new issue URL with prefilled fields.
 

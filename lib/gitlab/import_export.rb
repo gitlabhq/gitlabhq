@@ -99,11 +99,19 @@ module Gitlab
     def group_config_file
       Rails.root.join('lib/gitlab/import_export/group/import_export.yml')
     end
+
+    def group_wiki_repo_bundle_filename(group_id)
+      "#{group_id}.wiki.bundle"
+    end
+
+    def group_wiki_repo_bundle_path(shared, filename)
+      File.join(shared.export_path, 'repositories', filename)
+    end
+
+    def group_wiki_repo_bundle_full_path(shared, group_id)
+      group_wiki_repo_bundle_path(shared, group_wiki_repo_bundle_filename(group_id))
+    end
   end
 end
 
-Gitlab::ImportExport.prepend_if_ee('EE::Gitlab::ImportExport')
-
-# The methods in `Gitlab::ImportExport::GroupHelper` should be available as both
-# instance and class methods.
-Gitlab::ImportExport.extend_if_ee('Gitlab::ImportExport::GroupHelper')
+Gitlab::ImportExport.prepend_mod

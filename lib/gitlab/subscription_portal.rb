@@ -12,5 +12,5 @@ module Gitlab
   end
 end
 
-Gitlab::SubscriptionPortal.prepend_if_jh('JH::Gitlab::SubscriptionPortal')
+Gitlab::SubscriptionPortal.prepend_mod
 Gitlab::SubscriptionPortal::SUBSCRIPTIONS_URL = Gitlab::SubscriptionPortal.subscriptions_url.freeze

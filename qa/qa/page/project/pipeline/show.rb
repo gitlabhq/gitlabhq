@@ -117,4 +117,4 @@ module QA
   end
 end
 
-QA::Page::Project::Pipeline::Show.prepend_if_ee('QA::EE::Page::Project::Pipeline::Show')
+QA::Page::Project::Pipeline::Show.prepend_if_ee('Page::Project::Pipeline::Show', namespace: QA)

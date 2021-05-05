@@ -21,4 +21,4 @@ module QA
   end
 end
 
-QA::Page::Registration::Welcome.prepend_if_ee('QA::EE::Page::Registration::Welcome')
+QA::Page::Registration::Welcome.prepend_if_ee('Page::Registration::Welcome', namespace: QA)

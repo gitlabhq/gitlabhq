@@ -2,10 +2,14 @@
 
 require 'gitlab-dangerfiles'
 
-Gitlab::Dangerfiles.import_plugins(danger)
-danger.import_plugin('danger/plugins/*.rb')
+gitlab_dangerfiles = Gitlab::Dangerfiles::Engine.new(self)
+gitlab_dangerfiles.import_plugins
 
 return if helper.release_automation?
+
+danger.import_plugin('danger/plugins/*.rb')
+
+gitlab_dangerfiles.import_dangerfiles
 
 project_helper.rule_names.each do |rule|
   danger.import_dangerfile(path: File.join('danger', rule))

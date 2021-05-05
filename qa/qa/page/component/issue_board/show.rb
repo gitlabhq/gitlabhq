@@ -137,4 +137,4 @@ module QA
   end
 end
 
-QA::Page::Component::IssueBoard::Show.prepend_if_ee('QA::EE::Page::Component::IssueBoard::Show')
+QA::Page::Component::IssueBoard::Show.prepend_if_ee('Page::Component::IssueBoard::Show', namespace: QA)

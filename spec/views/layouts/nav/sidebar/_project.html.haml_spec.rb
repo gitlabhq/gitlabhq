@@ -650,6 +650,68 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
+  describe 'Analytics' do
+    it 'top level navigation link is visible points to the value stream page' do
+      render
+
+      expect(rendered).to have_link('Analytics', href: project_cycle_analytics_path(project))
+    end
+
+    describe 'CI/CD' do
+      it 'has a link to the CI/CD analytics page' do
+        render
+
+        expect(rendered).to have_link('CI/CD', href: charts_project_pipelines_path(project))
+      end
+
+      context 'when user does not have access' do
+        let(:user) { nil }
+
+        it 'does not have a link to the CI/CD analytics page' do
+          render
+
+          expect(rendered).not_to have_link('CI/CD', href: charts_project_pipelines_path(project))
+        end
+      end
+    end
+
+    describe 'Repository' do
+      it 'has a link to the repository analytics page' do
+        render
+
+        expect(rendered).to have_link('Repository', href: charts_project_graph_path(project, 'master'))
+      end
+
+      context 'when user does not have access' do
+        let(:user) { nil }
+
+        it 'does not have a link to the repository analytics page' do
+          render
+
+          expect(rendered).not_to have_link('Repository', href: charts_project_graph_path(project, 'master'))
+        end
+      end
+    end
+
+    describe 'Value Stream' do
+      it 'has a link to the value stream page' do
+        render
+
+        expect(rendered).to have_link('Value Stream', href: project_cycle_analytics_path(project))
+      end
+
+      context 'when user does not have access' do
+        let(:user) { nil }
+
+        it 'does not have a link to the value stream page' do
+          render
+
+          expect(rendered).not_to have_link('Value Stream', href: project_cycle_analytics_path(project))
+        end
+      end
+    end
+  end
+
   describe 'wiki entry tab' do
     let(:can_read_wiki) { true }
 
@@ -732,32 +794,6 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
 
       it 'shows the GitLab wiki tab' do
         expect(rendered).to have_link('Wiki', href: wiki_path(project.wiki))
-      end
-    end
-  end
-
-  describe 'value stream analytics entry' do
-    let(:read_cycle_analytics) { true }
-
-    before do
-      allow(view).to receive(:can?).with(user, :read_cycle_analytics, project).and_return(read_cycle_analytics)
-    end
-
-    describe 'when value stream analytics is enabled' do
-      it 'shows the value stream analytics entry' do
-        render
-
-        expect(rendered).to have_link('Value Stream', href: project_cycle_analytics_path(project))
-      end
-    end
-
-    describe 'when value stream analytics is disabled' do
-      let(:read_cycle_analytics) { false }
-
-      it 'does not show the value stream analytics entry' do
-        render
-
-        expect(rendered).not_to have_link('Value Stream', href: project_cycle_analytics_path(project))
       end
     end
   end

@@ -406,6 +406,12 @@ RSpec.describe "Issues > User edits issue", :js do
       end
 
       context 'update due date' do
+        before do
+          # Due date widget uses GraphQL and needs to wait for requests to come back
+          # The date picker won't be rendered before requests complete
+          wait_for_requests
+        end
+
         it 'adds due date to issue' do
           date = Date.today.at_beginning_of_month + 2.days
 

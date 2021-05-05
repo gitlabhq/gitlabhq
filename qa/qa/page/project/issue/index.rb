@@ -85,4 +85,4 @@ module QA
   end
 end
 
-QA::Page::Project::Issue::Index.prepend_if_ee('QA::EE::Page::Project::Issue::Index')
+QA::Page::Project::Issue::Index.prepend_if_ee('Page::Project::Issue::Index', namespace: QA)

@@ -21,16 +21,36 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip do
     before do
       allow(pipeline).to receive(:git_commit_message)
         .and_return('commit message [ci skip]')
-
-      step.perform!
     end
 
     it 'breaks the chain' do
+      step.perform!
+
       expect(step.break?).to be true
     end
 
     it 'skips the pipeline' do
+      step.perform!
+
       expect(pipeline.reload).to be_skipped
+    end
+
+    it 'calls ensure_project_iid explicitly' do
+      expect(pipeline).to receive(:ensure_project_iid!)
+
+      step.perform!
+    end
+
+    context 'when the ci_pipeline_ensure_iid_on_save feature flag is off' do
+      before do
+        stub_feature_flags(ci_pipeline_ensure_iid_on_skip: false)
+      end
+
+      it 'does not call ensure_project_iid explicitly' do
+        expect(pipeline).not_to receive(:ensure_project_iid!)
+
+        step.perform!
+      end
     end
   end
 

@@ -390,4 +390,4 @@ module QA
   end
 end
 
-QA::Page::MergeRequest::Show.prepend_if_ee('QA::EE::Page::MergeRequest::Show')
+QA::Page::MergeRequest::Show.prepend_if_ee('Page::MergeRequest::Show', namespace: QA)

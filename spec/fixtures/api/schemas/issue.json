@@ -14,6 +14,7 @@
     "due_date": { "type": ["string", "null"] },
     "relative_position": { "type": ["integer", "null"] },
     "time_estimate": { "type": "integer" },
+    "type": { "type": "string", "enum": ["ISSUE", "INCIDENT", "TEST_CASE", "REQUIREMENT"] },
     "issue_sidebar_endpoint": { "type": "string" },
     "toggle_subscription_endpoint": { "type": "string" },
     "assignable_labels_endpoint": { "type": "string" },

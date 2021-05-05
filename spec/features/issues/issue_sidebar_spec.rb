@@ -5,17 +5,14 @@ require 'spec_helper'
 RSpec.describe 'Issue Sidebar' do
   include MobileHelpers
 
-  let(:group) { create(:group, :nested) }
-  let(:project) { create(:project, :public, namespace: group) }
-  let!(:user) { create(:user) }
-  let!(:label) { create(:label, project: project, title: 'bug') }
-  let(:issue) { create(:labeled_issue, project: project, labels: [label]) }
-  let!(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
-  let!(:milestone_expired) { create(:milestone, project: project, due_date: 5.days.ago) }
-  let!(:milestone_no_duedate) { create(:milestone, project: project, title: 'Foo - No due date') }
-  let!(:milestone1) { create(:milestone, project: project, title: 'Milestone-1', due_date: 20.days.from_now) }
-  let!(:milestone2) { create(:milestone, project: project, title: 'Milestone-2', due_date: 15.days.from_now) }
-  let!(:milestone3) { create(:milestone, project: project, title: 'Milestone-3', due_date: 10.days.from_now) }
+  let_it_be(:group) { create(:group, :nested) }
+  let_it_be(:project) { create(:project, :public, namespace: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:label) { create(:label, project: project, title: 'bug') }
+  let_it_be(:issue) { create(:labeled_issue, project: project, labels: [label]) }
+  let_it_be(:mock_date) { Date.today.at_beginning_of_month + 2.days }
+  let_it_be(:issue_with_due_date) { create(:issue, project: project, due_date: mock_date) }
+  let_it_be(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
 
   before do
     stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
@@ -204,7 +201,31 @@ RSpec.describe 'Issue Sidebar' do
       end
     end
 
-    context 'as a allowed user' do
+    context 'due date widget', :js do
+      let(:due_date_value) { find('[data-testid="due-date"] [data-testid="sidebar-date-value"]') }
+
+      context 'when no due date exists' do
+        before do
+          visit_issue(project, issue)
+        end
+
+        it "displays 'None'" do
+          expect(due_date_value.text).to have_content 'None'
+        end
+      end
+
+      context 'when due date exists' do
+        before do
+          visit_issue(project, issue_with_due_date)
+        end
+
+        it "displays the due date" do
+          expect(due_date_value.text).to have_content mock_date.strftime('%b %-d, %Y')
+        end
+      end
+    end
+
+    context 'as an allowed user' do
       before do
         project.add_developer(user)
         visit_issue(project, issue)
@@ -238,6 +259,12 @@ RSpec.describe 'Issue Sidebar' do
       end
 
       context 'editing issue milestone', :js do
+        let_it_be(:milestone_expired) { create(:milestone, project: project, due_date: 5.days.ago) }
+        let_it_be(:milestone_no_duedate) { create(:milestone, project: project, title: 'Foo - No due date') }
+        let_it_be(:milestone1) { create(:milestone, project: project, title: 'Milestone-1', due_date: 20.days.from_now) }
+        let_it_be(:milestone2) { create(:milestone, project: project, title: 'Milestone-2', due_date: 15.days.from_now) }
+        let_it_be(:milestone3) { create(:milestone, project: project, title: 'Milestone-3', due_date: 10.days.from_now) }
+
         before do
           page.within('.block.milestone > .title') do
             click_on 'Edit'
@@ -426,6 +453,8 @@ RSpec.describe 'Issue Sidebar' do
 
   def visit_issue(project, issue)
     visit project_issue_path(project, issue)
+
+    wait_for_requests
   end
 
   def open_issue_sidebar

@@ -282,10 +282,12 @@ export default {
     </template>
     <template #default>
       <gl-datepicker
+        v-if="!isLoading"
         ref="datePicker"
         class="gl-relative"
         :default-date="parsedDate"
         show-clear-button
+        autocomplete="off"
         @input="setDate"
         @clear="setDate(null)"
       />

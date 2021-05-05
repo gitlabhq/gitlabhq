@@ -34,7 +34,7 @@ RSpec.describe 'Project navbar' do
 
     it 'redirects to value stream when Analytics item is clicked' do
       page.within('.sidebar-top-level-items') do
-        find('[data-qa-selector=analytics_anchor]').click
+        find('.shortcuts-analytics').click
       end
 
       wait_for_requests

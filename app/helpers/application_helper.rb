@@ -409,5 +409,4 @@ module ApplicationHelper
   end
 end
 
-ApplicationHelper.prepend_if_ee('EE::ApplicationHelper')
-ApplicationHelper.prepend_if_jh('JH::ApplicationHelper')
+ApplicationHelper.prepend_mod

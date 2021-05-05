@@ -311,4 +311,4 @@ module QA
   end
 end
 
-QA::Page::Project::WebIDE::Edit.prepend_if_ee('QA::EE::Page::Component::WebIDE::WebTerminalPanel')
+QA::Page::Project::WebIDE::Edit.prepend_if_ee('Page::Component::WebIDE::WebTerminalPanel', namespace: QA)

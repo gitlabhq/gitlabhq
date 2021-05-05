@@ -3,6 +3,10 @@
 module API
   module Entities
     class IssueBasic < IssuableEntity
+      format_with(:upcase) do |item|
+        item.upcase if item.respond_to?(:upcase)
+      end
+
       expose :closed_at
       expose :closed_by, using: Entities::UserBasic
 
@@ -16,6 +20,10 @@ module API
 
       expose :milestone, using: Entities::Milestone
       expose :assignees, :author, using: Entities::UserBasic
+      expose :issue_type,
+             as: :type,
+             format_with: :upcase,
+             documentation: { type: "String", desc: "One of #{Issue.issue_types.keys.map(&:upcase)}" }
 
       expose :assignee, using: ::API::Entities::UserBasic do |issue|
         issue.assignees.first

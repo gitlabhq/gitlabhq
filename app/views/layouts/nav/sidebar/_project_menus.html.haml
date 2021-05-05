@@ -1,6 +1,3 @@
-- if project_nav_tab? :analytics
-  = render 'layouts/nav/sidebar/analytics_links', links: project_analytics_navbar_links(@project, current_user)
-
 - if project_nav_tab?(:confluence)
   - confluence_url = project_wikis_confluence_path(@project)
   = nav_link do

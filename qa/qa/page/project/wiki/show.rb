@@ -14,4 +14,4 @@ module QA
   end
 end
 
-QA::Page::Project::Wiki::Show.prepend_if_ee('QA::EE::Page::Project::Wiki::Show')
+QA::Page::Project::Wiki::Show.prepend_if_ee('Page::Project::Wiki::Show', namespace: QA)

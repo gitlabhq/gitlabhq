@@ -127,6 +127,7 @@ Example response:
          "avatar_url" : null,
          "username" : "root"
       },
+      "type" : "ISSUE",
       "updated_at" : "2016-01-04T15:31:51.081Z",
       "closed_at" : null,
       "closed_by" : null,
@@ -331,6 +332,7 @@ Example response:
          "id" : 9,
          "name" : "Dr. Luella Kovacek"
       },
+      "type" : "ISSUE",
       "labels" : ["foo", "bar"],
       "upvotes": 4,
       "downvotes": 0,
@@ -531,6 +533,7 @@ Example response:
          "id" : 9,
          "name" : "Dr. Luella Kovacek"
       },
+      "type" : "ISSUE",
       "labels" : ["foo", "bar"],
       "upvotes": 4,
       "downvotes": 0,
@@ -699,6 +702,7 @@ Example response:
     "id": 9,
     "name": "Dr. Luella Kovacek"
   },
+  "type": "ISSUE",
   "labels": [],
   "upvotes": 4,
   "downvotes": 0,
@@ -863,6 +867,7 @@ Example response:
       "id" : 9,
       "name" : "Dr. Luella Kovacek"
    },
+   "type" : "ISSUE",
    "labels" : [],
    "upvotes": 4,
    "downvotes": 0,
@@ -1002,6 +1007,7 @@ Example response:
    "state" : "opened",
    "assignees" : [],
    "assignee" : null,
+   "type" : "ISSUE",
    "labels" : [
       "bug"
    ],
@@ -1375,6 +1381,7 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/axel.block"
   },
+  "type" : "ISSUE",
   "author": {
     "name": "Kris Steuber",
     "username": "solon.cremin",
@@ -1518,6 +1525,7 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/axel.block"
   },
+  "type" : "ISSUE",
   "author": {
     "name": "Kris Steuber",
     "username": "solon.cremin",
@@ -1651,6 +1659,7 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/3e6f06a86cf27fa8b56f3f74f7615987?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/keyon"
   },
+  "type" : "ISSUE",
   "closed_at": null,
   "closed_by": null,
   "author": {
@@ -1756,6 +1765,7 @@ Example response:
       "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
       "web_url": "https://gitlab.example.com/francisca"
     },
+    "type" : "ISSUE",
     "author": {
       "name": "Maxie Medhurst",
       "username": "craig_rutherford",

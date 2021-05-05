@@ -92,6 +92,16 @@ module Gitlab
     Rails.env.development? || Rails.env.test?
   end
 
+  def self.extensions
+    if jh?
+      %w[ee jh]
+    elsif ee?
+      %w[ee]
+    else
+      %w[]
+    end
+  end
+
   def self.ee?
     @is_ee ||=
       # We use this method when the Rails environment is not loaded. This

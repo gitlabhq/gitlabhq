@@ -6689,6 +6689,9 @@ msgstr ""
 msgid "CloudLicense|Buy subscription"
 msgstr ""
 
+msgid "CloudLicense|Enter activation code"
+msgstr ""
+
 msgid "CloudLicense|Free trial"
 msgstr ""
 
@@ -6696,9 +6699,6 @@ msgid "CloudLicense|Get help for the most common connectivity issues by %{linkSt
 msgstr ""
 
 msgid "CloudLicense|I agree that my use of the GitLab Software is subject to the Subscription Agreement located at the %{linkStart}Terms of Service%{linkEnd}, unless otherwise agreed to in writing with GitLab."
-msgstr ""
-
-msgid "CloudLicense|Learn how to %{linkStart}activate your subscription%{linkEnd}."
 msgstr ""
 
 msgid "CloudLicense|Maximum users"
@@ -12971,6 +12971,21 @@ msgstr ""
 msgid "Errors:"
 msgstr ""
 
+msgid "Escalation Policies"
+msgstr ""
+
+msgid "Escalation policies"
+msgstr ""
+
+msgid "EscalationPolicies|Add an escalation policy"
+msgstr ""
+
+msgid "EscalationPolicies|Create an escalation policy in GitLab"
+msgstr ""
+
+msgid "EscalationPolicies|Set up escalation policies to define who is paged, and when, in the event the first users paged don't respond."
+msgstr ""
+
 msgid "Estimate"
 msgstr ""
 
@@ -16484,6 +16499,9 @@ msgid "If you want to re-enable two-factor authentication, visit %{two_factor_li
 msgstr ""
 
 msgid "If you want to re-enable two-factor authentication, visit the %{settings_link_to} page."
+msgstr ""
+
+msgid "If you've purchased or renewed your subscription and have an activation code, please enter it below to start the activation process."
 msgstr ""
 
 msgid "If your HTTP repository is not publicly accessible, add your credentials."
@@ -31070,6 +31088,9 @@ msgstr ""
 msgid "SuperSonics|Last Sync"
 msgstr ""
 
+msgid "SuperSonics|Learn how to %{linkStart}activate your subscription%{linkEnd}."
+msgstr ""
+
 msgid "SuperSonics|Licensed to"
 msgstr ""
 
@@ -32265,9 +32286,6 @@ msgid "There are pending advanced search migrations. Indexing must remain paused
 msgstr ""
 
 msgid "There are running deployments on the environment. Please retry later."
-msgstr ""
-
-msgid "There is a connectivity issue"
 msgstr ""
 
 msgid "There is a halted Elasticsearch migration"
@@ -38713,6 +38731,12 @@ msgid "revised"
 msgstr ""
 
 msgid "satisfied"
+msgstr ""
+
+msgid "scan-execution-policy: policy not applied, %{policy_path} file is invalid"
+msgstr ""
+
+msgid "scan-execution-policy: policy not applied, %{policy_path} file is missing"
 msgstr ""
 
 msgid "security Reports|There was an error creating the merge request"

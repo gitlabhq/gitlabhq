@@ -41,4 +41,4 @@ module QA
   end
 end
 
-QA::Page::MergeRequest::New.prepend_if_ee('QA::EE::Page::MergeRequest::New')
+QA::Page::MergeRequest::New.prepend_if_ee('Page::MergeRequest::New', namespace: QA)

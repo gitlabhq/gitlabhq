@@ -23,4 +23,4 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::Integrations.prepend_if_ee('QA::EE::Page::Project::Settings::Integrations')
+QA::Page::Project::Settings::Integrations.prepend_if_ee('Page::Project::Settings::Integrations', namespace: QA)

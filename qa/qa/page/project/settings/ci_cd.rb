@@ -43,4 +43,4 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::CICD.prepend_if_ee("QA::EE::Page::Project::Settings::CICD")
+QA::Page::Project::Settings::CICD.prepend_if_ee("Page::Project::Settings::CICD", namespace: QA)
