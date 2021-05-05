@@ -337,6 +337,10 @@ module Types
           description: 'Pipeline analytics.',
           resolver: Resolvers::ProjectPipelineStatisticsResolver
 
+    field :ci_template, Types::Ci::TemplateType, null: true,
+          description: 'Find a single CI/CD template by name.',
+          resolver: Resolvers::Ci::TemplateResolver
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|
         LabelsFinder

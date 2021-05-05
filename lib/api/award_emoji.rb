@@ -4,23 +4,18 @@ module API
   class AwardEmoji < ::API::Base
     include PaginationParams
 
-    before { authenticate! }
-    AWARDABLES = [
-      { type: 'issue', find_by: :iid, feature_category: :issue_tracking },
-      { type: 'merge_request', find_by: :iid, feature_category: :code_review },
-      { type: 'snippet', find_by: :id, feature_category: :snippets }
-    ].freeze
+    helpers ::API::Helpers::AwardEmoji
 
-    params do
-      requires :id, type: String, desc: 'The ID of a project'
-    end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      AWARDABLES.each do |awardable_params|
+    before { authenticate! }
+
+    Helpers::AwardEmoji.awardables.each do |awardable_params|
+      resource awardable_params[:resource], requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         awardable_string = awardable_params[:type].pluralize
         awardable_id_string = "#{awardable_params[:type]}_#{awardable_params[:find_by]}"
 
         params do
-          requires :"#{awardable_id_string}", type: Integer, desc: "The ID of an Issue, Merge Request or Snippet"
+          requires :id, type: String, desc: "The ID of a #{awardable_params[:resource] == :projects ? 'project' : 'group'}"
+          requires :"#{awardable_id_string}", type: Integer, desc: Helpers::AwardEmoji.awardable_id_desc
         end
 
         [
@@ -103,25 +98,6 @@ module API
       def can_award_awardable?
         awardable.user_can_award?(current_user)
       end
-
-      # rubocop: disable CodeReuse/ActiveRecord
-      def awardable
-        @awardable ||=
-          begin
-            if params.include?(:note_id)
-              note_id = params.delete(:note_id)
-
-              awardable.notes.find(note_id)
-            elsif params.include?(:issue_iid)
-              user_project.issues.find_by!(iid: params[:issue_iid])
-            elsif params.include?(:merge_request_iid)
-              user_project.merge_requests.find_by!(iid: params[:merge_request_iid])
-            else
-              user_project.snippets.find(params[:snippet_id])
-            end
-          end
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def read_ability(awardable)
         case awardable

@@ -194,13 +194,7 @@ is an archive file format for logging HTTP transactions. When used with the GitL
 must contain records of calling the web API to test. The API fuzzer extracts all the requests and
 uses them to perform testing.
 
-You can use various tools to generate HAR files:
-
-- [Fiddler](https://www.telerik.com/fiddler): Web debugging proxy
-- [Insomnia Core](https://insomnia.rest/): API client
-- [Chrome](https://www.google.com/chrome/): Browser
-- [Firefox](https://www.mozilla.org/en-US/firefox/): Browser
-- [GitLab HAR Recorder](https://gitlab.com/gitlab-org/security-products/har-recorder): Command line
+For more details, including how to create a HAR file, see [HTTP Archive format](create_har_files.md).
 
 WARNING:
 HAR files may contain sensitive information such as authentication tokens, API keys, and session

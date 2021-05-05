@@ -3,6 +3,8 @@
 module Banzai
   module Filter
     class CustomEmojiFilter < HTML::Pipeline::Filter
+      include Gitlab::Utils::StrongMemoize
+
       IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
 
       def call
@@ -14,7 +16,7 @@ module Banzai
 
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
           next unless content.include?(':')
-          next unless namespace && namespace.custom_emoji.any?
+          next unless has_custom_emoji?
 
           html = custom_emoji_name_element_filter(content)
 
@@ -45,6 +47,12 @@ module Banzai
       end
 
       private
+
+      def has_custom_emoji?
+        strong_memoize(:has_custom_emoji) do
+          namespace&.custom_emoji&.any?
+        end
+      end
 
       def namespace
         context[:project].namespace.root_ancestor

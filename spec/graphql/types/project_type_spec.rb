@@ -32,6 +32,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       issue_status_counts terraform_states alert_management_integrations
       container_repositories container_repositories_count
       pipeline_analytics squash_read_only sast_ci_configuration
+      ci_template
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -378,5 +379,12 @@ RSpec.describe GitlabSchema.types['Project'] do
 
     it { is_expected.to have_graphql_type(Types::Ci::JobType.connection_type) }
     it { is_expected.to have_graphql_arguments(:statuses) }
+  end
+
+  describe 'ci_template field' do
+    subject { described_class.fields['ciTemplate'] }
+
+    it { is_expected.to have_graphql_type(Types::Ci::TemplateType) }
+    it { is_expected.to have_graphql_arguments(:name) }
   end
 end

@@ -7298,6 +7298,17 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cistagejobs"></a>`jobs` | [`CiJobConnection`](#cijobconnection) | Jobs for the stage. (see [Connections](#connections)) |
 | <a id="cistagename"></a>`name` | [`String`](#string) | Name of the stage. |
 
+### `CiTemplate`
+
+GitLab CI/CD configuration template.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="citemplatecontent"></a>`content` | [`String!`](#string) | Contents of the CI template. |
+| <a id="citemplatename"></a>`name` | [`String!`](#string) | Name of the CI template. |
+
 ### `ClusterAgent`
 
 #### Fields
@@ -10814,6 +10825,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectboardsid"></a>`id` | [`BoardID`](#boardid) | Find a board by its ID. |
+
+##### `Project.ciTemplate`
+
+Find a single CI/CD template by name.
+
+Returns [`CiTemplate`](#citemplate).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcitemplatename"></a>`name` | [`String!`](#string) | Name of the CI/CD template to search for. |
 
 ##### `Project.clusterAgent`
 
