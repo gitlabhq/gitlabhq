@@ -625,7 +625,7 @@ In the UI:
 1. For your group, go to **Settings > Packages & Registries**.
 1. Expand the **Package Registry** section.
 1. Turn on the **Reject duplicates** toggle.
-1. Optional. To allow some duplicate packages, in the **Exceptions** box, enter a regex pattern that matches the names of packages you want to allow.
+1. Optional. To allow some duplicate packages, in the **Exceptions** box, enter a regex pattern that matches the names and/or versions of packages you want to allow.
 
 Your changes are automatically saved.
 

@@ -42,7 +42,7 @@ RSpec.describe Namespace::PackageSetting do
     context 'package types with package_settings' do
       # As more package types gain settings they will be added to this list
       [:maven_package].each do |format|
-        let_it_be(:package) { create(format) } # rubocop:disable Rails/SaveBang
+        let_it_be(:package) { create(format, name: 'foo', version: 'beta') } # rubocop:disable Rails/SaveBang
         let_it_be(:package_type) { package.package_type }
         let_it_be(:package_setting) { package.project.namespace.package_settings }
 
@@ -50,6 +50,8 @@ RSpec.describe Namespace::PackageSetting do
           true  | ''   | true
           false | ''   | false
           false | '.*' | true
+          false | 'fo.*' | true
+          false | 'be.*' | true
         end
 
         with_them do

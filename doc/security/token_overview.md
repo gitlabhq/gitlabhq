@@ -106,3 +106,15 @@ This table shows available scopes per token. Scopes can be limited further on to
 1. Limited to the one project.
 1. Runner registration and authentication token don't provide direct access to repositories, but can be used to register and authenticate a new runner that may execute jobs which do have access to the repository
 1. Limited to certain [endpoints](../api/README.md#gitlab-cicd-job-token).
+
+## Security considerations
+
+Access tokens should be treated like passwords and kept secure.
+
+Adding them to URLs is a security risk. This is especially true when cloning or adding a remote, as Git then writes the URL to its `.git/config` file in plain text. URLs are also generally logged by proxies and application servers, which makes those credentials visible to system administrators.
+
+Instead, API calls can be passed an access token using headers, like [the `Private-Token` header](../api/README.md#personalproject-access-tokens).
+
+Tokens can also be stored using a [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
+
+When creating a scoped token, consider using the most limited scope possible to reduce the impact of accidentally leaking the token.
