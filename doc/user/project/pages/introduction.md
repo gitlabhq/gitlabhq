@@ -302,6 +302,9 @@ A 404 can also be related to incorrect permissions. If [Pages Access Control](pa
 navigates to the Pages URL and receives a 404 response, it is possible that the user does not have permission to view the site.
 To fix this, verify that the user is a member of the project.
 
+For Geo instances, 404 errors on Pages occur after promoting a secondary to a primary.
+Find more details in the [Pages administration documentation](../../../administration/pages/index.md#404-error-after-promoting-a-geo-secondary-to-a-primary-node)
+
 ### Cannot play media content on Safari
 
 Safari requires the web server to support the [Range request header](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/CreatingVideoforSafarioniPhone/CreatingVideoforSafarioniPhone.html#//apple_ref/doc/uid/TP40006514-SW6)

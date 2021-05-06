@@ -68,7 +68,7 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             class="learn-gitlab-section-card-header"
           >
             <img
-              src="/assets/learn_gitlab/section_workspace.svg"
+              src="workspace.svg"
             />
              
             <h2
@@ -246,7 +246,7 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             class="learn-gitlab-section-card-header"
           >
             <img
-              src="/assets/learn_gitlab/section_plan.svg"
+              src="plan.svg"
             />
              
             <h2
@@ -324,7 +324,7 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
             class="learn-gitlab-section-card-header"
           >
             <img
-              src="/assets/learn_gitlab/section_deploy.svg"
+              src="deploy.svg"
             />
              
             <h2

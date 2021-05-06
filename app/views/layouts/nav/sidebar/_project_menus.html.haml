@@ -1,28 +1,3 @@
-- if project_nav_tab? :snippets
-  = nav_link(controller: :snippets) do
-    = link_to project_snippets_path(@project), class: 'shortcuts-snippets', data: { qa_selector: 'snippets_link' } do
-      .nav-icon-container
-        = sprite_icon('snippet')
-      %span.nav-item-name
-        = _('Snippets')
-    %ul.sidebar-sub-level-items.is-fly-out-only
-      = nav_link(controller: :snippets, html_options: { class: "fly-out-top-item" } ) do
-        = link_to project_snippets_path(@project) do
-          %strong.fly-out-top-item-name
-            = _('Snippets')
-
-= nav_link(controller: :project_members) do
-  = link_to project_project_members_path(@project), title: _('Members'), class: 'qa-members-link', id: 'js-onboarding-members-link' do
-    .nav-icon-container
-      = sprite_icon('users')
-    %span.nav-item-name
-      = _('Members')
-  %ul.sidebar-sub-level-items.is-fly-out-only
-    = nav_link(path: %w[members#show], html_options: { class: "fly-out-top-item" } ) do
-      = link_to project_project_members_path(@project) do
-        %strong.fly-out-top-item-name
-          = _('Members')
-
 - if project_nav_tab? :settings
   = nav_link(path: sidebar_settings_paths) do
     = link_to edit_project_path(@project) do

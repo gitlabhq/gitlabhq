@@ -1076,14 +1076,6 @@ module Ci
       complete? && builds.latest.with_exposed_artifacts.exists?
     end
 
-    def has_downloadable_artifacts?
-      if downloadable_artifacts.loaded?
-        downloadable_artifacts.any?
-      else
-        downloadable_artifacts.exists?
-      end
-    end
-
     def branch_updated?
       strong_memoize(:branch_updated) do
         push_details.branch_updated?

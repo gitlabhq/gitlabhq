@@ -36,6 +36,20 @@ module LearnGitlabHelper
       Gitlab::Experimentation.in_experiment_group?(:learn_gitlab_b, subject: current_user)
   end
 
+  def onboarding_sections_data
+    {
+      workspace: {
+        svg: image_path("learn_gitlab/section_workspace.svg")
+      },
+      plan: {
+        svg: image_path("learn_gitlab/section_plan.svg")
+      },
+      deploy: {
+        svg: image_path("learn_gitlab/section_deploy.svg")
+      }
+    }
+  end
+
   private
 
   def action_urls

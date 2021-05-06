@@ -22,6 +22,8 @@ module Sidebars
         add_menu(Sidebars::Projects::Menus::AnalyticsMenu.new(context))
         add_menu(confluence_or_wiki_menu)
         add_menu(Sidebars::Projects::Menus::ExternalWikiMenu.new(context))
+        add_menu(Sidebars::Projects::Menus::SnippetsMenu.new(context))
+        add_menu(Sidebars::Projects::Menus::MembersMenu.new(context))
       end
 
       override :render_raw_menus_partial

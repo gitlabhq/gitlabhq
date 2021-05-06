@@ -30,5 +30,11 @@ module Mail
     def deliver!(mail)
       @pool.with { |conn| conn.deliver!(mail) }
     end
+
+    # This makes it compatible with Mail's `#deliver!` method
+    # https://github.com/mikel/mail/blob/22a7afc23f253319965bf9228a0a430eec94e06d/lib/mail/message.rb#L271
+    def settings
+      {}
+    end
   end
 end

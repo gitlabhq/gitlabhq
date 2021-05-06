@@ -863,6 +863,46 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
+  describe 'Snippets' do
+    before do
+      render
+    end
+
+    context 'when user can access snippets' do
+      it 'shows Snippets link' do
+        expect(rendered).to have_link('Snippets', href: project_snippets_path(project))
+      end
+    end
+
+    context 'when user cannot access snippets' do
+      let(:user) { nil }
+
+      it 'does not show Snippets link' do
+        expect(rendered).not_to have_link('Snippets')
+      end
+    end
+  end
+
+  describe 'Members' do
+    before do
+      render
+    end
+
+    context 'when user can access members' do
+      it 'show Members link' do
+        expect(rendered).to have_link('Members', href: project_project_members_path(project))
+      end
+    end
+
+    context 'when user cannot access members' do
+      let(:user) { nil }
+
+      it 'show Members link' do
+        expect(rendered).not_to have_link('Members')
+      end
+    end
+  end
+
   describe 'operations settings tab' do
     describe 'archive projects' do
       before do

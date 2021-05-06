@@ -64,5 +64,27 @@ describe Mail::SMTPPool do
 
       expect(MockSMTP.deliveries.size).to eq(1)
     end
+
+    context 'when called from Mail:Message' do
+      before do
+        mail.delivery_method(described_class, { pool: described_class.create_pool })
+      end
+
+      describe '#deliver' do
+        it 'delivers mail' do
+          mail.deliver
+
+          expect(MockSMTP.deliveries.size).to eq(1)
+        end
+      end
+
+      describe '#deliver!' do
+        it 'delivers mail' do
+          mail.deliver!
+
+          expect(MockSMTP.deliveries.size).to eq(1)
+        end
+      end
+    end
   end
 end

@@ -96,6 +96,17 @@ RSpec.describe LearnGitlabHelper do
     end
   end
 
+  describe '.onboarding_sections_data' do
+    subject(:sections) { helper.onboarding_sections_data }
+
+    it 'has the right keys' do
+      expect(sections.keys).to contain_exactly(:deploy, :plan, :workspace)
+    end
+    it 'has the svg' do
+      expect(sections.values.map { |section| section.keys }).to eq([[:svg]] * 3)
+    end
+  end
+
   describe '.learn_gitlab_experiment_tracking_category' do
     using RSpec::Parameterized::TableSyntax
 

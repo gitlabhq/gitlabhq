@@ -36,14 +36,6 @@ export default {
     };
   },
   computed: {
-    displayPipelineActions() {
-      return (
-        this.pipeline.flags.retryable ||
-        this.pipeline.flags.cancelable ||
-        this.pipeline.details.manual_actions.length ||
-        this.pipeline.details.has_downloadable_artifacts
-      );
-    },
     actions() {
       if (!this.pipeline || !this.pipeline.details) {
         return [];
@@ -53,9 +45,6 @@ export default {
     },
     isCancelling() {
       return this.cancelingPipeline === this.pipeline.id;
-    },
-    showArtifacts() {
-      return this.pipeline.details.has_downloadable_artifacts;
     },
   },
   watch: {
@@ -79,7 +68,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="displayPipelineActions" class="gl-text-right">
+  <div class="gl-text-right">
     <div class="btn-group">
       <pipelines-manual-actions v-if="actions.length > 0" :actions="actions" />
 
@@ -113,7 +102,7 @@ export default {
         @click="handleCancelClick"
       />
 
-      <pipeline-multi-actions v-if="showArtifacts" :pipeline-id="pipeline.id" />
+      <pipeline-multi-actions :pipeline-id="pipeline.id" />
     </div>
   </div>
 </template>

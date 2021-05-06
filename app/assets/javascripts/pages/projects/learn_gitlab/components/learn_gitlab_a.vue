@@ -18,9 +18,13 @@ export default {
       required: true,
       type: Object,
     },
+    sections: {
+      required: true,
+      type: Object,
+    },
   },
   maxValue: Object.keys(ACTION_LABELS).length,
-  sections: Object.keys(ACTION_SECTIONS),
+  actionSections: Object.keys(ACTION_SECTIONS),
   computed: {
     progressValue() {
       return Object.values(this.actions).filter((a) => a.completed).length;
@@ -37,6 +41,9 @@ export default {
         ),
       );
       return actions;
+    },
+    svgFor(section) {
+      return this.sections[section].svg;
     },
   },
 };
@@ -59,8 +66,12 @@ export default {
       <gl-progress-bar :value="progressValue" :max="$options.maxValue" />
     </div>
     <div class="row row-cols-1 row-cols-md-3 gl-mt-5">
-      <div v-for="section in $options.sections" :key="section" class="col gl-mb-6">
-        <learn-gitlab-section-card :section="section" :actions="actionsFor(section)" />
+      <div v-for="section in $options.actionSections" :key="section" class="col gl-mb-6">
+        <learn-gitlab-section-card
+          :section="section"
+          :svg="svgFor(section)"
+          :actions="actionsFor(section)"
+        />
       </div>
     </div>
   </div>

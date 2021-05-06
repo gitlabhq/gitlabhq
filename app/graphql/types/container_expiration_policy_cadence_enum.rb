@@ -11,7 +11,7 @@ module Types
     }.freeze
 
     ::ContainerExpirationPolicy.cadence_options.each do |option, description|
-      value OPTIONS_MAPPING[option], description, value: option.to_s
+      value OPTIONS_MAPPING[option], description: description, value: option.to_s
     end
   end
 end

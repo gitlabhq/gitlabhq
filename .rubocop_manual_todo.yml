@@ -13,15 +13,10 @@
 # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/322903
 Graphql/Descriptions:
   Exclude:
-    - 'app/graphql/types/container_expiration_policy_cadence_enum.rb'
-    - 'app/graphql/types/container_expiration_policy_keep_enum.rb'
-    - 'app/graphql/types/container_expiration_policy_older_than_enum.rb'
-    - 'app/graphql/types/packages/package_type_enum.rb'
     - 'app/graphql/types/snippets/blob_action_enum.rb'
     - 'app/graphql/types/snippets/type_enum.rb'
     - 'app/graphql/types/snippets/visibility_scopes_enum.rb'
     - 'ee/app/graphql/ee/types/list_limit_metric_enum.rb'
-    - 'ee/app/graphql/types/alert_management/payload_alert_field_name_enum.rb'
     - 'ee/app/graphql/types/epic_state_enum.rb'
     - 'ee/app/graphql/types/health_status_enum.rb'
     - 'ee/app/graphql/types/iteration_state_enum.rb'

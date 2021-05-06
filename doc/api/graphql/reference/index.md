@@ -24,7 +24,9 @@ Fields that are deprecated are marked with **{warning-solid}**.
 Items (fields, enums, etc) that have been removed according to our [deprecation process](../index.md#deprecation-and-removal-process) can be found
 in [Removed Items](../removed_items.md).
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale off -->
+<!-- Docs linting disabled after this line. -->
+<!-- See https://docs.gitlab.com/ee/development/documentation/testing.html#disable-vale-tests -->
 
 ## `Query` type
 

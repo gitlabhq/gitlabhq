@@ -90,11 +90,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
           context 'when quick actions are present' do
             let(:label) { create(:label, project: project, title: 'label1') }
             let(:milestone) { create(:milestone, project: project) }
-            let!(:user) { create(:user, username: 'user1') }
-
-            before do
-              project.add_developer(user)
-            end
 
             it 'applies quick action commands present on templates' do
               file_content = %(Text from template \n/label ~#{label.title} \n/milestone %"#{milestone.name}"")

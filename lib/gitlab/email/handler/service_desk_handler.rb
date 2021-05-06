@@ -38,7 +38,7 @@ module Gitlab
 
           if from_address
             add_email_participant
-            send_thank_you_email!
+            send_thank_you_email
           end
         end
 
@@ -92,8 +92,8 @@ module Gitlab
           end
         end
 
-        def send_thank_you_email!
-          Notify.service_desk_thank_you_email(@issue.id).deliver_later!
+        def send_thank_you_email
+          Notify.service_desk_thank_you_email(@issue.id).deliver_later
         end
 
         def message_including_template

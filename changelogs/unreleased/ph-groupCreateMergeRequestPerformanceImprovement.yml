@@ -1,5 +1,5 @@
 ---
-title: Increase load time of project select dropdowns
+title: Decrease load time of project select dropdowns
 merge_request: 61117
 author:
 type: performance
