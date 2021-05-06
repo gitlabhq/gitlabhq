@@ -41,6 +41,8 @@ module API
             .execute.with_api_entity_associations
 
         present paginate(deployments), with: Entities::Deployment
+      rescue DeploymentsFinder::InefficientQueryError => e
+        bad_request!(e.message)
       end
 
       desc 'Gets a specific deployment' do

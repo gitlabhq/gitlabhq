@@ -16,7 +16,7 @@ module Gitlab
 
         def deployments_count
           DeploymentsFinder
-            .new(project: @project, finished_after: @from, finished_before: @to, status: :success)
+            .new(project: @project, finished_after: @from, finished_before: @to, status: :success, order_by: :finished_at)
             .execute
             .count
         end

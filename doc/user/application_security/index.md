@@ -104,19 +104,6 @@ rules:
   - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 ```
 
-## Security Scanning with Auto DevOps
-
-When [Auto DevOps](../../topics/autodevops/) is enabled, all GitLab Security scanning tools are configured using default settings.
-
-- [Auto SAST](../../topics/autodevops/stages.md#auto-sast)
-- [Auto Secret Detection](../../topics/autodevops/stages.md#auto-secret-detection)
-- [Auto DAST](../../topics/autodevops/stages.md#auto-dast)
-- [Auto Dependency Scanning](../../topics/autodevops/stages.md#auto-dependency-scanning)
-- [Auto License Compliance](../../topics/autodevops/stages.md#auto-license-compliance)
-- [Auto Container Scanning](../../topics/autodevops/stages.md#auto-container-scanning)
-
-While you cannot directly customize Auto DevOps, you can [include the Auto DevOps template in your project's `.gitlab-ci.yml` file](../../topics/autodevops/customize.md#customizing-gitlab-ciyml).
-
 ## View security scan information in merge requests **(FREE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4393) in GitLab Free 13.5.

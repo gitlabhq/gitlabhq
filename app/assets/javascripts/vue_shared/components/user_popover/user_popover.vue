@@ -20,7 +20,7 @@ export default {
   },
   props: {
     target: {
-      type: HTMLAnchorElement,
+      type: HTMLElement,
       required: true,
     },
     user: {

@@ -12,9 +12,11 @@ RSpec.describe API::Deployments do
 
   describe 'GET /projects/:id/deployments' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:deployment_1) { create(:deployment, :success, project: project, iid: 11, ref: 'master', created_at: Time.now, updated_at: Time.now) }
-    let_it_be(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'master', created_at: 1.day.ago, updated_at: 2.hours.ago) }
-    let_it_be(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'master', created_at: 2.days.ago, updated_at: 1.hour.ago) }
+    let_it_be(:production) { create(:environment, :production, project: project) }
+    let_it_be(:staging) { create(:environment, :staging, project: project) }
+    let_it_be(:deployment_1) { create(:deployment, :success, project: project, environment: production, ref: 'master', created_at: Time.now, updated_at: Time.now) }
+    let_it_be(:deployment_2) { create(:deployment, :success, project: project, environment: staging, ref: 'master', created_at: 1.day.ago, updated_at: 2.hours.ago) }
+    let_it_be(:deployment_3) { create(:deployment, :success, project: project, environment: staging, ref: 'master', created_at: 2.days.ago, updated_at: 1.hour.ago) }
 
     def perform_request(params = {})
       get api("/projects/#{project.id}/deployments", user), params: params
@@ -36,17 +38,26 @@ RSpec.describe API::Deployments do
 
       context 'with updated_at filters specified' do
         it 'returns projects deployments with last update in specified datetime range' do
-          perform_request({ updated_before: 30.minutes.ago, updated_after: 90.minutes.ago })
+          perform_request({ updated_before: 30.minutes.ago, updated_after: 90.minutes.ago, order_by: :updated_at })
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response.first['id']).to eq(deployment_3.id)
         end
+
+        context 'when forbidden order_by is specified' do
+          it 'returns projects deployments with last update in specified datetime range' do
+            perform_request({ updated_before: 30.minutes.ago, updated_after: 90.minutes.ago, order_by: :id })
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('`updated_at` filter and `updated_at` sorting must be paired')
+          end
+        end
       end
 
       context 'with the environment filter specifed' do
         it 'returns deployments for the environment' do
-          perform_request({ environment: deployment_1.environment.name })
+          perform_request({ environment: production.name })
 
           expect(json_response.size).to eq(1)
           expect(json_response.first['iid']).to eq(deployment_1.iid)
@@ -68,7 +79,7 @@ RSpec.describe API::Deployments do
         end
 
         it 'returns ordered deployments' do
-          expect(json_response.map { |i| i['id'] }).to eq([deployment_2.id, deployment_1.id, deployment_3.id])
+          expect(json_response.map { |i| i['id'] }).to eq([deployment_3.id, deployment_2.id, deployment_1.id])
         end
 
         context 'with invalid order_by' do
@@ -475,7 +486,7 @@ RSpec.describe API::Deployments do
       let(:project) { create(:project, :repository) }
       let!(:deployment) { create(:deployment, :success, project: project) }
 
-      subject { get api("/projects/#{project.id}/deployments?order_by=updated_at&sort=asc", user) }
+      subject { get api("/projects/#{project.id}/deployments?order_by=id&sort=asc", user) }
 
       it 'succeeds', :aggregate_failures do
         subject
