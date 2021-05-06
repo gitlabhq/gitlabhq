@@ -21,12 +21,12 @@ module API
         related_issues = source_issue.related_issues(current_user) do |issues|
           issues.with_api_entity_associations.preload_awardable
         end
-        related_issues.each { |issue| issue.lazy_subscription(current_user, user_project) } # preload subscriptions
 
         present related_issues,
                 with: Entities::RelatedIssue,
                 current_user: current_user,
-                project: user_project
+                project: user_project,
+                include_subscribed: false
       end
 
       desc 'Relate issues' do

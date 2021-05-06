@@ -18,7 +18,7 @@ RSpec.describe Boards::Visits::CreateService do
         expect(service.execute(project_board)).to eq nil
       end
 
-      it 'returns nil when database is read only' do
+      it 'returns nil when database is read-only' do
         allow(Gitlab::Database).to receive(:read_only?) { true }
 
         expect(service.execute(project_board)).to eq nil

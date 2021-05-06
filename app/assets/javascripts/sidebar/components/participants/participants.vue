@@ -95,7 +95,7 @@ export default {
       <gl-loading-icon v-if="loading" />
       <span v-else data-testid="collapsed-count"> {{ participantCount }} </span>
     </div>
-    <div v-if="showParticipantLabel" class="title hide-collapsed">
+    <div v-if="showParticipantLabel" class="title hide-collapsed gl-mb-2">
       <gl-loading-icon v-if="loading" :inline="true" />
       {{ participantLabel }}
     </div>
@@ -105,10 +105,10 @@ export default {
         :key="participant.id"
         class="participants-author"
       >
-        <a :href="participant.web_url" class="author-link">
+        <a :href="participant.web_url || participant.webUrl" class="author-link">
           <user-avatar-image
             :lazy="true"
-            :img-src="participant.avatar_url"
+            :img-src="participant.avatar_url || participant.avatarUrl"
             :size="24"
             :tooltip-text="participant.name"
             css-classes="avatar-inline"

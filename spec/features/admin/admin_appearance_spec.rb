@@ -37,7 +37,7 @@ RSpec.describe 'Admin Appearance' do
     expect_custom_sign_in_appearance(appearance)
   end
 
-  it 'preview new project page appearance' do
+  it 'preview new project page appearance', :js do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
 
@@ -86,10 +86,11 @@ RSpec.describe 'Admin Appearance' do
     expect_custom_sign_in_appearance(appearance)
   end
 
-  it 'custom new project page' do
+  it 'custom new project page', :js do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
     visit new_project_path
+    find('[data-qa-selector="blank_project_link"]').click
 
     expect_custom_new_project_appearance(appearance)
   end

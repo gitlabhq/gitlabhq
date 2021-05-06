@@ -1034,7 +1034,7 @@ RSpec.describe Gitlab::GitAccess do
     end
   end
 
-  context 'when the repository is read only' do
+  context 'when the repository is read-only' do
     let(:project) { create(:project, :repository, :read_only) }
 
     it 'denies push access' do

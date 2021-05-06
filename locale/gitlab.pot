@@ -1463,9 +1463,6 @@ msgstr ""
 msgid "A project containing issues for each audit inquiry in the HIPAA Audit Protocol published by the U.S. Department of Health & Human Services"
 msgstr ""
 
-msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
-msgstr ""
-
 msgid "A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -3184,9 +3181,6 @@ msgstr ""
 msgid "All epics"
 msgstr ""
 
-msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
-msgstr ""
-
 msgid "All groups and projects"
 msgstr ""
 
@@ -3502,6 +3496,9 @@ msgstr ""
 msgid "An error occurred while fetching markdown preview"
 msgstr ""
 
+msgid "An error occurred while fetching participants"
+msgstr ""
+
 msgid "An error occurred while fetching participants."
 msgstr ""
 
@@ -3593,9 +3590,6 @@ msgid "An error occurred while loading issues"
 msgstr ""
 
 msgid "An error occurred while loading merge requests."
-msgstr ""
-
-msgid "An error occurred while loading project creation UI"
 msgstr ""
 
 msgid "An error occurred while loading the access tokens form, please try again."
@@ -4170,16 +4164,13 @@ msgstr ""
 msgid "Archived in this version"
 msgstr ""
 
-msgid "Archived project! Repository and other project resources are read only"
-msgstr ""
-
 msgid "Archived project! Repository and other project resources are read-only"
 msgstr ""
 
 msgid "Archived projects"
 msgstr ""
 
-msgid "Archiving the project will make it entirely read only. It is hidden from the dashboard and doesn't show up in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}"
+msgid "Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Are you ABSOLUTELY SURE you wish to delete this project?"
@@ -5590,9 +5581,6 @@ msgid "CI/CD configuration"
 msgstr ""
 
 msgid "CI/CD configuration file"
-msgstr ""
-
-msgid "CI/CD for external repo"
 msgstr ""
 
 msgid "CICDAnalytics|%{percent}%{percentSymbol}"
@@ -9248,9 +9236,6 @@ msgid "Create a new repository"
 msgstr ""
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
-msgstr ""
-
-msgid "Create a project pre-populated with the necessary files to get you started quickly."
 msgstr ""
 
 msgid "Create an account using:"
@@ -12987,9 +12972,6 @@ msgid "Errors found on line %{line_number}: %{error_lines}. Please check if thes
 msgstr ""
 
 msgid "Errors:"
-msgstr ""
-
-msgid "Escalation Policies"
 msgstr ""
 
 msgid "Escalation policies"
@@ -17356,9 +17338,6 @@ msgstr ""
 msgid "Inform users without uploaded SSH keys that they can't push over SSH until one is added"
 msgstr ""
 
-msgid "Information about additional Pages templates and how to install them can be found in our %{pages_getting_started_guide}."
-msgstr ""
-
 msgid "Infrastructure"
 msgstr ""
 
@@ -20925,9 +20904,6 @@ msgstr ""
 msgid "Middleman project with Static Site Editor support"
 msgstr ""
 
-msgid "Migrate your data from an external source like GitHub, Bitbucket, or another instance of GitLab."
-msgstr ""
-
 msgid "Migrated %{success_count}/%{total_count} files."
 msgstr ""
 
@@ -23404,9 +23380,6 @@ msgstr ""
 msgid "Pages Domain"
 msgstr ""
 
-msgid "Pages getting started guide"
-msgstr ""
-
 msgid "Pagination|Go to first page"
 msgstr ""
 
@@ -25828,12 +25801,6 @@ msgstr ""
 msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."
 msgstr ""
 
-msgid "ProjectsNew|Blank"
-msgstr ""
-
-msgid "ProjectsNew|Blank project"
-msgstr ""
-
 msgid "ProjectsNew|Connect your external repository to GitLab CI/CD."
 msgstr ""
 
@@ -25846,6 +25813,9 @@ msgstr ""
 msgid "ProjectsNew|Create a blank project to house your files, plan your work, and collaborate on code, among other things."
 msgstr ""
 
+msgid "ProjectsNew|Create a project pre-populated with the necessary files to get you started quickly."
+msgstr ""
+
 msgid "ProjectsNew|Create blank project"
 msgstr ""
 
@@ -25856,9 +25826,6 @@ msgid "ProjectsNew|Create from template"
 msgstr ""
 
 msgid "ProjectsNew|Create new project"
-msgstr ""
-
-msgid "ProjectsNew|Creating project & repository."
 msgstr ""
 
 msgid "ProjectsNew|Description format"
@@ -25876,19 +25843,16 @@ msgstr ""
 msgid "ProjectsNew|Initialize repository with a README"
 msgstr ""
 
-msgid "ProjectsNew|No import options available"
+msgid "ProjectsNew|Migrate your data from an external source like GitHub, Bitbucket, or another instance of GitLab."
 msgstr ""
 
-msgid "ProjectsNew|Please wait a moment, this page will automatically refresh when ready."
+msgid "ProjectsNew|No import options available"
 msgstr ""
 
 msgid "ProjectsNew|Project description %{tag_start}(optional)%{tag_end}"
 msgstr ""
 
 msgid "ProjectsNew|Run CI/CD for external repository"
-msgstr ""
-
-msgid "ProjectsNew|Template"
 msgstr ""
 
 msgid "ProjectsNew|Visibility Level"
@@ -31160,6 +31124,9 @@ msgstr ""
 msgid "SuperSonics|Type"
 msgstr ""
 
+msgid "SuperSonics|Upload a legacy license"
+msgstr ""
+
 msgid "SuperSonics|Valid From"
 msgstr ""
 
@@ -33487,9 +33454,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Time|s"
-msgstr ""
-
-msgid "Tip:"
 msgstr ""
 
 msgid "Tip: Hover over a job to see the jobs it depends on to run."
@@ -37447,9 +37411,6 @@ msgstr ""
 msgid "already shared with this group"
 msgstr ""
 
-msgid "among other things"
-msgstr ""
-
 msgid "and"
 msgstr ""
 
@@ -38103,7 +38064,7 @@ msgstr ""
 msgid "is not valid. The iteration group has to match the iteration cadence group."
 msgstr ""
 
-msgid "is read only"
+msgid "is read-only"
 msgstr ""
 
 msgid "is too long (%{current_value}). The maximum size is %{max_size}."

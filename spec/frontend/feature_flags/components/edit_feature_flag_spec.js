@@ -90,7 +90,7 @@ describe('Edit feature flag form', () => {
     expect(wrapper.find(GlToggle).props('value')).toBe(true);
   });
 
-  it('should alert users the flag is read only', () => {
+  it('should alert users the flag is read-only', () => {
     expect(findAlert().text()).toContain('GitLab is moving to a new way of managing feature flags');
   });
 

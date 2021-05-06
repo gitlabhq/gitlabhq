@@ -287,7 +287,7 @@ Please note that disabling a **secondary** node stops the synchronization proces
 Please note that if `git_data_dirs` is customized on the **primary** node for multiple
 repository shards you must duplicate the same configuration on each **secondary** node.
 
-Point your users to the ["Using a Geo Server" guide](using_a_geo_server.md).
+Point your users to the [Using a Geo Site guide](usage.md).
 
 Currently, this is what is synced:
 

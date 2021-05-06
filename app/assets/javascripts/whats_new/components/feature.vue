@@ -1,11 +1,13 @@
 <script>
-import { GlBadge, GlIcon, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlBadge, GlIcon, GlLink, GlSafeHtmlDirective, GlButton } from '@gitlab/ui';
+import { dateInWords, isValidDate } from '~/lib/utils/datetime_utility';
 
 export default {
   components: {
     GlBadge,
     GlIcon,
     GlLink,
+    GlButton,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -16,11 +18,37 @@ export default {
       required: true,
     },
   },
+  computed: {
+    releaseDate() {
+      const { published_at } = this.feature;
+      const date = new Date(published_at);
+
+      if (!isValidDate(date) || date.getTime() === 0) {
+        return '';
+      }
+
+      return dateInWords(date);
+    },
+  },
 };
 </script>
 
 <template>
-  <div class="gl-pb-7 gl-pt-5 gl-px-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100">
+  <div class="gl-py-6 gl-px-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100">
+    <gl-link
+      :href="feature.url"
+      target="_blank"
+      data-track-event="click_whats_new_item"
+      :data-track-label="feature.title"
+      :data-track-property="feature.url"
+    >
+      <div
+        class="whats-new-item-image gl-bg-size-cover"
+        :style="`background-image: url(${feature.image_url});`"
+      >
+        <span class="gl-sr-only">{{ feature.title }}</span>
+      </div>
+    </gl-link>
     <gl-link
       :href="feature.url"
       target="_blank"
@@ -29,39 +57,28 @@ export default {
       :data-track-label="feature.title"
       :data-track-property="feature.url"
     >
-      <h5 class="gl-font-lg" data-test-id="feature-title">{{ feature.title }}</h5>
+      <h5 class="gl-font-lg gl-mb-1" data-test-id="feature-title">{{ feature.title }}</h5>
     </gl-link>
+    <div v-if="releaseDate" class="gl-mb-3" data-testid="release-date">{{ releaseDate }}</div>
     <div v-if="feature.packages" class="gl-mb-3">
       <gl-badge
         v-for="packageName in feature.packages"
         :key="packageName"
-        size="sm"
-        class="whats-new-item-badge gl-mr-2 gl-py-1!"
+        size="md"
+        class="whats-new-item-badge gl-mr-2"
       >
         <gl-icon name="license" />{{ packageName }}
       </gl-badge>
     </div>
-    <gl-link
+    <div v-safe-html="feature.body" class="gl-pt-3 gl-line-height-20"></div>
+    <gl-button
       :href="feature.url"
       target="_blank"
       data-track-event="click_whats_new_item"
       :data-track-label="feature.title"
       :data-track-property="feature.url"
     >
-      <img
-        :alt="feature.title"
-        :src="feature.image_url"
-        class="img-thumbnail gl-px-8 gl-py-3 whats-new-item-image"
-      />
-    </gl-link>
-    <div v-safe-html="feature.body" class="gl-pt-3"></div>
-    <gl-link
-      :href="feature.url"
-      target="_blank"
-      data-track-event="click_whats_new_item"
-      :data-track-label="feature.title"
-      :data-track-property="feature.url"
-      >{{ __('Learn more') }}</gl-link
-    >
+      {{ __('Learn more') }} <gl-icon name="arrow-right" />
+    </gl-button>
   </div>
 </template>

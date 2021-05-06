@@ -947,7 +947,7 @@ To enable the read-only mode:
    sudo gitlab-ctl reconfigure
    ```
 
-   This command sets the Container Registry into the read only mode.
+   This command sets the Container Registry into the read-only mode.
 
 1. Next, trigger one of the garbage collect commands:
 

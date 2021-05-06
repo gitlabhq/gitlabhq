@@ -142,7 +142,7 @@ RSpec.describe GroupMemberPresenter do
     let(:expected_roles) { { 'Developer' => 30, 'Maintainer' => 40, 'Owner' => 50, 'Reporter' => 20 } }
 
     before do
-      entity.parent = group
+      entity.update!(parent: group)
     end
   end
 end

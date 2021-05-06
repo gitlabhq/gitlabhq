@@ -1,0 +1,28 @@
+@import 'mixins_and_variables_and_functions';
+
+$new-namespace-panel-illustration-width: 215px;
+$new-namespace-panel-height: 240px;
+
+.new-namespace-panel-illustration {
+  width: $new-namespace-panel-illustration-width;
+}
+
+.new-namespace-panel-wrapper {
+  @include media-breakpoint-down(md) {
+    width: 100%;
+  }
+  width: 50%;
+}
+
+.new-namespace-panel {
+  &:hover {
+    background-color: $gray-10;
+  }
+
+  color: $purple-700;
+  min-height: $new-namespace-panel-height;
+  text-align: center;
+  @include media-breakpoint-up(lg) {
+    text-align: left;
+  }
+}

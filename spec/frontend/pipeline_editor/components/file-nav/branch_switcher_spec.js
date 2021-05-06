@@ -123,9 +123,26 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('when switching branches', () => {
     beforeEach(async () => {
+      jest.spyOn(window.history, 'pushState').mockImplementation(() => {});
       mockAvailableBranchQuery.mockResolvedValue(mockProjectBranches);
       createComponentWithApollo();
       await waitForPromises();
+    });
+
+    it('updates session history when selecting a different branch', async () => {
+      const branch = findDropdownItems().at(1);
+      await branch.vm.$emit('click');
+
+      expect(window.history.pushState).toHaveBeenCalled();
+      expect(window.history.pushState.mock.calls[0][2]).toContain(`?branch_name=${branch.text()}`);
+    });
+
+    it('does not update session history when selecting current branch', async () => {
+      const branch = findDropdownItems().at(0);
+      await branch.vm.$emit('click');
+
+      expect(branch.text()).toBe(mockDefaultBranch);
+      expect(window.history.pushState).not.toHaveBeenCalled();
     });
 
     it('emits the refetchContent event when selecting a different branch', async () => {

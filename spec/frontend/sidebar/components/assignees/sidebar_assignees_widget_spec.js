@@ -208,6 +208,22 @@ describe('Sidebar assignees widget', () => {
       ]);
     });
 
+    it('does not trigger mutation or fire event  when editing and exiting without making changes', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      findEditableItem().vm.$emit('open');
+
+      await waitForPromises();
+
+      findEditableItem().vm.$emit('close');
+
+      expect(findEditableItem().props('isDirty')).toBe(false);
+      expect(updateIssueAssigneesMutationSuccess).toHaveBeenCalledTimes(0);
+      expect(wrapper.emitted('assignees-updated')).toBe(undefined);
+    });
+
     describe('when expanded', () => {
       beforeEach(async () => {
         createComponent();

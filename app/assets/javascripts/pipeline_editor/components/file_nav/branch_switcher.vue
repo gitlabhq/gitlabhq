@@ -1,5 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlDropdownSectionHeader, GlIcon } from '@gitlab/ui';
+import { historyPushState } from '~/lib/utils/common_utils';
+import { setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { DEFAULT_FAILURE } from '~/pipeline_editor/constants';
 import getAvailableBranches from '~/pipeline_editor/graphql/queries/available_branches.graphql';
@@ -54,6 +56,9 @@ export default {
         query: getCurrentBranch,
         data: { currentBranch: newBranch },
       });
+
+      const updatedPath = setUrlParams({ branch_name: newBranch });
+      historyPushState(updatedPath);
 
       this.$emit('refetchContent');
     },

@@ -36,7 +36,7 @@ RSpec.shared_examples 'handles repository moves' do
         container.set_repository_read_only!
 
         expect(subject).not_to be_valid
-        expect(subject.errors[error_key].first).to match(/is read only/)
+        expect(subject.errors[error_key].first).to match(/is read-only/)
       end
     end
   end

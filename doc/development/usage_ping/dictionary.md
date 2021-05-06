@@ -4692,7 +4692,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 Projects with repository mirroring enabled
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181920_projects_mirrored_with_pipelines_enabled.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181920_projects_mirrored_with_pipelines_enabled.yml)
 
 Group: `group::continuous integration`
 
@@ -10532,6 +10532,30 @@ Status: `implemented`
 
 Tiers: `premium`, `ultimate`
 
+### `redis_hll_counters.epics_usage.g_project_management_users_removing_epic_emoji_monthly`
+
+Counts of MAU removing emoji on epic
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210505071850_g_project_management_users_removing_epic_emoji_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epics_usage.g_project_management_users_removing_epic_emoji_weekly`
+
+Counts of WAU removing emoji on epic
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210505071932_g_project_management_users_removing_epic_emoji_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.g_project_management_users_setting_epic_confidential_monthly`
 
 Count of MAU making epics confidential
@@ -16360,7 +16384,7 @@ Tiers: `free`
 
 Count creator_id from projects with repository mirroring enabled.
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181934_projects_mirrored_with_pipelines_enabled.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216181934_projects_mirrored_with_pipelines_enabled.yml)
 
 Group: `group::continuous integration`
 
@@ -18280,7 +18304,7 @@ Tiers: `free`
 
 Count creator_id from projects with repository mirroring enabled.
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181943_projects_mirrored_with_pipelines_enabled.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216181943_projects_mirrored_with_pipelines_enabled.yml)
 
 Group: `group::continuous integration`
 

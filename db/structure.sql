@@ -12447,6 +12447,8 @@ CREATE TABLE elastic_reindexing_tasks (
     error_message text,
     documents_count_target integer,
     delete_original_index_at timestamp with time zone,
+    max_slices_running smallint DEFAULT 60 NOT NULL,
+    slice_multiplier smallint DEFAULT 2 NOT NULL,
     CONSTRAINT check_04151aca42 CHECK ((char_length(index_name_from) <= 255)),
     CONSTRAINT check_7f64acda8e CHECK ((char_length(error_message) <= 255)),
     CONSTRAINT check_85ebff7124 CHECK ((char_length(index_name_to) <= 255)),

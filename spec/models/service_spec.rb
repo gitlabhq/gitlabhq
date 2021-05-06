@@ -597,23 +597,49 @@ RSpec.describe Service do
             context 'passing a group' do
               let!(:sub_subgroup) { create(:group, parent: subgroup) }
 
-              it 'creates a service from the subgroup-level integration' do
-                described_class.create_from_active_default_integrations(sub_subgroup, :group_id)
+              context 'traversal queries' do
+                shared_examples 'correct ancestor order' do
+                  it 'creates a service from the subgroup-level integration' do
+                    described_class.create_from_active_default_integrations(sub_subgroup, :group_id)
 
-                expect(sub_subgroup.reload.services.size).to eq(1)
-                expect(sub_subgroup.reload.services.first.api_url).to eq(subgroup_integration.api_url)
-                expect(sub_subgroup.reload.services.first.inherit_from_id).to eq(subgroup_integration.id)
-              end
+                    sub_subgroup.reload
 
-              context 'having a service inheriting settings' do
-                let!(:subgroup_integration) { create(:prometheus_service, group: subgroup, project: nil, inherit_from_id: group_integration.id, api_url: 'https://prometheus.subgroup.com/') }
+                    expect(sub_subgroup.services.size).to eq(1)
+                    expect(sub_subgroup.services.first.api_url).to eq(subgroup_integration.api_url)
+                    expect(sub_subgroup.services.first.inherit_from_id).to eq(subgroup_integration.id)
+                  end
 
-                it 'creates a service from the group-level integration' do
-                  described_class.create_from_active_default_integrations(sub_subgroup, :group_id)
+                  context 'having a service inheriting settings' do
+                    let!(:subgroup_integration) { create(:prometheus_service, group: subgroup, project: nil, inherit_from_id: group_integration.id, api_url: 'https://prometheus.subgroup.com/') }
 
-                  expect(sub_subgroup.reload.services.size).to eq(1)
-                  expect(sub_subgroup.reload.services.first.api_url).to eq(group_integration.api_url)
-                  expect(sub_subgroup.reload.services.first.inherit_from_id).to eq(group_integration.id)
+                    it 'creates a service from the group-level integration' do
+                      described_class.create_from_active_default_integrations(sub_subgroup, :group_id)
+
+                      sub_subgroup.reload
+
+                      expect(sub_subgroup.services.size).to eq(1)
+                      expect(sub_subgroup.services.first.api_url).to eq(group_integration.api_url)
+                      expect(sub_subgroup.services.first.inherit_from_id).to eq(group_integration.id)
+                    end
+                  end
+                end
+
+                context 'recursive' do
+                  before do
+                    stub_feature_flags(use_traversal_ids: false)
+                  end
+
+                  include_examples 'correct ancestor order'
+                end
+
+                context 'linear' do
+                  before do
+                    stub_feature_flags(use_traversal_ids: true)
+
+                    sub_subgroup.reload # make sure traversal_ids are reloaded
+                  end
+
+                  include_examples 'correct ancestor order'
                 end
               end
             end

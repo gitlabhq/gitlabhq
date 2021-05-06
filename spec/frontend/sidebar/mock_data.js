@@ -262,6 +262,31 @@ export const issuableStartDateResponse = (startDate = null) => ({
   },
 });
 
+export const epicParticipantsResponse = () => ({
+  data: {
+    workspace: {
+      __typename: 'Group',
+      issuable: {
+        __typename: 'Epic',
+        id: 'gid://gitlab/Epic/4',
+        participants: {
+          nodes: [
+            {
+              id: 'gid://gitlab/User/2',
+              avatarUrl:
+                'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
+              name: 'Jacki Kub',
+              username: 'francina.skiles',
+              webUrl: '/franc',
+              status: null,
+            },
+          ],
+        },
+      },
+    },
+  },
+});
+
 export const issueReferenceResponse = (reference) => ({
   data: {
     workspace: {

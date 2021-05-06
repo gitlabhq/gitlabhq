@@ -15,7 +15,7 @@ Although branching strategies usually work well enough for source code and
 plain text because different versions can be merged together, they do not work
 for binary files.
 
-When file locking is setup, lockable files are **read only** by default.
+When file locking is setup, lockable files are **read-only** by default.
 
 When a file is locked, only the user who locked the file may modify it. This
 user is said to "hold the lock" or have "taken the lock", since only one user

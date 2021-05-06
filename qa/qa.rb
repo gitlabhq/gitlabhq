@@ -260,7 +260,6 @@ module QA
 
     module Project
       autoload :New, 'qa/page/project/new'
-      autoload :NewExperiment, 'qa/page/project/new_experiment'
       autoload :Show, 'qa/page/project/show'
       autoload :Activity, 'qa/page/project/activity'
       autoload :Menu, 'qa/page/project/menu'

@@ -108,9 +108,9 @@ The availability objectives for Gitaly clusters are:
 Gitaly Cluster supports:
 
 - [Strong consistency](praefect.md#strong-consistency) of the secondary replicas.
-- [Automatic failover](praefect.md#automatic-failover-and-leader-election) from the primary to the secondary.
+- [Automatic failover](praefect.md#automatic-failover-and-primary-election-strategies) from the primary to the secondary.
 - Reporting of possible data loss if replication queue is non-empty.
-- Marking repositories as [read only](praefect.md#read-only-mode) if data loss is detected to prevent data inconsistencies.
+- Marking repositories as [read-only](praefect.md#read-only-mode) if data loss is detected to prevent data inconsistencies.
 
 Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
 for improvements including
@@ -248,10 +248,10 @@ Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the r
 
 The following table outlines the major differences between Gitaly Cluster and Geo:
 
-| Tool           | Nodes    | Locations | Latency tolerance  | Failover                                                        | Consistency                              | Provides redundancy for |
-|:---------------|:---------|:----------|:-------------------|:----------------------------------------------------------------|:-----------------------------------------|:------------------------|
-| Gitaly Cluster | Multiple | Single    | Approximately 1 ms | [Automatic](praefect.md#automatic-failover-and-leader-election) | [Strong](praefect.md#strong-consistency) | Data storage in Git     |
-| Geo            | Multiple | Multiple  | Up to one minute   | [Manual](../geo/disaster_recovery/index.md)                     | Eventual                                 | Entire GitLab instance  |
+| Tool           | Nodes    | Locations | Latency tolerance  | Failover                                                                    | Consistency                              | Provides redundancy for |
+|:---------------|:---------|:----------|:-------------------|:----------------------------------------------------------------------------|:-----------------------------------------|:------------------------|
+| Gitaly Cluster | Multiple | Single    | Approximately 1 ms | [Automatic](praefect.md#automatic-failover-and-primary-election-strategies) | [Strong](praefect.md#strong-consistency) | Data storage in Git     |
+| Geo            | Multiple | Multiple  | Up to one minute   | [Manual](../geo/disaster_recovery/index.md)                                 | Eventual                                 | Entire GitLab instance  |
 
 For more information, see:
 

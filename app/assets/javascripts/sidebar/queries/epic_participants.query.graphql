@@ -1,0 +1,18 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+
+query epicParticipants($fullPath: ID!, $iid: ID) {
+  workspace: group(fullPath: $fullPath) {
+    __typename
+    issuable: epic(iid: $iid) {
+      __typename
+      id
+      participants {
+        nodes {
+          ...User
+          ...UserAvailability
+        }
+      }
+    }
+  }
+}

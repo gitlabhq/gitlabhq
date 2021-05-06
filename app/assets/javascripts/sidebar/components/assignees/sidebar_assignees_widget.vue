@@ -175,8 +175,10 @@ export default {
       this.updateAssignees([this.currentUser.username]);
     },
     saveAssignees() {
-      this.isDirty = false;
-      this.updateAssignees(this.selected.map(({ username }) => username));
+      if (this.isDirty) {
+        this.isDirty = false;
+        this.updateAssignees(this.selected.map(({ username }) => username));
+      }
       this.$el.dispatchEvent(hideDropdownEvent);
     },
     collapseWidget() {

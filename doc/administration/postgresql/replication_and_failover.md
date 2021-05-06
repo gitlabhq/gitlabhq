@@ -120,7 +120,7 @@ Few notes on the service itself:
 - The service runs under a system account, by default `gitlab-consul`.
   - If you are using a different username, you will have to specify it. We
     will refer to it with `CONSUL_USERNAME`,
-- There will be a database user created with read only access to the repmgr
+- There will be a database user created with read-only access to the repmgr
   database
 - Passwords will be stored in the following locations:
   - `/etc/gitlab/gitlab.rb`: hashed

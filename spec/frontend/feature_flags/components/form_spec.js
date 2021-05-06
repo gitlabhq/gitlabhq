@@ -281,7 +281,7 @@ describe('feature flag form', () => {
           });
         });
 
-        it('renders read only name', () => {
+        it('renders read-only name', () => {
           expect(wrapper.find('.js-scope-all').exists()).toEqual(true);
         });
       });

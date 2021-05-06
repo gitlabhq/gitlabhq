@@ -51,7 +51,6 @@ Parameters:
     "description" : null,
     "updated_at" : "2016-01-07T12:44:33.959Z",
     "milestone" : null,
-    "subscribed" : true,
     "user_notes_count": 0,
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/14",

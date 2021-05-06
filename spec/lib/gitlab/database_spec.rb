@@ -395,13 +395,13 @@ RSpec.describe Gitlab::Database do
       allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
     end
 
-    it 'detects a read only database' do
+    it 'detects a read-only database' do
       allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "t" }])
 
       expect(described_class.db_read_only?).to be_truthy
     end
 
-    it 'detects a read only database' do
+    it 'detects a read-only database' do
       allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => true }])
 
       expect(described_class.db_read_only?).to be_truthy

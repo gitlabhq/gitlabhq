@@ -114,7 +114,7 @@ module RepositoryStorageMovable
   private
 
   def container_repository_writable
-    add_error(_('is read only')) if container&.repository_read_only?
+    add_error(_('is read-only')) if container&.repository_read_only?
   end
 
   def error_key

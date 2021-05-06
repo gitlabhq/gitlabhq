@@ -107,7 +107,6 @@ Example response:
       "award_emoji": "http://localhost:3001/api/v4/projects/8/issues/6/award_emoji",
       "project": "http://localhost:3001/api/v4/projects/8"
     },
-    "subscribed": true,
     "epic_issue_id": 2
   }
 ]

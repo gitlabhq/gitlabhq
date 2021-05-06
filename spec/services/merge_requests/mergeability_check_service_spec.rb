@@ -87,7 +87,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       described_class.new(merge_request).async_execute
     end
 
-    context 'when read only DB' do
+    context 'when read-only DB' do
       before do
         allow(Gitlab::Database).to receive(:read_only?) { true }
       end
@@ -258,7 +258,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       end
     end
 
-    context 'when read only DB' do
+    context 'when read-only DB' do
       it 'returns ServiceResponse.error' do
         allow(Gitlab::Database).to receive(:read_only?) { true }
 

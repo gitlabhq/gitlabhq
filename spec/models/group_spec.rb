@@ -427,6 +427,50 @@ RSpec.describe Group do
     end
   end
 
+  context 'traversal queries' do
+    let_it_be(:group, reload: true) { create(:group, :nested) }
+
+    context 'recursive' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
+
+      it_behaves_like 'namespace traversal'
+
+      describe '#self_and_descendants' do
+        it { expect(group.self_and_descendants.to_sql).not_to include 'traversal_ids @>' }
+      end
+
+      describe '#ancestors' do
+        it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
+      end
+    end
+
+    context 'linear' do
+      it_behaves_like 'namespace traversal'
+
+      describe '#self_and_descendants' do
+        it { expect(group.self_and_descendants.to_sql).to include 'traversal_ids @>' }
+      end
+
+      describe '#ancestors' do
+        it { expect(group.ancestors.to_sql).to include "\"namespaces\".\"id\" = #{group.parent_id}" }
+
+        it 'hierarchy order' do
+          expect(group.ancestors(hierarchy_order: :asc).to_sql).to include 'ORDER BY "depth" ASC'
+        end
+
+        context 'ancestor linear queries feature flag disabled' do
+          before do
+            stub_feature_flags(use_traversal_ids_for_ancestors: false)
+          end
+
+          it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
+        end
+      end
+    end
+  end
+
   describe '.without_integration' do
     let(:another_group) { create(:group) }
     let(:instance_integration) { build(:jira_service, :instance) }
@@ -1798,13 +1842,35 @@ RSpec.describe Group do
         allow(project).to receive(:protected_for?).with('ref').and_return(true)
       end
 
-      it 'returns all variables belong to the group and parent groups' do
-        expected_array1 = [protected_variable, ci_variable]
-        expected_array2 = [variable_child, variable_child_2, variable_child_3]
-        got_array = group_child_3.ci_variables_for('ref', project).to_a
+      context 'traversal queries' do
+        shared_examples 'correct ancestor order' do
+          it 'returns all variables belong to the group and parent groups' do
+            expected_array1 = [protected_variable, ci_variable]
+            expected_array2 = [variable_child, variable_child_2, variable_child_3]
+            got_array = group_child_3.ci_variables_for('ref', project).to_a
 
-        expect(got_array.shift(2)).to contain_exactly(*expected_array1)
-        expect(got_array).to eq(expected_array2)
+            expect(got_array.shift(2)).to contain_exactly(*expected_array1)
+            expect(got_array).to eq(expected_array2)
+          end
+        end
+
+        context 'recursive' do
+          before do
+            stub_feature_flags(use_traversal_ids: false)
+          end
+
+          include_examples 'correct ancestor order'
+        end
+
+        context 'linear' do
+          before do
+            stub_feature_flags(use_traversal_ids: true)
+
+            group_child_3.reload # make sure traversal_ids are reloaded
+          end
+
+          include_examples 'correct ancestor order'
+        end
       end
     end
   end

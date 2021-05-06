@@ -268,7 +268,7 @@ class Service < ApplicationRecord
   private_class_method :instance_level_integration
 
   def self.create_from_active_default_integrations(scope, association, with_templates: false)
-    group_ids = scope.ancestors.select(:id)
+    group_ids = sorted_ancestors(scope).select(:id)
     array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
 
     from_union([
@@ -458,6 +458,15 @@ class Service < ApplicationRecord
   end
 
   private
+
+  # Ancestors sorted by hierarchy depth in bottom-top order.
+  def self.sorted_ancestors(scope)
+    if scope.root_ancestor.use_traversal_ids?
+      Namespace.from(scope.ancestors(hierarchy_order: :asc))
+    else
+      scope.ancestors
+    end
+  end
 
   def validate_is_instance_or_template
     errors.add(:template, 'The service should be a service template or instance-level integration') if template? && instance_level?

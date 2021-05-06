@@ -267,9 +267,9 @@ dashboard in your browser.
 Failures that happen during a backfill are scheduled to be retried at the end
 of the backfill.
 
-## Remove Geo node
+## Remove Geo site
 
-For more information on removing a Geo node, see [Removing **secondary** Geo nodes](replication/remove_geo_node.md).
+For more information on removing a Geo node, see [Removing **secondary** Geo nodes](replication/remove_geo_site.md).
 
 ## Disable Geo
 

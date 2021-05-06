@@ -1,6 +1,7 @@
 import { IssuableType } from '~/issue_show/constants';
 import epicConfidentialQuery from '~/sidebar/queries/epic_confidential.query.graphql';
 import epicDueDateQuery from '~/sidebar/queries/epic_due_date.query.graphql';
+import epicParticipantsQuery from '~/sidebar/queries/epic_participants.query.graphql';
 import epicStartDateQuery from '~/sidebar/queries/epic_start_date.query.graphql';
 import epicSubscribedQuery from '~/sidebar/queries/epic_subscribed.query.graphql';
 import issuableAssigneesSubscription from '~/sidebar/queries/issuable_assignees.subscription.graphql';
@@ -45,6 +46,9 @@ export const participantsQueries = {
   },
   [IssuableType.MergeRequest]: {
     query: getMergeRequestParticipants,
+  },
+  [IssuableType.Epic]: {
+    query: epicParticipantsQuery,
   },
 };
 

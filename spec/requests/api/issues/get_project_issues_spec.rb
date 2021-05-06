@@ -186,7 +186,7 @@ RSpec.describe API::Issues do
     it 'avoids N+1 queries' do
       get api("/projects/#{project.id}/issues", user)
 
-      create_list(:issue, 3, project: project, closed_by: user)
+      issues = create_list(:issue, 3, project: project, closed_by: user)
 
       control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         get api("/projects/#{project.id}/issues", user)
@@ -194,6 +194,9 @@ RSpec.describe API::Issues do
 
       milestone = create(:milestone, project: project)
       create(:issue, project: project, milestone: milestone, closed_by: create(:user))
+
+      create(:note_on_issue, project: project, noteable: issues[0])
+      create(:note_on_issue, project: project, noteable: issues[1])
 
       expect do
         get api("/projects/#{project.id}/issues", user)

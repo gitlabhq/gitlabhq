@@ -25,8 +25,8 @@ RSpec.describe 'New project', :js do
           expect(page).to have_no_selector('a', text: 'New project/repository')
         end
 
-        expect(page).to have_selector('.blank-state-title', text: 'Create blank project')
-        expect(page).to have_no_selector('.blank-state-title', text: 'Create blank project/repository')
+        expect(page).to have_selector('h3', text: 'Create blank project')
+        expect(page).to have_no_selector('h3', text: 'Create blank project/repository')
       end
 
       it 'when in candidate renders "project/repository"' do
@@ -40,7 +40,7 @@ RSpec.describe 'New project', :js do
           expect(page).to have_selector('a', text: 'New project/repository')
         end
 
-        expect(page).to have_selector('.blank-state-title', text: 'Create blank project/repository')
+        expect(page).to have_selector('h3', text: 'Create blank project/repository')
       end
 
       context 'with combined_menu feature disabled' do
@@ -240,7 +240,7 @@ RSpec.describe 'New project', :js do
         find('[data-qa-selector="import_project_link"]').click
         first('.js-import-git-toggle-button').click
 
-        page.within '.toggle-import-form' do
+        page.within '#import-project-pane' do
           expect(page).not_to have_css('input#project_initialize_with_readme')
           expect(page).not_to have_content('Initialize repository with a README')
         end

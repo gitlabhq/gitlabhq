@@ -839,7 +839,12 @@ class Group < Namespace
   end
 
   def uncached_ci_variables_for(ref, project, environment: nil)
-    list_of_ids = [self] + ancestors
+    list_of_ids = if root_ancestor.use_traversal_ids?
+                    [self] + ancestors(hierarchy_order: :asc)
+                  else
+                    [self] + ancestors
+                  end
+
     variables = Ci::GroupVariable.where(group: list_of_ids)
     variables = variables.unprotected unless project.protected_for?(ref)
 

@@ -240,6 +240,7 @@ RSpec.describe Groups::TransferService do
       end
 
       context 'when the group is allowed to be transferred' do
+        let_it_be(:new_parent_group, reload: true) { create(:group, :public) }
         let_it_be(:new_parent_group_integration) { create(:slack_service, group: new_parent_group, project: nil, webhook: 'http://new-group.slack.com') }
 
         before do
@@ -273,11 +274,10 @@ RSpec.describe Groups::TransferService do
         end
 
         context 'with a group integration' do
-          let_it_be(:instance_integration) { create(:slack_service, :instance, webhook: 'http://project.slack.com') }
-
           let(:new_created_integration) { Service.find_by(group: group) }
 
           context 'with an inherited integration' do
+            let_it_be(:instance_integration) { create(:slack_service, :instance, webhook: 'http://project.slack.com') }
             let_it_be(:group_integration) { create(:slack_service, group: group, project: nil, webhook: 'http://group.slack.com', inherit_from_id: instance_integration.id) }
 
             it 'replaces inherited integrations', :aggregate_failures do
@@ -603,6 +603,7 @@ RSpec.describe Groups::TransferService do
           create(:group_member, :owner, group: new_parent_group, user: user)
           create(:group, :private, parent: group, require_two_factor_authentication: true)
           group.update!(require_two_factor_authentication: true)
+          new_parent_group.reload # make sure traversal_ids are reloaded
         end
 
         it 'does not update group two factor authentication setting' do

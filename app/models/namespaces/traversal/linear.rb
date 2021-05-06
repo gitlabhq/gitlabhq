@@ -58,11 +58,18 @@ module Namespaces
       end
 
       def self_and_descendants
-        if use_traversal_ids?
-          lineage(self)
-        else
-          super
-        end
+        return super unless use_traversal_ids?
+
+        lineage(top: self)
+      end
+
+      def ancestors(hierarchy_order: nil)
+        return super() unless use_traversal_ids?
+        return super() unless Feature.enabled?(:use_traversal_ids_for_ancestors, root_ancestor, default_enabled: :yaml)
+
+        return self.class.none if parent_id.blank?
+
+        lineage(bottom: parent, hierarchy_order: hierarchy_order)
       end
 
       private
@@ -84,11 +91,29 @@ module Namespaces
       end
 
       # Search this namespace's lineage. Bound inclusively by top node.
-      def lineage(top)
-        raise UnboundedSearch, 'Must bound search by a top' unless top
+      def lineage(top: nil, bottom: nil, hierarchy_order: nil)
+        raise UnboundedSearch, 'Must bound search by either top or bottom' unless top || bottom
 
-        without_sti_condition
-          .traversal_ids_contains("{#{top.id}}")
+        skope = without_sti_condition
+
+        if top
+          skope = skope.traversal_ids_contains("{#{top.id}}")
+        end
+
+        if bottom
+          skope = skope.where(id: bottom.traversal_ids[0..-1])
+        end
+
+        # The original `with_depth` attribute in ObjectHierarchy increments as you
+        # walk away from the "base" namespace. This direction changes depending on
+        # if you are walking up the ancestors or down the descendants.
+        if hierarchy_order
+          depth_sql = "ABS(#{traversal_ids.count} - array_length(traversal_ids, 1))"
+          skope = skope.select(skope.arel_table[Arel.star], "#{depth_sql} as depth")
+                       .order(depth: hierarchy_order)
+        end
+
+        skope
       end
     end
   end
