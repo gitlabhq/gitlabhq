@@ -800,6 +800,12 @@ msgstr ""
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
 msgstr ""
 
+msgid "%{rotation} has been recalculated with the remaining participants. Please review the new setup for %{rotation_link}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
+msgstr ""
+
+msgid "%{rotation} has been recalculated with the remaining participants. Please review the new setup for %{rotation}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
+msgstr ""
+
 msgid "%{seconds}s"
 msgstr ""
 
@@ -962,6 +968,9 @@ msgid "%{userName} (cannot merge)"
 msgstr ""
 
 msgid "%{userName}'s avatar"
+msgstr ""
+
+msgid "%{user_name} (%{user_username}) was removed from %{rotation} in %{schedule} in %{project}. "
 msgstr ""
 
 msgid "%{user_name} profile page"
@@ -2163,6 +2172,9 @@ msgid "Adds email participant(s)"
 msgstr ""
 
 msgid "Adjust your filters/search criteria above. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
+msgstr ""
+
+msgid "Admin"
 msgstr ""
 
 msgid "Admin Area"
@@ -9343,6 +9355,9 @@ msgstr ""
 msgid "Create new label"
 msgstr ""
 
+msgid "Create new project"
+msgstr ""
+
 msgid "Create new..."
 msgstr ""
 
@@ -15288,6 +15303,9 @@ msgstr ""
 msgid "Go to previous page"
 msgstr ""
 
+msgid "Go to primary node"
+msgstr ""
+
 msgid "Go to project"
 msgstr ""
 
@@ -20282,6 +20300,9 @@ msgid "Member|Revoke invite"
 msgstr ""
 
 msgid "Memory Usage"
+msgstr ""
+
+msgid "Menu"
 msgstr ""
 
 msgid "Merge"

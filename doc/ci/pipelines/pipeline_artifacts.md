@@ -17,4 +17,5 @@ Pipeline artifacts are saved to disk or object storage. They count towards a pro
 
 ## When pipeline artifacts are deleted
 
-The latest artifacts for refs are locked against deletion, and kept regardless of the expiry time.
+See the [`expire_in`](../yaml/README.md#artifactsexpire_in) documentation for information on when
+pipeline artifacts are deleted.

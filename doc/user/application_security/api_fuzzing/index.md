@@ -582,6 +582,7 @@ repository's root as `.gitlab-api-fuzzing.yml`.
 
 | CI/CD variable                                       | Description        |
 |------------------------------------------------------|--------------------|
+| `SECURE_ANALYZERS_PREFIX`                            | Specify the Docker registry base address from which to download the analyzer. |
 | `FUZZAPI_VERSION`                                    | Specify API Fuzzing container version. Defaults to `latest`. |
 | `FUZZAPI_TARGET_URL`                                 | Base URL of API testing target. |
 |[`FUZZAPI_CONFIG`](#configuration-files)              | API Fuzzing configuration file. Defaults to `.gitlab-apifuzzer.yml`. |
@@ -1116,6 +1117,12 @@ Profiles:
               FuzzingCount: 10
               UnicodeFuzzing: true
 ```
+
+## Running API fuzzing in an offline environment
+
+For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
+to external resources through the internet, some adjustments are required for the Web API Fuzz testing job to
+successfully run. For more information, see [Offline environments](../offline_deployments/index.md).
 
 ## Troubleshooting
 

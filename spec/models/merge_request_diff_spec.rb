@@ -1166,5 +1166,9 @@ RSpec.describe MergeRequestDiff do
     it 'loads nothing if the merge request has no diff record' do
       expect(described_class.latest_diff_for_merge_requests(merge_request_3)).to be_empty
     end
+
+    it 'loads nothing if nil was passed as merge_request' do
+      expect(described_class.latest_diff_for_merge_requests(nil)).to be_empty
+    end
   end
 end

@@ -113,14 +113,29 @@ class MergeRequestDiff < ApplicationRecord
     joins(merge_request: :metrics).where(condition)
   end
 
+  # This scope uses LATERAL JOIN to find the most recent MR diff association for the given merge requests.
+  # To avoid joining the merge_requests table, we build an in memory table using the merge request ids.
+  # Example:
+  # SELECT ...
+  # FROM (VALUES (MR_ID_1),(MR_ID_2)) merge_requests (id)
+  # INNER JOIN LATERAL (...)
   scope :latest_diff_for_merge_requests, -> (merge_requests) do
-    inner_select = MergeRequestDiff
-      .default_scoped
-      .distinct
-      .select("FIRST_VALUE(id) OVER (PARTITION BY merge_request_id ORDER BY created_at DESC) as id")
-      .where(merge_request: merge_requests)
+    mrs = Array(merge_requests)
+    return MergeRequestDiff.none if mrs.empty?
 
-    joins("INNER JOIN (#{inner_select.to_sql}) latest_diffs ON latest_diffs.id = merge_request_diffs.id")
+    merge_request_table = MergeRequest.arel_table
+    merge_request_diff_table = MergeRequestDiff.arel_table
+
+    join_query = MergeRequestDiff
+      .where(merge_request_table[:id].eq(merge_request_diff_table[:merge_request_id]))
+      .order(created_at: :desc)
+      .limit(1)
+
+    mr_id_list = mrs.map { |mr| "(#{Integer(mr.id)})" }.join(",")
+
+    MergeRequestDiff
+      .from("(VALUES #{mr_id_list}) merge_requests (id)")
+      .joins("INNER JOIN LATERAL (#{join_query.to_sql}) #{MergeRequestDiff.table_name} ON TRUE")
       .includes(:merge_request_diff_commits)
   end
 
