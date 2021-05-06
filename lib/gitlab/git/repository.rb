@@ -700,11 +700,11 @@ module Gitlab
         end
       end
 
-      def find_remote_root_ref(remote_name)
-        return unless remote_name.present?
+      def find_remote_root_ref(remote_name, remote_url, authorization = nil)
+        return unless remote_name.present? && remote_url.present?
 
         wrapped_gitaly_errors do
-          gitaly_remote_client.find_remote_root_ref(remote_name)
+          gitaly_remote_client.find_remote_root_ref(remote_name, remote_url, authorization)
         end
       end
 

@@ -60,12 +60,17 @@ module Types
       field :committed_at, Types::TimeType, null: true,
             description: "Timestamp of the pipeline's commit."
 
-      field :stages, Types::Ci::StageType.connection_type, null: true,
+      field :stages,
+            type: Types::Ci::StageType.connection_type,
+            null: true,
+            authorize: :read_commit_status,
             description: 'Stages of the pipeline.',
             extras: [:lookahead],
             resolver: Resolvers::Ci::PipelineStagesResolver
 
-      field :user, Types::UserType, null: true,
+      field :user,
+            type: Types::UserType,
+            null: true,
             description: 'Pipeline user.'
 
       field :retryable, GraphQL::BOOLEAN_TYPE,
@@ -81,12 +86,14 @@ module Types
       field :jobs,
             ::Types::Ci::JobType.connection_type,
             null: true,
+            authorize: :read_commit_status,
             description: 'Jobs belonging to the pipeline.',
             resolver: ::Resolvers::Ci::JobsResolver
 
       field :job,
             type: ::Types::Ci::JobType,
             null: true,
+            authorize: :read_commit_status,
             description: 'A specific job in this pipeline, either by name or ID.' do
         argument :id,
                  type: ::Types::GlobalIDType[::CommitStatus],
@@ -98,7 +105,10 @@ module Types
                  description: 'Name of the job.'
       end
 
-      field :source_job, Types::Ci::JobType, null: true,
+      field :source_job,
+            type: Types::Ci::JobType,
+            null: true,
+            authorize: :read_commit_status,
             description: 'Job where pipeline was triggered from.'
 
       field :downstream, Types::Ci::PipelineType.connection_type, null: true,

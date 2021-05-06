@@ -1,5 +1,5 @@
 import initDevOpsScore from '~/analytics/devops_report/devops_score';
-import initDevOpsScoreEmptyState from '~/analytics/devops_report/devops_score_empty_state';
+import initDevOpsScoreDisabledUsagePing from '~/analytics/devops_report/devops_score_disabled_usage_ping';
 
-initDevOpsScoreEmptyState();
+initDevOpsScoreDisabledUsagePing();
 initDevOpsScore();

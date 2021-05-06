@@ -142,6 +142,9 @@ func TestAcceleratedUpload(t *testing.T) {
 		{"POST", `/api/v4/projects/group%2Fsubgroup%2Fproject/issues/30/metric_images`, true},
 		{"POST", `/my/project/-/requirements_management/requirements/import_csv`, true},
 		{"POST", `/my/project/-/requirements_management/requirements/import_csv/`, true},
+		{"POST", "/api/v4/projects/2412/packages/helm/api/stable/charts", true},
+		{"POST", "/api/v4/projects/group%2Fproject/packages/helm/api/stable/charts", true},
+		{"POST", "/api/v4/projects/group%2Fsubgroup%2Fproject/packages/helm/api/stable/charts", true},
 	}
 
 	for _, tt := range tests {
@@ -232,6 +235,8 @@ func TestUnacceleratedUploads(t *testing.T) {
 		{"POST", `/api/v4/projects/group/subgroup/project/packages/pypi`},
 		{"POST", `/api/v4/projects/group/project/packages/pypi`},
 		{"POST", `/api/v4/projects/group/subgroup/project/packages/pypi`},
+		{"POST", "/api/v4/projects/group/project/packages/helm/api/stable/charts"},
+		{"POST", "/api/v4/projects/group/subgroup%2Fproject/packages/helm/api/stable/charts"},
 		{"POST", `/api/v4/projects/group/project/issues/30/metric_images`},
 		{"POST", `/api/v4/projects/group/subgroup/project/issues/30/metric_images`},
 	}

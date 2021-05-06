@@ -680,7 +680,7 @@ module ProjectsHelper
       operations#show
       badges#index
       pages#show
-      packages_and_registries#index
+      packages_and_registries#show
       projects/runners#show
       projects/runners#edit
     ]

@@ -53,7 +53,10 @@ RSpec.describe Gitlab::Git::Blame, :seed_helper do
       end
 
       it 'converts to UTF-8' do
-        expect(CharlockHolmes::EncodingDetector).to receive(:detect).and_return(nil)
+        expect_next_instance_of(CharlockHolmes::EncodingDetector) do |detector|
+          expect(detector).to receive(:detect).and_return(nil)
+        end
+
         data = []
         blame.each do |commit, line|
           data << {

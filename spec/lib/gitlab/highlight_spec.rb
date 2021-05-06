@@ -133,5 +133,39 @@ RSpec.describe Gitlab::Highlight do
         subject.highlight("Content")
       end
     end
+
+    describe 'highlight timeouts' do
+      context 'when there is a timeout error while highlighting' do
+        let(:result) { described_class.highlight(file_name, content) }
+
+        before do
+          allow(Timeout).to receive(:timeout).twice.and_raise(Timeout::Error)
+          # This is done twice because it's rescued first and then
+          # calls the original exception
+        end
+
+        it "increments the foreground counter if it's in the foreground" do
+          expect { result }
+            .to raise_error(Timeout::Error)
+            .and change { highlight_timeout_total('foreground') }.by(1)
+            .and not_change { highlight_timeout_total('background') }
+        end
+
+        it "increments the background counter if it's in the background" do
+          allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+
+          expect { result }
+            .to raise_error(Timeout::Error)
+            .and change { highlight_timeout_total('background') }.by(1)
+            .and not_change { highlight_timeout_total('foreground') }
+        end
+      end
+    end
+  end
+
+  def highlight_timeout_total(source)
+    Gitlab::Metrics
+      .counter(:highlight_timeout, 'Counts the times highlights have timed out')
+      .get(source: source)
   end
 end

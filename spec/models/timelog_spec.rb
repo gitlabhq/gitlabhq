@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Timelog do
   subject { create(:timelog) }
 
-  let(:issue) { create(:issue) }
-  let(:merge_request) { create(:merge_request) }
+  let_it_be(:issue) { create(:issue) }
+  let_it_be(:merge_request) { create(:merge_request) }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:issue).touch(true) }
@@ -54,27 +54,34 @@ RSpec.describe Timelog do
   end
 
   describe 'scopes' do
-    describe 'for_issues_in_group' do
-      it 'return timelogs created for group issues' do
-        group = create(:group)
-        subgroup = create(:group, parent: group)
+    let_it_be(:group) { create(:group) }
+    let_it_be(:group_project) { create(:project, :empty_repo, group: group) }
+    let_it_be(:group_issue) { create(:issue, project: group_project) }
+    let_it_be(:group_merge_request) { create(:merge_request, source_project: group_project) }
 
-        create(:issue_timelog)
-        timelog1 = create(:issue_timelog, issue: create(:issue, project: create(:project, group: group)))
-        timelog2 = create(:issue_timelog, issue: create(:issue, project: create(:project, group: subgroup)))
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:subgroup_project) { create(:project, :empty_repo, group: subgroup) }
+    let_it_be(:subgroup_issue) { create(:issue, project: subgroup_project) }
+    let_it_be(:subgroup_merge_request) { create(:merge_request, source_project: subgroup_project) }
 
-        expect(described_class.for_issues_in_group(group)).to contain_exactly(timelog1, timelog2)
+    let_it_be(:timelog) { create(:issue_timelog, spent_at: 65.days.ago) }
+    let_it_be(:timelog1) { create(:issue_timelog, spent_at: 15.days.ago, issue: group_issue) }
+    let_it_be(:timelog2) { create(:issue_timelog, spent_at: 5.days.ago, issue: subgroup_issue) }
+    let_it_be(:timelog3) { create(:merge_request_timelog, spent_at: 65.days.ago) }
+    let_it_be(:timelog4) { create(:merge_request_timelog, spent_at: 15.days.ago, merge_request: group_merge_request) }
+    let_it_be(:timelog5) { create(:merge_request_timelog, spent_at: 5.days.ago, merge_request: subgroup_merge_request) }
+
+    describe 'in_group' do
+      it 'return timelogs created for group issues and merge requests' do
+        expect(described_class.in_group(group)).to contain_exactly(timelog1, timelog2, timelog4, timelog5)
       end
     end
 
     describe 'between_times' do
       it 'returns collection of timelogs within given times' do
-        create(:issue_timelog, spent_at: 65.days.ago)
-        timelog1 = create(:issue_timelog, spent_at: 15.days.ago)
-        timelog2 = create(:issue_timelog, spent_at: 5.days.ago)
-        timelogs = described_class.between_times(20.days.ago, 1.day.ago)
+        timelogs = described_class.between_times(20.days.ago, 10.days.ago)
 
-        expect(timelogs).to contain_exactly(timelog1, timelog2)
+        expect(timelogs).to contain_exactly(timelog1, timelog4)
       end
     end
   end

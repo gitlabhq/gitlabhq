@@ -11,6 +11,10 @@ module InviteMembersHelper
     Feature.enabled?(:invite_members_group_modal, project.group) && can_manage_project_members?(project)
   end
 
+  def can_invite_group_for_project?(project)
+    Feature.enabled?(:invite_members_group_modal, project.group) && project.allowed_to_share_with_group?
+  end
+
   def directly_invite_members?
     strong_memoize(:directly_invite_members) do
       can_import_members?

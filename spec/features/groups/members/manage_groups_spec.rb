@@ -12,18 +12,39 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
     sign_in(user)
   end
 
-  context 'when group link does not exist' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:group_to_add) { create(:group) }
+  context 'with invite_members_group_modal disabled' do
+    context 'when group link does not exist' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_to_add) { create(:group) }
 
-    before do
-      stub_feature_flags(invite_members_group_modal: false)
-      group.add_owner(user)
-      visit group_group_members_path(group)
+      before do
+        stub_feature_flags(invite_members_group_modal: false)
+        group.add_owner(user)
+        visit group_group_members_path(group)
+      end
+
+      it 'add group to group' do
+        add_group(group_to_add.id, 'Reporter')
+
+        click_groups_tab
+
+        page.within(first_row) do
+          expect(page).to have_content(group_to_add.name)
+          expect(page).to have_content('Reporter')
+        end
+      end
     end
+  end
 
-    it 'add group to group' do
-      add_group(group_to_add.id, 'Reporter')
+  context 'when group link does not exist' do
+    it 'can share a group with group' do
+      group = create(:group)
+      group_to_add = create(:group)
+      group.add_owner(user)
+      group_to_add.add_owner(user)
+
+      visit group_group_members_path(group)
+      invite_group(group_to_add.name, 'Reporter')
 
       click_groups_tab
 
@@ -124,6 +145,21 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
       select(role, from: "shared_group_access")
       click_button "Invite"
     end
+  end
+
+  def invite_group(name, role)
+    click_on 'Invite a group'
+
+    click_on 'Select a group'
+    wait_for_requests
+    click_button name
+
+    click_button 'Guest'
+    wait_for_requests
+    click_button role
+
+    click_button 'Invite'
+    page.refresh
   end
 
   def click_groups_tab

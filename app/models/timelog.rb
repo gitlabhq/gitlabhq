@@ -14,12 +14,8 @@ class Timelog < ApplicationRecord
   belongs_to :user
   belongs_to :note
 
-  scope :for_issues_in_group, -> (group) do
-    joins(:issue).where(
-      'EXISTS (?)',
-      Project.select(1).where(namespace: group.self_and_descendants)
-        .where('issues.project_id = projects.id')
-    )
+  scope :in_group, -> (group) do
+    joins(:project).where(projects: { namespace: group.self_and_descendants })
   end
 
   scope :between_times, -> (start_time, end_time) do

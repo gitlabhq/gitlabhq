@@ -284,14 +284,29 @@ RSpec.describe ApplicationHelper do
   end
 
   describe '#autocomplete_data_sources' do
-    let(:project) { create(:project) }
-    let(:noteable_type) { Issue }
+    context 'group' do
+      let(:group) { create(:group) }
+      let(:noteable_type) { Issue }
 
-    it 'returns paths for autocomplete_sources_controller' do
-      sources = helper.autocomplete_data_sources(project, noteable_type)
-      expect(sources.keys).to match_array([:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets])
-      sources.keys.each do |key|
-        expect(sources[key]).not_to be_nil
+      it 'returns paths for autocomplete_sources_controller' do
+        sources = helper.autocomplete_data_sources(group, noteable_type)
+        expect(sources.keys).to include(:members, :issues, :mergeRequests, :labels, :milestones, :commands)
+        sources.keys.each do |key|
+          expect(sources[key]).not_to be_nil
+        end
+      end
+    end
+
+    context 'project' do
+      let(:project) { create(:project) }
+      let(:noteable_type) { Issue }
+
+      it 'returns paths for autocomplete_sources_controller' do
+        sources = helper.autocomplete_data_sources(project, noteable_type)
+        expect(sources.keys).to match_array([:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets])
+        sources.keys.each do |key|
+          expect(sources[key]).not_to be_nil
+        end
       end
     end
   end

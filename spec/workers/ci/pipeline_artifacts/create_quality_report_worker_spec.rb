@@ -21,8 +21,8 @@ RSpec.describe ::Ci::PipelineArtifacts::CreateQualityReportWorker do
       it_behaves_like 'an idempotent worker' do
         let(:job_args) { pipeline_id }
 
-        it 'creates a pipeline artifact' do
-          expect { subject }.to change { pipeline.pipeline_artifacts.count }.by(1)
+        it 'does not create another pipeline artifact if already has one' do
+          expect { subject }.not_to change { pipeline.pipeline_artifacts.count }
         end
       end
     end

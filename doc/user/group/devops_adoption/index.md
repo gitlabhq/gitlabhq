@@ -6,33 +6,36 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Group DevOps Adoption **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321083) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321083) as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta) in GitLab 13.11.
 > - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - Disabled on GitLab.com.
 > - Not recommended for production use.
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-group-devops-adoption).
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+This in-development feature might not be available for your use. There can be
+[risks when enabling features still in development](../../feature_flags.md#risks-when-enabling-features-still-in-development).
+Refer to this feature's version history for more details.
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321083) in GitLab 13.11 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
+Prerequisites:
 
-To access Group DevOps Adoption, navigate to your group sidebar and select **Analytics > DevOps Adoption**
+- A minimum of [Reporter access](../../permissions.md) to the group.
+
+To access Group DevOps Adoption, go to your group and select **Analytics > DevOps Adoption**.
 
 Group DevOps Adoption shows you how individual groups and sub-groups within your organization use the following features:
 
+- Approvals
+- Deployments
 - Issues
 - Merge Requests
-- Approvals
-- Runners
 - Pipelines
-- Deployments
+- Runners
 - Scans
 
 When managing groups in the UI, you can manage your sub-groups with the **Add/Remove sub-groups**
 button, in the top right hand section of your Groups pages.
 
-DevOps Adoption allows you to:
+With DevOps Adoption you can:
 
 - Verify whether you are getting the return on investment that you expected from GitLab.
 - Identify specific sub-groups that are lagging in their adoption of GitLab so you can help them along in their DevOps journey.

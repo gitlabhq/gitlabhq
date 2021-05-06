@@ -46,27 +46,23 @@ review:
     name: review/$CI_COMMIT_REF_NAME
     url: http://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$OPENSHIFT_DOMAIN
     on_stop: stop-review
-  only:
-    - branches
-  except:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
 
 stop-review:
   <<: *deploy
   stage: cleanup
   script:
     - oc delete all -l "app=$APP"
-  when: manual
   variables:
     APP: review-$CI_COMMIT_REF_NAME
     GIT_STRATEGY: none
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
-  only:
-    - branches
-  except:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      when: manual
 
 staging:
   <<: *deploy
@@ -77,8 +73,8 @@ staging:
   environment:
     name: staging
     url: http://$CI_PROJECT_NAME-staging.$OPENSHIFT_DOMAIN
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 production:
   <<: *deploy
@@ -86,9 +82,9 @@ production:
   variables:
     APP: production
     APP_HOST: $CI_PROJECT_NAME.$OPENSHIFT_DOMAIN
-  when: manual
   environment:
     name: production
     url: http://$CI_PROJECT_NAME.$OPENSHIFT_DOMAIN
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual

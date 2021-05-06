@@ -10,7 +10,7 @@ module Projects
 
       feature_category :package_registry
 
-      def index
+      def show
       end
 
       private

@@ -2,6 +2,8 @@
 
 module DevOpsReportHelper
   def devops_score_metrics(metric)
+    return {} if metric.blank?
+
     {
       averageScore: average_score_data(metric),
       cards: devops_score_card_data(metric),

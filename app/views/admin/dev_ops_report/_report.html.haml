@@ -4,9 +4,7 @@
   = render 'callout'
 
 - if !usage_ping_enabled
-  #js-devops-empty-state{ data: { is_admin: current_user&.admin.to_s, empty_state_svg_path: image_path('illustrations/convdev/convdev_no_index.svg'), enable_usage_ping_link: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), docs_link: help_page_path('development/usage_ping/index.md') } }
-- elsif @metric.blank?
-  = render 'no_data'
+  #js-devops-usage-ping-disabled{ data: { is_admin: current_user&.admin.to_s, empty_state_svg_path: image_path('illustrations/convdev/convdev_no_index.svg'), enable_usage_ping_link: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), docs_link: help_page_path('development/usage_ping/index.md') } }
 - else
-  #js-devops-score{ data: { devops_score_metrics: devops_score_metrics(@metric).to_json } }
+  #js-devops-score{ data: { devops_score_metrics: devops_score_metrics(@metric).to_json, devops_report_docs_path: help_page_path('user/admin_area/analytics/dev_ops_report'), no_data_image_path: image_path('dev_ops_report_no_data.svg') } }
 

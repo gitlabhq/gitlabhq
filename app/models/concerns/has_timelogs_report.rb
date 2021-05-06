@@ -15,6 +15,6 @@ module HasTimelogsReport
   private
 
   def timelogs_for(start_time, end_time)
-    Timelog.between_times(start_time, end_time).for_issues_in_group(self)
+    Timelog.between_times(start_time, end_time).in_group(self)
   end
 end

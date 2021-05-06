@@ -4,7 +4,7 @@
 .js-remove-member-modal
 .row.gl-mt-3
   .col-lg-12
-    - if can_invite_members_for_project?(@project)
+    - if can_invite_members_for_project?(@project) || can_invite_group_for_project?(@project)
       .row
         .col-md-12.col-lg-6.gl-display-flex
           .gl-flex-direction-column.gl-flex-wrap.align-items-baseline
@@ -18,12 +18,15 @@
                   = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
         .col-md-12.col-lg-6
           .gl-display-flex.gl-flex-wrap.gl-justify-content-end
-            = link_to _("Import a project"),
-              import_project_project_members_path(@project),
-              class: "btn btn-default btn-md gl-button gl-mt-3 gl-sm-w-auto gl-w-full",
-              title: _("Import members from another project")
-            .js-invite-group-trigger{ data: { classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite a group') } }
-            .js-invite-members-trigger{ data: { variant: 'success', classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite members') } }
+            - if can_import_members?
+              = link_to _("Import a project"),
+                import_project_project_members_path(@project),
+                class: "btn btn-default btn-md gl-button gl-mt-3 gl-sm-w-auto gl-w-full",
+                title: _("Import members from another project")
+            - if @project.allowed_to_share_with_group?
+              .js-invite-group-trigger{ data: { classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite a group') } }
+            - if !membership_locked?
+              .js-invite-members-trigger{ data: { variant: 'success', classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite members') } }
         = render 'projects/invite_members_modal', project: @project
 
     - else
@@ -36,7 +39,7 @@
           %p
             = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
 
-    - if !can_invite_members_for_project?(@project) && can_manage_project_members?(@project) && project_can_be_shared?
+    - if Feature.disabled?(:invite_members_group_modal, @project.group) && can_manage_project_members?(@project) && project_can_be_shared?
       - if !membership_locked? && @project.allowed_to_share_with_group?
         %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }

@@ -382,15 +382,26 @@ module ApplicationHelper
   def autocomplete_data_sources(object, noteable_type)
     return {} unless object && noteable_type
 
-    {
-      members: members_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
-      issues: issues_project_autocomplete_sources_path(object),
-      mergeRequests: merge_requests_project_autocomplete_sources_path(object),
-      labels: labels_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
-      milestones: milestones_project_autocomplete_sources_path(object),
-      commands: commands_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
-      snippets: snippets_project_autocomplete_sources_path(object)
-    }
+    if object.is_a?(Group)
+      {
+        members: members_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
+        issues: issues_group_autocomplete_sources_path(object),
+        mergeRequests: merge_requests_group_autocomplete_sources_path(object),
+        labels: labels_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
+        milestones: milestones_group_autocomplete_sources_path(object),
+        commands: commands_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id])
+      }
+    else
+      {
+        members: members_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
+        issues: issues_project_autocomplete_sources_path(object),
+        mergeRequests: merge_requests_project_autocomplete_sources_path(object),
+        labels: labels_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
+        milestones: milestones_project_autocomplete_sources_path(object),
+        commands: commands_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
+        snippets: snippets_project_autocomplete_sources_path(object)
+      }
+    end
   end
 
   def asset_to_string(name)

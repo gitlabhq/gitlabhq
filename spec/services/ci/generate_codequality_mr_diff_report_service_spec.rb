@@ -10,7 +10,7 @@ RSpec.describe Ci::GenerateCodequalityMrDiffReportService do
     subject { service.execute(base_pipeline, head_pipeline) }
 
     context 'when head pipeline has codequality mr diff report' do
-      let!(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project) }
+      let!(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project, id: 123456789) }
       let!(:service) { described_class.new(project, nil, id: merge_request.id) }
       let!(:head_pipeline) { merge_request.head_pipeline }
       let!(:base_pipeline) { nil }
@@ -18,7 +18,7 @@ RSpec.describe Ci::GenerateCodequalityMrDiffReportService do
       it 'returns status and data', :aggregate_failures do
         expect_any_instance_of(Ci::PipelineArtifact) do |instance|
           expect(instance).to receive(:present)
-          expect(instance).to receive(:for_files).with(merge_request.new_paths).and_call_original
+          expect(instance).to receive(:for_files).with(merge_request).and_call_original
         end
 
         expect(subject[:status]).to eq(:parsed)

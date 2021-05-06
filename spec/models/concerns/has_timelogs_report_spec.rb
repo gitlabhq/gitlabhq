@@ -3,16 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe HasTimelogsReport do
-  let(:user)      { create(:user) }
+  let_it_be(:user) { create(:user) }
+
   let(:group)     { create(:group) }
-  let(:issue)     { create(:issue, project: create(:project, :public, group: group)) }
+  let(:project)   { create(:project, :public, group: group) }
+  let(:issue1)    { create(:issue, project: project) }
+  let(:merge_request1) { create(:merge_request, source_project: project) }
 
   describe '#timelogs' do
-    let!(:timelog1) { create_timelog(15.days.ago) }
-    let!(:timelog2) { create_timelog(10.days.ago) }
-    let!(:timelog3) { create_timelog(5.days.ago) }
-    let(:start_time) { 20.days.ago }
-    let(:end_time) { 8.days.ago }
+    let_it_be(:start_time) { 20.days.ago }
+    let_it_be(:end_time) { 8.days.ago }
+
+    let!(:timelog1) { create_timelog(15.days.ago, issue: issue1) }
+    let!(:timelog2) { create_timelog(10.days.ago, merge_request: merge_request1) }
+    let!(:timelog3) { create_timelog(5.days.ago, issue: issue1) }
 
     before do
       group.add_developer(user)
@@ -45,7 +49,7 @@ RSpec.describe HasTimelogsReport do
     end
   end
 
-  def create_timelog(time)
-    create(:timelog, issue: issue, user: user, spent_at: time)
+  def create_timelog(time, issue: nil, merge_request: nil)
+    create(:timelog, issue: issue, merge_request: merge_request, user: user, spent_at: time)
   end
 end

@@ -18,10 +18,6 @@ module QA
           element :members_link
         end
 
-        view 'app/views/layouts/nav/sidebar/_wiki_link.html.haml' do
-          element :wiki_link
-        end
-
         def click_merge_requests
           within_sidebar do
             click_element(:sidebar_menu_link, menu_item: 'Merge requests')
@@ -30,7 +26,7 @@ module QA
 
         def click_wiki
           within_sidebar do
-            click_element(:wiki_link)
+            click_element(:sidebar_menu_link, menu_item: 'Wiki')
           end
         end
 

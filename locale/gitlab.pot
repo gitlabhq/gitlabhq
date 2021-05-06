@@ -5040,6 +5040,15 @@ msgstr ""
 msgid "BillingPlan|Upgrade for free"
 msgstr ""
 
+msgid "Billings|Verify User Account"
+msgstr ""
+
+msgid "Billings|Verify account"
+msgstr ""
+
+msgid "Billings|Your user account has been flagged for potential abuse for running a large number of concurrent pipelines. To continue to run a large number of concurrent pipelines, you'll need to validate your account with a credit card. %{strongStart}GitLab will not charge your credit card, it will only be used for validation.%{strongEnd}"
+msgstr ""
+
 msgid "Billing|An email address is only visible for users with public emails."
 msgstr ""
 
@@ -22984,9 +22993,6 @@ msgstr ""
 msgid "Otherwise, click the link below to complete the process:"
 msgstr ""
 
-msgid "Our documentation includes an example DevOps Score report."
-msgstr ""
-
 msgid "Out-of-compliance with this project's policies and should be removed"
 msgstr ""
 
@@ -28802,6 +28808,9 @@ msgid "SecurityReports|You must sign in as an authorized user to see this report
 msgstr ""
 
 msgid "SecurityReports|Your feedback is important to us! We will ask again in a week."
+msgstr ""
+
+msgid "See example DevOps Score page in our documentation."
 msgstr ""
 
 msgid "See metrics"
@@ -37181,6 +37190,9 @@ msgstr ""
 msgid "Your authorized applications"
 msgstr ""
 
+msgid "Your browser does not support iFrames"
+msgstr ""
+
 msgid "Your browser doesn't support U2F. Please use Google Chrome desktop (version 41 or newer)."
 msgstr ""
 
@@ -38255,9 +38267,6 @@ msgstr ""
 msgid "mrWidget|Are you adding technical debt or code vulnerabilities?"
 msgstr ""
 
-msgid "mrWidget|Before this can be merged, one or more threads must be resolved."
-msgstr ""
-
 msgid "mrWidget|Cancel automatic merge"
 msgstr ""
 
@@ -38322,6 +38331,9 @@ msgid "mrWidget|Mentions"
 msgstr ""
 
 msgid "mrWidget|Merge"
+msgstr ""
+
+msgid "mrWidget|Merge blocked: all threads must be resolved."
 msgstr ""
 
 msgid "mrWidget|Merge failed."

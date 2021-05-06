@@ -13,7 +13,11 @@
           = f.label :description, _('Description')
         .col-sm-10
           = render layout: 'shared/md_preview', locals: { url: preview_markdown_path(@project) } do
-            = render 'shared/zen', f: f, attr: :description, classes: 'note-textarea', qa_selector: 'milestone_description_field', placeholder: _('Write milestone description...')
+            = render 'shared/zen', f: f, attr: :description,
+                                    classes: 'note-textarea',
+                                    qa_selector: 'milestone_description_field',
+                                    supports_autocomplete: true,
+                                    placeholder: _('Write milestone description...')
             = render 'shared/notes/hints'
           .clearfix
           .error-alert

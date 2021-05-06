@@ -75,7 +75,10 @@ Are there any other stages or teams involved that need to be kept in the loop?
       issue](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process). Cross
       link the issue here if it does.
 
+- [ ] Ensure that you or a representative in development can be available for at least 2 hours after feature flag updates in production. If a different developer will be covering, or an exception is needed, please inform the oncall SRE by using the `@sre-oncall` Slack alias.
+
 *Partial Rollout Phase*
+
 - [ ] Enable on GitLab.com for individual groups/projects listed above and verify behaviour (`/chatops run feature set --project=gitlab-org/gitlab feature_name true`)
 
 - [ ] Verify behaviour (See Beta Groups) and add details with screenshots as a comment on this issue

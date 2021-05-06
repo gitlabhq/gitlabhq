@@ -99,3 +99,8 @@ With this option enabled, `75h` is displayed instead of `1w 4d 3h`.
 ## Other interesting links
 
 - [Time Tracking solutions page](https://about.gitlab.com/solutions/time-tracking/)
+- Time Tracking GraphQL references:
+  - [Connection](../../api/graphql/reference/index.md#timelogconnection)
+  - [Edge](../../api/graphql/reference/index.md#timelogedge)
+  - [Fields](../../api/graphql/reference/index.md#timelog)
+  - [Group Timelogs](../../api/graphql/reference/index.md#grouptimelogs)

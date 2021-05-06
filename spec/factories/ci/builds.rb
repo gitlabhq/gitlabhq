@@ -369,6 +369,12 @@ FactoryBot.define do
       end
     end
 
+    trait :codequality_reports_without_degradation do
+      after(:build) do |build|
+        build.job_artifacts << create(:ci_job_artifact, :codequality_without_errors, job: build)
+      end
+    end
+
     trait :terraform_reports do
       after(:build) do |build|
         build.job_artifacts << create(:ci_job_artifact, :terraform, job: build)

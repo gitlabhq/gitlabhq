@@ -6,7 +6,7 @@ export default () => {
   // eslint-disable-next-line no-new
   new UserCallout();
 
-  const emptyStateContainer = document.getElementById('js-devops-empty-state');
+  const emptyStateContainer = document.getElementById('js-devops-usage-ping-disabled');
 
   if (!emptyStateContainer) return false;
 

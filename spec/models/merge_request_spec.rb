@@ -2255,7 +2255,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
   describe '#find_codequality_mr_diff_reports' do
     let(:project) { create(:project, :repository) }
-    let(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project) }
+    let(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project, id: 123456789) }
     let(:pipeline) { merge_request.head_pipeline }
 
     subject(:mr_diff_report) { merge_request.find_codequality_mr_diff_reports }

@@ -783,13 +783,39 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
-  describe 'wiki entry tab' do
-    let(:can_read_wiki) { true }
+  describe 'Confluence' do
+    let!(:service) { create(:confluence_service, project: project, active: active) }
 
     before do
-      allow(view).to receive(:can?).with(user, :read_wiki, project).and_return(can_read_wiki)
+      render
     end
 
+    context 'when the Confluence integration is active' do
+      let(:active) { true }
+
+      it 'shows the Confluence link' do
+        expect(rendered).to have_link('Confluence', href: project_wikis_confluence_path(project))
+      end
+
+      it 'does not show the GitLab wiki link' do
+        expect(rendered).not_to have_link('Wiki')
+      end
+    end
+
+    context 'when it is disabled' do
+      let(:active) { false }
+
+      it 'does not show the Confluence link' do
+        expect(rendered).not_to have_link('Confluence')
+      end
+
+      it 'shows the GitLab wiki link' do
+        expect(rendered).to have_link('Wiki', href: wiki_path(project.wiki))
+      end
+    end
+  end
+
+  describe 'Wiki' do
     describe 'when wiki is enabled' do
       it 'shows the wiki tab with the wiki internal link' do
         render
@@ -799,9 +825,9 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
 
     describe 'when wiki is disabled' do
-      let(:can_read_wiki) { false }
+      let(:user) { nil }
 
-      it 'does not show the wiki tab' do
+      it 'does not show the wiki link' do
         render
 
         expect(rendered).not_to have_link('Wiki')
@@ -809,7 +835,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
-  describe 'external wiki entry tab' do
+  describe 'External Wiki' do
     let(:properties) { { 'external_wiki_url' => 'https://gitlab.com' } }
     let(:service_status) { true }
 
@@ -829,42 +855,10 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     context 'when it is disabled' do
       let(:service_status) { false }
 
-      it 'does not show the external wiki tab' do
+      it 'does not show the external wiki link' do
         render
 
         expect(rendered).not_to have_link('External wiki')
-      end
-    end
-  end
-
-  describe 'confluence tab' do
-    let!(:service) { create(:confluence_service, project: project, active: active) }
-
-    before do
-      render
-    end
-
-    context 'when the Confluence integration is active' do
-      let(:active) { true }
-
-      it 'shows the Confluence tab' do
-        expect(rendered).to have_link('Confluence', href: project_wikis_confluence_path(project))
-      end
-
-      it 'does not show the GitLab wiki tab' do
-        expect(rendered).not_to have_link('Wiki')
-      end
-    end
-
-    context 'when it is disabled' do
-      let(:active) { false }
-
-      it 'does not show the Confluence tab' do
-        expect(rendered).not_to have_link('Confluence')
-      end
-
-      it 'shows the GitLab wiki tab' do
-        expect(rendered).to have_link('Wiki', href: wiki_path(project.wiki))
       end
     end
   end

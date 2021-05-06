@@ -130,7 +130,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
 
-          resources :packages_and_registries, only: [:index]
+          resource :packages_and_registries, only: [:show]
         end
 
         resources :autocomplete_sources, only: [] do

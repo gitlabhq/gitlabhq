@@ -87,6 +87,7 @@ module Gitlab
 
       def highlight_line(diff_line)
         return unless diff_file && diff_file.diff_refs
+        return diff_line_highlighting(diff_line, plain: true) if blobs_too_large?
 
         if Feature.enabled?(:diff_line_syntax_highlighting, project, default_enabled: :yaml)
           diff_line_highlighting(diff_line)
@@ -95,9 +96,10 @@ module Gitlab
         end
       end
 
-      def diff_line_highlighting(diff_line)
+      def diff_line_highlighting(diff_line, plain: false)
         rich_line = syntax_highlighter(diff_line).highlight(
           diff_line.text(prefix: false),
+          plain: plain,
           context: { line_number: diff_line.line }
         )
 
@@ -157,6 +159,13 @@ module Gitlab
 
         blob.load_all_data!
         blob.present.highlight.lines
+      end
+
+      def blobs_too_large?
+        return false unless Feature.enabled?(:limited_diff_highlighting, project, default_enabled: :yaml)
+        return true if Gitlab::Highlight.too_large?(diff_file.old_blob&.size)
+
+        Gitlab::Highlight.too_large?(diff_file.new_blob&.size)
       end
     end
   end

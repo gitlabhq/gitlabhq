@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlTable } from '@gitlab/ui';
+import { GlBadge, GlTable, GlLink, GlEmptyState } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { sprintf, s__ } from '~/locale';
 
@@ -13,10 +13,18 @@ export default {
     GlBadge,
     GlTable,
     GlSingleStat,
+    GlLink,
+    GlEmptyState,
   },
   inject: {
     devopsScoreMetrics: {
       default: null,
+    },
+    devopsReportDocsPath: {
+      default: '',
+    },
+    noDataImagePath: {
+      default: '',
     },
   },
   computed: {
@@ -27,6 +35,9 @@ export default {
         ),
         { timestamp: this.devopsScoreMetrics.createdAt },
       );
+    },
+    isEmpty() {
+      return this.devopsScoreMetrics.averageScore === undefined;
     },
   },
   tableHeaderFields: [
@@ -54,7 +65,19 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="devops-score-app">
+  <gl-empty-state
+    v-if="isEmpty"
+    :title="__('Data is still calculating...')"
+    :svg-path="noDataImagePath"
+  >
+    <template #description>
+      <p class="gl-mb-0">{{ __('It may be several days before you see feature usage data.') }}</p>
+      <gl-link :href="devopsReportDocsPath">{{
+        __('See example DevOps Score page in our documentation.')
+      }}</gl-link>
+    </template>
+  </gl-empty-state>
+  <div v-else data-testid="devops-score-app">
     <div class="gl-text-gray-400 gl-my-4" data-testid="devops-score-note-text">
       {{ titleHelperText }}
     </div>

@@ -286,6 +286,9 @@ func configureRoutes(u *upstream) {
 		// Terraform Module Package Repository
 		u.route("PUT", apiProjectPattern+`packages/terraform/modules/`, upload.BodyUploader(api, signingProxy, preparers.packages)),
 
+		// Helm Artifact Repository
+		u.route("POST", apiProjectPattern+`packages/helm/api/[^/]+/charts\z`, upload.Accelerate(api, signingProxy, preparers.packages)),
+
 		// We are porting API to disk acceleration
 		// we need to declare each routes until we have fixed all the routes on the rails codebase.
 		// Overall status can be seen at https://gitlab.com/groups/gitlab-org/-/epics/1802#current-status

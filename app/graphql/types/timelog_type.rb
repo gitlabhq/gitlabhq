@@ -26,6 +26,11 @@ module Types
           null: true,
           description: 'The issue that logged time was added to.'
 
+    field :merge_request,
+          Types::MergeRequestType,
+          null: true,
+          description: 'The merge request that logged time was added to.'
+
     field :note,
           Types::Notes::NoteType,
           null: true,
