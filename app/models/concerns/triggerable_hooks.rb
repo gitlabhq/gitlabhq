@@ -29,11 +29,11 @@ module TriggerableHooks
       callable_scopes = triggers.keys + [:all]
       return none unless callable_scopes.include?(trigger)
 
-      public_send(trigger) # rubocop:disable GitlabSecurity/PublicSend
+      executable.public_send(trigger) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def select_active(hooks_scope, data)
-      select do |hook|
+      executable.select do |hook|
         ActiveHookFilter.new(hook).matches?(hooks_scope, data)
       end
     end

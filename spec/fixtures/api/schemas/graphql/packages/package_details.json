@@ -12,7 +12,8 @@
     "tags",
     "pipelines",
     "versions",
-    "metadata"
+    "metadata",
+    "status"
   ],
   "properties": {
     "id": {
@@ -92,6 +93,10 @@
         "edges": { "type": "array" },
         "nodes": { "type": "array" }
       }
+    },
+    "status": {
+      "type": ["string"],
+      "enum": ["DEFAULT", "HIDDEN", "PROCESSING", "ERROR"]
     }
   }
 }

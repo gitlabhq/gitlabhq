@@ -1,0 +1,8 @@
+---
+name: show_relevant_approval_rule_approvers
+introduced_by_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329153
+milestone: '13.12'
+type: development
+group: group::source code
+default_enabled: false

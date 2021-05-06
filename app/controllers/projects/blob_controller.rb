@@ -36,6 +36,10 @@ class Projects::BlobController < Projects::ApplicationController
 
   feature_category :source_code_management
 
+  before_action do
+    push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
+  end
+
   def new
     commit unless @repository.empty?
   end

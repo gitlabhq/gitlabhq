@@ -3,6 +3,11 @@
 class WebHook < ApplicationRecord
   include Sortable
 
+  FAILURE_THRESHOLD = 3 # three strikes
+  INITIAL_BACKOFF = 10.minutes
+  MAX_BACKOFF = 1.day
+  BACKOFF_GROWTH_FACTOR = 2.0
+
   attr_encrypted :token,
                  mode:      :per_attribute_iv,
                  algorithm: 'aes-256-gcm',
@@ -21,15 +26,27 @@ class WebHook < ApplicationRecord
   validates :token, format: { without: /\n/ }
   validates :push_events_branch_filter, branch_filter: true
 
+  scope :executable, -> do
+    next all unless Feature.enabled?(:web_hooks_disable_failed)
+
+    where('recent_failures <= ? AND (disabled_until IS NULL OR disabled_until < ?)', FAILURE_THRESHOLD, Time.current)
+  end
+
+  def executable?
+    return true unless web_hooks_disable_failed?
+
+    recent_failures <= FAILURE_THRESHOLD && (disabled_until.nil? || disabled_until < Time.current)
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def execute(data, hook_name)
-    WebHookService.new(self, data, hook_name).execute
+    WebHookService.new(self, data, hook_name).execute if executable?
   end
   # rubocop: enable CodeReuse/ServiceClass
 
   # rubocop: disable CodeReuse/ServiceClass
   def async_execute(data, hook_name)
-    WebHookService.new(self, data, hook_name).async_execute
+    WebHookService.new(self, data, hook_name).async_execute if executable?
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -40,5 +57,27 @@ class WebHook < ApplicationRecord
 
   def help_path
     'user/project/integrations/webhooks'
+  end
+
+  def next_backoff
+    return MAX_BACKOFF if backoff_count >= 8 # optimization to prevent expensive exponentiation and possible overflows
+
+    (INITIAL_BACKOFF * (BACKOFF_GROWTH_FACTOR**backoff_count))
+      .clamp(INITIAL_BACKOFF, MAX_BACKOFF)
+      .seconds
+  end
+
+  def disable!
+    update!(recent_failures: FAILURE_THRESHOLD + 1)
+  end
+
+  def enable!
+    update!(recent_failures: 0, disabled_until: nil, backoff_count: 0)
+  end
+
+  private
+
+  def web_hooks_disable_failed?
+    Feature.enabled?(:web_hooks_disable_failed)
   end
 end

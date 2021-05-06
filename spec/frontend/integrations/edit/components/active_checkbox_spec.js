@@ -6,31 +6,27 @@ import { createStore } from '~/integrations/edit/store';
 describe('ActiveCheckbox', () => {
   let wrapper;
 
-  const createComponent = (customStateProps = {}, isInheriting = false) => {
+  const createComponent = (customStateProps = {}, { isInheriting = false } = {}) => {
     wrapper = mount(ActiveCheckbox, {
       store: createStore({
         customState: { ...customStateProps },
+        override: !isInheriting,
+        defaultState: isInheriting ? {} : undefined,
       }),
-      computed: {
-        isInheriting: () => isInheriting,
-      },
     });
   };
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
   });
 
-  const findGlFormCheckbox = () => wrapper.find(GlFormCheckbox);
+  const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findInputInCheckbox = () => findGlFormCheckbox().find('input');
 
   describe('template', () => {
     describe('is inheriting adminSettings', () => {
       it('renders GlFormCheckbox as disabled', () => {
-        createComponent({}, true);
+        createComponent({}, { isInheriting: true });
 
         expect(findGlFormCheckbox().exists()).toBe(true);
         expect(findInputInCheckbox().attributes('disabled')).toBe('disabled');

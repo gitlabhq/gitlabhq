@@ -63,6 +63,12 @@ module Namespaces
         lineage(top: self)
       end
 
+      def descendants
+        return super unless use_traversal_ids?
+
+        self_and_descendants.where.not(id: id)
+      end
+
       def ancestors(hierarchy_order: nil)
         return super() unless use_traversal_ids?
         return super() unless Feature.enabled?(:use_traversal_ids_for_ancestors, root_ancestor, default_enabled: :yaml)

@@ -21,6 +21,10 @@ RSpec.describe WebHookService do
 
   let(:service_instance) { described_class.new(project_hook, data, :push_hooks) }
 
+  around do |example|
+    travel_to(Time.current) { example.run }
+  end
+
   describe '#initialize' do
     before do
       stub_application_setting(setting_name => setting)
@@ -120,10 +124,21 @@ RSpec.describe WebHookService do
       expect { service_instance.execute }.to raise_error(StandardError)
     end
 
+    it 'does not execute disabled hooks' do
+      project_hook.update!(recent_failures: 4)
+
+      expect(service_instance.execute).to eq({ status: :error, message: 'Hook disabled' })
+    end
+
     it 'handles exceptions' do
-      exceptions = [SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep]
+      exceptions = [
+        SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED,
+        Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout,
+        Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep
+      ]
       exceptions.each do |exception_class|
         exception = exception_class.new('Exception message')
+        project_hook.enable!
 
         stub_full_request(project_hook.url, method: :post).to_raise(exception)
         expect(service_instance.execute).to eq({ status: :error, message: exception.to_s })
@@ -166,10 +181,11 @@ RSpec.describe WebHookService do
       context 'with success' do
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
-          service_instance.execute
         end
 
         it 'log successful execution' do
+          service_instance.execute
+
           expect(hook_log.trigger).to eq('push_hooks')
           expect(hook_log.url).to eq(project_hook.url)
           expect(hook_log.request_headers).to eq(headers)
@@ -178,15 +194,62 @@ RSpec.describe WebHookService do
           expect(hook_log.execution_duration).to be > 0
           expect(hook_log.internal_error_message).to be_nil
         end
+
+        it 'does not increment the failure count' do
+          expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+        end
+
+        it 'does not change the disabled_until attribute' do
+          expect { service_instance.execute }.not_to change(project_hook, :disabled_until)
+        end
+
+        context 'when the hook had previously failed' do
+          before do
+            project_hook.update!(recent_failures: 2)
+          end
+
+          it 'resets the failure count' do
+            expect { service_instance.execute }.to change(project_hook, :recent_failures).to(0)
+          end
+        end
+      end
+
+      context 'with bad request' do
+        before do
+          stub_full_request(project_hook.url, method: :post).to_return(status: 400, body: 'Bad request')
+        end
+
+        it 'logs failed execution' do
+          service_instance.execute
+
+          expect(hook_log).to have_attributes(
+            trigger: eq('push_hooks'),
+            url: eq(project_hook.url),
+            request_headers: eq(headers),
+            response_body: eq('Bad request'),
+            response_status: eq('400'),
+            execution_duration: be > 0,
+            internal_error_message: be_nil
+          )
+        end
+
+        it 'increments the failure count' do
+          expect { service_instance.execute }.to change(project_hook, :recent_failures).by(1)
+        end
+
+        it 'does not change the disabled_until attribute' do
+          expect { service_instance.execute }.not_to change(project_hook, :disabled_until)
+        end
       end
 
       context 'with exception' do
         before do
           stub_full_request(project_hook.url, method: :post).to_raise(SocketError.new('Some HTTP Post error'))
-          service_instance.execute
         end
 
         it 'log failed execution' do
+          service_instance.execute
+
           expect(hook_log.trigger).to eq('push_hooks')
           expect(hook_log.url).to eq(project_hook.url)
           expect(hook_log.request_headers).to eq(headers)
@@ -194,6 +257,47 @@ RSpec.describe WebHookService do
           expect(hook_log.response_status).to eq('internal error')
           expect(hook_log.execution_duration).to be > 0
           expect(hook_log.internal_error_message).to eq('Some HTTP Post error')
+        end
+
+        it 'does not increment the failure count' do
+          expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+        end
+
+        it 'sets the disabled_until attribute' do
+          expect { service_instance.execute }
+            .to change(project_hook, :disabled_until).to(project_hook.next_backoff.from_now)
+        end
+
+        it 'increases the backoff count' do
+          expect { service_instance.execute }.to change(project_hook, :backoff_count).by(1)
+        end
+
+        context 'when the previous cool-off was near the maximum' do
+          before do
+            project_hook.update!(disabled_until: 5.minutes.ago, backoff_count: 8)
+          end
+
+          it 'sets the disabled_until attribute' do
+            expect { service_instance.execute }.to change(project_hook, :disabled_until).to(1.day.from_now)
+          end
+
+          it 'sets the last_backoff attribute' do
+            expect { service_instance.execute }.to change(project_hook, :backoff_count).by(1)
+          end
+        end
+
+        context 'when we have backed-off many many times' do
+          before do
+            project_hook.update!(disabled_until: 5.minutes.ago, backoff_count: 365)
+          end
+
+          it 'sets the disabled_until attribute' do
+            expect { service_instance.execute }.to change(project_hook, :disabled_until).to(1.day.from_now)
+          end
+
+          it 'sets the last_backoff attribute' do
+            expect { service_instance.execute }.to change(project_hook, :backoff_count).by(1)
+          end
         end
       end
 

@@ -25,6 +25,7 @@ module Types
       field :versions, ::Types::Packages::PackageType.connection_type, null: true,
         description: 'The other versions of the package.',
         deprecated: { reason: 'This field is now only returned in the PackageDetailsType', milestone: '13.11' }
+      field :status, Types::Packages::PackageStatusEnum, null: false, description: 'Package status.'
 
       def project
         Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find

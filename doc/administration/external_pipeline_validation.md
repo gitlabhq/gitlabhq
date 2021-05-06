@@ -22,12 +22,12 @@ invalidated.
 Response codes:
 
 - `200`: Accepted
-- `4XX`: Not accepted
+- `4XX`: Rejected
 - All other codes: accepted and logged
 
 ### Service Result
 
-Pipelines not accepted by the external validation service aren't created or visible in pipeline lists, in either the GitLab user interface or API. Creating an unaccepted pipeline when using the GitLab user interface displays an error message that states: `Pipeline cannot be run. External validation failed`
+Pipelines rejected by the external validation service aren't created or visible in pipeline lists, in either the GitLab user interface or API. Creating an unaccepted pipeline when using the GitLab user interface displays an error message that states: `Pipeline cannot be run. External validation failed`
 
 ## Configuration
 

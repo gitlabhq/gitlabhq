@@ -84,10 +84,9 @@ class Member < ApplicationRecord
     is_external_invite = arel_table[:user_id].eq(nil).and(arel_table[:invite_token].not_eq(nil))
     user_is_blocked = User.arel_table[:state].eq(:blocked)
 
-    user_ok = Arel::Nodes::Grouping.new(is_external_invite).or(user_is_blocked)
-
     left_join_users
-      .where(user_ok)
+      .where(user_is_blocked)
+      .where.not(is_external_invite)
       .non_request
       .non_minimal_access
       .reorder(nil)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::BranchHooksService do
+RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
   include RepoHelpers
   include ProjectForksHelper
 
@@ -116,8 +116,6 @@ RSpec.describe Git::BranchHooksService do
           allow_next_instance_of(Gitlab::Git::Diff) do |diff|
             allow(diff).to receive(:new_path).and_return('.gitlab-ci.yml')
           end
-
-          allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
         end
 
         let!(:commit_author) { create(:user, email: sample_commit.author_email) }
@@ -127,23 +125,11 @@ RSpec.describe Git::BranchHooksService do
         end
 
         it 'tracks the event' do
+          time = Time.zone.now
+
           execute_service
 
-          expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-            .to have_received(:track_event).with(*tracking_params)
-        end
-
-        context 'when the FF usage_data_unique_users_committing_ciconfigfile is disabled' do
-          before do
-            stub_feature_flags(usage_data_unique_users_committing_ciconfigfile: false)
-          end
-
-          it 'does not track the event' do
-            execute_service
-
-            expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-              .not_to have_received(:track_event).with(*tracking_params)
-          end
+          expect(Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'o_pipeline_authoring_unique_users_committing_ciconfigfile', start_date: time, end_date: time + 7.days)).to eq(1)
         end
 
         context 'when usage ping is disabled' do
@@ -155,7 +141,7 @@ RSpec.describe Git::BranchHooksService do
             execute_service
 
             expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-              .not_to have_received(:track_event).with(*tracking_params)
+              .not_to receive(:track_event).with(*tracking_params)
           end
         end
 
@@ -166,7 +152,7 @@ RSpec.describe Git::BranchHooksService do
             execute_service
 
             expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-              .not_to have_received(:track_event).with(*tracking_params)
+              .not_to receive(:track_event).with(*tracking_params)
           end
         end
 
@@ -179,7 +165,7 @@ RSpec.describe Git::BranchHooksService do
             execute_service
 
             expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-              .not_to have_received(:track_event).with(*tracking_params)
+              .not_to receive(:track_event).with(*tracking_params)
           end
         end
       end

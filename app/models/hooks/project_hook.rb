@@ -29,6 +29,10 @@ class ProjectHook < WebHook
   def pluralized_name
     _('Webhooks')
   end
+
+  def web_hooks_disable_failed?
+    Feature.enabled?(:web_hooks_disable_failed, project)
+  end
 end
 
 ProjectHook.prepend_if_ee('EE::ProjectHook')

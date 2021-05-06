@@ -6,9 +6,7 @@ class ServiceHook < WebHook
   belongs_to :service
   validates :service, presence: true
 
-  # rubocop: disable CodeReuse/ServiceClass
   def execute(data, hook_name = 'service_hook')
-    WebHookService.new(self, data, hook_name).execute
+    super(data, hook_name)
   end
-  # rubocop: enable CodeReuse/ServiceClass
 end

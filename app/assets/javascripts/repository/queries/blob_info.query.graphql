@@ -6,6 +6,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!) {
         nodes {
           webPath
           name
+          size
           rawSize
           rawTextBlob
           fileType
@@ -18,11 +19,13 @@ query getBlobInfo($projectPath: ID!, $filePath: String!) {
             fileType
             tooLarge
             type
+            renderError
           }
           richViewer {
             fileType
             tooLarge
             type
+            renderError
           }
         }
       }
