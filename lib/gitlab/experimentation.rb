@@ -51,10 +51,6 @@ module Gitlab
       trial_during_signup: {
         tracking_category: 'Growth::Conversion::Experiment::TrialDuringSignup'
       },
-      ci_syntax_templates_b: {
-        tracking_category: 'Growth::Activation::Experiment::CiSyntaxTemplates',
-        rollout_strategy: :user
-      },
       invite_members_new_dropdown: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
       },

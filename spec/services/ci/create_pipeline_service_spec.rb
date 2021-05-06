@@ -102,14 +102,6 @@ RSpec.describe Ci::CreatePipelineService do
         execute_service
       end
 
-      describe 'recording a conversion event' do
-        it 'schedules a record conversion event worker' do
-          expect(Experiments::RecordConversionEventWorker).to receive(:perform_async).with(:ci_syntax_templates_b, user.id)
-
-          pipeline
-        end
-      end
-
       context 'when merge requests already exist for this source branch' do
         let(:merge_request_1) do
           create(:merge_request, source_branch: 'feature', target_branch: "master", source_project: project)

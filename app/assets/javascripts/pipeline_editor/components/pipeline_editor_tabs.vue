@@ -134,7 +134,6 @@ export default {
       <ci-lint v-else :is-valid="isValid" :ci-config="ciConfigData" />
     </editor-tab>
     <editor-tab
-      v-if="glFeatures.ciConfigMergedTab"
       class="gl-mb-3"
       :empty-message="$options.i18n.empty.merge"
       :keep-component-mounted="false"

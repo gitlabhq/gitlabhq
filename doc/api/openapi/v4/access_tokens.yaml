@@ -1,0 +1,170 @@
+# Markdown documentation: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/resource_access_tokens.md
+
+#/v4/projects/{id}/access_tokens
+accessTokens:
+  get:
+    description: Lists access tokens for a project
+    summary: List access tokens for a project
+    operationId: accessTokens_get
+    tags:
+      - access_tokens
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+    responses:
+      '404':
+        description: Not Found
+      '401':
+        description: Unauthorized operation
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              title: AccessTokenList
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                scopes:
+                  type: array
+                name:
+                  type: string
+                expires_at:
+                  type: date
+                id:
+                  type: integer
+                active:
+                  type: boolean
+                created_at:
+                  type: date
+                revoked:
+                  type: boolean
+            example:
+              "user_id": 141
+              "scopes" : ["api"]
+              "name": "token"
+              "expires_at": "2022-01-31"
+              "id": 42
+              "active": true
+              "created_at": "2021-01-20T14:13:35Z"
+              "revoked" : false
+  post:
+    description: Creates an access token for a project
+    summary: Creates an access token for a project
+    operationId: accessTokens_post
+    tags:
+      - access_tokens
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+      - name: name
+        in: query
+        description: The name of the project access token
+        required: true
+        schema:
+          type: string
+      - name: scopes
+        in: query
+        description: Defines read and write permissions for the token
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum: ["api", "read_api", "read_registry", "write_registry", "read_repository", "write_repository"]
+      - name: expires_at
+        in: query
+        description: Date when the token expires. Time of day is Midnight UTC of that date.
+        required: false
+        schema:
+          type: date
+    responses:
+      '404':
+        description: Not Found
+      '401':
+        description: Unauthorized operation
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              title: AccessTokenList
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                scopes:
+                  type: array
+                name:
+                  type: string
+                expires_at:
+                  type: date
+                id:
+                  type: integer
+                active:
+                  type: boolean
+                created_at:
+                  type: date
+                revoked:
+                  type: boolean
+                token:
+                  type: string
+            example:
+              "user_id": 166
+              "scopes" : [
+                "api",
+                "read_repository"
+              ]
+              "name": "test"
+              "expires_at": "2022-01-31"
+              "id": 58
+              "active": true
+              "created_at": "2021-01-20T14:13:35Z"
+              "revoked" : false
+              "token" : "D4y...Wzr"
+
+#/v4/projects/{id}/access_tokens/{token_id}
+accessTokensRevoke:
+  delete:
+    description: Revokes an access token
+    summary: Revokes an access token
+    operationId: accessTokens_delete
+    tags:
+      - access_tokens
+    parameters:
+      - name: id
+        in: path
+        description: The ID or URL-encoded path of the project
+        required: true
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+      - name: token_id
+        in: path
+        description: The ID of the project access token
+        required: true
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+    responses:
+      '400':
+        description: Bad Request
+      '404':
+        description: Not Found
+      '204':
+        description: No content if successfully revoked

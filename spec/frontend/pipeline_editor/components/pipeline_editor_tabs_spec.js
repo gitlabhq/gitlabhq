@@ -20,11 +20,6 @@ describe('Pipeline editor tabs component', () => {
   const MockTextEditor = {
     template: '<div />',
   };
-  const mockProvide = {
-    glFeatures: {
-      ciConfigMergedTab: true,
-    },
-  };
 
   const createComponent = ({
     props = {},
@@ -43,7 +38,7 @@ describe('Pipeline editor tabs component', () => {
           appStatus,
         };
       },
-      provide: { ...mockProvide, ...provide },
+      provide: { ...provide },
       stubs: {
         TextEditor: MockTextEditor,
         EditorTab,
@@ -81,26 +76,24 @@ describe('Pipeline editor tabs component', () => {
   });
 
   describe('visualization tab', () => {
-    describe('with feature flag on', () => {
-      describe('while loading', () => {
-        beforeEach(() => {
-          createComponent({ appStatus: EDITOR_APP_STATUS_LOADING });
-        });
-
-        it('displays a loading icon if the lint query is loading', () => {
-          expect(findLoadingIcon().exists()).toBe(true);
-          expect(findPipelineGraph().exists()).toBe(false);
-        });
+    describe('while loading', () => {
+      beforeEach(() => {
+        createComponent({ appStatus: EDITOR_APP_STATUS_LOADING });
       });
-      describe('after loading', () => {
-        beforeEach(() => {
-          createComponent();
-        });
 
-        it('display the tab and visualization', () => {
-          expect(findVisualizationTab().exists()).toBe(true);
-          expect(findPipelineGraph().exists()).toBe(true);
-        });
+      it('displays a loading icon if the lint query is loading', () => {
+        expect(findLoadingIcon().exists()).toBe(true);
+        expect(findPipelineGraph().exists()).toBe(false);
+      });
+    });
+    describe('after loading', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('display the tab and visualization', () => {
+        expect(findVisualizationTab().exists()).toBe(true);
+        expect(findPipelineGraph().exists()).toBe(true);
       });
     });
   });
@@ -132,51 +125,39 @@ describe('Pipeline editor tabs component', () => {
   });
 
   describe('merged tab', () => {
-    describe('with feature flag on', () => {
-      describe('while loading', () => {
-        beforeEach(() => {
-          createComponent({ appStatus: EDITOR_APP_STATUS_LOADING });
-        });
-
-        it('displays a loading icon if the lint query is loading', () => {
-          expect(findLoadingIcon().exists()).toBe(true);
-        });
+    describe('while loading', () => {
+      beforeEach(() => {
+        createComponent({ appStatus: EDITOR_APP_STATUS_LOADING });
       });
 
-      describe('when there is a fetch error', () => {
-        beforeEach(() => {
-          createComponent({ appStatus: EDITOR_APP_STATUS_ERROR });
-        });
-
-        it('show an error message', () => {
-          expect(findAlert().exists()).toBe(true);
-          expect(findAlert().text()).toBe(wrapper.vm.$options.errorTexts.loadMergedYaml);
-        });
-
-        it('does not render the `meged_preview` component', () => {
-          expect(findMergedPreview().exists()).toBe(false);
-        });
-      });
-
-      describe('after loading', () => {
-        beforeEach(() => {
-          createComponent();
-        });
-
-        it('display the tab and the merged preview component', () => {
-          expect(findMergedTab().exists()).toBe(true);
-          expect(findMergedPreview().exists()).toBe(true);
-        });
+      it('displays a loading icon if the lint query is loading', () => {
+        expect(findLoadingIcon().exists()).toBe(true);
       });
     });
-    describe('with feature flag off', () => {
+
+    describe('when there is a fetch error', () => {
       beforeEach(() => {
-        createComponent({ provide: { glFeatures: { ciConfigMergedTab: false } } });
+        createComponent({ appStatus: EDITOR_APP_STATUS_ERROR });
       });
 
-      it('does not display the merged tab', () => {
-        expect(findMergedTab().exists()).toBe(false);
+      it('show an error message', () => {
+        expect(findAlert().exists()).toBe(true);
+        expect(findAlert().text()).toBe(wrapper.vm.$options.errorTexts.loadMergedYaml);
+      });
+
+      it('does not render the `merged_preview` component', () => {
         expect(findMergedPreview().exists()).toBe(false);
+      });
+    });
+
+    describe('after loading', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('display the tab and the merged preview component', () => {
+        expect(findMergedTab().exists()).toBe(true);
+        expect(findMergedPreview().exists()).toBe(true);
       });
     });
   });

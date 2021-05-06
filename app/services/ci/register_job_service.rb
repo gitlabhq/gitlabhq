@@ -253,17 +253,23 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def builds_for_shared_runner
-      new_builds.
+      relation = new_builds.
         # don't run projects which have not enabled shared runners and builds
         joins(:project).where(projects: { shared_runners_enabled: true, pending_delete: false })
         .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
-        .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
+        .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0')
 
-      # Implement fair scheduling
-      # this returns builds that are ordered by number of running builds
-      # we prefer projects that don't use shared runners at all
-      joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
-        .order(Arel.sql('COALESCE(project_builds.running_builds, 0) ASC'), 'ci_builds.id ASC')
+      if Feature.enabled?(:ci_queueing_disaster_recovery, runner, type: :ops, default_enabled: :yaml)
+        # if disaster recovery is enabled, we fallback to FIFO scheduling
+        relation.order('ci_builds.id ASC')
+      else
+        # Implement fair scheduling
+        # this returns builds that are ordered by number of running builds
+        # we prefer projects that don't use shared runners at all
+        relation
+          .joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
+          .order(Arel.sql('COALESCE(project_builds.running_builds, 0) ASC'), 'ci_builds.id ASC')
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

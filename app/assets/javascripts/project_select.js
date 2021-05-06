@@ -62,6 +62,7 @@ const projectSelect = () => {
                   with_shared: this.withShared,
                   include_subgroups: this.includeProjectsInSubgroups,
                   order_by: 'similarity',
+                  simple: true,
                 },
                 projectsCallback,
               );

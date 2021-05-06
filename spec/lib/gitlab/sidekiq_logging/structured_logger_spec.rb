@@ -293,6 +293,16 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
     end
+
+    context 'when instrumentation data is not loaded' do
+      before do
+        allow(logger).to receive(:info)
+      end
+
+      it 'does not raise exception' do
+        expect { subject.call(job.dup, 'test_queue') {} }.not_to raise_error
+      end
+    end
   end
 
   describe '#add_time_keys!' do

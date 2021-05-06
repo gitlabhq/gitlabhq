@@ -19052,9 +19052,6 @@ msgstr ""
 msgid "Lead time"
 msgstr ""
 
-msgid "Learn CI/CD syntax"
-msgstr ""
-
 msgid "Learn GitLab"
 msgstr ""
 
@@ -31083,6 +31080,9 @@ msgid "Sunday"
 msgstr ""
 
 msgid "SuperSonics|Activated on"
+msgstr ""
+
+msgid "SuperSonics|An error occurred while activating your subscription."
 msgstr ""
 
 msgid "SuperSonics|Expires on"
