@@ -1,6 +1,7 @@
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, s__ } from '~/locale';
 
+import configureSastMutation from '~/security_configuration/graphql/configure_sast.mutation.graphql';
 import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_DAST,
@@ -134,3 +135,18 @@ export const scanners = [
     type: REPORT_TYPE_LICENSE_COMPLIANCE,
   },
 ];
+
+export const featureToMutationMap = {
+  [REPORT_TYPE_SAST]: {
+    mutationId: 'configureSast',
+    getMutationPayload: (projectPath) => ({
+      mutation: configureSastMutation,
+      variables: {
+        input: {
+          projectPath,
+          configuration: { global: [], pipeline: [], analyzers: [] },
+        },
+      },
+    }),
+  },
+};

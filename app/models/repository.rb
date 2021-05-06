@@ -1165,17 +1165,13 @@ class Repository
   end
 
   def tags_sorted_by_committed_date
-    tags.sort_by do |tag|
-      # Annotated tags can point to any object (e.g. a blob), but generally
-      # tags point to a commit. If we don't have a commit, then just default
-      # to putting the tag at the end of the list.
-      target = tag.dereferenced_target
+    # Annotated tags can point to any object (e.g. a blob), but generally
+    # tags point to a commit. If we don't have a commit, then just default
+    # to putting the tag at the end of the list.
+    default = Time.current
 
-      if target
-        target.committed_date
-      else
-        Time.current
-      end
+    tags.sort_by do |tag|
+      tag.dereferenced_target&.committed_date || default
     end
   end
 

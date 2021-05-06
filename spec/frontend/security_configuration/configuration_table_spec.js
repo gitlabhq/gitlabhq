@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ConfigurationTable from '~/security_configuration/components/configuration_table.vue';
-import { scanners, UPGRADE_CTA } from '~/security_configuration/components/scanners_constants';
+import { scanners, UPGRADE_CTA } from '~/security_configuration/components/constants';
 
 import {
   REPORT_TYPE_SAST,
@@ -12,7 +12,13 @@ describe('Configuration Table Component', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = extendedWrapper(mount(ConfigurationTable, {}));
+    wrapper = extendedWrapper(
+      mount(ConfigurationTable, {
+        provide: {
+          projectPath: 'testProjectPath',
+        },
+      }),
+    );
   };
 
   const findHelpLinks = () => wrapper.findAll('[data-testid="help-link"]');
@@ -30,8 +36,10 @@ describe('Configuration Table Component', () => {
       expect(wrapper.text()).toContain(scanner.name);
       expect(wrapper.text()).toContain(scanner.description);
       if (scanner.type === REPORT_TYPE_SAST) {
-        expect(wrapper.findByTestId(scanner.type).text()).toBe('Configure via merge request');
-      } else if (scanner.type !== REPORT_TYPE_SECRET_DETECTION) {
+        expect(wrapper.findByTestId(scanner.type).text()).toBe('Configure via Merge Request');
+      } else if (scanner.type === REPORT_TYPE_SECRET_DETECTION) {
+        expect(wrapper.findByTestId(scanner.type).exists()).toBe(false);
+      } else {
         expect(wrapper.findByTestId(scanner.type).text()).toMatchInterpolatedText(UPGRADE_CTA);
       }
     });

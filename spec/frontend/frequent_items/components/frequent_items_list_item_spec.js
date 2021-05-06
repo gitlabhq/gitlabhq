@@ -1,14 +1,18 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
 import { createStore } from '~/frequent_items/store';
 import { mockProject } from '../mock_data';
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('FrequentItemsListItemComponent', () => {
   let wrapper;
   let trackingSpy;
-  let store = createStore();
+  let store;
 
   const findTitle = () => wrapper.find({ ref: 'frequentItemsItemTitle' });
   const findAvatar = () => wrapper.find({ ref: 'frequentItemsItemAvatar' });
@@ -31,11 +35,15 @@ describe('FrequentItemsListItemComponent', () => {
         avatarUrl: mockProject.avatarUrl,
         ...props,
       },
+      provide: {
+        vuexModule: 'frequentProjects',
+      },
+      localVue,
     });
   };
 
   beforeEach(() => {
-    store = createStore({ dropdownType: 'project' });
+    store = createStore();
     trackingSpy = mockTracking('_category_', document, jest.spyOn);
     trackingSpy.mockImplementation(() => {});
   });
@@ -119,7 +127,7 @@ describe('FrequentItemsListItemComponent', () => {
       });
       link.trigger('click');
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
-        label: 'project_dropdown_frequent_items_list_item',
+        label: 'projects_dropdown_frequent_items_list_item',
       });
     });
   });

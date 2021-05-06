@@ -104,3 +104,5 @@ module Terraform
     end
   end
 end
+
+Terraform::State.prepend_if_ee('EE::Terraform::State')

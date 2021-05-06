@@ -36,3 +36,16 @@ export const TRANSLATION_KEYS = {
     searchInputPlaceholder: s__('GroupsDropdown|Search your groups'),
   },
 };
+
+export const FREQUENT_ITEMS_DROPDOWNS = [
+  {
+    namespace: 'projects',
+    key: 'project',
+    vuexModule: 'frequentProjects',
+  },
+  {
+    namespace: 'groups',
+    key: 'group',
+    vuexModule: 'frequentGroups',
+  },
+];

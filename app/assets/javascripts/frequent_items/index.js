@@ -1,25 +1,20 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import Vuex from 'vuex';
 import { createStore } from '~/frequent_items/store';
+import VuexModuleProvider from '~/vue_shared/components/vuex_module_provider.vue';
 import Translate from '~/vue_shared/translate';
+import { FREQUENT_ITEMS_DROPDOWNS } from './constants';
 import eventHub from './event_hub';
 
+Vue.use(Vuex);
 Vue.use(Translate);
 
-const frequentItemDropdowns = [
-  {
-    namespace: 'projects',
-    key: 'project',
-  },
-  {
-    namespace: 'groups',
-    key: 'group',
-  },
-];
-
 export default function initFrequentItemDropdowns() {
-  frequentItemDropdowns.forEach((dropdown) => {
-    const { namespace, key } = dropdown;
+  const store = createStore();
+
+  FREQUENT_ITEMS_DROPDOWNS.forEach((dropdown) => {
+    const { namespace, key, vuexModule } = dropdown;
     const el = document.getElementById(`js-${namespace}-dropdown`);
     const navEl = document.getElementById(`nav-${namespace}-dropdown`);
 
@@ -28,9 +23,6 @@ export default function initFrequentItemDropdowns() {
     if (!el || !navEl) {
       return;
     }
-
-    const dropdownType = namespace;
-    const store = createStore({ dropdownType });
 
     import('./components/app.vue')
       .then(({ default: FrequentItems }) => {
@@ -55,13 +47,23 @@ export default function initFrequentItemDropdowns() {
             };
           },
           render(createElement) {
-            return createElement(FrequentItems, {
-              props: {
-                namespace,
-                currentUserName: this.currentUserName,
-                currentItem: this.currentItem,
+            return createElement(
+              VuexModuleProvider,
+              {
+                props: {
+                  vuexModule,
+                },
               },
-            });
+              [
+                createElement(FrequentItems, {
+                  props: {
+                    namespace,
+                    currentUserName: this.currentUserName,
+                    currentItem: this.currentItem,
+                  },
+                }),
+              ],
+            );
           },
         });
       })

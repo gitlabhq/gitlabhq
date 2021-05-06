@@ -277,6 +277,8 @@ For more on epic templates, see [Epic Templates - Repeatable sets of issues](htt
 
 ## Manage multi-level child epics **(ULTIMATE)**
 
+With [multi-level epics](index.md#multi-level-child-epics), you can manage more complex projects.
+
 ### Add a child epic to an epic
 
 To add a child epic to an epic:
