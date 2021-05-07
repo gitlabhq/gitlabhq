@@ -8,7 +8,9 @@ import {
   clientTypenames,
   createResolvers,
 } from '~/import_entities/import_groups/graphql/client_factory';
-import importGroupMutation from '~/import_entities/import_groups/graphql/mutations/import_group.mutation.graphql';
+import addValidationErrorMutation from '~/import_entities/import_groups/graphql/mutations/add_validation_error.mutation.graphql';
+import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
+import removeValidationErrorMutation from '~/import_entities/import_groups/graphql/mutations/remove_validation_error.mutation.graphql';
 import setImportProgressMutation from '~/import_entities/import_groups/graphql/mutations/set_import_progress.mutation.graphql';
 import setNewNameMutation from '~/import_entities/import_groups/graphql/mutations/set_new_name.mutation.graphql';
 import setTargetNamespaceMutation from '~/import_entities/import_groups/graphql/mutations/set_target_namespace.mutation.graphql';
@@ -240,6 +242,7 @@ describe('Bulk import resolvers', () => {
                   target_namespace: 'root',
                   new_name: 'group1',
                 },
+                validation_errors: [],
               },
             ],
             pageInfo: {
@@ -294,8 +297,8 @@ describe('Bulk import resolvers', () => {
         axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(() => new Promise(() => {}));
 
         client.mutate({
-          mutation: importGroupMutation,
-          variables: { sourceGroupId: GROUP_ID },
+          mutation: importGroupsMutation,
+          variables: { sourceGroupIds: [GROUP_ID] },
         });
         await waitForPromises();
 
@@ -325,8 +328,8 @@ describe('Bulk import resolvers', () => {
         it('sets import status to CREATED when request completes', async () => {
           axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK, { id: 1 });
           await client.mutate({
-            mutation: importGroupMutation,
-            variables: { sourceGroupId: GROUP_ID },
+            mutation: importGroupsMutation,
+            variables: { sourceGroupIds: [GROUP_ID] },
           });
           await waitForPromises();
 
@@ -340,8 +343,8 @@ describe('Bulk import resolvers', () => {
 
           client
             .mutate({
-              mutation: importGroupMutation,
-              variables: { sourceGroupId: GROUP_ID },
+              mutation: [importGroupsMutation],
+              variables: { sourceGroupIds: [GROUP_ID] },
             })
             .catch(() => {});
           await waitForPromises();
@@ -357,8 +360,8 @@ describe('Bulk import resolvers', () => {
 
         client
           .mutate({
-            mutation: importGroupMutation,
-            variables: { sourceGroupId: GROUP_ID },
+            mutation: importGroupsMutation,
+            variables: { sourceGroupIds: [GROUP_ID] },
           })
           .catch(() => {});
         await waitForPromises();
@@ -375,8 +378,8 @@ describe('Bulk import resolvers', () => {
 
         client
           .mutate({
-            mutation: importGroupMutation,
-            variables: { sourceGroupId: GROUP_ID },
+            mutation: importGroupsMutation,
+            variables: { sourceGroupIds: [GROUP_ID] },
           })
           .catch(() => {});
         await waitForPromises();
@@ -417,6 +420,42 @@ describe('Bulk import resolvers', () => {
         id: FAKE_JOB_ID,
         status: NEW_STATUS,
       });
+    });
+
+    it('addValidationError adds error to group', async () => {
+      const FAKE_FIELD = 'some-field';
+      const FAKE_MESSAGE = 'some-message';
+      const {
+        data: {
+          addValidationError: { validation_errors: validationErrors },
+        },
+      } = await client.mutate({
+        mutation: addValidationErrorMutation,
+        variables: { sourceGroupId: GROUP_ID, field: FAKE_FIELD, message: FAKE_MESSAGE },
+      });
+
+      expect(validationErrors).toMatchObject([{ field: FAKE_FIELD, message: FAKE_MESSAGE }]);
+    });
+
+    it('removeValidationError removes error from group', async () => {
+      const FAKE_FIELD = 'some-field';
+      const FAKE_MESSAGE = 'some-message';
+
+      await client.mutate({
+        mutation: addValidationErrorMutation,
+        variables: { sourceGroupId: GROUP_ID, field: FAKE_FIELD, message: FAKE_MESSAGE },
+      });
+
+      const {
+        data: {
+          removeValidationError: { validation_errors: validationErrors },
+        },
+      } = await client.mutate({
+        mutation: removeValidationErrorMutation,
+        variables: { sourceGroupId: GROUP_ID, field: FAKE_FIELD },
+      });
+
+      expect(validationErrors).toMatchObject([]);
     });
   });
 });

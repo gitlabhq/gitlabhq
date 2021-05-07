@@ -1,5 +1,6 @@
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '~/content_editor/constants';
 import { createContentEditor } from '~/content_editor/services/create_content_editor';
+import { createTestContentEditorExtension } from '../test_utils';
 
 describe('content_editor/services/create_editor', () => {
   let renderMarkdown;
@@ -26,6 +27,22 @@ describe('content_editor/services/create_editor', () => {
     await editor.setSerializedContent(serializedContent);
 
     expect(renderMarkdown).toHaveBeenCalledWith(serializedContent);
+  });
+
+  it('allows providing external content editor extensions', async () => {
+    const labelReference = 'this is a ~group::editor';
+
+    renderMarkdown.mockReturnValueOnce(
+      '<p>this is a <span data-reference="label" data-label-name="group::editor">group::editor</span></p>',
+    );
+    editor = createContentEditor({
+      renderMarkdown,
+      extensions: [createTestContentEditorExtension()],
+    });
+
+    await editor.setSerializedContent(labelReference);
+
+    expect(editor.getSerializedContent()).toBe(labelReference);
   });
 
   it('throws an error when a renderMarkdown fn is not provided', () => {

@@ -65,6 +65,10 @@ module Gitlab
           @definitions ||= load_all!
         end
 
+        def all
+          @all ||= definitions.map { |_key_path, definition| definition }
+        end
+
         def schemer
           @schemer ||= ::JSONSchemer.schema(Pathname.new(METRIC_SCHEMA_PATH))
         end

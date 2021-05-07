@@ -18,6 +18,11 @@ type ClientBulkImportProgress {
   status: String!
 }
 
+type ClientBulkImportValidationError {
+  field: String!
+  message: String!
+}
+
 type ClientBulkImportSourceGroup {
   id: ID!
   web_url: String!
@@ -25,6 +30,7 @@ type ClientBulkImportSourceGroup {
   full_name: String!
   progress: ClientBulkImportProgress!
   import_target: ClientBulkImportTarget!
+  validation_errors: [ClientBulkImportValidationError!]!
 }
 
 type ClientBulkImportPageInfo {
@@ -45,9 +51,15 @@ extend type Query {
 }
 
 extend type Mutation {
-  setNewName(newName: String, sourceGroupId: ID!): ClientTargetNamespace!
-  setTargetNamespace(targetNamespace: String, sourceGroupId: ID!): ClientTargetNamespace!
-  importGroup(id: ID!): ClientBulkImportSourceGroup!
+  setNewName(newName: String, sourceGroupId: ID!): ClientBulkImportSourceGroup!
+  setTargetNamespace(targetNamespace: String, sourceGroupId: ID!): ClientBulkImportSourceGroup!
+  importGroups(sourceGroupIds: [ID!]!): [ClientBulkImportSourceGroup!]!
   setImportProgress(id: ID, status: String!): ClientBulkImportSourceGroup!
   updateImportProgress(id: ID, status: String!): ClientBulkImportProgress
+  addValidationError(
+    sourceGroupId: ID!
+    field: String!
+    message: String!
+  ): ClientBulkImportSourceGroup!
+  removeValidationError(sourceGroupId: ID!, field: String!): ClientBulkImportSourceGroup!
 }

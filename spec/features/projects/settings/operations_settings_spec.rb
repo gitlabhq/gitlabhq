@@ -3,21 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Settings > For a forked project', :js do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, create_templates: :issue) }
-  let(:role) { :maintainer }
+  let_it_be(:project) { create(:project, :repository, create_templates: :issue) }
+
+  let(:user) { project.owner}
 
   before do
     sign_in(user)
-    project.add_role(user, role)
   end
 
   describe 'Sidebar > Operations' do
-    it 'renders the settings link in the sidebar' do
+    it 'renders the menu in the sidebar' do
       visit project_path(project)
       wait_for_requests
 
-      expect(page).to have_selector('a[title="Operations"]', visible: false)
+      expect(page).to have_selector('.sidebar-sub-level-items a[aria-label="Operations"]', text: 'Operations', visible: false)
     end
   end
 

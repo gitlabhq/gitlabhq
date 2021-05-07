@@ -34,20 +34,23 @@ class Namespace
       sql = """
             UPDATE namespaces
             SET traversal_ids = cte.traversal_ids
-            FROM (#{recursive_traversal_ids(lock: true)}) as cte
+            FROM (#{recursive_traversal_ids}) as cte
             WHERE namespaces.id = cte.id
               AND namespaces.traversal_ids <> cte.traversal_ids
             """
-      Namespace.connection.exec_query(sql)
+      Namespace.transaction do
+        @root.lock!
+        Namespace.connection.exec_query(sql)
+      end
     rescue ActiveRecord::Deadlocked
       db_deadlock_counter.increment(source: 'Namespace#sync_traversal_ids!')
       raise
     end
 
     # Identify all incorrect traversal_ids in the current namespace hierarchy.
-    def incorrect_traversal_ids(lock: false)
+    def incorrect_traversal_ids
       Namespace
-        .joins("INNER JOIN (#{recursive_traversal_ids(lock: lock)}) as cte ON namespaces.id = cte.id")
+        .joins("INNER JOIN (#{recursive_traversal_ids}) as cte ON namespaces.id = cte.id")
         .where('namespaces.traversal_ids <> cte.traversal_ids')
     end
 
@@ -58,13 +61,10 @@ class Namespace
     #
     # Note that the traversal_ids represent a calculated traversal path for the
     # namespace and not the value stored within the traversal_ids attribute.
-    #
-    # Optionally locked with FOR UPDATE to ensure isolation between concurrent
-    # updates of the heirarchy.
-    def recursive_traversal_ids(lock: false)
+    def recursive_traversal_ids
       root_id = Integer(@root.id)
 
-      sql = <<~SQL
+      <<~SQL
       WITH RECURSIVE cte(id, traversal_ids, cycle) AS (
         VALUES(#{root_id}, ARRAY[#{root_id}], false)
       UNION ALL
@@ -74,10 +74,6 @@ class Namespace
       )
       SELECT id, traversal_ids FROM cte
       SQL
-
-      sql += ' FOR UPDATE' if lock
-
-      sql
     end
 
     # This is essentially Namespace#root_ancestor which will soon be rewritten

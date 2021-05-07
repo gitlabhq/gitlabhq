@@ -25,6 +25,12 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
   let(:definition) { described_class.new(path, attributes) }
   let(:yaml_content) { attributes.deep_stringify_keys.to_yaml }
 
+  around do |example|
+    described_class.instance_variable_set(:@definitions, nil)
+    example.run
+    described_class.instance_variable_set(:@definitions, nil)
+  end
+
   def write_metric(metric, path, content)
     path = File.join(metric, path)
     dir = File.dirname(path)
@@ -62,6 +68,9 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :distribution       | 'test'
       :tier               | %w(test ee)
       :name               | 'count_<adjective_describing>_boards'
+
+      :instrumentation_class | 'Gitlab::Usage::Metrics::Instrumentations::Metric_Class'
+      :instrumentation_class | 'Gitlab::Usage::Metrics::MetricClass'
     end
 
     with_them do

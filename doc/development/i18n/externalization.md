@@ -491,6 +491,48 @@ To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) inst
   // => 'In < 1 hour'
   ```
 
+### Numbers
+
+Different locales may use different number formats. To support localization of numbers, we use `formatNumber`,
+which leverages [`toLocaleString()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString).
+
+`formatNumber` formats numbers as strings using the current user locale by default.
+
+- In JavaScript
+
+```javascript
+import { formatNumber } from '~/locale';
+
+// Assuming "User Preferences > Language" is set to "English":
+
+const tenThousand = formatNumber(10000); // "10,000" (uses comma as decimal symbol in English locale)
+const fiftyPercent = formatNumber(0.5, { style: 'percent' }) // "50%" (other options are passed to toLocaleString)
+```
+
+- In Vue templates
+
+```html
+<script>
+import { formatNumber } from '~/locale';
+
+export default {
+  //...
+  methods: {
+    // ...
+    formatNumber,
+  },
+}
+</script>
+<template>
+<div class="my-number">
+  {{ formatNumber(10000) }} <!-- 10,000 -->
+</div>
+<div class="my-percent">
+  {{ formatNumber(0.5,  { style: 'percent' }) }} <!-- 50% -->
+</div>
+</template>
+```
+
 ### Dates / times
 
 - In JavaScript:

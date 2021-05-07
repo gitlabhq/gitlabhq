@@ -41,6 +41,7 @@ module Namespaces
       UnboundedSearch = Class.new(StandardError)
 
       included do
+        before_update :lock_both_roots, if: -> { sync_traversal_ids? && parent_id_changed? }
         after_create :sync_traversal_ids, if: -> { sync_traversal_ids? }
         after_update :sync_traversal_ids, if: -> { sync_traversal_ids? && saved_change_to_parent_id? }
 
@@ -88,6 +89,23 @@ module Namespaces
         clear_memoization(:root_ancestor)
 
         Namespace::TraversalHierarchy.for_namespace(root_ancestor).sync_traversal_ids!
+      end
+
+      # Lock the root of the hierarchy we just left, and lock the root of the hierarchy
+      # we just joined. In most cases the two hierarchies will be the same.
+      def lock_both_roots
+        parent_ids = [
+          parent_id_was || self.id,
+          parent_id || self.id
+        ].compact
+
+        roots = Gitlab::ObjectHierarchy
+          .new(Namespace.where(id: parent_ids))
+          .base_and_ancestors
+          .reorder(nil)
+          .where(parent_id: nil)
+
+        Namespace.lock.select(:id).where(id: roots).order(id: :asc).load
       end
 
       # Make sure we drop the STI `type = 'Group'` condition for better performance.

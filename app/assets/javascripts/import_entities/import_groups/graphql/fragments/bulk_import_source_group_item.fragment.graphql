@@ -12,4 +12,8 @@ fragment BulkImportSourceGroupItem on ClientBulkImportSourceGroup {
     target_namespace
     new_name
   }
+  validation_errors {
+    field
+    message
+  }
 }

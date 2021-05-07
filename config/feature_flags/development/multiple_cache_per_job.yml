@@ -1,8 +1,0 @@
----
-name: multiple_cache_per_job
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53410
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/321877
-milestone: '13.10'
-type: development
-group: group::pipeline authoring
-default_enabled: true

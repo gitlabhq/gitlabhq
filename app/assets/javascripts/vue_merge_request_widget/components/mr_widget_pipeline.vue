@@ -107,9 +107,6 @@ export default {
     hasCommitInfo() {
       return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
     },
-    hasArtifacts() {
-      return this.pipeline?.details?.artifacts?.length > 0;
-    },
     isMergeRequestPipeline() {
       return Boolean(this.pipeline.flags && this.pipeline.flags.merge_request_pipeline);
     },
@@ -288,11 +285,7 @@ export default {
               />
             </span>
             <linked-pipelines-mini-list v-if="triggered.length" :triggered="triggered" />
-            <pipeline-artifacts
-              v-if="hasArtifacts"
-              :artifacts="pipeline.details.artifacts"
-              class="gl-ml-3"
-            />
+            <pipeline-artifacts :pipeline-id="pipeline.id" class="gl-ml-3" />
           </span>
         </div>
       </div>

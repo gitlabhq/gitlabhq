@@ -19,6 +19,7 @@ const getFakeGroup = (status) => ({
     new_name: 'group1',
   },
   id: 1,
+  validation_errors: [],
   progress: { status },
 });
 
@@ -187,21 +188,25 @@ describe('import table row', () => {
       expect(wrapper.text()).toContain('Please choose a group URL with no special characters.');
     });
 
-    it('Reports invalid group name if group already exists', async () => {
+    it('Reports invalid group name if relevant validation error exists', async () => {
+      const FAKE_ERROR_MESSAGE = 'fake error';
+
       createComponent({
         group: {
           ...getFakeGroup(STATUSES.NONE),
-          import_target: {
-            target_namespace: EXISTING_GROUP_TARGET_NAMESPACE,
-            new_name: EXISTING_GROUP_PATH,
-          },
+          validation_errors: [
+            {
+              field: 'new_name',
+              message: FAKE_ERROR_MESSAGE,
+            },
+          ],
         },
       });
 
       jest.runOnlyPendingTimers();
       await nextTick();
 
-      expect(wrapper.text()).toContain('Name already exists.');
+      expect(wrapper.text()).toContain(FAKE_ERROR_MESSAGE);
     });
   });
 });

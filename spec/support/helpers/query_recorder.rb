@@ -13,6 +13,10 @@ module ActiveRecord
       @skip_cached = skip_cached
       @query_recorder_debug = ENV['QUERY_RECORDER_DEBUG'] || query_recorder_debug
       @log_file = log_file
+      record(&block) if block_given?
+    end
+
+    def record(&block)
       # force replacement of bind parameters to give tests the ability to check for ids
       ActiveRecord::Base.connection.unprepared_statement do
         ActiveSupport::Notifications.subscribed(method(:callback), 'sql.active_record', &block)

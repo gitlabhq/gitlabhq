@@ -20,6 +20,13 @@ export const locationSearch = [
   'not[weight]=3',
 ].join('&');
 
+export const locationSearchWithSpecialValues = [
+  'assignee_id=None',
+  'my_reaction_emoji=None',
+  'iteration_id=Current',
+  'weight=None',
+].join('&');
+
 export const filteredTokens = [
   { type: 'author_username', value: { data: 'homer', operator: OPERATOR_IS } },
   { type: 'author_username', value: { data: 'marge', operator: OPERATOR_IS_NOT } },
@@ -41,6 +48,13 @@ export const filteredTokens = [
   { type: 'filtered-search-term', value: { data: 'issues' } },
 ];
 
+export const filteredTokensWithSpecialValues = [
+  { type: 'assignee_username', value: { data: 'None', operator: OPERATOR_IS } },
+  { type: 'my_reaction_emoji', value: { data: 'None', operator: OPERATOR_IS } },
+  { type: 'iteration', value: { data: 'Current', operator: OPERATOR_IS } },
+  { type: 'weight', value: { data: 'None', operator: OPERATOR_IS } },
+];
+
 export const apiParams = {
   author_username: 'homer',
   'not[author_username]': 'marge',
@@ -58,6 +72,13 @@ export const apiParams = {
   'not[weight]': '3',
 };
 
+export const apiParamsWithSpecialValues = {
+  assignee_id: 'None',
+  my_reaction_emoji: 'None',
+  iteration_id: 'Current',
+  weight: 'None',
+};
+
 export const urlParams = {
   author_username: ['homer'],
   'not[author_username]': ['marge'],
@@ -73,4 +94,11 @@ export const urlParams = {
   'not[iteration_title]': ['season: #20'],
   weight: ['1'],
   'not[weight]': ['3'],
+};
+
+export const urlParamsWithSpecialValues = {
+  assignee_id: ['None'],
+  my_reaction_emoji: ['None'],
+  iteration_id: ['Current'],
+  weight: ['None'],
 };

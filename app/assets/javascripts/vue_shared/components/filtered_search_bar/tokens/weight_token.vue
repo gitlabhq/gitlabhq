@@ -1,6 +1,6 @@
 <script>
 import { GlDropdownDivider, GlFilteredSearchSuggestion, GlFilteredSearchToken } from '@gitlab/ui';
-import { DEFAULT_LABEL_ANY, DEFAULT_LABEL_NONE } from '../constants';
+import { DEFAULT_NONE_ANY } from '../constants';
 
 export default {
   baseWeights: ['0', '1', '2', '3', '4', '5'],
@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       weights: this.$options.baseWeights,
-      defaultWeights: this.config.defaultWeights || [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY],
+      defaultWeights: this.config.defaultWeights || DEFAULT_NONE_ANY,
     };
   },
   methods: {

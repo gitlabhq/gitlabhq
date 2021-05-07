@@ -16,13 +16,15 @@ describe('content_editor/components/toolbar_button', () => {
     toggleFooSpy = jest.fn();
     tiptapEditor = createContentEditor({
       extensions: [
-        Extension.create({
-          addCommands() {
-            return {
-              toggleFoo: () => toggleFooSpy,
-            };
-          },
-        }),
+        {
+          tiptapExtension: Extension.create({
+            addCommands() {
+              return {
+                toggleFoo: () => toggleFooSpy,
+              };
+            },
+          }),
+        },
       ],
       renderMarkdown: () => true,
     }).tiptapEditor;

@@ -157,11 +157,6 @@ gosec-sast:
 
 mobsf-android-sast:
   extends: .sast-analyzer
-  services:
-    # this version must match with analyzer version mentioned in: https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/-/blob/master/Dockerfile
-    # Unfortunately, we need to keep track of mobsf version in 2 different places for now.
-    - name: opensecurity/mobile-security-framework-mobsf:v3.4.0
-      alias: mobsf
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
@@ -169,7 +164,6 @@ mobsf-android-sast:
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
-    MOBSF_API_KEY: key
   rules:
     - if: $SAST_DISABLED
       when: never
@@ -183,11 +177,6 @@ mobsf-android-sast:
 
 mobsf-ios-sast:
   extends: .sast-analyzer
-  services:
-    # this version must match with analyzer version mentioned in: https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/-/blob/master/Dockerfile
-    # Unfortunately, we need to keep track of mobsf version in 2 different places for now.
-    - name: opensecurity/mobile-security-framework-mobsf:v3.4.0
-      alias: mobsf
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
@@ -195,7 +184,6 @@ mobsf-ios-sast:
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
-    MOBSF_API_KEY: key
   rules:
     - if: $SAST_DISABLED
       when: never

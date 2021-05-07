@@ -20,6 +20,7 @@ export const clientTypenames = {
   BulkImportPageInfo: 'ClientBulkImportPageInfo',
   BulkImportTarget: 'ClientBulkImportTarget',
   BulkImportProgress: 'ClientBulkImportProgress',
+  BulkImportValidationError: 'ClientBulkImportValidationError',
 };
 
 function makeGroup(data) {
@@ -106,6 +107,7 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
 
                 return makeGroup({
                   ...group,
+                  validation_errors: [],
                   progress: {
                     id: jobId ?? localProgressId(group.id),
                     status: cachedImportState?.status ?? STATUSES.NONE,
@@ -152,7 +154,7 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
 
       async setImportProgress(_, { sourceGroupId, status, jobId }) {
         if (jobId) {
-          groupsManager.saveImportState(jobId, { status });
+          groupsManager.updateImportProgress(jobId, status);
         }
 
         return makeGroup({
@@ -165,7 +167,7 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
       },
 
       async updateImportStatus(_, { id, status }) {
-        groupsManager.saveImportState(id, { status });
+        groupsManager.updateImportProgress(id, status);
 
         return {
           __typename: clientTypenames.BulkImportProgress,
@@ -174,39 +176,81 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
         };
       },
 
-      async importGroup(_, { sourceGroupId }, { client }) {
+      async addValidationError(_, { sourceGroupId, field, message }, { client }) {
         const {
-          data: { bulkImportSourceGroup: group },
+          data: {
+            bulkImportSourceGroup: { validation_errors: validationErrors, ...group },
+          },
         } = await client.query({
           query: bulkImportSourceGroupQuery,
           variables: { id: sourceGroupId },
         });
 
-        const GROUP_BEING_SCHEDULED = makeGroup({
-          id: sourceGroupId,
-          progress: {
-            id: localProgressId(sourceGroupId),
-            status: STATUSES.SCHEDULING,
+        return {
+          ...group,
+          validation_errors: [
+            ...validationErrors.filter(({ field: f }) => f !== field),
+            {
+              __typename: clientTypenames.BulkImportValidationError,
+              field,
+              message,
+            },
+          ],
+        };
+      },
+
+      async removeValidationError(_, { sourceGroupId, field }, { client }) {
+        const {
+          data: {
+            bulkImportSourceGroup: { validation_errors: validationErrors, ...group },
           },
+        } = await client.query({
+          query: bulkImportSourceGroupQuery,
+          variables: { id: sourceGroupId },
         });
+
+        return {
+          ...group,
+          validation_errors: validationErrors.filter(({ field: f }) => f !== field),
+        };
+      },
+
+      async importGroups(_, { sourceGroupIds }, { client }) {
+        const groups = await Promise.all(
+          sourceGroupIds.map((id) =>
+            client
+              .query({
+                query: bulkImportSourceGroupQuery,
+                variables: { id },
+              })
+              .then(({ data }) => data.bulkImportSourceGroup),
+          ),
+        );
+
+        const GROUPS_BEING_SCHEDULED = sourceGroupIds.map((sourceGroupId) =>
+          makeGroup({
+            id: sourceGroupId,
+            progress: {
+              id: localProgressId(sourceGroupId),
+              status: STATUSES.SCHEDULING,
+            },
+          }),
+        );
 
         const defaultErrorMessage = s__('BulkImport|Importing the group failed');
         axios
           .post(endpoints.createBulkImport, {
-            bulk_import: [
-              {
-                source_type: 'group_entity',
-                source_full_path: group.full_path,
-                destination_namespace: group.import_target.target_namespace,
-                destination_name: group.import_target.new_name,
-              },
-            ],
+            bulk_import: groups.map((group) => ({
+              source_type: 'group_entity',
+              source_full_path: group.full_path,
+              destination_namespace: group.import_target.target_namespace,
+              destination_name: group.import_target.new_name,
+            })),
           })
           .then(({ data: { id: jobId } }) => {
-            groupsManager.saveImportState(jobId, {
-              id: group.id,
-              importTarget: group.import_target,
+            groupsManager.createImportState(jobId, {
               status: STATUSES.CREATED,
+              groups,
             });
 
             return { status: STATUSES.CREATED, jobId };
@@ -217,14 +261,16 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
             return { status: STATUSES.NONE };
           })
           .then((newStatus) =>
-            client.mutate({
-              mutation: setImportProgressMutation,
-              variables: { sourceGroupId, ...newStatus },
-            }),
+            sourceGroupIds.forEach((sourceGroupId) =>
+              client.mutate({
+                mutation: setImportProgressMutation,
+                variables: { sourceGroupId, ...newStatus },
+              }),
+            ),
           )
           .catch(() => createFlash({ message: defaultErrorMessage }));
 
-        return GROUP_BEING_SCHEDULED;
+        return GROUPS_BEING_SCHEDULED;
       },
     },
   };

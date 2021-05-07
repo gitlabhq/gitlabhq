@@ -40,5 +40,42 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
         end
       end
     end
+
+    describe '.payment_form_url' do
+      subject { described_class.payment_form_url }
+
+      context 'on non test and non dev environments' do
+        before do
+          allow(Rails).to receive_message_chain(:env, :test?).and_return(false)
+          allow(Rails).to receive_message_chain(:env, :development?).and_return(false)
+        end
+
+        it 'returns URL to production payment form' do
+          is_expected.to eq('https://customers.gitlab.com/payment_forms/cc_validation')
+        end
+      end
+
+      context 'on dev environment' do
+        before do
+          allow(Rails).to receive_message_chain(:env, :test?).and_return(false)
+          allow(Rails).to receive_message_chain(:env, :development?).and_return(true)
+        end
+
+        it 'returns URL to staging payment form' do
+          is_expected.to eq('https://customers.stg.gitlab.com/payment_forms/cc_validation')
+        end
+      end
+
+      context 'on test environment' do
+        before do
+          allow(Rails).to receive_message_chain(:env, :test?).and_return(true)
+          allow(Rails).to receive_message_chain(:env, :development?).and_return(false)
+        end
+
+        it 'returns URL to staging payment form' do
+          is_expected.to eq('https://customers.stg.gitlab.com/payment_forms/cc_validation')
+        end
+      end
+    end
   end
 end

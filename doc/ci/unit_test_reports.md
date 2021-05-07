@@ -333,18 +333,10 @@ If parsing JUnit report XML results in an error, an indicator is shown next to t
 
 ## Viewing JUnit screenshots on GitLab
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0.
-> - It's deployed behind a feature flag, disabled by default.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-junit-screenshots-feature). **(FREE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-When [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/6061) is complete, the attached file is visible on the pipeline details page.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0 behind the `:junit_pipeline_screenshots_view` feature flag, disabled by default.
+> - The feature flag was removed and was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/216979) in GitLab 13.12.
 
 If JUnit report format XML files contain an `attachment` tag, GitLab parses the attachment.
-
-Upload your screenshots as [artifacts](yaml/README.md#artifactsreportsjunit) to GitLab. The `attachment` tag **must** contain the absolute path to the screenshots you uploaded.
 
 ```xml
 <testcase time="1.00" name="Test">
@@ -352,13 +344,6 @@ Upload your screenshots as [artifacts](yaml/README.md#artifactsreportsjunit) to 
 </testcase>
 ```
 
-### Enabling the JUnit screenshots feature **(FREE SELF)**
+Upload your screenshots as [artifacts](yaml/README.md#artifactsreportsjunit) to GitLab. The `attachment` tag **must** contain the absolute path to the screenshots you uploaded.
 
-This feature comes with the `:junit_pipeline_screenshots_view` feature flag disabled by default.
-
-To enable this feature, ask a GitLab administrator with [Rails console access](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
-following command:
-
-```ruby
-Feature.enable(:junit_pipeline_screenshots_view)
-```
+A link to the test case attachment will appear in the test case details in [the pipeline test report](#viewing-unit-test-reports-on-gitlab).

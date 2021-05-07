@@ -11,6 +11,7 @@ milestone: "9.1"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521
 time_frame: none
 data_source: database
+instrumentation_class: 'Gitlab::Usage::Metrics::Instrumentations::UuidMetric'
 distribution:
 - ee
 - ce

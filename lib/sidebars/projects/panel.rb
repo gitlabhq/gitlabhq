@@ -24,6 +24,7 @@ module Sidebars
         add_menu(Sidebars::Projects::Menus::ExternalWikiMenu.new(context))
         add_menu(Sidebars::Projects::Menus::SnippetsMenu.new(context))
         add_menu(Sidebars::Projects::Menus::MembersMenu.new(context))
+        add_menu(Sidebars::Projects::Menus::SettingsMenu.new(context))
       end
 
       override :render_raw_menus_partial

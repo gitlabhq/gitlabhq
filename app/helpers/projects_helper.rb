@@ -285,10 +285,6 @@ module ProjectsHelper
     !disabled && !compact_mode
   end
 
-  def settings_operations_available?
-    !@project.archived? && can?(current_user, :admin_operations, @project)
-  end
-
   def error_tracking_setting_project_json
     setting = @project.error_tracking_setting
 
@@ -664,26 +660,6 @@ module ProjectsHelper
   def filter_starrer_path(options = {})
     options = params.slice(:sort).merge(options).permit!
     "#{request.path}?#{options.to_param}"
-  end
-
-  def sidebar_settings_paths
-    %w[
-      projects#edit
-      integrations#show
-      services#edit
-      hooks#index
-      hooks#edit
-      access_tokens#index
-      hook_logs#show
-      repository#show
-      ci_cd#show
-      operations#show
-      badges#index
-      pages#show
-      packages_and_registries#show
-      projects/runners#show
-      projects/runners#edit
-    ]
   end
 
   def sidebar_operations_paths

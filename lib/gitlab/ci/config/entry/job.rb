@@ -64,7 +64,7 @@ module Gitlab
             description: 'Commands that will be executed when finishing job.',
             inherit: true
 
-          entry :cache, Entry::Cache,
+          entry :cache, Entry::Caches,
             description: 'Cache definition for this job.',
             inherit: true
 

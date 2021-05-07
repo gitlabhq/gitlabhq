@@ -56,8 +56,8 @@ module Gitlab
         ::Feature.enabled?(:codequality_mr_diff, project, default_enabled: false)
       end
 
-      def self.multiple_cache_per_job?
-        ::Feature.enabled?(:multiple_cache_per_job, default_enabled: :yaml)
+      def self.gldropdown_tags_enabled?
+        ::Feature.enabled?(:gldropdown_tags, default_enabled: :yaml)
       end
     end
   end

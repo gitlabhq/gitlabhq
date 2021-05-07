@@ -62,12 +62,12 @@ module SystemNotes
       if time_spent == :reset
         body = "removed time spent"
       else
-        spent_at = noteable.spent_at
+        spent_at = noteable.spent_at&.to_date
         parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
         action = time_spent > 0 ? 'added' : 'subtracted'
 
         text_parts = ["#{action} #{parsed_time} of time spent"]
-        text_parts << "at #{spent_at}" if spent_at
+        text_parts << "at #{spent_at}" if spent_at && spent_at != DateTime.current.to_date
         body = text_parts.join(' ')
       end
 

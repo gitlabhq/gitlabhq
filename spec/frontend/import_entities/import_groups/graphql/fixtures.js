@@ -14,6 +14,7 @@ export const generateFakeEntry = ({ id, status, ...rest }) => ({
     id: `test-${id}`,
     status,
   },
+  validation_errors: [],
   ...rest,
 });
 

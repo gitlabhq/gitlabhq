@@ -14,6 +14,12 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     )
   end
 
+  def plain_data
+    return if blob.binary?
+
+    highlight(plain: false)
+  end
+
   def web_url
     url_helpers.project_blob_url(project, ref_qualified_path)
   end

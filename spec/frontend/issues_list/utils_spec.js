@@ -1,4 +1,13 @@
-import { apiParams, filteredTokens, locationSearch, urlParams } from 'jest/issues_list/mock_data';
+import {
+  apiParams,
+  apiParamsWithSpecialValues,
+  filteredTokens,
+  filteredTokensWithSpecialValues,
+  locationSearch,
+  locationSearchWithSpecialValues,
+  urlParams,
+  urlParamsWithSpecialValues,
+} from 'jest/issues_list/mock_data';
 import { sortParams } from '~/issues_list/constants';
 import {
   convertToApiParams,
@@ -53,17 +62,31 @@ describe('getFilterTokens', () => {
   it('returns filtered tokens given "window.location.search"', () => {
     expect(getFilterTokens(locationSearch)).toEqual(filteredTokens);
   });
+
+  it('returns filtered tokens given "window.location.search" with special values', () => {
+    expect(getFilterTokens(locationSearchWithSpecialValues)).toEqual(
+      filteredTokensWithSpecialValues,
+    );
+  });
 });
 
 describe('convertToApiParams', () => {
   it('returns api params given filtered tokens', () => {
     expect(convertToApiParams(filteredTokens)).toEqual(apiParams);
   });
+
+  it('returns api params given filtered tokens with special values', () => {
+    expect(convertToApiParams(filteredTokensWithSpecialValues)).toEqual(apiParamsWithSpecialValues);
+  });
 });
 
 describe('convertToUrlParams', () => {
   it('returns url params given filtered tokens', () => {
     expect(convertToUrlParams(filteredTokens)).toEqual(urlParams);
+  });
+
+  it('returns url params given filtered tokens with special values', () => {
+    expect(convertToUrlParams(filteredTokensWithSpecialValues)).toEqual(urlParamsWithSpecialValues);
   });
 });
 

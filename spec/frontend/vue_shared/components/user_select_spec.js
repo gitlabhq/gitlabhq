@@ -95,14 +95,14 @@ describe('User select dropdown', () => {
     createComponent({ participantsQueryHandler: mockError });
     await waitForPromises();
 
-    expect(wrapper.emitted('error')).toBeTruthy();
+    expect(wrapper.emitted('error')).toEqual([[], []]);
   });
 
   it('emits an `error` event if search query was rejected', async () => {
     createComponent({ searchQueryHandler: mockError });
     await waitForSearch();
 
-    expect(wrapper.emitted('error')).toBeTruthy();
+    expect(wrapper.emitted('error')).toEqual([[], []]);
   });
 
   it('renders current user if they are not in participants or assignees', async () => {
@@ -262,6 +262,50 @@ describe('User select dropdown', () => {
 
       expect(findUnselectedParticipants()).toHaveLength(0);
       expect(findEmptySearchResults().exists()).toBe(true);
+    });
+  });
+
+  // TODO Remove this test after the following issue is resolved in the backend
+  // https://gitlab.com/gitlab-org/gitlab/-/issues/329750
+  describe('temporary error suppression', () => {
+    beforeEach(() => {
+      jest.spyOn(console, 'error').mockImplementation();
+    });
+
+    const nullError = { message: 'Cannot return null for non-nullable field GroupMember.user' };
+
+    it.each`
+      mockErrors
+      ${[nullError]}
+      ${[nullError, nullError]}
+    `('does not emit errors', async ({ mockErrors }) => {
+      createComponent({
+        searchQueryHandler: jest.fn().mockResolvedValue({
+          errors: mockErrors,
+        }),
+      });
+      await waitForSearch();
+
+      expect(wrapper.emitted()).toEqual({});
+      // eslint-disable-next-line no-console
+      expect(console.error).toHaveBeenCalled();
+    });
+
+    it.each`
+      mockErrors
+      ${[{ message: 'serious error' }]}
+      ${[nullError, { message: 'serious error' }]}
+    `('emits error when non-null related errors are included', async ({ mockErrors }) => {
+      createComponent({
+        searchQueryHandler: jest.fn().mockResolvedValue({
+          errors: mockErrors,
+        }),
+      });
+      await waitForSearch();
+
+      expect(wrapper.emitted('error')).toEqual([[]]);
+      // eslint-disable-next-line no-console
+      expect(console.error).not.toHaveBeenCalled();
     });
   });
 });

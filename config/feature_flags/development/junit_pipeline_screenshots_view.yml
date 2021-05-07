@@ -1,8 +1,0 @@
----
-name: junit_pipeline_screenshots_view
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31029
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/202114
-milestone: '13.0'
-type: development
-group: group::verify testing
-default_enabled: false

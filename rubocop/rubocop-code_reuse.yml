@@ -31,6 +31,7 @@ CodeReuse/ActiveRecord:
     - lib/gitlab/import_export/**/*.rb
     - lib/gitlab/project_authorizations.rb
     - lib/gitlab/sql/**/*.rb
+    - lib/gitlab/usage/metrics/instrumentations/**/*.rb
     - lib/system_check/**/*.rb
     - qa/**/*.rb
     - rubocop/**/*.rb

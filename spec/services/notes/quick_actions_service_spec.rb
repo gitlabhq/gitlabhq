@@ -103,6 +103,30 @@ RSpec.describe Notes::QuickActionsService do
             expect(Timelog.last.note_id).to eq(note.id)
           end
         end
+
+        context 'adds a system note' do
+          context 'when not specifying a date' do
+            let(:note_text) { "/spend 1h" }
+
+            it 'does not include the date' do
+              _, update_params = service.execute(note)
+              service.apply_updates(update_params, note)
+
+              expect(Note.last.note).to eq('added 1h of time spent')
+            end
+          end
+
+          context 'when specifying a date' do
+            let(:note_text) { "/spend 1h 2020-01-01" }
+
+            it 'does include the date' do
+              _, update_params = service.execute(note)
+              service.apply_updates(update_params, note)
+
+              expect(Note.last.note).to eq('added 1h of time spent at 2020-01-01')
+            end
+          end
+        end
       end
     end
 

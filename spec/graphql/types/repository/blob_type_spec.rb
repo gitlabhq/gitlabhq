@@ -24,7 +24,8 @@ RSpec.describe Types::Repository::BlobType do
       :raw_path,
       :replace_path,
       :simple_viewer,
-      :rich_viewer
+      :rich_viewer,
+      :plain_data
     )
   end
 end

@@ -285,7 +285,7 @@ defer it to another release if there is risk of important data loss.
 Follow these best practices for best results:
 
 - When working in batches, keep the batch size under 9,000 documents
-  and `throttle_delay` over 3 minutes. The bulk indexer is set to run
+  and `throttle_delay` for at least 3 minutes. The bulk indexer is set to run
   every 1 minute and process a batch of 10,000 documents. These limits
   allow the bulk indexer time to process records before another migration
   batch is attempted.

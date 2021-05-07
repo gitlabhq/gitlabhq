@@ -60,6 +60,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Updating multiple values](setting_multiple_values.md)
 - [Constraints naming conventions](constraint_naming_convention.md)
 - [Query performance guidelines](../query_performance.md)
+- [Pagination guidelines](pagination_guidelines.md)
+  - [Pagination performance guidelines](pagination_performance_guidelines.md)
 
 ## Case studies
 

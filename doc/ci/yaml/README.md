@@ -2970,11 +2970,7 @@ You can specify a [fallback cache key](#fallback-cache-key) to use if the specif
 ##### Multiple caches
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32814) in GitLab 13.10.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/321877) in GitLab 13.11.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-multiple-caches). **(FREE SELF)**
+> - [Feature Flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321877), in GitLab 13.12.
 
 You can have a maximum of four caches:
 
@@ -3000,25 +2996,6 @@ test-job:
 
 If multiple caches are combined with a [Fallback cache key](#fallback-cache-key),
 the fallback is fetched multiple times if multiple caches are not found.
-
-##### Enable or disable multiple caches **(FREE SELF)**
-
-The multiple caches feature is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:multiple_cache_per_job)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:multiple_cache_per_job)
-```
 
 #### Fallback cache key
 

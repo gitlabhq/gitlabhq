@@ -10,8 +10,11 @@ import {
   GlFormInput,
 } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { s__ } from '~/locale';
 import ImportStatus from '../../components/import_status.vue';
 import { STATUSES } from '../../constants';
+import addValidationErrorMutation from '../graphql/mutations/add_validation_error.mutation.graphql';
+import removeValidationErrorMutation from '../graphql/mutations/remove_validation_error.mutation.graphql';
 import groupQuery from '../graphql/queries/group.query.graphql';
 
 const DEBOUNCE_INTERVAL = 300;
@@ -52,6 +55,27 @@ export default {
           fullPath: this.fullPath,
         };
       },
+      update({ existingGroup }) {
+        const variables = {
+          field: 'new_name',
+          sourceGroupId: this.group.id,
+        };
+
+        if (!existingGroup) {
+          this.$apollo.mutate({
+            mutation: removeValidationErrorMutation,
+            variables,
+          });
+        } else {
+          this.$apollo.mutate({
+            mutation: addValidationErrorMutation,
+            variables: {
+              ...variables,
+              message: s__('BulkImport|Name already exists.'),
+            },
+          });
+        }
+      },
       skip() {
         return !this.isNameValid || this.isAlreadyImported;
       },
@@ -63,8 +87,12 @@ export default {
       return this.group.import_target;
     },
 
+    invalidNameValidationMessage() {
+      return this.group.validation_errors.find(({ field }) => field === 'new_name')?.message;
+    },
+
     isInvalid() {
-      return Boolean(!this.isNameValid || this.existingGroup);
+      return Boolean(!this.isNameValid || this.invalidNameValidationMessage);
     },
 
     isNameValid() {
@@ -157,21 +185,21 @@ export default {
             <template v-if="!isNameValid">
               {{ __('Please choose a group URL with no special characters.') }}
             </template>
-            <template v-else-if="existingGroup">
-              {{ s__('BulkImport|Name already exists.') }}
+            <template v-else-if="invalidNameValidationMessage">
+              {{ invalidNameValidationMessage }}
             </template>
           </p>
         </div>
       </div>
     </td>
     <td class="gl-p-4 gl-white-space-nowrap">
-      <import-status :status="group.progress.status" />
+      <import-status :status="group.progress.status" class="gl-mt-2" />
     </td>
     <td class="gl-p-4">
       <gl-button
         v-if="!isAlreadyImported"
         :disabled="isInvalid"
-        variant="success"
+        variant="confirm"
         category="secondary"
         @click="$emit('import-group')"
         >{{ __('Import') }}</gl-button

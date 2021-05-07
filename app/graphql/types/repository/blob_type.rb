@@ -67,6 +67,11 @@ module Types
             description: 'Blob content rich viewer.',
             null: true
 
+      field :plain_data, GraphQL::STRING_TYPE,
+            description: 'Blob plain highlighted data.',
+            null: true,
+            calls_gitaly: true
+
       def raw_text_blob
         object.data unless object.binary?
       end

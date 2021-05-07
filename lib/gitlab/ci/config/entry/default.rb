@@ -37,7 +37,7 @@ module Gitlab
             description: 'Script that will be executed after each job.',
             inherit: true
 
-          entry :cache, Entry::Cache,
+          entry :cache, Entry::Caches,
             description: 'Configure caching between build jobs.',
             inherit: true
 

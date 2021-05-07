@@ -61,7 +61,7 @@ module Gitlab
             description: 'Deprecated: stages for this pipeline.',
             reserved: true
 
-          entry :cache, Entry::Cache,
+          entry :cache, Entry::Caches,
             description: 'Configure caching between build jobs.',
             reserved: true
 

@@ -903,56 +903,168 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
-  describe 'operations settings tab' do
-    describe 'archive projects' do
-      before do
-        project.update!(archived: project_archived)
+  describe 'Settings' do
+    describe 'General' do
+      it 'has a link to the General settings' do
+        render
+
+        expect(rendered).to have_link('General', href: edit_project_path(project))
+      end
+    end
+
+    describe 'Integrations' do
+      it 'has a link to the Integrations settings' do
+        render
+
+        expect(rendered).to have_link('Integrations', href: project_settings_integrations_path(project))
+      end
+    end
+
+    describe 'WebHooks' do
+      it 'has a link to the WebHooks settings' do
+        render
+
+        expect(rendered).to have_link('Webhooks', href: project_hooks_path(project))
+      end
+    end
+
+    describe 'Access Tokens' do
+      context 'self-managed instance' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(false)
+        end
+
+        it 'has a link to the Access Tokens settings' do
+          render
+
+          expect(rendered).to have_link('Access Tokens', href: project_settings_access_tokens_path(project))
+        end
       end
 
-      context 'when project is archived' do
-        let(:project_archived) { true }
+      context 'gitlab.com' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+        end
 
-        it 'does not show the operations settings tab' do
+        it 'has a link to the Access Tokens settings' do
+          render
+
+          expect(rendered).to have_link('Access Tokens', href: project_settings_access_tokens_path(project))
+        end
+      end
+    end
+
+    describe 'Repository' do
+      it 'has a link to the Repository settings' do
+        render
+
+        expect(rendered).to have_link('Repository', href: project_settings_repository_path(project))
+      end
+    end
+
+    describe 'CI/CD' do
+      context 'when project is archived' do
+        before do
+          project.update!(archived: true)
+        end
+
+        it 'does not have a link to the CI/CD settings' do
+          render
+
+          expect(rendered).not_to have_link('CI/CD', href: project_settings_ci_cd_path(project))
+        end
+      end
+
+      context 'when project is not archived' do
+        it 'has a link to the CI/CD settings' do
+          render
+
+          expect(rendered).to have_link('CI/CD', href: project_settings_ci_cd_path(project))
+        end
+      end
+    end
+
+    describe 'Operations' do
+      context 'when project is archived' do
+        before do
+          project.update!(archived: true)
+        end
+
+        it 'does not have a link to the Operations settings' do
           render
 
           expect(rendered).not_to have_link('Operations', href: project_settings_operations_path(project))
         end
       end
 
-      context 'when project is active' do
-        let(:project_archived) { false }
-
-        it 'shows the operations settings tab' do
+      context 'when project is not archived active' do
+        it 'has a link to the Operations settings' do
           render
 
           expect(rendered).to have_link('Operations', href: project_settings_operations_path(project))
         end
       end
     end
-  end
 
-  describe 'project access tokens' do
-    context 'self-managed instance' do
+    describe 'Pages' do
       before do
-        allow(Gitlab).to receive(:com?).and_return(false)
+        stub_config(pages: { enabled: pages_enabled })
       end
 
-      it 'displays "Access Tokens" nav item' do
-        render
+      context 'when pages are enabled' do
+        let(:pages_enabled) { true }
 
-        expect(rendered).to have_link('Access Tokens', href: project_settings_access_tokens_path(project))
+        it 'has a link to the Pages settings' do
+          render
+
+          expect(rendered).to have_link('Pages', href: project_pages_path(project))
+        end
+      end
+
+      context 'when pages are not enabled' do
+        let(:pages_enabled) { false }
+
+        it 'does not have a link to the Pages settings' do
+          render
+
+          expect(rendered).not_to have_link('Pages', href: project_pages_path(project))
+        end
       end
     end
 
-    context 'gitlab.com' do
+    describe 'Packages & Registries' do
       before do
-        allow(Gitlab).to receive(:com?).and_return(true)
+        stub_container_registry_config(enabled: registry_enabled)
       end
 
-      it 'displays "Access Tokens" nav item' do
-        render
+      context 'when registry is enabled' do
+        let(:registry_enabled) { true }
 
-        expect(rendered).to have_link('Access Tokens', href: project_settings_access_tokens_path(project))
+        it 'has a link to the Packages & Registries settings' do
+          render
+
+          expect(rendered).to have_link('Packages & Registries', href: project_settings_packages_and_registries_path(project))
+        end
+
+        context 'when feature flag :sidebar_refactor is disabled' do
+          it 'does not have a link to the Packages & Registries settings' do
+            stub_feature_flags(sidebar_refactor: false)
+
+            render
+
+            expect(rendered).not_to have_link('Packages & Registries', href: project_settings_packages_and_registries_path(project))
+          end
+        end
+      end
+
+      context 'when registry is not enabled' do
+        let(:registry_enabled) { false }
+
+        it 'does not have a link to the Packages & Registries settings' do
+          render
+
+          expect(rendered).not_to have_link('Packages & Registries', href: project_settings_packages_and_registries_path(project))
+        end
       end
     end
   end

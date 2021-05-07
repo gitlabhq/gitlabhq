@@ -34,6 +34,7 @@ import {
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase, getParameterByName } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import IterationToken from '~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue';
@@ -186,7 +187,7 @@ export default {
           token: AuthorToken,
           dataType: 'user',
           unique: true,
-          defaultAuthors: [],
+          defaultAuthors: DEFAULT_NONE_ANY,
           fetchAuthors: this.fetchUsers,
         },
         {
@@ -213,7 +214,6 @@ export default {
           token: EmojiToken,
           unique: true,
           operators: [{ value: '=', description: __('is') }],
-          defaultEmojis: [],
           fetchEmojis: this.fetchEmojis,
         },
         {
@@ -237,7 +237,6 @@ export default {
           icon: 'iteration',
           token: IterationToken,
           unique: true,
-          defaultIterations: [],
           fetchIterations: this.fetchIterations,
         });
       }

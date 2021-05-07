@@ -13,25 +13,42 @@ export class SourceGroupsManager {
 
   loadImportStatesFromStorage() {
     try {
-      return JSON.parse(this.storage.getItem(KEY)) ?? {};
+      return Object.fromEntries(
+        Object.entries(JSON.parse(this.storage.getItem(KEY)) ?? {}).map(([jobId, config]) => {
+          // new format of storage
+          if (config.groups) {
+            return [jobId, config];
+          }
+
+          return [
+            jobId,
+            {
+              status: config.status,
+              groups: [{ id: config.id, importTarget: config.importTarget }],
+            },
+          ];
+        }),
+      );
     } catch {
       return {};
     }
   }
 
-  saveImportState(importId, group) {
-    const key = this.getStorageKey(importId);
-    const oldState = this.importStates[key] ?? {};
+  createImportState(importId, jobConfig) {
+    this.importStates[this.getStorageKey(importId)] = {
+      status: jobConfig.status,
+      groups: jobConfig.groups.map((g) => ({ importTarget: g.import_target, id: g.id })),
+    };
+    this.saveImportStatesToStorage();
+  }
 
-    if (!oldState.id && !group.id) {
+  updateImportProgress(importId, status) {
+    const currentState = this.importStates[this.getStorageKey(importId)];
+    if (!currentState) {
       return;
     }
 
-    this.importStates[key] = {
-      ...oldState,
-      ...group,
-      status: group.status,
-    };
+    currentState.status = status;
     this.saveImportStatesToStorage();
   }
 
@@ -39,10 +56,15 @@ export class SourceGroupsManager {
     const PREFIX = this.getStorageKey('');
     const [jobId, importState] =
       Object.entries(this.importStates).find(
-        ([key, group]) => key.startsWith(PREFIX) && group.id === groupId,
+        ([key, state]) => key.startsWith(PREFIX) && state.groups.some((g) => g.id === groupId),
       ) ?? [];
 
-    return { jobId, importState };
+    if (!jobId) {
+      return null;
+    }
+
+    const group = importState.groups.find((g) => g.id === groupId);
+    return { jobId, importState: { ...group, status: importState.status } };
   }
 
   getStorageKey(importId) {

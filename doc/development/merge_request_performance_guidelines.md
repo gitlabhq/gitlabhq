@@ -426,6 +426,8 @@ Take into consideration the following when choosing a pagination strategy:
    The database has to sort and iterate all previous items, and this operation usually
    can result in substantial load put on database.
 
+You can find useful tips related to pagination in the [pagination guidelines](database/pagination_guidelines.md).
+
 ## Badge counters
 
 Counters should always be truncated. It means that we don't want to present

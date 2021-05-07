@@ -108,10 +108,12 @@ export default {
       error({ graphQLErrors }) {
         // TODO This error suppression is temporary (BE fix required)
         // https://gitlab.com/gitlab-org/gitlab/-/issues/329750
-        if (
-          graphQLErrors.length === 1 &&
-          graphQLErrors[0]?.message === 'Cannot return null for non-nullable field GroupMember.user'
-        ) {
+        const isNullError = ({ message }) => {
+          return message === 'Cannot return null for non-nullable field GroupMember.user';
+        };
+
+        if (graphQLErrors?.length > 0 && graphQLErrors.every(isNullError)) {
+          // only null-related errors exist, suppress them.
           // eslint-disable-next-line no-console
           console.error(
             "Suppressing the error 'Cannot return null for non-nullable field GroupMember.user'. Please see https://gitlab.com/gitlab-org/gitlab/-/issues/329750",
