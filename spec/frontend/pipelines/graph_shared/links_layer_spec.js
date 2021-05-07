@@ -96,21 +96,17 @@ describe('links layer component', () => {
   });
 
   describe('performance metrics', () => {
+    const metricsPath = '/root/project/-/ci/prometheus_metrics/histograms.json';
     let markAndMeasure;
     let reportToSentry;
     let reportPerformance;
     let mock;
 
     beforeEach(() => {
-      mock = new MockAdapter(axios);
       jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => cb());
       markAndMeasure = jest.spyOn(perfUtils, 'performanceMarkAndMeasure');
       reportToSentry = jest.spyOn(sentryUtils, 'reportToSentry');
       reportPerformance = jest.spyOn(Api, 'reportPerformance');
-    });
-
-    afterEach(() => {
-      mock.restore();
     });
 
     describe('with no metrics config object', () => {
@@ -164,7 +160,6 @@ describe('links layer component', () => {
     });
 
     describe('with metrics path and collect set to true', () => {
-      const metricsPath = '/root/project/-/ci/prometheus_metrics/histograms.json';
       const duration = 875;
       const numLinks = 7;
       const totalGroups = 8;
@@ -204,6 +199,9 @@ describe('links layer component', () => {
 
       describe('with duration and no error', () => {
         beforeEach(() => {
+          mock = new MockAdapter(axios);
+          mock.onPost(metricsPath).reply(200, {});
+
           jest.spyOn(window.performance, 'getEntriesByName').mockImplementation(() => {
             return [{ duration }];
           });
@@ -216,6 +214,10 @@ describe('links layer component', () => {
               },
             },
           });
+        });
+
+        afterEach(() => {
+          mock.restore();
         });
 
         it('it calls reportPerformance with expected arguments', () => {

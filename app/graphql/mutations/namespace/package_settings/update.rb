@@ -25,6 +25,16 @@ module Mutations
                 required: false,
                 description: copy_field_description(Types::Namespace::PackageSettingsType, :maven_duplicate_exception_regex)
 
+        argument :generic_duplicates_allowed,
+                GraphQL::BOOLEAN_TYPE,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :generic_duplicates_allowed)
+
+        argument :generic_duplicate_exception_regex,
+                Types::UntrustedRegexp,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :generic_duplicate_exception_regex)
+
         field :package_settings,
               Types::Namespace::PackageSettingsType,
               null: true,

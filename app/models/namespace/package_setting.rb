@@ -6,13 +6,15 @@ class Namespace::PackageSetting < ApplicationRecord
 
   PackageSettingNotImplemented = Class.new(StandardError)
 
-  PACKAGES_WITH_SETTINGS = %w[maven].freeze
+  PACKAGES_WITH_SETTINGS = %w[maven generic].freeze
 
   belongs_to :namespace, inverse_of: :package_setting_relation
 
   validates :namespace, presence: true
   validates :maven_duplicates_allowed, inclusion: { in: [true, false] }
   validates :maven_duplicate_exception_regex, untrusted_regexp: true, length: { maximum: 255 }
+  validates :generic_duplicates_allowed, inclusion: { in: [true, false] }
+  validates :generic_duplicate_exception_regex, untrusted_regexp: true, length: { maximum: 255 }
 
   class << self
     def duplicates_allowed?(package)

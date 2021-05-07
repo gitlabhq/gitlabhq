@@ -14798,6 +14798,9 @@ CREATE TABLE namespace_package_settings (
     namespace_id bigint NOT NULL,
     maven_duplicates_allowed boolean DEFAULT true NOT NULL,
     maven_duplicate_exception_regex text DEFAULT ''::text NOT NULL,
+    generic_duplicates_allowed boolean DEFAULT true NOT NULL,
+    generic_duplicate_exception_regex text DEFAULT ''::text NOT NULL,
+    CONSTRAINT check_31340211b1 CHECK ((char_length(generic_duplicate_exception_regex) <= 255)),
     CONSTRAINT check_d63274b2b6 CHECK ((char_length(maven_duplicate_exception_regex) <= 255))
 );
 

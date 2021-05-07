@@ -5,7 +5,10 @@ module Namespaces
     class UpdateService < BaseContainerService
       include Gitlab::Utils::StrongMemoize
 
-      ALLOWED_ATTRIBUTES = %i[maven_duplicates_allowed maven_duplicate_exception_regex].freeze
+      ALLOWED_ATTRIBUTES = %i[maven_duplicates_allowed
+                              maven_duplicate_exception_regex
+                              generic_duplicates_allowed
+                              generic_duplicate_exception_regex].freeze
 
       def execute
         return ServiceResponse.error(message: 'Access Denied', http_status: 403) unless allowed?

@@ -12,7 +12,9 @@ RSpec.describe 'Updating the package settings' do
     {
       namespace_path: namespace.full_path,
       maven_duplicates_allowed: false,
-      maven_duplicate_exception_regex: 'foo-.*'
+      maven_duplicate_exception_regex: 'foo-.*',
+      generic_duplicates_allowed: false,
+      generic_duplicate_exception_regex: 'bar-.*'
     }
   end
 
@@ -22,6 +24,8 @@ RSpec.describe 'Updating the package settings' do
         packageSettings {
           mavenDuplicatesAllowed
           mavenDuplicateExceptionRegex
+          genericDuplicatesAllowed
+          genericDuplicateExceptionRegex
         }
         errors
       QL
@@ -40,6 +44,8 @@ RSpec.describe 'Updating the package settings' do
       expect(mutation_response['errors']).to be_empty
       expect(package_settings_response['mavenDuplicatesAllowed']).to eq(params[:maven_duplicates_allowed])
       expect(package_settings_response['mavenDuplicateExceptionRegex']).to eq(params[:maven_duplicate_exception_regex])
+      expect(package_settings_response['genericDuplicatesAllowed']).to eq(params[:generic_duplicates_allowed])
+      expect(package_settings_response['genericDuplicateExceptionRegex']).to eq(params[:generic_duplicate_exception_regex])
     end
   end
 
@@ -69,8 +75,8 @@ RSpec.describe 'Updating the package settings' do
 
   RSpec.shared_examples 'accepting the mutation request updating the package settings' do
     it_behaves_like 'updating the namespace package setting attributes',
-      from: { maven_duplicates_allowed: true, maven_duplicate_exception_regex: 'SNAPSHOT' },
-      to: { maven_duplicates_allowed: false, maven_duplicate_exception_regex: 'foo-.*' }
+      from: { maven_duplicates_allowed: true, maven_duplicate_exception_regex: 'SNAPSHOT', generic_duplicates_allowed: true, generic_duplicate_exception_regex: 'foo' },
+      to: { maven_duplicates_allowed: false, maven_duplicate_exception_regex: 'foo-.*', generic_duplicates_allowed: false, generic_duplicate_exception_regex: 'bar-.*' }
 
     it_behaves_like 'returning a success'
     it_behaves_like 'rejecting invalid regex'

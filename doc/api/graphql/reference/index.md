@@ -3911,6 +3911,8 @@ Input type: `UpdateNamespacePackageSettingsInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenamespacepackagesettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatenamespacepackagesettingsgenericduplicateexceptionregex"></a>`genericDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When generic_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
+| <a id="mutationupdatenamespacepackagesettingsgenericduplicatesallowed"></a>`genericDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate generic packages are allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingsmavenduplicateexceptionregex"></a>`mavenDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="mutationupdatenamespacepackagesettingsmavenduplicatesallowed"></a>`mavenDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate Maven packages are allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingsnamespacepath"></a>`namespacePath` | [`ID!`](#id) | The namespace path where the namespace package setting is located. |
@@ -10488,6 +10490,8 @@ Namespace-level Package Registry settings.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="packagesettingsgenericduplicateexceptionregex"></a>`genericDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When generic_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
+| <a id="packagesettingsgenericduplicatesallowed"></a>`genericDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate generic packages are allowed for this namespace. |
 | <a id="packagesettingsmavenduplicateexceptionregex"></a>`mavenDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="packagesettingsmavenduplicatesallowed"></a>`mavenDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate Maven packages are allowed for this namespace. |
 

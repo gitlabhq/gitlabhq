@@ -774,6 +774,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.usage_counters }
 
     it { is_expected.to include(:kubernetes_agent_gitops_sync) }
+    it { is_expected.to include(:kubernetes_agent_k8s_api_proxy_request) }
     it { is_expected.to include(:static_site_editor_views) }
     it { is_expected.to include(:package_events_i_package_pull_package) }
     it { is_expected.to include(:package_events_i_package_delete_package_by_user) }

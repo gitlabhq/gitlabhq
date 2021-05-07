@@ -453,7 +453,8 @@ metric counters.
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `gitops_sync_count` | integer| yes | The number to increase the `gitops_sync_count` counter by |
+| `gitops_sync_count` | integer| no | The number to increase the `gitops_sync_count` counter by |
+| `k8s_api_proxy_request_count` | integer| no | The number to increase the `k8s_api_proxy_request_count` counter by |
 
 ```plaintext
 POST /internal/kubernetes/usage_metrics

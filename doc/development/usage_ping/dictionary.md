@@ -2902,6 +2902,18 @@ Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
+### `counts.kubernetes_agent_k8s_api_proxy_request`
+
+Count of Kubernetes API proxy requests
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210505015532_kubernetes_agent_k8s_api_proxy_request.yml)
+
+Group: `group::configure`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `counts.kubernetes_agents`
 
 Count of Kubernetes agents

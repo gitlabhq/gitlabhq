@@ -4,17 +4,27 @@ module Gitlab
   module UsageDataCounters
     class KubernetesAgentCounter < BaseCounter
       PREFIX = 'kubernetes_agent'
-      KNOWN_EVENTS = %w[gitops_sync].freeze
+      KNOWN_EVENTS = %w[gitops_sync k8s_api_proxy_request].freeze
 
       class << self
-        def increment_gitops_sync(incr)
-          raise ArgumentError, 'must be greater than or equal to zero' if incr < 0
+        def increment_event_counts(events)
+          validate!(events)
 
-          # rather then hitting redis for this no-op, we return early
-          # note: redis returns the increment, so we mimic this here
-          return 0 if incr == 0
+          events.each do |event, incr|
+            # rather then hitting redis for this no-op, we return early
+            next if incr == 0
 
-          increment_by(redis_key(:gitops_sync), incr)
+            increment_by(redis_key(event), incr)
+          end
+        end
+
+        private
+
+        def validate!(events)
+          events.each do |event, incr|
+            raise ArgumentError, "unknown event #{event}" unless event.in?(KNOWN_EVENTS)
+            raise ArgumentError, "#{event} count must be greater than or equal to zero" if incr < 0
+          end
         end
       end
     end
