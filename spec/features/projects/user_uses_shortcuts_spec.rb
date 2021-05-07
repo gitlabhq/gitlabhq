@@ -68,14 +68,27 @@ RSpec.describe 'User uses shortcuts', :js do
   end
 
   context 'when navigating to the Project pages' do
-    it 'redirects to the details page' do
+    it 'redirects to the project page' do
       visit project_issues_path(project)
 
       find('body').native.send_key('g')
       find('body').native.send_key('p')
 
       expect(page).to have_active_navigation('Project')
-      expect(page).to have_active_sub_navigation('Details')
+    end
+
+    context 'when feature flag :sidebar_refactor is disabled' do
+      it 'redirects to the details page' do
+        stub_feature_flags(sidebar_refactor: false)
+
+        visit project_issues_path(project)
+
+        find('body').native.send_key('g')
+        find('body').native.send_key('p')
+
+        expect(page).to have_active_navigation('Project')
+        expect(page).to have_active_sub_navigation('Details')
+      end
     end
 
     it 'redirects to the activity page' do

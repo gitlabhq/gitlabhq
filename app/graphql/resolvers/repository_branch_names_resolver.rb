@@ -10,8 +10,16 @@ module Resolvers
       required: true,
       description: 'The pattern to search for branch names by.'
 
-    def resolve(search_pattern:)
-      Repositories::BranchNamesFinder.new(object, search: search_pattern).execute
+    argument :offset, GraphQL::INT_TYPE,
+      required: true,
+      description: 'The number of branch names to skip.'
+
+    argument :limit, GraphQL::INT_TYPE,
+      required: true,
+      description: 'The number of branch names to return.'
+
+    def resolve(search_pattern:, offset:, limit:)
+      Repositories::BranchNamesFinder.new(object, offset: offset, limit: limit, search: search_pattern).execute
     end
   end
 end

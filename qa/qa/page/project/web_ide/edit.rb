@@ -18,8 +18,8 @@ module QA
           end
 
           view 'app/assets/javascripts/ide/components/ide_tree.vue' do
-            element :new_file_button
-            element :new_directory_button
+            element :new_file_button, required: true
+            element :new_directory_button, required: true
           end
 
           view 'app/assets/javascripts/ide/components/ide_tree_list.vue' do
@@ -106,6 +106,10 @@ module QA
 
           view 'app/assets/javascripts/ide/components/commit_sidebar/list_item.vue' do
             element :file_to_commit_content
+          end
+
+          view 'app/assets/javascripts/editor/extensions/editor_lite_extension_base.js' do
+            element :line_link
           end
 
           def has_file?(file_name)
@@ -304,6 +308,22 @@ module QA
 
           def switch_to_commit_tab
             click_element(:commit_mode_tab)
+          end
+
+          def select_file(file_name)
+            # wait for the list of files to load
+            wait_until(reload: true) do
+              has_element?(:file_name_content, file_name: file_name)
+            end
+            click_element(:file_name_content, file_name: file_name)
+          end
+
+          def link_line(line_number)
+            wait_for_animated_element(:editor_container)
+            within_element(:editor_container) do
+              find('.line-numbers', text: line_number).hover
+              find_element(:line_link, number: "#L#{line_number}")['href'].to_s
+            end
           end
         end
       end

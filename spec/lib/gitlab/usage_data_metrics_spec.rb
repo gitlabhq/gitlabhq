@@ -20,6 +20,10 @@ RSpec.describe Gitlab::UsageDataMetrics do
       it 'includes top level keys' do
         expect(subject).to include(:uuid)
       end
+
+      it 'includes counts keys' do
+        expect(subject[:counts]).to include(:boards)
+      end
     end
   end
 end

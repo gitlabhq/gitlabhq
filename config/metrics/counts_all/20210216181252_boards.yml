@@ -1,18 +1,19 @@
 ---
 key_path: counts.boards
-description: Count of total Boards created 
+description: Count of Boards created
 product_section: dev
 product_stage: plan
 product_group: group::project management
-product_category: boards 
+product_category: boards
 value_type: number
 status: data_available
 time_frame: all
 data_source: database
+instrumentation_class: 'Gitlab::Usage::Metrics::Instrumentations::CountBoardsMetric'
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
-- premium 
-- ultimate 
+- premium
+- ultimate

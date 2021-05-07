@@ -19,20 +19,41 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
 
   it_behaves_like 'has nav sidebar'
 
-  describe 'Project Overview' do
+  describe 'Project information' do
     it 'has a link to the project path' do
       render
 
-      expect(rendered).to have_link('Project overview', href: project_path(project), class: %w(shortcuts-project rspec-project-link))
-      expect(rendered).to have_selector('[aria-label="Project overview"]')
+      expect(rendered).to have_link('Project information', href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+      expect(rendered).to have_selector('[aria-label="Project information"]')
+    end
+
+    context 'when feature flag :sidebar_refactor is disabled' do
+      it 'has a link to the project path' do
+        stub_feature_flags(sidebar_refactor: false)
+
+        render
+
+        expect(rendered).to have_link('Project overview', href: project_path(project), class: %w(shortcuts-project rspec-project-link))
+        expect(rendered).to have_selector('[aria-label="Project overview"]')
+      end
     end
 
     describe 'Details' do
-      it 'has a link to the projects path' do
+      it 'does not have a link to the details menu' do
         render
 
-        expect(rendered).to have_link('Details', href: project_path(project), class: 'shortcuts-project')
-        expect(rendered).to have_selector('[aria-label="Project details"]')
+        expect(rendered).not_to have_link('Details', href: project_path(project))
+      end
+
+      context 'when feature flag :sidebar_refactor is disabled' do
+        it 'has a link to the projects path' do
+          stub_feature_flags(sidebar_refactor: false)
+
+          render
+
+          expect(rendered).to have_link('Details', href: project_path(project), class: 'shortcuts-project')
+          expect(rendered).to have_selector('[aria-label="Project details"]')
+        end
       end
     end
 

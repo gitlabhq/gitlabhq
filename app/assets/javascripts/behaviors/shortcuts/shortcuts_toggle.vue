@@ -6,7 +6,7 @@ import { disableShortcuts, enableShortcuts, shouldDisableShortcuts } from './sho
 
 export default {
   i18n: {
-    toggleLabel: __('Keyboard shortcuts'),
+    toggleLabel: __('Toggle shortcuts'),
   },
   components: {
     GlToggle,
@@ -31,14 +31,12 @@ export default {
 </script>
 
 <template>
-  <div v-if="localStorageUsable" class="d-inline-flex align-items-center js-toggle-shortcuts">
+  <div v-if="localStorageUsable" class="js-toggle-shortcuts">
     <gl-toggle
       v-model="shortcutsEnabled"
-      aria-describedby="shortcutsToggle"
       :label="$options.i18n.toggleLabel"
       label-position="left"
       @change="onChange"
     />
-    <div id="shortcutsToggle" class="sr-only">{{ __('Enable or disable keyboard shortcuts') }}</div>
   </div>
 </template>

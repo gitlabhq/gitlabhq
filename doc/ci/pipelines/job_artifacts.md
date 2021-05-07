@@ -118,7 +118,7 @@ job with the same name, the job artifact from the parent pipeline is returned.
 
 ## Access the latest job artifacts by URL
 
-You can download the latest job artifacts by using a URL.
+You can download job artifacts from the latest successful pipeline by using a URL.
 
 To download the whole artifacts archive:
 

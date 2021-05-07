@@ -3661,7 +3661,7 @@ msgstr ""
 msgid "An error occurred while reordering issues."
 msgstr ""
 
-msgid "An error occurred while requesting data from the Jira service"
+msgid "An error occurred while requesting data from the Jira service."
 msgstr ""
 
 msgid "An error occurred while retrieving calendar activity"
@@ -12185,9 +12185,6 @@ msgstr ""
 msgid "Enable or disable Seat Link."
 msgstr ""
 
-msgid "Enable or disable keyboard shortcuts"
-msgstr ""
-
 msgid "Enable or disable the Pseudonymizer data collection."
 msgstr ""
 
@@ -14538,6 +14535,9 @@ msgstr ""
 msgid "Geo|%{component} synced"
 msgstr ""
 
+msgid "Geo|%{eventId} (%{timeAgo})"
+msgstr ""
+
 msgid "Geo|%{itemTitle} checksum progress"
 msgstr ""
 
@@ -14616,6 +14616,9 @@ msgstr ""
 msgid "Geo|Data type"
 msgstr ""
 
+msgid "Geo|Disabled"
+msgstr ""
+
 msgid "Geo|Discover GitLab Geo"
 msgstr ""
 
@@ -14641,6 +14644,9 @@ msgid "Geo|Geo supports replication of many data types."
 msgstr ""
 
 msgid "Geo|Go to the primary site"
+msgstr ""
+
+msgid "Geo|Healthy"
 msgstr ""
 
 msgid "Geo|If you want to make changes, you must visit the primary site."
@@ -14704,6 +14710,9 @@ msgid "Geo|Nothing to synchronize"
 msgstr ""
 
 msgid "Geo|Number of %{title}"
+msgstr ""
+
+msgid "Geo|Offline"
 msgstr ""
 
 msgid "Geo|Pending synchronization"
@@ -14866,6 +14875,12 @@ msgid "Geo|URL must be a valid url (ex: https://gitlab.com)"
 msgstr ""
 
 msgid "Geo|Undefined"
+msgstr ""
+
+msgid "Geo|Unhealthy"
+msgstr ""
+
+msgid "Geo|Unknown"
 msgstr ""
 
 msgid "Geo|Unknown state"
@@ -18399,7 +18414,7 @@ msgstr ""
 msgid "Jira integration not configured."
 msgstr ""
 
-msgid "Jira project key is not configured"
+msgid "Jira project key is not configured."
 msgstr ""
 
 msgid "Jira project: %{importProject}"
@@ -18798,7 +18813,28 @@ msgstr ""
 msgid "Keyboard shortcuts"
 msgstr ""
 
+msgid "KeyboardKey|Alt"
+msgstr ""
+
+msgid "KeyboardKey|Ctrl"
+msgstr ""
+
 msgid "KeyboardKey|Ctrl+"
+msgstr ""
+
+msgid "KeyboardKey|Enter"
+msgstr ""
+
+msgid "KeyboardKey|Esc"
+msgstr ""
+
+msgid "KeyboardKey|Shift"
+msgstr ""
+
+msgid "KeyboardShortcuts|No shortcuts matched your search"
+msgstr ""
+
+msgid "KeyboardShortcuts|Search keyboard shortcuts"
 msgstr ""
 
 msgid "Keys"
@@ -25160,6 +25196,9 @@ msgid "Project has too many %{label_for_message} to search"
 msgstr ""
 
 msgid "Project info:"
+msgstr ""
+
+msgid "Project information"
 msgstr ""
 
 msgid "Project is required when cluster_type is :project"
@@ -33762,13 +33801,13 @@ msgstr ""
 msgid "Toggle project select"
 msgstr ""
 
+msgid "Toggle shortcuts"
+msgstr ""
+
 msgid "Toggle sidebar"
 msgstr ""
 
 msgid "Toggle the Performance Bar"
-msgstr ""
-
-msgid "Toggle this dialog"
 msgstr ""
 
 msgid "Toggle thread"
@@ -38932,6 +38971,9 @@ msgid "the following issue(s)"
 msgstr ""
 
 msgid "the wiki"
+msgstr ""
+
+msgid "then"
 msgstr ""
 
 msgid "this document"

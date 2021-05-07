@@ -1,30 +1,30 @@
-.shortcut-mappings {
-  font-size: 12px;
-  color: $gray-700;
-
-  tbody:first-child tr:first-child {
-    padding-top: 0;
+.shortcut-help {
+  &-body {
+    height: 80vh;
+    overflow-y: scroll;
   }
 
-  th {
-    padding-top: 15px;
-    line-height: 1.5;
-    color: $help-shortcut-header-color;
-    text-align: left;
+  &-container {
+    column-count: 1;
+    @include media-breakpoint-up(md) {
+      column-count: 2;
+    }
+    column-gap: 1rem;
   }
 
-  td {
-    padding-top: 3px;
-    padding-bottom: 3px;
-    vertical-align: top;
-    line-height: 20px;
-  }
+  &-mapping {
+    overflow: hidden;
+    break-inside: avoid;
 
-  .shortcut {
-    padding-right: 10px;
-    color: $gray-300;
-    text-align: right;
-    white-space: nowrap;
+    &-title {
+      margin-left: 40%;
+    }
+
+    kbd {
+      margin: 0.1rem 0;
+      line-height: unset;
+      font-size: unset;
+    }
   }
 }
 

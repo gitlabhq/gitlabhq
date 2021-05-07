@@ -1,0 +1,5 @@
+---
+title: Add offset and limit to branch names resolver.
+merge_request: 61061
+author:
+type: changed

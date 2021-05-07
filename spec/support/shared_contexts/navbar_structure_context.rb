@@ -41,16 +41,20 @@ RSpec.shared_context 'project navbar structure' do
     ]
   end
 
+  let(:project_information_nav_item) do
+    {
+      nav_item: _('Project overview'),
+      nav_sub_items: [
+        _('Details'),
+        _('Activity'),
+        _('Releases')
+      ]
+    }
+  end
+
   let(:structure) do
     [
-      {
-        nav_item: _('Project overview'),
-        nav_sub_items: [
-          _('Details'),
-          _('Activity'),
-          _('Releases')
-        ]
-      },
+      project_information_nav_item,
       {
         nav_item: _('Repository'),
         nav_sub_items: [

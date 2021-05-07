@@ -1,0 +1,15 @@
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: $gl-font-size-monospace-sm;
+  line-height: 10px;
+  color: var(--gray-700, $gray-700);
+  vertical-align: middle;
+  background-color: var(--gray-10, $gray-10);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--gray-100, $gray-100) var(--gray-100, $gray-100) var(--gray-200, $gray-200);
+  border-image: none;
+  border-radius: 3px;
+  box-shadow: 0 -1px 0 var(--gray-200, $gray-200) inset;
+}

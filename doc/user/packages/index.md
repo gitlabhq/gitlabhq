@@ -12,22 +12,17 @@ packages, which can be easily consumed as a dependency in downstream projects.
 
 The Package Registry supports the following formats:
 
-<div class="row">
-<div class="col-md-9">
-<table align="left" style="width:50%">
-<tr style="background:#dfdfdf"><th>Package type</th><th>GitLab version</th></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/composer_repository/index.html">Composer</a></td><td>13.2+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/conan_repository/index.html">Conan</a></td><td>12.6+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/go_proxy/index.html">Go</a></td><td>13.1+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/maven_repository/index.html">Maven</a></td><td>11.3+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/npm_registry/index.html">npm</a></td><td>11.7+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/nuget_repository/index.html">NuGet</a></td><td>12.8+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/pypi_repository/index.html">PyPI</a></td><td>12.10+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/generic_packages/index.html">Generic packages</a></td><td>13.5+</td></tr>
-<tr><td><a href="https://docs.gitlab.com/ee/user/packages/rubygems_registry/index.html">Ruby gems</a></td><td>13.10+</td></tr>
-</table>
-</div>
-</div>
+| Package type | GitLab version |
+| ------------ | -------------- |
+| [Composer](composer_repository/index.md) | 13.2+ |
+| [Conan](conan_repository/index.md) | 12.6+ |
+| [Go](go_proxy/index.md) | 13.1+ |
+| [Maven](maven_repository/index.md) | 11.3+ |
+| [npm](npm_registry/index.md) | 11.7+ |
+| [NuGet](nuget_repository/index.md) | 12.8+ |
+| [PyPI](pypi_repository/index.md) | 12.10+ |
+| [Generic packages](generic_packages/index.md) | 13.5+ |
+| [Ruby gems](rubygems_registry/index.md) | 13.10+ |
 
 You can also use the [API](../../api/packages.md) to administer the Package Registry.
 

@@ -378,11 +378,11 @@ RSpec.describe 'Group' do
       expect(page).to have_link('Subgroup information')
     end
 
-    it 'renders project page with the text "Project overview"' do
+    it 'renders project page with the text "Project information"' do
       visit project_path(project)
       wait_for_requests
 
-      expect(page).to have_link('Project overview')
+      expect(page).to have_link('Project information')
     end
   end
 

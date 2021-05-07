@@ -468,7 +468,7 @@ Tiers: `free`
 
 ### `counts.boards`
 
-Count of total Boards created
+Count of Boards created
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181252_boards.yml)
 

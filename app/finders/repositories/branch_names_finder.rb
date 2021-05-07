@@ -10,15 +10,23 @@ module Repositories
     end
 
     def execute
-      return unless search
+      return unless search && offset && limit
 
-      repository.search_branch_names(search)
+      repository.search_branch_names(search).lazy.drop(offset).take(limit) # rubocop:disable CodeReuse/ActiveRecord
     end
 
     private
 
     def search
       @params[:search].presence
+    end
+
+    def offset
+      @params[:offset]
+    end
+
+    def limit
+      @params[:limit]
     end
   end
 end

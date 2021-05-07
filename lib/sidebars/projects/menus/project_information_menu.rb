@@ -3,7 +3,7 @@
 module Sidebars
   module Projects
     module Menus
-      class ProjectOverviewMenu < ::Sidebars::Menu
+      class ProjectInformationMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
           add_item(details_menu_item)
@@ -32,17 +32,34 @@ module Sidebars
 
         override :title
         def title
-          _('Project overview')
+          if Feature.enabled?(:sidebar_refactor, context.current_user)
+            _('Project information')
+          else
+            _('Project overview')
+          end
         end
 
         override :sprite_icon
         def sprite_icon
-          'home'
+          if Feature.enabled?(:sidebar_refactor, context.current_user)
+            'project'
+          else
+            'home'
+          end
+        end
+
+        override :active_routes
+        def active_routes
+          return {} if Feature.disabled?(:sidebar_refactor, context.current_user)
+
+          { path: 'projects#show' }
         end
 
         private
 
         def details_menu_item
+          return if Feature.enabled?(:sidebar_refactor, context.current_user)
+
           ::Sidebars::MenuItem.new(
             title: _('Details'),
             link: project_path(context.project),

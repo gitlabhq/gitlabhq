@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe 'Project active tab' do
-  let(:user) { create :user }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
+  let(:user) { project.owner }
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -18,15 +18,28 @@ RSpec.describe 'Project active tab' do
   end
 
   context 'on project Home' do
-    before do
-      visit project_path(project)
+    context 'when feature flag :sidebar_refactor is enabled' do
+      before do
+        visit project_path(project)
+      end
+
+      it_behaves_like 'page has active tab', 'Project'
     end
 
-    it_behaves_like 'page has active tab', 'Project'
-    it_behaves_like 'page has active sub tab', 'Details'
+    context 'when feature flag :sidebar_refactor is disabled' do
+      before do
+        stub_feature_flags(sidebar_refactor: false)
+
+        visit project_path(project)
+      end
+
+      it_behaves_like 'page has active tab', 'Project'
+      it_behaves_like 'page has active sub tab', 'Details'
+    end
 
     context 'on project Home/Activity' do
       before do
+        visit project_path(project)
         click_tab('Activity')
       end
 

@@ -86,6 +86,16 @@ RSpec.describe 'Project navbar' do
       ]
     end
 
+    let(:project_information_nav_item) do
+      {
+        nav_item: _('Project information'),
+        nav_sub_items: [
+          _('Activity'),
+          _('Releases')
+        ]
+      }
+    end
+
     before do
       stub_feature_flags(sidebar_refactor: true)
       stub_config(registry: { enabled: true })

@@ -147,7 +147,7 @@ module QA
         end
 
         def open_web_ide!
-          click_element :web_ide_button
+          click_element(:web_ide_button)
         end
 
         def has_edit_fork_button?

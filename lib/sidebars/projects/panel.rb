@@ -7,7 +7,7 @@ module Sidebars
       def configure_menus
         set_scope_menu(Sidebars::Projects::Menus::ScopeMenu.new(context))
 
-        add_menu(Sidebars::Projects::Menus::ProjectOverviewMenu.new(context))
+        add_menu(Sidebars::Projects::Menus::ProjectInformationMenu.new(context))
         add_menu(Sidebars::Projects::Menus::LearnGitlabMenu.new(context))
         add_menu(Sidebars::Projects::Menus::RepositoryMenu.new(context))
         add_menu(Sidebars::Projects::Menus::IssuesMenu.new(context))
