@@ -88,6 +88,7 @@ Example response:
   "rate_limiting_response_text": null,
   "keep_latest_artifact": true,
   "admin_mode": false,
+  "floc_enabled": false,
   "external_pipeline_validation_service_timeout": null,
   "external_pipeline_validation_service_token": null,
   "external_pipeline_validation_service_url": null

@@ -101,6 +101,8 @@ export default () => {
       labelsManagePath: $boardApp.dataset.labelsManagePath,
       labelsFilterBasePath: $boardApp.dataset.labelsFilterBasePath,
       timeTrackingLimitToHours: parseBoolean($boardApp.dataset.timeTrackingLimitToHours),
+      epicFeatureAvailable: parseBoolean($boardApp.dataset.epicFeatureAvailable),
+      iterationFeatureAvailable: parseBoolean($boardApp.dataset.iterationFeatureAvailable),
       weightFeatureAvailable: parseBoolean($boardApp.dataset.weightFeatureAvailable),
       boardWeight: $boardApp.dataset.boardWeight
         ? parseInt($boardApp.dataset.boardWeight, 10)

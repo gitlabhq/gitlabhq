@@ -10234,6 +10234,78 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `redis_hll_counters.epic_boards_usage.g_project_management_users_creating_epic_boards_monthly`
+
+Count of MAU creating epic boards
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210428072511_g_project_management_users_creating_epic_boards_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epic_boards_usage.g_project_management_users_creating_epic_boards_weekly`
+
+Count of WAU creating epic boards
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210428072508_g_project_management_users_creating_epic_boards_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epic_boards_usage.g_project_management_users_updating_epic_board_names_monthly`
+
+Count of MAU updating epic board names
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210428073607_g_project_management_users_updating_epic_board_names_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epic_boards_usage.g_project_management_users_updating_epic_board_names_weekly`
+
+Count of WAU updating epic board names
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210428073604_g_project_management_users_updating_epic_board_names_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epic_boards_usage.g_project_management_users_viewing_epic_boards_monthly`
+
+Count of MAU viewing epic boards
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210428073329_g_project_management_users_viewing_epic_boards_monthly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.epic_boards_usage.g_project_management_users_viewing_epic_boards_weekly`
+
+Count of WAU viewing epic boards
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210428073327_g_project_management_users_viewing_epic_boards_weekly.yml)
+
+Group: `group::product planning`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
 ### `redis_hll_counters.epics_usage.epics_usage_total_unique_counts_monthly`
 
 Total monthly users count for epics_usage

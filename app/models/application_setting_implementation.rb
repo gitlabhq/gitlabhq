@@ -77,6 +77,7 @@ module ApplicationSettingImplementation
         external_pipeline_validation_service_token: nil,
         external_pipeline_validation_service_url: nil,
         first_day_of_week: 0,
+        floc_enabled: false,
         gitaly_timeout_default: 55,
         gitaly_timeout_fast: 10,
         gitaly_timeout_medium: 30,

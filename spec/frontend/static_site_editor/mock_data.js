@@ -55,7 +55,7 @@ export const mergeRequestTemplates = [
 
 export const submitChangesError = 'Could not save changes';
 export const commitBranchResponse = {
-  web_url: '/tree/root-master-patch-88195',
+  web_url: '/tree/root-main-patch-88195',
 };
 export const commitMultipleResponse = {
   short_id: 'ed899a2f4b5',
@@ -84,8 +84,8 @@ export const mounts = [
   },
 ];
 
-export const branch = 'master';
+export const branch = 'main';
 
-export const baseUrl = '/user1/project1/-/sse/master%2Ftest.md';
+export const baseUrl = '/user1/project1/-/sse/main%2Ftest.md';
 
 export const imageRoot = 'source/images/';

@@ -301,7 +301,7 @@ export default {
         <statistics-list v-else :counts="formattedCounts" />
       </div>
       <div v-if="!loading" class="col-md-6">
-        <strong>{{ __('Duration for the last 30 commits') }}</strong>
+        <strong>{{ __('Pipeline durations for the last 30 commits') }}</strong>
         <gl-column-chart
           :height="$options.chartContainerHeight"
           :option="$options.timesChartOptions"

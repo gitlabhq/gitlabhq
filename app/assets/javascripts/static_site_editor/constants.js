@@ -1,7 +1,6 @@
 import { s__, __ } from '~/locale';
 
 export const BRANCH_SUFFIX_COUNT = 8;
-export const DEFAULT_TARGET_BRANCH = 'master';
 export const ISSUABLE_TYPE = 'merge_request';
 
 export const SUBMIT_CHANGES_BRANCH_ERROR = s__('StaticSiteEditor|Branch could not be created.');

@@ -47,11 +47,11 @@ describe('rich_content_editor/renderers/render_image', () => {
     it.each`
       destination                                      | isAbsolute | src
       ${'http://test.host/absolute/path/to/image.png'} | ${true}    | ${'http://test.host/absolute/path/to/image.png'}
-      ${'/relative/path/to/image.png'}                 | ${false}   | ${'http://test.host/user1/project1/-/raw/master/default/source/relative/path/to/image.png'}
-      ${'/target/image.png'}                           | ${false}   | ${'http://test.host/user1/project1/-/raw/master/source/with/target/image.png'}
-      ${'relative/to/current/image.png'}               | ${false}   | ${'http://test.host/user1/project1/-/raw/master/relative/to/current/image.png'}
-      ${'./relative/to/current/image.png'}             | ${false}   | ${'http://test.host/user1/project1/-/raw/master/./relative/to/current/image.png'}
-      ${'../relative/to/current/image.png'}            | ${false}   | ${'http://test.host/user1/project1/-/raw/master/../relative/to/current/image.png'}
+      ${'/relative/path/to/image.png'}                 | ${false}   | ${'http://test.host/user1/project1/-/raw/main/default/source/relative/path/to/image.png'}
+      ${'/target/image.png'}                           | ${false}   | ${'http://test.host/user1/project1/-/raw/main/source/with/target/image.png'}
+      ${'relative/to/current/image.png'}               | ${false}   | ${'http://test.host/user1/project1/-/raw/main/relative/to/current/image.png'}
+      ${'./relative/to/current/image.png'}             | ${false}   | ${'http://test.host/user1/project1/-/raw/main/./relative/to/current/image.png'}
+      ${'../relative/to/current/image.png'}            | ${false}   | ${'http://test.host/user1/project1/-/raw/main/../relative/to/current/image.png'}
     `('returns an image with the correct attributes', ({ destination, isAbsolute, src }) => {
       node.destination = destination;
 

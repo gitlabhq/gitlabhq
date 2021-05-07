@@ -1,0 +1,22 @@
+# Epic board events
+#
+# We are using the same slot of issue events 'project_management' for
+# epic events to allow data aggregation.
+# More information in: https://gitlab.com/gitlab-org/gitlab/-/issues/322405
+- name: g_project_management_users_creating_epic_boards
+  category: epic_boards_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epic_boards_activity
+
+- name: g_project_management_users_viewing_epic_boards
+  category: epic_boards_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epic_boards_activity
+
+- name: g_project_management_users_updating_epic_board_names
+  category: epic_boards_usage
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_epic_boards_activity

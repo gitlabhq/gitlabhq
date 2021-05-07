@@ -11,7 +11,6 @@ import { contentTop } from '~/lib/utils/common_utils';
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   headerHeight: `${contentTop()}px`,
@@ -32,7 +31,17 @@ export default {
     SidebarIterationWidget: () =>
       import('ee_component/sidebar/components/sidebar_iteration_widget.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
+  inject: {
+    epicFeatureAvailable: {
+      default: false,
+    },
+    iterationFeatureAvailable: {
+      default: false,
+    },
+    weightFeatureAvailable: {
+      default: false,
+    },
+  },
   computed: {
     ...mapGetters([
       'isSidebarOpen',
@@ -77,10 +86,11 @@ export default {
         class="assignee"
         @assignees-updated="setAssignees"
       />
-      <board-sidebar-epic-select class="epic" />
+      <board-sidebar-epic-select v-if="epicFeatureAvailable" class="epic" />
       <div>
         <board-sidebar-milestone-select />
         <sidebar-iteration-widget
+          v-if="iterationFeatureAvailable"
           :iid="activeBoardItem.iid"
           :workspace-path="projectPathForActiveIssue"
           :iterations-workspace-path="groupPathForActiveIssue"
@@ -91,7 +101,7 @@ export default {
       <board-sidebar-time-tracker class="swimlanes-sidebar-time-tracker" />
       <board-sidebar-due-date />
       <board-sidebar-labels-select class="labels" />
-      <board-sidebar-weight-input v-if="glFeatures.issueWeights" class="weight" />
+      <board-sidebar-weight-input v-if="weightFeatureAvailable" class="weight" />
       <sidebar-confidentiality-widget
         :iid="activeBoardItem.iid"
         :full-path="fullPath"

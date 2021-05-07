@@ -504,6 +504,9 @@ class ApplicationSetting < ApplicationRecord
   validates :whats_new_variant,
             inclusion: { in: ApplicationSetting.whats_new_variants.keys }
 
+  validates :floc_enabled,
+            inclusion: { in: [true, false], message: _('must be a boolean value') }
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,

@@ -1027,4 +1027,44 @@ RSpec.describe ApplicationController do
       get :index
     end
   end
+
+  describe 'setting permissions-policy header' do
+    controller do
+      skip_before_action :authenticate_user!
+
+      def index
+        render html: 'It is a flock of sheep, not a floc of sheep.'
+      end
+    end
+
+    before do
+      routes.draw do
+        get 'index' => 'anonymous#index'
+      end
+    end
+
+    context 'with FloC enabled' do
+      before do
+        stub_application_setting floc_enabled: true
+      end
+
+      it 'does not set the Permissions-Policy header' do
+        get :index
+
+        expect(response.headers['Permissions-Policy']).to eq(nil)
+      end
+    end
+
+    context 'with FloC disabled' do
+      before do
+        stub_application_setting floc_enabled: false
+      end
+
+      it 'sets the Permissions-Policy header' do
+        get :index
+
+        expect(response.headers['Permissions-Policy']).to eq('interest-cohort=()')
+      end
+    end
+  end
 end
