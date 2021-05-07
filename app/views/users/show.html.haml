@@ -39,7 +39,7 @@
           = link_to user_unfollow_path(@user, :json) , class: link_classes + 'btn gl-button btn-default', method: :post do
             = _('Unfollow')
         - else
-          = link_to user_follow_path(@user, :json) , class: link_classes + 'btn gl-button btn-confirm', method: :post do
+          = link_to user_follow_path(@user, :json) , class: link_classes + 'btn gl-button btn-confirm', method: :post, data: { qa_selector: 'follow_user_link' } do
             = _('Follow')
 
     .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
@@ -103,7 +103,7 @@
                 - count = @user.followers.count
                 = n_('1 follower', '%{count} followers', count) % { count: count }
             .profile-link-holder.middle-dot-divider
-              = link_to user_following_path, class: 'text-link' do
+              = link_to user_following_path, class: 'text-link', data: { qa_selector: 'following_link' } do
                 = @user.followees.count
                 = _('following')
         - if @user.bio.present?

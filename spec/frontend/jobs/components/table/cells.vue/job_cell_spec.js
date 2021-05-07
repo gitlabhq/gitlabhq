@@ -6,11 +6,13 @@ import { mockJobsInTable } from '../../../mock_data';
 
 const mockJob = mockJobsInTable[0];
 const mockJobCreatedByTag = mockJobsInTable[1];
+const mockJobLimitedAccess = mockJobsInTable[2];
 
 describe('Job Cell', () => {
   let wrapper;
 
-  const findJobId = () => wrapper.findByTestId('job-id');
+  const findJobIdLink = () => wrapper.findByTestId('job-id-link');
+  const findJobIdNoLink = () => wrapper.findByTestId('job-id-limited-access');
   const findJobRef = () => wrapper.findByTestId('job-ref');
   const findJobSha = () => wrapper.findByTestId('job-sha');
   const findLabelIcon = () => wrapper.findByTestId('label-icon');
@@ -34,15 +36,24 @@ describe('Job Cell', () => {
   });
 
   describe('Job Id', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('displays the job id and links to the job', () => {
+      createComponent();
+
       const expectedJobId = `#${getIdFromGraphQLId(mockJob.id)}`;
 
-      expect(findJobId().text()).toBe(expectedJobId);
-      expect(findJobId().attributes('href')).toBe(mockJob.detailedStatus.detailsPath);
+      expect(findJobIdLink().text()).toBe(expectedJobId);
+      expect(findJobIdLink().attributes('href')).toBe(mockJob.detailedStatus.detailsPath);
+      expect(findJobIdNoLink().exists()).toBe(false);
+    });
+
+    it('display the job id with no link', () => {
+      createComponent(mockJobLimitedAccess);
+
+      const expectedJobId = `#${getIdFromGraphQLId(mockJobLimitedAccess.id)}`;
+
+      expect(findJobIdNoLink().text()).toBe(expectedJobId);
+      expect(findJobIdNoLink().exists()).toBe(true);
+      expect(findJobIdLink().exists()).toBe(false);
     });
   });
 

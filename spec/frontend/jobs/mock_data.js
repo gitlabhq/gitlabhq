@@ -1322,6 +1322,7 @@ export const mockJobsInTable = [
     playable: true,
     cancelable: false,
     active: false,
+    userPermissions: { readBuild: true, __typename: 'JobPermissions' },
     __typename: 'CiJob',
   },
   {
@@ -1360,6 +1361,7 @@ export const mockJobsInTable = [
     playable: false,
     cancelable: false,
     active: false,
+    userPermissions: { readBuild: true, __typename: 'JobPermissions' },
     __typename: 'CiJob',
   },
   {
@@ -1405,6 +1407,7 @@ export const mockJobsInTable = [
     playable: false,
     cancelable: false,
     active: false,
+    userPermissions: { readBuild: false, __typename: 'JobPermissions' },
     __typename: 'CiJob',
   },
 ];
@@ -1492,6 +1495,7 @@ export const mockJobsQueryResponse = {
             playable: false,
             cancelable: false,
             active: false,
+            userPermissions: { readBuild: true, __typename: 'JobPermissions' },
             __typename: 'CiJob',
           },
         ],

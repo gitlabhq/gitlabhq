@@ -18,7 +18,7 @@
             %h4.gl-flex-grow-1
               = Feature.enabled?(:security_auto_fix) && @user.bot? ? s_('UserProfile|Bot activity') : s_('UserProfile|Activity')
             = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all"
-          .overview-content-list{ data: { href: user_activity_path } }
+          .overview-content-list{ data: { href: user_activity_path, qa_selector: 'user_activity_content' } }
             .center.light.loading
               .gl-spinner.gl-spinner-md
 

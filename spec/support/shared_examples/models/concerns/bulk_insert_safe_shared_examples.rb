@@ -30,10 +30,6 @@ RSpec.shared_examples 'a BulkInsertSafe model' do |klass|
         expect { target_class.set_callback(name) {} }.not_to raise_error
       end
     end
-
-    it 'does not raise an error when the call is triggered by belongs_to' do
-      expect { target_class.belongs_to(:other_record) }.not_to raise_error
-    end
   end
 
   describe '.bulk_insert!' do

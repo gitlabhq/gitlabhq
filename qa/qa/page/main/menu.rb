@@ -125,6 +125,12 @@ module QA
           end
         end
 
+        def click_user_profile_link
+          within_user_menu do
+            click_element(:user_profile_link)
+          end
+        end
+
         def search_for(term)
           fill_element :search_term_field, "#{term}\n"
         end

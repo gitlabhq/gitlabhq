@@ -52,6 +52,9 @@ export default {
     isScheduledJob() {
       return Boolean(this.job.scheduledAt);
     },
+    canReadJob() {
+      return this.job?.userPermissions?.readBuild;
+    },
   },
 };
 </script>
@@ -59,7 +62,16 @@ export default {
 <template>
   <div>
     <div class="gl-text-truncate">
-      <gl-link class="gl-text-gray-500!" :href="jobPath" data-testid="job-id">{{ jobId }}</gl-link>
+      <gl-link
+        v-if="canReadJob"
+        class="gl-text-gray-500!"
+        :href="jobPath"
+        data-testid="job-id-link"
+      >
+        {{ jobId }}
+      </gl-link>
+
+      <span v-else data-testid="job-id-limited-access">{{ jobId }}</span>
 
       <div class="gl-display-flex gl-align-items-center">
         <div v-if="jobRef" class="gl-max-w-15 gl-text-truncate">
