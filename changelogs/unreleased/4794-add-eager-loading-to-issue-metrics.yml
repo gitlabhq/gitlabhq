@@ -1,0 +1,5 @@
+---
+title: Remove N+1 query from Issue::Metrics#record
+merge_request: 60589
+author:
+type: performance

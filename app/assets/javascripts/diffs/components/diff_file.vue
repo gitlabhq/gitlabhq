@@ -148,10 +148,8 @@ export default {
 
       return loggedIn && featureOn;
     },
-    hasCodequalityChanges() {
-      return (
-        this.codequalityDiff?.files && this.codequalityDiff?.files[this.file.file_path]?.length > 0
-      );
+    codequalityDiffForFile() {
+      return this.codequalityDiff?.files?.[this.file.file_path] || [];
     },
   },
   watch: {
@@ -299,7 +297,7 @@ export default {
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :show-local-file-reviews="showLocalFileReviews"
-      :has-codequality-changes="hasCodequalityChanges"
+      :codequality-diff="codequalityDiffForFile"
       class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
       :class="hasBodyClasses.header"
       @toggleFile="handleToggle"

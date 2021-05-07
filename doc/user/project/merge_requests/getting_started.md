@@ -3,12 +3,12 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index, reference
-description: "Getting started with Merge Requests."
+description: "Getting started with merge requests."
 ---
 
-# Getting started with Merge Requests **(FREE)**
+# Getting started with merge requests **(FREE)**
 
-A Merge Request (**MR**) is the basis of GitLab as a code
+A merge request (**MR**) is the basis of GitLab as a code
 collaboration and version control.
 
 When working in a Git-based platform, you can use branching
@@ -25,7 +25,7 @@ avoiding changes to be pushed directly to the default branch
 without prior reviews, tests, and approvals.
 
 When you create a new feature branch, change the files, and push
-it to GitLab, you have the option to create a **Merge Request**,
+it to GitLab, you have the option to create a **merge request**,
 which is essentially a _request_ to merge one branch into another.
 
 The branch you added your changes into is called _source branch_
@@ -122,7 +122,7 @@ Requesting a code review is an important part of contributing code. However, dec
 your code and asking for a review are no easy tasks. Using the "assignee" field for both authors and
 reviewers makes it hard for others to determine who's doing what on a merge request.
 
-The Merge Request Reviewers feature enables you to request a review of your work, and
+The merge request Reviewers feature enables you to request a review of your work, and
 see the status of the review. Reviewers help distinguish the roles of the users
 involved in the merge request. In comparison to an **Assignee**, who is directly
 responsible for creating or merging a merge request, a **Reviewer** is a team member
@@ -234,7 +234,7 @@ The feature today works only on merge. Clicking the **Remove source branch** but
 after the merge request was merged will not automatically retarget a merge request.
 This improvement is [tracked as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
 
-## Recommendations and best practices for Merge Requests
+## Recommendations and best practices for merge requests
 
 - When working locally in your branch, add multiple commits and only push when
   you're done, so GitLab runs only one pipeline for all the commits pushed

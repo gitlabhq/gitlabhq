@@ -38,6 +38,7 @@ RSpec.describe Gitlab::Spamcheck::Client do
       ::Spamcheck::SpamVerdict::Verdict::CONDITIONAL_ALLOW    | Spam::SpamConstants::CONDITIONAL_ALLOW
       ::Spamcheck::SpamVerdict::Verdict::DISALLOW             | Spam::SpamConstants::DISALLOW
       ::Spamcheck::SpamVerdict::Verdict::BLOCK                | Spam::SpamConstants::BLOCK_USER
+      ::Spamcheck::SpamVerdict::Verdict::NOOP                 | Spam::SpamConstants::NOOP
     end
 
     with_them do
@@ -58,6 +59,7 @@ RSpec.describe Gitlab::Spamcheck::Client do
       expect(issue_pb.title).to eq issue.title
       expect(issue_pb.description).to eq issue.description
       expect(issue_pb.user_in_project). to be false
+      expect(issue_pb.project.project_id).to eq issue.project_id
       expect(issue_pb.created_at).to eq timestamp_to_protobuf_timestamp(issue.created_at)
       expect(issue_pb.updated_at).to eq timestamp_to_protobuf_timestamp(issue.updated_at)
       expect(issue_pb.action).to be ::Spamcheck::Action.lookup(::Spamcheck::Action::CREATE)
@@ -83,7 +85,7 @@ RSpec.describe Gitlab::Spamcheck::Client do
         user.emails << secondary_email
       end
 
-      it 'adds emsils to the user pb object' do
+      it 'adds emails to the user pb object' do
         user_pb = described_class.new.send(:build_user_protobuf, user)
         expect(user_pb.emails.count).to eq 2
         expect(user_pb.emails.first.email).to eq user.email
@@ -91,6 +93,14 @@ RSpec.describe Gitlab::Spamcheck::Client do
         expect(user_pb.emails.last.email).to eq secondary_email.email
         expect(user_pb.emails.last.verified).to eq secondary_email.confirmed?
       end
+    end
+  end
+
+  describe "#build_project_protobuf", :aggregate_failures do
+    it 'builds the expected protobuf object' do
+      project_pb = described_class.new.send(:build_project_protobuf, issue)
+      expect(project_pb.project_id).to eq issue.project_id
+      expect(project_pb.project_path).to eq issue.project.full_path
     end
   end
 

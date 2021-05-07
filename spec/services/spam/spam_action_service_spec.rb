@@ -313,6 +313,22 @@ RSpec.describe Spam::SpamActionService do
           end
         end
 
+        context 'when spam verdict service returns noop' do
+          before do
+            allow(fake_verdict_service).to receive(:execute).and_return(NOOP)
+          end
+
+          it 'does not create a spam log' do
+            expect { subject }.not_to change(SpamLog, :count)
+          end
+
+          it 'clears spam flags' do
+            expect(issue).to receive(:clear_spam_flags!)
+
+            subject
+          end
+        end
+
         context 'with spam verdict service options' do
           before do
             allow(fake_verdict_service).to receive(:execute).and_return(ALLOW)

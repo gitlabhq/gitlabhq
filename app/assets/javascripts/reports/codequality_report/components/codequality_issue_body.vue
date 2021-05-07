@@ -6,7 +6,7 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ReportLink from '~/reports/components/report_link.vue';
-import { STATUS_SUCCESS } from '~/reports/constants';
+import { STATUS_SUCCESS, STATUS_NEUTRAL } from '~/reports/constants';
 import { SEVERITY_CLASSES, SEVERITY_ICONS } from '../constants';
 
 export default {
@@ -21,7 +21,8 @@ export default {
   props: {
     status: {
       type: String,
-      required: true,
+      required: false,
+      default: STATUS_NEUTRAL,
     },
     issue: {
       type: Object,

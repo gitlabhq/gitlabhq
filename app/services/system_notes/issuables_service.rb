@@ -178,8 +178,7 @@ module SystemNotes
       if noteable.is_a?(ExternalIssue)
         noteable.project.external_issue_tracker.create_cross_reference_note(noteable, mentioner, author)
       else
-        issue_activity_counter.track_issue_cross_referenced_action(author: author) if noteable.is_a?(Issue)
-
+        track_cross_reference_action
         create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference'))
       end
     end
@@ -413,6 +412,10 @@ module SystemNotes
 
     def issue_activity_counter
       Gitlab::UsageDataCounters::IssueActivityUniqueCounter
+    end
+
+    def track_cross_reference_action
+      issue_activity_counter.track_issue_cross_referenced_action(author: author) if noteable.is_a?(Issue)
     end
   end
 end

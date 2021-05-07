@@ -21,7 +21,7 @@ export default {
 
   groupPathForActiveIssue: (_, getters) => {
     const { referencePath = '' } = getters.activeBoardItem;
-    return referencePath.slice(0, referencePath.indexOf('/'));
+    return referencePath.slice(0, referencePath.lastIndexOf('/'));
   },
 
   projectPathForActiveIssue: (_, getters) => {

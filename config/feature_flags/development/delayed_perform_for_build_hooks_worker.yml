@@ -1,0 +1,8 @@
+---
+name: delayed_perform_for_build_hooks_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61149
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/330132
+milestone: '13.12'
+type: development
+group: group::memory
+default_enabled: false

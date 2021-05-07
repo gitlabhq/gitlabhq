@@ -17,8 +17,8 @@ members can choose to accept or reject it.
 
 You can view merge requests for a specific project, or for all projects in a group:
 
-- **Specific project**: Go to your project and select **Merge Requests**.
-- **All projects in a group**: Go to your group and select **Merge Requests**.
+- **Specific project**: Go to your project and select **Merge requests**.
+- **All projects in a group**: Go to your group and select **Merge requests**.
   If your group contains subgroups, this view also displays merge requests from the subgroup projects.
   GitLab displays a count of open merge requests in the left sidebar, but
   [caches the value](#cached-merge-request-count) for groups with a large number of
@@ -101,15 +101,17 @@ A merge commit is created for every merge, but the branch is only merged if
 a fast-forward merge is possible. This ensures that if the merge request build
 succeeded, the target branch build also succeeds after the merge.
 
-Navigate to a project's settings, select the **Merge commit with semi-linear history**
-option under **Merge Requests: Merge method** and save your changes.
+1. Go to your project and select **Settings > General**.
+1. Expand **Merge requests**.
+1. In the **Merge method** section, select **Merge commit with semi-linear history**.
+1. Select **Save changes**.
 
 ## Perform inline code reviews
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13950) in GitLab 11.5.
 
 In a merge request, you can leave comments in any part of the file being changed.
-In the Merge Request Diff UI, you can:
+In the merge request Diff UI, you can:
 
 - **Comment on a single line**: Select the **{comment}** **comment** icon in the
   gutter to expand the diff lines and display a comment box.
@@ -222,15 +224,15 @@ seconds and the status should update automatically.
 
 #### Bug
 
-Merge Request pipeline statuses can't be retrieved when the following occurs:
+Merge request pipeline statuses can't be retrieved when the following occurs:
 
-1. A Merge Request is created
-1. The Merge Request is closed
+1. A merge request is created
+1. The merge request is closed
 1. Changes are made in the project
-1. The Merge Request is reopened
+1. The merge request is reopened
 
 To enable the pipeline status to be properly retrieved, close and reopen the
-Merge Request again.
+merge request again.
 
 ## Tips
 

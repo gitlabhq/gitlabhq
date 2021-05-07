@@ -130,6 +130,9 @@ module Spam
           create_spam_log(api)
         when ALLOW
           target.clear_spam_flags!
+        when NOOP
+          # spamcheck is not explicitly rendering a verdict & therefore can't make a decision
+          target.clear_spam_flags!
         end
       end
     end

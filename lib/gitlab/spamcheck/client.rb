@@ -11,7 +11,8 @@ module Gitlab
         ::Spamcheck::SpamVerdict::Verdict::ALLOW => ALLOW,
         ::Spamcheck::SpamVerdict::Verdict::CONDITIONAL_ALLOW => CONDITIONAL_ALLOW,
         ::Spamcheck::SpamVerdict::Verdict::DISALLOW => DISALLOW,
-        ::Spamcheck::SpamVerdict::Verdict::BLOCK => BLOCK_USER
+        ::Spamcheck::SpamVerdict::Verdict::BLOCK => BLOCK_USER,
+        ::Spamcheck::SpamVerdict::Verdict::NOOP => NOOP
       }.freeze
 
       ACTION_MAPPING = {
@@ -60,6 +61,7 @@ module Gitlab
         issue_pb.created_at = convert_to_pb_timestamp(issue.created_at) if issue.created_at
         issue_pb.updated_at = convert_to_pb_timestamp(issue.updated_at) if issue.updated_at
         issue_pb.user_in_project = user.authorized_project?(issue.project)
+        issue_pb.project = build_project_protobuf(issue)
         issue_pb.action = ACTION_MAPPING.fetch(context.fetch(:action)) if context.has_key?(:action)
         issue_pb.user = build_user_protobuf(user)
         issue_pb
@@ -85,6 +87,13 @@ module Gitlab
         email_pb.email = email
         email_pb.verified = verified
         email_pb
+      end
+
+      def build_project_protobuf(issue)
+        project_pb = ::Spamcheck::Project.new
+        project_pb.project_id = issue.project_id
+        project_pb.project_path = issue.project.full_path
+        project_pb
       end
 
       def convert_to_pb_timestamp(ar_timestamp)

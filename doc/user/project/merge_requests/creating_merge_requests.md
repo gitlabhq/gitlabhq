@@ -3,14 +3,14 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
-description: "How to create Merge Requests in GitLab."
+description: "How to create merge requests in GitLab."
 disqus_identifier: 'https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html'
 ---
 
 # How to create a merge request **(FREE)**
 
 Before creating a merge request, read through an
-[introduction to Merge Requests](getting_started.md)
+[introduction to merge requests](getting_started.md)
 to familiarize yourself with the concept, the terminology,
 and to learn what you can do with them.
 
@@ -21,16 +21,16 @@ or through the [GitLab UI](#new-merge-request-from-a-new-branch-created-through-
 This document describes the several ways to create a merge request.
 
 When you start a new merge request, regardless of the method,
-you are taken to the [**New Merge Request** page](#new-merge-request-page)
+you are taken to the [**New merge request** page](#new-merge-request-page)
 to fill it with information about the merge request.
 
 If you push a new branch to GitLab, also regardless of the method,
-you can click the [**Create Merge Request**](#create-merge-request-button)
+you can click the [**Create merge request**](#create-merge-request-button)
 button and start a merge request from there.
 
-## New Merge Request page
+## New merge request page
 
-On the **New Merge Request** page, start by filling in the title and description
+On the **New merge request** page, start by filling in the title and description
 for the merge request. If commits already exist on the branch, GitLab suggests a
 merge request title for you:
 
@@ -43,31 +43,31 @@ merge request title for you:
 The title is the only field that is mandatory in all cases.
 
 From there, you can fill it with information (title, description,
-assignee(s), milestone, labels, approvers) and click **Create Merge Request**.
+assignee(s), milestone, labels, approvers) and click **Create merge request**.
 
 From that initial screen, you can also see all the commits,
 pipelines, and file changes pushed to your branch before submitting
 the merge request.
 
-![New Merge Request page](img/new_merge_request_page_v12_6.png)
+![New merge request page](img/new_merge_request_page_v12_6.png)
 
 NOTE:
 You can push one or more times to your branch in GitLab before
 creating the merge request.
 
-## Create Merge Request button
+## Create merge request button
 
 Once you have pushed a new branch to GitLab, visit your repository
 in GitLab and to see a call-to-action at the top of your screen
-from which you can click the button **Create Merge Request**.
+from which you can click the button **Create merge request**.
 
-![Create Merge Request button](img/create_merge_request_button_v12_6.png)
+![Create merge request button](img/create_merge_request_button_v12_6.png)
 
 You can also see the **Create merge request** button in the top-right of the:
 
 - **Project** page.
 - **Repository > Files** page.
-- **Merge Requests** page.
+- **Merge requests** page.
 
 In this case, GitLab uses the most recent branch you pushed
 changes to as the source branch, and the default branch in the current
@@ -90,7 +90,7 @@ Once you have added, edited, or uploaded the file:
 1. Click **Commit changes**.
 
 If you chose to start a merge request, you are taken to the
-[**New Merge Request** page](#new-merge-request-page), from
+[**New merge request** page](#new-merge-request-page), from
 which you can fill it in with information and submit the merge request.
 
 The merge request targets the default branch of the repository.
@@ -103,8 +103,8 @@ navigate to your project's **Repository > Branches** and click
 **New branch**. A new branch is created and you can start
 editing files.
 
-Once committed and pushed, you can click on the [**Create Merge Request**](#create-merge-request-button)
-button to open the [**New Merge Request** page](#new-merge-request-page).
+Once committed and pushed, you can click on the [**Create merge request**](#create-merge-request-button)
+button to open the [**New merge request** page](#new-merge-request-page).
 A new merge request is started using the current branch as the source,
 and the default branch in the current project as the target.
 
@@ -140,7 +140,7 @@ remote: To create a merge request for docs-new-merge-request, visit:
 remote:   https://gitlab-instance.com/my-group/my-project/merge_requests/new?merge_request%5Bsource_branch%5D=my-new-branch
 ```
 
-Copy that link and paste it in your browser, and the [**New Merge Request page**](#new-merge-request-page)
+Copy that link and paste it in your browser, and the [**New merge request page**](#new-merge-request-page)
 is displayed.
 
 There is also a number of [flags you can add to commands when pushing through the command line](../push_options.md) to reduce the need for editing merge requests manually through the UI.
@@ -148,20 +148,20 @@ There is also a number of [flags you can add to commands when pushing through th
 If you didn't push your branch to GitLab through the command line
 (for example, you used a Git CLI application to push your changes),
 you can create a merge request through the GitLab UI by clicking
-the [**Create Merge Request**](#create-merge-request-button) button.
+the [**Create merge request**](#create-merge-request-button) button.
 
 ## New merge request from an issue
 
 You can also [create a new merge request directly from an issue](../repository/web_editor.md#create-a-new-branch-from-an-issue).
 
-## New merge request from the Merge Requests page
+## New merge request from the merge requests page
 
 You can start creating a new merge request by clicking the
-**New merge request** button on the **Merge Requests** page in a project.
+**New merge request** button on the **merge requests** page in a project.
 Then choose the source project and branch that contain your changes,
 and the target project and branch where you want to merge the changes into.
 Click on **Compare branches and continue** to go to the
-[**New Merge Request** page](#new-merge-request-page) and fill in the details.
+[**New merge request** page](#new-merge-request-page) and fill in the details.
 
 ## New merge request from a fork
 
@@ -169,7 +169,7 @@ After forking a project and applying your local changes, complete the following 
 create a merge request from your fork to contribute back to the main project:
 
 1. Go to **Projects > Your Projects** and select your fork of the repository.
-1. In the left menu, go to **Merge Requests**, and click **New Merge Request**.
+1. In the left menu, go to **Merge requests**, and click **New merge request**.
 1. In the **Source branch** drop-down list box, select your branch in your forked repository as the source branch.
 1. In the **Target branch** drop-down list box, select the branch from the upstream repository as the target branch.
    You can set a [default target project](#set-the-default-target-project) to
@@ -247,6 +247,6 @@ apply the patches. The target branch can be specified using the
 [`/target_branch` quick action](../quick_actions.md). If the source
 branch already exists, the patches are applied on top of it.
 
-## Reviewing and managing Merge Requests
+## Reviewing and managing merge requests
 
 Once you have submitted a merge request, it can be [reviewed and managed](reviews/index.md) through GitLab.

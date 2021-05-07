@@ -4,13 +4,13 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Export Merge Requests to CSV **(FREE)**
+# Export merge requests to CSV **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3619) in GitLab 13.6.
 
-Exporting Merge Requests CSV enables you and your team to export all the data collected from merge requests into a comma-separated values (CSV) file, which stores tabular data in plain text.
+Exporting merge requests CSV enables you and your team to export all the data collected from merge requests into a comma-separated values (CSV) file, which stores tabular data in plain text.
 
-To export Merge Requests to CSV, navigate to your **Merge Requests** from the sidebar of a project and click **Export to CSV**.
+To export merge requests to CSV, navigate to your **Merge requests** from the sidebar of a project and click **Export to CSV**.
 
 ## CSV Output
 

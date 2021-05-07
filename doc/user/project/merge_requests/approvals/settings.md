@@ -7,7 +7,7 @@ type: reference, concepts
 
 # Merge request approval settings
 
-The settings for Merge Request Approvals are found by going to
+The settings for merge request approvals are found by going to
 **Settings > General** and expanding **Merge request (MR) approvals**.
 
 ## Prevent overriding default approvals
@@ -90,7 +90,7 @@ To enable this feature:
 
 ## Security approvals in merge requests **(ULTIMATE)**
 
-Merge Request Approvals can be configured to require approval from a member
+Merge request approvals can be configured to require approval from a member
 of your security team when a vulnerability would be introduced by a merge request.
 
 For more information, see

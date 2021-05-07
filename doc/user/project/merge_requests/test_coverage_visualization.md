@@ -53,12 +53,12 @@ of times the line was checked by tests.
 
 NOTE:
 A limit of 100 `<source>` nodes for Cobertura format XML files applies. If your Cobertura report exceeds
-100 nodes, there can be mismatches or no matches in the Merge Request diff view.
+100 nodes, there can be mismatches or no matches in the merge request diff view.
 
 ### Artifact expiration
 
 By default, the [pipeline artifact](../../../ci/pipelines/pipeline_artifacts.md#storage) used
-to draw the visualization on the Merge Request expires **one week** after creation.
+to draw the visualization on the merge request expires **one week** after creation.
 
 ### Automatic class path correction
 
