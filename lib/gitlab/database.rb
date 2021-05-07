@@ -2,6 +2,14 @@
 
 module Gitlab
   module Database
+    # This constant is used when renaming tables concurrently.
+    # If you plan to rename a table using the `rename_table_safely` method, add your table here one milestone before the rename.
+    # Example:
+    # TABLES_TO_BE_RENAMED = {
+    #   'old_name' => 'new_name'
+    # }.freeze
+    TABLES_TO_BE_RENAMED = {}.freeze
+
     # Minimum PostgreSQL version requirement per documentation:
     # https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements
     MINIMUM_POSTGRES_VERSION = 11

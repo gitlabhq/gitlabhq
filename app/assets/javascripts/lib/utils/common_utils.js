@@ -645,9 +645,6 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) =>
 export const convertObjectPropsToSnakeCase = (obj = {}, options = {}) =>
   convertObjectProps(convertToSnakeCase, obj, options);
 
-export const imagePath = (imgUrl) =>
-  `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;
-
 export const addSelectOnFocusBehaviour = (selector = '.js-select-on-focus') => {
   // Click a .js-select-on-focus field, select the contents
   // Prevent a mouseup event from deselecting the input

@@ -5040,6 +5040,12 @@ msgstr ""
 msgid "BillingPlan|Upgrade for free"
 msgstr ""
 
+msgid "Billings|As a user on a free or trial namespace, you'll need to verify your account with a credit card to run pipelines. This is required to help prevent cryptomining attacks on GitLab infrastructure. %{strongStart}GitLab will not charge or store your credit card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "Billings|User Verification Required"
+msgstr ""
+
 msgid "Billings|Verify User Account"
 msgstr ""
 
@@ -11263,6 +11269,9 @@ msgid "DevopsAdoption|Add/remove sub-groups"
 msgstr ""
 
 msgid "DevopsAdoption|Adopted"
+msgstr ""
+
+msgid "DevopsAdoption|Adoption"
 msgstr ""
 
 msgid "DevopsAdoption|An error occurred while removing the group. Please try again."
@@ -26999,6 +27008,9 @@ msgstr ""
 msgid "Remove user from project"
 msgstr ""
 
+msgid "Remove..."
+msgstr ""
+
 msgid "Removed"
 msgstr ""
 
@@ -30656,13 +30668,31 @@ msgstr ""
 msgid "StatusCheck|API to check"
 msgstr ""
 
+msgid "StatusCheck|Add status check"
+msgstr ""
+
+msgid "StatusCheck|An error occurred fetching the status checks."
+msgstr ""
+
+msgid "StatusCheck|Check for a status response in Merge Requests. Failures do not block merges. %{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "StatusCheck|Invoke an external API as part of the approvals"
+msgstr ""
+
+msgid "StatusCheck|No status checks are defined yet."
 msgstr ""
 
 msgid "StatusCheck|Remove status check"
 msgstr ""
 
 msgid "StatusCheck|Remove status check?"
+msgstr ""
+
+msgid "StatusCheck|Service name"
+msgstr ""
+
+msgid "StatusCheck|Status checks"
 msgstr ""
 
 msgid "StatusCheck|Status to check"
@@ -31745,6 +31775,9 @@ msgid "The \"%{group_path}\" group allows you to sign in with your Single Sign-O
 msgstr ""
 
 msgid "The \"Require approval from CODEOWNERS\" setting was moved to %{banner_link_start}Protected Branches%{banner_link_end}"
+msgstr ""
+
+msgid "The %{featureName} feature is part of your GitLab Ultimate trial."
 msgstr ""
 
 msgid "The %{link_start}true-up model%{link_end} allows having more users, and additional users will incur a retroactive charge on renewal."
@@ -38206,6 +38239,9 @@ msgid "merge request"
 msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "merge request approvals"
+msgstr ""
 
 msgid "merged %{timeAgo}"
 msgstr ""

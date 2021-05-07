@@ -8,6 +8,7 @@ module HashedStorage
 
     queue_namespace :hashed_storage
     loggable_arguments 1
+    tags :exclude_from_gitlab_com
 
     attr_reader :project_id
 

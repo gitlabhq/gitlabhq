@@ -218,15 +218,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
     end
 
     context 'N+1 queries' do
-      it 'avoids N+1 queries when calculating variables of jobs' do
+      it 'avoids N+1 queries when calculating variables of jobs', :use_sql_query_cache do
+        warm_up_pipeline, warm_up_command = prepare_pipeline1
+        perform_seed(warm_up_pipeline, warm_up_command)
+
         pipeline1, command1 = prepare_pipeline1
         pipeline2, command2 = prepare_pipeline2
 
-        control = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           perform_seed(pipeline1, command1)
         end
 
-        expect { perform_seed(pipeline2, command2) }.not_to exceed_query_limit(
+        expect { perform_seed(pipeline2, command2) }.not_to exceed_all_query_limit(
           control.count + expected_extra_queries
         )
       end

@@ -173,7 +173,7 @@ export default {
       <pre
         v-if="commit.description_html"
         :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
-        class="commit-row-description gl-mb-3 text-dark"
+        class="commit-row-description gl-mb-3 gl-text-body"
         v-html="commitDescription"
       ></pre>
     </div>

@@ -47,11 +47,6 @@ module Gitlab
         ::Feature.enabled?(:ci_trace_log_invalid_chunks, project, type: :ops, default_enabled: false)
       end
 
-      def self.validate_build_dependencies?(project)
-        ::Feature.enabled?(:ci_validate_build_dependencies, project, default_enabled: :yaml) &&
-          ::Feature.disabled?(:ci_validate_build_dependencies_override, project)
-      end
-
       def self.display_quality_on_mr_diff?(project)
         ::Feature.enabled?(:codequality_mr_diff, project, default_enabled: false)
       end

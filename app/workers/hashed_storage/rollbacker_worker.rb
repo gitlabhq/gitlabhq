@@ -8,6 +8,7 @@ module HashedStorage
 
     queue_namespace :hashed_storage
     feature_category :source_code_management
+    tags :exclude_from_gitlab_com
 
     # @param [Integer] start initial ID of the batch
     # @param [Integer] finish last ID of the batch

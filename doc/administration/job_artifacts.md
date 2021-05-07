@@ -370,42 +370,6 @@ steps below.
 If the `expire` directive is not set explicitly in your pipeline, artifacts expire per the
 default artifacts expiration setting, which you can find in the [CI/CD Administration settings](../user/admin_area/settings/continuous_integration.md).
 
-## Validation for dependencies
-
-> Introduced in GitLab 10.3.
-
-To disable [the dependencies validation](../ci/yaml/README.md#when-a-dependent-job-fails),
-you can enable the `ci_validate_build_dependencies_override` feature flag from a Rails console.
-
-**In Omnibus installations:**
-
-1. Enter the Rails console:
-
-   ```shell
-   sudo gitlab-rails console
-   ```
-
-1. Enable the feature flag to disable the validation:
-
-   ```ruby
-   Feature.enable(:ci_validate_build_dependencies_override)
-   ```
-
-**In installations from source:**
-
-1. Enter the Rails console:
-
-   ```shell
-   cd /home/git/gitlab
-   sudo -u git -H bundle exec rails console -e production
-   ```
-
-1. Enable the feature flag to disable the validation:
-
-   ```ruby
-   Feature.enable(:ci_validate_build_dependencies_override)
-   ```
-
 ## Set the maximum file size of the artifacts
 
 If artifacts are enabled, you can change the maximum file size of the

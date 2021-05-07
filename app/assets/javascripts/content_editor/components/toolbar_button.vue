@@ -45,7 +45,7 @@ export default {
         this.tiptapEditor.chain()[this.editorCommand]().focus().run();
       }
 
-      this.$emit('click', { contentType });
+      this.$emit('execute', { contentType });
     },
   },
 };

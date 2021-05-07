@@ -3264,10 +3264,6 @@ If the artifacts of the job that is set as a dependency are
 [deleted](../pipelines/job_artifacts.md#delete-job-artifacts), then
 the dependent job fails.
 
-You can ask your administrator to
-[flip this switch](../../administration/job_artifacts.md#validation-for-dependencies)
-and bring back the old behavior.
-
 #### `artifacts:exclude`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15122) in GitLab 13.1

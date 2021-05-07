@@ -516,10 +516,6 @@ module Ci
             end
           end
 
-          before do
-            stub_feature_flags(ci_validate_build_dependencies_override: false)
-          end
-
           let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
           let!(:pending_job) do
@@ -530,37 +526,7 @@ module Ci
 
           subject { execute(specific_runner) }
 
-          context 'when validates for dependencies is enabled' do
-            before do
-              stub_feature_flags(ci_validate_build_dependencies_override: false)
-            end
-
-            it_behaves_like 'validation is active'
-
-            context 'when the main feature flag is enabled for a specific project' do
-              before do
-                stub_feature_flags(ci_validate_build_dependencies: pipeline.project)
-              end
-
-              it_behaves_like 'validation is active'
-            end
-
-            context 'when the main feature flag is enabled for a different project' do
-              before do
-                stub_feature_flags(ci_validate_build_dependencies: create(:project))
-              end
-
-              it_behaves_like 'validation is not active'
-            end
-          end
-
-          context 'when validates for dependencies is disabled' do
-            before do
-              stub_feature_flags(ci_validate_build_dependencies_override: true)
-            end
-
-            it_behaves_like 'validation is not active'
-          end
+          it_behaves_like 'validation is active'
         end
 
         context 'when build is degenerated' do

@@ -18,10 +18,6 @@ RSpec.describe Ci::BuildDependencies do
   let!(:rubocop_test) { create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1, stage: 'test') }
   let!(:staging) { create(:ci_build, pipeline: pipeline, name: 'staging', stage_idx: 2, stage: 'deploy') }
 
-  before do
-    stub_feature_flags(ci_validate_build_dependencies_override: false)
-  end
-
   context 'for local dependencies' do
     subject { described_class.new(job).all }
 
@@ -378,14 +374,6 @@ RSpec.describe Ci::BuildDependencies do
       end
 
       it { is_expected.to eq(false) }
-
-      context 'when ci_validate_build_dependencies_override feature flag is enabled' do
-        before do
-          stub_feature_flags(ci_validate_build_dependencies_override: job.project)
-        end
-
-        it { is_expected.to eq(true) }
-      end
     end
   end
 end

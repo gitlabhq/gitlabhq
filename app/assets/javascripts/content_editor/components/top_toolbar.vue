@@ -1,17 +1,32 @@
 <script>
+import Tracking from '~/tracking';
+import { CONTENT_EDITOR_TRACKING_LABEL, TOOLBAR_CONTROL_TRACKING_ACTION } from '../constants';
 import { ContentEditor } from '../services/content_editor';
 import Divider from './divider.vue';
 import ToolbarButton from './toolbar_button.vue';
+
+const trackingMixin = Tracking.mixin({
+  label: CONTENT_EDITOR_TRACKING_LABEL,
+});
 
 export default {
   components: {
     ToolbarButton,
     Divider,
   },
+  mixins: [trackingMixin],
   props: {
     contentEditor: {
       type: ContentEditor,
       required: true,
+    },
+  },
+  methods: {
+    trackToolbarControlExecution({ contentType: property, value }) {
+      this.track(TOOLBAR_CONTROL_TRACKING_ACTION, {
+        property,
+        value,
+      });
     },
   },
 };
@@ -27,6 +42,7 @@ export default {
       editor-command="toggleBold"
       :label="__('Bold text')"
       :tiptap-editor="contentEditor.tiptapEditor"
+      @execute="trackToolbarControlExecution"
     />
     <toolbar-button
       data-testid="italic"
@@ -35,6 +51,7 @@ export default {
       editor-command="toggleItalic"
       :label="__('Italic text')"
       :tiptap-editor="contentEditor.tiptapEditor"
+      @execute="trackToolbarControlExecution"
     />
     <toolbar-button
       data-testid="code"
@@ -43,6 +60,7 @@ export default {
       editor-command="toggleCode"
       :label="__('Code')"
       :tiptap-editor="contentEditor.tiptapEditor"
+      @execute="trackToolbarControlExecution"
     />
     <divider />
     <toolbar-button
@@ -52,6 +70,7 @@ export default {
       editor-command="toggleBlockquote"
       :label="__('Insert a quote')"
       :tiptap-editor="contentEditor.tiptapEditor"
+      @execute="trackToolbarControlExecution"
     />
     <toolbar-button
       data-testid="bullet-list"
@@ -60,6 +79,7 @@ export default {
       editor-command="toggleBulletList"
       :label="__('Add a bullet list')"
       :tiptap-editor="contentEditor.tiptapEditor"
+      @execute="trackToolbarControlExecution"
     />
     <toolbar-button
       data-testid="ordered-list"
@@ -68,6 +88,7 @@ export default {
       editor-command="toggleOrderedList"
       :label="__('Add a numbered list')"
       :tiptap-editor="contentEditor.tiptapEditor"
+      @execute="trackToolbarControlExecution"
     />
   </div>
 </template>
