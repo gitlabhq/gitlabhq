@@ -66,7 +66,6 @@ module Namespaces
       Experiment.add_group(:in_product_marketing_emails, variant: variant, group: group)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def groups_for_track
       onboarding_progress_scope = OnboardingProgress
         .completed_actions_with_latest_in_range(completed_actions, range)
@@ -75,9 +74,18 @@ module Namespaces
       # Filtering out sub-groups is a temporary fix to prevent calling
       # `.root_ancestor` on groups that are not root groups.
       # See https://gitlab.com/groups/gitlab-org/-/epics/5594 for more information.
-      Group.where(parent_id: nil).joins(:onboarding_progress).merge(onboarding_progress_scope)
+      Group
+        .top_most
+        .with_onboarding_progress
+        .merge(onboarding_progress_scope)
+        .merge(subscription_scope)
     end
 
+    def subscription_scope
+      {}
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
     def users_for_group(group)
       group.users
         .where(email_opted_in: true)
@@ -136,3 +144,5 @@ module Namespaces
     end
   end
 end
+
+Namespaces::InProductMarketingEmailsService.prepend_ee_mod

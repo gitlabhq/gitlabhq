@@ -1,0 +1,9 @@
+mutation dismissUserCallout($input: UserCalloutCreateInput!) {
+  userCalloutCreate(input: $input) {
+    errors
+    userCallout {
+      dismissedAt
+      featureName
+    }
+  }
+}

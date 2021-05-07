@@ -9,12 +9,20 @@ RSpec.describe Gitlab::Spamcheck::Client do
   let_it_be(:user) { create(:user, organization: 'GitLab') }
   let(:verdict_value) { nil }
   let(:error_value) { "" }
+
+  let(:attribs_value) do
+    extra_attributes = Google::Protobuf::Map.new(:string, :string)
+    extra_attributes["monitorMode"] = "false"
+    extra_attributes
+  end
+
   let_it_be(:issue) { create(:issue, description: 'Test issue description') }
 
   let(:response) do
     verdict = ::Spamcheck::SpamVerdict.new
     verdict.verdict = verdict_value
     verdict.error = error_value
+    verdict.extra_attributes = attribs_value
     verdict
   end
 
@@ -45,7 +53,7 @@ RSpec.describe Gitlab::Spamcheck::Client do
       let(:verdict_value) { verdict }
 
       it "returns expected spam constant" do
-        expect(subject).to eq([expected, ""])
+        expect(subject).to eq([expected, { "monitorMode" => "false" }, ""])
       end
     end
   end

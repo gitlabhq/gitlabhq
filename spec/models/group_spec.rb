@@ -632,6 +632,16 @@ RSpec.describe Group do
       it { is_expected.to match_array([private_group, internal_group]) }
     end
 
+    describe 'with_onboarding_progress' do
+      subject { described_class.with_onboarding_progress }
+
+      it 'joins onboarding_progress' do
+        create(:onboarding_progress, namespace: group)
+
+        expect(subject).to eq([group])
+      end
+    end
+
     describe 'for_authorized_group_members' do
       let_it_be(:group_member1) { create(:group_member, source: private_group, user_id: user1.id, access_level: Gitlab::Access::OWNER) }
 

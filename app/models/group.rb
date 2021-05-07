@@ -107,6 +107,8 @@ class Group < Namespace
 
   scope :with_users, -> { includes(:users) }
 
+  scope :with_onboarding_progress, -> { joins(:onboarding_progress) }
+
   scope :by_id, ->(groups) { where(id: groups) }
 
   scope :for_authorized_group_members, -> (user_ids) do

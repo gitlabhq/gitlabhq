@@ -510,6 +510,7 @@ describe('RepoEditor', () => {
         },
       });
       await vm.$nextTick();
+      await vm.$nextTick();
 
       expect(vm.initEditor).toHaveBeenCalled();
     });

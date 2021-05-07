@@ -17,7 +17,8 @@ module IdeHelper
       'file-path' => @path,
       'merge-request' => @merge_request,
       'fork-info' => @fork_info&.to_json,
-      'project' => convert_to_project_entity_json(@project)
+      'project' => convert_to_project_entity_json(@project),
+      'enable-environments-guidance' => enable_environments_guidance?.to_s
     }
   end
 
@@ -27,6 +28,18 @@ module IdeHelper
     return unless project
 
     API::Entities::Project.represent(project).to_json
+  end
+
+  def enable_environments_guidance?
+    experiment(:in_product_guidance_environments_webide, project: @project) do |e|
+      e.try { !has_dismissed_ide_environments_callout? }
+
+      e.run
+    end
+  end
+
+  def has_dismissed_ide_environments_callout?
+    current_user.dismissed_callout?(feature_name: 'web_ide_ci_environments_guidance')
   end
 end
 

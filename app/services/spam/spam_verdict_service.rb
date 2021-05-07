@@ -15,10 +15,16 @@ module Spam
 
     def execute
       spamcheck_result = nil
+      spamcheck_attribs = {}
 
       external_spam_check_round_trip_time = Benchmark.realtime do
-        spamcheck_result = spamcheck_verdict
+        spamcheck_result, spamcheck_attribs = spamcheck_verdict
       end
+
+      # assign result to a var and log it before reassigning to nil when monitorMode is true
+      original_spamcheck_result = spamcheck_result
+
+      spamcheck_result = nil if spamcheck_attribs&.fetch("monitorMode", "false") == "true"
 
       akismet_result = akismet_verdict
 
@@ -33,7 +39,8 @@ module Spam
 
       logger.info(class: self.class.name,
                   akismet_verdict: akismet_verdict,
-                  spam_check_verdict: spamcheck_result,
+                  spam_check_verdict: original_spamcheck_result,
+                  extra_attributes: spamcheck_attribs,
                   spam_check_rtt: external_spam_check_round_trip_time.real,
                   final_verdict: final_verdict,
                   username: user.username,
@@ -61,21 +68,23 @@ module Spam
       return unless Gitlab::CurrentSettings.spam_check_endpoint_enabled
 
       begin
-        result, _error = spamcheck_client.issue_spam?(spam_issue: target, user: user, context: context)
-        return unless result
+        result, attribs, _error = spamcheck_client.issue_spam?(spam_issue: target, user: user, context: context)
+        return [nil, attribs] unless result
 
         # @TODO log if error is not nil https://gitlab.com/gitlab-org/gitlab/-/issues/329545
 
+        return [result, attribs] if result == NOOP || attribs["monitorMode"] == "true"
+
         # Duplicate logic with Akismet logic in #akismet_verdict
         if Gitlab::Recaptcha.enabled? && result != ALLOW
-          CONDITIONAL_ALLOW
+          [CONDITIONAL_ALLOW, attribs]
         else
-          result
+          [result, attribs]
         end
       rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e)
         # Default to ALLOW if any errors occur
-        ALLOW
+        [ALLOW, attribs]
       end
     end
 

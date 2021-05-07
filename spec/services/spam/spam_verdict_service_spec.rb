@@ -23,12 +23,17 @@ RSpec.describe Spam::SpamVerdictService do
     described_class.new(user: user, target: issue, request: request, options: {})
   end
 
+  let(:attribs) do
+    extra_attributes = { "monitorMode" => "false" }
+    extra_attributes
+  end
+
   describe '#execute' do
     subject { service.execute }
 
     before do
       allow(service).to receive(:akismet_verdict).and_return(nil)
-      allow(service).to receive(:spamcheck_verdict).and_return(nil)
+      allow(service).to receive(:spamcheck_verdict).and_return([nil, attribs])
     end
 
     context 'if all services return nil' do
@@ -63,7 +68,7 @@ RSpec.describe Spam::SpamVerdictService do
       context 'and they are supported' do
         before do
           allow(service).to receive(:akismet_verdict).and_return(DISALLOW)
-          allow(service).to receive(:spamcheck_verdict).and_return(BLOCK_USER)
+          allow(service).to receive(:spamcheck_verdict).and_return([BLOCK_USER, attribs])
         end
 
         it 'renders the more restrictive verdict' do
@@ -74,7 +79,7 @@ RSpec.describe Spam::SpamVerdictService do
       context 'and one is supported' do
         before do
           allow(service).to receive(:akismet_verdict).and_return('nonsense')
-          allow(service).to receive(:spamcheck_verdict).and_return(BLOCK_USER)
+          allow(service).to receive(:spamcheck_verdict).and_return([BLOCK_USER, attribs])
         end
 
         it 'renders the more restrictive verdict' do
@@ -85,11 +90,27 @@ RSpec.describe Spam::SpamVerdictService do
       context 'and none are supported' do
         before do
           allow(service).to receive(:akismet_verdict).and_return('nonsense')
-          allow(service).to receive(:spamcheck_verdict).and_return('rubbish')
+          allow(service).to receive(:spamcheck_verdict).and_return(['rubbish', attribs])
         end
 
         it 'renders the more restrictive verdict' do
           expect(subject).to eq ALLOW
+        end
+      end
+
+      context 'and attribs - monitorMode is true' do
+        let(:attribs) do
+          extra_attributes = { "monitorMode" => "true" }
+          extra_attributes
+        end
+
+        before do
+          allow(service).to receive(:akismet_verdict).and_return(DISALLOW)
+          allow(service).to receive(:spamcheck_verdict).and_return([BLOCK_USER, attribs])
+        end
+
+        it 'renders the more restrictive verdict' do
+          expect(subject).to eq(DISALLOW)
         end
       end
     end
@@ -170,16 +191,42 @@ RSpec.describe Spam::SpamVerdictService do
         let(:error) { '' }
         let(:verdict) { nil }
 
+        let(:attribs) do
+          extra_attributes = { "monitorMode" => "false" }
+          extra_attributes
+        end
+
         before do
           allow(service).to receive(:spamcheck_client).and_return(spam_client)
-          allow(spam_client).to receive(:issue_spam?).and_return([verdict, error])
+          allow(spam_client).to receive(:issue_spam?).and_return([verdict, attribs, error])
+        end
+
+        context 'if the result is a NOOP verdict' do
+          let(:verdict) { NOOP }
+
+          it 'returns the verdict' do
+            expect(subject).to eq([NOOP, attribs])
+          end
+        end
+
+        context 'if attribs - monitorMode is true' do
+          let(:attribs) do
+            extra_attributes = { "monitorMode" => "true" }
+            extra_attributes
+          end
+
+          let(:verdict) { ALLOW }
+
+          it 'returns the verdict' do
+            expect(subject).to eq([ALLOW, attribs])
+          end
         end
 
         context 'the result is a valid verdict' do
           let(:verdict) { ALLOW }
 
           it 'returns the verdict' do
-            expect(subject).to eq ALLOW
+            expect(subject).to eq([ALLOW, attribs])
           end
         end
 
@@ -203,7 +250,7 @@ RSpec.describe Spam::SpamVerdictService do
             let(:verdict) { verdict_value }
 
             it "returns expected spam constant" do
-              expect(subject).to eq(expected)
+              expect(subject).to eq([expected, attribs])
             end
           end
         end
@@ -218,7 +265,7 @@ RSpec.describe Spam::SpamVerdictService do
            ::Spam::SpamConstants::DISALLOW,
            ::Spam::SpamConstants::BLOCK_USER].each do |verdict_value|
             let(:verdict) { verdict_value }
-            let(:expected) { verdict_value }
+            let(:expected) { [verdict_value, attribs] }
 
             it "returns expected spam constant" do
               expect(subject).to eq(expected)
@@ -230,7 +277,7 @@ RSpec.describe Spam::SpamVerdictService do
           let(:verdict) { :this_is_fine }
 
           it 'returns the string' do
-            expect(subject).to eq verdict
+            expect(subject).to eq([verdict, attribs])
           end
         end
 
@@ -238,7 +285,7 @@ RSpec.describe Spam::SpamVerdictService do
           let(:verdict) { '' }
 
           it 'returns nil' do
-            expect(subject).to eq verdict
+            expect(subject).to eq([verdict, attribs])
           end
         end
 
@@ -246,7 +293,7 @@ RSpec.describe Spam::SpamVerdictService do
           let(:verdict) { nil }
 
           it 'returns nil' do
-            expect(subject).to be_nil
+            expect(subject).to eq([nil, attribs])
           end
         end
 
@@ -254,17 +301,19 @@ RSpec.describe Spam::SpamVerdictService do
           let(:error) { "Sorry Dave, I can't do that" }
 
           it 'returns nil' do
-            expect(subject).to be_nil
+            expect(subject).to eq([nil, attribs])
           end
         end
 
         context 'the requested is aborted' do
+          let(:attribs) { nil }
+
           before do
             allow(spam_client).to receive(:issue_spam?).and_raise(GRPC::Aborted)
           end
 
           it 'returns nil' do
-            expect(subject).to be(ALLOW)
+            expect(subject).to eq([ALLOW, attribs])
           end
         end
 
@@ -273,18 +322,20 @@ RSpec.describe Spam::SpamVerdictService do
           let(:error) { 'oh noes!' }
 
           it 'renders the verdict' do
-            expect(subject).to eq DISALLOW
+            expect(subject).to eq [DISALLOW, attribs]
           end
         end
       end
 
       context 'if the endpoint times out' do
+        let(:attribs) { nil }
+
         before do
           allow(spam_client).to receive(:issue_spam?).and_raise(GRPC::DeadlineExceeded)
         end
 
         it 'returns nil' do
-          expect(subject).to be(ALLOW)
+          expect(subject).to eq([ALLOW, attribs])
         end
       end
     end

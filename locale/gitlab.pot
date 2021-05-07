@@ -22044,6 +22044,9 @@ msgstr ""
 msgid "No data to display"
 msgstr ""
 
+msgid "No deployments detected. Use environments to control your software's continuous deployment. %{linkStart}Learn more about deployment jobs.%{linkEnd}"
+msgstr ""
+
 msgid "No deployments found"
 msgstr ""
 
@@ -24320,6 +24323,9 @@ msgid "Please provide a name"
 msgstr ""
 
 msgid "Please provide a valid URL"
+msgstr ""
+
+msgid "Please provide a valid URL ending with .git"
 msgstr ""
 
 msgid "Please provide a valid YouTube URL or ID"
