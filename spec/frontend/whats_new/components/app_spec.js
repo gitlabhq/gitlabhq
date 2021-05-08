@@ -149,7 +149,10 @@ describe('App', () => {
         wrapper.vm.$store.state.pageInfo = { nextPage: 840 };
         emitBottomReached();
 
-        expect(actions.fetchItems).toHaveBeenCalledWith(expect.anything(), { page: 840 });
+        expect(actions.fetchItems).toHaveBeenCalledWith(expect.anything(), {
+          page: 840,
+          versionDigest: 'version-digest',
+        });
       });
 
       it('when nextPage does not exist it does not call fetchItems', () => {

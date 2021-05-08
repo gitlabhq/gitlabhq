@@ -30,7 +30,7 @@ export default {
   },
   mounted() {
     this.openDrawer(this.versionDigest);
-    this.fetchItems();
+    this.fetchFreshItems();
 
     const body = document.querySelector('body');
     const namespaceId = body.getAttribute('data-namespace-id');
@@ -42,12 +42,17 @@ export default {
     bottomReached() {
       const page = this.pageInfo.nextPage;
       if (page) {
-        this.fetchItems({ page });
+        this.fetchFreshItems(page);
       }
     },
     handleResize() {
       const height = getDrawerBodyHeight(this.$refs.drawer.$el);
       this.setDrawerBodyHeight(height);
+    },
+    fetchFreshItems(page) {
+      const { versionDigest } = this;
+
+      this.fetchItems({ page, versionDigest });
     },
   },
 };
