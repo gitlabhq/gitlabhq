@@ -270,22 +270,25 @@ describe('Incidents List', () => {
     const noneSort = 'none';
 
     it.each`
-      selector                   | initialSort | firstSort   | nextSort
-      ${TH_CREATED_AT_TEST_ID}   | ${descSort} | ${ascSort}  | ${descSort}
-      ${TH_SEVERITY_TEST_ID}     | ${noneSort} | ${descSort} | ${ascSort}
-      ${TH_PUBLISHED_TEST_ID}    | ${noneSort} | ${descSort} | ${ascSort}
-      ${TH_INCIDENT_SLA_TEST_ID} | ${noneSort} | ${ascSort}  | ${descSort}
-    `('updates sort with new direction', async ({ selector, initialSort, firstSort, nextSort }) => {
-      const [[attr, value]] = Object.entries(selector);
-      const columnHeader = () => wrapper.find(`[${attr}="${value}"]`);
-      expect(columnHeader().attributes('aria-sort')).toBe(initialSort);
-      columnHeader().trigger('click');
-      await wrapper.vm.$nextTick();
-      expect(columnHeader().attributes('aria-sort')).toBe(firstSort);
-      columnHeader().trigger('click');
-      await wrapper.vm.$nextTick();
-      expect(columnHeader().attributes('aria-sort')).toBe(nextSort);
-    });
+      description        | selector                   | initialSort | firstSort   | nextSort
+      ${'creation date'} | ${TH_CREATED_AT_TEST_ID}   | ${descSort} | ${ascSort}  | ${descSort}
+      ${'severity'}      | ${TH_SEVERITY_TEST_ID}     | ${noneSort} | ${descSort} | ${ascSort}
+      ${'publish date'}  | ${TH_PUBLISHED_TEST_ID}    | ${noneSort} | ${descSort} | ${ascSort}
+      ${'due date'}      | ${TH_INCIDENT_SLA_TEST_ID} | ${noneSort} | ${ascSort}  | ${descSort}
+    `(
+      'updates sort with new direction when sorting by $description',
+      async ({ selector, initialSort, firstSort, nextSort }) => {
+        const [[attr, value]] = Object.entries(selector);
+        const columnHeader = () => wrapper.find(`[${attr}="${value}"]`);
+        expect(columnHeader().attributes('aria-sort')).toBe(initialSort);
+        columnHeader().trigger('click');
+        await wrapper.vm.$nextTick();
+        expect(columnHeader().attributes('aria-sort')).toBe(firstSort);
+        columnHeader().trigger('click');
+        await wrapper.vm.$nextTick();
+        expect(columnHeader().attributes('aria-sort')).toBe(nextSort);
+      },
+    );
   });
 
   describe('Snowplow tracking', () => {

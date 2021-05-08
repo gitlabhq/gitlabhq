@@ -44,9 +44,7 @@ exports[`Learn GitLab Design A renders correctly 1`] = `
         class="progress-bar"
         role="progressbar"
         style="width: 22.22222222222222%;"
-      >
-        <!---->
-      </div>
+      />
     </div>
   </div>
    

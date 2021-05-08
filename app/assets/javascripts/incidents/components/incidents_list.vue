@@ -10,7 +10,6 @@ import {
   GlIcon,
   GlEmptyState,
 } from '@gitlab/ui';
-import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import { visitUrl, mergeUrlParams, joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { INCIDENT_SEVERITY } from '~/sidebar/components/severity/constants';
@@ -49,6 +48,7 @@ export default {
       label: s__('IncidentManagement|Severity'),
       thClass: `${thClass} w-15p`,
       tdClass: `${tdClass} sortable-cell`,
+      actualSortKey: 'SEVERITY',
       sortable: true,
       thAttr: TH_SEVERITY_TEST_ID,
     },
@@ -63,6 +63,7 @@ export default {
       label: s__('IncidentManagement|Date created'),
       thClass: `${thClass} gl-w-eighth`,
       tdClass: `${tdClass} sortable-cell`,
+      actualSortKey: 'CREATED',
       sortable: true,
       thAttr: TH_CREATED_AT_TEST_ID,
     },
@@ -72,7 +73,7 @@ export default {
       thClass: `gl-text-right gl-w-eighth`,
       tdClass: `${tdClass} gl-text-right`,
       thAttr: TH_INCIDENT_SLA_TEST_ID,
-      sortKey: 'SLA_DUE_AT',
+      actualSortKey: 'SLA_DUE_AT',
       sortable: true,
       sortDirection: 'asc',
     },
@@ -87,6 +88,7 @@ export default {
       label: s__('IncidentManagement|Published'),
       thClass: `${thClass} w-15p`,
       tdClass: `${tdClass} sortable-cell`,
+      actualSortKey: 'PUBLISHED',
       sortable: true,
       thAttr: TH_PUBLISHED_TEST_ID,
     },
@@ -174,8 +176,7 @@ export default {
       redirecting: false,
       incidents: {},
       incidentsCount: {},
-      sort: 'created_desc',
-      sortBy: 'createdAt',
+      sort: 'CREATED_DESC',
       sortDesc: true,
       statusFilter: '',
       filteredByStatus: '',
@@ -256,20 +257,17 @@ export default {
       this.redirecting = true;
     },
     fetchSortedData({ sortBy, sortDesc }) {
-      let sortKey;
-      // In bootstrap-vue v2.17.0, sortKey becomes natively supported and we can eliminate this function
       const field = this.availableFields.find(({ key }) => key === sortBy);
       const sortingDirection = sortDesc ? 'DESC' : 'ASC';
 
-      // Use `sortKey` if provided, otherwise fall back to existing algorithm
-      if (field?.sortKey) {
-        sortKey = field.sortKey;
-      } else {
-        sortKey = convertToSnakeCase(sortBy).replace(/_.*/, '').toUpperCase();
-      }
-
       this.pagination = initialPaginationState;
-      this.sort = `${sortKey}_${sortingDirection}`;
+
+      // BootstapVue natively supports a `sortKey` parameter, but using it results in the sorting
+      // icons not being updated properly in the header. We decided to fallback on `actualSortKey`
+      // to bypass BootstrapVue's behavior until the bug is addressed upstream.
+      // Related discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60926/diffs#note_568020482
+      // Upstream issue: https://github.com/bootstrap-vue/bootstrap-vue/issues/6602
+      this.sort = `${field.actualSortKey}_${sortingDirection}`;
     },
     getSeverity(severity) {
       return INCIDENT_SEVERITY[severity];
@@ -334,14 +332,14 @@ export default {
         <gl-table
           :items="incidents.list || []"
           :fields="availableFields"
-          :show-empty="true"
           :busy="loading"
           stacked="md"
           :tbody-tr-class="tbodyTrClass"
-          :no-local-sorting="true"
-          :sort-direction="'desc'"
+          sort-direction="desc"
           :sort-desc.sync="sortDesc"
-          :sort-by.sync="sortBy"
+          sort-by="createdAt"
+          show-empty
+          no-local-sorting
           sort-icon-left
           fixed
           @row-clicked="navigateToIncidentDetails"

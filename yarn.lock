@@ -907,14 +907,14 @@
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@29.17.0":
-  version "29.17.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-29.17.0.tgz#405eb5448741f1b7ea17afd913d6e918d783cbce"
-  integrity sha512-BsHPEBD9wIq0LnewxgTmPYKDn0rE3b3aluN3hn9A7zVgnofifmA9c0Cn25u0ha3sOV13K1NNtDKlEgcwgOWgQQ==
+"@gitlab/ui@29.18.0":
+  version "29.18.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-29.18.0.tgz#c6ca04d9ef0b2e96ab0cd1e0570441e0d2accda7"
+  integrity sha512-CNa7eZn+8/j4/NzDBG5cdiIfyRZEb9J84WkEFTk7ZafZKdP2jtbdzys9eotQcS11kS1rf95rSVpQy0P6vebt1A==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
-    bootstrap-vue "2.16.0"
+    bootstrap-vue "2.17.3"
     copy-to-clipboard "^3.0.8"
     dompurify "^2.2.8"
     echarts "^4.9.0"
@@ -2740,21 +2740,26 @@ bonjour@^3.5.0:
     multicast-dns "^6.0.1"
     multicast-dns-service-types "^1.1.0"
 
-bootstrap-vue@2.16.0:
-  version "2.16.0"
-  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.16.0.tgz#07e7032ec9ffdd576470dc437da54f398ec16ba5"
-  integrity sha512-gLETwPmeRHCe5WHmhGxzb5PtTEuKqQPGl0TFvZ2Odbkg/7UuIHdqIexrJRerpnomP4ZzDQ+qYGL91Ls9lcQsJQ==
+bootstrap-vue@2.17.3:
+  version "2.17.3"
+  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.17.3.tgz#3d78b7b4ff992a8ad69d2ed1c7413fcfdcefaec7"
+  integrity sha512-upX5LktvsecbBsLnjwaSQoDCsYfneToOweOaERt+Cc/cT6P44zODzpxZa54HZEAbE5gSE5mJmDacUrs02qAR8g==
   dependencies:
     "@nuxt/opencollective" "^0.3.0"
-    bootstrap ">=4.5.0 <5.0.0"
+    bootstrap ">=4.5.2 <5.0.0"
     popper.js "^1.16.1"
     portal-vue "^2.1.7"
     vue-functional-data-merge "^3.1.0"
 
-bootstrap@4.5.3, "bootstrap@>=4.5.0 <5.0.0":
+bootstrap@4.5.3:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.5.3.tgz#c6a72b355aaf323920be800246a6e4ef30997fe6"
   integrity sha512-o9ppKQioXGqhw8Z7mah6KdTYpNQY//tipnkxppWhPbiSWdD+1raYsnhwEZjkTHYbGee4cVQ0Rx65EhOY/HNLcQ==
+
+"bootstrap@>=4.5.2 <5.0.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.6.0.tgz#97b9f29ac98f98dfa43bf7468262d84392552fd7"
+  integrity sha512-Io55IuQY3kydzHtbGvQya3H+KorS/M9rSNyfCGCg9WZ4pyT/lCxIlpJgG1GXW/PswzC84Tr2fBYi+7+jFVQQBw==
 
 boxen@^4.2.0:
   version "4.2.0"
