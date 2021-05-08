@@ -1,8 +1,10 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
+import BlobHeaderEdit from '~/repository/components/blob_header_edit.vue';
 
 let wrapper;
 const simpleMockData = {
@@ -44,8 +46,11 @@ const richMockData = {
   },
 };
 
-function factory({ props = {}, mockData = {} } = {}, loading = false) {
-  wrapper = shallowMount(BlobContentViewer, {
+const createFactory = (mountFn) => (
+  { props = {}, mockData = {}, stubs = {} } = {},
+  loading = false,
+) => {
+  wrapper = mountFn(BlobContentViewer, {
     propsData: {
       path: 'some_file.js',
       projectPath: 'some/path',
@@ -60,19 +65,20 @@ function factory({ props = {}, mockData = {} } = {}, loading = false) {
         },
       },
     },
+    stubs,
   });
 
   wrapper.setData(mockData);
-}
+};
+
+const factory = createFactory(shallowMount);
+const fullFactory = createFactory(mount);
 
 describe('Blob content viewer component', () => {
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findBlobHeader = () => wrapper.find(BlobHeader);
+  const findBlobHeaderEdit = () => wrapper.find(BlobHeaderEdit);
   const findBlobContent = () => wrapper.find(BlobContent);
-
-  beforeEach(() => {
-    factory({ mockData: { blobInfo: simpleMockData } });
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -85,6 +91,10 @@ describe('Blob content viewer component', () => {
   });
 
   describe('simple viewer', () => {
+    beforeEach(() => {
+      factory({ mockData: { blobInfo: simpleMockData } });
+    });
+
     it('renders a BlobHeader component', () => {
       expect(findBlobHeader().props('activeViewerType')).toEqual('simple');
       expect(findBlobHeader().props('hasRenderError')).toEqual(false);
@@ -140,7 +150,7 @@ describe('Blob content viewer component', () => {
       expect(findBlobHeader().props('activeViewerType')).toEqual('rich');
 
       findBlobHeader().vm.$emit('viewer-changed', 'simple');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findBlobHeader().props('activeViewerType')).toEqual('simple');
       expect(findBlobContent().props('activeViewer')).toEqual(
@@ -148,6 +158,30 @@ describe('Blob content viewer component', () => {
           type: 'simple',
         }),
       );
+    });
+  });
+
+  describe('BlobHeader action slot', () => {
+    it('renders BlobHeaderEdit button in simple viewer', async () => {
+      fullFactory({
+        mockData: { blobInfo: simpleMockData },
+        stubs: {
+          BlobContent: true,
+        },
+      });
+      await nextTick();
+      expect(findBlobHeaderEdit().props('editPath')).toEqual('some_file.js/edit');
+    });
+
+    it('renders BlobHeaderEdit button in rich viewer', async () => {
+      fullFactory({
+        mockData: { blobInfo: richMockData },
+        stubs: {
+          BlobContent: true,
+        },
+      });
+      await nextTick();
+      expect(findBlobHeaderEdit().props('editPath')).toEqual('some_file.js/edit');
     });
   });
 });

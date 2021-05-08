@@ -7,10 +7,12 @@ import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constant
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
+import BlobHeaderEdit from './blob_header_edit.vue';
 
 export default {
   components: {
     BlobHeader,
+    BlobHeaderEdit,
     BlobContent,
     GlLoadingIcon,
   },
@@ -122,7 +124,11 @@ export default {
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
         @viewer-changed="switchViewer"
-      />
+      >
+        <template #actions>
+          <blob-header-edit :edit-path="blobInfo.editBlobPath" />
+        </template>
+      </blob-header>
       <blob-content
         :blob="blobInfo"
         :content="blobInfo.rawTextBlob"
