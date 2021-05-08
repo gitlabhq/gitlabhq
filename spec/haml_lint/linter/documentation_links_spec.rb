@@ -80,6 +80,12 @@ RSpec.describe HamlLint::Linter::DocumentationLinks do
 
       it { is_expected.to report_lint }
     end
+
+    context 'when the second link is invalid' do
+      let(:haml) { ".data-form{ data: { url: #{link_pattern}('README.md'), wrong_url: #{link_pattern}('wrong.md') } }" }
+
+      it { is_expected.to report_lint }
+    end
   end
 
   context 'help_page_path' do

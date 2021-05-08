@@ -13,7 +13,7 @@ module HamlLint
       DOCS_DIRECTORY = File.join(File.expand_path('../..', __dir__), 'doc')
 
       HELP_PATH_LINK_PATTERN = <<~PATTERN
-      `(send nil? {:help_page_url :help_page_path} $...)
+      (send nil? {:help_page_url :help_page_path} $...)
       PATTERN
 
       MARKDOWN_HEADER = %r{\A\#{1,6}\s+(?<header>.+)\Z}.freeze
@@ -33,8 +33,17 @@ module HamlLint
       private
 
       def check(node)
-        match = extract_link_and_anchor(node)
+        ast_tree = fetch_ast_tree(node)
 
+        return unless ast_tree
+
+        ast_tree.descendants.each do |child_node|
+          match = extract_link_and_anchor(child_node)
+          validate_node(node, match)
+        end
+      end
+
+      def validate_node(node, match)
         return if match.empty?
 
         path_to_file = detect_path_to_file(match[:link])
@@ -49,11 +58,7 @@ module HamlLint
         end
       end
 
-      def extract_link_and_anchor(node)
-        ast_tree = fetch_ast_tree(node)
-
-        return {} unless ast_tree
-
+      def extract_link_and_anchor(ast_tree)
         link_match, attributes_match = ::RuboCop::NodePattern.new(HELP_PATH_LINK_PATTERN).match(ast_tree)
 
         { link: fetch_link(link_match), anchor: fetch_anchor(attributes_match) }.compact
