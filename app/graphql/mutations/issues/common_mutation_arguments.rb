@@ -22,6 +22,11 @@ module Mutations
                  as: :discussion_locked,
                  required: false,
                  description: copy_field_description(Types::IssueType, :discussion_locked)
+
+        argument :type, Types::IssueTypeEnum,
+                 as: :issue_type,
+                 required: false,
+                 description: copy_field_description(Types::IssueType, :type)
       end
     end
   end

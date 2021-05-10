@@ -30,6 +30,10 @@ export default {
       required: false,
       default: true,
     },
+    sidebarCollapsed: {
+      type: Boolean,
+      required: false,
+    },
   },
   data() {
     return {
@@ -61,21 +65,29 @@ export default {
 </script>
 
 <template>
-  <div class="block alert-status">
-    <div ref="status" class="sidebar-collapsed-icon" @click="$emit('toggle-sidebar')">
-      <gl-icon name="status" :size="14" />
-      <gl-loading-icon v-if="isUpdating" />
-    </div>
-    <gl-tooltip :target="() => $refs.status" boundary="viewport" placement="left">
-      <gl-sprintf :message="s__('AlertManagement|Alert status: %{status}')">
-        <template #status>
-          {{ alert.status.toLowerCase() }}
-        </template>
-      </gl-sprintf>
-    </gl-tooltip>
+  <div
+    class="alert-status gl-py-5 gl-w-70p"
+    :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': !sidebarCollapsed }"
+    style="width: 70%"
+  >
+    <template v-if="sidebarCollapsed">
+      <div ref="status" class="gl-ml-6" data-testid="status-icon" @click="$emit('toggle-sidebar')">
+        <gl-icon name="status" />
+        <gl-loading-icon v-if="isUpdating" />
+      </div>
+      <gl-tooltip :target="() => $refs.status" boundary="viewport" placement="left">
+        <gl-sprintf :message="s__('AlertManagement|Alert status: %{status}')">
+          <template #status>
+            {{ alert.status.toLowerCase() }}
+          </template>
+        </gl-sprintf>
+      </gl-tooltip>
+    </template>
 
-    <div class="hide-collapsed">
-      <p class="title gl-display-flex justify-content-between">
+    <div v-else>
+      <p
+        class="gl-text-gray-900 gl-mb-2 gl-line-height-20 gl-display-flex gl-justify-content-space-between"
+      >
         {{ s__('AlertManagement|Status') }}
         <a
           v-if="isEditable"

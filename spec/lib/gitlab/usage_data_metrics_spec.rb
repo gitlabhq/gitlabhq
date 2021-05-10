@@ -30,6 +30,18 @@ RSpec.describe Gitlab::UsageDataMetrics do
         expect(subject[:redis_hll_counters][:quickactions]).to include(:i_quickactions_approve_monthly)
         expect(subject[:redis_hll_counters][:quickactions]).to include(:i_quickactions_approve_weekly)
       end
+
+      it 'includes counts keys' do
+        expect(subject[:counts]).to include(:issues)
+      end
+
+      it 'includes usage_activity_by_stage keys' do
+        expect(subject[:usage_activity_by_stage][:plan]).to include(:issues)
+      end
+
+      it 'includes usage_activity_by_stage_monthly keys' do
+        expect(subject[:usage_activity_by_stage_monthly][:plan]).to include(:issues)
+      end
     end
   end
 end

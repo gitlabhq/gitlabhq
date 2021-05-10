@@ -125,32 +125,10 @@ module ProjectsHelper
     project.fork_source if project.fork_source && can?(current_user, :read_project, project.fork_source)
   end
 
-  def project_nav_tabs
-    @nav_tabs ||= get_project_nav_tabs(@project, current_user)
-  end
-
   def project_search_tabs?(tab)
     abilities = Array(search_tab_ability_map[tab])
 
     abilities.any? { |ability| can?(current_user, ability, @project) }
-  end
-
-  def project_nav_tab?(name)
-    project_nav_tabs.include? name
-  end
-
-  def any_project_nav_tab?(tabs)
-    tabs.any? { |tab| project_nav_tab?(tab) }
-  end
-
-  def project_for_deploy_key(deploy_key)
-    if deploy_key.has_access_to?(@project)
-      @project
-    else
-      deploy_key.projects.find do |project|
-        can?(current_user, :read_project, project)
-      end
-    end
   end
 
   def can_change_visibility_level?(project, current_user)
@@ -373,66 +351,6 @@ module ProjectsHelper
   end
 
   private
-
-  # rubocop:disable Metrics/CyclomaticComplexity
-  def get_project_nav_tabs(project, current_user)
-    nav_tabs = [:home]
-
-    unless project.empty_repo?
-      nav_tabs += [:files, :commits, :network, :graphs, :forks] if can?(current_user, :download_code, project)
-      nav_tabs << :releases if can?(current_user, :read_release, project)
-    end
-
-    if project.repo_exists? && can?(current_user, :read_merge_request, project)
-      nav_tabs << :merge_requests
-    end
-
-    if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
-      nav_tabs << :container_registry
-    end
-
-    if Feature.enabled?(:infrastructure_registry_page)
-      nav_tabs << :infrastructure_registry
-    end
-
-    # Pipelines feature is tied to presence of builds
-    if can?(current_user, :read_build, project)
-      nav_tabs << :pipelines
-    end
-
-    tab_ability_map.each do |tab, ability|
-      if can?(current_user, ability, project)
-        nav_tabs << tab
-      end
-    end
-
-    apply_external_nav_tabs(nav_tabs, project)
-
-    nav_tabs += package_nav_tabs(project, current_user)
-
-    nav_tabs << :learn_gitlab if learn_gitlab_experiment_enabled?(project)
-
-    nav_tabs
-  end
-  # rubocop:enable Metrics/CyclomaticComplexity
-
-  def package_nav_tabs(project, current_user)
-    [].tap do |tabs|
-      if ::Gitlab.config.packages.enabled && can?(current_user, :read_package, project)
-        tabs << :packages
-      end
-    end
-  end
-
-  def apply_external_nav_tabs(nav_tabs, project)
-    nav_tabs << :external_issue_tracker if project.external_issue_tracker
-    nav_tabs << :external_wiki if project.external_wiki
-
-    if project.has_confluence?
-      nav_tabs.delete(:wiki)
-      nav_tabs << :confluence
-    end
-  end
 
   def tab_ability_map
     {

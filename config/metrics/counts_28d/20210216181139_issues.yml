@@ -1,18 +1,19 @@
 ---
 key_path: usage_activity_by_stage_monthly.plan.issues
-description: Count of MAU creating issues
+description: Count of users creating Issues in last 28 days.
 product_section: dev
-product_stage: plan 
+product_stage: plan
 product_group: group::project management
-product_category: issue_tracking 
+product_category: issue_tracking
 value_type: number
 status: data_available
 time_frame: 28d
 data_source: database
+instrumentation_class: 'Gitlab::Usage::Metrics::Instrumentations::CountUsersCreatingIssuesMetric'
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
-- premium 
+- premium
 - ultimate

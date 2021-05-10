@@ -19,7 +19,8 @@ RSpec.describe Mutations::Issues::Create do
       description: 'new description',
       confidential: true,
       due_date: Date.tomorrow,
-      discussion_locked: true
+      discussion_locked: true,
+      issue_type: 'issue'
     }
   end
 
@@ -91,6 +92,16 @@ RSpec.describe Mutations::Issues::Create do
           it 'ignores the special params' do
             expect(mutated_issue).not_to be_like_time(special_params[:created_at])
             expect(mutated_issue.iid).not_to eq(special_params[:iid])
+          end
+        end
+
+        context 'when creating a non-default issue type' do
+          before do
+            mutation_params[:issue_type] = 'incident'
+          end
+
+          it 'creates issue with correct values' do
+            expect(mutated_issue.issue_type).to eq('incident')
           end
         end
       end

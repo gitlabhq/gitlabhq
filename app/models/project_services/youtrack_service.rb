@@ -33,8 +33,8 @@ class YoutrackService < IssueTrackerService
 
   def fields
     [
-      { type: 'text', name: 'project_url', title: _('Project URL'), required: true },
-      { type: 'text', name: 'issues_url', title: s_('ProjectService|Issue URL'), required: true }
+      { type: 'text', name: 'project_url', title: _('Project URL'), help: s_('IssueTracker|The URL to the project in YouTrack.'), required: true },
+      { type: 'text', name: 'issues_url', title: s_('ProjectService|Issue URL'), help: s_('IssueTracker|The URL to view an issue in the YouTrack project. Must contain %{colon_id}.') % { colon_id: '<code>:id</code>'.html_safe }, required: true }
     ]
   end
 end

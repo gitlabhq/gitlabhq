@@ -18256,7 +18256,7 @@ Tiers: `free`
 
 ### `usage_activity_by_stage_monthly.plan.issues`
 
-Count of MAU creating issues
+Count of users creating Issues in last 28 days.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216181139_issues.yml)
 

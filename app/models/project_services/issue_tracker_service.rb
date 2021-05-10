@@ -73,9 +73,9 @@ class IssueTrackerService < Service
 
   def fields
     [
-      { type: 'text', name: 'project_url', title: _('Project URL'), required: true },
-      { type: 'text', name: 'issues_url', title: s_('ProjectService|Issue URL'), required: true },
-      { type: 'text', name: 'new_issue_url', title: s_('ProjectService|New issue URL'), required: true }
+      { type: 'text', name: 'project_url', title: _('Project URL'), help: s_('IssueTracker|The URL to the project in the external issue tracker.'), required: true },
+      { type: 'text', name: 'issues_url', title: s_('IssueTracker|Issue URL'), help: s_('IssueTracker|The URL to view an issue in the external issue tracker. Must contain %{colon_id}.') % { colon_id: '<code>:id</code>'.html_safe }, required: true },
+      { type: 'text', name: 'new_issue_url', title: s_('IssueTracker|New issue URL'), help: s_('IssueTracker|The URL to create an issue in the external issue tracker.'), required: true }
     ]
   end
 

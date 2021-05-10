@@ -20,7 +20,8 @@ RSpec.describe 'Create an issue' do
       'title' => 'new title',
       'description' => 'new description',
       'confidential' => true,
-      'dueDate' => Date.tomorrow.strftime('%Y-%m-%d')
+      'dueDate' => Date.tomorrow.strftime('%Y-%m-%d'),
+      'type' => 'ISSUE'
     }
   end
 
@@ -37,7 +38,7 @@ RSpec.describe 'Create an issue' do
       project.add_developer(current_user)
     end
 
-    it 'updates the issue' do
+    it 'creates the issue' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)

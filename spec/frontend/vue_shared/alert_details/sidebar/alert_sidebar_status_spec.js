@@ -1,5 +1,5 @@
 import { GlDropdown, GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import updateAlertStatusMutation from '~/graphql_shared/mutations/alert_status_update.mutation.graphql';
 import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue';
 import AlertSidebarStatus from '~/vue_shared/alert_details/components/sidebar/sidebar_status.vue';
@@ -13,9 +13,10 @@ describe('Alert Details Sidebar Status', () => {
   const findStatusDropdown = () => wrapper.find(GlDropdown);
   const findStatusDropdownItem = () => wrapper.find(GlDropdownItem);
   const findStatusLoadingIcon = () => wrapper.find(GlLoadingIcon);
-  const findStatusDropdownHeader = () => wrapper.find('[data-testid="dropdown-header"]');
+  const findStatusDropdownHeader = () => wrapper.findByTestId('dropdown-header');
   const findAlertStatus = () => wrapper.findComponent(AlertStatus);
-  const findStatus = () => wrapper.find('[data-testid="status"]');
+  const findStatus = () => wrapper.findByTestId('status');
+  const findSidebarIcon = () => wrapper.findByTestId('status-icon');
 
   function mountComponent({
     data,
@@ -24,7 +25,7 @@ describe('Alert Details Sidebar Status', () => {
     stubs = {},
     provide = {},
   } = {}) {
-    wrapper = mount(AlertSidebarStatus, {
+    wrapper = mountExtended(AlertSidebarStatus, {
       propsData: {
         alert: { ...mockAlert },
         ...data,
@@ -52,7 +53,7 @@ describe('Alert Details Sidebar Status', () => {
     }
   });
 
-  describe('Alert Sidebar Dropdown Status', () => {
+  describe('sidebar expanded', () => {
     beforeEach(() => {
       mountComponent({
         data: { alert: mockAlert },
@@ -67,6 +68,10 @@ describe('Alert Details Sidebar Status', () => {
 
     it('displays the dropdown status header', () => {
       expect(findStatusDropdownHeader().exists()).toBe(true);
+    });
+
+    it('does not display the collapsed sidebar icon', () => {
+      expect(findSidebarIcon().exists()).toBe(false);
     });
 
     describe('updating the alert status', () => {
@@ -109,22 +114,40 @@ describe('Alert Details Sidebar Status', () => {
         expect(findStatusLoadingIcon().exists()).toBe(false);
         expect(findStatus().text()).toBe('Triggered');
       });
+
+      it('renders default translated statuses', () => {
+        mountComponent({ sidebarCollapsed: false });
+        expect(findAlertStatus().props('statuses')).toBe(PAGE_CONFIG.OPERATIONS.STATUSES);
+        expect(findStatus().text()).toBe('Triggered');
+      });
+
+      it('renders translated statuses', () => {
+        const status = 'TEST';
+        const statuses = { [status]: 'Test' };
+        mountComponent({
+          data: { alert: { ...mockAlert, status } },
+          provide: { statuses },
+          sidebarCollapsed: false,
+        });
+        expect(findAlertStatus().props('statuses')).toBe(statuses);
+        expect(findStatus().text()).toBe(statuses.TEST);
+      });
     });
   });
 
-  describe('Statuses', () => {
-    it('renders default translated statuses', () => {
-      mountComponent({});
-      expect(findAlertStatus().props('statuses')).toBe(PAGE_CONFIG.OPERATIONS.STATUSES);
-      expect(findStatus().text()).toBe('Triggered');
+  describe('sidebar collapsed', () => {
+    beforeEach(() => {
+      mountComponent({
+        data: { alert: mockAlert },
+        loading: false,
+      });
+    });
+    it('does not display the status dropdown', () => {
+      expect(findStatusDropdown().exists()).toBe(false);
     });
 
-    it('renders translated statuses', () => {
-      const status = 'TEST';
-      const statuses = { [status]: 'Test' };
-      mountComponent({ data: { alert: { ...mockAlert, status } }, provide: { statuses } });
-      expect(findAlertStatus().props('statuses')).toBe(statuses);
-      expect(findStatus().text()).toBe(statuses.TEST);
+    it('does display the collapsed sidebar icon', () => {
+      expect(findSidebarIcon().exists()).toBe(true);
     });
   });
 });

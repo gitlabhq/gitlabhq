@@ -9,6 +9,7 @@ value_type: number
 status: data_available
 time_frame: all
 data_source: database
+instrumentation_class: 'Gitlab::Usage::Metrics::Instrumentations::CountIssuesMetric'
 distribution:
 - ce
 - ee

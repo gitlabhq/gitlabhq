@@ -1,7 +1,7 @@
 import { GlDropdownItem } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarAssignee from '~/vue_shared/alert_details/components/sidebar/sidebar_assignee.vue';
 import SidebarAssignees from '~/vue_shared/alert_details/components/sidebar/sidebar_assignees.vue';
 import AlertSetAssignees from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
@@ -13,6 +13,29 @@ describe('Alert Details Sidebar Assignees', () => {
   let wrapper;
   let mock;
 
+  const mockPath = '/-/autocomplete/users.json';
+  const mockUsers = [
+    {
+      avatar_url:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+      id: 1,
+      name: 'User 1',
+      username: 'root',
+    },
+    {
+      avatar_url:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+      id: 2,
+      name: 'User 2',
+      username: 'not-root',
+    },
+  ];
+
+  const findAssigned = () => wrapper.findByTestId('assigned-users');
+  const findDropdown = () => wrapper.findComponent(GlDropdownItem);
+  const findSidebarIcon = () => wrapper.findByTestId('assignees-icon');
+  const findUnassigned = () => wrapper.findByTestId('unassigned-users');
+
   function mountComponent({
     data,
     users = [],
@@ -21,7 +44,7 @@ describe('Alert Details Sidebar Assignees', () => {
     loading = false,
     stubs = {},
   } = {}) {
-    wrapper = shallowMount(SidebarAssignees, {
+    wrapper = shallowMountExtended(SidebarAssignees, {
       data() {
         return {
           users,
@@ -56,10 +79,7 @@ describe('Alert Details Sidebar Assignees', () => {
     mock.restore();
   });
 
-  const findAssigned = () => wrapper.find('[data-testid="assigned-users"]');
-  const findUnassigned = () => wrapper.find('[data-testid="unassigned-users"]');
-
-  describe('updating the alert status', () => {
+  describe('sidebar expanded', () => {
     const mockUpdatedMutationResult = {
       data: {
         alertSetAssignees: {
@@ -73,30 +93,13 @@ describe('Alert Details Sidebar Assignees', () => {
 
     beforeEach(() => {
       mock = new MockAdapter(axios);
-      const path = '/-/autocomplete/users.json';
-      const users = [
-        {
-          avatar_url:
-            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-          id: 1,
-          name: 'User 1',
-          username: 'root',
-        },
-        {
-          avatar_url:
-            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-          id: 2,
-          name: 'User 2',
-          username: 'not-root',
-        },
-      ];
 
-      mock.onGet(path).replyOnce(200, users);
+      mock.onGet(mockPath).replyOnce(200, mockUsers);
       mountComponent({
         data: { alert: mockAlert },
         sidebarCollapsed: false,
         loading: false,
-        users,
+        users: mockUsers,
         stubs: {
           SidebarAssignee,
         },
@@ -106,7 +109,11 @@ describe('Alert Details Sidebar Assignees', () => {
     it('renders a unassigned option', async () => {
       wrapper.setData({ isDropdownSearching: false });
       await wrapper.vm.$nextTick();
-      expect(wrapper.find(GlDropdownItem).text()).toBe('Unassigned');
+      expect(findDropdown().text()).toBe('Unassigned');
+    });
+
+    it('does not display the collapsed sidebar icon', () => {
+      expect(findSidebarIcon().exists()).toBe(false);
     });
 
     it('calls `$apollo.mutate` with `AlertSetAssignees` mutation and variables containing `iid`, `assigneeUsernames`, & `projectPath`', async () => {
@@ -168,6 +175,30 @@ describe('Alert Details Sidebar Assignees', () => {
       expect(findAssigned().find('img').attributes('src')).toBe('/url');
       expect(findAssigned().find('.dropdown-menu-user-full-name').text()).toBe('root');
       expect(findAssigned().find('.dropdown-menu-user-username').text()).toBe('@root');
+    });
+  });
+
+  describe('sidebar collapsed', () => {
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+
+      mock.onGet(mockPath).replyOnce(200, mockUsers);
+
+      mountComponent({
+        data: { alert: mockAlert },
+        loading: false,
+        users: mockUsers,
+        stubs: {
+          SidebarAssignee,
+        },
+      });
+    });
+    it('does not display the status dropdown', () => {
+      expect(findDropdown().exists()).toBe(false);
+    });
+
+    it('does display the collapsed sidebar icon', () => {
+      expect(findSidebarIcon().exists()).toBe(true);
     });
   });
 });

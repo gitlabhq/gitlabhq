@@ -64,6 +64,7 @@ export default {
       <sidebar-status
         :project-path="projectPath"
         :alert="alert"
+        :sidebar-collapsed="sidebarStatus"
         @toggle-sidebar="$emit('toggle-sidebar')"
         @alert-error="$emit('alert-error', $event)"
       />

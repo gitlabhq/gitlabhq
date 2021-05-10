@@ -134,7 +134,12 @@ export default {
 </script>
 
 <template>
-  <div :class="{ 'block todo': sidebarCollapsed, 'gl-ml-auto': !sidebarCollapsed }">
+  <div
+    :class="{
+      'block todo': sidebarCollapsed,
+      'gl-ml-auto': !sidebarCollapsed,
+    }"
+  >
     <todo
       data-testid="alert-todo-button"
       :collapsed="sidebarCollapsed"

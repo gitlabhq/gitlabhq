@@ -128,6 +128,14 @@ RSpec.describe Mutations::Issues::Update do
           expect(issue.reload.labels).to match_array([project_label, label_2])
         end
       end
+
+      context 'when changing type' do
+        it 'changes the type of the issue' do
+          mutation_params[:issue_type] = 'incident'
+
+          expect { subject }.to change { issue.reload.issue_type }.from('issue').to('incident')
+        end
+      end
     end
   end
 end
