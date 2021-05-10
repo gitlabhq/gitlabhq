@@ -1,0 +1,5 @@
+---
+title: Stop exposing artifacts in pipelines.json
+merge_request: 61253
+author:
+type: performance

@@ -8,15 +8,6 @@ class PipelineDetailsEntity < Ci::PipelineEntity
   end
 
   expose :details do
-    expose :artifacts, unless: proc { options[:disable_artifacts] } do |pipeline, options|
-      rel = pipeline.downloadable_artifacts
-
-      if Feature.enabled?(:non_public_artifacts, type: :development)
-        rel = rel.select { |artifact| can?(request.current_user, :read_job_artifacts, artifact.job) }
-      end
-
-      BuildArtifactEntity.represent(rel, options.merge(project: pipeline.project))
-    end
     expose :manual_actions, using: BuildActionEntity
     expose :scheduled_actions, using: BuildActionEntity
   end

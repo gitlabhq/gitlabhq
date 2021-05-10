@@ -343,10 +343,10 @@ As in other list types, click the trash icon to remove a list.
 ### Iteration lists **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11.
-> - [Deployed behind the `board_new_lists` and `iteration_board_lists` feature flags](../feature_flags.md), enabled by default.
+> - [Deployed behind the `board_new_list` and `iteration_board_lists` feature flags](../feature_flags.md), enabled by default.
 > - Enabled on GitLab.com.
 > - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to disable the feature flags: [`board_new_lists`](#enable-or-disable-new-add-list-form) and [`iteration_board_lists`](#enable-or-disable-iteration-lists-in-boards). **(PREMIUM SELF)**
+> - For GitLab self-managed instances, GitLab administrators can opt to disable the feature flags: [`board_new_list`](#enable-or-disable-new-add-list-form) and [`iteration_board_lists`](#enable-or-disable-iteration-lists-in-boards). **(PREMIUM SELF)**
 
 There can be
 [risks when disabling released features](../feature_flags.md#risks-when-disabling-released-features).

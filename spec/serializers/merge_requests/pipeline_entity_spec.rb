@@ -42,6 +42,4 @@ RSpec.describe MergeRequests::PipelineEntity do
       expect(entity.as_json).not_to include(:coverage)
     end
   end
-
-  it_behaves_like 'public artifacts'
 end

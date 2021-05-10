@@ -109,7 +109,7 @@ To do so, follow these steps:
       If the merge request was deployed before [the code cutoff](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post.
     - [ ] `/chatops run auto_deploy status <merge-commit>`
-- [ ] Close [the feature issue](ISSUE LINK) to indicate the feature has been released.
+- [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
 
 **WARNING:** This approach has the downside that it makes it difficult for us to
 [clean up](https://docs.gitlab.com/ee/development/feature_flags/controls.html#cleaning-up) the flag.
@@ -134,7 +134,7 @@ codebase.
       If the merge request was deployed before [the code cutoff](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post.
     - [ ] `/chatops run auto_deploy status <merge-commit>`
-- [ ] Close [the feature issue](ISSUE LINK) to indicate the feature has been released.
+- [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
 - [ ] Clean up the feature flag from all environments by running these chatops command in `#production` channel:
     - [ ] `/chatops run feature delete <feature-flag-name> --dev`
     - [ ] `/chatops run feature delete <feature-flag-name> --staging`

@@ -32,7 +32,7 @@ RSpec.describe PipelineDetailsEntity do
         expect(subject[:details])
           .to include :duration, :finished_at
         expect(subject[:details])
-          .to include :stages, :artifacts, :manual_actions, :scheduled_actions
+          .to include :stages, :manual_actions, :scheduled_actions
         expect(subject[:details][:status]).to include :icon, :favicon, :text, :label
       end
 
@@ -184,7 +184,5 @@ RSpec.describe PipelineDetailsEntity do
         expect(source_jobs[child_pipeline.id][:name]).to eq('child')
       end
     end
-
-    it_behaves_like 'public artifacts'
   end
 end

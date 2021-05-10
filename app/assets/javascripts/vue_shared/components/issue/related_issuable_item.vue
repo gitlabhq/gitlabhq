@@ -146,6 +146,7 @@ export default {
             <span v-if="dueDate" class="order-md-1">
               <issue-due-date
                 :date="dueDate"
+                :closed="Boolean(closedAt)"
                 tooltip-placement="top"
                 css-class="item-due-date gl-display-flex gl-align-items-center"
               />

@@ -155,7 +155,7 @@ RSpec.describe PipelineSerializer do
 
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
-          expected_queries = Gitlab.ee? ? 39 : 36
+          expected_queries = Gitlab.ee? ? 33 : 30
 
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
@@ -176,7 +176,7 @@ RSpec.describe PipelineSerializer do
           # pipeline. With the same ref this check is cached but if refs are
           # different then there is an extra query per ref
           # https://gitlab.com/gitlab-org/gitlab-foss/issues/46368
-          expected_queries = Gitlab.ee? ? 42 : 39
+          expected_queries = Gitlab.ee? ? 36 : 33
 
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
@@ -202,7 +202,7 @@ RSpec.describe PipelineSerializer do
           # Existing numbers are high and require performance optimization
           # Ongoing issue:
           # https://gitlab.com/gitlab-org/gitlab/-/issues/225156
-          expected_queries = Gitlab.ee? ? 82 : 76
+          expected_queries = Gitlab.ee? ? 77 : 70
 
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
@@ -221,8 +221,7 @@ RSpec.describe PipelineSerializer do
           create(:ci_build, :scheduled, project: project, environment: env.name)
 
           recorded = ActiveRecord::QueryRecorder.new { subject }
-          expected_queries = Gitlab.ee? ? 61 : 57
-
+          expected_queries = Gitlab.ee? ? 56 : 52
           expect(recorded.count).to be_within(1).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
         end

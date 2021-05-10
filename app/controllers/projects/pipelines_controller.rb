@@ -223,7 +223,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     PipelineSerializer
       .new(project: @project, current_user: @current_user)
       .with_pagination(request, response)
-      .represent(@pipelines, disable_coverage: true, preload: true, disable_artifacts: true)
+      .represent(@pipelines, disable_coverage: true, preload: true)
   end
 
   def render_show

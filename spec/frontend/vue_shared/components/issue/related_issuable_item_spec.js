@@ -132,6 +132,35 @@ describe('RelatedIssuableItem', () => {
     it('renders due date component with correct due date', () => {
       expect(wrapper.find(IssueDueDate).props('date')).toBe(props.dueDate);
     });
+
+    it('does not render red icon for overdue issue that is closed', async () => {
+      mountComponent({
+        props: {
+          ...props,
+          closedAt: '2018-12-01T00:00:00.00Z',
+        },
+      });
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find(IssueDueDate).props('closed')).toBe(true);
+    });
+
+    it('should not contain the `.text-danger` css class for overdue issue that is closed', async () => {
+      mountComponent({
+        props: {
+          ...props,
+          closedAt: '2018-12-01T00:00:00.00Z',
+        },
+      });
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find(IssueDueDate).find('.board-card-info-icon').classes('text-danger')).toBe(
+        false,
+      );
+      expect(wrapper.find(IssueDueDate).find('.board-card-info-text').classes('text-danger')).toBe(
+        false,
+      );
+    });
   });
 
   describe('token assignees', () => {

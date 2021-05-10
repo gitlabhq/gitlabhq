@@ -49,10 +49,6 @@ class PipelineSerializer < BaseSerializer
       {
         manual_actions: :metadata,
         scheduled_actions: :metadata,
-        downloadable_artifacts: {
-          project: [:route, { namespace: :route }],
-          job: []
-        },
         failed_builds: %i(project metadata),
         merge_request: {
           source_project: [:route, { namespace: :route }],
