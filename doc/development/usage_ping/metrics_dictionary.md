@@ -37,6 +37,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `status`            | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `data_available`, `implemented`, `not_used`, `deprecated`, `removed`. |
 | `time_frame`        | yes      | `string`; may be set to a value like `7d`, `28d`, `all`, `none`. |
 | `data_source`       | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `ruby`. |
+| `instrumentation_class` | no   | `string`; [the class that implements the metric](metrics_instrumentation.md).  |
 | `distribution`      | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available.  |
 | `tier`              | yes      | `array`; may be set to one of `free, premium, ultimate`, `premium, ultimate` or `ultimate`. The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. |
 | `milestone`         | no       | The milestone when the metric is introduced. |

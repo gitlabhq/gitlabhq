@@ -3,7 +3,7 @@
     - .default-retry
     - .rails-cache
     - .default-before_script
-    - .use-pg11
+    - .use-pg12
   stage: test
   needs: ["setup-test-env"]
   variables:
@@ -29,7 +29,7 @@ run-dev-fixtures-ee:
   extends:
     - .run-dev-fixtures
     - .dev-fixtures:rules:ee-only
-    - .use-pg11-ee
+    - .use-pg12-ee
   script:
     - cp ee/db/fixtures/development/* $FIXTURE_PATH
     - *run-dev-fixtures-script

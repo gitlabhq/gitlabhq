@@ -79,8 +79,10 @@ Personal access tokens expire on the date you define, at midnight UTC.
 
 - GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that expire in the next seven days. The owners of these tokens are notified by email.
 - GitLab runs a check at 02:00 AM UTC every day to identify personal access tokens that expire on the current date. The owners of these tokens are notified by email.
-- In GitLab Ultimate, administrators can [limit the lifetime of personal access tokens](../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens).
-- In GitLab Ultimate, administrators can choose whether or not to [enforce personal access token expiration](../admin_area/settings/account_and_limit_settings.md#optional-non-enforcement-of-personal-access-token-expiration).
+- In GitLab Ultimate, administrators can
+  [limit the lifetime of personal access tokens](../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens).
+- In GitLab Ultimate, administrators can choose whether or not to
+  [enforce personal access token expiration](../admin_area/settings/account_and_limit_settings.md#do-not-enforce-personal-access-token-expiration).
 
 ## Create a personal access token programmatically **(FREE SELF)**
 

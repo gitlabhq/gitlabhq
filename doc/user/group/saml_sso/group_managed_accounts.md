@@ -104,9 +104,11 @@ This expiration date is not a requirement, and can be set to any arbitrary date.
 
 Since personal access tokens are the only token needed for programmatic access to GitLab, organizations with security requirements may want to enforce more protection to require regular rotation of these tokens.
 
-### Setting a limit
+### Set a limit
 
-Only a GitLab administrator or an owner of a group-managed account can set a limit. When this field is left empty, the [instance-level restriction](../../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens) on the lifetime of personal access tokens apply.
+Only a GitLab administrator or an owner of a group-managed account can set a limit. When this field
+is left empty, the [instance-level restriction](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens)
+on the lifetime of personal access tokens apply.
 
 To set a limit on how long personal access tokens are valid for users in a group managed account:
 

@@ -1,4 +1,4 @@
-import { uuids } from '../../diffs/utils/uuids';
+import { uuids } from './uuids';
 
 /**
  * @module recurrence

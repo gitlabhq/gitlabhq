@@ -1,10 +1,10 @@
 import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
-import { uuids } from '~/diffs/utils/uuids';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import languages from '~/ide/lib/languages';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import { registerLanguages } from '~/ide/utils';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { uuids } from '~/lib/utils/uuids';
 import {
   EDITOR_LITE_INSTANCE_ERROR_NO_EL,
   URI_PREFIX,

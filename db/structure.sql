@@ -24961,35 +24961,35 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
 
-CREATE TRIGGER table_sync_trigger_b99eb6998c AFTER INSERT OR DELETE OR UPDATE ON web_hook_logs FOR EACH ROW EXECUTE PROCEDURE table_sync_function_29bc99d6db();
+CREATE TRIGGER table_sync_trigger_b99eb6998c AFTER INSERT OR DELETE OR UPDATE ON web_hook_logs FOR EACH ROW EXECUTE FUNCTION table_sync_function_29bc99d6db();
 
-CREATE TRIGGER trigger_07c94931164e BEFORE INSERT OR UPDATE ON push_event_payloads FOR EACH ROW EXECUTE PROCEDURE trigger_07c94931164e();
+CREATE TRIGGER trigger_07c94931164e BEFORE INSERT OR UPDATE ON push_event_payloads FOR EACH ROW EXECUTE FUNCTION trigger_07c94931164e();
 
-CREATE TRIGGER trigger_21e7a2602957 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE PROCEDURE trigger_21e7a2602957();
+CREATE TRIGGER trigger_21e7a2602957 BEFORE INSERT OR UPDATE ON ci_build_needs FOR EACH ROW EXECUTE FUNCTION trigger_21e7a2602957();
 
-CREATE TRIGGER trigger_3f6129be01d2 BEFORE INSERT OR UPDATE ON ci_builds FOR EACH ROW EXECUTE PROCEDURE trigger_3f6129be01d2();
+CREATE TRIGGER trigger_3f6129be01d2 BEFORE INSERT OR UPDATE ON ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_3f6129be01d2();
 
-CREATE TRIGGER trigger_51ab7cef8934 BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE PROCEDURE trigger_51ab7cef8934();
+CREATE TRIGGER trigger_51ab7cef8934 BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_51ab7cef8934();
 
-CREATE TRIGGER trigger_69523443cc10 BEFORE INSERT OR UPDATE ON events FOR EACH ROW EXECUTE PROCEDURE trigger_69523443cc10();
+CREATE TRIGGER trigger_69523443cc10 BEFORE INSERT OR UPDATE ON events FOR EACH ROW EXECUTE FUNCTION trigger_69523443cc10();
 
-CREATE TRIGGER trigger_8485e97c00e3 BEFORE INSERT OR UPDATE ON ci_sources_pipelines FOR EACH ROW EXECUTE PROCEDURE trigger_8485e97c00e3();
+CREATE TRIGGER trigger_8485e97c00e3 BEFORE INSERT OR UPDATE ON ci_sources_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_8485e97c00e3();
 
-CREATE TRIGGER trigger_be1804f21693 BEFORE INSERT OR UPDATE ON ci_job_artifacts FOR EACH ROW EXECUTE PROCEDURE trigger_be1804f21693();
+CREATE TRIGGER trigger_be1804f21693 BEFORE INSERT OR UPDATE ON ci_job_artifacts FOR EACH ROW EXECUTE FUNCTION trigger_be1804f21693();
 
-CREATE TRIGGER trigger_cf2f9e35f002 BEFORE INSERT OR UPDATE ON ci_build_trace_chunks FOR EACH ROW EXECUTE PROCEDURE trigger_cf2f9e35f002();
+CREATE TRIGGER trigger_cf2f9e35f002 BEFORE INSERT OR UPDATE ON ci_build_trace_chunks FOR EACH ROW EXECUTE FUNCTION trigger_cf2f9e35f002();
 
-CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON services FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE PROCEDURE set_has_external_issue_tracker();
+CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON services FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
 
-CREATE TRIGGER trigger_has_external_issue_tracker_on_insert AFTER INSERT ON services FOR EACH ROW WHEN ((((new.category)::text = 'issue_tracker'::text) AND (new.active = true) AND (new.project_id IS NOT NULL))) EXECUTE PROCEDURE set_has_external_issue_tracker();
+CREATE TRIGGER trigger_has_external_issue_tracker_on_insert AFTER INSERT ON services FOR EACH ROW WHEN ((((new.category)::text = 'issue_tracker'::text) AND (new.active = true) AND (new.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
 
-CREATE TRIGGER trigger_has_external_issue_tracker_on_update AFTER UPDATE ON services FOR EACH ROW WHEN ((((new.category)::text = 'issue_tracker'::text) AND (old.active <> new.active) AND (new.project_id IS NOT NULL))) EXECUTE PROCEDURE set_has_external_issue_tracker();
+CREATE TRIGGER trigger_has_external_issue_tracker_on_update AFTER UPDATE ON services FOR EACH ROW WHEN ((((new.category)::text = 'issue_tracker'::text) AND (old.active <> new.active) AND (new.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
 
-CREATE TRIGGER trigger_has_external_wiki_on_delete AFTER DELETE ON services FOR EACH ROW WHEN ((((old.type)::text = 'ExternalWikiService'::text) AND (old.project_id IS NOT NULL))) EXECUTE PROCEDURE set_has_external_wiki();
+CREATE TRIGGER trigger_has_external_wiki_on_delete AFTER DELETE ON services FOR EACH ROW WHEN ((((old.type)::text = 'ExternalWikiService'::text) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_wiki();
 
-CREATE TRIGGER trigger_has_external_wiki_on_insert AFTER INSERT ON services FOR EACH ROW WHEN (((new.active = true) AND ((new.type)::text = 'ExternalWikiService'::text) AND (new.project_id IS NOT NULL))) EXECUTE PROCEDURE set_has_external_wiki();
+CREATE TRIGGER trigger_has_external_wiki_on_insert AFTER INSERT ON services FOR EACH ROW WHEN (((new.active = true) AND ((new.type)::text = 'ExternalWikiService'::text) AND (new.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_wiki();
 
-CREATE TRIGGER trigger_has_external_wiki_on_update AFTER UPDATE ON services FOR EACH ROW WHEN ((((new.type)::text = 'ExternalWikiService'::text) AND (old.active <> new.active) AND (new.project_id IS NOT NULL))) EXECUTE PROCEDURE set_has_external_wiki();
+CREATE TRIGGER trigger_has_external_wiki_on_update AFTER UPDATE ON services FOR EACH ROW WHEN ((((new.type)::text = 'ExternalWikiService'::text) AND (old.active <> new.active) AND (new.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_wiki();
 
 ALTER TABLE ONLY chat_names
     ADD CONSTRAINT fk_00797a2bf9 FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE;

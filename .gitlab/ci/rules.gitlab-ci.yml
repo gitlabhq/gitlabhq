@@ -922,18 +922,16 @@
       allow_failure: true
     - <<: *if-merge-request-title-run-all-rspec
 
-.rails:rules:default-branch-schedule-2-hourly-nightly--code-backstage:
+.rails:rules:default-branch-schedule-nightly--code-backstage:
   rules:
-    - <<: *if-default-branch-schedule-2-hourly
     - <<: *if-default-branch-schedule-nightly
     - <<: *if-merge-request
       changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
-.rails:rules:default-branch-schedule-2-hourly-nightly--code-backstage-ee-only:
+.rails:rules:default-branch-schedule-nightly--code-backstage-ee-only:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-default-branch-schedule-2-hourly
     - <<: *if-default-branch-schedule-nightly
     - <<: *if-merge-request
       changes: [".gitlab/ci/rails.gitlab-ci.yml"]

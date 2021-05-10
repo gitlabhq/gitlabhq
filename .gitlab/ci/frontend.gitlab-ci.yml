@@ -89,7 +89,7 @@ update-yarn-cache:
     - .default-retry
     - .default-before_script
     - .rails-cache
-    - .use-pg11
+    - .use-pg12
   stage: fixtures
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
   variables:

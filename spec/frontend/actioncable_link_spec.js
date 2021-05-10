@@ -4,7 +4,7 @@ import cable from '~/actioncable_consumer';
 import ActionCableLink from '~/actioncable_link';
 
 // Mock uuids module for determinism
-jest.mock('~/diffs/utils/uuids', () => ({
+jest.mock('~/lib/utils/uuids', () => ({
   uuids: () => ['testuuid'],
 }));
 

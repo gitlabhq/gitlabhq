@@ -1,4 +1,4 @@
-import { uuids } from '~/diffs/utils/uuids';
+import { uuids } from '~/lib/utils/uuids';
 
 const HEX = /[a-f0-9]/i;
 const HEX_RE = HEX.source;

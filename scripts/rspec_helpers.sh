@@ -95,7 +95,7 @@ function rspec_paralellized_job() {
   read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"
   local test_level="${job_name[1]}"
-  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg11 1/24' would become 'rspec_unit_pg11_1_24'
+  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg12 1/24' would become 'rspec_unit_pg12_1_24'
   local rspec_opts="${1}"
   local spec_folder_prefix=""
 

@@ -1,7 +1,7 @@
 import { ApolloLink, Observable } from 'apollo-link';
 import { print } from 'graphql';
 import cable from '~/actioncable_consumer';
-import { uuids } from '~/diffs/utils/uuids';
+import { uuids } from '~/lib/utils/uuids';
 
 export default class ActionCableLink extends ApolloLink {
   // eslint-disable-next-line class-methods-use-this
