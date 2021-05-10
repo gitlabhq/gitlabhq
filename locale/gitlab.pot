@@ -5613,6 +5613,9 @@ msgstr ""
 msgid "CICDAnalytics|All time"
 msgstr ""
 
+msgid "CICDAnalytics|Deployment frequency"
+msgstr ""
+
 msgid "CICDAnalytics|Projects with releases"
 msgstr ""
 
@@ -9236,9 +9239,6 @@ msgid "Create New Domain"
 msgstr ""
 
 msgid "Create Project"
-msgstr ""
-
-msgid "Create Value Stream"
 msgstr ""
 
 msgid "Create a GitLab account first, and then connect it to your %{label} account."
@@ -19290,6 +19290,12 @@ msgid "LearnGitLab|Try all GitLab features for 30 days, no credit card required.
 msgstr ""
 
 msgid "LearnGitLab|Use your new GitLab workflow to deploy your application, monitor its health, and keep it secure:"
+msgstr ""
+
+msgid "LearnGitlab|Creating your onboarding experience..."
+msgstr ""
+
+msgid "LearnGitlab|Ok, let's go"
 msgstr ""
 
 msgid "LearnGitlab|Trial only"
@@ -34665,6 +34671,9 @@ msgid "Upload an image"
 msgstr ""
 
 msgid "Upload file"
+msgstr ""
+
+msgid "Upload license"
 msgstr ""
 
 msgid "Upload object map"

@@ -92,30 +92,4 @@ variables:
   GIT_CLONE_PATH: "/builds/gitlab-org-forks/${CI_PROJECT_NAME}"
 
 include:
-  - local: .gitlab/ci/build-images.gitlab-ci.yml
-  - local: .gitlab/ci/cache-repo.gitlab-ci.yml
-  - local: .gitlab/ci/cng.gitlab-ci.yml
-  - local: .gitlab/ci/docs.gitlab-ci.yml
-  - local: .gitlab/ci/frontend.gitlab-ci.yml
-  - local: .gitlab/ci/global.gitlab-ci.yml
-  - local: .gitlab/ci/memory.gitlab-ci.yml
-  - local: .gitlab/ci/pages.gitlab-ci.yml
-  - local: .gitlab/ci/qa.gitlab-ci.yml
-  - local: .gitlab/ci/reports.gitlab-ci.yml
-  - local: .gitlab/ci/rails.gitlab-ci.yml
-  - local: .gitlab/ci/vendored-gems.gitlab-ci.yml
-  - local: .gitlab/ci/review.gitlab-ci.yml
-  - local: .gitlab/ci/rules.gitlab-ci.yml
-  - local: .gitlab/ci/setup.gitlab-ci.yml
-  - local: .gitlab/ci/dev-fixtures.gitlab-ci.yml
-  - local: .gitlab/ci/test-metadata.gitlab-ci.yml
-  - local: .gitlab/ci/yaml.gitlab-ci.yml
-  - local: .gitlab/ci/releases.gitlab-ci.yml
-  - local: .gitlab/ci/notify.gitlab-ci.yml
-  - local: .gitlab/ci/dast.gitlab-ci.yml
-  - local: .gitlab/ci/workhorse.gitlab-ci.yml
-  - local: .gitlab/ci/graphql.gitlab-ci.yml
-  # switch the remote include to a local include until this is resolved:
-  #   https://gitlab.com/gitlab-org/gitlab/-/issues/327299
-  # - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/.gitlab-ci-template.yml'
-  - local: .gitlab/ci/untamper-my-lockfile.yml
+  - local: .gitlab/ci/*.gitlab-ci.yml

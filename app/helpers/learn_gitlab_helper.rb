@@ -50,6 +50,11 @@ module LearnGitlabHelper
     }
   end
 
+  def learn_gitlab_onboarding_available?(project)
+    OnboardingProgress.onboarding?(project.namespace) &&
+      LearnGitlab::Project.new(current_user).available?
+  end
+
   private
 
   def action_urls
@@ -63,10 +68,5 @@ module LearnGitlabHelper
 
   def onboarding_progress(project)
     OnboardingProgress.find_by(namespace: project.namespace) # rubocop: disable CodeReuse/ActiveRecord
-  end
-
-  def learn_gitlab_onboarding_available?(project)
-    OnboardingProgress.onboarding?(project.namespace) &&
-      LearnGitlab::Project.new(current_user).available?
   end
 end

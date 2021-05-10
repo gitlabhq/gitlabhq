@@ -8,7 +8,8 @@ product_category: collection
 value_type: string
 status: data_available
 time_frame: none
-data_source:
+data_source: ruby
+instrumentation_class: 'Gitlab::Usage::Metrics::Instrumentations::HostnameMetric'
 distribution:
 - ce
 - ee

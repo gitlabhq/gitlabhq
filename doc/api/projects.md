@@ -1072,6 +1072,7 @@ GET /projects/:id/groups
 | `skip_groups`               | array of integers | **{dotted-circle}** No | Skip the group IDs passed. |
 | `with_shared`               | boolean           | **{dotted-circle}** No | Include projects shared with this group. Default is `false`. |
 | `shared_min_access_level`   | integer           | **{dotted-circle}** No | Limit to shared groups with at least this [access level](members.md#valid-access-levels). |
+| `shared_visible_only`       | boolean           | **{dotted-circle}** No | Limit to shared groups user has access to. |
 
 ```json
 [

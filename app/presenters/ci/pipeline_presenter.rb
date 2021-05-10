@@ -11,6 +11,7 @@ module Ci
       { unknown_failure: 'The reason for the pipeline failure is unknown.',
         config_error: 'The pipeline failed due to an error on the CI/CD configuration file.',
         external_validation_failure: 'The external pipeline validation failed.',
+        user_not_verified: 'The pipeline failed due to the user not being verified',
         activity_limit_exceeded: 'The pipeline activity limit was exceeded.',
         size_limit_exceeded: 'The pipeline size limit was exceeded.',
         job_activity_limit_exceeded: 'The pipeline job activity limit was exceeded.',

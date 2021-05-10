@@ -49,3 +49,21 @@ file is in your default branch (usually `master`).
 
 NOTE:
 The Web IDE does not support `.gitattribute` files, but it's [planned for a future release](https://gitlab.com/gitlab-org/gitlab/-/issues/22014).
+
+## Configure maximum file size for highlighting
+
+You can configure the maximum size of the file to be highlighted.
+
+The file size is measured in kilobytes, and is set to a default of `512 KB`. Any file _over_ the file size is rendered in plain text.
+
+1. Open the [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/gitlab.yml.example) configuration file.
+
+1. Add this section, replacing `maximum_text_highlight_size_kilobytes` with the value you want.
+
+   ```yaml
+   gitlab:
+     extra:
+       ## Maximum file size for syntax highlighting
+       ## https://docs.gitlab.com/ee/user/project/highlighting.html
+       maximum_text_highlight_size_kilobytes: 512
+   ```

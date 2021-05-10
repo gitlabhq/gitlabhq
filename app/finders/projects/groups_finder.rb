@@ -7,6 +7,7 @@
 #   current_user - which user is requesting groups
 #   params:
 #     with_shared: boolean (optional)
+#     shared_visible_only: boolean (optional)
 #     shared_min_access_level: integer (optional)
 #     skip_groups: array of integers (optional)
 #
@@ -37,25 +38,35 @@ module Projects
       Ability.allowed?(current_user, :read_project, project)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def all_groups
       groups = []
-      groups << project.group.self_and_ancestors if project.group
+      groups += [project.group.self_and_ancestors] if project.group
+      groups += with_shared_groups if params[:with_shared]
 
-      if params[:with_shared]
-        shared_groups = project.invited_groups
+      return [Group.none] if groups.compact.empty?
 
-        if params[:shared_min_access_level]
-          shared_groups = shared_groups.where(
-            'project_group_links.group_access >= ?', params[:shared_min_access_level]
-          )
-        end
-
-        groups << shared_groups
-      end
-
-      groups << Group.none if groups.compact.empty?
       groups
+    end
+
+    def with_shared_groups
+      shared_groups = project.invited_groups
+      shared_groups = apply_min_access_level(shared_groups)
+
+      if params[:shared_visible_only]
+        [
+          shared_groups.public_to_user(current_user),
+          shared_groups.for_authorized_group_members(current_user&.id)
+        ]
+      else
+        [shared_groups]
+      end
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def apply_min_access_level(groups)
+      return groups unless params[:shared_min_access_level]
+
+      groups.where('project_group_links.group_access >= ?', params[:shared_min_access_level])
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

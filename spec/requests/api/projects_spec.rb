@@ -1683,7 +1683,7 @@ RSpec.describe API::Projects do
     let_it_be(:root_group) { create(:group, :public, name: 'root group') }
     let_it_be(:project_group) { create(:group, :public, parent: root_group, name: 'project group') }
     let_it_be(:shared_group_with_dev_access) { create(:group, :private, parent: root_group, name: 'shared group') }
-    let_it_be(:shared_group_with_reporter_access) { create(:group, :private) }
+    let_it_be(:shared_group_with_reporter_access) { create(:group, :public) }
     let_it_be(:private_project) { create(:project, :private, group: project_group) }
     let_it_be(:public_project) { create(:project, :public, group: project_group) }
 
@@ -1762,6 +1762,14 @@ RSpec.describe API::Projects do
 
             it_behaves_like 'successful groups response' do
               let(:expected_groups) { [root_group, project_group, shared_group_with_dev_access] }
+            end
+          end
+
+          context 'when shared_visible_only is on' do
+            let(:params) { super().merge(shared_visible_only: true) }
+
+            it_behaves_like 'successful groups response' do
+              let(:expected_groups) { [root_group, project_group, shared_group_with_reporter_access] }
             end
           end
 

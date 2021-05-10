@@ -66,7 +66,9 @@ frequency to the `production` environment. The environment must be part of the
 [production deployment tier](../../ci/environments/index.md#deployment-tier-of-environments)
 for its deployment information to appear on the graphs.
 
-![Deployment frequency](img/deployment_frequency_chart_v13_8.png)
+![Deployment frequency](img/deployment_frequency_charts_v13_12.png)
+
+These charts are available for both groups and projects.
 
 ### Lead time charts **(ULTIMATE)**
 
@@ -82,3 +84,5 @@ processes.
 
 For time periods in which no merge requests were deployed, the charts render a
 red, dashed line.
+
+These charts are only available for projects.

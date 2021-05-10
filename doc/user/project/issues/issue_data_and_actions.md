@@ -101,7 +101,7 @@ assigned to them if they created the issue themselves.
 Often, multiple people work on the same issue together. This can be difficult
 to track in large teams where there is shared ownership of an issue.
 
-In [GitLab Starter](https://about.gitlab.com/pricing/), you can
+To help with this, you can use GitLab to
 [assign multiple people](multiple_assignees_for_issues.md) to an issue.
 
 ### Epic **(PREMIUM)**
