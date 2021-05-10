@@ -59,7 +59,7 @@ Importing Jira issues is done as an asynchronous background job, which
 may result in delays based on import queues load, system load, or other factors.
 Importing large projects may take several minutes depending on the size of the import.
 
-To import Jira issues to a GitLab project, follow these steps:
+To import Jira issues to a GitLab project:
 
 1. On the **{issues}** **Issues** page, click **Import Issues** (**{import}**) **> Import from Jira**.
 

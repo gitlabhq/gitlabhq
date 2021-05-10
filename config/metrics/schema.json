@@ -43,6 +43,9 @@
     "introduced_by_url": {
       "type": ["string", "null"]
     },
+    "extra": {
+      "type": "object"
+    },
     "time_frame": {
       "type": "string",
       "enum": ["7d", "28d", "all", "none"]

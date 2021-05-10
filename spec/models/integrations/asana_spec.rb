@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AsanaService do
+RSpec.describe Integrations::Asana do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -54,7 +54,7 @@ RSpec.describe AsanaService do
 
       d1 = double('Asana::Resources::Task')
       expect(d1).to receive(:add_comment).with(text: expected_message)
-      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, gid).once.and_return(d1)
+      expect(::Asana::Resources::Task).to receive(:find_by_id).with(anything, gid).once.and_return(d1)
 
       @asana.execute(data)
     end
@@ -64,7 +64,7 @@ RSpec.describe AsanaService do
       d1 = double('Asana::Resources::Task')
       expect(d1).to receive(:add_comment)
       expect(d1).to receive(:update).with(completed: true)
-      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '456789').once.and_return(d1)
+      expect(::Asana::Resources::Task).to receive(:find_by_id).with(anything, '456789').once.and_return(d1)
 
       @asana.execute(data)
     end
@@ -74,7 +74,7 @@ RSpec.describe AsanaService do
       d1 = double('Asana::Resources::Task')
       expect(d1).to receive(:add_comment)
       expect(d1).to receive(:update).with(completed: true)
-      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '42').once.and_return(d1)
+      expect(::Asana::Resources::Task).to receive(:find_by_id).with(anything, '42').once.and_return(d1)
 
       @asana.execute(data)
     end
@@ -88,25 +88,25 @@ RSpec.describe AsanaService do
       d1 = double('Asana::Resources::Task')
       expect(d1).to receive(:add_comment)
       expect(d1).to receive(:update).with(completed: true)
-      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '123').once.and_return(d1)
+      expect(::Asana::Resources::Task).to receive(:find_by_id).with(anything, '123').once.and_return(d1)
 
       d2 = double('Asana::Resources::Task')
       expect(d2).to receive(:add_comment)
       expect(d2).to receive(:update).with(completed: true)
-      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '456').once.and_return(d2)
+      expect(::Asana::Resources::Task).to receive(:find_by_id).with(anything, '456').once.and_return(d2)
 
       d3 = double('Asana::Resources::Task')
       expect(d3).to receive(:add_comment)
-      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '789').once.and_return(d3)
+      expect(::Asana::Resources::Task).to receive(:find_by_id).with(anything, '789').once.and_return(d3)
 
       d4 = double('Asana::Resources::Task')
       expect(d4).to receive(:add_comment)
-      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '42').once.and_return(d4)
+      expect(::Asana::Resources::Task).to receive(:find_by_id).with(anything, '42').once.and_return(d4)
 
       d5 = double('Asana::Resources::Task')
       expect(d5).to receive(:add_comment)
       expect(d5).to receive(:update).with(completed: true)
-      expect(Asana::Resources::Task).to receive(:find_by_id).with(anything, '12').once.and_return(d5)
+      expect(::Asana::Resources::Task).to receive(:find_by_id).with(anything, '12').once.and_return(d5)
 
       @asana.execute(data)
     end

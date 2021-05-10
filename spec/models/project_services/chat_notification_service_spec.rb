@@ -12,7 +12,7 @@ RSpec.describe ChatNotificationService do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_inclusion_of(:labels_to_be_notified_behavior).in_array(%w[match_any match_all]) }
+    it { is_expected.to validate_inclusion_of(:labels_to_be_notified_behavior).in_array(%w[match_any match_all]).allow_blank }
   end
 
   describe '#can_test?' do
@@ -113,6 +113,22 @@ RSpec.describe ChatNotificationService do
 
       context 'when labels_to_be_notified_behavior is not defined' do
         subject(:chat_service) { described_class.new(labels_to_be_notified: label_filter) }
+
+        context 'no matching labels' do
+          let(:label_filter) { '~some random label' }
+
+          it_behaves_like 'does not notify the chat service'
+        end
+
+        context 'only one label matches' do
+          let(:label_filter) { '~some random label, ~Bug' }
+
+          it_behaves_like 'notifies the chat service'
+        end
+      end
+
+      context 'when labels_to_be_notified_behavior is blank' do
+        subject(:chat_service) { described_class.new(labels_to_be_notified: label_filter, labels_to_be_notified_behavior: '') }
 
         context 'no matching labels' do
           let(:label_filter) { '~some random label' }

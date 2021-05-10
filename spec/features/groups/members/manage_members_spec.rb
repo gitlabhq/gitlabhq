@@ -26,6 +26,18 @@ RSpec.describe 'Groups > Members > Manage members' do
     end
   end
 
+  shared_examples 'does not include either invite modal or either invite form' do
+    it 'does not include either of the invite members or invite group modal buttons' do
+      expect(page).not_to have_selector '.js-invite-members-modal'
+      expect(page).not_to have_selector '.js-invite-group-modal'
+    end
+
+    it 'does not include either of the invite users or invite group forms' do
+      expect(page).not_to have_selector '.invite-users-form'
+      expect(page).not_to have_selector '.invite-group-form'
+    end
+  end
+
   context 'when Invite Members modal is enabled' do
     it_behaves_like 'includes the correct Invite link', '.js-invite-members-trigger', '.invite-users-form'
     it_behaves_like 'includes the correct Invite link', '.js-invite-group-trigger', '.invite-group-form'
@@ -165,23 +177,46 @@ RSpec.describe 'Groups > Members > Manage members' do
     end
   end
 
-  it 'guest can not manage other users', :js do
-    group.add_guest(user1)
-    group.add_developer(user2)
+  context 'as a guest', :js do
+    before do
+      group.add_guest(user1)
+      group.add_developer(user2)
 
-    visit group_group_members_path(group)
+      visit group_group_members_path(group)
+    end
 
-    expect(page).not_to have_selector '.invite-users-form'
-    expect(page).not_to have_selector '.invite-group-form'
-    expect(page).not_to have_selector '.js-invite-members-modal'
-    expect(page).not_to have_selector '.js-invite-group-modal'
+    it_behaves_like 'does not include either invite modal or either invite form'
 
-    page.within(second_row) do
-      # Can not modify user2 role
-      expect(page).not_to have_button 'Developer'
+    it 'does not include a button on the members page list to manage or remove the existing member', :js do
+      page.within(second_row) do
+        # Can not modify user2 role
+        expect(page).not_to have_button 'Developer'
 
-      # Can not remove user2
-      expect(page).not_to have_selector 'button[title="Remove member"]'
+        # Can not remove user2
+        expect(page).not_to have_selector 'button[title="Remove member"]'
+      end
+    end
+  end
+
+  context 'As a guest when the :invite_members_group_modal feature flag is disabled', :js do
+    before do
+      stub_feature_flags(invite_members_group_modal: false)
+      group.add_guest(user1)
+      group.add_developer(user2)
+
+      visit group_group_members_path(group)
+    end
+
+    it_behaves_like 'does not include either invite modal or either invite form'
+
+    it 'does not include a button on the members page list to manage or remove the existing member', :js do
+      page.within(second_row) do
+        # Can not modify user2 role
+        expect(page).not_to have_button 'Developer'
+
+        # Can not remove user2
+        expect(page).not_to have_selector 'button[title="Remove member"]'
+      end
     end
   end
 end

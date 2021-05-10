@@ -29,7 +29,7 @@ RSpec.describe Admin::PropagateServiceTemplate do
 
     context 'with a project that has another service' do
       before do
-        BambooService.create!(
+        Integrations::Bamboo.create!(
           active: true,
           project: project,
           properties: {

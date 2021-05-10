@@ -176,7 +176,7 @@ If the key is **privately accessible** and in use by other projects, it will be 
 If the owner of this deploy key doesn't have access to a [protected
 branch](../protected_branches.md), then this deploy key doesn't have access to
 the branch either. In addition to this, choosing the **No one** value in
-[the "Allowed to push" section](../protected_branches.md#configuring-protected-branches)
+[the "Allowed to push" section](../protected_branches.md#configure-a-protected-branch)
 means that no users **and** no services using deploy keys can push to that selected branch.
 
 Refer to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30769) for more information.

@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Share Projects with other Groups
+# Share projects with other groups
 
 You can share projects with other [groups](../../group/index.md). This makes it
 possible to add a group of users to a project with a single action.

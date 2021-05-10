@@ -28,6 +28,8 @@ class Service < ApplicationRecord
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
+  attribute :type, Gitlab::Integrations::StiType.new
+
   default_value_for :active, false
   default_value_for :alert_events, true
   default_value_for :category, 'common'
@@ -164,22 +166,23 @@ class Service < ApplicationRecord
   end
 
   def self.create_nonexistent_templates
-    nonexistent_services = list_nonexistent_services_for(for_template)
+    nonexistent_services = build_nonexistent_services_for(for_template)
     return if nonexistent_services.empty?
 
     # Create within a transaction to perform the lowest possible SQL queries.
     transaction do
-      nonexistent_services.each do |service_type|
-        service_type.constantize.create(template: true)
+      nonexistent_services.each do |service|
+        service.template = true
+        service.save
       end
     end
   end
   private_class_method :create_nonexistent_templates
 
   def self.find_or_initialize_non_project_specific_integration(name, instance: false, group_id: nil)
-    if name.in?(available_services_names(include_project_specific: false))
-      "#{name}_service".camelize.constantize.find_or_initialize_by(instance: instance, group_id: group_id)
-    end
+    return unless name.in?(available_services_names(include_project_specific: false))
+
+    service_name_to_model(name).find_or_initialize_by(instance: instance, group_id: group_id)
   end
 
   def self.find_or_initialize_all_non_project_specific(scope)
@@ -187,19 +190,23 @@ class Service < ApplicationRecord
   end
 
   def self.build_nonexistent_services_for(scope)
-    list_nonexistent_services_for(scope).map do |service_type|
-      service_type.constantize.new
+    nonexistent_services_types_for(scope).map do |service_type|
+      service_type_to_model(service_type).new
     end
   end
   private_class_method :build_nonexistent_services_for
 
-  def self.list_nonexistent_services_for(scope)
+  # Returns a list of service types that do not exist in the given scope.
+  # Example: ["AsanaService", ...]
+  def self.nonexistent_services_types_for(scope)
     # Using #map instead of #pluck to save one query count. This is because
     # ActiveRecord loaded the object here, so we don't need to query again later.
     available_services_types(include_project_specific: false) - scope.map(&:type)
   end
-  private_class_method :list_nonexistent_services_for
+  private_class_method :nonexistent_services_types_for
 
+  # Returns a list of available service names.
+  # Example: ["asana", ...]
   def self.available_services_names(include_project_specific: true, include_dev: true)
     service_names = services_names
     service_names += project_specific_services_names if include_project_specific
@@ -222,11 +229,33 @@ class Service < ApplicationRecord
     PROJECT_SPECIFIC_SERVICE_NAMES
   end
 
+  # Returns a list of available service types.
+  # Example: ["AsanaService", ...]
   def self.available_services_types(include_project_specific: true, include_dev: true)
     available_services_names(include_project_specific: include_project_specific, include_dev: include_dev).map do |service_name|
-      "#{service_name}_service".camelize
+      service_name_to_type(service_name)
     end
   end
+
+  # Returns the model for the given service name.
+  # Example: "asana" => Integrations::Asana
+  def self.service_name_to_model(name)
+    type = service_name_to_type(name)
+    service_type_to_model(type)
+  end
+
+  # Returns the STI type for the given service name.
+  # Example: "asana" => "AsanaService"
+  def self.service_name_to_type(name)
+    "#{name}_service".camelize
+  end
+
+  # Returns the model for the given STI type.
+  # Example: "AsanaService" => Integrations::Asana
+  def self.service_type_to_model(type)
+    Gitlab::Integrations::StiType.new.cast(type).constantize
+  end
+  private_class_method :service_type_to_model
 
   def self.build_from_integration(integration, project_id: nil, group_id: nil)
     service = integration.dup

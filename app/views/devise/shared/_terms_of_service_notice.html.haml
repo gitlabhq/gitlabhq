@@ -1,5 +1,9 @@
-- company_name = Gitlab.com? ? 'GitLab' : ''
+- return unless Gitlab::CurrentSettings.current_application_settings.enforce_terms?
 
-- if Gitlab::CurrentSettings.current_application_settings.enforce_terms?
-  %p.gl-text-gray-500.gl-mt-5.gl-mb-0
-    = html_escape(_("By clicking Register, I agree that I have read and accepted the %{company_name} %{linkStart}Terms of Use and Privacy Policy%{linkEnd}")) % { linkStart: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe, linkEnd: '</a>'.html_safe, company_name: company_name }
+%p.gl-text-gray-500.gl-mt-5.gl-mb-0
+  - if Gitlab.dev_env_or_com?
+    = html_escape(s_("SignUp|By clicking %{button_text}, I agree that I have read and accepted the GitLab %{link_start}Terms of Use and Privacy Policy%{link_end}")) % { button_text: button_text,
+      link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe, link_end: '</a>'.html_safe }
+  - else
+    = html_escape(s_("SignUp|By clicking %{button_text}, I agree that I have read and accepted the %{link_start}Terms of Use and Privacy Policy%{link_end}")) % { button_text: button_text,
+      link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe, link_end: '</a>'.html_safe }

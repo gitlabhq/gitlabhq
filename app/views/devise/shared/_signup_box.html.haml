@@ -37,6 +37,6 @@
       = recaptcha_tags
     .submit-container
       = f.submit button_text, class: 'btn gl-button btn-confirm', data: { qa_selector: 'new_user_register_button' }
-    = render 'devise/shared/terms_of_service_notice'
+    = render 'devise/shared/terms_of_service_notice', button_text: button_text
     - if show_omniauth_providers && omniauth_providers_placement == :bottom
       = render 'devise/shared/signup_omniauth_providers'

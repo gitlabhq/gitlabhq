@@ -10,7 +10,7 @@ RSpec.describe Sidebars::Projects::Menus::WikiMenu do
   subject { described_class.new(context) }
 
   it 'does not contain any sub menu' do
-    expect(subject.items).to be_empty
+    expect(subject.has_items?).to be false
   end
 
   describe '#render?' do

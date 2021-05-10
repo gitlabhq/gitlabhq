@@ -48,6 +48,7 @@ describe('Markdown field header component', () => {
         'Add a bullet list',
         'Add a numbered list',
         'Add a task list',
+        'Add a collapsible section',
         'Add a table',
         'Go full screen',
       ];
@@ -130,6 +131,14 @@ describe('Markdown field header component', () => {
   it('renders suggestion template', () => {
     expect(findToolbarButtonByProp('buttonTitle', 'Insert suggestion').props('tag')).toEqual(
       '```suggestion:-0+0\n{text}\n```',
+    );
+  });
+
+  it('renders collapsible section template', () => {
+    const detailsBlockButton = findToolbarButtonByProp('icon', 'details-block');
+
+    expect(detailsBlockButton.props('tag')).toEqual(
+      '<details><summary>Click to expand</summary>\n{text}\n</details>',
     );
   });
 

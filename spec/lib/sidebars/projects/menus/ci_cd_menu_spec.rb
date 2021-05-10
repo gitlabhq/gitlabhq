@@ -26,40 +26,44 @@ RSpec.describe Sidebars::Projects::Menus::CiCdMenu do
     end
   end
 
-  describe 'Pipelines Editor' do
-    subject { described_class.new(context).items.index { |e| e.item_id == :pipelines_editor } }
+  describe 'Menu items' do
+    subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
-    context 'when user cannot view pipeline editor' do
-      let(:can_view_pipeline_editor) { false }
+    describe 'Pipelines Editor' do
+      let(:item_id) { :pipelines_editor }
 
-      it 'does not include pipeline editor menu item' do
-        is_expected.to be_nil
+      context 'when user cannot view pipeline editor' do
+        let(:can_view_pipeline_editor) { false }
+
+        it 'does not include pipeline editor menu item' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'when user can view pipeline editor' do
+        it 'includes pipeline editor menu item' do
+          is_expected.not_to be_nil
+        end
       end
     end
 
-    context 'when user can view pipeline editor' do
-      it 'includes pipeline editor menu item' do
-        is_expected.not_to be_nil
+    describe 'Artifacts' do
+      let(:item_id) { :artifacts }
+
+      context 'when feature flag :artifacts_management_page is disabled' do
+        it 'does not include artifacts menu item' do
+          stub_feature_flags(artifacts_management_page: false)
+
+          is_expected.to be_nil
+        end
       end
-    end
-  end
 
-  describe 'Artifacts' do
-    subject { described_class.new(context).items.index { |e| e.item_id == :artifacts } }
+      context 'when feature flag :artifacts_management_page is enabled' do
+        it 'includes artifacts menu item' do
+          stub_feature_flags(artifacts_management_page: true)
 
-    context 'when feature flag :artifacts_management_page is disabled' do
-      it 'does not include artifacts menu item' do
-        stub_feature_flags(artifacts_management_page: false)
-
-        is_expected.to be_nil
-      end
-    end
-
-    context 'when feature flag :artifacts_management_page is enabled' do
-      it 'includes artifacts menu item' do
-        stub_feature_flags(artifacts_management_page: true)
-
-        is_expected.not_to be_nil
+          is_expected.not_to be_nil
+        end
       end
     end
   end

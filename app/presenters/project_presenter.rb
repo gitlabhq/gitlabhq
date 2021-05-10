@@ -210,7 +210,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                      strong_start: '<strong class="project-stat-value">'.html_safe,
                      strong_end: '</strong>'.html_safe
                    },
-                   empty_repo? ? nil : project_commits_path(project, repository.root_ref))
+                   empty_repo? ? nil : project_commits_path(project, default_branch_or_main))
   end
 
   def branches_anchor_data

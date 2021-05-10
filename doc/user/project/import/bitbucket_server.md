@@ -22,10 +22,8 @@ The Bitbucket importer can import:
 - Pull requests (GitLab 11.2+)
 - Pull request comments (GitLab 11.2+)
 
-When importing:
-
-- Repository public access is retained. If a repository is private in Bitbucket, it's created as
-  private in GitLab as well.
+When importing, repository public access is retained. If a repository is private in Bitbucket, it's
+created as private in GitLab as well.
 
 ## Limitations
 

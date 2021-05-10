@@ -13,7 +13,7 @@ RSpec.describe Sidebars::Projects::Menus::HiddenMenu do
 
     context 'when menu does not have any menu items' do
       it 'returns false' do
-        allow(subject).to receive(:has_items?).and_return(false)
+        allow(subject).to receive(:has_renderable_items?).and_return(false)
 
         expect(subject.render?).to be false
       end
@@ -27,7 +27,7 @@ RSpec.describe Sidebars::Projects::Menus::HiddenMenu do
   end
 
   describe 'Menu items' do
-    subject { described_class.new(context).items.index { |e| e.item_id == item_id } }
+    subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
     shared_examples 'access rights checks' do
       specify { is_expected.not_to be_nil }

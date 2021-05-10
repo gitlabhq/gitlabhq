@@ -1,14 +1,17 @@
 - attribute = local_assigns.fetch(:attribute, nil)
-- group = local_assigns.fetch(:group, nil)
 - form = local_assigns.fetch(:form, nil)
+- setting_locked = local_assigns.fetch(:setting_locked, false)
+- help_text = local_assigns.fetch(:help_text, s_('CascadingSettings|Subgroups cannot change this setting.'))
 
 - return unless attribute && group && form && cascading_namespace_settings_enabled?
-- return if group.namespace_settings.public_send("#{attribute}_locked?")
+- return if setting_locked
 
 - lock_attribute = "lock_#{attribute}"
 
 .gl-form-checkbox.custom-control.custom-checkbox
   = form.check_box lock_attribute, checked: group.namespace_settings.public_send(lock_attribute), class: 'custom-control-input', data: { testid: 'enforce-for-all-subgroups-checkbox' }
   = form.label lock_attribute, class: 'custom-control-label' do
-    %span= s_('CascadingSettings|Enforce for all subgroups')
-    %p.help-text= s_('CascadingSettings|Subgroups cannot change this setting.')
+    %span
+      = yield.presence || s_('CascadingSettings|Enforce for all subgroups')
+    %p.help-text
+      = help_text

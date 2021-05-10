@@ -774,9 +774,9 @@ module API
 
       def self.service_classes
         [
-          ::AsanaService,
-          ::AssemblaService,
-          ::BambooService,
+          ::Integrations::Asana,
+          ::Integrations::Assembla,
+          ::Integrations::Bamboo,
           ::BugzillaService,
           ::BuildkiteService,
           ::ConfluenceService,

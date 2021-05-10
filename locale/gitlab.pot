@@ -1895,6 +1895,9 @@ msgstr ""
 msgid "Add a bullet list"
 msgstr ""
 
+msgid "Add a collapsible section"
+msgstr ""
+
 msgid "Add a comment to this line"
 msgstr ""
 
@@ -5554,9 +5557,6 @@ msgid "By %{user_name}"
 msgstr ""
 
 msgid "By authenticating with an account tied to an Enterprise e-mail address, it is understood that this account is an Enterprise User. "
-msgstr ""
-
-msgid "By clicking Register, I agree that I have read and accepted the %{company_name} %{linkStart}Terms of Use and Privacy Policy%{linkEnd}"
 msgstr ""
 
 msgid "By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format."
@@ -14530,6 +14530,9 @@ msgid "GeoNodes|secondary nodes"
 msgstr ""
 
 msgid "Geo|%{component} synced"
+msgstr ""
+
+msgid "Geo|%{component} verified"
 msgstr ""
 
 msgid "Geo|%{eventId} (%{timeAgo})"
@@ -29835,6 +29838,12 @@ msgid "Sign-in text"
 msgstr ""
 
 msgid "Sign-up restrictions"
+msgstr ""
+
+msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted the %{link_start}Terms of Use and Privacy Policy%{link_end}"
+msgstr ""
+
+msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted the GitLab %{link_start}Terms of Use and Privacy Policy%{link_end}"
 msgstr ""
 
 msgid "SignUp|First name is too long (maximum is %{max_length} characters)."

@@ -25,6 +25,11 @@ RSpec.describe Gitlab::UsageDataMetrics do
       it 'includes counts keys' do
         expect(subject[:counts]).to include(:boards)
       end
+
+      it 'includes i_quickactions_approve monthly and weekly key' do
+        expect(subject[:redis_hll_counters][:quickactions]).to include(:i_quickactions_approve_monthly)
+        expect(subject[:redis_hll_counters][:quickactions]).to include(:i_quickactions_approve_weekly)
+      end
     end
   end
 end

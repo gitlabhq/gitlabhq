@@ -19,7 +19,7 @@ RSpec.describe Sidebars::Projects::Menus::LearnGitlabMenu do
   subject { described_class.new(context) }
 
   it 'does not contain any sub menu' do
-    expect(subject.instance_variable_get(:@items)).to be_empty
+    expect(subject.has_items?).to be false
   end
 
   describe '#nav_link_html_options' do

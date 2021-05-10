@@ -21,10 +21,8 @@ The Gitea importer can import:
 - Milestones (GitLab 8.15+)
 - Labels (GitLab 8.15+)
 
-When importing:
-
-- Repository public access is retained. If a repository is private in Gitea it's created as private
-  in GitLab as well.
+When importing, repository public access is retained. If a repository is private in Gitea, it's
+created as private in GitLab as well.
 
 ## How it works
 
@@ -78,9 +76,9 @@ From there, you can see the import statuses of your Gitea repositories.
 You also can:
 
 - Import all your Gitea projects in one go by hitting **Import all projects** in
-  the upper left corner
+  the upper left corner.
 - Filter projects by name. If filter is applied, hitting **Import all projects**
-  only imports matched projects
+  only imports matched projects.
 
 ![Gitea importer page](img/import_projects_from_gitea_importer_v12_3.png)
 

@@ -6,7 +6,7 @@ Service.available_services_names.each do |service|
 
     let(:dashed_service) { service.dasherize }
     let(:service_method) { "#{service}_service".to_sym }
-    let(:service_klass) { "#{service}_service".classify.constantize }
+    let(:service_klass) { Service.service_name_to_model(service) }
     let(:service_instance) { service_klass.new }
     let(:service_fields) { service_instance.fields }
     let(:service_attrs_list) { service_fields.inject([]) {|arr, hash| arr << hash[:name].to_sym } }

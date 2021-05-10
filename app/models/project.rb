@@ -149,7 +149,10 @@ class Project < ApplicationRecord
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards
 
-  # Project services
+  # Project integrations
+  has_one :asana_service, class_name: 'Integrations::Asana'
+  has_one :assembla_service, class_name: 'Integrations::Assembla'
+  has_one :bamboo_service, class_name: 'Integrations::Bamboo'
   has_one :campfire_service
   has_one :datadog_service
   has_one :discord_service
@@ -160,14 +163,11 @@ class Project < ApplicationRecord
   has_one :irker_service
   has_one :pivotaltracker_service
   has_one :flowdock_service
-  has_one :assembla_service
-  has_one :asana_service
   has_one :mattermost_slash_commands_service
   has_one :mattermost_service
   has_one :slack_slash_commands_service
   has_one :slack_service
   has_one :buildkite_service
-  has_one :bamboo_service
   has_one :teamcity_service
   has_one :pushover_service
   has_one :jenkins_service
@@ -2603,7 +2603,7 @@ class Project < ApplicationRecord
   end
 
   def build_service(name)
-    "#{name}_service".classify.constantize.new(project_id: id)
+    Service.service_name_to_model(name).new(project_id: id)
   end
 
   def services_templates

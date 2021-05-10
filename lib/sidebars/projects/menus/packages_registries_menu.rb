@@ -15,7 +15,7 @@ module Sidebars
 
         override :link
         def link
-          items.first.link
+          renderable_items.first.link
         end
 
         override :title

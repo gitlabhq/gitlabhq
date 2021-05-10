@@ -44,7 +44,7 @@ You can undo changes at any point in this workflow:
 Until you push your changes to a remote repository, changes
 you make in Git are only in your local development environment.
 
-### Undo unstaged local changes before you commit
+### Undo unstaged local changes
 
 When you make a change, but have not yet staged it, you can undo your work.
 
@@ -82,7 +82,7 @@ When you make a change, but have not yet staged it, you can undo your work.
      git reset --hard
      ```
 
-### Undo staged local changes before you commit
+### Undo staged local changes
 
 If you added a file to staging, you can undo it.
 
@@ -132,104 +132,85 @@ If you added a file to staging, you can undo it.
 
 ### Quickly save local changes
 
-You are working on a feature when someone drops by with an urgent task. Because your
-feature is not complete, but you need to swap to another branch, you can use
-`git stash` to:
+If you want to change to another branch, you can use [`git stash`](https://www.git-scm.com/docs/git-stash).
 
-- Save what you have done.
-- Swap to another branch.
-- Commit, push, and test.
-- Return to the feature branch.
-- Run `git stash pop`.
-- Resume your work.
+1. From the branch where you want to save your work, type `git stash`.
+1. Swap to another branch (`git checkout <branchname>`).
+1. Commit, push, and test.
+1. Return to the branch where you want to resume your changes.
+1. Use `git stash list` to list all previously stashed commits.
+1. Run a version of `git stash`:
 
-The example above shows that discarding all changes is not always a preferred option.
-However, Git provides a way to save them for later, while resetting the repository to state without
-them. This is achieved by Git stashing command `git stash`, which in fact saves your
-current work and runs `git reset --hard`, but it also has various
-additional options like:
-
-- `git stash save`, which enables including temporary commit message, which helps you identify changes, among with other options
-- `git stash list`, which lists all previously stashed commits (yes, there can be more) that were not `pop`ed
-- `git stash pop`, which redoes previously stashed changes and removes them from stashed list
-- `git stash apply`, which redoes previously stashed changes, but keeps them on stashed list
+   - Use `git stash pop` to redo previously stashed changes and remove them from stashed list.
+   - Use `git stash apply` to redo previously stashed changes, but keep them on stashed list.
 
 ## Undo committed local changes
 
-After you commit, your changes are recorded by the version control system.
-Because you haven't pushed to your remote repository yet, your changes are
-still not public (or shared with other developers). At this point, undoing
-things is a lot easier, we have quite some workaround options. After you push
-your code, you have fewer options to troubleshoot your work.
+When you commit to your local repository (`git commit`), the version control system records
+your changes. Because you did not push to a remote repository yet, your changes are
+not public (or shared with other developers). At this point, you can undo your changes.
 
-### Without modifying history
+### Undo staged local changes without modifying history
 
-Through the development process some of the previously committed changes do not
-fit anymore in the end solution, or are source of the bugs. After you find the
-commit which triggered bug, or identify a faulty commit, you can
-revert it with `git revert commit-id`.
+You can revert a commit while retaining the commit history.
 
-This command inverts (swaps) the additions and
-deletions in that commit, so that it does not modify history. Retaining history
-can be helpful in future to notice that some changes have been tried
-unsuccessfully in the past.
+This example uses five commits `A`,`B`,`C`,`D`,`E`, which were committed in order: `A-B-C-D-E`.
+The commit you want to undo is `B`.
 
-In our example we assume there are commits `A`,`B`,`C`,`D`,`E` committed in this order: `A-B-C-D-E`,
-and `B` is the commit you want to undo. There are many different ways to identify commit
-`B` as bad. One of them is to pass a range to `git bisect` command. The provided range includes
-last known good commit (we assume `A`) and first known bad commit where the bug was detected (we assume `E`).
+1. Find the commit SHA of the commit you want to revert to. To look
+   through a log of commits, type `git log`.
+1. Choose an option and undo your changes:
 
-```shell
-git bisect A..E
-```
+   - To swap additions and deletions changes introduced by commit `B`:
 
-Bisect provides us with commit ID of the middle commit to test, and then guide us
-through the bisection process. You can read more about it [in official Git Tools](https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git)
-Our example results in commit `B`, which introduced the bug/error. We have
-these options to remove all or part of it from our repository:
+     ```shell
+     git revert <commit-B-SHA>
+     ```
 
-- Undo (swap additions and deletions) changes introduced by commit `B`:
+   - To undo changes on a single file or directory from commit `B`, but retain them in the staged state:
 
-  ```shell
-  git revert commit-B-id
-  ```
+     ```shell
+     git checkout <commit-B-SHA> <file>
+     ```
 
-- Undo changes on a single file or directory from commit `B`, but retain them in the staged state:
+   - To undo changes on a single file or directory from commit `B`, but retain them in the unstaged state:
 
-  ```shell
-  git checkout commit-B-id <file>
-  ```
+     ```shell
+     git reset <commit-B-SHA> <file>
+     ```
 
-- Undo changes on a single file or directory from commit `B`, but retain them in the unstaged state:
+#### Undo multiple committed changes
 
-  ```shell
-  git reset commit-B-id <file>
-  ```
+You can recover from multiple commits. For example, if you have done commits `A-B-C-D`
+on your feature branch and then realize that `C` and `D` are wrong.
 
-- There is one command we also must not forget: **creating a new branch**
-  from the point where changes are not applicable or where the development has hit a
-  dead end. For example you have done commits `A-B-C-D` on your feature branch
-  and then you figure `C` and `D` are wrong.
+To recover from multiple incorrect commits:
 
-  At this point you either reset to `B`
-  and do commit `F` (which causes problems with pushing and if forced pushed also with other developers)
-  because the branch now looks `A-B-F`, which clashes with what other developers have locally (you will
-  [change history](#with-history-modification)), or you checkout commit `B` create
-  a new branch and do commit `F`. In the last case, everyone else can still do their work while you
-  have your new way to get it right and merge it back in later. Alternatively, with GitLab,
-  you can [cherry-pick](../../../user/project/merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
-  that commit into a new merge request.
+1. Check out the last correct commit. In this example, `B`.
 
-  ![Create a new branch to avoid clashing](img/branching.png)
+   ```shell
+   git checkout <commit-B-SHA>
+   ```
 
-  ```shell
-  git checkout commit-B-id
-  git checkout -b new-path-of-feature
-  # Create <commit F>
-  git commit -a
-  ```
+1. Create a new branch.
 
-### With history modification
+   ```shell
+   git checkout -b new-path-of-feature
+   ```
+
+1. Add, push, and commit your changes.
+
+The commits are now `A-B-C-D-E`.
+
+Alternatively, with GitLab,
+you can [cherry-pick](../../../user/project/merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
+that commit into a new merge request.
+
+NOTE:
+Another solution is to reset to `B` and commit `E`. However, this solution results in `A-B-E`,
+which clashes with what other developers have locally.
+
+### Undo staged local changes with history modification
 
 You can rewrite history in Git, but you should avoid it, because it can cause problems
 when multiple developers are contributing to the same codebase.

@@ -13,7 +13,7 @@ module Sidebars
     include ::Sidebars::Concerns::ContainerWithHtmlOptions
     include ::Sidebars::Concerns::HasActiveRoutes
 
-    attr_reader :context, :items
+    attr_reader :context
     delegate :current_user, :container, to: :@context
 
     def initialize(context)
@@ -29,7 +29,7 @@ module Sidebars
 
     override :render?
     def render?
-      has_items?
+      has_renderable_items?
     end
 
     # Menus might have or not a link
@@ -43,7 +43,7 @@ module Sidebars
     # This method filters the information and returns: { path: ['foo', 'bar'], controller: :foo }
     def all_active_routes
       @all_active_routes ||= begin
-        ([active_routes] + items.map(&:active_routes)).flatten.each_with_object({}) do |pairs, hash|
+        ([active_routes] + renderable_items.map(&:active_routes)).flatten.each_with_object({}) do |pairs, hash|
           pairs.each do |k, v|
             hash[k] ||= []
             hash[k] += Array(v)
@@ -55,8 +55,20 @@ module Sidebars
       end
     end
 
+    # Returns whether the menu has any menu item, no
+    # matter whether it is renderable or not
     def has_items?
       @items.any?
+    end
+
+    # Returns all renderable menu items
+    def renderable_items
+      @renderable_items ||= @items.select(&:render?)
+    end
+
+    # Returns whether the menu has any renderable menu item
+    def has_renderable_items?
+      renderable_items.any?
     end
 
     def add_item(item)

@@ -1092,7 +1092,7 @@ Markdown is fine in GitLab.
   </dd>
 </dl>
 
-#### Details and summary
+#### Collapsible section
 
 To see the second Markdown example rendered in HTML,
 [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#details-and-summary).

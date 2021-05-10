@@ -6,19 +6,75 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Members of a project
 
-You can manage the groups and users and their access levels in all of your
-projects. You can also personalize the access level you give each user,
-per-project.
+Members are the users and groups who have access to your project.
 
-You should have Maintainer or Owner [permissions](../../permissions.md) to add
-or import a new user to your project.
+Each member gets a role, which determines what they can do in the project.
 
-To view, edit, add, and remove project's members, go to your
-project's **Members**.
+## Add users to a project
+
+Add users to a project so they become members and have permission
+to perform actions.
+
+Prerequisite:
+
+- You must have maintainer or owner [permissions](../../permissions.md).
+
+To add a user to a project:
+
+1. Go to your project and select **Members**.
+1. On the **Invite member** tab, under **GitLab member of Email address**, type the username or email address.
+1. Select a [role](../../permissions.md). 
+1. Optional. Choose an expiration date. On that date, the user can no longer access the project.
+1. Select **Invite**.
+
+If the user has a GitLab account, they are added to the members list.
+If you used an email address, the user receives an email.
+
+## Add groups to a project
+
+When you assign a group to a project, each user in the group gets access to the project,
+based on the role they're assigned in the group. However, the user's access is also
+limited by the maximum role you choose when you invite the group.
+
+Prerequisite:
+
+- You must have maintainer or owner [permissions](../../permissions.md).
+
+To add groups to a project:
+
+1. Go to your project and select **Members**.
+1. On the **Invite group** tab, under **Select a group to invite**, choose a group.
+1. Select the highest max [role](../../permissions.md) for users in the group. 
+1. Optional. Choose an expiration date. On that date, the user can no longer access the project.
+1. Select **Invite**.
+
+The members of the group are not displayed on the **Members** tab.
+The **Members** tab shows:
+
+- Members who are directly assigned to the project.
+- If the project was created in a group [namespace](../../group/index.md#namespaces), members of that group.
+
+## Import users from another project
+
+You can import another project's users to your own project. Users
+retain the same permissions as the project you import them from.
+
+Prerequisite:
+
+- You must have maintainer or owner [permissions](../../permissions.md).
+
+To import users:
+
+1. Go to your project and select **Members**.
+1. On the **Invite member** tab, at the bottom of the panel, select **Import**.
+1. Select the project. You can view only the projects for which you're a maintainer.
+1. Select **Import project members**.
+
+A success message is displayed and the new members are now displayed in the list.
 
 ## Inherited membership
 
-When your project belongs to the group, group members inherit the membership and permission
+When your project belongs to a group, group members inherit the membership and permission
 level for the project from the group.
 
 ![Project members page](img/project_members_v13_9.png)
@@ -69,48 +125,6 @@ You can search for members by name, username, or email.
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in** in ascending or descending order.
 
 ![Project members sort](img/project_members_sort_v13_9.png)
-
-## Add a user
-
-Right next to **People**, start typing the name or username of the user you
-want to add.
-
-![Search for people](img/add_user_search_people_v13_8.png)
-
-Select the user and the [permission level](../../permissions.md)
-that you'd like to give the user. You can add more than one user at a time.
-The Owner role can only be assigned at the group level.
-
-![Give user permissions](img/add_user_give_permissions_v13_8.png)
-
-Once done, select **Add users to project** and they are immediately added to
-your project with the permissions you gave them above.
-
-![List members](img/add_user_list_members_v13_9.png)
-
-From there on, you can either remove an existing user or change their access
-level to the project.
-
-## Import users from another project
-
-You can import another project's users to your own project. Users
-retain the same permissions as the project you import them from.
-
-To import users:
-
-1. Go to your project and select **Members**.
-
-1. On the **Invite member** tab, select **Import**.
-
-1. Select the project. You can only view projects you are Maintainer of.
-
-   ![Import members from another project](img/add_user_import_members_from_another_project_v13_8.png)
-
-1. Select **Import project members**. A message displays, notifying you
-   that the import was successful, and the new members are now in the project's
-   members list.
-
-![Members list of new members](img/add_user_imported_members_v13_9.png)
 
 ## Invite people using their e-mail address
 
@@ -240,8 +254,7 @@ requests they are currently assigned or leave the assignments as they are.
 
 To remove a member from a project:
 
-1. In a project, go to **{users}** **Members**.
-1. Click the **Delete** **{remove}** button next to a project member you want to remove.
-   A **Remove member** modal appears.
-1. (Optional) Select the **Also unassign this user from related issues and merge requests** checkbox.
-1. Click **Remove member**.
+1. Go to your project and select **Members**.
+1. Next to the project member you want to remove, select **Remove member** **{remove}**.
+1. Optional. In the confirmation box, select the **Also unassign this user from related issues and merge requests** checkbox.
+1. Select **Remove member**.

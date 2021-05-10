@@ -36,7 +36,7 @@ RSpec.describe Sidebars::Projects::Menus::ConfluenceMenu do
         end
 
         it 'does not contain any sub menu' do
-          expect(subject.items).to be_empty
+          expect(subject.has_items?).to be false
         end
       end
     end

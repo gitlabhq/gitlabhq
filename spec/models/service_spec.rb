@@ -248,7 +248,7 @@ RSpec.describe Service do
   describe '.find_or_initialize_all_non_project_specific' do
     shared_examples 'service instances' do
       it 'returns the available service instances' do
-        expect(Service.find_or_initialize_all_non_project_specific(Service.for_instance).pluck(:type)).to match_array(Service.available_services_types(include_project_specific: false))
+        expect(Service.find_or_initialize_all_non_project_specific(Service.for_instance).map(&:to_param)).to match_array(Service.available_services_names(include_project_specific: false))
       end
 
       it 'does not create service instances' do
@@ -666,9 +666,22 @@ RSpec.describe Service do
     end
   end
 
+  describe '.service_name_to_model' do
+    it 'returns the model for the given service name', :aggregate_failures do
+      expect(described_class.service_name_to_model('asana')).to eq(Integrations::Asana)
+      # TODO We can remove this test when all models have been namespaced:
+      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60968#note_570994955
+      expect(described_class.service_name_to_model('youtrack')).to eq(YoutrackService)
+    end
+
+    it 'raises an error if service name is invalid' do
+      expect { described_class.service_name_to_model('foo') }.to raise_exception(NameError, /uninitialized constant FooService/)
+    end
+  end
+
   describe "{property}_changed?" do
     let(:service) do
-      BambooService.create(
+      Integrations::Bamboo.create(
         project: project,
         properties: {
           bamboo_url: 'http://gitlab.com',
@@ -708,7 +721,7 @@ RSpec.describe Service do
 
   describe "{property}_touched?" do
     let(:service) do
-      BambooService.create(
+      Integrations::Bamboo.create(
         project: project,
         properties: {
           bamboo_url: 'http://gitlab.com',
@@ -748,7 +761,7 @@ RSpec.describe Service do
 
   describe "{property}_was" do
     let(:service) do
-      BambooService.create(
+      Integrations::Bamboo.create(
         project: project,
         properties: {
           bamboo_url: 'http://gitlab.com',

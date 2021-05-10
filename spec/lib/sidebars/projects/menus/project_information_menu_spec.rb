@@ -9,7 +9,7 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu do
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 
   describe 'Releases' do
-    subject { described_class.new(context).items.index { |e| e.item_id == :releases } }
+    subject { described_class.new(context).renderable_items.index { |e| e.item_id == :releases } }
 
     context 'when project repository is empty' do
       it 'does not include releases menu item' do

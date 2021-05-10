@@ -16,7 +16,7 @@ There are two approaches to SVN to Git migration:
 - [Git/SVN Mirror](#smooth-migration-with-a-gitsvn-mirror-using-subgit) which:
   - Makes the GitLab repository to mirror the SVN project.
   - Git and SVN repositories are kept in sync; you can use either one.
-  - Smoothens the migration process and allows to manage migration risks.
+  - Smoothens the migration process and allows you to manage migration risks.
 
 - [Cut over migration](#cut-over-migration-with-svn2git) which:
   - Translates and imports the existing data and history from SVN to Git.

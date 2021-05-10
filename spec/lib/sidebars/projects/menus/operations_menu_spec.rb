@@ -21,9 +21,9 @@ RSpec.describe Sidebars::Projects::Menus::OperationsMenu do
     end
 
     context 'when operation feature is enabled' do
-      context 'when menu does not have any menu items' do
+      context 'when menu does not have any renderable menu items' do
         it 'returns false' do
-          allow(subject).to receive(:has_items?).and_return(false)
+          allow(subject).to receive(:has_renderable_items?).and_return(false)
 
           expect(subject.render?).to be false
         end
@@ -54,7 +54,7 @@ RSpec.describe Sidebars::Projects::Menus::OperationsMenu do
   end
 
   context 'Menu items' do
-    subject { described_class.new(context).items.index { |e| e.item_id == item_id } }
+    subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
     describe 'Metrics Dashboard' do
       let(:item_id) { :metrics }

@@ -18,5 +18,9 @@ module Sidebars
     def show_hint?
       hint_html_options.present?
     end
+
+    def render?
+      true
+    end
   end
 end

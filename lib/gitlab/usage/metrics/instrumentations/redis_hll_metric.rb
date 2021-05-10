@@ -12,7 +12,7 @@ module Gitlab
           # end
           class << self
             def event_names(events = nil)
-              @mentric_events = events
+              @metric_events = events
             end
 
             attr_reader :metric_events

@@ -5,15 +5,18 @@ require 'spec_helper'
 RSpec.describe Sidebars::Menu do
   let(:menu) { described_class.new(context) }
   let(:context) { Sidebars::Context.new(current_user: nil, container: nil) }
+  let(:nil_menu_item) { Sidebars::NilMenuItem.new(item_id: :foo) }
 
   describe '#all_active_routes' do
     it 'gathers all active routes of items and the current menu' do
       menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: { path: %w(bar test) }))
       menu.add_item(Sidebars::MenuItem.new(title: 'foo2', link: 'foo2', active_routes: { controller: 'fooc' }))
       menu.add_item(Sidebars::MenuItem.new(title: 'foo3', link: 'foo3', active_routes: { controller: 'barc' }))
+      menu.add_item(nil_menu_item)
 
       allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
 
+      expect(menu).to receive(:renderable_items).and_call_original
       expect(menu.all_active_routes).to eq({ path: %w(foo bar test), controller: %w(fooc barc) })
     end
   end
@@ -31,6 +34,60 @@ RSpec.describe Sidebars::Menu do
 
         expect(menu.render?).to be true
       end
+
+      context 'when menu items are NilMenuItem' do
+        it 'returns false' do
+          menu.add_item(nil_menu_item)
+
+          expect(menu.render?).to be false
+        end
+      end
+    end
+  end
+
+  describe '#has_items?' do
+    it 'returns true when there are regular menu items' do
+      menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: {}))
+
+      expect(menu.has_items?).to be true
+    end
+
+    it 'returns true when there are nil menu items' do
+      menu.add_item(nil_menu_item)
+
+      expect(menu.has_items?).to be true
+    end
+  end
+
+  describe '#has_renderable_items?' do
+    it 'returns true when there are regular menu items' do
+      menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: {}))
+
+      expect(menu.has_renderable_items?).to be true
+    end
+
+    it 'returns false when there are nil menu items' do
+      menu.add_item(nil_menu_item)
+
+      expect(menu.has_renderable_items?).to be false
+    end
+
+    it 'returns true when there are both regular and nil menu items' do
+      menu.add_item(Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: {}))
+      menu.add_item(nil_menu_item)
+
+      expect(menu.has_renderable_items?).to be true
+    end
+  end
+
+  describe '#renderable_items' do
+    it 'returns only regular menu items' do
+      item = Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: {})
+      menu.add_item(item)
+      menu.add_item(nil_menu_item)
+
+      expect(menu.renderable_items.size).to eq 1
+      expect(menu.renderable_items.first).to eq item
     end
   end
 

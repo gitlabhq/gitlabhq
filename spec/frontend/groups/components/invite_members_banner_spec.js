@@ -2,6 +2,7 @@ import { GlBanner, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import InviteMembersBanner from '~/groups/components/invite_members_banner.vue';
+import eventHub from '~/invite_members/event_hub';
 import { setCookie, parseBoolean } from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/common_utils');
@@ -58,12 +59,23 @@ describe('InviteMembersBanner', () => {
       });
     });
 
-    it('sets the button attributes for the buttonClickEvent', () => {
-      const button = wrapper.find(`[href='${wrapper.vm.inviteMembersPath}']`);
+    describe('when the button is clicked', () => {
+      beforeEach(() => {
+        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+        wrapper.find(GlBanner).vm.$emit('primary');
+      });
 
-      expect(button.attributes()).toMatchObject({
-        'data-track-event': buttonClickEvent,
-        'data-track-label': trackLabel,
+      it('calls openModal through the eventHub', () => {
+        expect(eventHub.$emit).toHaveBeenCalledWith('openModal', {
+          inviteeType: 'members',
+          source: 'invite_members_banner',
+        });
+      });
+
+      it('sends the buttonClickEvent with correct trackCategory and trackLabel', () => {
+        expect(trackingSpy).toHaveBeenCalledWith(trackCategory, buttonClickEvent, {
+          label: trackLabel,
+        });
       });
     });
 
@@ -99,10 +111,6 @@ describe('InviteMembersBanner', () => {
 
     it('uses the button_text text from options for buttontext', () => {
       expect(findBanner().attributes('buttontext')).toBe(buttonText);
-    });
-
-    it('uses the href from inviteMembersPath for buttonlink', () => {
-      expect(findBanner().attributes('buttonlink')).toBe(inviteMembersPath);
     });
   });
 

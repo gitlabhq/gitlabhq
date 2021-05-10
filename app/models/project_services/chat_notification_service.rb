@@ -30,7 +30,7 @@ class ChatNotificationService < Service
   boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
 
   validates :webhook, presence: true, public_url: true, if: :activated?
-  validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_nil: true
+  validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_blank: true
 
   def initialize_properties
     if properties.nil?
