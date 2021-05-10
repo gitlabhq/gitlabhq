@@ -33,6 +33,10 @@ const focusFirstInvalidInput = (e) => {
   }
 };
 
+const getInputElement = (el) => {
+  return el.querySelector('input') || el;
+};
+
 const isEveryFieldValid = (form) => Object.values(form.fields).every(({ state }) => state === true);
 
 const createValidator = (context, feedbackMap) => ({ el, reportInvalidInput = false }) => {
@@ -91,8 +95,9 @@ export default function initValidation(customFeedbackMap = {}) {
   const elDataMap = new WeakMap();
 
   return {
-    inserted(el, binding, { context }) {
+    inserted(element, binding, { context }) {
       const { arg: showGlobalValidation } = binding;
+      const el = getInputElement(element);
       const { form: formEl } = el;
 
       const validate = createValidator(context, feedbackMap);
@@ -121,7 +126,8 @@ export default function initValidation(customFeedbackMap = {}) {
 
       validate({ el, reportInvalidInput: showGlobalValidation });
     },
-    update(el, binding) {
+    update(element, binding) {
+      const el = getInputElement(element);
       const { arg: showGlobalValidation } = binding;
       const { validate, isTouched, isBlurred } = elDataMap.get(el);
       const showValidationFeedback = showGlobalValidation || (isTouched && isBlurred);

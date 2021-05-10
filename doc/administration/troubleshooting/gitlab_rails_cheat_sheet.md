@@ -537,7 +537,7 @@ inactive_users.each do |user|
 end
 ```
 
-### Find Max permissions for project/group
+### Find a user's max permissions for project/group
 
 ```ruby
 user = User.find_by_username 'username'

@@ -6,11 +6,6 @@ import { formatIssue } from '../boards_util';
 import { issuableTypes } from '../constants';
 import * as mutationTypes from './mutation_types';
 
-const notImplemented = () => {
-  /* eslint-disable-next-line @gitlab/require-i18n-strings */
-  throw new Error('Not implemented!');
-};
-
 const updateListItemsCount = ({ state, listId, value }) => {
   const list = state.boardLists[listId];
   if (state.issuableType === issuableTypes.epic) {
@@ -94,16 +89,8 @@ export default {
     state.error = s__('Boards|An error occurred while generating lists. Please reload the page.');
   },
 
-  [mutationTypes.REQUEST_ADD_LIST]: () => {
-    notImplemented();
-  },
-
   [mutationTypes.RECEIVE_ADD_LIST_SUCCESS]: (state, list) => {
     Vue.set(state.boardLists, list.id, list);
-  },
-
-  [mutationTypes.RECEIVE_ADD_LIST_ERROR]: () => {
-    notImplemented();
   },
 
   [mutationTypes.MOVE_LIST]: (state, { movedList, listAtNewIndex }) => {
@@ -172,33 +159,9 @@ export default {
     state.isSettingAssignees = isLoading;
   },
 
-  [mutationTypes.REQUEST_ADD_ISSUE]: () => {
-    notImplemented();
-  },
-
-  [mutationTypes.RECEIVE_ADD_ISSUE_SUCCESS]: () => {
-    notImplemented();
-  },
-
-  [mutationTypes.RECEIVE_ADD_ISSUE_ERROR]: () => {
-    notImplemented();
-  },
-
   [mutationTypes.MUTATE_ISSUE_SUCCESS]: (state, { issue }) => {
     const issueId = getIdFromGraphQLId(issue.id);
     Vue.set(state.boardItems, issueId, formatIssue({ ...issue, id: issueId }));
-  },
-
-  [mutationTypes.REQUEST_UPDATE_ISSUE]: () => {
-    notImplemented();
-  },
-
-  [mutationTypes.RECEIVE_UPDATE_ISSUE_SUCCESS]: () => {
-    notImplemented();
-  },
-
-  [mutationTypes.RECEIVE_UPDATE_ISSUE_ERROR]: () => {
-    notImplemented();
   },
 
   [mutationTypes.ADD_BOARD_ITEM_TO_LIST]: (
@@ -218,14 +181,6 @@ export default {
 
   [mutationTypes.REMOVE_BOARD_ITEM]: (state, itemId) => {
     Vue.delete(state.boardItems, itemId);
-  },
-
-  [mutationTypes.SET_CURRENT_PAGE]: () => {
-    notImplemented();
-  },
-
-  [mutationTypes.TOGGLE_EMPTY_STATE]: () => {
-    notImplemented();
   },
 
   [mutationTypes.REQUEST_GROUP_PROJECTS]: (state, fetchNext) => {

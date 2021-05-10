@@ -1090,5 +1090,43 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
+  describe 'Hidden menus' do
+    it 'has a link to the Activity page' do
+      render
+
+      expect(rendered).to have_link('Activity', href: activity_project_path(project), class: 'shortcuts-project-activity', visible: false)
+    end
+
+    it 'has a link to the Graph page' do
+      render
+
+      expect(rendered).to have_link('Graph', href: project_network_path(project, current_ref), class: 'shortcuts-network', visible: false)
+    end
+
+    it 'has a link to the New Issue page' do
+      render
+
+      expect(rendered).to have_link('Create a new issue', href: new_project_issue_path(project), class: 'shortcuts-new-issue', visible: false)
+    end
+
+    it 'has a link to the Jobs page' do
+      render
+
+      expect(rendered).to have_link('Jobs', href: project_jobs_path(project), class: 'shortcuts-builds', visible: false)
+    end
+
+    it 'has a link to the Commits page' do
+      render
+
+      expect(rendered).to have_link('Commits', href: project_commits_path(project), class: 'shortcuts-commits', visible: false)
+    end
+
+    it 'has a link to the Issue Boards page' do
+      render
+
+      expect(rendered).to have_link('Issue Boards', href: project_boards_path(project), class: 'shortcuts-issue-boards', visible: false)
+    end
+  end
+
   it_behaves_like 'sidebar includes snowplow attributes', 'render', 'projects_side_navigation', 'projects_side_navigation'
 end

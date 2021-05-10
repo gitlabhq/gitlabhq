@@ -103,7 +103,7 @@ module Issuable
     end
     scope :assigned_to, ->(u) do
       assignees_table = Arel::Table.new("#{to_ability_name}_assignees")
-      sql = assignees_table.project('true').where(assignees_table[:user_id].in(u)).where(Arel::Nodes::SqlLiteral.new("#{to_ability_name}_id = #{to_ability_name}s.id"))
+      sql = assignees_table.project('true').where(assignees_table[:user_id].in(u.id)).where(Arel::Nodes::SqlLiteral.new("#{to_ability_name}_id = #{to_ability_name}s.id"))
       where("EXISTS (#{sql.to_sql})")
     end
     # rubocop:enable GitlabSecurity/SqlInjection

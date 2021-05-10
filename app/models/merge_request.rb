@@ -381,7 +381,7 @@ class MergeRequest < ApplicationRecord
   scope :review_requested_to, ->(user) do
     where(
       reviewers_subquery
-        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user))
+        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user.id))
         .exists
     )
   end
@@ -389,7 +389,7 @@ class MergeRequest < ApplicationRecord
   scope :no_review_requested_to, ->(user) do
     where(
       reviewers_subquery
-        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user))
+        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user.id))
         .exists
         .not
     )

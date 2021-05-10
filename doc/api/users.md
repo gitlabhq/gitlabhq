@@ -190,7 +190,7 @@ GET /users
 ]
 ```
 
-Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `using_license_seat` parameters.
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, `is_auditor`, and `using_license_seat` parameters.
 
 ```json
 [
@@ -199,6 +199,7 @@ Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see 
     ...
     "shared_runners_minutes_limit": 133,
     "extra_shared_runners_minutes_limit": 133,
+    "is_auditor": false,
     "using_license_seat": true
     ...
   }
@@ -359,12 +360,13 @@ NOTE:
 The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
 Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see
-the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` parameters.
+the `shared_runners_minutes_limit`, `is_auditor`, and `extra_shared_runners_minutes_limit` parameters.
 
 ```json
 {
   "id": 1,
   "username": "john_smith",
+  "is_auditor": false,
   "shared_runners_minutes_limit": 133,
   "extra_shared_runners_minutes_limit": 133,
   ...
@@ -627,6 +629,8 @@ GET /user
   "last_sign_in_ip": "172.127.2.22"
 }
 ```
+
+Users on GitLab [Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, `is_auditor`, and `using_license_seat` parameters.
 
 ## User status
 

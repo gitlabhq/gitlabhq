@@ -13,12 +13,6 @@ import {
   mockList,
 } from '../mock_data';
 
-const expectNotImplemented = (action) => {
-  it('is not implemented', () => {
-    expect(action).toThrow(new Error('Not implemented!'));
-  });
-};
-
 describe('Board Store Mutations', () => {
   let state;
 
@@ -158,10 +152,6 @@ describe('Board Store Mutations', () => {
     });
   });
 
-  describe('REQUEST_ADD_LIST', () => {
-    expectNotImplemented(mutations.REQUEST_ADD_LIST);
-  });
-
   describe('RECEIVE_ADD_LIST_SUCCESS', () => {
     it('adds list to boardLists state', () => {
       mutations.RECEIVE_ADD_LIST_SUCCESS(state, mockLists[0]);
@@ -170,10 +160,6 @@ describe('Board Store Mutations', () => {
         [mockLists[0].id]: mockLists[0],
       });
     });
-  });
-
-  describe('RECEIVE_ADD_LIST_ERROR', () => {
-    expectNotImplemented(mutations.RECEIVE_ADD_LIST_ERROR);
   });
 
   describe('MOVE_LIST', () => {
@@ -341,10 +327,6 @@ describe('Board Store Mutations', () => {
     });
   });
 
-  describe('REQUEST_ADD_ISSUE', () => {
-    expectNotImplemented(mutations.REQUEST_ADD_ISSUE);
-  });
-
   describe('UPDATE_BOARD_ITEM_BY_ID', () => {
     const issueId = '1';
     const prop = 'id';
@@ -386,14 +368,6 @@ describe('Board Store Mutations', () => {
     });
   });
 
-  describe('RECEIVE_ADD_ISSUE_SUCCESS', () => {
-    expectNotImplemented(mutations.RECEIVE_ADD_ISSUE_SUCCESS);
-  });
-
-  describe('RECEIVE_ADD_ISSUE_ERROR', () => {
-    expectNotImplemented(mutations.RECEIVE_ADD_ISSUE_ERROR);
-  });
-
   describe('MUTATE_ISSUE_SUCCESS', () => {
     it('updates issue in issues state', () => {
       const issues = {
@@ -432,18 +406,6 @@ describe('Board Store Mutations', () => {
 
       expect(state.boardItems).toEqual({ some_gid2: {} });
     });
-  });
-
-  describe('REQUEST_UPDATE_ISSUE', () => {
-    expectNotImplemented(mutations.REQUEST_UPDATE_ISSUE);
-  });
-
-  describe('RECEIVE_UPDATE_ISSUE_SUCCESS', () => {
-    expectNotImplemented(mutations.RECEIVE_UPDATE_ISSUE_SUCCESS);
-  });
-
-  describe('RECEIVE_UPDATE_ISSUE_ERROR', () => {
-    expectNotImplemented(mutations.RECEIVE_UPDATE_ISSUE_ERROR);
   });
 
   describe('ADD_BOARD_ITEM_TO_LIST', () => {
@@ -538,14 +500,6 @@ describe('Board Store Mutations', () => {
 
       expect(state.isSettingAssignees).toBe(true);
     });
-  });
-
-  describe('SET_CURRENT_PAGE', () => {
-    expectNotImplemented(mutations.SET_CURRENT_PAGE);
-  });
-
-  describe('TOGGLE_EMPTY_STATE', () => {
-    expectNotImplemented(mutations.TOGGLE_EMPTY_STATE);
   });
 
   describe('REQUEST_GROUP_PROJECTS', () => {

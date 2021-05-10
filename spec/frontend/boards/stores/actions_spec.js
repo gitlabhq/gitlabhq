@@ -40,12 +40,6 @@ import {
 
 jest.mock('~/flash');
 
-const expectNotImplemented = (action) => {
-  it('is not implemented', () => {
-    expect(action).toThrow(new Error('Not implemented!'));
-  });
-};
-
 // We need this helper to make sure projectPath is including
 // subgroups when the movIssue action is called.
 const getProjectPath = (path) => path.split('#')[0];
@@ -1824,28 +1818,4 @@ describe('unsetError', () => {
       ],
     });
   });
-});
-
-describe('fetchBacklog', () => {
-  expectNotImplemented(actions.fetchBacklog);
-});
-
-describe('bulkUpdateIssues', () => {
-  expectNotImplemented(actions.bulkUpdateIssues);
-});
-
-describe('fetchIssue', () => {
-  expectNotImplemented(actions.fetchIssue);
-});
-
-describe('toggleIssueSubscription', () => {
-  expectNotImplemented(actions.toggleIssueSubscription);
-});
-
-describe('showPage', () => {
-  expectNotImplemented(actions.showPage);
-});
-
-describe('toggleEmptyState', () => {
-  expectNotImplemented(actions.toggleEmptyState);
 });

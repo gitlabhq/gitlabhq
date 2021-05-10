@@ -4,11 +4,17 @@ import validation from '~/vue_shared/directives/validation';
 describe('validation directive', () => {
   let wrapper;
 
-  const createComponent = ({ inputAttributes, showValidation } = {}) => {
+  const createComponent = ({ inputAttributes, showValidation, template } = {}) => {
     const defaultInputAttributes = {
       type: 'text',
       required: true,
     };
+
+    const defaultTemplate = `
+      <form>
+        <input v-validation:[showValidation] name="exampleField" v-bind="attributes" />
+      </form>
+    `;
 
     const component = {
       directives: {
@@ -29,11 +35,7 @@ describe('validation directive', () => {
           },
         };
       },
-      template: `
-        <form>
-          <input v-validation:[showValidation] name="exampleField" v-bind="attributes" />
-        </form>
-      `,
+      template: template || defaultTemplate,
     };
 
     wrapper = shallowMount(component, { attachTo: document.body });
@@ -47,6 +49,12 @@ describe('validation directive', () => {
   const getFormData = () => wrapper.vm.form;
   const findForm = () => wrapper.find('form');
   const findInput = () => wrapper.find('input');
+
+  const setValueAndTriggerValidation = (value) => {
+    const input = findInput();
+    input.setValue(value);
+    input.trigger('blur');
+  };
 
   describe.each([true, false])(
     'with fields untouched and "showValidation" set to "%s"',
@@ -78,12 +86,6 @@ describe('validation directive', () => {
   `(
     'with input-attributes set to $inputAttributes',
     ({ inputAttributes, validValue, invalidValue }) => {
-      const setValueAndTriggerValidation = (value) => {
-        const input = findInput();
-        input.setValue(value);
-        input.trigger('blur');
-      };
-
       beforeEach(() => {
         createComponent({ inputAttributes });
       });
@@ -129,4 +131,52 @@ describe('validation directive', () => {
       });
     },
   );
+
+  describe('with group elements', () => {
+    const template = `
+      <form>
+        <div v-validation:[showValidation]>
+          <input name="exampleField" v-bind="attributes" />
+        </div>
+      </form>
+    `;
+    beforeEach(() => {
+      createComponent({
+        template,
+        inputAttributes: {
+          required: true,
+        },
+      });
+    });
+
+    describe('with invalid value', () => {
+      beforeEach(() => {
+        setValueAndTriggerValidation('');
+      });
+
+      it('should set correct field state', () => {
+        expect(getFormData().fields.exampleField).toEqual({
+          state: false,
+          feedback: expect.any(String),
+        });
+      });
+
+      it('should set correct feedback', () => {
+        expect(getFormData().fields.exampleField.feedback).toBe('Please fill out this field.');
+      });
+    });
+
+    describe('with valid value', () => {
+      beforeEach(() => {
+        setValueAndTriggerValidation('hello');
+      });
+
+      it('set the correct state', () => {
+        expect(getFormData().fields.exampleField).toEqual({
+          state: true,
+          feedback: '',
+        });
+      });
+    });
+  });
 });

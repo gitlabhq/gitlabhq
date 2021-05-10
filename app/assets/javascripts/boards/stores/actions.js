@@ -40,11 +40,6 @@ import issueSetMilestoneMutation from '../graphql/issue_set_milestone.mutation.g
 import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
 import * as types from './mutation_types';
 
-const notImplemented = () => {
-  /* eslint-disable-next-line @gitlab/require-i18n-strings */
-  throw new Error('Not implemented!');
-};
-
 export const gqlClient = createGqClient(
   {},
   {
@@ -736,29 +731,5 @@ export default {
 
   unsetError: ({ commit }) => {
     commit(types.SET_ERROR, undefined);
-  },
-
-  fetchBacklog: () => {
-    notImplemented();
-  },
-
-  bulkUpdateIssues: () => {
-    notImplemented();
-  },
-
-  fetchIssue: () => {
-    notImplemented();
-  },
-
-  toggleIssueSubscription: () => {
-    notImplemented();
-  },
-
-  showPage: () => {
-    notImplemented();
-  },
-
-  toggleEmptyState: () => {
-    notImplemented();
   },
 };

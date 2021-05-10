@@ -569,7 +569,10 @@ To get you started quickly, GitLab provides the configuration file
 [`gitlab-api-fuzzing-config.yml`](https://gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing/-/blob/master/gitlab-api-fuzzing-config.yml).
 This file has several testing profiles that perform various numbers of tests. The run time of each
 profile increases as the test numbers go up. To use a configuration file, add it to your
-repository's root as `.gitlab-api-fuzzing.yml`.
+repository as `.gitlab/gitlab-api-fuzzing-config.yml`.
+
+NOTE:
++In GitLab 13.11 and earlier, the configuration file was `.gitlab-api-fuzzing.yml` in the repository's root. In GitLab 13.12 and later, it is `.gitlab/gitlab-api-fuzzing-config.yml` in the repository's root.
 
 | Profile  | Fuzz Tests (per parameter) |
 |:---------|:-----------|

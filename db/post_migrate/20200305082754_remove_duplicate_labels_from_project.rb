@@ -9,6 +9,8 @@ class RemoveDuplicateLabelsFromProject < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   class BackupLabel < Label
+    self.inheritance_column = :_type_disabled
+
     self.table_name = 'backup_labels'
   end
 

@@ -6,6 +6,7 @@ module Sidebars
       override :configure_menus
       def configure_menus
         set_scope_menu(Sidebars::Projects::Menus::ScopeMenu.new(context))
+        set_hidden_menu(Sidebars::Projects::Menus::HiddenMenu.new(context))
 
         add_menu(Sidebars::Projects::Menus::ProjectInformationMenu.new(context))
         add_menu(Sidebars::Projects::Menus::LearnGitlabMenu.new(context))
@@ -25,11 +26,6 @@ module Sidebars
         add_menu(Sidebars::Projects::Menus::SnippetsMenu.new(context))
         add_menu(Sidebars::Projects::Menus::MembersMenu.new(context))
         add_menu(Sidebars::Projects::Menus::SettingsMenu.new(context))
-      end
-
-      override :render_raw_menus_partial
-      def render_raw_menus_partial
-        'layouts/nav/sidebar/project_menus'
       end
 
       override :aria_label

@@ -10199,9 +10199,6 @@ msgstr ""
 msgid "DastProfiles|Password form field"
 msgstr ""
 
-msgid "DastProfiles|Please enter a valid timeout value"
-msgstr ""
-
 msgid "DastProfiles|Profile name"
 msgstr ""
 
