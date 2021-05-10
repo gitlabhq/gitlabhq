@@ -15,31 +15,31 @@ Use the [Bitbucket Cloud importer](bitbucket.md) for that.
 
 Import your projects from Bitbucket Server to GitLab with minimal effort.
 
-## Overview
+The Bitbucket importer can import:
 
-- In its current state, the Bitbucket importer can import:
-  - the repository description (GitLab 11.2+)
-  - the Git repository data (GitLab 11.2+)
-  - the pull requests (GitLab 11.2+)
-  - the pull request comments (GitLab 11.2+)
-- Repository public access is retained. If a repository is private in Bitbucket
-  it will be created as private in GitLab as well.
+- Repository description (GitLab 11.2+)
+- Git repository data (GitLab 11.2+)
+- Pull requests (GitLab 11.2+)
+- Pull request comments (GitLab 11.2+)
+
+When importing:
+
+- Repository public access is retained. If a repository is private in Bitbucket, it's created as
+  private in GitLab as well.
 
 ## Limitations
 
-1. Currently GitLab doesn't allow comments on arbitrary lines of code, so any
-   Bitbucket comments out of bounds are inserted as comments in the merge
-   request.
-1. Bitbucket Server allows multiple levels of threading. GitLab import
-   collapses this into one thread and quote part of the original comment.
-1. Declined pull requests have unreachable commits, which prevents the GitLab
-   importer from generating a proper diff. These pull requests show up as
-   empty changes.
-1. Attachments in Markdown are currently not imported.
-1. Task lists are not imported.
-1. Emoji reactions are not imported
-1. Project filtering does not support fuzzy search (only `starts with` or `full
-   match strings` are currently supported)
+- GitLab doesn't allow comments on arbitrary lines of code, so any Bitbucket comments out of bounds
+  are inserted as comments in the merge request.
+- Bitbucket Server allows multiple levels of threading. GitLab import collapses this into one thread
+  and quote part of the original comment.
+- Declined pull requests have unreachable commits, which prevents the GitLab importer from
+  generating a proper diff. These pull requests show up as empty changes.
+- Attachments in Markdown are not imported.
+- Task lists are not imported.
+- Emoji reactions are not imported.
+- Project filtering does not support fuzzy search (only `starts with` or `full match strings` are 
+  supported).
 
 ## How it works
 
@@ -104,7 +104,7 @@ To disable it:
 Feature.disable(:bitbucket_server_user_mapping_by_username)
 ```
 
-## Importing your Bitbucket repositories
+## Import your Bitbucket repositories
 
 1. Sign in to GitLab and go to your dashboard.
 1. Click on **New project**.

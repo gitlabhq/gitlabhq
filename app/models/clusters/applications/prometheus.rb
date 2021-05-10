@@ -25,18 +25,15 @@ module Clusters
         key: Settings.attr_encrypted_db_key_base_32,
         algorithm: 'aes-256-gcm'
 
+      default_value_for(:alert_manager_token) { SecureRandom.hex }
+
       after_destroy do
-        run_after_commit do
-          disable_prometheus_integration
-        end
+        cluster.find_or_build_integration_prometheus.destroy
       end
 
       state_machine :status do
         after_transition any => [:installed, :externally_installed] do |application|
-          application.run_after_commit do
-            Clusters::Applications::ActivateServiceWorker
-              .perform_async(application.cluster_id, ::PrometheusService.to_param) # rubocop:disable CodeReuse/ServiceClass
-          end
+          application.cluster.find_or_build_integration_prometheus.update(enabled: true, alert_manager_token: application.alert_manager_token)
         end
 
         after_transition any => :updating do |application|
@@ -103,22 +100,7 @@ module Clusters
         files.merge('values.yaml': replaced_values)
       end
 
-      def generate_alert_manager_token!
-        unless alert_manager_token.present?
-          update!(alert_manager_token: generate_token)
-        end
-      end
-
       private
-
-      def generate_token
-        SecureRandom.hex
-      end
-
-      def disable_prometheus_integration
-        ::Clusters::Applications::DeactivateServiceWorker
-          .perform_async(cluster_id, ::PrometheusService.to_param) # rubocop:disable CodeReuse/ServiceClass
-      end
 
       def install_knative_metrics
         return [] unless cluster.application_knative_available?

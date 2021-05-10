@@ -9,20 +9,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Import your projects from Gitea to GitLab with minimal effort.
 
-## Overview
-
 NOTE:
 This requires Gitea `v1.0.0` or newer.
 
-- At its current state, Gitea importer can import:
-  - the repository description (GitLab 8.15+)
-  - the Git repository data (GitLab 8.15+)
-  - the issues (GitLab 8.15+)
-  - the pull requests (GitLab 8.15+)
-  - the milestones (GitLab 8.15+)
-  - the labels (GitLab 8.15+)
-- Repository public access is retained. If a repository is private in Gitea
-  it will be created as private in GitLab as well.
+The Gitea importer can import:
+
+- Repository description (GitLab 8.15+)
+- Git repository data (GitLab 8.15+)
+- Issues (GitLab 8.15+)
+- Pull requests (GitLab 8.15+)
+- Milestones (GitLab 8.15+)
+- Labels (GitLab 8.15+)
+
+When importing:
+
+- Repository public access is retained. If a repository is private in Gitea it's created as private
+  in GitLab as well.
 
 ## How it works
 
@@ -35,13 +37,13 @@ The importer creates any new namespaces (groups) if they don't exist or in
 the case the namespace is taken, the repository is imported under the user's
 namespace that started the import process.
 
-## Importing your Gitea repositories
+## Import your Gitea repositories
 
 The importer page is visible when you create a new project.
 
 ![New project page on GitLab](img/import_projects_from_new_project_page.png)
 
-Click on the **Gitea** link and the import authorization process starts.
+Click the **Gitea** link and the import authorization process starts.
 
 ![New Gitea project import](img/import_projects_from_gitea_new_import.png)
 

@@ -11,18 +11,16 @@ Subversion (SVN) is a central version control system (VCS) while
 Git is a distributed version control system. There are some major differences
 between the two, for more information consult your favorite search engine.
 
-## Overview
-
 There are two approaches to SVN to Git migration:
 
-1. [Git/SVN Mirror](#smooth-migration-with-a-gitsvn-mirror-using-subgit) which:
-   - Makes the GitLab repository to mirror the SVN project.
-   - Git and SVN repositories are kept in sync; you can use either one.
-   - Smoothens the migration process and allows to manage migration risks.
+- [Git/SVN Mirror](#smooth-migration-with-a-gitsvn-mirror-using-subgit) which:
+  - Makes the GitLab repository to mirror the SVN project.
+  - Git and SVN repositories are kept in sync; you can use either one.
+  - Smoothens the migration process and allows to manage migration risks.
 
-1. [Cut over migration](#cut-over-migration-with-svn2git) which:
-   - Translates and imports the existing data and history from SVN to Git.
-   - Is a fire and forget approach, good for smaller teams.
+- [Cut over migration](#cut-over-migration-with-svn2git) which:
+  - Translates and imports the existing data and history from SVN to Git.
+  - Is a fire and forget approach, good for smaller teams.
 
 ## Smooth migration with a Git/SVN mirror using SubGit
 

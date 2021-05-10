@@ -49,9 +49,9 @@ As a result, the following projects are created:
 | `https://gitlab.com/YOUR_GROUP/build/make`      | <https://android.googlesource.com/platform/build>           |
 | `https://gitlab.com/YOUR_GROUP/build/blueprint` | <https://android.googlesource.com/platform/build/blueprint> |
 
-## Importing the repositories
+## Import the repositories
 
-You can start the import with:
+Follow these steps to start the import:
 
 1. From your GitLab dashboard click **New project**
 1. Switch to the **Import project** tab

@@ -14,26 +14,27 @@ Server (aka Stash). If you are trying to import projects from Bitbucket Server, 
 
 Import your projects from Bitbucket Cloud to GitLab with minimal effort.
 
-## Overview
+The Bitbucket importer can import:
 
-- At its current state, the Bitbucket importer can import:
-  - the repository description (GitLab 7.7+)
-  - the Git repository data (GitLab 7.7+)
-  - the issues (GitLab 7.7+)
-  - the issue comments (GitLab 8.15+)
-  - the pull requests (GitLab 8.4+)
-  - the pull request comments (GitLab 8.15+)
-  - the milestones (GitLab 8.15+)
-  - the wiki (GitLab 8.15+)
-- References to pull requests and issues are preserved (GitLab 8.7+)
-- Repository public access is retained. If a repository is private in Bitbucket
-  it will be created as private in GitLab as well.
+- Repository description (GitLab 7.7+)
+- Git repository data (GitLab 7.7+)
+- Issues (GitLab 7.7+)
+- Issue comments (GitLab 8.15+)
+- Pull requests (GitLab 8.4+)
+- Pull request comments (GitLab 8.15+)
+- Milestones (GitLab 8.15+)
+- Wiki (GitLab 8.15+)
+
+When importing:
+
+- References to pull requests and issues are preserved (GitLab 8.7+).
+- Repository public access is retained. If a repository is private in Bitbucket, it's created as
+  private in GitLab as well.
 
 ## Requirements
 
-The [Bitbucket Cloud integration](../../../integration/bitbucket.md) must be first enabled in order to be
-able to import your projects from Bitbucket Cloud. Ask your GitLab administrator
-to enable this if not already.
+To import your projects from Bitbucket Cloud, the [Bitbucket Cloud integration](../../../integration/bitbucket.md)
+must be enabled. Ask your GitLab administrator to enable this if it isn't already enabled.
 
 ## How it works
 

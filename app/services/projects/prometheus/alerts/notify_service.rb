@@ -63,7 +63,7 @@ module Projects
         def valid_alert_manager_token?(token, integration)
           valid_for_manual?(token) ||
             valid_for_alerts_endpoint?(token, integration) ||
-            valid_for_managed?(token)
+            valid_for_cluster?(token)
         end
 
         def valid_for_manual?(token)
@@ -83,18 +83,20 @@ module Projects
           compare_token(token, integration.token)
         end
 
-        def valid_for_managed?(token)
-          prometheus_application = available_prometheus_application(project)
-          return false unless prometheus_application
+        def valid_for_cluster?(token)
+          cluster_integration = find_cluster_integration(project)
+          return false unless cluster_integration
+
+          cluster_integration_token = cluster_integration.alert_manager_token
 
           if token
-            compare_token(token, prometheus_application.alert_manager_token)
+            compare_token(token, cluster_integration_token)
           else
-            prometheus_application.alert_manager_token.nil?
+            cluster_integration_token.nil?
           end
         end
 
-        def available_prometheus_application(project)
+        def find_cluster_integration(project)
           alert_id = gitlab_alert_id
           return unless alert_id
 
@@ -105,7 +107,7 @@ module Projects
           return unless cluster&.enabled?
           return unless cluster.application_prometheus_available?
 
-          cluster.application_prometheus
+          cluster.application_prometheus || cluster.integration_prometheus
         end
 
         def find_alert(project, metric)

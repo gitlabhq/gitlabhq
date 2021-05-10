@@ -5,13 +5,11 @@ class ServiceDeskEmailReceiverWorker < EmailReceiverWorker # rubocop:disable Sca
 
   sidekiq_options retry: 3
 
-  def perform(raw)
-    return unless ::Gitlab::ServiceDeskEmail.enabled?
+  def should_perform?
+    ::Gitlab::ServiceDeskEmail.enabled?
+  end
 
-    begin
-      Gitlab::Email::ServiceDeskReceiver.new(raw).execute
-    rescue StandardError => e
-      handle_failure(raw, e)
-    end
+  def receiver
+    @receiver ||= Gitlab::Email::ServiceDeskReceiver.new(raw)
   end
 end

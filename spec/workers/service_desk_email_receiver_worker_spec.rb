@@ -9,11 +9,12 @@ RSpec.describe ServiceDeskEmailReceiverWorker, :mailer do
 
     context 'when service_desk_email config is enabled' do
       before do
-        stub_service_desk_email_setting(enabled: true, address: 'foo')
+        stub_service_desk_email_setting(enabled: true, address: 'support+%{key}@example.com')
       end
 
       it 'does not ignore the email' do
-        expect(Gitlab::Email::ServiceDeskReceiver).to receive(:new)
+        expect(Gitlab::Email::ServiceDeskReceiver).to receive(:new).and_call_original
+        expect(Sidekiq.logger).to receive(:error).with(hash_including('exception.class' => Gitlab::Email::ProjectNotFound.to_s)).and_call_original
 
         worker.perform(email)
       end
@@ -23,6 +24,7 @@ RSpec.describe ServiceDeskEmailReceiverWorker, :mailer do
           allow_next_instance_of(Gitlab::Email::ServiceDeskReceiver) do |receiver|
             allow(receiver).to receive(:find_handler).and_return(nil)
           end
+          expect(Sidekiq.logger).to receive(:error).with(hash_including('exception.class' => Gitlab::Email::UnknownIncomingEmail.to_s)).and_call_original
         end
 
         it 'sends a rejection email' do

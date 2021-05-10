@@ -11701,7 +11701,9 @@ CREATE TABLE clusters_integration_prometheus (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     cluster_id bigint NOT NULL,
-    enabled boolean DEFAULT false NOT NULL
+    enabled boolean DEFAULT false NOT NULL,
+    encrypted_alert_manager_token text,
+    encrypted_alert_manager_token_iv text
 );
 
 CREATE TABLE clusters_kubernetes_namespaces (

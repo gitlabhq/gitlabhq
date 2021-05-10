@@ -15,6 +15,62 @@ RSpec.describe Clusters::Integrations::Prometheus do
     it { is_expected.not_to allow_value(nil).for(:enabled) }
   end
 
+  describe 'after_destroy' do
+    subject(:integration) { create(:clusters_integrations_prometheus, cluster: cluster, enabled: true) }
+
+    let(:cluster) { create(:cluster, :with_installed_helm) }
+
+    it 'deactivates prometheus_service' do
+      expect(Clusters::Applications::DeactivateServiceWorker)
+        .to receive(:perform_async).with(cluster.id, 'prometheus')
+
+      integration.destroy!
+    end
+  end
+
+  describe 'after_save' do
+    subject(:integration) { create(:clusters_integrations_prometheus, cluster: cluster, enabled: enabled) }
+
+    let(:cluster) { create(:cluster, :with_installed_helm) }
+    let(:enabled) { true }
+
+    context 'when no change to enabled status' do
+      it 'does not touch project services' do
+        integration # ensure integration exists before we set the expectations
+
+        expect(Clusters::Applications::DeactivateServiceWorker)
+          .not_to receive(:perform_async)
+
+        expect(Clusters::Applications::ActivateServiceWorker)
+          .not_to receive(:perform_async)
+
+        integration.update!(enabled: enabled)
+      end
+    end
+
+    context 'when enabling' do
+      let(:enabled) { false }
+
+      it 'deactivates prometheus_service' do
+        expect(Clusters::Applications::ActivateServiceWorker)
+          .to receive(:perform_async).with(cluster.id, 'prometheus')
+
+        integration.update!(enabled: true)
+      end
+    end
+
+    context 'when disabling' do
+      let(:enabled) { true }
+
+      it 'activates prometheus_service' do
+        expect(Clusters::Applications::DeactivateServiceWorker)
+          .to receive(:perform_async).with(cluster.id, 'prometheus')
+
+        integration.update!(enabled: false)
+      end
+    end
+  end
+
   describe '#prometheus_client' do
     include_examples '#prometheus_client shared' do
       let(:factory) { :clusters_integrations_prometheus }

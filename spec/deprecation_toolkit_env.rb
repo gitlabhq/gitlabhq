@@ -59,6 +59,7 @@ module DeprecationToolkitEnv
       activesupport-6.0.3.6/lib/active_support/cache.rb
       activerecord-6.0.3.6/lib/active_record/relation.rb
       asciidoctor-2.0.12/lib/asciidoctor/extensions.rb
+      attr_encrypted-3.1.0/lib/attr_encrypted/adapters/active_record.rb
     ]
   end
 

@@ -58,8 +58,8 @@ RSpec.describe Gitlab::Prometheus::Adapter do
         context 'with cluster with prometheus integration' do
           let!(:prometheus_integration) { create(:clusters_integrations_prometheus, cluster: cluster) }
 
-          it 'returns the integration instead' do
-            expect(subject.prometheus_adapter).to eq(prometheus_integration)
+          it 'returns the application' do
+            expect(subject.prometheus_adapter).to eq(prometheus)
           end
         end
       end

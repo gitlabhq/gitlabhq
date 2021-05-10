@@ -62,7 +62,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       end
     end
 
-    context 'with project specific cluster' do
+    context 'with project specific cluster using prometheus application' do
       where(:cluster_enabled, :status, :configured_token, :token_input, :result) do
         true  | :installed | token | token | :success
         true  | :installed | nil   | nil   | :success
@@ -82,6 +82,40 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
           if status
             create(:clusters_applications_prometheus, status,
                    cluster: cluster,
+                   alert_manager_token: configured_token)
+          end
+        end
+
+        case result = params[:result]
+        when :success
+          include_examples 'processes one firing and one resolved prometheus alerts'
+        when :failure
+          it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
+        else
+          raise "invalid result: #{result.inspect}"
+        end
+      end
+    end
+
+    context 'with project specific cluster using prometheus integration' do
+      where(:cluster_enabled, :integration_enabled, :configured_token, :token_input, :result) do
+        true  | true  | token | token | :success
+        true  | true  | nil   | nil   | :success
+        true  | true  | token | 'x'   | :failure
+        true  | true  | token | nil   | :failure
+        true  | false | token | token | :failure
+        false | true  | token | token | :failure
+        false | nil   | nil   | token | :failure
+      end
+
+      with_them do
+        before do
+          cluster.update!(enabled: cluster_enabled)
+
+          unless integration_enabled.nil?
+            create(:clusters_integrations_prometheus,
+                   cluster: cluster,
+                   enabled: integration_enabled,
                    alert_manager_token: configured_token)
           end
         end

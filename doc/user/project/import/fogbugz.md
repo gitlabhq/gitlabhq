@@ -8,12 +8,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Import your project from FogBugz to GitLab
 
 It only takes a few simple steps to import your project from FogBugz.
-The importer will import all of your cases and comments with original case
-numbers and timestamps. You will also have the opportunity to map FogBugz
-users to GitLab users.
+The importer imports all your cases and comments with original case
+numbers and timestamps. You can also map FogBugz users to GitLab users.
 
-1. From your GitLab dashboard click 'New project'
-1. Click on the 'FogBugz' button
+Follow these steps to import your project from FogBugz:
+
+1. From your GitLab dashboard, select **New project**.
+
+1. Select the **FogBugz** button.
 
   ![FogBugz](img/fogbugz_import_select_fogbogz.png)
 
@@ -25,11 +27,11 @@ users to GitLab users.
 
   ![User Map](img/fogbugz_import_user_map.png)
 
-1. Select the projects you wish to import by clicking the Import buttons
+1. Select the projects you wish to import by selecting the **Import** buttons.
 
   ![Import Project](img/fogbugz_import_select_project.png)
 
-1. Once the import has finished click the link to take you to the project
+1. Once the import finishes, click the link to go to the project
    dashboard. Follow the directions to push your existing repository.
 
   ![Finished](img/fogbugz_import_finished.png)
