@@ -978,6 +978,7 @@ required for an on-demand DAST scan.
 A site profile contains the following:
 
 - **Profile name**: A name you assign to the site to be scanned.
+- **Site type**: The type of target to be scanned, either website or API scan.
 - **Target URL**: The URL that DAST runs against.
 - **Excluded URLs**: A comma-separated list of URLs to exclude from the scan.
 - **Request headers**: A comma-separated list of HTTP request headers, including names and values. These headers are added to every request made by DAST.
@@ -987,6 +988,8 @@ A site profile contains the following:
   - **Password**: The password used to authenticate to the website.
   - **Username form field**: The name of username field at the sign-in HTML form.
   - **Password form field**: The name of password field at the sign-in HTML form.
+
+When an API site type is selected, a [host override](#host-override) is used to ensure the API being scanned is on the same host as the target. This is done to reduce the risk of running an active scan against the wrong API.
 
 #### Site profile validation
 
