@@ -24,7 +24,7 @@ RSpec.describe Groups::GroupMembersController do
       expect(response).to render_template(:index)
     end
 
-    context 'user with owner access' do
+    context 'when user can manage members' do
       let_it_be(:invited) { create_list(:group_member, 3, :invited, group: group) }
 
       before do
@@ -68,6 +68,19 @@ RSpec.describe Groups::GroupMembersController do
         get :index, params: { group_id: group, invited_members_page: 2 }
 
         expect(assigns(:invited_members).count).to eq(1)
+      end
+    end
+
+    context 'when user cannot manage members' do
+      before do
+        sign_in(user)
+      end
+
+      it 'does not assign invited members or skip_groups', :aggregate_failures do
+        get :index, params: { group_id: group }
+
+        expect(assigns(:invited_members)).to be_nil
+        expect(assigns(:skip_groups)).to be_nil
       end
     end
 

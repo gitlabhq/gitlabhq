@@ -97,6 +97,18 @@ module Banzai
           @nodes ||= each_node.to_a
         end
 
+        def object_class
+          self.class.object_class
+        end
+
+        def project
+          context[:project]
+        end
+
+        def group
+          context[:group]
+        end
+
         private
 
         # Returns a data attribute String to attach to a reference link
@@ -139,14 +151,6 @@ module Banzai
         # Note that while the key might exist, its value could be nil!
         def validate
           needs :project unless skip_project_check?
-        end
-
-        def project
-          context[:project]
-        end
-
-        def group
-          context[:group]
         end
 
         def user
@@ -214,10 +218,6 @@ module Banzai
 
         def element_node?(node)
           node.is_a?(Nokogiri::XML::Element)
-        end
-
-        def object_class
-          self.class.object_class
         end
 
         def object_reference_pattern

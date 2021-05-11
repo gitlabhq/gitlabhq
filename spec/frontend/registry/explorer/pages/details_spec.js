@@ -292,7 +292,6 @@ describe('Details Page', () => {
 
       await waitForApolloRequestRender();
       expect(findDetailsHeader().props()).toMatchObject({
-        metadataLoading: false,
         image: {
           name: containerRepositoryMock.name,
           project: {

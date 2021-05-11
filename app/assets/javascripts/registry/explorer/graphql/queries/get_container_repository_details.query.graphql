@@ -8,7 +8,6 @@ query getContainerRepositoryDetails($id: ID!) {
     canDelete
     createdAt
     updatedAt
-    tagsCount
     expirationPolicyStartedAt
     expirationPolicyCleanupStatus
     project {

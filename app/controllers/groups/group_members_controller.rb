@@ -4,6 +4,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   include MembershipActions
   include MembersPresentation
   include SortingHelper
+  include Gitlab::Utils::StrongMemoize
 
   MEMBER_PER_PAGE_LIMIT = 50
 
@@ -21,6 +22,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   feature_category :authentication_and_authorization
 
+  helper_method :can_manage_members?
+
   def index
     preload_max_access
     @sort = params[:sort].presence || sort_value_name
@@ -29,7 +32,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
       .new(@group, current_user, params: filter_params)
       .execute(include_relations: requested_relations)
 
-    if can_manage_members
+    if can_manage_members?
       @skip_groups = @group.related_group_ids
 
       @invited_members = @members.invite
@@ -59,8 +62,10 @@ class Groups::GroupMembersController < Groups::ApplicationController
     current_user.max_access_for_group[@group.id] = @group.max_member_access(current_user)
   end
 
-  def can_manage_members
-    can?(current_user, :admin_group_member, @group)
+  def can_manage_members?
+    strong_memoize(:can_manage_members) do
+      can?(current_user, :admin_group_member, @group)
+    end
   end
 
   def present_invited_members(invited_members)

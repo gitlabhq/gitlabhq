@@ -1,15 +1,14 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _('Group members')
-- can_manage_members = can?(current_user, :admin_group_member, @group)
-- show_invited_members = can_manage_members && @invited_members.exists?
-- show_access_requests = can_manage_members && @requesters.exists?
+- show_invited_members = can_manage_members? && @invited_members.load.any?
+- show_access_requests = can_manage_members? && @requesters.load.any?
 - invited_active = params[:search_invited].present? || params[:invited_members_page].present?
 
 .js-remove-member-modal
 .row.gl-mt-3
   .col-lg-12
     .gl-display-flex.gl-flex-wrap
-      - if can_manage_members
+      - if can_manage_members?
         .gl-w-half.gl-xs-w-full
           %h4
             = _('Group members')
@@ -21,7 +20,7 @@
               .js-invite-group-trigger{ data: { classes: 'gl-mt-3 gl-sm-w-auto gl-w-full', display_text: _('Invite a group') } }
               .js-invite-members-trigger{ data: { variant: 'success', classes: 'gl-mt-3 gl-sm-w-auto gl-w-full gl-sm-ml-3', display_text: _('Invite members') } }
           = render 'groups/invite_members_modal', group: @group
-    - if can_manage_members && Feature.disabled?(:invite_members_group_modal, @group)
+    - if can_manage_members? && Feature.disabled?(:invite_members_group_modal, @group)
       %hr.gl-mt-4
         %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }
@@ -42,7 +41,7 @@
           %span
             = _('Members')
           %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @members.total_count
-      - if @group.shared_with_group_links.any?
+      - if @group.shared_with_group_links.present?
         %li.nav-item
           = link_to '#tab-groups', class: ['nav-link'] , data: { toggle: 'tab', qa_selector: 'groups_list_tab' } do
             %span
@@ -65,7 +64,7 @@
         .js-group-members-list{ data: group_members_list_data_attributes(@group, @members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }) }
           .loading
             .gl-spinner.gl-spinner-md
-      - if @group.shared_with_group_links.any?
+      - if @group.shared_with_group_links.present?
         #tab-groups.tab-pane
           .js-group-group-links-list{ data: group_group_links_list_data_attributes(@group) }
             .loading

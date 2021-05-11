@@ -79,6 +79,7 @@ export default {
       :toggle-class="toggleClass"
       :boundary="getBoundaryElement()"
       menu-class="dropdown-extended-height"
+      category="tertiary"
       no-flip
       right
       lazy

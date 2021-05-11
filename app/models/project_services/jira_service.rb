@@ -106,9 +106,8 @@ class JiraService < IssueTrackerService
   end
 
   def help
-    "You need to configure Jira before enabling this service. For more details
-    read the
-    [Jira service documentation](#{help_page_url('user/project/integrations/jira')})."
+    jira_doc_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_url('integration/jira/index.html') }
+    s_("JiraService|You need to configure Jira before enabling this integration. For more details, read the %{jira_doc_link_start}Jira integration documentation%{link_end}.") % { jira_doc_link_start: jira_doc_link_start, link_end: '</a>'.html_safe }
   end
 
   def title

@@ -26,9 +26,9 @@ module Packages
 
       def base
         if @project
-          packages_for_a_single_project
+          packages_for_project(@project)
         elsif @group
-          packages_for_multiple_projects
+          packages_visible_to_user(@current_user, within_group: @group)
         else
           ::Packages::Package.none
         end
@@ -39,23 +39,6 @@ module Packages
         matching_packages = matching_packages.order_by_package_file if @order_by_package_file
 
         matching_packages
-      end
-
-      # Produces a query that retrieves packages from a single project.
-      def packages_for_a_single_project
-        @project.packages
-      end
-
-      # Produces a query that retrieves packages from multiple projects that
-      # the current user can view within a group.
-      def packages_for_multiple_projects
-        packages_visible_to_user(@current_user, within_group: @group)
-      end
-
-      # Returns the projects that the current user can view within a group.
-      def projects_visible_to_current_user
-        @group.all_projects
-              .public_or_visible_to_user(@current_user)
       end
     end
   end

@@ -69,7 +69,7 @@ RSpec.describe BulkImportWorker do
       end
 
       context 'when there are created entities to process' do
-        it 'marks a batch of entities as started, enqueues BulkImports::EntityWorker and reenqueues' do
+        it 'marks a batch of entities as started, enqueues EntityWorker, ExportRequestWorker and reenqueues' do
           stub_const("#{described_class}::DEFAULT_BATCH_SIZE", 1)
 
           bulk_import = create(:bulk_import, :created)
@@ -78,6 +78,7 @@ RSpec.describe BulkImportWorker do
 
           expect(described_class).to receive(:perform_in).with(described_class::PERFORM_DELAY, bulk_import.id)
           expect(BulkImports::EntityWorker).to receive(:perform_async)
+          expect(BulkImports::ExportRequestWorker).to receive(:perform_async)
 
           subject.perform(bulk_import.id)
 

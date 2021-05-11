@@ -11,7 +11,7 @@ module Packages
       end
 
       def execute
-        packages_for_current_user.with_name_like(query).order_name_asc if query
+        packages_for_current_user.installable.with_name_like(query).order_name_asc if query
       end
 
       private

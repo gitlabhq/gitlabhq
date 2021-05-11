@@ -19,7 +19,7 @@ module BoardsActions
 
   def show
     # Add / update the board in the recent visits table
-    Boards::Visits::CreateService.new(parent, current_user).execute(board) if request.format.html?
+    board_visit_service.new(parent, current_user).execute(board) if request.format.html?
 
     respond_with_board
   end
@@ -50,6 +50,10 @@ module BoardsActions
 
   def board_type
     board_klass.to_type
+  end
+
+  def board_visit_service
+    Boards::Visits::CreateService
   end
 
   def serializer

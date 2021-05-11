@@ -30,13 +30,19 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     pipelineEtag,
     // Add to provide/inject API for static values
     ciConfigPath,
+    ciExamplesHelpPagePath,
+    ciHelpPagePath,
     defaultBranch,
     emptyStateIllustrationPath,
+    helpPaths,
     lintHelpPagePath,
+    needsHelpPagePath,
     newMergeRequestPath,
+    pipelinePagePath,
     projectFullPath,
     projectPath,
     projectNamespace,
+    runnerHelpPagePath,
     ymlHelpPagePath,
   } = el?.dataset;
 
@@ -80,15 +86,21 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     apolloProvider,
     provide: {
       ciConfigPath,
+      ciExamplesHelpPagePath,
+      ciHelpPagePath,
+      configurationPaths,
       defaultBranch,
       emptyStateIllustrationPath,
+      helpPaths,
       lintHelpPagePath,
+      needsHelpPagePath,
       newMergeRequestPath,
+      pipelinePagePath,
       projectFullPath,
       projectPath,
       projectNamespace,
+      runnerHelpPagePath,
       ymlHelpPagePath,
-      configurationPaths,
     },
     render(h) {
       return h(PipelineEditorApp);

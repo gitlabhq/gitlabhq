@@ -20,7 +20,7 @@ module Packages
 
     attr_reader :current_user, :group, :params
 
-    def packages_for_group_projects
+    def packages_for_group_projects(installable_only: false)
       packages = ::Packages::Package
         .including_build_info
         .including_project_route
@@ -32,7 +32,7 @@ module Packages
       packages = filter_with_version(packages)
       packages = filter_by_package_type(packages)
       packages = filter_by_package_name(packages)
-      filter_by_status(packages)
+      installable_only ? packages.installable : filter_by_status(packages)
     end
 
     def group_projects_visible_to_current_user

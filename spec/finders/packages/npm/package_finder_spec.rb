@@ -3,7 +3,7 @@ require 'spec_helper'
 
 RSpec.describe ::Packages::Npm::PackageFinder do
   let_it_be_with_reload(:project) { create(:project)}
-  let_it_be(:package) { create(:npm_package, project: project) }
+  let_it_be_with_refind(:package) { create(:npm_package, project: project) }
 
   let(:project) { package.project }
   let(:package_name) { package.name }
@@ -43,6 +43,14 @@ RSpec.describe ::Packages::Npm::PackageFinder do
 
       context 'with unknown package name' do
         let(:package_name) { 'baz' }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'with an uninstallable package' do
+        before do
+          package.update_column(:status, 1)
+        end
 
         it { is_expected.to be_empty }
       end

@@ -6,7 +6,7 @@ RSpec.describe ::Packages::Maven::PackageFinder do
   let_it_be(:user)    { create(:user) }
   let_it_be(:group)   { create(:group) }
   let_it_be(:project) { create(:project, namespace: group) }
-  let_it_be(:package) { create(:maven_package, project: project) }
+  let_it_be_with_refind(:package) { create(:maven_package, project: project) }
 
   let(:param_path) { nil }
   let(:param_project) { nil }
@@ -35,6 +35,16 @@ RSpec.describe ::Packages::Maven::PackageFinder do
           it 'raises an error' do
             expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
           end
+        end
+
+        context 'with an uninstallable package' do
+          let(:param_path) { package.maven_metadatum.path }
+
+          before do
+            package.update_column(:status, 1)
+          end
+
+          it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
         end
       end
 

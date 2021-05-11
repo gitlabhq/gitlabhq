@@ -11,7 +11,8 @@ RSpec.describe ::Packages::Conan::PackageFinder do
 
     subject { described_class.new(user, query: query).execute }
 
-    context 'packages that are not visible to user' do
+    context 'packages that are not installable' do
+      let!(:conan_package3) { create(:conan_package, :error, project: project) }
       let!(:non_visible_project) { create(:project, :private) }
       let!(:non_visible_conan_package) { create(:conan_package, project: non_visible_project) }
       let(:query) { "#{conan_package.name.split('/').first[0, 3]}%" }

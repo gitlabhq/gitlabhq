@@ -6,6 +6,7 @@ class Packages::Package < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
 
   DISPLAYABLE_STATUSES = [:default, :error].freeze
+  INSTALLABLE_STATUSES = [:default].freeze
 
   belongs_to :project
   belongs_to :creator, class_name: 'User'
@@ -86,6 +87,7 @@ class Packages::Package < ApplicationRecord
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
   scope :with_status, ->(status) { where(status: status) }
   scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
+  scope :installable, -> { with_status(INSTALLABLE_STATUSES) }
   scope :including_build_info, -> { includes(pipelines: :user) }
   scope :including_project_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }

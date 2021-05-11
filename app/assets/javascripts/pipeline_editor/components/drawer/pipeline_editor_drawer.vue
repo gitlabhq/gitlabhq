@@ -1,6 +1,10 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
+import FirstPipelineCard from './cards/first_pipeline_card.vue';
+import GettingStartedCard from './cards/getting_started_card.vue';
+import PipelineConfigReferenceCard from './cards/pipeline_config_reference_card.vue';
+import VisualizeAndLintCard from './cards/visualize_and_lint_card.vue';
 
 export default {
   width: {
@@ -11,6 +15,10 @@ export default {
     toggleTxt: __('Collapse'),
   },
   components: {
+    FirstPipelineCard,
+    GettingStartedCard,
+    PipelineConfigReferenceCard,
+    VisualizeAndLintCard,
     GlButton,
     GlIcon,
   },
@@ -55,7 +63,7 @@ export default {
 <template>
   <aside
     aria-live="polite"
-    class="gl-fixed gl-right-0 gl-h-full gl-bg-gray-10 gl-transition-medium gl-border-l-solid gl-border-1 gl-border-gray-100"
+    class="gl-fixed gl-right-0 gl-bg-gray-10 gl-shadow-drawer gl-transition-medium gl-border-l-solid gl-border-1 gl-border-gray-100 gl-h-full gl-z-index-9999 gl-overflow-y-auto"
     :style="rootStyle"
   >
     <gl-button
@@ -63,14 +71,19 @@ export default {
       class="gl-w-full gl-h-9 gl-rounded-0! gl-border-none! gl-border-b-solid! gl-border-1! gl-border-gray-100 gl-text-decoration-none! gl-outline-0! gl-display-flex"
       :class="buttonClass"
       :title="__('Toggle sidebar')"
-      data-testid="toggleBtn"
       @click="toggleDrawer"
     >
-      <span v-if="isExpanded" class="gl-text-gray-500 gl-mr-3" data-testid="collapse-text">{{
-        __('Collapse')
-      }}</span>
+      <span v-if="isExpanded" class="gl-text-gray-500 gl-mr-3" data-testid="collapse-text">
+        {{ __('Collapse') }}
+      </span>
       <gl-icon data-testid="toggle-icon" :name="buttonIconName" />
     </gl-button>
-    <div v-if="isExpanded" class="gl-p-5" data-testid="drawer-content"></div>
+    <div v-if="isExpanded" class="gl-h-full gl-p-5" data-testid="drawer-content">
+      <getting-started-card class="gl-mb-4" />
+      <first-pipeline-card class="gl-mb-4" />
+      <visualize-and-lint-card class="gl-mb-4" />
+      <pipeline-config-reference-card />
+      <div class="gl-h-13"></div>
+    </div>
   </aside>
 </template>

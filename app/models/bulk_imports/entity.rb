@@ -68,6 +68,10 @@ class BulkImports::Entity < ApplicationRecord
     end
   end
 
+  def encoded_source_full_path
+    ERB::Util.url_encode(source_full_path)
+  end
+
   private
 
   def validate_parent_is_a_group

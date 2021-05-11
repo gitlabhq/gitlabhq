@@ -103,6 +103,7 @@ module Packages
 
       def nuget_packages
         Packages::Package.nuget
+                         .displayable
                          .has_version
                          .without_nuget_temporary_name
       end

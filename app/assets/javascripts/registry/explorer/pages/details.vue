@@ -48,13 +48,10 @@ export default {
   mixins: [Tracking.mixin()],
   inject: ['breadCrumbState', 'config'],
   apollo: {
-    image: {
+    containerRepository: {
       query: getContainerRepositoryDetailsQuery,
       variables() {
         return this.queryVariables;
-      },
-      update(data) {
-        return data.containerRepository;
       },
       result() {
         this.updateBreadcrumb();
@@ -66,7 +63,7 @@ export default {
   },
   data() {
     return {
-      image: {},
+      containerRepository: {},
       itemsToBeDeleted: [],
       isMobile: false,
       mutationLoading: false,
@@ -82,12 +79,12 @@ export default {
       };
     },
     isLoading() {
-      return this.$apollo.queries.image.loading || this.mutationLoading;
+      return this.$apollo.queries.containerRepository.loading || this.mutationLoading;
     },
     showPartialCleanupWarning() {
       return (
         this.config.showUnfinishedTagCleanupCallout &&
-        this.image?.expirationPolicyCleanupStatus === UNFINISHED_STATUS &&
+        this.containerRepository?.expirationPolicyCleanupStatus === UNFINISHED_STATUS &&
         !this.hidePartialCleanupWarning
       );
     },
@@ -98,13 +95,13 @@ export default {
       };
     },
     pageActionsAreDisabled() {
-      return Boolean(this.image?.status);
+      return Boolean(this.containerRepository?.status);
     },
   },
   methods: {
     updateBreadcrumb() {
-      const name = this.image?.id
-        ? this.image?.name || ROOT_IMAGE_TEXT
+      const name = this.containerRepository?.id
+        ? this.containerRepository?.name || ROOT_IMAGE_TEXT
         : MISSING_OR_DELETED_IMAGE_BREADCRUMB;
       this.breadCrumbState.updateName(name);
     },
@@ -164,7 +161,7 @@ export default {
     },
     deleteImage() {
       this.deleteImageAlert = true;
-      this.itemsToBeDeleted = [{ path: this.image.path }];
+      this.itemsToBeDeleted = [{ path: this.containerRepository.path }];
       this.$refs.deleteModal.show();
     },
     deleteImageError() {
@@ -180,7 +177,7 @@ export default {
 
 <template>
   <div v-gl-resize-observer="handleResize" class="gl-my-3">
-    <template v-if="image">
+    <template v-if="containerRepository">
       <delete-alert
         v-model="deleteAlertType"
         :garbage-collection-help-page-path="config.garbageCollectionHelpPagePath"
@@ -195,11 +192,11 @@ export default {
         @dismiss="dismissPartialCleanupWarning"
       />
 
-      <status-alert v-if="image.status" :status="image.status" />
+      <status-alert v-if="containerRepository.status" :status="containerRepository.status" />
 
       <details-header
-        :image="image"
-        :metadata-loading="isLoading"
+        v-if="!isLoading"
+        :image="containerRepository"
         :disabled="pageActionsAreDisabled"
         @delete="deleteImage"
       />
@@ -215,7 +212,7 @@ export default {
       />
 
       <delete-image
-        :id="image.id"
+        :id="containerRepository.id"
         ref="deleteImage"
         use-update-fn
         @start="deleteImageIniit"

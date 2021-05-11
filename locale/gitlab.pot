@@ -3289,6 +3289,9 @@ msgstr ""
 msgid "Allowed Geo IP"
 msgstr ""
 
+msgid "Allowed characters: +, 0-9, -, and spaces."
+msgstr ""
+
 msgid "Allowed email domain restriction only permitted for top-level groups"
 msgstr ""
 
@@ -8562,6 +8565,9 @@ msgid "ContainerRegistry|%{strongStart}Enabled%{strongEnd} - Tags that match the
 msgstr ""
 
 msgid "ContainerRegistry|%{title} was successfully scheduled for deletion"
+msgstr ""
+
+msgid "ContainerRegistry|-- tags"
 msgstr ""
 
 msgid "ContainerRegistry|Build an image"
@@ -17586,10 +17592,10 @@ msgstr ""
 msgid "Integrations|Failed to unlink namespace. Please try again."
 msgstr ""
 
-msgid "Integrations|Includes Standard plus entire commit message, commit hash, and issue IDs"
+msgid "Integrations|Includes Standard, plus the entire commit message, commit hash, and issue IDs"
 msgstr ""
 
-msgid "Integrations|Includes commit title and branch"
+msgid "Integrations|Includes commit title and branch."
 msgstr ""
 
 msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
@@ -17667,7 +17673,7 @@ msgstr ""
 msgid "Integrations|Use default settings"
 msgstr ""
 
-msgid "Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) is created."
+msgid "Integrations|When you mention a Jira issue in a commit or merge request, GitLab creates a remote link and comment (if enabled)."
 msgstr ""
 
 msgid "Integrations|You can now close this window and return to the GitLab for Jira application."
@@ -18609,6 +18615,9 @@ msgstr ""
 msgid "JiraService|Work on Jira issues without leaving GitLab. Adds a Jira menu to access your list of Jira issues and view any issue as read-only."
 msgstr ""
 
+msgid "JiraService|You need to configure Jira before enabling this integration. For more details, read the %{jira_doc_link_start}Jira integration documentation%{link_end}."
+msgstr ""
+
 msgid "JiraService|transition ids can have only numbers which can be split with , or ;"
 msgstr ""
 
@@ -18655,6 +18664,18 @@ msgid "Job to delete self-monitoring project is in progress"
 msgstr ""
 
 msgid "Job was retried"
+msgstr ""
+
+msgid "JobName|build-job"
+msgstr ""
+
+msgid "JobName|deploy-app"
+msgstr ""
+
+msgid "JobName|lint-test"
+msgstr ""
+
+msgid "JobName|unit-test"
 msgstr ""
 
 msgid "Jobs"
@@ -23810,6 +23831,54 @@ msgid "PipelineCharts|There was an error parsing the data for the charts."
 msgstr ""
 
 msgid "PipelineCharts|Total:"
+msgstr ""
+
+msgid "PipelineEditorTutorial|A typical GitLab pipeline consists of three stages: build, test and deploy. Each stage can have one or more jobs."
+msgstr ""
+
+msgid "PipelineEditorTutorial|Browse %{linkStart}CI/CD examples and templates%{linkEnd}"
+msgstr ""
+
+msgid "PipelineEditorTutorial|Get started with GitLab CI/CD"
+msgstr ""
+
+msgid "PipelineEditorTutorial|GitLab CI/CD can automatically build, test, and deploy your application."
+msgstr ""
+
+msgid "PipelineEditorTutorial|If you’re using a self-managed GitLab instance, %{linkStart}make sure your instance has runners available.%{linkEnd}"
+msgstr ""
+
+msgid "PipelineEditorTutorial|In the example below, %{codeStart}build%{codeEnd} and %{codeStart}deploy%{codeEnd} each contain one job, and %{codeStart}test%{codeEnd} contains two jobs. Your scripts run in jobs like these."
+msgstr ""
+
+msgid "PipelineEditorTutorial|Learn more about %{linkStart}GitLab CI/CD concepts%{linkEnd}"
+msgstr ""
+
+msgid "PipelineEditorTutorial|Make your pipeline more efficient with the %{linkStart}Needs keyword%{linkEnd}"
+msgstr ""
+
+msgid "PipelineEditorTutorial|Resources to help with your CI/CD configuration:"
+msgstr ""
+
+msgid "PipelineEditorTutorial|The pipeline stages and jobs are defined in a %{codeStart}.gitlab-ci.yml%{codeEnd} file. You can edit, visualize and validate the syntax in this file by using the Pipeline Editor."
+msgstr ""
+
+msgid "PipelineEditorTutorial|Use the Visualize and Lint tabs in the Pipeline Editor to visualize your pipeline and check for any errors or warnings before committing your changes."
+msgstr ""
+
+msgid "PipelineEditorTutorial|View %{linkStart}.gitlab-ci.yml syntax reference%{linkEnd}"
+msgstr ""
+
+msgid "PipelineEditorTutorial|You can use %{linkStart}CI/CD examples and templates%{linkEnd} to get your first %{codeStart}.gitlab-ci.yml%{codeEnd} configuration file started. Your first pipeline runs when you commit the changes."
+msgstr ""
+
+msgid "PipelineEditorTutorial|⚙️ Pipeline configuration reference"
+msgstr ""
+
+msgid "PipelineEditorTutorial|💡 Tip: Visualize and validate your pipeline"
+msgstr ""
+
+msgid "PipelineEditorTutorial|🚀 Run your first pipeline"
 msgstr ""
 
 msgid "PipelineEditor|The CI/CD configuration is continuously validated. Errors and warnings are displayed when the CI/CD configuration file is not empty."
@@ -30510,6 +30579,15 @@ msgid "Stage data updated"
 msgstr ""
 
 msgid "Stage removed"
+msgstr ""
+
+msgid "StageName|Build"
+msgstr ""
+
+msgid "StageName|Deploy"
+msgstr ""
+
+msgid "StageName|Test"
 msgstr ""
 
 msgid "Standard"

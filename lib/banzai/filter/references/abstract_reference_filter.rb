@@ -8,6 +8,12 @@ module Banzai
       class AbstractReferenceFilter < ReferenceFilter
         include CrossProjectReference
 
+        def initialize(doc, context = nil, result = nil)
+          super
+
+          @reference_cache = ReferenceCache.new(self, context)
+        end
+
         # REFERENCE_PLACEHOLDER is used for re-escaping HTML text except found
         # reference (which we replace with placeholder during re-scaping).  The
         # random number helps ensure it's pretty close to unique. Since it's a
@@ -112,6 +118,8 @@ module Banzai
         def call
           return doc unless project || group || user
 
+          reference_cache.load_reference_cache(nodes) if respond_to?(:parent_records)
+
           ref_pattern = object_reference_pattern
           link_pattern = object_class.link_reference_pattern
 
@@ -174,9 +182,9 @@ module Banzai
         def object_link_filter(text, pattern, link_content: nil, link_reference: false)
           references_in(text, pattern) do |match, id, project_ref, namespace_ref, matches|
             parent_path = if parent_type == :group
-                            full_group_path(namespace_ref)
+                            reference_cache.full_group_path(namespace_ref)
                           else
-                            full_project_path(namespace_ref, project_ref)
+                            reference_cache.full_project_path(namespace_ref, project_ref)
                           end
 
             parent = from_ref_cached(parent_path)
@@ -263,127 +271,6 @@ module Banzai
           text
         end
 
-        # Returns a Hash containing all object references (e.g. issue IDs) per the
-        # project they belong to.
-        def references_per_parent
-          @references_per ||= {}
-
-          @references_per[parent_type] ||= begin
-            refs = Hash.new { |hash, key| hash[key] = Set.new }
-            regex = [
-              object_class.link_reference_pattern,
-              object_class.reference_pattern
-            ].compact.reduce { |a, b| Regexp.union(a, b) }
-
-            nodes.each do |node|
-              node.to_html.scan(regex) do
-                path = if parent_type == :project
-                         full_project_path($~[:namespace], $~[:project])
-                       else
-                         full_group_path($~[:group])
-                       end
-
-                if ident = identifier($~)
-                  refs[path] << ident
-                end
-              end
-            end
-
-            refs
-          end
-        end
-
-        # Returns a Hash containing referenced projects grouped per their full
-        # path.
-        def parent_per_reference
-          @per_reference ||= {}
-
-          @per_reference[parent_type] ||= begin
-            refs = Set.new
-
-            references_per_parent.each do |ref, _|
-              refs << ref
-            end
-
-            find_for_paths(refs.to_a).index_by(&:full_path)
-          end
-        end
-
-        def relation_for_paths(paths)
-          klass = parent_type.to_s.camelize.constantize
-          result = klass.where_full_path_in(paths)
-          return result if parent_type == :group
-
-          result.includes(:namespace) if parent_type == :project
-        end
-
-        # Returns projects for the given paths.
-        def find_for_paths(paths)
-          if Gitlab::SafeRequestStore.active?
-            cache = refs_cache
-            to_query = paths - cache.keys
-
-            unless to_query.empty?
-              records = relation_for_paths(to_query)
-
-              found = []
-              records.each do |record|
-                ref = record.full_path
-                get_or_set_cache(cache, ref) { record }
-                found << ref
-              end
-
-              not_found = to_query - found
-              not_found.each do |ref|
-                get_or_set_cache(cache, ref) { nil }
-              end
-            end
-
-            cache.slice(*paths).values.compact
-          else
-            relation_for_paths(paths)
-          end
-        end
-
-        def current_parent_path
-          @current_parent_path ||= parent&.full_path
-        end
-
-        def current_project_namespace_path
-          @current_project_namespace_path ||= project&.namespace&.full_path
-        end
-
-        def records_per_parent
-          @_records_per_project ||= {}
-
-          @_records_per_project[object_class.to_s.underscore] ||= begin
-            hash = Hash.new { |h, k| h[k] = {} }
-
-            parent_per_reference.each do |path, parent|
-              record_ids = references_per_parent[path]
-
-              parent_records(parent, record_ids).each do |record|
-                hash[parent][record_identifier(record)] = record
-              end
-            end
-
-            hash
-          end
-        end
-
-        private
-
-        def full_project_path(namespace, project_ref)
-          return current_parent_path unless project_ref
-
-          namespace_ref = namespace || current_project_namespace_path
-          "#{namespace_ref}/#{project_ref}"
-        end
-
-        def refs_cache
-          Gitlab::SafeRequestStore["banzai_#{parent_type}_refs".to_sym] ||= {}
-        end
-
         def parent_type
           :project
         end
@@ -392,11 +279,9 @@ module Banzai
           parent_type == :project ? project : group
         end
 
-        def full_group_path(group_ref)
-          return current_parent_path unless group_ref
+        private
 
-          group_ref
-        end
+        attr_accessor :reference_cache
 
         def escape_with_placeholders(text, placeholder_data)
           escaped = escape_html_entities(text)
@@ -409,5 +294,3 @@ module Banzai
     end
   end
 end
-
-Banzai::Filter::References::AbstractReferenceFilter.prepend_if_ee('EE::Banzai::Filter::References::AbstractReferenceFilter')

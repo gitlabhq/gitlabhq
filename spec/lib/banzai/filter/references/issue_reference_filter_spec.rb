@@ -470,24 +470,6 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     end
   end
 
-  describe '#records_per_parent' do
-    context 'using an internal issue tracker' do
-      it 'returns a Hash containing the issues per project' do
-        doc = Nokogiri::HTML.fragment('')
-        filter = described_class.new(doc, project: project)
-
-        expect(filter).to receive(:parent_per_reference)
-          .and_return({ project.full_path => project })
-
-        expect(filter).to receive(:references_per_parent)
-          .and_return({ project.full_path => Set.new([issue.iid]) })
-
-        expect(filter.records_per_parent)
-          .to eq({ project => { issue.iid => issue } })
-      end
-    end
-  end
-
   describe '.references_in' do
     let(:merge_request) { create(:merge_request) }
 

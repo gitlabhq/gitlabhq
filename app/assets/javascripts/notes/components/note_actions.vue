@@ -278,7 +278,6 @@ export default {
       v-if="canResolve"
       ref="resolveButton"
       v-gl-tooltip
-      size="small"
       category="tertiary"
       :variant="resolveVariant"
       :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
@@ -292,7 +291,7 @@ export default {
     <template v-if="canAwardEmoji">
       <emoji-picker
         v-if="glFeatures.improvedEmojiPicker"
-        toggle-class="note-action-button note-emoji-button gl-text-gray-600 gl-m-2 gl-p-0! gl-shadow-none! gl-bg-transparent!"
+        toggle-class="note-action-button note-emoji-button gl-text-gray-600 gl-m-3 gl-p-0! gl-shadow-none! gl-bg-transparent!"
         @click="setAwardEmoji"
       >
         <template #button-content>
@@ -305,10 +304,9 @@ export default {
         v-else
         v-gl-tooltip
         :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
-        class="note-action-button note-emoji-button add-reaction-button js-add-award js-note-emoji"
+        class="note-action-button note-emoji-button add-reaction-button btn-icon js-add-award js-note-emoji"
         category="tertiary"
         variant="default"
-        size="small"
         :title="$options.i18n.addReactionLabel"
         :aria-label="$options.i18n.addReactionLabel"
         data-position="right"
@@ -336,7 +334,6 @@ export default {
       :title="$options.i18n.editCommentLabel"
       :aria-label="$options.i18n.editCommentLabel"
       icon="pencil"
-      size="small"
       category="tertiary"
       class="note-action-button js-note-edit"
       data-qa-selector="note_edit_button"
@@ -347,7 +344,6 @@ export default {
       v-gl-tooltip
       :title="$options.i18n.deleteCommentLabel"
       :aria-label="$options.i18n.deleteCommentLabel"
-      size="small"
       icon="remove"
       category="tertiary"
       class="note-action-button js-note-delete"
@@ -360,7 +356,6 @@ export default {
         :title="$options.i18n.moreActionsLabel"
         :aria-label="$options.i18n.moreActionsLabel"
         icon="ellipsis_v"
-        size="small"
         category="tertiary"
         class="note-action-button more-actions-toggle"
         data-toggle="dropdown"

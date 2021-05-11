@@ -676,6 +676,7 @@ $system-note-svg-size: 16px;
   @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     float: none;
     margin-left: 0;
+    transform: translateY(-4px);
   }
 }
 

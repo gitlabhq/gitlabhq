@@ -1,0 +1,5 @@
+---
+title: Fine tune a few queries found in GroupMembers#index
+merge_request: 60857
+author:
+type: performance

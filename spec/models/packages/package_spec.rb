@@ -660,27 +660,37 @@ RSpec.describe Packages::Package, type: :model do
       it { is_expected.to match_array([pypi_package]) }
     end
 
-    describe '.displayable' do
+    context 'status scopes' do
       let_it_be(:hidden_package) { create(:maven_package, :hidden) }
       let_it_be(:processing_package) { create(:maven_package, :processing) }
       let_it_be(:error_package) { create(:maven_package, :error) }
 
-      subject { described_class.displayable }
+      describe '.displayable' do
+        subject { described_class.displayable }
 
-      it 'does not include non-displayable packages', :aggregate_failures do
-        is_expected.to include(error_package)
-        is_expected.not_to include(hidden_package)
-        is_expected.not_to include(processing_package)
+        it 'does not include non-displayable packages', :aggregate_failures do
+          is_expected.to include(error_package)
+          is_expected.not_to include(hidden_package)
+          is_expected.not_to include(processing_package)
+        end
       end
-    end
 
-    describe '.with_status' do
-      let_it_be(:hidden_package) { create(:maven_package, :hidden) }
+      describe '.installable' do
+        subject { described_class.installable }
 
-      subject { described_class.with_status(:hidden) }
+        it 'does not include non-displayable packages', :aggregate_failures do
+          is_expected.not_to include(error_package)
+          is_expected.not_to include(hidden_package)
+          is_expected.not_to include(processing_package)
+        end
+      end
 
-      it 'returns packages with specified status' do
-        is_expected.to match_array([hidden_package])
+      describe '.with_status' do
+        subject { described_class.with_status(:hidden) }
+
+        it 'returns packages with specified status' do
+          is_expected.to match_array([hidden_package])
+        end
       end
     end
   end

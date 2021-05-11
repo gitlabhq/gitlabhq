@@ -1,5 +1,12 @@
 <script>
-import { GlButtonGroup, GlDropdown, GlDropdownItem, GlLink, GlSearchBoxByType } from '@gitlab/ui';
+import {
+  GlButtonGroup,
+  GlDropdown,
+  GlDropdownItem,
+  GlIcon,
+  GlLink,
+  GlSearchBoxByType,
+} from '@gitlab/ui';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 import ReviewAppLink from '../review_app_link.vue';
 
@@ -9,6 +16,7 @@ export default {
     GlButtonGroup,
     GlDropdown,
     GlDropdownItem,
+    GlIcon,
     GlLink,
     GlSearchBoxByType,
     ReviewAppLink,
@@ -71,7 +79,14 @@ export default {
         size="small"
         css-class="deploy-link js-deploy-url inline"
       />
-      <gl-dropdown size="small" class="js-mr-wigdet-deployment-dropdown">
+      <gl-dropdown toggle-class="gl-px-2!" size="small" class="js-mr-wigdet-deployment-dropdown">
+        <template #button-content>
+          <gl-icon
+            class="dropdown-chevron gl-mx-0!"
+            name="chevron-down"
+            data-testid="mr-wigdet-deployment-dropdown-icon"
+          />
+        </template>
         <gl-search-box-by-type v-model.trim="searchTerm" v-autofocusonshow autofocus />
         <gl-dropdown-item
           v-for="change in filteredChanges"

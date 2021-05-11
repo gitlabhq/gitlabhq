@@ -1,0 +1,6 @@
+query getContainerRepositoryTagsCount($id: ID!) {
+  containerRepository(id: $id) {
+    id
+    tagsCount
+  }
+}

@@ -23,6 +23,13 @@ RSpec.describe ::Packages::Generic::PackageFinder do
       expect(found_package).to eq(package)
     end
 
+    it 'does not find uninstallable packages' do
+      error_package = create(:generic_package, :error, project: project)
+
+      expect { finder.execute!(error_package.name, error_package.version) }
+        .to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it 'raises ActiveRecord::RecordNotFound if package is not found' do
       expect { finder.execute!(package.name, '3.1.4') }
         .to raise_error(ActiveRecord::RecordNotFound)

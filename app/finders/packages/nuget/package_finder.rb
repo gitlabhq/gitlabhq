@@ -23,7 +23,7 @@ module Packages
 
       def base
         if project?
-          @project_or_group.packages
+          packages_for_project(@project_or_group)
         elsif group?
           packages_visible_to_user(@current_user, within_group: @project_or_group)
         else

@@ -50,6 +50,12 @@
 
   img.avatar {
     margin-right: $gl-padding;
+
+    @include media-breakpoint-down(sm) {
+      width: $gl-spacing-scale-6;
+      height: $gl-spacing-scale-6;
+      margin-right: $gl-padding-8;
+    }
   }
 
   .controls {

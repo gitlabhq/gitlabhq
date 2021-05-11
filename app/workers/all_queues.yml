@@ -1836,6 +1836,15 @@
   :idempotent:
   :tags:
   - :exclude_from_kubernetes
+- :name: bulk_imports_export_request
+  :worker_name: BulkImports::ExportRequestWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: bulk_imports_pipeline
   :worker_name: BulkImports::PipelineWorker
   :feature_category: :importers

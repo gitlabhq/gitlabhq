@@ -125,4 +125,13 @@ RSpec.describe BulkImports::Entity, type: :model do
       end
     end
   end
+
+  describe '#encoded_source_full_path' do
+    it 'encodes entity source full path' do
+      expected = 'foo%2Fbar'
+      entity = build(:bulk_import_entity, source_full_path: 'foo/bar')
+
+      expect(entity.encoded_source_full_path).to eq(expected)
+    end
+  end
 end

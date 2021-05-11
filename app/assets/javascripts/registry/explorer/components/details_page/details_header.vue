@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { sprintf, n__ } from '~/locale';
+import { sprintf, n__, s__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -23,6 +23,8 @@ import {
   ROOT_IMAGE_TOOLTIP,
 } from '../../constants/index';
 
+import getContainerRepositoryTagsCountQuery from '../../graphql/queries/get_container_repository_tags_count.query.graphql';
+
 export default {
   name: 'DetailsHeader',
   components: { GlButton, GlIcon, TitleArea, MetadataItem },
@@ -35,60 +37,77 @@ export default {
       type: Object,
       required: true,
     },
-    metadataLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     disabled: {
       type: Boolean,
       default: false,
       required: false,
     },
   },
+  data() {
+    return {
+      containerRepository: {},
+      fetchTagsCount: false,
+    };
+  },
+  apollo: {
+    containerRepository: {
+      query: getContainerRepositoryTagsCountQuery,
+      variables() {
+        return {
+          id: this.image.id,
+        };
+      },
+    },
+  },
   computed: {
+    imageDetails() {
+      return { ...this.image, ...this.containerRepository };
+    },
     visibilityIcon() {
-      return this.image?.project?.visibility === 'public' ? 'eye' : 'eye-slash';
+      return this.imageDetails?.project?.visibility === 'public' ? 'eye' : 'eye-slash';
     },
     timeAgo() {
-      return this.timeFormatted(this.image.updatedAt);
+      return this.timeFormatted(this.imageDetails.updatedAt);
     },
     updatedText() {
       return sprintf(UPDATED_AT, { time: this.timeAgo });
     },
     tagCountText() {
-      return n__('%d tag', '%d tags', this.image.tagsCount);
+      if (this.$apollo.queries.containerRepository.loading) {
+        return s__('ContainerRegistry|-- tags');
+      }
+      return n__('%d tag', '%d tags', this.imageDetails.tagsCount);
     },
     cleanupTextAndTooltip() {
-      if (!this.image.project.containerExpirationPolicy?.enabled) {
+      if (!this.imageDetails.project.containerExpirationPolicy?.enabled) {
         return { text: CLEANUP_DISABLED_TEXT, tooltip: CLEANUP_DISABLED_TOOLTIP };
       }
       return {
         [UNSCHEDULED_STATUS]: {
           text: sprintf(CLEANUP_UNSCHEDULED_TEXT, {
-            time: this.timeFormatted(this.image.project.containerExpirationPolicy.nextRunAt),
+            time: this.timeFormatted(this.imageDetails.project.containerExpirationPolicy.nextRunAt),
           }),
         },
         [SCHEDULED_STATUS]: { text: CLEANUP_SCHEDULED_TEXT, tooltip: CLEANUP_SCHEDULED_TOOLTIP },
         [ONGOING_STATUS]: { text: CLEANUP_ONGOING_TEXT, tooltip: CLEANUP_ONGOING_TOOLTIP },
         [UNFINISHED_STATUS]: { text: CLEANUP_UNFINISHED_TEXT, tooltip: CLEANUP_UNFINISHED_TOOLTIP },
-      }[this.image?.expirationPolicyCleanupStatus];
+      }[this.imageDetails?.expirationPolicyCleanupStatus];
     },
     deleteButtonDisabled() {
-      return this.disabled || !this.image.canDelete;
+      return this.disabled || !this.imageDetails.canDelete;
     },
     rootImageTooltip() {
-      return !this.image.name ? ROOT_IMAGE_TOOLTIP : '';
+      return !this.imageDetails.name ? ROOT_IMAGE_TOOLTIP : '';
     },
     imageName() {
-      return this.image.name || ROOT_IMAGE_TEXT;
+      return this.imageDetails.name || ROOT_IMAGE_TEXT;
     },
   },
 };
 </script>
 
 <template>
-  <title-area :metadata-loading="metadataLoading">
+  <title-area>
     <template #title>
       <span data-testid="title">
         {{ imageName }}
@@ -124,12 +143,7 @@ export default {
       />
     </template>
     <template #right-actions>
-      <gl-button
-        v-if="!metadataLoading"
-        variant="danger"
-        :disabled="deleteButtonDisabled"
-        @click="$emit('delete')"
-      >
+      <gl-button variant="danger" :disabled="deleteButtonDisabled" @click="$emit('delete')">
         {{ __('Delete image repository') }}
       </gl-button>
     </template>

@@ -1,0 +1,5 @@
+---
+title: Add relations export request when Bulk Import is initiated
+merge_request: 61365
+author:
+type: changed

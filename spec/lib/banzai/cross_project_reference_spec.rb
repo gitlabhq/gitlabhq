@@ -4,10 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Banzai::CrossProjectReference do
   let(:including_class) { Class.new.include(described_class).new }
+  let(:reference_cache) { Banzai::Filter::References::ReferenceCache.new(including_class, {})}
 
   before do
     allow(including_class).to receive(:context).and_return({})
     allow(including_class).to receive(:parent_from_ref).and_call_original
+    allow(including_class).to receive(:reference_cache).and_return(reference_cache)
   end
 
   describe '#parent_from_ref' do
@@ -44,6 +46,19 @@ RSpec.describe Banzai::CrossProjectReference do
         expect(Project).to receive(:find_by_full_path)
           .with('cross/reference').and_return(project2)
 
+        expect(including_class.parent_from_ref('cross/reference')).to eq project2
+      end
+    end
+
+    context 'when reference cache is loaded' do
+      let(:project2) { double('referenced project') }
+
+      before do
+        allow(reference_cache).to receive(:cache_loaded?).and_return(true)
+        allow(reference_cache).to receive(:parent_per_reference).and_return({ 'cross/reference' => project2 })
+      end
+
+      it 'pulls from the reference cache' do
         expect(including_class.parent_from_ref('cross/reference')).to eq project2
       end
     end

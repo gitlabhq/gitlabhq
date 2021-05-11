@@ -3,6 +3,30 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::FinderHelper do
+  describe '#packages_for_project' do
+    let_it_be_with_reload(:project1) { create(:project) }
+    let_it_be(:package1) { create(:package, project: project1) }
+    let_it_be(:package2) { create(:package, :error, project: project1) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:package3) { create(:package, project: project2) }
+
+    let(:finder_class) do
+      Class.new do
+        include ::Packages::FinderHelper
+
+        def execute(project1)
+          packages_for_project(project1)
+        end
+      end
+    end
+
+    let(:finder) { finder_class.new }
+
+    subject { finder.execute(project1) }
+
+    it { is_expected.to eq [package1]}
+  end
+
   describe '#packages_visible_to_user' do
     using RSpec::Parameterized::TableSyntax
 
@@ -12,6 +36,7 @@ RSpec.describe ::Packages::FinderHelper do
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be_with_reload(:project2) { create(:project, namespace: subgroup) }
     let_it_be(:package2) { create(:package, project: project2) }
+    let_it_be(:package3) { create(:package, :error, project: project2) }
 
     let(:finder_class) do
       Class.new do

@@ -9,12 +9,16 @@ module Packages
 
     private
 
+    def packages_for_project(project)
+      project.packages.installable
+    end
+
     def packages_visible_to_user(user, within_group:)
       return ::Packages::Package.none unless within_group
       return ::Packages::Package.none unless Ability.allowed?(user, :read_group, within_group)
 
       projects = projects_visible_to_reporters(user, within_group: within_group)
-      ::Packages::Package.for_projects(projects.select(:id))
+      ::Packages::Package.for_projects(projects.select(:id)).installable
     end
 
     def projects_visible_to_user(user, within_group:)

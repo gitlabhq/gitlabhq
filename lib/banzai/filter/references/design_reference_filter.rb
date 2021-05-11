@@ -36,7 +36,7 @@ module Banzai
         self.object_class   = ::DesignManagement::Design
 
         def find_object(project, identifier)
-          records_per_parent[project][identifier]
+          reference_cache.records_per_parent[project][identifier]
         end
 
         def parent_records(project, identifiers)
@@ -57,15 +57,6 @@ module Banzai
 
         def relation_for_paths(paths)
           super.includes(:route, :namespace, :group)
-        end
-
-        def parent_type
-          :project
-        end
-
-        # optimisation to reuse the parent_per_reference query information
-        def parent_from_ref(ref)
-          parent_per_reference[ref || current_parent_path]
         end
 
         def url_for_object(design, project)

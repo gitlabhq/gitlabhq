@@ -1,7 +1,10 @@
 import { GlButton, GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import VueApollo from 'vue-apollo';
 import { useFakeDate } from 'helpers/fake_date';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import waitForPromises from 'helpers/wait_for_promises';
 import component from '~/registry/explorer/components/details_page/details_header.vue';
 import {
   UNSCHEDULED_STATUS,
@@ -16,15 +19,18 @@ import {
   ROOT_IMAGE_TEXT,
   ROOT_IMAGE_TOOLTIP,
 } from '~/registry/explorer/constants';
+import getContainerRepositoryTagCountQuery from '~/registry/explorer/graphql/queries/get_container_repository_tags_count.query.graphql';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import { imageTagsCountMock } from '../../mock_data';
 
 describe('Details Header', () => {
   let wrapper;
+  let apolloProvider;
+  let localVue;
 
   const defaultImage = {
     name: 'foo',
     updatedAt: '2020-11-03T13:29:21Z',
-    tagsCount: 10,
     canDelete: true,
     project: {
       visibility: 'public',
@@ -51,12 +57,31 @@ describe('Details Header', () => {
     await wrapper.vm.$nextTick();
   };
 
-  const mountComponent = (propsData = { image: defaultImage }) => {
+  const mountComponent = ({
+    propsData = { image: defaultImage },
+    resolver = jest.fn().mockResolvedValue(imageTagsCountMock()),
+    $apollo = undefined,
+  } = {}) => {
+    const mocks = {};
+
+    if ($apollo) {
+      mocks.$apollo = $apollo;
+    } else {
+      localVue = createLocalVue();
+      localVue.use(VueApollo);
+
+      const requestHandlers = [[getContainerRepositoryTagCountQuery, resolver]];
+      apolloProvider = createMockApollo(requestHandlers);
+    }
+
     wrapper = shallowMount(component, {
+      localVue,
+      apolloProvider,
       propsData,
       directives: {
         GlTooltip: createMockDirective(),
       },
+      mocks,
       stubs: {
         TitleArea,
       },
@@ -64,41 +89,48 @@ describe('Details Header', () => {
   };
 
   afterEach(() => {
+    // if we want to mix createMockApollo and manual mocks we need to reset everything
     wrapper.destroy();
+    apolloProvider = undefined;
+    localVue = undefined;
     wrapper = null;
   });
+
   describe('image name', () => {
     describe('missing image name', () => {
-      it('root image ', () => {
-        mountComponent({ image: { ...defaultImage, name: '' } });
+      beforeEach(() => {
+        mountComponent({ propsData: { image: { ...defaultImage, name: '' } } });
 
+        return waitForPromises();
+      });
+
+      it('root image ', () => {
         expect(findTitle().text()).toBe(ROOT_IMAGE_TEXT);
       });
 
       it('has an icon', () => {
-        mountComponent({ image: { ...defaultImage, name: '' } });
-
         expect(findInfoIcon().exists()).toBe(true);
         expect(findInfoIcon().props('name')).toBe('information-o');
       });
 
       it('has a tooltip', () => {
-        mountComponent({ image: { ...defaultImage, name: '' } });
-
         const tooltip = getBinding(findInfoIcon().element, 'gl-tooltip');
         expect(tooltip.value).toBe(ROOT_IMAGE_TOOLTIP);
       });
     });
 
     describe('with image name present', () => {
-      it('shows image.name ', () => {
+      beforeEach(() => {
         mountComponent();
+
+        return waitForPromises();
+      });
+
+      it('shows image.name ', () => {
         expect(findTitle().text()).toContain('foo');
       });
 
       it('has no icon', () => {
-        mountComponent();
-
         expect(findInfoIcon().exists()).toBe(false);
       });
     });
@@ -109,12 +141,6 @@ describe('Details Header', () => {
       mountComponent();
 
       expect(findDeleteButton().exists()).toBe(true);
-    });
-
-    it('is hidden while loading', () => {
-      mountComponent({ image: defaultImage, metadataLoading: true });
-
-      expect(findDeleteButton().exists()).toBe(false);
     });
 
     it('has the correct text', () => {
@@ -149,7 +175,7 @@ describe('Details Header', () => {
     `(
       'when canDelete is $canDelete and disabled is $disabled is $isDisabled that the button is disabled',
       ({ canDelete, disabled, isDisabled }) => {
-        mountComponent({ image: { ...defaultImage, canDelete }, disabled });
+        mountComponent({ propsData: { image: { ...defaultImage, canDelete }, disabled } });
 
         expect(findDeleteButton().props('disabled')).toBe(isDisabled);
       },
@@ -158,15 +184,32 @@ describe('Details Header', () => {
 
   describe('metadata items', () => {
     describe('tags count', () => {
-      it('when there is more than one tag has the correct text', async () => {
-        mountComponent();
+      it('displays "-- tags" while loading', async () => {
+        // here we are forced to mock apollo because `waitForMetadataItems` waits
+        // for two ticks, de facto allowing the promise to resolve, so there is
+        // no way to catch the component as both rendered and in loading state
+        mountComponent({ $apollo: { queries: { containerRepository: { loading: true } } } });
+
         await waitForMetadataItems();
 
-        expect(findTagsCount().props('text')).toBe('10 tags');
+        expect(findTagsCount().props('text')).toBe('-- tags');
+      });
+
+      it('when there is more than one tag has the correct text', async () => {
+        mountComponent();
+
+        await waitForPromises();
+        await waitForMetadataItems();
+
+        expect(findTagsCount().props('text')).toBe('13 tags');
       });
 
       it('when there is one tag has the correct text', async () => {
-        mountComponent({ image: { ...defaultImage, tagsCount: 1 } });
+        mountComponent({
+          resolver: jest.fn().mockResolvedValue(imageTagsCountMock({ tagsCount: 1 })),
+        });
+
+        await waitForPromises();
         await waitForMetadataItems();
 
         expect(findTagsCount().props('text')).toBe('1 tag');
@@ -208,11 +251,13 @@ describe('Details Header', () => {
         'when the status is $status the text is $text and the tooltip is $tooltip',
         async ({ status, text, tooltip }) => {
           mountComponent({
-            image: {
-              ...defaultImage,
-              expirationPolicyCleanupStatus: status,
-              project: {
-                containerExpirationPolicy: { enabled: true, nextRunAt: '2021-01-03T14:29:21Z' },
+            propsData: {
+              image: {
+                ...defaultImage,
+                expirationPolicyCleanupStatus: status,
+                project: {
+                  containerExpirationPolicy: { enabled: true, nextRunAt: '2021-01-03T14:29:21Z' },
+                },
               },
             },
           });
@@ -242,7 +287,9 @@ describe('Details Header', () => {
           expect(findLastUpdatedAndVisibility().props('icon')).toBe('eye');
         });
         it('shows an eye slashed when the project is not public', async () => {
-          mountComponent({ image: { ...defaultImage, project: { visibility: 'private' } } });
+          mountComponent({
+            propsData: { image: { ...defaultImage, project: { visibility: 'private' } } },
+          });
           await waitForMetadataItems();
 
           expect(findLastUpdatedAndVisibility().props('icon')).toBe('eye-slash');

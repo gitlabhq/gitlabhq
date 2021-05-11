@@ -19,7 +19,7 @@ module Banzai
         def find_object(project, id)
           return unless project.is_a?(Project) && project.valid_repo?
 
-          _, record = records_per_parent[project].detect { |k, _v| Gitlab::Git.shas_eql?(k, id) }
+          _, record = reference_cache.records_per_parent[project].detect { |k, _v| Gitlab::Git.shas_eql?(k, id) }
 
           record
         end
@@ -28,7 +28,7 @@ module Banzai
           return [] unless noteable.is_a?(MergeRequest)
 
           @referenced_merge_request_commit_shas ||= begin
-            referenced_shas = references_per_parent.values.reduce(:|).to_a
+            referenced_shas = reference_cache.references_per_parent.values.reduce(:|).to_a
             noteable.all_commit_shas.select do |sha|
               referenced_shas.any? { |ref| Gitlab::Git.shas_eql?(sha, ref) }
             end
@@ -66,11 +66,11 @@ module Banzai
           extras
         end
 
-        private
-
         def parent_records(parent, ids)
           parent.commits_by(oids: ids.to_a)
         end
+
+        private
 
         def noteable
           context[:noteable]
