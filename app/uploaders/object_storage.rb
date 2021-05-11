@@ -508,4 +508,4 @@ module ObjectStorage
   end
 end
 
-ObjectStorage::Concern.include_if_ee('::EE::ObjectStorage::Concern')
+ObjectStorage::Concern.include_mod_with('ObjectStorage::Concern')

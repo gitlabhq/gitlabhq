@@ -45,4 +45,4 @@ class ProjectFeatureUsage < ApplicationRecord
   end
 end
 
-ProjectFeatureUsage.prepend_if_ee('EE::ProjectFeatureUsage')
+ProjectFeatureUsage.prepend_mod_with('ProjectFeatureUsage')

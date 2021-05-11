@@ -391,4 +391,4 @@ class Projects::IssuesController < Projects::ApplicationController
   def create_vulnerability_issue_feedback(issue); end
 end
 
-Projects::IssuesController.prepend_if_ee('EE::Projects::IssuesController')
+Projects::IssuesController.prepend_mod_with('Projects::IssuesController')

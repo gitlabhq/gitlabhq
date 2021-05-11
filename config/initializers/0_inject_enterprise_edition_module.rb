@@ -3,49 +3,39 @@
 require 'active_support/inflector'
 
 module InjectEnterpriseEditionModule
-  def prepend_if_ee(constant_with_prefix, namespace: Object, with_descendants: false)
-    prepend_mod_for(
-      constant_without_prefix(constant_with_prefix),
-      namespace: namespace,
-      with_descendants: with_descendants)
+  def prepend_mod_with(constant_name, namespace: Object, with_descendants: false)
+    each_extension_for(constant_name, namespace) do |constant|
+      prepend_module(constant, with_descendants)
+    end
   end
 
-  def extend_if_ee(constant_with_prefix, namespace: Object)
+  def extend_mod_with(constant_name, namespace: Object)
     each_extension_for(
-      constant_without_prefix(constant_with_prefix),
+      constant_name,
       namespace,
       &method(:extend))
   end
 
-  def include_if_ee(constant_with_prefix, namespace: Object)
+  def include_mod_with(constant_name, namespace: Object)
     each_extension_for(
-      constant_without_prefix(constant_with_prefix),
+      constant_name,
       namespace,
       &method(:include))
   end
 
   def prepend_mod(with_descendants: false)
-    prepend_mod_for(name, with_descendants: with_descendants)
+    prepend_mod_with(name, with_descendants: with_descendants) # rubocop: disable Cop/InjectEnterpriseEditionModule
   end
-  alias_method :prepend_ee_mod, :prepend_mod
 
   def extend_mod
-    each_extension_for(name, Object, &method(:extend))
+    extend_mod_with(name) # rubocop: disable Cop/InjectEnterpriseEditionModule
   end
-  alias_method :extend_ee_mod, :extend_mod
 
   def include_mod
-    each_extension_for(name, Object, &method(:include))
+    include_mod_with(name) # rubocop: disable Cop/InjectEnterpriseEditionModule
   end
-  alias_method :include_ee_mod, :include_mod
 
   private
-
-  def prepend_mod_for(constant_name, namespace: Object, with_descendants: false)
-    each_extension_for(constant_name, namespace) do |constant|
-      prepend_module(constant, with_descendants)
-    end
-  end
 
   def prepend_module(mod, with_descendants)
     prepend(mod)
@@ -77,12 +67,6 @@ module InjectEnterpriseEditionModule
     mod && mod.const_get(name, false)
   rescue NameError
     false
-  end
-
-  def constant_without_prefix(constant_with_prefix)
-    constant_with_prefix
-      .delete_prefix('::') # TODO: Some calling sites are passing this prefix
-      .delete_prefix('EE::')
   end
 end
 

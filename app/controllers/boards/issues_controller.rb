@@ -158,4 +158,4 @@ module Boards
   end
 end
 
-Boards::IssuesController.prepend_if_ee('EE::Boards::IssuesController')
+Boards::IssuesController.prepend_mod_with('Boards::IssuesController')

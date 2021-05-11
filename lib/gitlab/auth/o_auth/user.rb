@@ -294,4 +294,4 @@ module Gitlab
   end
 end
 
-Gitlab::Auth::OAuth::User.prepend_if_ee('::EE::Gitlab::Auth::OAuth::User')
+Gitlab::Auth::OAuth::User.prepend_mod_with('Gitlab::Auth::OAuth::User')

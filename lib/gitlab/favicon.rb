@@ -61,4 +61,4 @@ module Gitlab
   end
 end
 
-Gitlab::Favicon.prepend_if_ee('EE::Gitlab::Favicon')
+Gitlab::Favicon.prepend_mod_with('Gitlab::Favicon')

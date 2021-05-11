@@ -241,4 +241,4 @@ module Sidebars
   end
 end
 
-Sidebars::Projects::Menus::OperationsMenu.prepend_if_ee('EE::Sidebars::Projects::Menus::OperationsMenu')
+Sidebars::Projects::Menus::OperationsMenu.prepend_mod_with('Sidebars::Projects::Menus::OperationsMenu')

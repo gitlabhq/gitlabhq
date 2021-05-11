@@ -28,19 +28,7 @@ RSpec.describe InjectEnterpriseEditionModule do
       it "calls #{method} with the extension module" do
         expect(fish_class).to receive(method).with(fish_extension)
 
-        fish_class.__send__("#{method}_if_ee", fish_name)
-      end
-
-      it "ignores EE prefix and calls #{method} with the extension module" do
-        expect(fish_class).to receive(method).with(fish_extension)
-
-        fish_class.__send__("#{method}_if_ee", "EE::#{fish_name}")
-      end
-
-      it "ignores ::EE prefix and calls #{method} with the extension module" do
-        expect(fish_class).to receive(method).with(fish_extension)
-
-        fish_class.__send__("#{method}_if_ee", "::EE::#{fish_name}")
+        fish_class.__send__("#{method}_mod_with", fish_name)
       end
     end
 
@@ -55,7 +43,7 @@ RSpec.describe InjectEnterpriseEditionModule do
       it "calls #{method} with the extension module from the additional namespace" do
         expect(fish_class).to receive(method).with(fish_extension)
 
-        fish_class.__send__("#{method}_if_ee", fish_name, namespace: another_namespace)
+        fish_class.__send__("#{method}_mod_with", fish_name, namespace: another_namespace)
       end
     end
 
@@ -67,7 +55,7 @@ RSpec.describe InjectEnterpriseEditionModule do
       it "does not call #{method}" do
         expect(fish_class).not_to receive(method).with(fish_extension)
 
-        fish_class.__send__("#{method}_if_ee", fish_name)
+        fish_class.__send__("#{method}_mod_with", fish_name)
       end
     end
 
@@ -75,7 +63,7 @@ RSpec.describe InjectEnterpriseEditionModule do
       it "does not call #{method}" do
         expect(fish_class).not_to receive(method).with(fish_extension)
 
-        fish_class.__send__("#{method}_if_ee", fish_name)
+        fish_class.__send__("#{method}_mod_with", fish_name)
       end
     end
   end
@@ -115,15 +103,15 @@ RSpec.describe InjectEnterpriseEditionModule do
     end
   end
 
-  describe '#prepend_if_ee' do
+  describe '#prepend_mod_with' do
     it_behaves_like 'expand the extension with', :prepend
   end
 
-  describe '#extend_if_ee' do
+  describe '#extend_mod_with' do
     it_behaves_like 'expand the extension with', :extend
   end
 
-  describe '#include_if_ee' do
+  describe '#include_mod_with' do
     it_behaves_like 'expand the extension with', :include
   end
 

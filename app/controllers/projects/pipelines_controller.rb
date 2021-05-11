@@ -309,4 +309,4 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 end
 
-Projects::PipelinesController.prepend_if_ee('EE::Projects::PipelinesController')
+Projects::PipelinesController.prepend_mod_with('Projects::PipelinesController')

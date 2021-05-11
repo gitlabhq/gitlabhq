@@ -39,4 +39,4 @@ module Users
   end
 end
 
-Users::RejectService.prepend_if_ee('EE::Users::RejectService')
+Users::RejectService.prepend_mod_with('Users::RejectService')

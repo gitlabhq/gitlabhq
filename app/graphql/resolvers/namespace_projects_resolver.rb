@@ -64,4 +64,4 @@ module Resolvers
   end
 end
 
-Resolvers::NamespaceProjectsResolver.prepend_if_ee('::EE::Resolvers::NamespaceProjectsResolver')
+Resolvers::NamespaceProjectsResolver.prepend_mod_with('Resolvers::NamespaceProjectsResolver')

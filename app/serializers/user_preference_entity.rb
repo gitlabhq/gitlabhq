@@ -13,4 +13,4 @@ class UserPreferenceEntity < Grape::Entity
   end
 end
 
-UserPreferenceEntity.prepend_if_ee('EE::UserPreferenceEntity')
+UserPreferenceEntity.prepend_mod_with('UserPreferenceEntity')

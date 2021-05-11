@@ -564,4 +564,4 @@ module Issuable
   end
 end
 
-Issuable.prepend_if_ee('EE::Issuable')
+Issuable.prepend_mod_with('Issuable')

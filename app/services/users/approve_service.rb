@@ -47,4 +47,4 @@ module Users
   end
 end
 
-Users::ApproveService.prepend_if_ee('EE::Users::ApproveService')
+Users::ApproveService.prepend_mod_with('Users::ApproveService')

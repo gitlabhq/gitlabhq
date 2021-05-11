@@ -321,4 +321,4 @@ module Gitlab
   end
 end
 
-Gitlab::Auth::AuthFinders.prepend_if_ee('::EE::Gitlab::Auth::AuthFinders')
+Gitlab::Auth::AuthFinders.prepend_mod_with('Gitlab::Auth::AuthFinders')

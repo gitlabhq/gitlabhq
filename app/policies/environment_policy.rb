@@ -21,4 +21,4 @@ class EnvironmentPolicy < BasePolicy
   rule { ~stopped }.prevent(:destroy_environment)
 end
 
-EnvironmentPolicy.prepend_if_ee('EE::EnvironmentPolicy')
+EnvironmentPolicy.prepend_mod_with('EnvironmentPolicy')

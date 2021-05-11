@@ -21,4 +21,4 @@ class ProjectSetting < ApplicationRecord
   end
 end
 
-ProjectSetting.prepend_ee_mod
+ProjectSetting.prepend_mod

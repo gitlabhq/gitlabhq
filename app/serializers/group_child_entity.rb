@@ -100,4 +100,4 @@ class GroupChildEntity < Grape::Entity
   end
 end
 
-GroupChildEntity.prepend_if_ee('EE::GroupChildEntity')
+GroupChildEntity.prepend_mod_with('GroupChildEntity')

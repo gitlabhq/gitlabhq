@@ -143,4 +143,4 @@ module Todos
   end
 end
 
-Todos::Destroy::EntityLeaveService.prepend_if_ee('EE::Todos::Destroy::EntityLeaveService')
+Todos::Destroy::EntityLeaveService.prepend_mod_with('Todos::Destroy::EntityLeaveService')

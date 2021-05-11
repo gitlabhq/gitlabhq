@@ -338,4 +338,4 @@ module SystemNoteService
   end
 end
 
-SystemNoteService.prepend_if_ee('EE::SystemNoteService')
+SystemNoteService.prepend_mod_with('SystemNoteService')

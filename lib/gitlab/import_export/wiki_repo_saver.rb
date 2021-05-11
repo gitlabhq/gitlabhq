@@ -20,4 +20,4 @@ module Gitlab
   end
 end
 
-Gitlab::ImportExport::WikiRepoSaver.prepend_if_ee('EE::Gitlab::ImportExport::WikiRepoSaver')
+Gitlab::ImportExport::WikiRepoSaver.prepend_mod_with('Gitlab::ImportExport::WikiRepoSaver')

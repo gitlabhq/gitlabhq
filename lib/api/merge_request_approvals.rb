@@ -79,4 +79,4 @@ module API
   end
 end
 
-API::MergeRequestApprovals.prepend_if_ee('EE::API::MergeRequestApprovals')
+API::MergeRequestApprovals.prepend_mod_with('API::MergeRequestApprovals')

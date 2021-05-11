@@ -117,4 +117,4 @@ class UploadsController < ApplicationController
   end
 end
 
-UploadsController.prepend_if_ee('EE::UploadsController')
+UploadsController.prepend_mod_with('UploadsController')

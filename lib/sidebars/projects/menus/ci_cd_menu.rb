@@ -115,4 +115,4 @@ module Sidebars
   end
 end
 
-Sidebars::Projects::Menus::CiCdMenu.prepend_if_ee('EE::Sidebars::Projects::Menus::CiCdMenu')
+Sidebars::Projects::Menus::CiCdMenu.prepend_mod_with('Sidebars::Projects::Menus::CiCdMenu')

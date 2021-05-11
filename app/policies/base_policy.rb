@@ -66,4 +66,4 @@ class BasePolicy < DeclarativePolicy::Base
   condition(:is_gitlab_com) { ::Gitlab.dev_env_or_com? }
 end
 
-BasePolicy.prepend_if_ee('EE::BasePolicy')
+BasePolicy.prepend_mod_with('BasePolicy')

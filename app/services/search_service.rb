@@ -140,4 +140,4 @@ class SearchService
   attr_reader :current_user, :params
 end
 
-SearchService.prepend_if_ee('EE::SearchService')
+SearchService.prepend_mod_with('SearchService')

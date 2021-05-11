@@ -117,4 +117,4 @@ module API
   end
 end
 
-API::ProjectMilestones.prepend_if_ee('EE::API::ProjectMilestones')
+API::ProjectMilestones.prepend_mod_with('API::ProjectMilestones')

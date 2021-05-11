@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::MigrateApproverToApprovalRulesCheckProgress.prepend_if_ee('EE::Gitlab::BackgroundMigration::MigrateApproverToApprovalRulesCheckProgress')
+Gitlab::BackgroundMigration::MigrateApproverToApprovalRulesCheckProgress.prepend_mod_with('Gitlab::BackgroundMigration::MigrateApproverToApprovalRulesCheckProgress')

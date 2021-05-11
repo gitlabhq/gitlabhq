@@ -22,9 +22,6 @@ variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
-  #
-  DAST_API_VERSION: "1"
-  DAST_API_IMAGE: $SECURE_ANALYZERS_PREFIX/api-fuzzing:$DAST_API_VERSION
 
 dast:
   stage: dast
@@ -41,11 +38,6 @@ dast:
     reports:
       dast: gl-dast-report.json
   rules:
-    - if: $DAST_API_BETA && ( $DAST_API_SPECIFICATION ||
-          $DAST_API_OPENAPI ||
-          $DAST_API_POSTMAN_COLLECTION ||
-          $DAST_API_HAR )
-      when: never
     - if: $DAST_DISABLED
       when: never
     - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH &&
@@ -61,42 +53,4 @@ dast:
     - if: $CI_COMMIT_BRANCH &&
           $DAST_WEBSITE
     - if: $CI_COMMIT_BRANCH &&
-          $DAST_API_BETA == null &&
           $DAST_API_SPECIFICATION
-
-dast_api:
-  stage: dast
-  image: $DAST_API_IMAGE
-  allow_failure: true
-  rules:
-    - if: $DAST_API_BETA == null
-      when: never
-    - if: $DAST_DISABLED
-      when: never
-    - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH &&
-          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
-      when: never
-    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
-          $REVIEW_DISABLED &&
-          $DAST_API_SPECIFICATION == null &&
-          $DAST_API_OPENAPI == null &&
-          $DAST_API_POSTMAN_COLLECTION == null &&
-          $DAST_API_HAR == null
-      when: never
-    - if: $DAST_API_SPECIFICATION == null &&
-          $DAST_API_OPENAPI == null &&
-          $DAST_API_POSTMAN_COLLECTION == null &&
-          $DAST_API_HAR == null
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bdast\b/
-  script:
-    - /peach/analyzer-dast-api
-  artifacts:
-    when: always
-    paths:
-      - gl-assets
-      - gl-dast-api-report.json
-      - gl-*.log
-    reports:
-      dast: gl-dast-api-report.json

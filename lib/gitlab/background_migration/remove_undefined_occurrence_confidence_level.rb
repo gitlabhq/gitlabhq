@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::RemoveUndefinedOccurrenceConfidenceLevel.prepend_if_ee('EE::Gitlab::BackgroundMigration::RemoveUndefinedOccurrenceConfidenceLevel')
+Gitlab::BackgroundMigration::RemoveUndefinedOccurrenceConfidenceLevel.prepend_mod_with('Gitlab::BackgroundMigration::RemoveUndefinedOccurrenceConfidenceLevel')

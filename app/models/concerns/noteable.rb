@@ -183,5 +183,5 @@ end
 
 Noteable.extend(Noteable::ClassMethods)
 
-Noteable::ClassMethods.prepend_if_ee('EE::Noteable::ClassMethods')
-Noteable.prepend_if_ee('EE::Noteable')
+Noteable::ClassMethods.prepend_mod_with('Noteable::ClassMethods')
+Noteable.prepend_mod_with('Noteable')

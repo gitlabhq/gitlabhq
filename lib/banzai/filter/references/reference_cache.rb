@@ -175,4 +175,4 @@ module Banzai
   end
 end
 
-Banzai::Filter::References::ReferenceCache.prepend_if_ee('EE::Banzai::Filter::References::ReferenceCache')
+Banzai::Filter::References::ReferenceCache.prepend_mod

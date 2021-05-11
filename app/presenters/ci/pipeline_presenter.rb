@@ -164,4 +164,4 @@ module Ci
   end
 end
 
-Ci::PipelinePresenter.prepend_if_ee('EE::Ci::PipelinePresenter')
+Ci::PipelinePresenter.prepend_mod_with('Ci::PipelinePresenter')

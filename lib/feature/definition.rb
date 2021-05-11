@@ -185,4 +185,4 @@ class Feature
   end
 end
 
-Feature::Definition.prepend_if_ee('EE::Feature::Definition')
+Feature::Definition.prepend_mod_with('Feature::Definition')

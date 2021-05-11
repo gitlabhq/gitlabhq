@@ -67,4 +67,4 @@ module QA
   end
 end
 
-QA::Page::Project::Pipeline::Index.prepend_if_ee('Page::Project::Pipeline::Index', namespace: QA)
+QA::Page::Project::Pipeline::Index.prepend_mod_with('Page::Project::Pipeline::Index', namespace: QA)

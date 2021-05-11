@@ -153,4 +153,4 @@ module StubGitlabCalls
   end
 end
 
-StubGitlabCalls.prepend_if_ee('EE::StubGitlabCalls')
+StubGitlabCalls.prepend_mod_with('StubGitlabCalls')

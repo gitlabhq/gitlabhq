@@ -26,3 +26,5 @@ export const TABS_WITH_COMMIT_FORM = [CREATE_TAB, LINT_TAB, VISUALIZE_TAB];
 
 export const COMMIT_ACTION_CREATE = 'CREATE';
 export const COMMIT_ACTION_UPDATE = 'UPDATE';
+
+export const DRAWER_EXPANDED_KEY = 'pipeline_editor_drawer_expanded';

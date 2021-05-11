@@ -51,4 +51,4 @@ module AlertManagement
   end
 end
 
-::AlertManagement::HttpIntegrationsFinder.prepend_if_ee('EE::AlertManagement::HttpIntegrationsFinder')
+::AlertManagement::HttpIntegrationsFinder.prepend_mod_with('AlertManagement::HttpIntegrationsFinder')

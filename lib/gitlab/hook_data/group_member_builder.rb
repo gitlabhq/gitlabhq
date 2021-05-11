@@ -62,4 +62,4 @@ module Gitlab
   end
 end
 
-Gitlab::HookData::GroupMemberBuilder.prepend_if_ee('EE::Gitlab::HookData::GroupMemberBuilder')
+Gitlab::HookData::GroupMemberBuilder.prepend_mod_with('Gitlab::HookData::GroupMemberBuilder')

@@ -46,4 +46,4 @@ module Groups
   end
 end
 
-Groups::AutocompleteService.prepend_if_ee('EE::Groups::AutocompleteService')
+Groups::AutocompleteService.prepend_mod

@@ -52,4 +52,4 @@ module IncidentManagement
   end
 end
 
-IncidentManagement::ProjectIncidentManagementSetting.prepend_if_ee('EE::IncidentManagement::ProjectIncidentManagementSetting')
+IncidentManagement::ProjectIncidentManagementSetting.prepend_mod_with('IncidentManagement::ProjectIncidentManagementSetting')

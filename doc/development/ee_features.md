@@ -94,11 +94,11 @@ class User < ActiveRecord::Base
   # ... lots of code here ...
 end
 
-User.prepend_ee_mod
+User.prepend_mod
 ```
 
 Do not use methods such as `prepend`, `extend`, and `include`. Instead, use
-`prepend_ee_mod`, `extend_ee_mod`, or `include_ee_mod`. These methods will try to
+`prepend_mod`, `extend_mod`, or `include_mod`. These methods will try to
 find the relevant EE module by the name of the receiver module, for example;
 
 ```ruby
@@ -108,13 +108,13 @@ module Vulnerabilities
   end
 end
 
-Vulnerabilities::Finding.prepend_ee_mod
+Vulnerabilities::Finding.prepend_mod
 ```
 
 will prepend the module named `::EE::Vulnerabilities::Finding`.
 
 If the extending module does not follow this naming convention, you can also provide the module name
-by using `prepend_if_ee`, `extend_if_ee`, or `include_if_ee`. These methods take a
+by using `prepend_mod_with`, `extend_mod_with`, or `include_mod_with`. These methods take a
 _String_ containing the full module name as the argument, not the module itself, like so;
 
 ```ruby
@@ -122,7 +122,7 @@ class User
   #...
 end
 
-User.prepend_if_ee('::EE::UserExtension')
+User.prepend_mod_with('UserExtension')
 ```
 
 Since the module would require an `EE` namespace, the file should also be
@@ -254,7 +254,7 @@ class ApplicationController < ActionController::Base
   # ...
 end
 
-ApplicationController.prepend_if_ee('EE::ApplicationController')
+ApplicationController.prepend_mod_with('ApplicationController')
 ```
 
 And create a new file in the `ee/` sub-directory with the altered
@@ -429,7 +429,7 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::PruneOrphanedGeoEvents.prepend_if_ee('EE::Gitlab::BackgroundMigration::PruneOrphanedGeoEvents')
+Gitlab::BackgroundMigration::PruneOrphanedGeoEvents.prepend_mod_with('Gitlab::BackgroundMigration::PruneOrphanedGeoEvents')
 ```
 
 GitLab EE:
@@ -563,7 +563,7 @@ EE-specific LDAP classes in `ee/lib/ee/gitlab/ldap`.
 
 ### Code in `lib/api/`
 
-It can be very tricky to extend EE features by a single line of `prepend_if_ee`,
+It can be very tricky to extend EE features by a single line of `prepend_mod_with`,
 and for each different [Grape](https://github.com/ruby-grape/grape) feature, we
 might need different strategies to extend it. To apply different strategies
 easily, we would use `extend ActiveSupport::Concern` in the EE module.
@@ -602,7 +602,7 @@ constants.
 We can define `params` and use `use` in another `params` definition to
 include parameters defined in EE. However, we need to define the "interface" first
 in CE in order for EE to override it. We don't have to do this in other places
-due to `prepend_if_ee`, but Grape is complex internally and we couldn't easily
+due to `prepend_mod_with`, but Grape is complex internally and we couldn't easily
 do that, so we follow regular object-oriented practices that we define the
 interface first here.
 
@@ -642,7 +642,7 @@ module API
   end
 end
 
-API::Helpers::ProjectsHelpers.prepend_if_ee('EE::API::Helpers::ProjectsHelpers')
+API::Helpers::ProjectsHelpers.prepend_mod_with('API::Helpers::ProjectsHelpers')
 ```
 
 We could override it in EE module:
@@ -683,7 +683,7 @@ module API
   end
 end
 
-API::JobArtifacts.prepend_if_ee('EE::API::JobArtifacts')
+API::JobArtifacts.prepend_mod_with('API::JobArtifacts')
 ```
 
 And then we can follow regular object-oriented practices to override it:
@@ -736,7 +736,7 @@ module API
   end
 end
 
-API::MergeRequests.prepend_if_ee('EE::API::MergeRequests')
+API::MergeRequests.prepend_mod_with('API::MergeRequests')
 ```
 
 Note that `update_merge_request_ee` doesn't do anything in CE, but
@@ -777,7 +777,7 @@ can't easily extend it with an EE module because Grape has different context in
 different blocks. In order to overcome this, we need to move the data to a class
 method that resides in a separate module or class. This allows us to extend that
 module or class before its data is used, without having to place a
-`prepend_if_ee` in the middle of CE code.
+`prepend_mod_with` in the middle of CE code.
 
 For example, in one place we need to pass an extra argument to
 `at_least_one_of` so that the API could consider an EE-only argument as the
@@ -798,7 +798,7 @@ module API
   end
 end
 
-API::MergeRequests::Parameters.prepend_if_ee('EE::API::MergeRequests::Parameters')
+API::MergeRequests::Parameters.prepend_mod_with('API::MergeRequests::Parameters')
 
 # api/merge_requests.rb
 module API
@@ -848,7 +848,7 @@ class Identity < ActiveRecord::Base
     [:provider]
   end
 
-  prepend_if_ee('EE::Identity')
+  prepend_mod_with('Identity')
 
   validates :extern_uid,
     allow_blank: true,
@@ -900,7 +900,7 @@ class Identity < ActiveRecord::Base
   end
 end
 
-Identity::UniquenessScopes.prepend_if_ee('EE::Identity::UniquenessScopes')
+Identity::UniquenessScopes.prepend_mod_with('Identity::UniquenessScopes')
 
 # app/models/identity.rb
 class Identity < ActiveRecord::Base

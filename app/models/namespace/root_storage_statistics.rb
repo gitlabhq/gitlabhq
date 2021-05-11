@@ -70,4 +70,4 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   end
 end
 
-Namespace::RootStorageStatistics.prepend_if_ee('EE::Namespace::RootStorageStatistics')
+Namespace::RootStorageStatistics.prepend_mod_with('Namespace::RootStorageStatistics')

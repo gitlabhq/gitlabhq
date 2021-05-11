@@ -99,4 +99,4 @@ module Issuable
   end
 end
 
-Issuable::BulkUpdateService.prepend_if_ee('EE::Issuable::BulkUpdateService')
+Issuable::BulkUpdateService.prepend_mod_with('Issuable::BulkUpdateService')

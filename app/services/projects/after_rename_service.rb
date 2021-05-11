@@ -147,4 +147,4 @@ module Projects
   end
 end
 
-Projects::AfterRenameService.prepend_if_ee('EE::Projects::AfterRenameService')
+Projects::AfterRenameService.prepend_mod_with('Projects::AfterRenameService')

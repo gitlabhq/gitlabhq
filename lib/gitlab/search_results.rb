@@ -236,4 +236,4 @@ module Gitlab
   end
 end
 
-Gitlab::SearchResults.prepend_if_ee('EE::Gitlab::SearchResults')
+Gitlab::SearchResults.prepend_mod_with('Gitlab::SearchResults')

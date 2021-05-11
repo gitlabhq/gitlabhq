@@ -70,4 +70,4 @@ class RootController < Dashboard::ProjectsController
   end
 end
 
-RootController.prepend_if_ee('EE::RootController')
+RootController.prepend_mod_with('RootController')

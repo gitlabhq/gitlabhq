@@ -26,4 +26,4 @@ class UserProjectAccessChangedService
   end
 end
 
-UserProjectAccessChangedService.prepend_if_ee('EE::UserProjectAccessChangedService')
+UserProjectAccessChangedService.prepend_mod_with('UserProjectAccessChangedService')

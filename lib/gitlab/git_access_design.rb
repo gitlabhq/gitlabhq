@@ -32,4 +32,4 @@ module Gitlab
   end
 end
 
-Gitlab::GitAccessDesign.prepend_if_ee('EE::Gitlab::GitAccessDesign')
+Gitlab::GitAccessDesign.prepend_mod_with('Gitlab::GitAccessDesign')

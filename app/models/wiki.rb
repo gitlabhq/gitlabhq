@@ -320,4 +320,4 @@ class Wiki
   end
 end
 
-Wiki.prepend_if_ee('EE::Wiki')
+Wiki.prepend_mod_with('Wiki')

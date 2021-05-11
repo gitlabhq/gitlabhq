@@ -5,7 +5,7 @@ module API
     include BoardsResponses
     include PaginationParams
 
-    prepend_if_ee('EE::API::BoardsResponses') # rubocop: disable Cop/InjectEnterpriseEditionModule
+    prepend_mod_with('API::BoardsResponses') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
     feature_category :boards
 

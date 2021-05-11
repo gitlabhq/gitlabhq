@@ -63,4 +63,4 @@ class ProjectCacheWorker
   end
 end
 
-ProjectCacheWorker.prepend_if_ee('EE::ProjectCacheWorker')
+ProjectCacheWorker.prepend_mod_with('ProjectCacheWorker')

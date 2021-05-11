@@ -90,4 +90,4 @@ module Milestones
   end
 end
 
-Milestones::PromoteService.prepend_if_ee('EE::Milestones::PromoteService')
+Milestones::PromoteService.prepend_mod_with('Milestones::PromoteService')

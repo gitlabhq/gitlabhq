@@ -163,4 +163,4 @@ end
 require_relative '../../../ee/spec/support/helpers/ee/stub_configuration' if
   Dir.exist?("#{__dir__}/../../../ee")
 
-StubConfiguration.prepend_if_ee('EE::StubConfiguration')
+StubConfiguration.prepend_mod_with('StubConfiguration')

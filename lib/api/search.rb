@@ -138,4 +138,4 @@ module API
   end
 end
 
-API::Search.prepend_if_ee('EE::API::Search')
+API::Search.prepend_mod_with('API::Search')

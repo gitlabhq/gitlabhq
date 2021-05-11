@@ -141,4 +141,4 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 end
 
-Projects::MergeRequests::CreationsController.prepend_ee_mod
+Projects::MergeRequests::CreationsController.prepend_mod

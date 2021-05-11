@@ -69,4 +69,4 @@ class PasswordsController < Devise::PasswordsController
   end
 end
 
-PasswordsController.prepend_if_ee('EE::PasswordsController')
+PasswordsController.prepend_mod_with('PasswordsController')

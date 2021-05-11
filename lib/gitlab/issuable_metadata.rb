@@ -98,4 +98,4 @@ module Gitlab
   end
 end
 
-Gitlab::IssuableMetadata.prepend_if_ee('EE::Gitlab::IssuableMetadata')
+Gitlab::IssuableMetadata.prepend_mod_with('Gitlab::IssuableMetadata')

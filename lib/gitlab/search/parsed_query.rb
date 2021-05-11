@@ -57,4 +57,4 @@ module Gitlab
   end
 end
 
-Gitlab::Search::ParsedQuery.prepend_if_ee('EE::Gitlab::Search::ParsedQuery')
+Gitlab::Search::ParsedQuery.prepend_mod_with('Gitlab::Search::ParsedQuery')

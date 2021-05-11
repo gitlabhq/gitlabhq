@@ -136,4 +136,4 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
   end
 end
 
-PostReceive.prepend_if_ee('EE::PostReceive')
+PostReceive.prepend_mod_with('PostReceive')

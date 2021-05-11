@@ -80,4 +80,4 @@ module Gitlab
   end
 end
 
-Gitlab::GonHelper.prepend_if_ee('EE::Gitlab::GonHelper')
+Gitlab::GonHelper.prepend_mod_with('Gitlab::GonHelper')

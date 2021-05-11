@@ -25,4 +25,4 @@ module Analytics
   end
 end
 
-Analytics::NavbarHelper.prepend_if_ee('EE::Analytics::NavbarHelper')
+Analytics::NavbarHelper.prepend_mod_with('Analytics::NavbarHelper')

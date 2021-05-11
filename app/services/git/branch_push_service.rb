@@ -94,4 +94,4 @@ module Git
   end
 end
 
-Git::BranchPushService.prepend_if_ee('::EE::Git::BranchPushService')
+Git::BranchPushService.prepend_mod_with('Git::BranchPushService')

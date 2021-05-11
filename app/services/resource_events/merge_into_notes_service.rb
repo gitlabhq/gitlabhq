@@ -37,4 +37,4 @@ module ResourceEvents
   end
 end
 
-ResourceEvents::MergeIntoNotesService.prepend_if_ee('EE::ResourceEvents::MergeIntoNotesService')
+ResourceEvents::MergeIntoNotesService.prepend_mod_with('ResourceEvents::MergeIntoNotesService')

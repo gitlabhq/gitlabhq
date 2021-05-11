@@ -21,4 +21,4 @@ module Types
   end
 end
 
-Types::Boards::BoardIssueInputType.prepend_if_ee('::EE::Types::Boards::BoardIssueInputType')
+Types::Boards::BoardIssueInputType.prepend_mod_with('Types::Boards::BoardIssueInputType')

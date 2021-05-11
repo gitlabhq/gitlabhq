@@ -64,4 +64,4 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 end
 
-Projects::ProjectMembersController.prepend_if_ee('EE::Projects::ProjectMembersController')
+Projects::ProjectMembersController.prepend_mod_with('Projects::ProjectMembersController')

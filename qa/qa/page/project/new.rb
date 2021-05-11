@@ -84,4 +84,4 @@ module QA
   end
 end
 
-QA::Page::Project::New.prepend_if_ee('Page::Project::New', namespace: QA)
+QA::Page::Project::New.prepend_mod_with('Page::Project::New', namespace: QA)

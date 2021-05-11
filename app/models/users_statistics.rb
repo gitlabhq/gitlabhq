@@ -71,4 +71,4 @@ class UsersStatistics < ApplicationRecord
   end
 end
 
-UsersStatistics.prepend_if_ee('EE::UsersStatistics')
+UsersStatistics.prepend_mod_with('UsersStatistics')

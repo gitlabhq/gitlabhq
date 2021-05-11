@@ -27,4 +27,4 @@ module QA
   end
 end
 
-QA::Page::Project::Packages::Index.prepend_if_ee('Page::Project::Packages::Index', namespace: QA)
+QA::Page::Project::Packages::Index.prepend_mod_with('Page::Project::Packages::Index', namespace: QA)

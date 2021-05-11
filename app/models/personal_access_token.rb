@@ -110,4 +110,4 @@ class PersonalAccessToken < ApplicationRecord
   end
 end
 
-PersonalAccessToken.prepend_if_ee('EE::PersonalAccessToken')
+PersonalAccessToken.prepend_mod_with('PersonalAccessToken')

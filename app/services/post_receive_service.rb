@@ -98,4 +98,4 @@ class PostReceiveService
   end
 end
 
-PostReceiveService.prepend_if_ee('EE::PostReceiveService')
+PostReceiveService.prepend_mod_with('PostReceiveService')

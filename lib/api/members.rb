@@ -175,4 +175,4 @@ module API
   end
 end
 
-API::Members.prepend_if_ee('EE::API::Members')
+API::Members.prepend_mod_with('API::Members')

@@ -145,4 +145,4 @@ class ProjectFeature < ApplicationRecord
   end
 end
 
-ProjectFeature.prepend_if_ee('EE::ProjectFeature')
+ProjectFeature.prepend_mod_with('ProjectFeature')

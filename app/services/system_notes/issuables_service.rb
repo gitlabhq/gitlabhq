@@ -420,4 +420,4 @@ module SystemNotes
   end
 end
 
-SystemNotes::IssuablesService.prepend_if_ee('::EE::SystemNotes::IssuablesService')
+SystemNotes::IssuablesService.prepend_mod_with('SystemNotes::IssuablesService')

@@ -259,4 +259,4 @@ module IssuableActions
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end
 
-IssuableActions.prepend_if_ee('EE::IssuableActions')
+IssuableActions.prepend_mod_with('IssuableActions')

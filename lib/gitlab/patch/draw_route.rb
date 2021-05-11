@@ -37,4 +37,4 @@ module Gitlab
   end
 end
 
-Gitlab::Patch::DrawRoute.prepend_if_ee('EE::Gitlab::Patch::DrawRoute')
+Gitlab::Patch::DrawRoute.prepend_mod_with('Gitlab::Patch::DrawRoute')

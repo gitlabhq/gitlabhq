@@ -145,4 +145,4 @@ module Namespaces
   end
 end
 
-Namespaces::InProductMarketingEmailsService.prepend_ee_mod
+Namespaces::InProductMarketingEmailsService.prepend_mod

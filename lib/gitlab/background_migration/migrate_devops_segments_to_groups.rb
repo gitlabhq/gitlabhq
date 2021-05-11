@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::MigrateDevopsSegmentsToGroups.prepend_if_ee('EE::Gitlab::BackgroundMigration::MigrateDevopsSegmentsToGroups')
+Gitlab::BackgroundMigration::MigrateDevopsSegmentsToGroups.prepend_mod_with('Gitlab::BackgroundMigration::MigrateDevopsSegmentsToGroups')

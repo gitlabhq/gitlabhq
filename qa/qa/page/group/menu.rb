@@ -83,4 +83,4 @@ module QA
   end
 end
 
-QA::Page::Group::Menu.prepend_if_ee('Page::Group::Menu', namespace: QA)
+QA::Page::Group::Menu.prepend_mod_with('Page::Group::Menu', namespace: QA)

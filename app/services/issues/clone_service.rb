@@ -90,4 +90,4 @@ module Issues
   end
 end
 
-Issues::CloneService.prepend_if_ee('EE::Issues::CloneService')
+Issues::CloneService.prepend_mod_with('Issues::CloneService')

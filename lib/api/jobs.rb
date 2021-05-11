@@ -202,4 +202,4 @@ module API
   end
 end
 
-API::Jobs.prepend_if_ee('EE::API::Jobs')
+API::Jobs.prepend_mod_with('API::Jobs')

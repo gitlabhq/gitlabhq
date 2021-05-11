@@ -58,4 +58,4 @@ module Analytics
   end
 end
 
-Analytics::UsageTrends::Measurement.prepend_if_ee('EE::Analytics::UsageTrends::Measurement')
+Analytics::UsageTrends::Measurement.prepend_mod_with('Analytics::UsageTrends::Measurement')

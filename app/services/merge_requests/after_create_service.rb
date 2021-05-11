@@ -40,4 +40,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::AfterCreateService.prepend_if_ee('EE::MergeRequests::AfterCreateService')
+MergeRequests::AfterCreateService.prepend_mod_with('MergeRequests::AfterCreateService')

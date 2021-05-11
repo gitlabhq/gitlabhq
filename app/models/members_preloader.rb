@@ -17,4 +17,4 @@ class MembersPreloader
   end
 end
 
-MembersPreloader.prepend_if_ee('EE::MembersPreloader')
+MembersPreloader.prepend_mod_with('MembersPreloader')

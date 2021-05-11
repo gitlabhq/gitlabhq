@@ -123,4 +123,4 @@ module Gitlab
   end
 end
 
-Gitlab::OmniauthInitializer.prepend_if_ee('::EE::Gitlab::OmniauthInitializer')
+Gitlab::OmniauthInitializer.prepend_mod_with('Gitlab::OmniauthInitializer')

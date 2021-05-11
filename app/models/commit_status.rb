@@ -292,4 +292,4 @@ class CommitStatus < ApplicationRecord
   end
 end
 
-CommitStatus.prepend_if_ee('::EE::CommitStatus')
+CommitStatus.prepend_mod_with('CommitStatus')

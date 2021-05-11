@@ -510,4 +510,4 @@ class Service < ApplicationRecord
   end
 end
 
-Service.prepend_if_ee('EE::Service')
+Service.prepend_mod_with('Service')

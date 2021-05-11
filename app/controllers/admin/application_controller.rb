@@ -9,4 +9,4 @@ class Admin::ApplicationController < ApplicationController
   layout 'admin'
 end
 
-Admin::ApplicationController.prepend_if_ee('EE::Admin::ApplicationController')
+Admin::ApplicationController.prepend_mod_with('Admin::ApplicationController')

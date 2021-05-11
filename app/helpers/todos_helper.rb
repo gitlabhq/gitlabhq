@@ -232,4 +232,4 @@ module TodosHelper
   end
 end
 
-TodosHelper.prepend_if_ee('EE::TodosHelper')
+TodosHelper.prepend_mod_with('TodosHelper')

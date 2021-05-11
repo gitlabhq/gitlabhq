@@ -196,4 +196,4 @@ module QA
   end
 end
 
-QA::Page::Main::Menu.prepend_if_ee('Page::Main::Menu', namespace: QA)
+QA::Page::Main::Menu.prepend_mod_with('Page::Main::Menu', namespace: QA)

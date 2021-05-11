@@ -315,4 +315,4 @@ class SessionsController < Devise::SessionsController
   end
 end
 
-SessionsController.prepend_if_ee('EE::SessionsController')
+SessionsController.prepend_mod_with('SessionsController')

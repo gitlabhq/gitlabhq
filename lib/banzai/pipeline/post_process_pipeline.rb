@@ -33,4 +33,4 @@ module Banzai
   end
 end
 
-Banzai::Pipeline::PostProcessPipeline.prepend_if_ee('EE::Banzai::Pipeline::PostProcessPipeline')
+Banzai::Pipeline::PostProcessPipeline.prepend_mod_with('Banzai::Pipeline::PostProcessPipeline')

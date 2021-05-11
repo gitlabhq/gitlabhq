@@ -57,4 +57,4 @@ module Gitlab
   end
 end
 
-Gitlab::Checks::BaseChecker.prepend_if_ee('EE::Gitlab::Checks::BaseChecker')
+Gitlab::Checks::BaseChecker.prepend_mod_with('Gitlab::Checks::BaseChecker')

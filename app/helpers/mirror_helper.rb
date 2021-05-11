@@ -17,4 +17,4 @@ module MirrorHelper
   end
 end
 
-MirrorHelper.prepend_if_ee('EE::MirrorHelper')
+MirrorHelper.prepend_mod_with('MirrorHelper')

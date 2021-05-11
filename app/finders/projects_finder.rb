@@ -247,4 +247,4 @@ class ProjectsFinder < UnionFinder
   end
 end
 
-ProjectsFinder.prepend_if_ee('::EE::ProjectsFinder')
+ProjectsFinder.prepend_mod_with('ProjectsFinder')

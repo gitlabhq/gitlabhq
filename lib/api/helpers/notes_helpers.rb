@@ -151,4 +151,4 @@ module API
   end
 end
 
-API::Helpers::NotesHelpers.prepend_if_ee('EE::API::Helpers::NotesHelpers')
+API::Helpers::NotesHelpers.prepend_mod_with('API::Helpers::NotesHelpers')

@@ -49,4 +49,4 @@ module ReadonlyAbilities
   end
 end
 
-ReadonlyAbilities::ClassMethods.prepend_if_ee('EE::ReadonlyAbilities::ClassMethods')
+ReadonlyAbilities::ClassMethods.prepend_mod_with('ReadonlyAbilities::ClassMethods')

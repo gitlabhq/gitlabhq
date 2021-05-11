@@ -144,4 +144,4 @@ module Clusters
   end
 end
 
-Clusters::ClusterPresenter.prepend_if_ee('EE::Clusters::ClusterPresenter')
+Clusters::ClusterPresenter.prepend_mod_with('Clusters::ClusterPresenter')

@@ -57,4 +57,4 @@ class MemberEntity < Grape::Entity
   end
 end
 
-MemberEntity.prepend_if_ee('EE::MemberEntity')
+MemberEntity.prepend_mod_with('MemberEntity')

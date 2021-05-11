@@ -11,4 +11,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::PopulateAnyApprovalRuleForMergeRequests.prepend_if_ee('EE::Gitlab::BackgroundMigration::PopulateAnyApprovalRuleForMergeRequests')
+Gitlab::BackgroundMigration::PopulateAnyApprovalRuleForMergeRequests.prepend_mod_with('Gitlab::BackgroundMigration::PopulateAnyApprovalRuleForMergeRequests')

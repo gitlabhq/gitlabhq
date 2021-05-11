@@ -8,7 +8,9 @@ module Gitlab
     # TABLES_TO_BE_RENAMED = {
     #   'old_name' => 'new_name'
     # }.freeze
-    TABLES_TO_BE_RENAMED = {}.freeze
+    TABLES_TO_BE_RENAMED = {
+      'analytics_instance_statistics_measurements' => 'analytics_usage_trends_measurements'
+    }.freeze
 
     # Minimum PostgreSQL version requirement per documentation:
     # https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements
@@ -384,4 +386,4 @@ module Gitlab
   end
 end
 
-Gitlab::Database.prepend_if_ee('EE::Gitlab::Database')
+Gitlab::Database.prepend_mod_with('Gitlab::Database')

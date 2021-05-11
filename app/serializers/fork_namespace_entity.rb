@@ -49,4 +49,4 @@ class ForkNamespaceEntity < Grape::Entity
   end
 end
 
-ForkNamespaceEntity.prepend_if_ee('EE::ForkNamespaceEntity')
+ForkNamespaceEntity.prepend_mod_with('ForkNamespaceEntity')

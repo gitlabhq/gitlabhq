@@ -31,4 +31,4 @@ class MergeRequest::Metrics < ApplicationRecord
   end
 end
 
-MergeRequest::Metrics.prepend_if_ee('EE::MergeRequest::Metrics')
+MergeRequest::Metrics.prepend_mod_with('MergeRequest::Metrics')

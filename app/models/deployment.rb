@@ -347,4 +347,4 @@ class Deployment < ApplicationRecord
   end
 end
 
-Deployment.prepend_if_ee('EE::Deployment')
+Deployment.prepend_mod_with('Deployment')

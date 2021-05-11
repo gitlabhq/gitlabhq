@@ -49,4 +49,4 @@ module Gitlab
   end
 end
 
-Gitlab::AlertManagement::Payload.prepend_if_ee('EE::Gitlab::AlertManagement::Payload')
+Gitlab::AlertManagement::Payload.prepend_mod_with('Gitlab::AlertManagement::Payload')

@@ -45,4 +45,4 @@ class NamespaceSetting < ApplicationRecord
   end
 end
 
-NamespaceSetting.prepend_if_ee('EE::NamespaceSetting')
+NamespaceSetting.prepend_mod_with('NamespaceSetting')

@@ -1,13 +1,22 @@
 import { GlForm, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import CreditCardValidationRequiredAlert from 'ee_component/billings/components/cc_validation_required_alert.vue';
+import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
 import RefsDropdown from '~/pipeline_new/components/refs_dropdown.vue';
-import { mockQueryParams, mockPostParams, mockProjectId, mockError, mockRefs } from '../mock_data';
+import {
+  mockQueryParams,
+  mockPostParams,
+  mockProjectId,
+  mockError,
+  mockRefs,
+  mockCreditCardValidationRequiredError,
+} from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),
@@ -375,6 +384,32 @@ describe('Pipeline New Form', () => {
 
       it('re-enables the submit button', () => {
         expect(findSubmitButton().props('disabled')).toBe(false);
+      });
+
+      it('does not show the credit card validation required alert', () => {
+        expect(wrapper.findComponent(CreditCardValidationRequiredAlert).exists()).toBe(false);
+      });
+
+      describe('when the error response is credit card validation required', () => {
+        beforeEach(async () => {
+          mock
+            .onPost(pipelinesPath)
+            .reply(httpStatusCodes.BAD_REQUEST, mockCreditCardValidationRequiredError);
+
+          window.gon = {
+            subscriptions_url: TEST_HOST,
+            payment_form_url: TEST_HOST,
+          };
+
+          findForm().vm.$emit('submit', dummySubmitEvent);
+
+          await waitForPromises();
+        });
+
+        it('shows credit card validation required alert', () => {
+          expect(findErrorAlert().exists()).toBe(false);
+          expect(wrapper.findComponent(CreditCardValidationRequiredAlert).exists()).toBe(true);
+        });
       });
     });
 

@@ -74,4 +74,4 @@ module NotificationRecipients
   end
 end
 
-NotificationRecipients::Builder::Default.prepend_if_ee('EE::NotificationRecipients::Builder::Default')
+NotificationRecipients::Builder::Default.prepend_mod_with('NotificationRecipients::Builder::Default')

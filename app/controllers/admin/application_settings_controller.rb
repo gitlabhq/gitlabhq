@@ -292,4 +292,4 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 end
 
-Admin::ApplicationSettingsController.prepend_if_ee('EE::Admin::ApplicationSettingsController')
+Admin::ApplicationSettingsController.prepend_mod_with('Admin::ApplicationSettingsController')

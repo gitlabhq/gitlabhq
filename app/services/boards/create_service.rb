@@ -37,4 +37,4 @@ module Boards
   end
 end
 
-Boards::CreateService.prepend_if_ee('EE::Boards::CreateService')
+Boards::CreateService.prepend_mod_with('Boards::CreateService')

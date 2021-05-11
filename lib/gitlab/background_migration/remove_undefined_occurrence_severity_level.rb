@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::RemoveUndefinedOccurrenceSeverityLevel.prepend_if_ee('EE::Gitlab::BackgroundMigration::RemoveUndefinedOccurrenceSeverityLevel')
+Gitlab::BackgroundMigration::RemoveUndefinedOccurrenceSeverityLevel.prepend_mod_with('Gitlab::BackgroundMigration::RemoveUndefinedOccurrenceSeverityLevel')

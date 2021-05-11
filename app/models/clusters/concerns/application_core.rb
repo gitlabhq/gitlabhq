@@ -102,4 +102,4 @@ module Clusters
   end
 end
 
-Clusters::Concerns::ApplicationCore.prepend_if_ee('EE::Clusters::Concerns::ApplicationCore')
+Clusters::Concerns::ApplicationCore.prepend_mod_with('Clusters::Concerns::ApplicationCore')

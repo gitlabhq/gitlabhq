@@ -98,4 +98,4 @@ module Gitlab
   end
 end
 
-Gitlab::Prometheus::Queries::QueryAdditionalMetrics.prepend_if_ee('EE::Gitlab::Prometheus::Queries::QueryAdditionalMetrics')
+Gitlab::Prometheus::Queries::QueryAdditionalMetrics.prepend_mod_with('Gitlab::Prometheus::Queries::QueryAdditionalMetrics')

@@ -24,4 +24,4 @@ class Admin::DashboardController < Admin::ApplicationController
   end
 end
 
-Admin::DashboardController.prepend_if_ee('EE::Admin::DashboardController')
+Admin::DashboardController.prepend_mod_with('Admin::DashboardController')

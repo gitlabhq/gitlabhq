@@ -175,4 +175,4 @@ module Gitlab
   end
 end
 
-Gitlab::ImportExport::Project::RelationFactory.prepend_if_ee('::EE::Gitlab::ImportExport::Project::RelationFactory')
+Gitlab::ImportExport::Project::RelationFactory.prepend_mod_with('Gitlab::ImportExport::Project::RelationFactory')

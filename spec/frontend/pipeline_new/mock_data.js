@@ -40,6 +40,12 @@ export const mockError = {
   total_warnings: 7,
 };
 
+export const mockCreditCardValidationRequiredError = {
+  errors: ['Credit card required to be on file in order to create a pipeline'],
+  warnings: [],
+  total_warnings: 0,
+};
+
 export const mockBranchRefs = ['main', 'dev', 'release'];
 
 export const mockTagRefs = ['1.0.0', '1.1.0', '1.2.0'];

@@ -140,4 +140,4 @@ module BoardsHelper
   end
 end
 
-BoardsHelper.prepend_if_ee('EE::BoardsHelper')
+BoardsHelper.prepend_mod_with('BoardsHelper')

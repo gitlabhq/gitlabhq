@@ -10,4 +10,4 @@ module Projects
   end
 end
 
-::Projects::Security::ConfigurationHelper.prepend_if_ee('::EE::Projects::Security::ConfigurationHelper')
+::Projects::Security::ConfigurationHelper.prepend_mod_with('Projects::Security::ConfigurationHelper')

@@ -44,4 +44,4 @@ module OperationsHelper
   end
 end
 
-OperationsHelper.prepend_if_ee('EE::OperationsHelper')
+OperationsHelper.prepend_mod_with('OperationsHelper')

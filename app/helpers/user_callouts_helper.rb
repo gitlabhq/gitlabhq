@@ -80,4 +80,4 @@ module UserCalloutsHelper
   end
 end
 
-UserCalloutsHelper.prepend_if_ee('EE::UserCalloutsHelper')
+UserCalloutsHelper.prepend_mod_with('UserCalloutsHelper')

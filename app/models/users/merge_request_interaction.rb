@@ -41,4 +41,4 @@ module Users
   end
 end
 
-::Users::MergeRequestInteraction.prepend_if_ee('EE::Users::MergeRequestInteraction')
+::Users::MergeRequestInteraction.prepend_mod_with('Users::MergeRequestInteraction')

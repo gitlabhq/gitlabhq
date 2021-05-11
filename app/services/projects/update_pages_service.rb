@@ -267,4 +267,4 @@ module Projects
   end
 end
 
-Projects::UpdatePagesService.prepend_if_ee('EE::Projects::UpdatePagesService')
+Projects::UpdatePagesService.prepend_mod_with('Projects::UpdatePagesService')

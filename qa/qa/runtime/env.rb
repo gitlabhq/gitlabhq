@@ -403,4 +403,4 @@ module QA
   end
 end
 
-QA::Runtime::Env.extend_if_ee('Runtime::Env', namespace: QA)
+QA::Runtime::Env.extend_mod_with('Runtime::Env', namespace: QA)

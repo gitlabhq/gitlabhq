@@ -45,4 +45,4 @@ class IssuesFinder
   end
 end
 
-IssuesFinder::Params.prepend_if_ee('EE::IssuesFinder::Params')
+IssuesFinder::Params.prepend_mod_with('IssuesFinder::Params')

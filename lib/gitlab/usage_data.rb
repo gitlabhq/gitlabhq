@@ -975,4 +975,4 @@ module Gitlab
   end
 end
 
-Gitlab::UsageData.prepend_if_ee('EE::Gitlab::UsageData')
+Gitlab::UsageData.prepend_mod_with('Gitlab::UsageData')

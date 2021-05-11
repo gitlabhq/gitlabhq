@@ -127,4 +127,4 @@ module Gitlab
   end
 end
 
-::Gitlab::UrlBuilder.prepend_if_ee('EE::Gitlab::UrlBuilder')
+::Gitlab::UrlBuilder.prepend_mod_with('Gitlab::UrlBuilder')

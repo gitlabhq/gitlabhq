@@ -108,4 +108,4 @@ module Ci
   end
 end
 
-Ci::BuildPolicy.prepend_if_ee('EE::Ci::BuildPolicy')
+Ci::BuildPolicy.prepend_mod_with('Ci::BuildPolicy')

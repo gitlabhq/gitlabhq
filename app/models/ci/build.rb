@@ -1144,4 +1144,4 @@ module Ci
   end
 end
 
-Ci::Build.prepend_if_ee('EE::Ci::Build')
+Ci::Build.prepend_mod_with('Ci::Build')

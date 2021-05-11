@@ -311,4 +311,4 @@ class PagesDomain < ApplicationRecord
   end
 end
 
-PagesDomain.prepend_if_ee('::EE::PagesDomain')
+PagesDomain.prepend_mod_with('PagesDomain')

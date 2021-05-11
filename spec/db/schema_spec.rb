@@ -4,7 +4,7 @@ require 'spec_helper'
 require Rails.root.join('ee', 'spec', 'db', 'schema_support') if Gitlab.ee?
 
 RSpec.describe 'Database schema' do
-  prepend_if_ee('EE::DB::SchemaSupport')
+  prepend_mod_with('DB::SchemaSupport')
 
   let(:connection) { ActiveRecord::Base.connection }
   let(:tables) { connection.tables }

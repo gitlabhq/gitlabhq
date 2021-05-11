@@ -718,4 +718,4 @@ module API
   end
 end
 
-API::Helpers.prepend_if_ee('EE::API::Helpers')
+API::Helpers.prepend_mod_with('API::Helpers')

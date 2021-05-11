@@ -120,4 +120,4 @@ module API
   end
 end
 
-API::Features.prepend_if_ee('EE::API::Features')
+API::Features.prepend_mod_with('API::Features')

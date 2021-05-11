@@ -122,4 +122,4 @@ class EnvironmentEntity < Grape::Entity
   end
 end
 
-EnvironmentEntity.prepend_if_ee('::EE::EnvironmentEntity')
+EnvironmentEntity.prepend_mod_with('EnvironmentEntity')

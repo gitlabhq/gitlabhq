@@ -6,4 +6,4 @@ module NamespaceStorageLimitAlertHelper
   end
 end
 
-NamespaceStorageLimitAlertHelper.prepend_if_ee('EE::NamespaceStorageLimitAlertHelper')
+NamespaceStorageLimitAlertHelper.prepend_mod_with('NamespaceStorageLimitAlertHelper')

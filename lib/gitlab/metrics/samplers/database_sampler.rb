@@ -55,4 +55,4 @@ module Gitlab
   end
 end
 
-Gitlab::Metrics::Samplers::DatabaseSampler.prepend_if_ee('EE::Gitlab::Metrics::Samplers::DatabaseSampler')
+Gitlab::Metrics::Samplers::DatabaseSampler.prepend_mod_with('Gitlab::Metrics::Samplers::DatabaseSampler')

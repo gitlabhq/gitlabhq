@@ -29,7 +29,7 @@ module Gitlab
     CI_JOB_USER = 'gitlab-ci-token'
 
     class << self
-      prepend_if_ee('EE::Gitlab::Auth') # rubocop: disable Cop/InjectEnterpriseEditionModule
+      prepend_mod_with('Gitlab::Auth') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
       def omniauth_enabled?
         Gitlab.config.omniauth.enabled

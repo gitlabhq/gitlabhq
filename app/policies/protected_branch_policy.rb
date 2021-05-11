@@ -10,4 +10,4 @@ class ProtectedBranchPolicy < BasePolicy
   end
 end
 
-ProtectedBranchPolicy.prepend_if_ee('EE::ProtectedBranchPolicy')
+ProtectedBranchPolicy.prepend_mod_with('ProtectedBranchPolicy')

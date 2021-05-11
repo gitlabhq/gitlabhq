@@ -42,4 +42,4 @@ module Mutations
   end
 end
 
-Mutations::Boards::Update.prepend_if_ee('::EE::Mutations::Boards::Update')
+Mutations::Boards::Update.prepend_mod_with('Mutations::Boards::Update')

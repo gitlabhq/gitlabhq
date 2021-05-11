@@ -819,4 +819,4 @@ module API
   end
 end
 
-API::Helpers::ServicesHelpers.prepend_if_ee('EE::API::Helpers::ServicesHelpers')
+API::Helpers::ServicesHelpers.prepend_mod_with('API::Helpers::ServicesHelpers')

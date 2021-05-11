@@ -32,4 +32,4 @@ module Mutations
   end
 end
 
-Mutations::AlertManagement::HttpIntegration::Update.prepend_if_ee('::EE::Mutations::AlertManagement::HttpIntegration::Update')
+Mutations::AlertManagement::HttpIntegration::Update.prepend_mod_with('Mutations::AlertManagement::HttpIntegration::Update')

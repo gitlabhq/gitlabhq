@@ -76,4 +76,4 @@ module Gitlab
   end
 end
 
-Gitlab::Uploads::MigrationHelper.prepend_if_ee('EE::Gitlab::Uploads::MigrationHelper')
+Gitlab::Uploads::MigrationHelper.prepend_mod_with('Gitlab::Uploads::MigrationHelper')

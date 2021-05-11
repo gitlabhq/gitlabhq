@@ -51,4 +51,4 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 end
 
-Groups::AutocompleteSourcesController.prepend_if_ee('EE::Groups::AutocompleteSourcesController')
+Groups::AutocompleteSourcesController.prepend_mod

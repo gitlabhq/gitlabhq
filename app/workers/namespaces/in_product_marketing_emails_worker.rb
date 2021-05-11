@@ -35,4 +35,4 @@ module Namespaces
   end
 end
 
-Namespaces::InProductMarketingEmailsWorker.prepend_if_ee('EE::Namespaces::InProductMarketingEmailsWorker')
+Namespaces::InProductMarketingEmailsWorker.prepend_mod_with('Namespaces::InProductMarketingEmailsWorker')

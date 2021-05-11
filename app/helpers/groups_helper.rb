@@ -343,4 +343,4 @@ module GroupsHelper
   end
 end
 
-GroupsHelper.prepend_if_ee('EE::GroupsHelper')
+GroupsHelper.prepend_mod_with('GroupsHelper')

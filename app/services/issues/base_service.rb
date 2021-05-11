@@ -78,4 +78,4 @@ module Issues
   end
 end
 
-Issues::BaseService.prepend_if_ee('EE::Issues::BaseService')
+Issues::BaseService.prepend_mod_with('Issues::BaseService')

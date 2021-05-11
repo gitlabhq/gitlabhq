@@ -30,4 +30,4 @@ module Mutations
   end
 end
 
-Mutations::Boards::Create.prepend_if_ee('::EE::Mutations::Boards::Create')
+Mutations::Boards::Create.prepend_mod_with('Mutations::Boards::Create')

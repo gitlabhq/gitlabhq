@@ -22,4 +22,4 @@ module BranchesHelper
   end
 end
 
-BranchesHelper.prepend_if_ee('EE::BranchesHelper')
+BranchesHelper.prepend_mod_with('BranchesHelper')

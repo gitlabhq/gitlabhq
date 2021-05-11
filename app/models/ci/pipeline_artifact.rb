@@ -60,4 +60,4 @@ module Ci
   end
 end
 
-Ci::PipelineArtifact.prepend_ee_mod
+Ci::PipelineArtifact.prepend_mod

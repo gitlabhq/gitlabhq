@@ -13,4 +13,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::PopulateNamespaceStatistics.prepend_if_ee('EE::Gitlab::BackgroundMigration::PopulateNamespaceStatistics')
+Gitlab::BackgroundMigration::PopulateNamespaceStatistics.prepend_mod_with('Gitlab::BackgroundMigration::PopulateNamespaceStatistics')

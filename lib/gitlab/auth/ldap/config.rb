@@ -320,4 +320,4 @@ module Gitlab
   end
 end
 
-Gitlab::Auth::Ldap::Config.prepend_if_ee('::EE::Gitlab::Auth::Ldap::Config')
+Gitlab::Auth::Ldap::Config.prepend_mod_with('Gitlab::Auth::Ldap::Config')

@@ -13,4 +13,4 @@ module Boards
   end
 end
 
-Boards::BaseService.prepend_if_ee('EE::Boards::BaseService')
+Boards::BaseService.prepend_mod_with('Boards::BaseService')

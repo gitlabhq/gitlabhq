@@ -10,4 +10,4 @@ module Issues
   end
 end
 
-Issues::AfterCreateService.prepend_ee_mod
+Issues::AfterCreateService.prepend_mod

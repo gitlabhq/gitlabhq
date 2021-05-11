@@ -183,4 +183,4 @@ class NotesFinder
   end
 end
 
-NotesFinder.prepend_if_ee('EE::NotesFinder')
+NotesFinder.prepend_mod_with('NotesFinder')

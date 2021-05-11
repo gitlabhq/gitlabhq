@@ -134,4 +134,4 @@ module QA
   end
 end
 
-QA::Page::Project::Operations::Metrics::Show.prepend_if_ee('Page::Project::Operations::Metrics::Show', namespace: QA)
+QA::Page::Project::Operations::Metrics::Show.prepend_mod_with('Page::Project::Operations::Metrics::Show', namespace: QA)

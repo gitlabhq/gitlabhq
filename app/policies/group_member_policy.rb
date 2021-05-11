@@ -30,4 +30,4 @@ class GroupMemberPolicy < BasePolicy
   end
 end
 
-GroupMemberPolicy.prepend_if_ee('EE::GroupMemberPolicy')
+GroupMemberPolicy.prepend_mod_with('GroupMemberPolicy')

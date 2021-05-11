@@ -92,4 +92,4 @@ module Gitlab
   end
 end
 
-Gitlab::Auth::OAuth::AuthHash.prepend_if_ee('::EE::Gitlab::Auth::OAuth::AuthHash')
+Gitlab::Auth::OAuth::AuthHash.prepend_mod_with('Gitlab::Auth::OAuth::AuthHash')

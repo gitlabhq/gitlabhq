@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::MigrateSecurityScans.prepend_if_ee('EE::Gitlab::BackgroundMigration::MigrateSecurityScans')
+Gitlab::BackgroundMigration::MigrateSecurityScans.prepend_mod_with('Gitlab::BackgroundMigration::MigrateSecurityScans')

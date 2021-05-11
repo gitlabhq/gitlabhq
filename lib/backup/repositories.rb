@@ -329,4 +329,4 @@ module Backup
   end
 end
 
-Backup::Repositories.prepend_if_ee('EE::Backup::Repositories')
+Backup::Repositories.prepend_mod_with('Backup::Repositories')

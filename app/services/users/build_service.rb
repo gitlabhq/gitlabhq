@@ -162,4 +162,4 @@ module Users
   end
 end
 
-Users::BuildService.prepend_if_ee('EE::Users::BuildService')
+Users::BuildService.prepend_mod_with('Users::BuildService')

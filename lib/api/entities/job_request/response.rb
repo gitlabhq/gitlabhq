@@ -34,4 +34,4 @@ module API
   end
 end
 
-API::Entities::JobRequest::Response.prepend_if_ee('EE::API::Entities::JobRequest::Response')
+API::Entities::JobRequest::Response.prepend_mod_with('API::Entities::JobRequest::Response')

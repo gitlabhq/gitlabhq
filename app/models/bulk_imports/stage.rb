@@ -62,4 +62,4 @@ module BulkImports
   end
 end
 
-::BulkImports::Stage.prepend_if_ee('::EE::BulkImports::Stage')
+::BulkImports::Stage.prepend_mod_with('BulkImports::Stage')

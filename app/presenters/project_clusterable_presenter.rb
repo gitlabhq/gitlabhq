@@ -44,4 +44,4 @@ class ProjectClusterablePresenter < ClusterablePresenter
   end
 end
 
-ProjectClusterablePresenter.prepend_if_ee('EE::ProjectClusterablePresenter')
+ProjectClusterablePresenter.prepend_mod_with('ProjectClusterablePresenter')

@@ -76,4 +76,4 @@ module Banzai
   end
 end
 
-Banzai::Pipeline::GfmPipeline.prepend_if_ee('EE::Banzai::Pipeline::GfmPipeline')
+Banzai::Pipeline::GfmPipeline.prepend_mod_with('Banzai::Pipeline::GfmPipeline')

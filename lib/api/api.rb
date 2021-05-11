@@ -297,4 +297,4 @@ module API
   end
 end
 
-API::API.prepend_ee_mod
+API::API.prepend_mod

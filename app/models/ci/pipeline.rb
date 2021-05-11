@@ -1301,4 +1301,4 @@ module Ci
   end
 end
 
-Ci::Pipeline.prepend_if_ee('EE::Ci::Pipeline')
+Ci::Pipeline.prepend_mod_with('Ci::Pipeline')

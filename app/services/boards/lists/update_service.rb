@@ -14,4 +14,4 @@ module Boards
   end
 end
 
-Boards::Lists::UpdateService.prepend_if_ee('EE::Boards::Lists::UpdateService')
+Boards::Lists::UpdateService.prepend_mod_with('Boards::Lists::UpdateService')

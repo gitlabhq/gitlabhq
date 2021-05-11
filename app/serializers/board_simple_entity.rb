@@ -5,4 +5,4 @@ class BoardSimpleEntity < Grape::Entity
   expose :name
 end
 
-BoardSimpleEntity.prepend_if_ee('EE::BoardSimpleEntity')
+BoardSimpleEntity.prepend_mod_with('BoardSimpleEntity')

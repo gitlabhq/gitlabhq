@@ -171,4 +171,4 @@ module Gitlab
     end
   end
 end
-::Gitlab::RackAttack.prepend_if_ee('::EE::Gitlab::RackAttack')
+::Gitlab::RackAttack.prepend_mod_with('Gitlab::RackAttack')

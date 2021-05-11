@@ -136,4 +136,4 @@ class AuditEventService
   end
 end
 
-AuditEventService.prepend_if_ee('EE::AuditEventService')
+AuditEventService.prepend_mod_with('AuditEventService')

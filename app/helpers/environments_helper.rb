@@ -117,4 +117,4 @@ module EnvironmentsHelper
   end
 end
 
-EnvironmentsHelper.prepend_if_ee('::EE::EnvironmentsHelper')
+EnvironmentsHelper.prepend_mod_with('EnvironmentsHelper')

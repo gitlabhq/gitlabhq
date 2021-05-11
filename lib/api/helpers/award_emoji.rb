@@ -37,4 +37,4 @@ module API
   end
 end
 
-API::Helpers::AwardEmoji.prepend_if_ee('EE::API::Helpers::AwardEmoji')
+API::Helpers::AwardEmoji.prepend_mod_with('API::Helpers::AwardEmoji')

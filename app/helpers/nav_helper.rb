@@ -101,4 +101,4 @@ module NavHelper
   end
 end
 
-NavHelper.prepend_if_ee('EE::NavHelper')
+NavHelper.prepend_mod_with('NavHelper')

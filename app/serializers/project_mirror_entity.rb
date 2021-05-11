@@ -8,4 +8,4 @@ class ProjectMirrorEntity < Grape::Entity
   end
 end
 
-ProjectMirrorEntity.prepend_if_ee('::EE::ProjectMirrorEntity')
+ProjectMirrorEntity.prepend_mod_with('ProjectMirrorEntity')

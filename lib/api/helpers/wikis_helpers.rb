@@ -32,4 +32,4 @@ module API
   end
 end
 
-API::Helpers::WikisHelpers.prepend_if_ee('EE::API::Helpers::WikisHelpers')
+API::Helpers::WikisHelpers.prepend_mod_with('API::Helpers::WikisHelpers')

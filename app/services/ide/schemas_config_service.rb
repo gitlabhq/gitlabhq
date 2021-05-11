@@ -46,4 +46,4 @@ module Ide
   end
 end
 
-Ide::SchemasConfigService.prepend_if_ee('::EE::Ide::SchemasConfigService')
+Ide::SchemasConfigService.prepend_mod_with('Ide::SchemasConfigService')

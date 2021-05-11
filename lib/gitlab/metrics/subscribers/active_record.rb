@@ -87,4 +87,4 @@ module Gitlab
   end
 end
 
-Gitlab::Metrics::Subscribers::ActiveRecord.prepend_if_ee('EE::Gitlab::Metrics::Subscribers::ActiveRecord')
+Gitlab::Metrics::Subscribers::ActiveRecord.prepend_mod_with('Gitlab::Metrics::Subscribers::ActiveRecord')

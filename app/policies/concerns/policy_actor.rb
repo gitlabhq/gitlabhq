@@ -82,4 +82,4 @@ module PolicyActor
   end
 end
 
-PolicyActor.prepend_if_ee('EE::PolicyActor')
+PolicyActor.prepend_mod_with('PolicyActor')

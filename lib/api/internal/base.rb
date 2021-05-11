@@ -336,4 +336,4 @@ module API
   end
 end
 
-API::Internal::Base.prepend_if_ee('EE::API::Internal::Base')
+API::Internal::Base.prepend_mod_with('API::Internal::Base')

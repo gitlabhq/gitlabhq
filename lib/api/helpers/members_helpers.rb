@@ -65,4 +65,4 @@ module API
   end
 end
 
-API::Helpers::MembersHelpers.prepend_if_ee('EE::API::Helpers::MembersHelpers')
+API::Helpers::MembersHelpers.prepend_mod_with('API::Helpers::MembersHelpers')

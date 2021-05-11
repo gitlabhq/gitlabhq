@@ -55,4 +55,4 @@ module Resolvers
   end
 end
 
-Resolvers::IssuesResolver.prepend_if_ee('::EE::Resolvers::IssuesResolver')
+Resolvers::IssuesResolver.prepend_mod_with('Resolvers::IssuesResolver')

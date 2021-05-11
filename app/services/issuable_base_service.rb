@@ -493,4 +493,4 @@ class IssuableBaseService < BaseService
   end
 end
 
-IssuableBaseService.prepend_if_ee('EE::IssuableBaseService')
+IssuableBaseService.prepend_mod_with('IssuableBaseService')

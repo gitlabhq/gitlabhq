@@ -57,4 +57,4 @@ module Groups
   end
 end
 
-Groups::VariablesController.prepend_if_ee('EE::Groups::VariablesController')
+Groups::VariablesController.prepend_mod_with('Groups::VariablesController')

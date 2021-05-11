@@ -48,4 +48,4 @@ module API
   end
 end
 
-API::Helpers::GroupsHelpers.prepend_if_ee('EE::API::Helpers::GroupsHelpers')
+API::Helpers::GroupsHelpers.prepend_mod_with('API::Helpers::GroupsHelpers')

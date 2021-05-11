@@ -120,4 +120,4 @@ module Sidebars
   end
 end
 
-Sidebars::Projects::Menus::RepositoryMenu.prepend_if_ee('EE::Sidebars::Projects::Menus::RepositoryMenu')
+Sidebars::Projects::Menus::RepositoryMenu.prepend_mod_with('Sidebars::Projects::Menus::RepositoryMenu')

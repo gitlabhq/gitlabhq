@@ -53,7 +53,7 @@ module Enums
   end
 end
 
-Enums::Pipeline.prepend_if_ee('EE::Enums::Pipeline')
+Enums::Pipeline.prepend_mod_with('Enums::Pipeline')
 ```
 
 ```ruby

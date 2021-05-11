@@ -64,4 +64,4 @@ module Ci
   end
 end
 
-Ci::RetryBuildService.prepend_if_ee('EE::Ci::RetryBuildService')
+Ci::RetryBuildService.prepend_mod_with('Ci::RetryBuildService')

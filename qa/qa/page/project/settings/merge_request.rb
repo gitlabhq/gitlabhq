@@ -38,4 +38,4 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::MergeRequest.prepend_if_ee("Page::Project::Settings::MergeRequest", namespace: QA)
+QA::Page::Project::Settings::MergeRequest.prepend_mod_with("Page::Project::Settings::MergeRequest", namespace: QA)

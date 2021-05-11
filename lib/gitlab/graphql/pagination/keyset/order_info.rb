@@ -121,4 +121,4 @@ module Gitlab
   end
 end
 
-Gitlab::Graphql::Pagination::Keyset::OrderInfo.prepend_if_ee('EE::Gitlab::Graphql::Pagination::Keyset::OrderInfo')
+Gitlab::Graphql::Pagination::Keyset::OrderInfo.prepend_mod_with('Gitlab::Graphql::Pagination::Keyset::OrderInfo')

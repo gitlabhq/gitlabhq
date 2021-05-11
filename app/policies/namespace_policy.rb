@@ -23,4 +23,4 @@ class NamespacePolicy < BasePolicy
   rule { (owner | admin) & can?(:create_projects) }.enable :transfer_projects
 end
 
-NamespacePolicy.prepend_if_ee('EE::NamespacePolicy')
+NamespacePolicy.prepend_mod_with('NamespacePolicy')

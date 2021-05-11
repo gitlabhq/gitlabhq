@@ -1954,4 +1954,4 @@ class MergeRequest < ApplicationRecord
   end
 end
 
-MergeRequest.prepend_if_ee('::EE::MergeRequest')
+MergeRequest.prepend_mod_with('MergeRequest')

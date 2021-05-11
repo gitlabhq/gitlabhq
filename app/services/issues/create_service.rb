@@ -75,4 +75,4 @@ module Issues
   end
 end
 
-Issues::CreateService.prepend_ee_mod
+Issues::CreateService.prepend_mod

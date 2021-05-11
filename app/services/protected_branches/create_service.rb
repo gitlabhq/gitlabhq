@@ -26,4 +26,4 @@ module ProtectedBranches
   end
 end
 
-ProtectedBranches::CreateService.prepend_if_ee('EE::ProtectedBranches::CreateService')
+ProtectedBranches::CreateService.prepend_mod_with('ProtectedBranches::CreateService')

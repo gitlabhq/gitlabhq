@@ -290,4 +290,4 @@ module EventsHelper
   end
 end
 
-EventsHelper.prepend_if_ee('EE::EventsHelper')
+EventsHelper.prepend_mod_with('EventsHelper')

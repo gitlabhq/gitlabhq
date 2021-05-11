@@ -200,4 +200,4 @@ module Gitlab
   end
 end
 
-::Gitlab::Ci::Config::Entry::Job.prepend_if_ee('::EE::Gitlab::Ci::Config::Entry::Job')
+::Gitlab::Ci::Config::Entry::Job.prepend_mod_with('Gitlab::Ci::Config::Entry::Job')

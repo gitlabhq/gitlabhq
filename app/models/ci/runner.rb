@@ -405,4 +405,4 @@ module Ci
   end
 end
 
-Ci::Runner.prepend_if_ee('EE::Ci::Runner')
+Ci::Runner.prepend_mod_with('Ci::Runner')

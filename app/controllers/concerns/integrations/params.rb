@@ -102,4 +102,4 @@ module Integrations
   end
 end
 
-Integrations::Params.prepend_if_ee('EE::Integrations::Params')
+Integrations::Params.prepend_mod_with('Integrations::Params')

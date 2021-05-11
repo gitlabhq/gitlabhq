@@ -22,4 +22,4 @@ module Gitlab
   end
 end
 
-Gitlab::Ci::Pipeline::Chain::Validate::SecurityOrchestrationPolicy.prepend_if_ee('EE::Gitlab::Ci::Pipeline::Chain::Validate::SecurityOrchestrationPolicy')
+Gitlab::Ci::Pipeline::Chain::Validate::SecurityOrchestrationPolicy.prepend_mod_with('Gitlab::Ci::Pipeline::Chain::Validate::SecurityOrchestrationPolicy')

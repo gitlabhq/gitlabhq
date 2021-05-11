@@ -52,4 +52,4 @@ module Gitlab
   end
 end
 
-Gitlab::ImportExport::RepoRestorer.prepend_if_ee('EE::Gitlab::ImportExport::RepoRestorer')
+Gitlab::ImportExport::RepoRestorer.prepend_mod_with('Gitlab::ImportExport::RepoRestorer')

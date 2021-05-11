@@ -187,4 +187,4 @@ module MembershipActions
   end
 end
 
-MembershipActions.prepend_if_ee('EE::MembershipActions')
+MembershipActions.prepend_mod_with('MembershipActions')

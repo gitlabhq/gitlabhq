@@ -264,4 +264,4 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 end
 
-Projects::EnvironmentsController.prepend_if_ee('EE::Projects::EnvironmentsController')
+Projects::EnvironmentsController.prepend_mod_with('Projects::EnvironmentsController')

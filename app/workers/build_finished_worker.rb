@@ -58,4 +58,4 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
   end
 end
 
-BuildFinishedWorker.prepend_if_ee('EE::BuildFinishedWorker')
+BuildFinishedWorker.prepend_mod_with('BuildFinishedWorker')

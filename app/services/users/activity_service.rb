@@ -38,4 +38,4 @@ module Users
   end
 end
 
-Users::ActivityService.prepend_ee_mod
+Users::ActivityService.prepend_mod

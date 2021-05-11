@@ -113,4 +113,4 @@ module AlertManagement
   end
 end
 
-AlertManagement::AlertPresenter.prepend_if_ee('EE::AlertManagement::AlertPresenter')
+AlertManagement::AlertPresenter.prepend_mod_with('AlertManagement::AlertPresenter')

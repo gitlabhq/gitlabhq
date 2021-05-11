@@ -128,4 +128,4 @@ module Sidebars
   end
 end
 
-Sidebars::Projects::Menus::IssuesMenu.prepend_if_ee('EE::Sidebars::Projects::Menus::IssuesMenu')
+Sidebars::Projects::Menus::IssuesMenu.prepend_mod_with('Sidebars::Projects::Menus::IssuesMenu')

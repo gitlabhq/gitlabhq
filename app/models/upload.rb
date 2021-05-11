@@ -163,4 +163,4 @@ class Upload < ApplicationRecord
   end
 end
 
-Upload.prepend_if_ee('EE::Upload')
+Upload.prepend_mod_with('Upload')

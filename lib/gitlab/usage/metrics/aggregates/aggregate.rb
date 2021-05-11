@@ -109,4 +109,4 @@ module Gitlab
   end
 end
 
-Gitlab::Usage::Metrics::Aggregates::Aggregate.prepend_if_ee('EE::Gitlab::Usage::Metrics::Aggregates::Aggregate')
+Gitlab::Usage::Metrics::Aggregates::Aggregate.prepend_mod_with('Gitlab::Usage::Metrics::Aggregates::Aggregate')

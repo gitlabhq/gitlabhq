@@ -32,4 +32,4 @@ module SystemCheck
   end
 end
 
-SystemCheck::RakeTask::GitlabTask.prepend_if_ee('EE::SystemCheck::RakeTask::GitlabTask')
+SystemCheck::RakeTask::GitlabTask.prepend_mod_with('SystemCheck::RakeTask::GitlabTask')

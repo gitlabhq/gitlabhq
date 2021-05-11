@@ -155,4 +155,4 @@ module Ci
   end
 end
 
-Ci::BuildDependencies.prepend_if_ee('EE::Ci::BuildDependencies')
+Ci::BuildDependencies.prepend_mod_with('Ci::BuildDependencies')

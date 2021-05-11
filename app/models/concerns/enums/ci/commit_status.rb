@@ -36,4 +36,4 @@ module Enums
   end
 end
 
-Enums::Ci::CommitStatus.prepend_if_ee('EE::Enums::Ci::CommitStatus')
+Enums::Ci::CommitStatus.prepend_mod_with('Enums::Ci::CommitStatus')

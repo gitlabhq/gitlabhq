@@ -213,4 +213,4 @@ module MergeRequestsHelper
   end
 end
 
-MergeRequestsHelper.prepend_if_ee('EE::MergeRequestsHelper')
+MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

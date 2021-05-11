@@ -29,4 +29,4 @@ class MergeRequestPolicy < IssuablePolicy
   end
 end
 
-MergeRequestPolicy.prepend_if_ee('EE::MergeRequestPolicy')
+MergeRequestPolicy.prepend_mod_with('MergeRequestPolicy')

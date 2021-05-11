@@ -17,4 +17,4 @@ module Ci
   end
 end
 
-Ci::PipelineBridgeStatusService.prepend_if_ee('EE::Ci::PipelineBridgeStatusService')
+Ci::PipelineBridgeStatusService.prepend_mod_with('Ci::PipelineBridgeStatusService')

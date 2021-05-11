@@ -126,4 +126,4 @@ module API
   end
 end
 
-API::Internal::Kubernetes.prepend_if_ee('EE::API::Internal::Kubernetes')
+API::Internal::Kubernetes.prepend_mod_with('API::Internal::Kubernetes')

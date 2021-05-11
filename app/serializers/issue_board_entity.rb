@@ -53,4 +53,4 @@ class IssueBoardEntity < Grape::Entity
   end
 end
 
-IssueBoardEntity.prepend_if_ee('EE::IssueBoardEntity')
+IssueBoardEntity.prepend_mod_with('IssueBoardEntity')

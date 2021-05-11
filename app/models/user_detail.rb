@@ -32,4 +32,4 @@ class UserDetail < ApplicationRecord
   end
 end
 
-UserDetail.prepend_if_ee('EE::UserDetail')
+UserDetail.prepend_mod_with('UserDetail')

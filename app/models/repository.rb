@@ -1193,4 +1193,4 @@ class Repository
   end
 end
 
-Repository.prepend_if_ee('EE::Repository')
+Repository.prepend_mod_with('Repository')

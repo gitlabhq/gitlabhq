@@ -129,4 +129,4 @@ module AlertManagement
   end
 end
 
-AlertManagement::AlertProcessing.prepend_ee_mod
+AlertManagement::AlertProcessing.prepend_mod

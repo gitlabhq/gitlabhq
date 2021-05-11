@@ -516,4 +516,4 @@ class Issue < ApplicationRecord
   end
 end
 
-Issue.prepend_if_ee('EE::Issue')
+Issue.prepend_mod_with('Issue')

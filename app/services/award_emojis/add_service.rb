@@ -46,4 +46,4 @@ module AwardEmojis
   end
 end
 
-AwardEmojis::AddService.prepend_if_ee('EE::AwardEmojis::AddService')
+AwardEmojis::AddService.prepend_mod_with('AwardEmojis::AddService')

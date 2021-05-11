@@ -13,4 +13,4 @@ module Keys
   end
 end
 
-Keys::DestroyService.prepend_if_ee('EE::Keys::DestroyService')
+Keys::DestroyService.prepend_mod_with('Keys::DestroyService')

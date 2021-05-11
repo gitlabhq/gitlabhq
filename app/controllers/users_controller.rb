@@ -260,4 +260,4 @@ class UsersController < ApplicationController
   end
 end
 
-UsersController.prepend_if_ee('EE::UsersController')
+UsersController.prepend_mod_with('UsersController')

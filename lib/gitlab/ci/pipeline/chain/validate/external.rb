@@ -147,4 +147,4 @@ module Gitlab
   end
 end
 
-Gitlab::Ci::Pipeline::Chain::Validate::External.prepend_if_ee('EE::Gitlab::Ci::Pipeline::Chain::Validate::External')
+Gitlab::Ci::Pipeline::Chain::Validate::External.prepend_mod_with('Gitlab::Ci::Pipeline::Chain::Validate::External')

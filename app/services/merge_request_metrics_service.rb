@@ -20,4 +20,4 @@ class MergeRequestMetricsService
   end
 end
 
-MergeRequestMetricsService.prepend_if_ee('EE::MergeRequestMetricsService')
+MergeRequestMetricsService.prepend_mod_with('MergeRequestMetricsService')

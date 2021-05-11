@@ -29,4 +29,4 @@ class DescriptionVersion < ApplicationRecord
   end
 end
 
-DescriptionVersion.prepend_if_ee('EE::DescriptionVersion')
+DescriptionVersion.prepend_mod_with('DescriptionVersion')

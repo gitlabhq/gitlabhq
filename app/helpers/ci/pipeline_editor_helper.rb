@@ -33,4 +33,4 @@ module Ci
   end
 end
 
-Ci::PipelineEditorHelper.prepend_if_ee('EE::Ci::PipelineEditorHelper')
+Ci::PipelineEditorHelper.prepend_mod_with('Ci::PipelineEditorHelper')

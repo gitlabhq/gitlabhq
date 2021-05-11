@@ -40,4 +40,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::HandleAssigneesChangeService.prepend_if_ee('EE::MergeRequests::HandleAssigneesChangeService')
+MergeRequests::HandleAssigneesChangeService.prepend_mod_with('MergeRequests::HandleAssigneesChangeService')

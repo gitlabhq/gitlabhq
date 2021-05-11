@@ -26,4 +26,4 @@ module AwardEmojis
   end
 end
 
-AwardEmojis::DestroyService.prepend_if_ee('EE::AwardEmojis::DestroyService')
+AwardEmojis::DestroyService.prepend_mod_with('AwardEmojis::DestroyService')

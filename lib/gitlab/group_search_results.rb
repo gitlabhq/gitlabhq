@@ -39,4 +39,4 @@ module Gitlab
   end
 end
 
-Gitlab::GroupSearchResults.prepend_if_ee('EE::Gitlab::GroupSearchResults')
+Gitlab::GroupSearchResults.prepend_mod_with('Gitlab::GroupSearchResults')

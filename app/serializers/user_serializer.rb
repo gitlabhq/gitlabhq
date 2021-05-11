@@ -21,4 +21,4 @@ class UserSerializer < BaseSerializer
   end
 end
 
-UserSerializer.prepend_if_ee('EE::UserSerializer')
+UserSerializer.prepend_mod_with('UserSerializer')

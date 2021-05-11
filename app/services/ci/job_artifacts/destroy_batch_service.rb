@@ -71,4 +71,4 @@ module Ci
   end
 end
 
-Ci::JobArtifacts::DestroyBatchService.prepend_if_ee('EE::Ci::JobArtifacts::DestroyBatchService')
+Ci::JobArtifacts::DestroyBatchService.prepend_mod_with('Ci::JobArtifacts::DestroyBatchService')

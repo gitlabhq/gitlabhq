@@ -87,4 +87,4 @@ module Gitlab
   end
 end
 
-Gitlab::ProjectTemplate.prepend_if_ee('EE::Gitlab::ProjectTemplate')
+Gitlab::ProjectTemplate.prepend_mod_with('Gitlab::ProjectTemplate')

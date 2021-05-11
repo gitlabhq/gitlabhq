@@ -122,4 +122,4 @@ module Repositories
   end
 end
 
-Repositories::GitHttpController.prepend_if_ee('EE::Repositories::GitHttpController')
+Repositories::GitHttpController.prepend_mod_with('Repositories::GitHttpController')

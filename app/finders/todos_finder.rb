@@ -215,4 +215,4 @@ class TodosFinder
   end
 end
 
-TodosFinder.prepend_if_ee('EE::TodosFinder')
+TodosFinder.prepend_mod_with('TodosFinder')

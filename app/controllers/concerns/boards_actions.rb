@@ -65,4 +65,4 @@ module BoardsActions
   end
 end
 
-BoardsActions.prepend_if_ee('EE::BoardsActions')
+BoardsActions.prepend_mod_with('BoardsActions')

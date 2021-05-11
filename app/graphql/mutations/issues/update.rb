@@ -42,4 +42,4 @@ module Mutations
   end
 end
 
-Mutations::Issues::Update.prepend_if_ee('::EE::Mutations::Issues::Update')
+Mutations::Issues::Update.prepend_mod_with('Mutations::Issues::Update')

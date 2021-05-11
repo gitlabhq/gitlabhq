@@ -55,4 +55,4 @@ class Profiles::PreferencesController < Profiles::ApplicationController
   end
 end
 
-Profiles::PreferencesController.prepend_if_ee('::EE::Profiles::PreferencesController')
+Profiles::PreferencesController.prepend_mod_with('Profiles::PreferencesController')

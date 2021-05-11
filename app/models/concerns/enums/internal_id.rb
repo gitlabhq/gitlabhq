@@ -22,4 +22,4 @@ module Enums
   end
 end
 
-Enums::InternalId.prepend_if_ee('EE::Enums::InternalId')
+Enums::InternalId.prepend_mod_with('Enums::InternalId')

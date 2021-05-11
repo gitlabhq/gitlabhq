@@ -28,4 +28,4 @@ module Gitlab
   end
 end
 
-Gitlab::Ci::Parsers.prepend_if_ee('::EE::Gitlab::Ci::Parsers')
+Gitlab::Ci::Parsers.prepend_mod_with('Gitlab::Ci::Parsers')

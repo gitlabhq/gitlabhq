@@ -128,4 +128,4 @@ class Release < ApplicationRecord
   end
 end
 
-Release.prepend_if_ee('EE::Release')
+Release.prepend_mod_with('Release')

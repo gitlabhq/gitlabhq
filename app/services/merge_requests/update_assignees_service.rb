@@ -61,4 +61,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::UpdateAssigneesService.prepend_if_ee('EE::MergeRequests::UpdateAssigneesService')
+MergeRequests::UpdateAssigneesService.prepend_mod_with('MergeRequests::UpdateAssigneesService')

@@ -431,4 +431,4 @@ module SearchHelper
   end
 end
 
-SearchHelper.prepend_if_ee('EE::SearchHelper')
+SearchHelper.prepend_mod_with('SearchHelper')

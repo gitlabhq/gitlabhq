@@ -129,4 +129,4 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::MirroringRepositories.prepend_if_ee('Page::Project::Settings::MirroringRepositories', namespace: QA)
+QA::Page::Project::Settings::MirroringRepositories.prepend_mod_with('Page::Project::Settings::MirroringRepositories', namespace: QA)

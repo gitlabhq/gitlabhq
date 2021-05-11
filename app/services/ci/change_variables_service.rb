@@ -8,4 +8,4 @@ module Ci
   end
 end
 
-::Ci::ChangeVariablesService.prepend_if_ee('EE::Ci::ChangeVariablesService')
+::Ci::ChangeVariablesService.prepend_mod_with('Ci::ChangeVariablesService')

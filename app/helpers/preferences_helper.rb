@@ -121,4 +121,4 @@ module PreferencesHelper
   end
 end
 
-PreferencesHelper.prepend_if_ee('EE::PreferencesHelper')
+PreferencesHelper.prepend_mod_with('PreferencesHelper')

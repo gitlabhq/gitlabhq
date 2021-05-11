@@ -55,4 +55,4 @@ class Projects::PagesController < Projects::ApplicationController
   end
 end
 
-Projects::PagesController.prepend_if_ee('EE::Projects::PagesController')
+Projects::PagesController.prepend_mod_with('Projects::PagesController')

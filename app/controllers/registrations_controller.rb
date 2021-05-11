@@ -203,4 +203,4 @@ class RegistrationsController < Devise::RegistrationsController
   end
 end
 
-RegistrationsController.prepend_if_ee('EE::RegistrationsController')
+RegistrationsController.prepend_mod_with('RegistrationsController')

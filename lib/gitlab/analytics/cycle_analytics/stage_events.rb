@@ -85,4 +85,4 @@ module Gitlab
   end
 end
 
-Gitlab::Analytics::CycleAnalytics::StageEvents.prepend_if_ee('::EE::Gitlab::Analytics::CycleAnalytics::StageEvents')
+Gitlab::Analytics::CycleAnalytics::StageEvents.prepend_mod_with('Gitlab::Analytics::CycleAnalytics::StageEvents')

@@ -50,4 +50,4 @@ module Gitlab
   end
 end
 
-Gitlab::SlashCommands::Presenters::IssueBase.prepend_if_ee('EE::Gitlab::SlashCommands::Presenters::IssueBase')
+Gitlab::SlashCommands::Presenters::IssueBase.prepend_mod_with('Gitlab::SlashCommands::Presenters::IssueBase')

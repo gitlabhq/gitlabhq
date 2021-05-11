@@ -106,4 +106,4 @@ module Issues
   end
 end
 
-Issues::MoveService.prepend_if_ee('EE::Issues::MoveService')
+Issues::MoveService.prepend_mod_with('Issues::MoveService')

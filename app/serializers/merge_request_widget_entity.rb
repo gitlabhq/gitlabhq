@@ -176,4 +176,4 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 end
 
-MergeRequestWidgetEntity.prepend_if_ee('EE::MergeRequestWidgetEntity')
+MergeRequestWidgetEntity.prepend_mod_with('MergeRequestWidgetEntity')

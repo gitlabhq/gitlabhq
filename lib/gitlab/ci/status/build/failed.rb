@@ -69,4 +69,4 @@ module Gitlab
   end
 end
 
-Gitlab::Ci::Status::Build::Failed.prepend_if_ee('::EE::Gitlab::Ci::Status::Build::Failed')
+Gitlab::Ci::Status::Build::Failed.prepend_mod_with('Gitlab::Ci::Status::Build::Failed')

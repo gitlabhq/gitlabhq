@@ -298,4 +298,4 @@ module EmailsHelper
   end
 end
 
-EmailsHelper.prepend_if_ee('EE::EmailsHelper')
+EmailsHelper.prepend_mod_with('EmailsHelper')

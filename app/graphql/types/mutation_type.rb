@@ -105,4 +105,4 @@ module Types
 end
 
 ::Types::MutationType.prepend(::Types::DeprecatedMutations)
-::Types::MutationType.prepend_if_ee('::EE::Types::MutationType')
+::Types::MutationType.prepend_mod_with('Types::MutationType')

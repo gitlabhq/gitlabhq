@@ -54,4 +54,4 @@ module Gitlab
   end
 end
 
-Gitlab::Checks::ChangeAccess.prepend_if_ee('EE::Gitlab::Checks::ChangeAccess')
+Gitlab::Checks::ChangeAccess.prepend_mod_with('Gitlab::Checks::ChangeAccess')

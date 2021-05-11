@@ -56,4 +56,4 @@ module AlertManagement
   end
 end
 
-::AlertManagement::HttpIntegrations::UpdateService.prepend_if_ee('::EE::AlertManagement::HttpIntegrations::UpdateService')
+::AlertManagement::HttpIntegrations::UpdateService.prepend_mod_with('AlertManagement::HttpIntegrations::UpdateService')

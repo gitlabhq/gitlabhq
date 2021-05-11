@@ -61,4 +61,4 @@ module Sidebars
   end
 end
 
-Sidebars::Projects::Menus::SecurityComplianceMenu.prepend_if_ee('EE::Sidebars::Projects::Menus::SecurityComplianceMenu')
+Sidebars::Projects::Menus::SecurityComplianceMenu.prepend_mod_with('Sidebars::Projects::Menus::SecurityComplianceMenu')

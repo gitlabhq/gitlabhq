@@ -344,4 +344,4 @@ class Admin::UsersController < Admin::ApplicationController
   end
 end
 
-Admin::UsersController.prepend_if_ee('EE::Admin::UsersController')
+Admin::UsersController.prepend_mod_with('Admin::UsersController')

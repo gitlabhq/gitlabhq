@@ -20,4 +20,4 @@ module Terraform
   end
 end
 
-Terraform::StateVersion.prepend_if_ee('EE::Terraform::StateVersion')
+Terraform::StateVersion.prepend_mod_with('Terraform::StateVersion')

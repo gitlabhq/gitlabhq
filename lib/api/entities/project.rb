@@ -147,4 +147,4 @@ module API
   end
 end
 
-API::Entities::Project.prepend_if_ee('EE::API::Entities::Project', with_descendants: true)
+API::Entities::Project.prepend_mod_with('API::Entities::Project', with_descendants: true)

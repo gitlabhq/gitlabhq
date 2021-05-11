@@ -7,7 +7,7 @@ class Milestone < ApplicationRecord
   include FromUnion
   include Importable
 
-  prepend_if_ee('::EE::Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
+  prepend_mod_with('Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
   class Predefined
     ALL = [::Timebox::None, ::Timebox::Any, ::Timebox::Started, ::Timebox::Upcoming].freeze

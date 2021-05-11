@@ -139,4 +139,4 @@ module Nav
   end
 end
 
-Nav::TopNavHelper.prepend_ee_mod
+Nav::TopNavHelper.prepend_mod

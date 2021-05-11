@@ -49,4 +49,4 @@ class IssuableExportCsvWorker # rubocop:disable Scalability/IdempotentWorker
   end
 end
 
-IssuableExportCsvWorker.prepend_if_ee('::EE::IssuableExportCsvWorker')
+IssuableExportCsvWorker.prepend_mod_with('IssuableExportCsvWorker')

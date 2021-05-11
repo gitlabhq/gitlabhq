@@ -16,4 +16,4 @@ module API
   end
 end
 
-API::Entities::Board.prepend_if_ee('EE::API::Entities::Board')
+API::Entities::Board.prepend_mod_with('API::Entities::Board')

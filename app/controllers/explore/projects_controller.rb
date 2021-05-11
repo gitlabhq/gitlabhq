@@ -122,4 +122,4 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 end
 
-Explore::ProjectsController.prepend_if_ee('EE::Explore::ProjectsController')
+Explore::ProjectsController.prepend_mod_with('Explore::ProjectsController')

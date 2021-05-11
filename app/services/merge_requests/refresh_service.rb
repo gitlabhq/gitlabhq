@@ -304,4 +304,4 @@ module MergeRequests
   end
 end
 
-MergeRequests::RefreshService.prepend_if_ee('EE::MergeRequests::RefreshService')
+MergeRequests::RefreshService.prepend_mod_with('MergeRequests::RefreshService')

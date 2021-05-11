@@ -77,4 +77,4 @@ module Deployments
   end
 end
 
-Deployments::UpdateEnvironmentService.prepend_if_ee('EE::Deployments::UpdateEnvironmentService')
+Deployments::UpdateEnvironmentService.prepend_mod_with('Deployments::UpdateEnvironmentService')

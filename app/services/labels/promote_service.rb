@@ -101,4 +101,4 @@ module Labels
   end
 end
 
-Labels::PromoteService.prepend_if_ee('EE::Labels::PromoteService')
+Labels::PromoteService.prepend_mod_with('Labels::PromoteService')

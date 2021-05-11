@@ -108,4 +108,4 @@ module Projects
   end
 end
 
-Projects::CleanupService.prepend_if_ee('EE::Projects::CleanupService')
+Projects::CleanupService.prepend_mod_with('Projects::CleanupService')

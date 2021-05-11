@@ -384,4 +384,4 @@ module GitlabRoutingHelper
   end
 end
 
-GitlabRoutingHelper.include_if_ee('EE::GitlabRoutingHelper')
+GitlabRoutingHelper.include_mod_with('GitlabRoutingHelper')

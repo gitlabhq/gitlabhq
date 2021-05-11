@@ -118,4 +118,4 @@ module Issuable
   end
 end
 
-Issuable::Clone::AttributesRewriter.prepend_if_ee('EE::Issuable::Clone::AttributesRewriter')
+Issuable::Clone::AttributesRewriter.prepend_mod_with('Issuable::Clone::AttributesRewriter')

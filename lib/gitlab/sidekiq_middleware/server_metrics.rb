@@ -119,4 +119,4 @@ module Gitlab
   end
 end
 
-Gitlab::SidekiqMiddleware::ServerMetrics.prepend_if_ee('EE::Gitlab::SidekiqMiddleware::ServerMetrics')
+Gitlab::SidekiqMiddleware::ServerMetrics.prepend_mod_with('Gitlab::SidekiqMiddleware::ServerMetrics')

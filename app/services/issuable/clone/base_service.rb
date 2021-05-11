@@ -88,4 +88,4 @@ module Issuable
   end
 end
 
-Issuable::Clone::BaseService.prepend_if_ee('EE::Issuable::Clone::BaseService')
+Issuable::Clone::BaseService.prepend_mod_with('Issuable::Clone::BaseService')
