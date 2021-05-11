@@ -271,10 +271,15 @@ Release note descriptions are unrelated. Description supports [Markdown](../../m
 
 ### Release assets
 
-You can add the following types of assets to each release:
+A release contains the following types of assets:
 
 - [Source code](#source-code)
-- [Links](#links)
+- [Permanent links to release assets](#permanent-links-to-release-assets)
+
+#### Source code
+
+GitLab automatically generates `zip`, `tar.gz`, `tar.bz2`, and `tar`
+archived source code from the given Git tag. These are read-only assets.
 
 #### Permanent links to release assets
 
@@ -285,9 +290,21 @@ GitLab always redirects this URL to the actual asset
 location, so even if the assets move to a different location, you can continue
 to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-link) or [updating](../../../api/releases/links.md#update-a-link).
 
-Each asset has a name, a URL of the *actual* asset location, and optionally, a
-`filepath` parameter, which, if you specify it, creates a URL pointing
-to the asset for the Release. The format of the URL is:
+Each asset has a `name`, a `url` of the *actual* asset location, and optionally,
+`filepath` and `link_type` parameters.
+
+A `filepath` creates a URL pointing to the asset for the Release.
+
+The `link_type` parameter accepts one of the following four values:
+
+- `runbook`
+- `package`
+- `image`
+- `other` (default)
+
+This field has no effect on the URL and it's only used for visual purposes in the Releases page of your project.
+
+The format of the URL is:
 
 ```plaintext
 https://host/namespace/project/releases/:release/downloads/:filepath
@@ -300,7 +317,8 @@ namespace and `gitlab-runner` project on `gitlab.com`, for example:
 {
   "name": "linux amd64",
   "filepath": "/binaries/gitlab-runner-linux-amd64",
-  "url": "https://gitlab-runner-downloads.s3.amazonaws.com/v11.9.0-rc2/binaries/gitlab-runner-linux-amd64"
+  "url": "https://gitlab-runner-downloads.s3.amazonaws.com/v11.9.0-rc2/binaries/gitlab-runner-linux-amd64",
+  "link_type": "other"
 }
 ```
 
@@ -311,11 +329,6 @@ https://gitlab.com/gitlab-org/gitlab-runner/releases/v11.9.0-rc2/downloads/binar
 ```
 
 The physical location of the asset can change at any time and the direct link remains unchanged.
-
-### Source code
-
-GitLab automatically generates `zip`, `tar.gz`, `tar.bz2` and `tar`
-archived source code from the given Git tag. These are read-only assets.
 
 ### Links
 

@@ -41,7 +41,9 @@ module Sidebars
         private
 
         def kubernetes_menu_item
-          return unless can?(context.current_user, :read_cluster, context.project)
+          unless can?(context.current_user, :read_cluster, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :kubernetes)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Kubernetes clusters'),
@@ -67,7 +69,9 @@ module Sidebars
         end
 
         def serverless_menu_item
-          return unless can?(context.current_user, :read_cluster, context.project)
+          unless can?(context.current_user, :read_cluster, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :serverless)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Serverless platform'),
@@ -78,7 +82,9 @@ module Sidebars
         end
 
         def terraform_menu_item
-          return unless can?(context.current_user, :read_terraform_state, context.project)
+          unless can?(context.current_user, :read_terraform_state, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :terraform)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Terraform'),

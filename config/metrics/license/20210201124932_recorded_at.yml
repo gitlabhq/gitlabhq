@@ -10,7 +10,7 @@ status: data_available
 milestone: "8.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/557
 time_frame: none
-data_source: ruby
+data_source: system
 distribution:
 - ee
 - ce

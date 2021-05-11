@@ -8,7 +8,7 @@ product_category: ''
 value_type: number
 status: data_available
 time_frame: all
-data_source:
+data_source: system
 distribution:
 - ce
 tier:

@@ -5043,7 +5043,7 @@ msgstr ""
 msgid "BillingPlan|Upgrade for free"
 msgstr ""
 
-msgid "Billings|As a user on a free or trial namespace, you'll need to verify your account with a credit card to run pipelines. This is required to help prevent cryptomining attacks on GitLab infrastructure. %{strongStart}GitLab will not charge or store your credit card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
+msgid "Billings|As a user on a free or trial namespace, you'll need to verify your account with a credit card to run pipelines. This is required to help prevent cryptomining attacks on GitLab infrastructure. %{strongStart}GitLab will not charge or store your credit card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
 msgid "Billings|User Verification Required"

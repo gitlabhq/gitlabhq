@@ -1,4 +1,5 @@
 import { Range } from 'monaco-editor';
+import { waitForCSSLoaded } from '~/helpers/startup_css_helper';
 import { ERROR_INSTANCE_REQUIRED_FOR_EXTENSION, EDITOR_TYPE_CODE } from '../constants';
 
 const hashRegexp = new RegExp('#?L', 'g');
@@ -25,9 +26,16 @@ export class EditorLiteExtension {
       if (instance.getEditorType && instance.getEditorType() === EDITOR_TYPE_CODE) {
         EditorLiteExtension.setupLineLinking(instance);
       }
+      EditorLiteExtension.deferRerender(instance);
     } else if (Object.entries(options).length) {
       throw new Error(ERROR_INSTANCE_REQUIRED_FOR_EXTENSION);
     }
+  }
+
+  static deferRerender(instance) {
+    waitForCSSLoaded(() => {
+      instance.layout();
+    });
   }
 
   static highlightLines(instance) {

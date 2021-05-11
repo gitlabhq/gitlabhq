@@ -83,8 +83,9 @@ module Sidebars
         end
 
         def releases_menu_item
-          return unless can?(context.current_user, :read_release, context.project)
-          return if context.project.empty_repo?
+          if !can?(context.current_user, :read_release, context.project) || context.project.empty_repo?
+            return ::Sidebars::NilMenuItem.new(item_id: :releases)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Releases'),

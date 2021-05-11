@@ -19,7 +19,7 @@ module Sidebars
 
         override :link
         def link
-          return cycle_analytics_menu_item.link if cycle_analytics_menu_item
+          return cycle_analytics_menu_item.link if cycle_analytics_menu_item.render?
 
           renderable_items.first.link
         end
@@ -44,9 +44,11 @@ module Sidebars
         private
 
         def ci_cd_analytics_menu_item
-          return if context.project.empty_repo?
-          return unless context.project.feature_available?(:builds, context.current_user)
-          return unless can?(context.current_user, :read_build, context.project)
+          if !context.project.feature_available?(:builds, context.current_user) ||
+            !can?(context.current_user, :read_build, context.project) ||
+            context.project.empty_repo?
+            return ::Sidebars::NilMenuItem.new(item_id: :ci_cd_analytics)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('CI/CD'),
@@ -57,7 +59,9 @@ module Sidebars
         end
 
         def repository_analytics_menu_item
-          return if context.project.empty_repo?
+          if context.project.empty_repo?
+            return ::Sidebars::NilMenuItem.new(item_id: :repository_analytics)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Repository'),
@@ -70,7 +74,9 @@ module Sidebars
 
         def cycle_analytics_menu_item
           strong_memoize(:cycle_analytics_menu_item) do
-            next unless can?(context.current_user, :read_cycle_analytics, context.project)
+            unless can?(context.current_user, :read_cycle_analytics, context.project)
+              next ::Sidebars::NilMenuItem.new(item_id: :cycle_analytics)
+            end
 
             ::Sidebars::MenuItem.new(
               title: _('Value Stream'),

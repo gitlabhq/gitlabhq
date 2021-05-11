@@ -58,7 +58,9 @@ module Sidebars
         private
 
         def metrics_dashboard_menu_item
-          return unless can?(context.current_user, :metrics_dashboard, context.project)
+          unless can?(context.current_user, :metrics_dashboard, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :metrics)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Metrics'),
@@ -70,8 +72,10 @@ module Sidebars
         end
 
         def logs_menu_item
-          return unless can?(context.current_user, :read_environment, context.project)
-          return unless can?(context.current_user, :read_pod_logs, context.project)
+          if !can?(context.current_user, :read_environment, context.project) ||
+            !can?(context.current_user, :read_pod_logs, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :logs)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Logs'),
@@ -82,8 +86,10 @@ module Sidebars
         end
 
         def tracing_menu_item
-          return unless can?(context.current_user, :read_environment, context.project)
-          return unless can?(context.current_user, :admin_project, context.project)
+          if !can?(context.current_user, :read_environment, context.project) ||
+            !can?(context.current_user, :admin_project, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :tracing)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Tracing'),
@@ -94,7 +100,9 @@ module Sidebars
         end
 
         def error_tracking_menu_item
-          return unless can?(context.current_user, :read_sentry_issue, context.project)
+          unless can?(context.current_user, :read_sentry_issue, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :error_tracking)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Error Tracking'),
@@ -105,7 +113,9 @@ module Sidebars
         end
 
         def alert_management_menu_item
-          return unless can?(context.current_user, :read_alert_management_alert, context.project)
+          unless can?(context.current_user, :read_alert_management_alert, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :alert_management)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Alerts'),
@@ -116,7 +126,9 @@ module Sidebars
         end
 
         def incidents_menu_item
-          return unless can?(context.current_user, :read_issue, context.project)
+          unless can?(context.current_user, :read_issue, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :incidents)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Incidents'),
@@ -127,8 +139,10 @@ module Sidebars
         end
 
         def serverless_menu_item
-          return if Feature.enabled?(:sidebar_refactor, context.current_user)
-          return unless can?(context.current_user, :read_cluster, context.project)
+          if Feature.enabled?(:sidebar_refactor, context.current_user) ||
+            !can?(context.current_user, :read_cluster, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :serverless)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Serverless'),
@@ -139,8 +153,10 @@ module Sidebars
         end
 
         def terraform_menu_item
-          return if Feature.enabled?(:sidebar_refactor, context.current_user)
-          return unless can?(context.current_user, :read_terraform_state, context.project)
+          if Feature.enabled?(:sidebar_refactor, context.current_user) ||
+            !can?(context.current_user, :read_terraform_state, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :terraform)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Terraform'),
@@ -151,8 +167,10 @@ module Sidebars
         end
 
         def kubernetes_menu_item
-          return if Feature.enabled?(:sidebar_refactor, context.current_user)
-          return unless can?(context.current_user, :read_cluster, context.project)
+          if Feature.enabled?(:sidebar_refactor, context.current_user) ||
+            !can?(context.current_user, :read_cluster, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :kubernetes)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Kubernetes'),
@@ -178,7 +196,9 @@ module Sidebars
         end
 
         def environments_menu_item
-          return unless can?(context.current_user, :read_environment, context.project)
+          unless can?(context.current_user, :read_environment, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :environments)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Environments'),
@@ -190,7 +210,9 @@ module Sidebars
         end
 
         def feature_flags_menu_item
-          return unless can?(context.current_user, :read_feature_flag, context.project)
+          unless can?(context.current_user, :read_feature_flag, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :feature_flags)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Feature Flags'),
@@ -202,8 +224,10 @@ module Sidebars
         end
 
         def product_analytics_menu_item
-          return if Feature.disabled?(:product_analytics, context.project)
-          return unless can?(context.current_user, :read_product_analytics, context.project)
+          if Feature.disabled?(:product_analytics, context.project) ||
+            !can?(context.current_user, :read_product_analytics, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :product_analytics)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Product Analytics'),

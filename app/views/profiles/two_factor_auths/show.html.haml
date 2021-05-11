@@ -29,7 +29,7 @@
           - register_2fa_token = _('We recommend cloud-based mobile authenticator apps such as Authy, Duo Mobile, and LastPass. They can restore access if you lose your hardware device.')
           = register_2fa_token.html_safe
         .row.gl-mb-3
-          .col-md-4
+          .col-md-4.gl-pt-2{ style: 'background: #fff' }
             = raw @qr_code
           .col-md-8
             .account-well

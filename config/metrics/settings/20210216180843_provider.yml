@@ -1,14 +1,14 @@
 ---
-key_path: object_store.uploads.enabled
-description: Whether Object Storage is enabled for Uploads
+key_path: object_store.artifacts.object_store.provider
+description: What Object Storage provider has been configured for Artifacts
 product_section: enablement
 product_stage: enablement
 product_group: group::memory
 product_category: operational_metrics
-value_type: number
+value_type: string
 status: data_available
 time_frame: all
-data_source:
+data_source: system
 distribution:
 - ce
 - ee

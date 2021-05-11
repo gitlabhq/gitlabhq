@@ -73,7 +73,9 @@ module Sidebars
         end
 
         def access_tokens_menu_item
-          return unless can?(context.current_user, :read_resource_access_tokens, context.project)
+          unless can?(context.current_user, :read_resource_access_tokens, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :access_tokens)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Access Tokens'),
@@ -93,8 +95,9 @@ module Sidebars
         end
 
         def ci_cd_menu_item
-          return if context.project.archived?
-          return unless context.project.feature_available?(:builds, context.current_user)
+          if context.project.archived? || !context.project.feature_available?(:builds, context.current_user)
+            return ::Sidebars::NilMenuItem.new(item_id: :ci_cd)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('CI/CD'),
@@ -105,8 +108,9 @@ module Sidebars
         end
 
         def operations_menu_item
-          return if context.project.archived?
-          return unless can?(context.current_user, :admin_operations, context.project)
+          if context.project.archived? || !can?(context.current_user, :admin_operations, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :operations)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Operations'),
@@ -117,7 +121,9 @@ module Sidebars
         end
 
         def pages_menu_item
-          return unless context.project.pages_available?
+          unless context.project.pages_available?
+            return ::Sidebars::NilMenuItem.new(item_id: :pages)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Pages'),
@@ -128,9 +134,11 @@ module Sidebars
         end
 
         def packages_and_registries_menu_item
-          return unless Gitlab.config.registry.enabled
-          return if Feature.disabled?(:sidebar_refactor, context.current_user)
-          return unless can?(context.current_user, :destroy_container_image, context.project)
+          if !Gitlab.config.registry.enabled ||
+            Feature.disabled?(:sidebar_refactor, context.current_user) ||
+            !can?(context.current_user, :destroy_container_image, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :packages_and_registries)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Packages & Registries'),

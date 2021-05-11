@@ -31,8 +31,9 @@ module Sidebars
         private
 
         def packages_registry_menu_item
-          return unless ::Gitlab.config.packages.enabled
-          return unless can?(context.current_user, :read_package, context.project)
+          if !::Gitlab.config.packages.enabled || !can?(context.current_user, :read_package, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :packages_registry)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Package Registry'),
@@ -44,8 +45,9 @@ module Sidebars
         end
 
         def container_registry_menu_item
-          return unless ::Gitlab.config.registry.enabled
-          return unless can?(context.current_user, :read_container_image, context.project)
+          if !::Gitlab.config.registry.enabled || !can?(context.current_user, :read_container_image, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :container_registry)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Container Registry'),
@@ -56,7 +58,9 @@ module Sidebars
         end
 
         def infrastructure_registry_menu_item
-          return if Feature.disabled?(:infrastructure_registry_page, context.current_user)
+          if Feature.disabled?(:infrastructure_registry_page, context.current_user)
+            return ::Sidebars::NilMenuItem.new(item_id: :infrastructure_registry)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Infrastructure Registry'),

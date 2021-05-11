@@ -4466,6 +4466,7 @@ These keywords are supported:
 - [`ref`](#releaseref) (optional)
 - [`milestones`](#releasemilestones) (optional)
 - [`released_at`](#releasereleased_at) (optional)
+- [`assets:links`](#releaseassetslinks) (optional)
 
 The release is created only if the job processes without error. If the Rails API
 returns an error during release creation, the `release` job fails.
@@ -4674,6 +4675,26 @@ defined. Should be enclosed in quotes and expressed in ISO 8601 format.
 released_at: '2021-03-15T08:00:00Z'
 ```
 
+#### `release:assets:links`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271454) in GitLab 13.12.
+
+Include [asset links](../../user/project/releases/index.md#release-assets) in the release.
+
+NOTE:
+Requires `release-cli` version v0.4.0 or higher.
+
+```yaml
+assets:
+  links:
+    - name: 'asset1'
+      url: 'https://example.com/assets/1'
+    - name: 'asset2'
+      url: 'https://example.com/assets/2'
+      filepath: '/pretty/url/1' # optional
+      link_type: 'other' # optional
+```
+
 #### Complete example for `release`
 
 If you combine the previous examples for `release`, you get two options, depending on how you generate the
@@ -4700,6 +4721,14 @@ tags. You can't use these options together, so choose one:
         - 'm2'
         - 'm3'
       released_at: '2020-07-15T08:00:00Z'  # Optional, is auto generated if not defined, or can use a variable.
+      assets: # Optional, multiple asset links
+        links:
+          - name: 'asset1'
+            url: 'https://example.com/assets/1'
+          - name: 'asset2'
+            url: 'https://example.com/assets/2'
+            filepath: '/pretty/url/1' # optional
+            link_type: 'other' # optional
   ```
 
 - To create a release automatically when commits are pushed or merged to the default branch,
@@ -4746,6 +4775,14 @@ tags. You can't use these options together, so choose one:
         - 'm2'
         - 'm3'
       released_at: '2020-07-15T08:00:00Z'  # Optional, is auto generated if not defined, or can use a variable.
+      assets:
+        links:
+          - name: 'asset1'
+            url: 'https://example.com/assets/1'
+          - name: 'asset2'
+            url: 'https://example.com/assets/2'
+            filepath: '/pretty/url/1' # optional
+            link_type: 'other' # optional
   ```
 
 #### Release assets as Generic packages
@@ -4763,7 +4800,7 @@ You can also call the `release-cli` directly from a `script` entry.
 For example, if you use the YAML described previously:
 
 ```shell
-release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "v${MAJOR}.${MINOR}.${REVISION}" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3"
+release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "v${MAJOR}.${MINOR}.${REVISION}" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3" --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\"}
 ```
 
 ### `secrets`

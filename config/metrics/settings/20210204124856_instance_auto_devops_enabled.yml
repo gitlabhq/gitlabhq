@@ -8,7 +8,7 @@ product_category: auto_devops
 value_type: boolean
 status: data_available
 time_frame: none
-data_source: database
+data_source: system
 distribution:
 - ce
 - ee

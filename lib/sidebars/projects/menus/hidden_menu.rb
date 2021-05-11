@@ -29,8 +29,10 @@ module Sidebars
         end
 
         def graph_menu_item
-          return unless can?(context.current_user, :download_code, context.project)
-          return if context.project.empty_repo?
+          if !can?(context.current_user, :download_code, context.project) ||
+            context.project.empty_repo?
+            return ::Sidebars::NilMenuItem.new(item_id: :graph)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Graph'),
@@ -42,7 +44,9 @@ module Sidebars
         end
 
         def new_issue_menu_item
-          return unless can?(context.current_user, :read_issue, context.project)
+          unless can?(context.current_user, :read_issue, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :new_issue)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Create a new issue'),
@@ -54,7 +58,9 @@ module Sidebars
         end
 
         def jobs_menu_item
-          return unless can?(context.current_user, :read_build, context.project)
+          unless can?(context.current_user, :read_build, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :jobs)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Jobs'),
@@ -66,8 +72,10 @@ module Sidebars
         end
 
         def commits_menu_item
-          return unless can?(context.current_user, :download_code, context.project)
-          return if context.project.empty_repo?
+          if !can?(context.current_user, :download_code, context.project) ||
+            context.project.empty_repo?
+            return ::Sidebars::NilMenuItem.new(item_id: :commits)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Commits'),
@@ -79,7 +87,9 @@ module Sidebars
         end
 
         def issue_boards_menu_item
-          return unless can?(context.current_user, :read_issue, context.project)
+          unless can?(context.current_user, :read_issue, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :issue_boards)
+          end
 
           ::Sidebars::MenuItem.new(
             title: _('Issue Boards'),

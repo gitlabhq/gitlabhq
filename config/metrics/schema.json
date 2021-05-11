@@ -52,7 +52,7 @@
     },
     "data_source": {
       "type": "string",
-      "enum": ["database", "redis", "redis_hll", "prometheus", "ruby"]
+      "enum": ["database", "redis", "redis_hll", "prometheus", "system"]
     },
     "instrumentation_class": {
       "type": "string",
