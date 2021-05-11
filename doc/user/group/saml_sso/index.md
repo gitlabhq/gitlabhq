@@ -66,6 +66,9 @@ the user details need to be passed to GitLab as SAML assertions.
 At a minimum, the user's email address *must* be specified as an assertion named `email` or `mail`.
 See [the assertions list](../../../integration/saml.md#assertions) for other available claims.
 
+NOTE:
+The `username` assertion is not supported for GitLab.com SaaS integrations.
+
 ### Metadata configuration
 
 GitLab provides metadata XML that can be used to configure your identity provider.

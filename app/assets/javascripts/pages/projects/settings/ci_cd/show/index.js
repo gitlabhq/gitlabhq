@@ -36,10 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initSettingsPipelinesTriggers();
   initArtifactsSettings();
-
-  if (gon?.features?.vueifySharedRunnersToggle) {
-    initSharedRunnersToggle();
-  }
-
+  initSharedRunnersToggle();
   initInstallRunner();
 });

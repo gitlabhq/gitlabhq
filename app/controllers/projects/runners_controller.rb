@@ -52,23 +52,13 @@ class Projects::RunnersController < Projects::ApplicationController
 
   def toggle_shared_runners
     if !project.shared_runners_enabled && project.group && project.group.shared_runners_setting == 'disabled_and_unoverridable'
-
-      if Feature.enabled?(:vueify_shared_runners_toggle, @project)
-        render json: { error: _('Cannot enable shared runners because parent group does not allow it') }, status: :unauthorized
-      else
-        redirect_to project_runners_path(@project), alert: _('Cannot enable shared runners because parent group does not allow it')
-      end
-
+      render json: { error: _('Cannot enable shared runners because parent group does not allow it') }, status: :unauthorized
       return
     end
 
     project.toggle!(:shared_runners_enabled)
 
-    if Feature.enabled?(:vueify_shared_runners_toggle, @project)
-      render json: {}, status: :ok
-    else
-      redirect_to project_settings_ci_cd_path(@project, anchor: 'js-runners-settings')
-    end
+    render json: {}, status: :ok
   end
 
   def toggle_group_runners

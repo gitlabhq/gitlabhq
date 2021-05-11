@@ -1,23 +1,6 @@
-- isVueifySharedRunnersToggleEnabled = Feature.enabled?(:vueify_shared_runners_toggle, @project)
+= render 'shared/runners/shared_runners_description'
 
-= render layout: 'shared/runners/shared_runners_description' do
-  - if !isVueifySharedRunnersToggleEnabled
-    %br
-    %br
-    - if @project.group&.shared_runners_setting == 'disabled_and_unoverridable'
-      %h5.gl-text-red-500
-        = _('Shared runners disabled on group level')
-    - else
-      - if @project.shared_runners_enabled?
-        = link_to toggle_shared_runners_project_runners_path(@project), class: 'btn gl-button btn-default', method: :post do
-          = _('Disable shared runners')
-      - else
-        = link_to toggle_shared_runners_project_runners_path(@project), class: 'btn gl-button btn-confirm-secondary', method: :post do
-          = _('Enable shared runners')
-      &nbsp; for this project
-
-- if isVueifySharedRunnersToggleEnabled
-  #toggle-shared-runners-form{ data: toggle_shared_runners_settings_data(@project) }
+#toggle-shared-runners-form{ data: toggle_shared_runners_settings_data(@project) }
 
 - if @shared_runners_count == 0
   = _('This GitLab instance does not provide any shared runners yet. Instance administrators can register shared runners in the admin area.')

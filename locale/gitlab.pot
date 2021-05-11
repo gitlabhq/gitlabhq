@@ -11463,9 +11463,6 @@ msgstr ""
 msgid "Disable public access to Pages sites"
 msgstr ""
 
-msgid "Disable shared runners"
-msgstr ""
-
 msgid "Disable two-factor authentication"
 msgstr ""
 
@@ -12201,9 +12198,6 @@ msgid "Enable reCAPTCHA for login"
 msgstr ""
 
 msgid "Enable reCAPTCHA, Invisible Captcha, Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
-msgstr ""
-
-msgid "Enable shared runners"
 msgstr ""
 
 msgid "Enable shared runners for all projects and subgroups in this group."
@@ -29615,9 +29609,6 @@ msgid "Shared runners are disabled for the parent group"
 msgstr ""
 
 msgid "Shared runners are disabled on group level"
-msgstr ""
-
-msgid "Shared runners disabled on group level"
 msgstr ""
 
 msgid "Shared runners help link"

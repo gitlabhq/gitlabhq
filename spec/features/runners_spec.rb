@@ -225,34 +225,27 @@ RSpec.describe 'Runners' do
     end
   end
 
-  context 'when a project has disabled shared_runners' do
-    let(:project) { create(:project, shared_runners_enabled: false) }
+  context 'enable shared runners in project settings', :js do
+    before do
+      project.add_maintainer(user)
 
-    context 'when feature flag: vueify_shared_runners_toggle is disabled' do
-      before do
-        stub_feature_flags(vueify_shared_runners_toggle: false)
-        project.add_maintainer(user)
-      end
+      visit project_runners_path(project)
+    end
 
-      it 'user enables shared runners' do
-        visit project_runners_path(project)
+    context 'when a project has enabled shared_runners' do
+      let(:project) { create(:project, shared_runners_enabled: true) }
 
-        click_on 'Enable shared runners'
-
-        expect(page.find("[data-testid='shared-runners-description']")).to have_content('Disable shared runners')
-        expect(page).not_to have_selector('#toggle-shared-runners-form')
+      it 'shared runners toggle is on' do
+        expect(page).to have_selector('[data-testid="toggle-shared-runners"]')
+        expect(page).to have_selector('[data-testid="toggle-shared-runners"] .is-checked')
       end
     end
 
-    context 'when feature flag: vueify_shared_runners_toggle is enabled' do
-      before do
-        project.add_maintainer(user)
-      end
+    context 'when a project has disabled shared_runners' do
+      let(:project) { create(:project, shared_runners_enabled: false) }
 
-      it 'user enables shared runners' do
-        visit project_runners_path(project)
-
-        expect(page).to have_selector('#toggle-shared-runners-form')
+      it 'shared runners toggle is off' do
+        expect(page).not_to have_selector('[data-testid="toggle-shared-runners"] .is-checked')
       end
     end
   end

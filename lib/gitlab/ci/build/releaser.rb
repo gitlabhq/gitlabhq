@@ -18,8 +18,9 @@ module Gitlab
           command = BASE_COMMAND.dup
           single_flags.each { |k, v| command.concat(" --#{k.to_s.dasherize} \"#{v}\"") }
           array_commands.each { |k, v| v.each { |elem| command.concat(" --#{k.to_s.singularize.dasherize} \"#{elem}\"") } }
+          asset_links.each { |link| command.concat(" --assets-link #{stringified_json(link)}") }
 
-          [command]
+          [command.freeze]
         end
 
         private
@@ -30,6 +31,14 @@ module Gitlab
 
         def array_commands
           config.slice(*ARRAY_FLAGS)
+        end
+
+        def asset_links
+          config.dig(:assets, :links) || []
+        end
+
+        def stringified_json(object)
+          "#{object.to_json.to_json}"
         end
       end
     end

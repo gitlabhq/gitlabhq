@@ -185,22 +185,6 @@ RSpec.describe API::Releases do
       3.times { get api("/projects/#{project.id}/releases", maintainer) }
     end
 
-    context 'when api_caching_releases feature flag is disabled' do
-      before do
-        stub_feature_flags(api_caching_releases: false)
-      end
-
-      it 'serializes releases everytime' do
-        create_list(:release, 2, project: project)
-
-        expect(API::Entities::Release)
-          .to receive(:represent).with(kind_of(ActiveRecord::Relation), any_args)
-          .exactly(5).times
-
-        5.times { get api("/projects/#{project.id}/releases", maintainer) }
-      end
-    end
-
     context 'when tag does not exist in git repository' do
       let!(:release) { create(:release, project: project, tag: 'v1.1.5') }
 
