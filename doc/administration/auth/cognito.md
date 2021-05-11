@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Amazon Web Services Cognito
+# Amazon Web Services Cognito **(FREE SELF)**
 
 Amazon Cognito lets you add user sign-up, sign-in, and access control to your GitLab instance.
 The following documentation enables Cognito as an OAuth2 provider.

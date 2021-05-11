@@ -10,9 +10,9 @@ const mockAlert = mockAlerts[0];
 
 describe('Alert Details Sidebar Status', () => {
   let wrapper;
-  const findStatusDropdown = () => wrapper.find(GlDropdown);
-  const findStatusDropdownItem = () => wrapper.find(GlDropdownItem);
-  const findStatusLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findStatusDropdown = () => wrapper.findComponent(GlDropdown);
+  const findStatusDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findStatusLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findStatusDropdownHeader = () => wrapper.findByTestId('dropdown-header');
   const findAlertStatus = () => wrapper.findComponent(AlertStatus);
   const findStatus = () => wrapper.findByTestId('status');

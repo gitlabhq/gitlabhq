@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Authentiq OmniAuth Provider
+# Authentiq OmniAuth Provider **(FREE SELF)**
 
 To enable the Authentiq OmniAuth provider for passwordless authentication you must register an application with Authentiq.
 

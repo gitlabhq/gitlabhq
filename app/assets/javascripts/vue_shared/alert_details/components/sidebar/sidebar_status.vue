@@ -52,7 +52,7 @@ export default {
     },
     toggleFormDropdown() {
       this.isDropdownShowing = !this.isDropdownShowing;
-      const { dropdown } = this.$children[2].$refs.dropdown.$refs;
+      const { dropdown } = this.$refs.status.$refs.dropdown.$refs;
       if (dropdown && this.isDropdownShowing) {
         dropdown.show();
       }
@@ -102,6 +102,7 @@ export default {
       </p>
 
       <alert-status
+        ref="status"
         :alert="alert"
         :project-path="projectPath"
         :is-dropdown-showing="isDropdownShowing"
