@@ -1,15 +1,18 @@
 <script>
-import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlDropdownDivider,
+  GlFilteredSearchSuggestion,
+  GlFilteredSearchToken,
+  GlLoadingIcon,
+} from '@gitlab/ui';
 import { debounce } from 'lodash';
-
 import createFlash from '~/flash';
-import { isNumeric } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
-import { DEBOUNCE_DELAY } from '../constants';
-import { stripQuotes } from '../filtered_search_utils';
+import { DEBOUNCE_DELAY, DEFAULT_NONE_ANY } from '../constants';
 
 export default {
   components: {
+    GlDropdownDivider,
     GlFilteredSearchToken,
     GlFilteredSearchSuggestion,
     GlLoadingIcon,
@@ -32,29 +35,16 @@ export default {
   },
   computed: {
     currentValue() {
-      /*
-       * When the URL contains the epic_iid, we'd get: '123'
-       */
-      if (isNumeric(this.value.data)) {
-        return parseInt(this.value.data, 10);
-      }
-
-      /*
-       * When the token is added in current session it'd be: 'Foo::&123'
-       */
-      const id = this.value.data.split('::&')[1];
-
-      if (id) {
-        return parseInt(id, 10);
-      }
-
-      return this.value.data;
+      return Number(this.value.data);
+    },
+    defaultEpics() {
+      return this.config.defaultEpics || DEFAULT_NONE_ANY;
+    },
+    idProperty() {
+      return this.config.idProperty || 'id';
     },
     activeEpic() {
-      const currentValueIsString = typeof this.currentValue === 'string';
-      return this.epics.find(
-        (epic) => epic[currentValueIsString ? 'title' : 'iid'] === this.currentValue,
-      );
+      return this.epics.find((epic) => epic[this.idProperty] === this.currentValue);
     },
   },
   watch: {
@@ -72,20 +62,8 @@ export default {
       this.loading = true;
       this.config
         .fetchEpics(searchTerm)
-        .then(({ data }) => {
-          this.epics = data;
-        })
-        .catch(() => createFlash({ message: __('There was a problem fetching epics.') }))
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-    fetchSingleEpic(iid) {
-      this.loading = true;
-      this.config
-        .fetchSingleEpic(iid)
-        .then(({ data }) => {
-          this.epics = [data];
+        .then((response) => {
+          this.epics = Array.isArray(response) ? response : response.data;
         })
         .catch(() => createFlash({ message: __('There was a problem fetching epics.') }))
         .finally(() => {
@@ -93,17 +71,13 @@ export default {
         });
     },
     searchEpics: debounce(function debouncedSearch({ data }) {
-      if (isNumeric(data)) {
-        return this.fetchSingleEpic(data);
-      }
-      return this.fetchEpicsBySearchTerm(data);
+      this.fetchEpicsBySearchTerm(data);
     }, DEBOUNCE_DELAY),
 
-    getEpicValue(epic) {
-      return `${epic.title}::&${epic.iid}`;
+    getEpicDisplayText(epic) {
+      return `${epic.title}::&${epic[this.idProperty]}`;
     },
   },
-  stripQuotes,
 };
 </script>
 
@@ -115,17 +89,25 @@ export default {
     @input="searchEpics"
   >
     <template #view="{ inputValue }">
-      <span>{{ activeEpic ? getEpicValue(activeEpic) : $options.stripQuotes(inputValue) }}</span>
+      {{ activeEpic ? getEpicDisplayText(activeEpic) : inputValue }}
     </template>
     <template #suggestions>
+      <gl-filtered-search-suggestion
+        v-for="epic in defaultEpics"
+        :key="epic.value"
+        :value="epic.value"
+      >
+        {{ epic.text }}
+      </gl-filtered-search-suggestion>
+      <gl-dropdown-divider v-if="defaultEpics.length" />
       <gl-loading-icon v-if="loading" />
       <template v-else>
         <gl-filtered-search-suggestion
           v-for="epic in epics"
-          :key="epic.id"
-          :value="getEpicValue(epic)"
+          :key="epic[idProperty]"
+          :value="String(epic[idProperty])"
         >
-          <div>{{ epic.title }}</div>
+          {{ epic.title }}
         </gl-filtered-search-suggestion>
       </template>
     </template>

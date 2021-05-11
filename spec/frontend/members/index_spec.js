@@ -2,7 +2,7 @@ import { createWrapper } from '@vue/test-utils';
 import MembersApp from '~/members/components/app.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 import { initMembersApp } from '~/members/index';
-import { membersJsonString, members, paginationJsonString, pagination } from './mock_data';
+import { members, pagination, dataAttribute } from './mock_data';
 
 describe('initMembersApp', () => {
   let el;
@@ -23,11 +23,7 @@ describe('initMembersApp', () => {
 
   beforeEach(() => {
     el = document.createElement('div');
-    el.setAttribute('data-members', membersJsonString);
-    el.setAttribute('data-pagination', paginationJsonString);
-    el.setAttribute('data-source-id', '234');
-    el.setAttribute('data-can-manage-members', 'true');
-    el.setAttribute('data-member-path', '/groups/foo-bar/-/group_members/:id');
+    el.setAttribute('data-members-data', dataAttribute);
 
     window.gon = { current_user_id: 123 };
   });

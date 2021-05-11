@@ -27,31 +27,41 @@ module Projects::ProjectMembersHelper
     project.group.has_owner?(current_user)
   end
 
-  def project_group_links_data_json(group_links)
-    GroupLink::ProjectGroupLinkSerializer.new.represent(group_links, { current_user: current_user }).to_json
+  def project_members_list_data_json(project, members, pagination = {})
+    project_members_list_data(project, members, pagination).to_json
   end
 
-  def project_members_data_json(project, members)
-    MemberSerializer.new.represent(members, { current_user: current_user, group: project.group, source: project }).to_json
+  def project_group_links_list_data_json(project, group_links)
+    project_group_links_list_data(project, group_links).to_json
   end
 
-  def project_members_list_data_attributes(project, members, pagination = {})
+  private
+
+  def project_members_serialized(project, members)
+    MemberSerializer.new.represent(members, { current_user: current_user, group: project.group, source: project })
+  end
+
+  def project_group_links_serialized(group_links)
+    GroupLink::ProjectGroupLinkSerializer.new.represent(group_links, { current_user: current_user })
+  end
+
+  def project_members_list_data(project, members, pagination)
     {
-      members: project_members_data_json(project, members),
-      pagination: members_pagination_data_json(members, pagination),
+      members: project_members_serialized(project, members),
+      pagination: members_pagination_data(members, pagination),
       member_path: project_project_member_path(project, ':id'),
       source_id: project.id,
-      can_manage_members: can_manage_project_members?(project).to_s
+      can_manage_members: can_manage_project_members?(project)
     }
   end
 
-  def project_group_links_list_data_attributes(project, group_links)
+  def project_group_links_list_data(project, group_links)
     {
-      members: project_group_links_data_json(group_links),
-      pagination: members_pagination_data_json(group_links),
+      members: project_group_links_serialized(group_links),
+      pagination: members_pagination_data(group_links),
       member_path: project_group_link_path(project, ':id'),
       source_id: project.id,
-      can_manage_members: can_manage_project_members?(project).to_s
+      can_manage_members: can_manage_project_members?(project)
     }
   end
 end

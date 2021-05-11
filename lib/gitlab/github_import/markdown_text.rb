@@ -19,10 +19,10 @@ module Gitlab
       end
 
       def to_s
-        if exists
-          text
-        else
+        if author&.login.present? && !exists
           "*Created by: #{author.login}*\n\n#{text}"
+        else
+          text
         end
       end
     end

@@ -4,11 +4,12 @@ require 'spec_helper'
 
 RSpec.describe BlobPresenter do
   let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { project.owner }
 
   let(:repository) { project.repository }
   let(:blob) { repository.blob_at('HEAD', 'files/ruby/regex.rb') }
 
-  subject(:presenter) { described_class.new(blob) }
+  subject(:presenter) { described_class.new(blob, current_user: user) }
 
   describe '#web_url' do
     it { expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}") }
@@ -28,6 +29,42 @@ RSpec.describe BlobPresenter do
 
   describe '#replace_path' do
     it { expect(presenter.replace_path).to eq("/#{project.full_path}/-/create/#{blob.commit_id}/#{blob.path}") }
+  end
+
+  describe '#ide_edit_path' do
+    it { expect(presenter.ide_edit_path).to eq("/-/ide/project/#{project.full_path}/edit/HEAD/-/files/ruby/regex.rb") }
+  end
+
+  describe '#fork_and_edit_path' do
+    it 'generates expected URI + query' do
+      uri = URI.parse(presenter.fork_and_edit_path)
+      query = Rack::Utils.parse_query(uri.query)
+
+      expect(uri.path).to eq("/#{project.full_path}/-/forks")
+      expect(query).to include('continue[to]' => presenter.edit_blob_path, 'namespace_key' => user.namespace_id.to_s)
+    end
+
+    context 'current_user is nil' do
+      let(:user) { nil }
+
+      it { expect(presenter.fork_and_edit_path).to be_nil }
+    end
+  end
+
+  describe '#ide_fork_and_edit_path' do
+    it 'generates expected URI + query' do
+      uri = URI.parse(presenter.ide_fork_and_edit_path)
+      query = Rack::Utils.parse_query(uri.query)
+
+      expect(uri.path).to eq("/#{project.full_path}/-/forks")
+      expect(query).to include('continue[to]' => presenter.ide_edit_path, 'namespace_key' => user.namespace_id.to_s)
+    end
+
+    context 'current_user is nil' do
+      let(:user) { nil }
+
+      it { expect(presenter.ide_fork_and_edit_path).to be_nil }
+    end
   end
 
   context 'given a Gitlab::Graphql::Representation::TreeEntry' do

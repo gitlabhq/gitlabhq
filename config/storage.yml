@@ -1,0 +1,2 @@
+# This file is created only to be able to run `derailed exec perf:mem` task
+# This task loads the whole Rails application using its own initializers

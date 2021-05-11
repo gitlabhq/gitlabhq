@@ -37,6 +37,7 @@ import { __ } from '~/locale';
 import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
+import EpicToken from '~/vue_shared/components/filtered_search_bar/tokens/epic_token.vue';
 import IterationToken from '~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
@@ -85,6 +86,9 @@ export default {
       default: '',
     },
     exportCsvPath: {
+      default: '',
+    },
+    groupEpicsPath: {
       default: '',
     },
     hasBlockedIssuesFeature: {
@@ -241,6 +245,17 @@ export default {
         });
       }
 
+      if (this.groupEpicsPath) {
+        tokens.push({
+          type: 'epic_id',
+          title: __('Epic'),
+          icon: 'epic',
+          token: EpicToken,
+          unique: true,
+          fetchEpics: this.fetchEpics,
+        });
+      }
+
       if (this.hasIssueWeightsFeature) {
         tokens.push({
           type: 'weight',
@@ -305,6 +320,16 @@ export default {
     },
     fetchEmojis(search) {
       return this.fetchWithCache(this.autocompleteAwardEmojisPath, 'emojis', 'name', search);
+    },
+    async fetchEpics(search) {
+      const epics = await this.fetchWithCache(this.groupEpicsPath, 'epics');
+      if (!search) {
+        return epics.slice(0, MAX_LIST_SIZE);
+      }
+      const number = Number(search);
+      return Number.isNaN(number)
+        ? fuzzaldrinPlus.filter(epics, search, { key: 'title' })
+        : epics.filter((epic) => epic.id === number);
     },
     fetchLabels(search) {
       return this.fetchWithCache(this.projectLabelsPath, 'labels', 'title', search);

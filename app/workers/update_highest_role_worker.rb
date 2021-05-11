@@ -17,7 +17,7 @@ class UpdateHighestRoleWorker
 
     return unless user.present?
 
-    if user.active? && user.user_type.nil? && !user.internal?
+    if user.active? && user.human? && !user.internal?
       Users::UpdateHighestMemberRoleService.new(user).execute
     else
       UserHighestRole.where(user_id: user_id).delete_all

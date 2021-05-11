@@ -14265,6 +14265,15 @@ msgstr ""
 msgid "ForkProject|Want to house several dependent projects under the same namespace?"
 msgstr ""
 
+msgid "ForkSuggestion|Cancel"
+msgstr ""
+
+msgid "ForkSuggestion|Fork"
+msgstr ""
+
+msgid "ForkSuggestion|You can’t %{edit_start}edit%{edit_end} files directly in this project. Fork this project and submit a merge request with your changes."
+msgstr ""
+
 msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
 
@@ -23200,6 +23209,9 @@ msgstr ""
 msgid "PackageRegistry|Add Gradle Groovy DSL repository command"
 msgstr ""
 
+msgid "PackageRegistry|Add Gradle Kotlin DSL repository command"
+msgstr ""
+
 msgid "PackageRegistry|Add NuGet Source"
 msgstr ""
 
@@ -23242,6 +23254,9 @@ msgstr ""
 msgid "PackageRegistry|Copy Gradle Groovy DSL install command"
 msgstr ""
 
+msgid "PackageRegistry|Copy Gradle Kotlin DSL install command"
+msgstr ""
+
 msgid "PackageRegistry|Copy Maven XML"
 msgstr ""
 
@@ -23261,6 +23276,9 @@ msgid "PackageRegistry|Copy Pip command"
 msgstr ""
 
 msgid "PackageRegistry|Copy add Gradle Groovy DSL repository command"
+msgstr ""
+
+msgid "PackageRegistry|Copy add Gradle Kotlin DSL repository command"
 msgstr ""
 
 msgid "PackageRegistry|Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block."
@@ -23314,7 +23332,16 @@ msgstr ""
 msgid "PackageRegistry|GitLab Packages allows organizations to utilize GitLab as a private repository for a variety of common package formats. %{linkStart}More Information%{linkEnd}"
 msgstr ""
 
+msgid "PackageRegistry|Gradle Groovy DSL"
+msgstr ""
+
 msgid "PackageRegistry|Gradle Groovy DSL install command"
+msgstr ""
+
+msgid "PackageRegistry|Gradle Kotlin DSL"
+msgstr ""
+
+msgid "PackageRegistry|Gradle Kotlin DSL install command"
 msgstr ""
 
 msgid "PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}.pypirc%{codeEnd} file."
@@ -23339,6 +23366,9 @@ msgid "PackageRegistry|Maven"
 msgstr ""
 
 msgid "PackageRegistry|Maven Command"
+msgstr ""
+
+msgid "PackageRegistry|Maven XML"
 msgstr ""
 
 msgid "PackageRegistry|NuGet"
@@ -23396,12 +23426,6 @@ msgid "PackageRegistry|Show Composer commands"
 msgstr ""
 
 msgid "PackageRegistry|Show Conan commands"
-msgstr ""
-
-msgid "PackageRegistry|Show Gradle Groovy DSL commands"
-msgstr ""
-
-msgid "PackageRegistry|Show Maven commands"
 msgstr ""
 
 msgid "PackageRegistry|Show NPM commands"
@@ -36135,16 +36159,16 @@ msgstr ""
 msgid "WebIDE|This project does not accept unsigned commits."
 msgstr ""
 
-msgid "WebIDE|This project does not accept unsigned commits. You will not be able to commit your changes through the Web IDE."
+msgid "WebIDE|This project does not accept unsigned commits. You can’t commit changes through the Web IDE."
+msgstr ""
+
+msgid "WebIDE|You can’t edit files directly in this project. Fork this project and submit a merge request with your changes."
+msgstr ""
+
+msgid "WebIDE|You can’t edit files directly in this project. Go to your fork and submit a merge request with your changes."
 msgstr ""
 
 msgid "WebIDE|You need permission to edit files directly in this project."
-msgstr ""
-
-msgid "WebIDE|You need permission to edit files directly in this project. Fork this project to make your changes and submit a merge request."
-msgstr ""
-
-msgid "WebIDE|You need permission to edit files directly in this project. Go to your fork to make changes and submit a merge request."
 msgstr ""
 
 msgid "WebexTeamsService|Send notifications about project events to Webex Teams."
@@ -36957,6 +36981,9 @@ msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
+msgstr ""
+
+msgid "You can’t %{tag_start}edit%{tag_end} files directly in this project. Fork this project and submit a merge request with your changes."
 msgstr ""
 
 msgid "You could not create a new trigger."

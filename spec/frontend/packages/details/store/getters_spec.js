@@ -19,6 +19,8 @@ import {
   groupExists,
   gradleGroovyInstalCommand,
   gradleGroovyAddSourceCommand,
+  gradleKotlinInstalCommand,
+  gradleKotlinAddSourceCommand,
 } from '~/packages/details/store/getters';
 import {
   conanPackage,
@@ -256,6 +258,24 @@ describe('Getters PackageDetails Store', () => {
           url 'foo/registry'
         }"
       `);
+    });
+  });
+
+  describe('gradle kotlin string getters', () => {
+    it('gets the correct gradleKotlinInstalCommand', () => {
+      setupState();
+
+      expect(gradleKotlinInstalCommand(state)).toMatchInlineSnapshot(
+        `"implementation(\\"com.test.app:test-app:1.0-SNAPSHOT\\")"`,
+      );
+    });
+
+    it('gets the correct gradleKotlinAddSourceCommand', () => {
+      setupState();
+
+      expect(gradleKotlinAddSourceCommand(state)).toMatchInlineSnapshot(
+        `"maven(\\"foo/registry\\")"`,
+      );
     });
   });
 

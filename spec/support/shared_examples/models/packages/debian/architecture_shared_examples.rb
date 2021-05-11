@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'Debian Distribution Architecture' do |factory, container, can_freeze|
-  let_it_be_with_refind(:architecture) { create(factory) } # rubocop:disable Rails/SaveBang
-  let_it_be(:architecture_same_distribution, freeze: can_freeze) { create(factory, distribution: architecture.distribution) }
+  let_it_be_with_refind(:architecture) { create(factory, name: 'name1') }
+  let_it_be(:architecture_same_distribution, freeze: can_freeze) { create(factory, distribution: architecture.distribution, name: 'name2') }
   let_it_be(:architecture_same_name, freeze: can_freeze) { create(factory, name: architecture.name) }
 
   subject { architecture }
@@ -30,20 +30,22 @@ RSpec.shared_examples 'Debian Distribution Architecture' do |factory, container,
   end
 
   describe 'scopes' do
+    describe '.ordered_by_name' do
+      subject { described_class.with_distribution(architecture.distribution).ordered_by_name }
+
+      it { expect(subject).to match_array([architecture, architecture_same_distribution]) }
+    end
+
     describe '.with_distribution' do
       subject { described_class.with_distribution(architecture.distribution) }
 
-      it 'does not return other distributions' do
-        expect(subject.to_a).to match_array([architecture, architecture_same_distribution])
-      end
+      it { expect(subject).to match_array([architecture, architecture_same_distribution]) }
     end
 
     describe '.with_name' do
       subject { described_class.with_name(architecture.name) }
 
-      it 'does not return other distributions' do
-        expect(subject.to_a).to match_array([architecture, architecture_same_name])
-      end
+      it { expect(subject).to match_array([architecture, architecture_same_name]) }
     end
   end
 end

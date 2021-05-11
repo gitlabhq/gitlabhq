@@ -607,7 +607,7 @@ module Gitlab
           unique_users_all_imports: unique_users_all_imports(time_period),
           bulk_imports: {
             gitlab: DEPRECATED_VALUE,
-            gitlab_v1: count(::BulkImport.where(time_period, source_type: :gitlab))
+            gitlab_v1: count(::BulkImport.where(**time_period, source_type: :gitlab))
           },
           project_imports: project_imports(time_period),
           issue_imports: issue_imports(time_period),

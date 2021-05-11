@@ -61,21 +61,21 @@
             %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= @requesters.count
     .tab-content
       #tab-members.tab-pane{ class: ('active' unless invited_active) }
-        .js-group-members-list{ data: group_members_list_data_attributes(@group, @members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }) }
+        .js-group-members-list{ data: { members_data: group_members_list_data_json(@group, @members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }) } }
           .loading
             .gl-spinner.gl-spinner-md
       - if @group.shared_with_group_links.present?
         #tab-groups.tab-pane
-          .js-group-group-links-list{ data: group_group_links_list_data_attributes(@group) }
+          .js-group-group-links-list{ data: { members_data: group_group_links_list_data_json(@group) } }
             .loading
               .gl-spinner.gl-spinner-md
       - if show_invited_members
         #tab-invited-members.tab-pane{ class: ('active' if invited_active) }
-          .js-group-invited-members-list{ data: group_members_list_data_attributes(@group, @invited_members, { param_name: :invited_members_page, params: { page: nil } }) }
+          .js-group-invited-members-list{ data: { members_data: group_members_list_data_json(@group, @invited_members, { param_name: :invited_members_page, params: { page: nil } }) } }
             .loading
               .gl-spinner.gl-spinner-md
       - if show_access_requests
         #tab-access-requests.tab-pane
-          .js-group-access-requests-list{ data: group_members_list_data_attributes(@group, @requesters) }
+          .js-group-access-requests-list{ data: { members_data: group_members_list_data_json(@group, @requesters) } }
             .loading
               .gl-spinner.gl-spinner-md

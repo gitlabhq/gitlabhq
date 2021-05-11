@@ -60,6 +60,8 @@ module Packages
 
         scope :preload_distribution, -> { includes(component: :distribution) }
 
+        scope :created_before, ->(reference) { where("#{table_name}.created_at < ?", reference) }
+
         mount_file_store_uploader Packages::Debian::ComponentFileUploader
 
         before_validation :update_size_from_file

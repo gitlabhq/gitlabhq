@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class BlobPresenter < Gitlab::View::Presenter::Delegated
+  include ApplicationHelper
+  include BlobHelper
+  include DiffHelper
+  include TreeHelper
+  include ChecksCollaboration
+
   presents :blob
 
   def highlight(to: nil, plain: nil)
@@ -38,6 +44,28 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   def replace_path
     url_helpers.project_create_blob_path(project, ref_qualified_path)
+  end
+
+  def fork_and_edit_path
+    fork_path_for_current_user(project, edit_blob_path)
+  end
+
+  def ide_fork_and_edit_path
+    fork_path_for_current_user(project, ide_edit_path)
+  end
+
+  def can_modify_blob?
+    super(blob, project, blob.commit_id)
+  end
+
+  def ide_edit_path
+    super(project, blob.commit_id, blob.path)
+  end
+
+  def external_storage_url
+    return unless static_objects_external_storage_enabled?
+
+    external_storage_url_or_path(url_helpers.project_raw_url(project, ref_qualified_path))
   end
 
   private

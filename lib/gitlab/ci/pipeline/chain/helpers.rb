@@ -19,6 +19,8 @@ module Gitlab
             # polluted with other unrelated errors (e.g. state machine)
             # https://gitlab.com/gitlab-org/gitlab/-/issues/220823
             pipeline.errors.add(:base, message)
+
+            pipeline.errors.full_messages
           end
 
           def warning(message)

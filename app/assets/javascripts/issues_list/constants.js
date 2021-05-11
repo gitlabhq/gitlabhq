@@ -324,6 +324,26 @@ export const filters = {
       },
     },
   },
+  epic_id: {
+    apiParam: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'epic_id',
+        [SPECIAL_FILTER]: 'epic_id',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[epic_id]',
+      },
+    },
+    urlParam: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'epic_id',
+        [SPECIAL_FILTER]: 'epic_id',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[epic_id]',
+      },
+    },
+  },
   weight: {
     apiParam: {
       [OPERATOR_IS]: {

@@ -61,6 +61,10 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
       expect(finder).to receive(:find).with(user.id, user.login).and_return(42)
       expect(finder.user_id_for(user)).to eq(42)
     end
+
+    it 'does not fail with empty input' do
+      expect(finder.user_id_for(nil)).to eq(nil)
+    end
   end
 
   describe '#find' do

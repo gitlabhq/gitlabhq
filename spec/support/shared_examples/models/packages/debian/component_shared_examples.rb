@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'Debian Distribution Component' do |factory, container, can_freeze|
-  let_it_be_with_refind(:component) { create(factory) } # rubocop:disable Rails/SaveBang
-  let_it_be(:component_same_distribution, freeze: can_freeze) { create(factory, distribution: component.distribution) }
+  let_it_be_with_refind(:component) { create(factory, name: 'name1') }
+  let_it_be(:component_same_distribution, freeze: can_freeze) { create(factory, distribution: component.distribution, name: 'name2') }
   let_it_be(:component_same_name, freeze: can_freeze) { create(factory, name: component.name) }
 
   subject { component }
@@ -32,6 +32,14 @@ RSpec.shared_examples 'Debian Distribution Component' do |factory, container, ca
   end
 
   describe 'scopes' do
+    describe '.ordered_by_name' do
+      subject { described_class.with_distribution(component.distribution).ordered_by_name }
+
+      it 'sorts by name' do
+        expect(subject.to_a).to eq([component, component_same_distribution])
+      end
+    end
+
     describe '.with_distribution' do
       subject { described_class.with_distribution(component.distribution) }
 

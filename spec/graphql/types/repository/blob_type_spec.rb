@@ -25,7 +25,12 @@ RSpec.describe Types::Repository::BlobType do
       :replace_path,
       :simple_viewer,
       :rich_viewer,
-      :plain_data
+      :plain_data,
+      :can_modify_blob,
+      :ide_edit_path,
+      :external_storage_url,
+      :fork_and_edit_path,
+      :ide_fork_and_edit_path
     )
   end
 end

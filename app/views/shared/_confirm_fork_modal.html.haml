@@ -6,7 +6,7 @@
         %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
           %span{ "aria-hidden": true } &times;
       .modal-body.p-3
-        %p= _("You're not allowed to %{tag_start}edit%{tag_end} files in this project directly. Please fork this project, make your changes there, and submit a merge request.") % { tag_start: '', tag_end: ''}
+        %p= _("You can’t %{tag_start}edit%{tag_end} files directly in this project. Fork this project and submit a merge request with your changes.") % { tag_start: '', tag_end: ''}
       .modal-footer
         = link_to _('Cancel'), '#', class: "btn gl-button btn-default", "data-dismiss" => "modal"
         = link_to _('Fork project'), fork_path, class: 'btn gl-button btn-confirm', data: { qa_selector: 'fork_project_button' }, method: :post

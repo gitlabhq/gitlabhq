@@ -46,9 +46,9 @@ module Ci
     MINUTES_COST_FACTOR_FIELDS = %i[public_projects_minutes_cost_factor private_projects_minutes_cost_factor].freeze
 
     has_many :builds
-    has_many :runner_projects, inverse_of: :runner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects
-    has_many :runner_namespaces, inverse_of: :runner
+    has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'

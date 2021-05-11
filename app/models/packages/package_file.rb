@@ -5,7 +5,7 @@ class Packages::PackageFile < ApplicationRecord
 
   delegate :project, :project_id, to: :package
   delegate :conan_file_type, to: :conan_file_metadatum
-  delegate :file_type, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
+  delegate :file_type, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
   delegate :channel, :metadata, to: :helm_file_metadatum, prefix: :helm
 
   belongs_to :package
@@ -27,6 +27,7 @@ class Packages::PackageFile < ApplicationRecord
   validates :file_name, uniqueness: { scope: :package }, if: -> { package&.pypi? }
 
   scope :recent, -> { order(id: :desc) }
+  scope :for_package_ids, ->(ids) { where(package_id: ids) }
   scope :with_file_name, ->(file_name) { where(file_name: file_name) }
   scope :with_file_name_like, ->(file_name) { where(arel_table[:file_name].matches(file_name)) }
   scope :with_files_stored_locally, -> { where(file_store: ::Packages::PackageFileUploader::Store::LOCAL) }
@@ -44,7 +45,17 @@ class Packages::PackageFile < ApplicationRecord
 
   scope :with_debian_file_type, ->(file_type) do
     joins(:debian_file_metadatum)
-      .where(packages_debian_file_metadata: { debian_file_type: ::Packages::Debian::FileMetadatum.debian_file_types[file_type] })
+      .where(packages_debian_file_metadata: { file_type: ::Packages::Debian::FileMetadatum.file_types[file_type] })
+  end
+
+  scope :with_debian_component_name, ->(component_name) do
+    joins(:debian_file_metadatum)
+      .where(packages_debian_file_metadata: { component: component_name })
+  end
+
+  scope :with_debian_architecture_name, ->(architecture_name) do
+    joins(:debian_file_metadatum)
+      .where(packages_debian_file_metadata: { architecture: architecture_name })
   end
 
   scope :with_conan_package_reference, ->(conan_package_reference) do

@@ -126,4 +126,15 @@ export const gradleGroovyAddSourceCommand = ({ mavenPath }) =>
   url '${mavenPath}'
 }`;
 
+export const gradleKotlinInstalCommand = ({ packageEntity }) => {
+  const {
+    app_group: group = '',
+    app_name: name = '',
+    app_version: version = '',
+  } = packageEntity.maven_metadatum;
+  return `implementation("${group}:${name}:${version}")`;
+};
+
+export const gradleKotlinAddSourceCommand = ({ mavenPath }) => `maven("${mavenPath}")`;
+
 export const groupExists = ({ groupListUrl }) => groupListUrl.length > 0;

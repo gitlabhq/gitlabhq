@@ -102,7 +102,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               request
 
               expect(response).to have_gitlab_http_status(:bad_request)
-              expect(json_response['message']).to include('runner_projects' => ['is invalid'])
+              expect(json_response['message']).to include('runner_projects.base' => ['Maximum number of ci registered project runners (1) exceeded'])
               expect(project.runners.reload.size).to eq(1)
             end
           end
@@ -143,7 +143,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               request
 
               expect(response).to have_gitlab_http_status(:bad_request)
-              expect(json_response['message']).to include('runner_namespaces' => ['is invalid'])
+              expect(json_response['message']).to include('runner_namespaces.base' => ['Maximum number of ci registered group runners (1) exceeded'])
               expect(group.runners.reload.size).to eq(1)
             end
           end

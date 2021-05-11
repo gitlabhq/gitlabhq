@@ -179,7 +179,7 @@ RSpec.describe Users::BuildService do
             params.merge!({ user_type: :project_bot })
           end
 
-          it { expect(user.project_bot?).to be true}
+          it { expect(user.project_bot?).to be true }
         end
 
         context 'when not a project_bot' do
@@ -187,7 +187,7 @@ RSpec.describe Users::BuildService do
             params.merge!({ user_type: :alert_bot })
           end
 
-          it { expect(user.user_type).to be nil }
+          it { expect(user).to be_human }
         end
       end
 

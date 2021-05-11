@@ -149,57 +149,61 @@ RSpec.describe Projects::ProjectMembersHelper do
   describe 'project members' do
     let_it_be(:project_members) { create_list(:project_member, 2, project: project) }
 
-    describe '#project_members_data_json' do
-      it 'matches json schema' do
-        expect(helper.project_members_data_json(project, present_members(project_members))).to match_schema('members')
-      end
-    end
+    let(:collection) { project_members }
+    let(:presented_members) { present_members(collection) }
 
-    describe '#project_members_list_data_attributes' do
+    describe '#project_members_list_data_json' do
       let(:allow_admin_project) { true }
+      let(:pagination) { {} }
+
+      subject { Gitlab::Json.parse(helper.project_members_list_data_json(project, presented_members, pagination)) }
 
       before do
         allow(helper).to receive(:project_project_member_path).with(project, ':id').and_return('/foo-bar/-/project_members/:id')
       end
 
-      it 'returns expected hash' do
-        expect(helper.project_members_list_data_attributes(project, present_members(project_members))).to include({
-          members: helper.project_members_data_json(project, present_members(project_members)),
+      it 'returns expected json' do
+        expected = {
           member_path: '/foo-bar/-/project_members/:id',
           source_id: project.id,
-          can_manage_members: 'true'
-        })
+          can_manage_members: true
+        }.as_json
+
+        expect(subject).to include(expected)
+      end
+
+      it 'returns `members` property that matches json schema' do
+        expect(subject['members'].to_json).to match_schema('members')
       end
 
       context 'when pagination is not available' do
         it 'sets `pagination` attribute to expected json' do
-          expect(helper.project_members_list_data_attributes(project, present_members(project_members))[:pagination]).to match({
+          expected = {
             current_page: nil,
             per_page: nil,
             total_items: 2,
             param_name: nil,
             params: {}
-          }.to_json)
+          }.as_json
+
+          expect(subject['pagination']).to include(expected)
         end
       end
 
       context 'when pagination is available' do
         let(:collection) { Kaminari.paginate_array(project_members).page(1).per(1) }
+        let(:pagination) { { param_name: :page, params: { search_groups: nil } } }
 
         it 'sets `pagination` attribute to expected json' do
-          expect(
-            helper.project_members_list_data_attributes(
-              project,
-              present_members(collection),
-              { param_name: :page, params: { search_groups: nil } }
-            )[:pagination]
-          ).to match({
+          expected = {
             current_page: 1,
             per_page: 1,
             total_items: 2,
             param_name: :page,
             params: { search_groups: nil }
-          }.to_json)
+          }.as_json
+
+          expect(subject['pagination']).to match(expected)
         end
       end
     end
@@ -210,32 +214,33 @@ RSpec.describe Projects::ProjectMembersHelper do
 
     let(:allow_admin_project) { true }
 
-    describe '#project_group_links_data_json' do
-      it 'matches json schema' do
-        expect(helper.project_group_links_data_json(project_group_links)).to match_schema('group_link/project_group_links')
-      end
-    end
+    describe '#project_group_links_list_data_json' do
+      subject { Gitlab::Json.parse(helper.project_group_links_list_data_json(project, project_group_links)) }
 
-    describe '#project_group_links_list_data_attributes' do
       before do
         allow(helper).to receive(:project_group_link_path).with(project, ':id').and_return('/foo-bar/-/group_links/:id')
         allow(helper).to receive(:can?).with(current_user, :admin_project_member, project).and_return(true)
       end
 
-      it 'returns expected hash' do
-        expect(helper.project_group_links_list_data_attributes(project, project_group_links)).to include({
-          members: helper.project_group_links_data_json(project_group_links),
+      it 'returns expected json' do
+        expected = {
           pagination: {
             current_page: nil,
             per_page: nil,
             total_items: 1,
             param_name: nil,
             params: {}
-          }.to_json,
+          },
           member_path: '/foo-bar/-/group_links/:id',
           source_id: project.id,
-          can_manage_members: 'true'
-        })
+          can_manage_members: true
+        }.as_json
+
+        expect(subject).to include(expected)
+      end
+
+      it 'returns `members` property that matches json schema' do
+        expect(subject['members'].to_json).to match_schema('group_link/project_group_links')
       end
     end
   end

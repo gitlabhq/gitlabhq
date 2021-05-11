@@ -11831,9 +11831,14 @@ Returns [`Tree`](#tree).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="repositoryblobcanmodifyblob"></a>`canModifyBlob` | [`Boolean`](#boolean) | Whether the current user can modify the blob. |
 | <a id="repositoryblobeditblobpath"></a>`editBlobPath` | [`String`](#string) | Web path to edit the blob in the old-style editor. |
+| <a id="repositoryblobexternalstorageurl"></a>`externalStorageUrl` | [`String`](#string) | Web path to download the raw blob via external storage, if enabled. |
 | <a id="repositoryblobfiletype"></a>`fileType` | [`String`](#string) | The expected format of the blob based on the extension. |
+| <a id="repositoryblobforkandeditpath"></a>`forkAndEditPath` | [`String`](#string) | Web path to edit this blob using a forked project. |
 | <a id="repositoryblobid"></a>`id` | [`ID!`](#id) | ID of the blob. |
+| <a id="repositoryblobideeditpath"></a>`ideEditPath` | [`String`](#string) | Web path to edit this blob in the Web IDE. |
+| <a id="repositoryblobideforkandeditpath"></a>`ideForkAndEditPath` | [`String`](#string) | Web path to edit this blob in the Web IDE using a forked project. |
 | <a id="repositorybloblfsoid"></a>`lfsOid` | [`String`](#string) | LFS OID of the blob. |
 | <a id="repositoryblobmode"></a>`mode` | [`String`](#string) | Blob mode. |
 | <a id="repositoryblobname"></a>`name` | [`String`](#string) | Blob name. |

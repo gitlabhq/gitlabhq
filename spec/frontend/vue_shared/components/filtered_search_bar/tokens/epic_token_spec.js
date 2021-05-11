@@ -68,21 +68,6 @@ describe('EpicToken', () => {
       await wrapper.vm.$nextTick();
     });
 
-    describe('currentValue', () => {
-      it.each`
-        data                                             | id
-        ${`${mockEpics[0].title}::&${mockEpics[0].iid}`} | ${mockEpics[0].iid}
-        ${mockEpics[0].iid}                              | ${mockEpics[0].iid}
-        ${'foobar'}                                      | ${'foobar'}
-      `('$data returns $id', async ({ data, id }) => {
-        wrapper.setProps({ value: { data } });
-
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.vm.currentValue).toBe(id);
-      });
-    });
-
     describe('activeEpic', () => {
       it('returns object for currently present `value.data`', async () => {
         wrapper.setProps({
@@ -138,20 +123,6 @@ describe('EpicToken', () => {
         await waitForPromises();
 
         expect(wrapper.vm.loading).toBe(false);
-      });
-    });
-
-    describe('fetchSingleEpic', () => {
-      it('calls `config.fetchSingleEpic` with provided iid param', async () => {
-        jest.spyOn(wrapper.vm.config, 'fetchSingleEpic');
-
-        wrapper.vm.fetchSingleEpic(1);
-
-        expect(wrapper.vm.config.fetchSingleEpic).toHaveBeenCalledWith(1);
-
-        await waitForPromises();
-
-        expect(wrapper.vm.epics).toEqual([mockEpics[0]]);
       });
     });
   });

@@ -139,8 +139,8 @@ export const mockEpicToken = {
   symbol: '&',
   token: EpicToken,
   operators: [{ value: '=', description: 'is', default: 'true' }],
+  idProperty: 'iid',
   fetchEpics: () => Promise.resolve({ data: mockEpics }),
-  fetchSingleEpic: () => Promise.resolve({ data: mockEpics[0] }),
 };
 
 export const mockReactionEmojiToken = {
