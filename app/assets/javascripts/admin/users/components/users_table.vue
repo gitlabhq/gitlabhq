@@ -1,7 +1,10 @@
 <script>
-import { GlTable } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlSkeletonLoader, GlTable } from '@gitlab/ui';
+import createFlash from '~/flash';
+import { convertNodeIdsFromGraphQLIds } from '~/graphql_shared/utils';
+import { s__, __ } from '~/locale';
 import UserDate from '~/vue_shared/components/user_date.vue';
+import getUsersGroupCountsQuery from '../graphql/queries/get_users_group_counts.query.graphql';
 import UserActions from './user_actions.vue';
 import UserAvatar from './user_avatar.vue';
 
@@ -11,6 +14,7 @@ const thWidthClass = (width) => `gl-w-${width}p ${DEFAULT_TH_CLASSES}`;
 
 export default {
   components: {
+    GlSkeletonLoader,
     GlTable,
     UserAvatar,
     UserActions,
@@ -26,6 +30,45 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      groupCounts: [],
+    };
+  },
+  apollo: {
+    groupCounts: {
+      query: getUsersGroupCountsQuery,
+      variables() {
+        return {
+          usernames: this.users.map((user) => user.username),
+        };
+      },
+      update(data) {
+        const nodes = data?.users?.nodes || [];
+        const parsedIds = convertNodeIdsFromGraphQLIds(nodes);
+
+        return parsedIds.reduce((acc, { id, groupCount }) => {
+          acc[id] = groupCount || 0;
+          return acc;
+        }, {});
+      },
+      error(error) {
+        createFlash({
+          message: this.$options.i18n.groupCountFetchError,
+          captureError: true,
+          error,
+        });
+      },
+      skip() {
+        return !this.users.length;
+      },
+    },
+  },
+  i18n: {
+    groupCountFetchError: s__(
+      'AdminUsers|Could not load user group counts. Please refresh the page to try again.',
+    ),
+  },
   fields: [
     {
       key: 'name',
@@ -35,6 +78,11 @@ export default {
     {
       key: 'projectsCount',
       label: __('Projects'),
+      thClass: thWidthClass(10),
+    },
+    {
+      key: 'groupCount',
+      label: __('Groups'),
       thClass: thWidthClass(10),
     },
     {
@@ -50,7 +98,7 @@ export default {
     {
       key: 'settings',
       label: '',
-      thClass: thWidthClass(20),
+      thClass: thWidthClass(10),
     },
   ],
 };
@@ -75,6 +123,13 @@ export default {
 
       <template #cell(lastActivityOn)="{ item: { lastActivityOn } }">
         <user-date :date="lastActivityOn" show-never />
+      </template>
+
+      <template #cell(groupCount)="{ item: { id } }">
+        <div :data-testid="`user-group-count-${id}`">
+          <gl-skeleton-loader v-if="$apollo.loading" :width="40" :lines="1" />
+          <span v-else>{{ groupCounts[id] }}</span>
+        </div>
       </template>
 
       <template #cell(projectsCount)="{ item: { id, projectsCount } }">

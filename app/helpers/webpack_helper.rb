@@ -5,6 +5,10 @@ module WebpackHelper
     javascript_include_tag(*webpack_entrypoint_paths(bundle))
   end
 
+  def webpack_preload_asset_tag(asset, options = {})
+    preload_link_tag(Gitlab::Webpack::Manifest.asset_paths(asset).first, options)
+  end
+
   def webpack_controller_bundle_tags
     chunks = []
 

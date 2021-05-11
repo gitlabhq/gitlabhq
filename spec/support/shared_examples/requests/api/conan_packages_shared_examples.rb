@@ -106,7 +106,7 @@ RSpec.shared_examples 'conan authenticate endpoint' do
         expect(payload['user_id']).to eq(personal_access_token.user_id)
 
         duration = payload['exp'] - payload['iat']
-        expect(duration).to eq(1.hour)
+        expect(duration).to eq(::Gitlab::ConanToken::CONAN_TOKEN_EXPIRE_TIME)
       end
     end
   end

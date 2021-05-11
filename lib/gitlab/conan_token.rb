@@ -8,6 +8,7 @@
 module Gitlab
   class ConanToken
     HMAC_KEY = 'gitlab-conan-packages'
+    CONAN_TOKEN_EXPIRE_TIME = 1.day.freeze
 
     attr_reader :access_token_id, :user_id
 
@@ -57,7 +58,7 @@ module Gitlab
       JSONWebToken::HMACToken.new(self.class.secret).tap do |token|
         token['access_token'] = access_token_id
         token['user_id'] = user_id
-        token.expire_time = token.issued_at + 1.hour
+        token.expire_time = token.issued_at + CONAN_TOKEN_EXPIRE_TIME
       end
     end
   end

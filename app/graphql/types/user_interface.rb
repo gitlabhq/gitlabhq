@@ -64,8 +64,7 @@ module Types
           description: 'Group memberships of the user.'
     field :group_count,
           resolver: Resolvers::Users::GroupCountResolver,
-          description: 'Group count for the user.',
-          feature_flag: :user_group_counts
+          description: 'Group count for the user.'
     field :status,
           type: Types::UserStatusType,
           null: true,

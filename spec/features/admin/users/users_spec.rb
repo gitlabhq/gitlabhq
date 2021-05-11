@@ -547,6 +547,32 @@ RSpec.describe 'Admin::Users' do
     end
   end
 
+  # TODO: Move to main GET /admin/users block once feature flag is removed. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/290737
+  context 'with vue_admin_users feature flag enabled', :js do
+    before do
+      stub_feature_flags(vue_admin_users: true)
+    end
+
+    describe 'GET /admin/users' do
+      context 'user group count', :js do
+        before do
+          group = create(:group)
+          group.add_developer(current_user)
+          project = create(:project, group: create(:group))
+          project.add_reporter(current_user)
+        end
+
+        it 'displays count of the users authorized groups' do
+          visit admin_users_path
+
+          wait_for_requests
+
+          expect(page.find("[data-testid='user-group-count-#{current_user.id}']").text).to eq("2")
+        end
+      end
+    end
+  end
+
   def click_user_dropdown_toggle(user_id)
     page.within("[data-testid='user-actions-#{user_id}']") do
       find("[data-testid='dropdown-toggle']").click

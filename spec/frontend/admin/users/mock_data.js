@@ -10,7 +10,7 @@ export const users = [
       'https://secure.gravatar.com/avatar/054f062d8b1a42b123f17e13a173cda8?s=80\\u0026d=identicon',
     badges: [
       { text: 'Admin', variant: 'success' },
-      { text: "It's you!", variant: null },
+      { text: "It's you!", variant: 'muted' },
     ],
     projectsCount: 0,
     actions: [],
@@ -31,3 +31,16 @@ export const paths = {
   deleteWithContributions: '/admin/users/id',
   adminUser: '/admin/users/id',
 };
+
+export const createGroupCountResponse = (groupCounts) => ({
+  data: {
+    users: {
+      nodes: groupCounts.map(({ id, groupCount }) => ({
+        id: `gid://gitlab/User/${id}`,
+        groupCount,
+        __typename: 'UserCore',
+      })),
+      __typename: 'UserCoreConnection',
+    },
+  },
+});
