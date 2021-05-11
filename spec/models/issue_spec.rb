@@ -242,16 +242,36 @@ RSpec.describe Issue do
 
       expect { issue.close }.to change { issue.state_id }.from(open_state).to(closed_state)
     end
+
+    context 'when an argument is provided' do
+      context 'and the argument is a User' do
+        it 'changes closed_by to the given user' do
+          expect { issue.close(user) }.to change { issue.closed_by }.from(nil).to(user)
+        end
+      end
+
+      context 'and the argument is a not a User' do
+        it 'does not change closed_by' do
+          expect { issue.close("test") }.not_to change { issue.closed_by }
+        end
+      end
+    end
+
+    context 'when an argument is not provided' do
+      it 'does not change closed_by' do
+        expect { issue.close }.not_to change { issue.closed_by }
+      end
+    end
   end
 
   describe '#reopen' do
     let(:issue) { create(:issue, project: reusable_project, state: 'closed', closed_at: Time.current, closed_by: user) }
 
-    it 'sets closed_at to nil when an issue is reopend' do
+    it 'sets closed_at to nil when an issue is reopened' do
       expect { issue.reopen }.to change { issue.closed_at }.to(nil)
     end
 
-    it 'sets closed_by to nil when an issue is reopend' do
+    it 'sets closed_by to nil when an issue is reopened' do
       expect { issue.reopen }.to change { issue.closed_by }.from(user).to(nil)
     end
 

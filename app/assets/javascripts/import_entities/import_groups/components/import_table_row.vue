@@ -119,7 +119,11 @@ export default {
 </script>
 
 <template>
-  <tr class="gl-border-gray-200 gl-border-0 gl-border-b-1 gl-border-solid">
+  <tr
+    class="gl-border-gray-200 gl-border-0 gl-border-b-1 gl-border-solid"
+    data-qa-selector="import_item"
+    :data-qa-source-group="group.full_path"
+  >
     <td class="gl-p-4">
       <gl-link
         :href="group.web_url"
@@ -150,6 +154,7 @@ export default {
           :disabled="isAlreadyImported"
           toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
           class="import-entities-namespace-dropdown gl-h-7 gl-flex-fill-1"
+          data-qa-selector="target_namespace_selector_dropdown"
         >
           <gl-dropdown-item @click="$emit('update-target-namespace', '')">{{
             s__('BulkImport|No parent')
@@ -162,6 +167,8 @@ export default {
             <gl-dropdown-item
               v-for="ns in availableNamespaces"
               :key="ns.full_path"
+              data-qa-selector="target_group_dropdown_item"
+              :data-qa-group-name="ns.full_path"
               @click="$emit('update-target-namespace', ns.full_path)"
             >
               {{ ns.full_path }}
@@ -192,7 +199,7 @@ export default {
         </div>
       </div>
     </td>
-    <td class="gl-p-4 gl-white-space-nowrap">
+    <td class="gl-p-4 gl-white-space-nowrap" data-qa-selector="import_status_indicator">
       <import-status :status="group.progress.status" class="gl-mt-2" />
     </td>
     <td class="gl-p-4">
@@ -201,6 +208,7 @@ export default {
         :disabled="isInvalid"
         variant="confirm"
         category="secondary"
+        data-qa-selector="import_group_button"
         @click="$emit('import-group')"
         >{{ __('Import') }}</gl-button
       >

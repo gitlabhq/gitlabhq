@@ -1,8 +1,0 @@
----
-name: usage_data_i_code_review_user_single_file_diffs
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48470
-rollout_issue_url:
-milestone: '13.7'
-type: development
-group: group::code review
-default_enabled: true

@@ -277,7 +277,11 @@ export default {
     </div>
 
     <gl-loading-icon v-if="isUpdating" :inline="true" />
-    <div v-else-if="!isDropdownShowing" class="value gl-m-0" :class="{ 'no-value': !userName }">
+    <div
+      v-else-if="!isDropdownShowing"
+      class="hide-collapsed value gl-m-0"
+      :class="{ 'no-value': !userName }"
+    >
       <div v-if="userName" class="gl-display-inline-flex gl-mt-2" data-testid="assigned-users">
         <span class="gl-relative gl-mr-4">
           <img

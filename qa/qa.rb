@@ -225,6 +225,7 @@ module QA
       autoload :Show, 'qa/page/group/show'
       autoload :Menu, 'qa/page/group/menu'
       autoload :Members, 'qa/page/group/members'
+      autoload :BulkImport, 'qa/page/group/bulk_import'
 
       module Milestone
         autoload :Index, 'qa/page/group/milestone/index'

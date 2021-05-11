@@ -10057,24 +10057,6 @@ CREATE SEQUENCE boards_epic_board_positions_id_seq
 
 ALTER SEQUENCE boards_epic_board_positions_id_seq OWNED BY boards_epic_board_positions.id;
 
-CREATE TABLE boards_epic_board_recent_visits (
-    id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    epic_board_id bigint NOT NULL,
-    group_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
-);
-
-CREATE SEQUENCE boards_epic_board_recent_visits_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE boards_epic_board_recent_visits_id_seq OWNED BY boards_epic_board_recent_visits.id;
-
 CREATE TABLE boards_epic_boards (
     id bigint NOT NULL,
     hide_backlog_list boolean DEFAULT false NOT NULL,
@@ -19371,8 +19353,6 @@ ALTER TABLE ONLY boards_epic_board_labels ALTER COLUMN id SET DEFAULT nextval('b
 
 ALTER TABLE ONLY boards_epic_board_positions ALTER COLUMN id SET DEFAULT nextval('boards_epic_board_positions_id_seq'::regclass);
 
-ALTER TABLE ONLY boards_epic_board_recent_visits ALTER COLUMN id SET DEFAULT nextval('boards_epic_board_recent_visits_id_seq'::regclass);
-
 ALTER TABLE ONLY boards_epic_boards ALTER COLUMN id SET DEFAULT nextval('boards_epic_boards_id_seq'::regclass);
 
 ALTER TABLE ONLY boards_epic_list_user_preferences ALTER COLUMN id SET DEFAULT nextval('boards_epic_list_user_preferences_id_seq'::regclass);
@@ -20487,9 +20467,6 @@ ALTER TABLE ONLY boards_epic_board_labels
 
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT boards_epic_board_positions_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY boards_epic_board_recent_visits
-    ADD CONSTRAINT boards_epic_board_recent_visits_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY boards_epic_boards
     ADD CONSTRAINT boards_epic_boards_pkey PRIMARY KEY (id);
@@ -22316,12 +22293,6 @@ CREATE INDEX index_boards_epic_board_positions_on_epic_id ON boards_epic_board_p
 
 CREATE INDEX index_boards_epic_board_positions_on_scoped_relative_position ON boards_epic_board_positions USING btree (epic_board_id, epic_id, relative_position);
 
-CREATE INDEX index_boards_epic_board_recent_visits_on_epic_board_id ON boards_epic_board_recent_visits USING btree (epic_board_id);
-
-CREATE INDEX index_boards_epic_board_recent_visits_on_group_id ON boards_epic_board_recent_visits USING btree (group_id);
-
-CREATE INDEX index_boards_epic_board_recent_visits_on_user_id ON boards_epic_board_recent_visits USING btree (user_id);
-
 CREATE INDEX index_boards_epic_boards_on_group_id ON boards_epic_boards USING btree (group_id);
 
 CREATE INDEX index_boards_epic_list_user_preferences_on_epic_list_id ON boards_epic_list_user_preferences USING btree (epic_list_id);
@@ -22885,8 +22856,6 @@ CREATE INDEX index_environments_on_project_id_state_environment_type ON environm
 CREATE INDEX index_environments_on_state_and_auto_stop_at ON environments USING btree (state, auto_stop_at) WHERE ((auto_stop_at IS NOT NULL) AND ((state)::text = 'available'::text));
 
 CREATE UNIQUE INDEX index_epic_board_list_preferences_on_user_and_list ON boards_epic_list_user_preferences USING btree (user_id, epic_list_id);
-
-CREATE UNIQUE INDEX index_epic_board_recent_visits_on_user_group_and_board ON boards_epic_board_recent_visits USING btree (user_id, group_id, epic_board_id);
 
 CREATE INDEX index_epic_issues_on_epic_id ON epic_issues USING btree (epic_id);
 
@@ -26657,9 +26626,6 @@ ALTER TABLE ONLY packages_rubygems_metadata
 ALTER TABLE ONLY packages_pypi_metadata
     ADD CONSTRAINT fk_rails_9698717cdd FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY boards_epic_board_recent_visits
-    ADD CONSTRAINT fk_rails_96c2c18642 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY packages_dependency_links
     ADD CONSTRAINT fk_rails_96ef1c00d3 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
@@ -26924,9 +26890,6 @@ ALTER TABLE ONLY pages_deployments
 ALTER TABLE ONLY merge_request_user_mentions
     ADD CONSTRAINT fk_rails_c440b9ea31 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY boards_epic_board_recent_visits
-    ADD CONSTRAINT fk_rails_c4dcba4a3e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY ci_job_artifacts
     ADD CONSTRAINT fk_rails_c5137cb2c1 FOREIGN KEY (job_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
@@ -27103,9 +27066,6 @@ ALTER TABLE ONLY draft_notes
 
 ALTER TABLE ONLY namespace_package_settings
     ADD CONSTRAINT fk_rails_e773444769 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY boards_epic_board_recent_visits
-    ADD CONSTRAINT fk_rails_e77911cf03 FOREIGN KEY (epic_board_id) REFERENCES boards_epic_boards(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dast_site_tokens
     ADD CONSTRAINT fk_rails_e84f721a8e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

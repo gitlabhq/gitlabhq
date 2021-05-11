@@ -91,7 +91,7 @@ RSpec.describe Issues::CloseService do
         end
       end
 
-      context 'with innactive external issue tracker supporting close_issue' do
+      context 'with inactive external issue tracker supporting close_issue' do
         let!(:external_issue_tracker) { create(:jira_service, project: project, active: false) }
 
         it 'does not close the issue on the external issue tracker' do
@@ -220,6 +220,14 @@ RSpec.describe Issues::CloseService do
         end
       end
 
+      it 'verifies the number of queries' do
+        recorded = ActiveRecord::QueryRecorder.new { close_issue }
+        expected_queries = 23
+
+        expect(recorded.count).to be <= expected_queries
+        expect(recorded.cached_count).to eq(0)
+      end
+
       it 'closes the issue' do
         close_issue
 
@@ -230,7 +238,7 @@ RSpec.describe Issues::CloseService do
       it 'records closed user' do
         close_issue
 
-        expect(issue.closed_by_id).to be(user.id)
+        expect(issue.reload.closed_by_id).to be(user.id)
       end
 
       it 'sends email to user2 about assign of new issue', :sidekiq_might_not_need_inline do
@@ -252,6 +260,16 @@ RSpec.describe Issues::CloseService do
         close_issue
 
         expect(todo.reload).to be_done
+      end
+
+      context 'when closing the issue fails' do
+        it 'does not assign a closed_by value for the issue' do
+          allow(issue).to receive(:close).and_return(false)
+
+          close_issue
+
+          expect(issue.closed_by_id).to be_nil
+        end
       end
 
       context 'when there is an associated Alert Management Alert' do

@@ -242,7 +242,7 @@ export default {
         :description="s__('Check your source instance permissions.')"
       />
       <template v-else>
-        <table class="gl-w-full">
+        <table class="gl-w-full" data-qa-selector="import_table">
           <thead class="gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1">
             <th class="gl-py-4 import-jobs-from-col">{{ s__('BulkImport|From source group') }}</th>
             <th class="gl-py-4 import-jobs-to-col">{{ s__('BulkImport|To new group') }}</th>

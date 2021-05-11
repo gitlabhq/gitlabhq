@@ -306,11 +306,6 @@
       }
     }
 
-    // ensure .build-content has hover style when action-icon is hovered
-    .ci-job-dropdown-container:hover .build-content {
-      @extend .build-content:hover;
-    }
-
     .ci-status-icon svg {
       height: 24px;
       width: 24px;
@@ -330,6 +325,7 @@
       @include build-content();
     }
 
+    .ci-job-dropdown-container:hover .build-content,
     a.build-content:hover,
     button.build-content:hover {
       background-color: var(--gray-100, $gray-100);

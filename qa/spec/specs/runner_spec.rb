@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/hash'
-
 RSpec.describe QA::Specs::Runner do
   shared_examples 'excludes orchestrated, transient, and geo' do
     it 'excludes the orchestrated, transient, and geo tags, and includes default args' do

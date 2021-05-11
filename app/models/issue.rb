@@ -176,8 +176,16 @@ class Issue < ApplicationRecord
     state :opened, value: Issue.available_states[:opened]
     state :closed, value: Issue.available_states[:closed]
 
-    before_transition any => :closed do |issue|
+    before_transition any => :closed do |issue, transition|
+      args = transition.args
+
       issue.closed_at = issue.system_note_timestamp
+
+      next if args.empty?
+
+      next unless args.first.is_a?(User)
+
+      issue.closed_by = args.first
     end
 
     before_transition closed: :opened do |issue|

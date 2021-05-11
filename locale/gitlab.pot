@@ -9748,9 +9748,6 @@ msgstr ""
 msgid "CustomCycleAnalytics|End event label"
 msgstr ""
 
-msgid "CustomCycleAnalytics|New stage"
-msgstr ""
-
 msgid "CustomCycleAnalytics|Stage name already exists"
 msgstr ""
 
@@ -26708,9 +26705,6 @@ msgid "Recently used"
 msgstr ""
 
 msgid "Reconfigure"
-msgstr ""
-
-msgid "Recover hidden stage"
 msgstr ""
 
 msgid "Recovering projects"

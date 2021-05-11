@@ -176,12 +176,6 @@
   li {
     position: relative;
 
-    // ensure .mini-pipeline-graph-dropdown-item has hover style when action-icon is hovered
-    &:hover > .mini-pipeline-graph-dropdown-item,
-    &:hover > .ci-job-component > .mini-pipeline-graph-dropdown-item {
-      @extend .mini-pipeline-graph-dropdown-item:hover;
-    }
-
     // link to the build
     .mini-pipeline-graph-dropdown-item {
       align-items: center;
@@ -216,13 +210,16 @@
           display: block;
         }
       }
+    }
 
-      &:hover,
-      &:focus {
-        outline: none;
-        text-decoration: none;
-        background-color: var(--gray-100, $gray-50);
-      }
+    // ensure .mini-pipeline-graph-dropdown-item has hover style when action-icon is hovered
+    &:hover > .mini-pipeline-graph-dropdown-item,
+    &:hover > .ci-job-component > .mini-pipeline-graph-dropdown-item,
+    .mini-pipeline-graph-dropdown-item:hover,
+    .mini-pipeline-graph-dropdown-item:focus {
+      outline: none;
+      text-decoration: none;
+      background-color: var(--gray-100, $gray-50);
     }
   }
 }

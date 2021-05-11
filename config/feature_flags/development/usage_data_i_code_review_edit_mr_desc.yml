@@ -1,8 +1,0 @@
----
-name: usage_data_i_code_review_edit_mr_desc
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/292830
-rollout_issue_url:
-milestone: '13.9'
-type: development
-group: group::code review
-default_enabled: true

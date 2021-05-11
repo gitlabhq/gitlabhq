@@ -4,7 +4,7 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# API Docs
+# API Docs **(FREE)**
 
 Use the GitLab [REST](http://spec.openapis.org/oas/v3.0.3) API to automate GitLab.
 
@@ -125,9 +125,10 @@ There are several ways you can authenticate with the GitLab API:
 - [Session cookie](#session-cookie)
 - [GitLab CI/CD job token](#gitlab-cicd-job-token) **(Specific endpoints only)**
 
-NOTE:
-Project access tokens are supported for self-managed instances on Free and
-higher. They're also supported on GitLab.com Bronze and higher.
+Project access tokens are supported by:
+
+- Self-managed GitLab Free and higher.
+- GitLab SaaS Premium and higher.
 
 If you are an administrator, you or your application can authenticate as a specific user.
 To do so, use:

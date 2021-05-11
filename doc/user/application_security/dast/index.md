@@ -144,6 +144,14 @@ image. Using the `DAST_VERSION` variable, you can choose how DAST updates:
 Find the latest DAST versions on the [Releases](https://gitlab.com/gitlab-org/security-products/dast/-/releases)
 page.
 
+#### Crawling web applications dependent on JavaScript
+
+GitLab has released a new browser-based crawler, an add-on to DAST that uses a browser to crawl web applications for content. This crawler replaces the standard DAST Spider and Ajax Crawler.
+
+The browser-based crawler crawls websites by browsing web pages as a user would. This approach works well with web applications that make heavy use of JavaScript, such as Single Page Applications.
+
+For more details, including setup instructions, see [DAST browser-based crawler](browser_based.md).
+
 ## Deployment options
 
 Depending on the complexity of the target application, there are a few options as to how to deploy and configure

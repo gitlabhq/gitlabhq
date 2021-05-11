@@ -27,15 +27,19 @@ describe('Deploy freeze mutations', () => {
 
   describe('RECEIVE_FREEZE_PERIODS_SUCCESS', () => {
     it('should set freeze periods and format timezones from identifiers to names', () => {
-      const timezoneNames = ['Eastern Time (US & Canada)', 'UTC', 'Berlin'];
+      const timezoneNames = {
+        'Europe/Berlin': 'Berlin',
+        'Etc/UTC': 'UTC',
+        'America/New_York': 'Eastern Time (US & Canada)',
+      };
 
       mutations[types.RECEIVE_FREEZE_PERIODS_SUCCESS](stateCopy, freezePeriodsFixture);
 
-      const expectedFreezePeriods = freezePeriodsFixture.map((freezePeriod, index) => ({
+      const expectedFreezePeriods = freezePeriodsFixture.map((freezePeriod) => ({
         ...convertObjectPropsToCamelCase(freezePeriod),
         cronTimezone: {
-          formattedTimezone: timezoneNames[index],
-          identifier: freezePeriod.cronTimezone,
+          formattedTimezone: timezoneNames[freezePeriod.cron_timezone],
+          identifier: freezePeriod.cron_timezone,
         },
       }));
 

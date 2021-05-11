@@ -5,17 +5,13 @@ module Boards
     class CreateService < Boards::BaseService
       def execute(board)
         return unless current_user && Gitlab::Database.read_write?
-        return unless board
+        return unless board.is_a?(Board) # other board types do not support board visits yet
 
-        model.visited!(current_user, board)
-      end
-
-      private
-
-      def model
-        return BoardGroupRecentVisit if parent.is_a?(Group)
-
-        BoardProjectRecentVisit
+        if parent.is_a?(Group)
+          BoardGroupRecentVisit.visited!(current_user, board)
+        else
+          BoardProjectRecentVisit.visited!(current_user, board)
+        end
       end
     end
   end

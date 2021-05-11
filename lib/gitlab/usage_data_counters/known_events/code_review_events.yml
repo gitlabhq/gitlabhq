@@ -3,207 +3,166 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_mr_diffs
 - name: i_code_review_user_single_file_diffs
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_single_file_diffs
 - name: i_code_review_mr_single_file_diffs
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_mr_single_file_diffs
 - name: i_code_review_user_toggled_task_item_status
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_toggled_task_item_status
 - name: i_code_review_user_create_mr
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_create_mr
 - name: i_code_review_user_close_mr
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_close_mr
 - name: i_code_review_user_reopen_mr
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_reopen_mr
 - name: i_code_review_user_approve_mr
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_approve_mr
 - name: i_code_review_user_unapprove_mr
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_unapprove_mr
 - name: i_code_review_user_resolve_thread
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_resolve_thread
 - name: i_code_review_user_unresolve_thread
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_unresolve_thread
 - name: i_code_review_edit_mr_title
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_edit_mr_title
 - name: i_code_review_edit_mr_desc
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_edit_mr_desc
 - name: i_code_review_user_merge_mr
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_merge_mr
 - name: i_code_review_user_create_mr_comment
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_create_mr_comment
 - name: i_code_review_user_edit_mr_comment
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_edit_mr_comment
 - name: i_code_review_user_remove_mr_comment
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_remove_mr_comment
 - name: i_code_review_user_create_review_note
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_create_review_note
 - name: i_code_review_user_publish_review
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_publish_review
 - name: i_code_review_user_create_multiline_mr_comment
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_create_multiline_mr_comment
 - name: i_code_review_user_edit_multiline_mr_comment
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_edit_multiline_mr_comment
 - name: i_code_review_user_remove_multiline_mr_comment
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_remove_multiline_mr_comment
 - name: i_code_review_user_add_suggestion
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_add_suggestion
 - name: i_code_review_user_apply_suggestion
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_apply_suggestion
 - name: i_code_review_user_assigned
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_assigned
 - name: i_code_review_user_marked_as_draft
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_marked_as_draft
 - name: i_code_review_user_unmarked_as_draft
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_unmarked_as_draft
 - name: i_code_review_user_review_requested
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_review_requested
 - name: i_code_review_user_approval_rule_added
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_approval_rule_added
 - name: i_code_review_user_approval_rule_deleted
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_approval_rule_deleted
 - name: i_code_review_user_approval_rule_edited
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_approval_rule_edited
 - name: i_code_review_user_vs_code_api_request
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_vs_code_api_request
 - name: i_code_review_user_create_mr_from_issue
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_create_mr_from_issue
 - name: i_code_review_user_mr_discussion_locked
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_mr_discussion_locked
 - name: i_code_review_user_mr_discussion_unlocked
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_mr_discussion_unlocked
 - name: i_code_review_user_time_estimate_changed
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_time_estimate_changed
 - name: i_code_review_user_time_spent_changed
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_time_spent_changed
 - name: i_code_review_user_assignees_changed
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_assignees_changed
 - name: i_code_review_user_reviewers_changed
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_reviewers_changed
 - name: i_code_review_user_milestone_changed
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_milestone_changed
 - name: i_code_review_user_labels_changed
   redis_slot: code_review
   category: code_review
   aggregation: weekly
-  feature_flag: usage_data_i_code_review_user_labels_changed
 # Diff settings events
 - name: i_code_review_click_single_file_mode_setting
   redis_slot: code_review

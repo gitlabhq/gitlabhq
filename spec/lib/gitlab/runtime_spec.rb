@@ -42,7 +42,19 @@ RSpec.describe Gitlab::Runtime do
     end
   end
 
-  context "puma" do
+  # Puma has no cli_config method unless `puma/cli` is required
+  context "puma without cli_config" do
+    let(:puma_type) { double('::Puma') }
+
+    before do
+      stub_const('::Puma', puma_type)
+      stub_env('ACTION_CABLE_IN_APP', 'false')
+    end
+
+    it_behaves_like "valid runtime", :puma, 1
+  end
+
+  context "puma with cli_config" do
     let(:puma_type) { double('::Puma') }
     let(:max_workers) { 2 }
 

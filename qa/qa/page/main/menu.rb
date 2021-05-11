@@ -35,17 +35,24 @@ module QA
           element :your_projects_link
         end
 
+        view 'app/views/layouts/nav/groups_dropdown/_show.html.haml' do
+          element :create_group_link
+          element :import_group_link
+        end
+
         view 'app/views/layouts/_search.html.haml' do
           element :search_term_field
         end
 
         def go_to_groups
-          within_top_menu do
-            click_element :groups_dropdown
-          end
-
-          page.within('.qa-groups-dropdown-sidebar') do
+          within_groups_menu do
             click_element :your_groups_link
+          end
+        end
+
+        def go_to_import_group
+          within_groups_menu do
+            click_element :import_group_link
           end
         end
 
@@ -171,6 +178,14 @@ module QA
               yield
             end
           end
+        end
+
+        def within_groups_menu(&block)
+          within_top_menu do
+            click_element :groups_dropdown
+          end
+
+          page.within('.qa-groups-dropdown-sidebar', &block)
         end
 
         def click_admin_area

@@ -7,7 +7,7 @@ const formatTimezoneName = (freezePeriod, timezoneList) =>
     cron_timezone: {
       formattedTimezone: timezoneList.find((tz) => tz.identifier === freezePeriod.cron_timezone)
         ?.name,
-      identifier: freezePeriod.cronTimezone,
+      identifier: freezePeriod.cron_timezone,
     },
   });
 
