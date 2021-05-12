@@ -1,6 +1,6 @@
 - label_class = local_assigns.fetch(:bold_label, false) ? 'font-weight-bold' : ''
 
-.form-check
-  = form.check_box :request_access_enabled, class: 'form-check-input', data: { qa_selector: 'request_access_checkbox' }
-  = form.label :request_access_enabled, class: 'form-check-label' do
+.gl-form-checkbox.custom-control.custom-checkbox
+  = form.check_box :request_access_enabled, class: 'custom-control-input', data: { qa_selector: 'request_access_checkbox' }
+  = form.label :request_access_enabled, class: 'custom-control-label' do
     %span{ class: label_class }= _('Allow users to request access (if visibility is public or internal)')

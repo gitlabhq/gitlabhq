@@ -1520,7 +1520,13 @@ msgstr ""
 msgid "APIFuzzing|$VariableWithUsername"
 msgstr ""
 
+msgid "APIFuzzing|/folder/example_file.har"
+msgstr ""
+
 msgid "APIFuzzing|/folder/example_file.json"
+msgstr ""
+
+msgid "APIFuzzing|/folder/example_file.postman_collection.json"
 msgstr ""
 
 msgid "APIFuzzing|API Fuzzing Configuration"
@@ -1562,28 +1568,22 @@ msgstr ""
 msgid "APIFuzzing|Enter the name of the variable containing the username. For example, $VariableWithUsername."
 msgstr ""
 
-msgid "APIFuzzing|Ex: Project_Test/File/example_fuzz"
-msgstr ""
-
-msgid "APIFuzzing|Ex: Project_Test/File/example_fuzz.har"
+msgid "APIFuzzing|File path containing APIs to be tested. For example, /folder/example_file.har. HAR files may contain sensitive information such as authentication tokens, API keys, and session cookies. We recommend that you review the HAR files' contents before adding them to a repository."
 msgstr ""
 
 msgid "APIFuzzing|File path containing APIs to be tested. For example, /folder/example_file.json."
 msgstr ""
 
-msgid "APIFuzzing|Generate code snippet"
+msgid "APIFuzzing|File path containing requests to be tested. For example, /folder/example_file.postman_collection.json."
 msgstr ""
 
-msgid "APIFuzzing|HAR files may contain sensitive information such as authentication tokens, API keys, and session cookies. We recommend that you review the HAR files' contents before adding them to a repository."
+msgid "APIFuzzing|Generate code snippet"
 msgstr ""
 
 msgid "APIFuzzing|Make sure your credentials are secured"
 msgstr ""
 
 msgid "APIFuzzing|Password for basic authentication"
-msgstr ""
-
-msgid "APIFuzzing|Postman collections are a group of saved requests you can organize into folders."
 msgstr ""
 
 msgid "APIFuzzing|Predefined profiles"
@@ -9425,6 +9425,9 @@ msgid "Create your first page"
 msgstr ""
 
 msgid "Create your group"
+msgstr ""
+
+msgid "Create your own profile to collaborate with your teammates in issues, merge requests, and more."
 msgstr ""
 
 msgid "Create/import your first project"
@@ -18384,6 +18387,9 @@ msgstr ""
 msgid "Iterations|Duration"
 msgstr ""
 
+msgid "Iterations|Error loading iteration cadences."
+msgstr ""
+
 msgid "Iterations|Future iterations"
 msgstr ""
 
@@ -18391,6 +18397,9 @@ msgid "Iterations|Iteration scheduling will be handled automatically"
 msgstr ""
 
 msgid "Iterations|New iteration cadence"
+msgstr ""
+
+msgid "Iterations|No iteration cadences to show."
 msgstr ""
 
 msgid "Iterations|Number of future iterations you would like to have scheduled"
@@ -18805,6 +18814,9 @@ msgid "Job|with"
 msgstr ""
 
 msgid "Join Zoom meeting"
+msgstr ""
+
+msgid "Join your team"
 msgstr ""
 
 msgid "Joined %{time_ago}"

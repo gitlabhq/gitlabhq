@@ -156,7 +156,7 @@ eslint-as-if-foss:
   needs: []
   script:
     - *yarn-install
-    - run_timed_command "yarn run eslint"
+    - run_timed_command "yarn run lint:eslint:all"
 
 .karma-base:
   extends: .frontend-test-base

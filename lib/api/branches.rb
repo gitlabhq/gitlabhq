@@ -47,13 +47,25 @@ module API
 
         merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
-        present(
-          branches,
-          with: Entities::Branch,
-          current_user: current_user,
-          project: user_project,
-          merged_branch_names: merged_branch_names
-        )
+        if Feature.enabled?(:api_caching_branches, user_project, type: :development, default_enabled: :yaml)
+          present_cached(
+            branches,
+            with: Entities::Branch,
+            current_user: current_user,
+            project: user_project,
+            merged_branch_names: merged_branch_names,
+            expires_in: 10.minutes,
+            cache_context: -> (branch) { [current_user&.cache_key, merged_branch_names.include?(branch.name)] }
+          )
+        else
+          present(
+            branches,
+            with: Entities::Branch,
+            current_user: current_user,
+            project: user_project,
+            merged_branch_names: merged_branch_names
+          )
+        end
       end
 
       resource ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do

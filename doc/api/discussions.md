@@ -853,9 +853,9 @@ Parameters for all comments:
 | `position[start_sha]`                    | string         | yes      | SHA referencing commit in target branch |
 | `position[head_sha]`                     | string         | yes      | SHA referencing HEAD of this merge request |
 | `position[position_type]`                | string         | yes      | Type of the position reference', allowed values: `text` or `image` |
-| `position[new_path]`                     | string         | no       | File path after change |
+| `position[new_path]`                     | string         | yes (if the position type is `text`) | File path after change |
 | `position[new_line]`                     | integer        | no       | Line number after change (for `text` diff notes) |
-| `position[old_path]`                     | string         | no       | File path before change |
+| `position[old_path]`                     | string         | yes (if the position type is `text`) | File path before change |
 | `position[old_line]`                     | integer        | no       | Line number before change (for `text` diff notes) |
 | `position[line_range]`                   | hash           | no       | Line range for a multi-line diff note |
 | `position[width]`                        | integer        | no       | Width of the image (for `image` diff notes) |
@@ -863,9 +863,62 @@ Parameters for all comments:
 | `position[x]`                            | float          | no       | X coordinate (for `image` diff notes) |
 | `position[y]`                            | float          | no       | Y coordinate (for `image` diff notes) |
 
+#### Create a new thread on the overview page
+
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions?body=comment"
 ```
+
+#### Create a new thread in the merge request diff
+
+- Both `position[old_path]` and `position[new_path]` are required and must refer to the file path before and after the change.
+- To create a thread on an added line (highlighted in green in the merge request diff), use `position[new_line]` and don't include `position[old_line]`.
+- To create a thread on a removed line (highlighted in red in the merge request diff), use `position[old_line]` and don't include `position[new_line]`.
+- To create a thread on an unchanged line, include both `position[new_line]` and `position[old_line]` for the line. These positions might not be the same if earlier changes in the file changed the line number. This is a bug that we plan to fix in [GraphQL `createDiffNote` forces clients to compute redundant information (#325161)](https://gitlab.com/gitlab-org/gitlab/-/issues/325161).
+- If you specify incorrect `base`/`head`/`start` `SHA` parameters, you might run into the following bug: [Merge request comments receive "download" link instead of inline code (#296829)](https://gitlab.com/gitlab-org/gitlab/-/issues/296829).
+
+To create a new thread:
+
+1. [Get the latest merge request version](merge_requests.md#get-mr-diff-versions):
+
+    ```shell
+    curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/versions"
+    ````
+
+1. Note the details of the latest version, which is listed first in the response array.
+
+    ```json
+    [
+      {
+        "id": 164560414,
+        "head_commit_sha": "f9ce7e16e56c162edbc9e480108041cf6b0291fe",
+        "base_commit_sha": "5e6dffa282c5129aa67cd227a0429be21bfdaf80",
+        "start_commit_sha": "5e6dffa282c5129aa67cd227a0429be21bfdaf80",
+        "created_at": "2021-03-30T09:18:27.351Z",
+        "merge_request_id": 93958054,
+        "state": "collected",
+        "real_size": "2"
+      },
+      "previous versions are here"
+    ]
+    ```
+  
+1. Create a new diff thread. This example creates a thread on an added line:
+
+    ```shell
+    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
+      --form 'position[position_type]=text'\
+      --form 'position[base_sha]=<use base_commit_sha from the versions response>'\
+      --form 'position[head_sha]=<use head_commit_sha from the versions response>'\
+      --form 'position[start_sha]=<use start_commit_sha from the versions response>'\
+      --form 'position[new_path]=file.js'\
+      --form 'position[old_path]=file.js'\
+      --form 'position[new_line]=18'\
+      --form 'body=test comment body'\
+      "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions"
+    ```
+
+#### Parameters for multiline comments
 
 Parameters for multiline comments only:
 

@@ -44,6 +44,16 @@ RSpec.describe Gitlab::Git::Branch, :seed_helper do
     end
   end
 
+  describe "#cache_key" do
+    subject { repository.branches.first }
+
+    it "returns a cache key that changes based on changeable values" do
+      digest = Digest::SHA1.hexdigest([subject.name, subject.target, subject.dereferenced_target.sha].join(":"))
+
+      expect(subject.cache_key).to eq("branch:#{digest}")
+    end
+  end
+
   describe '#size' do
     subject { super().size }
 

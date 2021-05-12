@@ -237,11 +237,6 @@
   line-height: 34px;
   margin: 0;
 
-  > li + li::before {
-    padding: 0 3px;
-    color: $gray-300;
-  }
-
   a {
     color: $gl-text-color;
   }

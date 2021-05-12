@@ -16,7 +16,7 @@ module AuthHelper
     twitter
   ).freeze
   LDAP_PROVIDER = /\Aldap/.freeze
-  TRIAL_REGISTRATION_PROVIDERS = %w(google_oauth2 github).freeze
+  POPULAR_PROVIDERS = %w(google_oauth2 github).freeze
 
   def ldap_enabled?
     Gitlab::Auth::Ldap::Config.enabled?
@@ -116,19 +116,12 @@ module AuthHelper
 
     providers = button_based_providers.map(&:to_s) - disabled_providers
     providers.sort_by do |provider|
-      case provider
-      when 'google_oauth2'
-        0
-      when 'github'
-        1
-      else
-        2
-      end
+      POPULAR_PROVIDERS.index(provider) || POPULAR_PROVIDERS.length
     end
   end
 
-  def trial_enabled_button_based_providers
-    enabled_button_based_providers & TRIAL_REGISTRATION_PROVIDERS
+  def popular_enabled_button_based_providers
+    enabled_button_based_providers & POPULAR_PROVIDERS
   end
 
   def button_based_providers_enabled?

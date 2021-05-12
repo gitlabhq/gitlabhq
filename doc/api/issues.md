@@ -27,7 +27,7 @@ When requested across groups or projects, it's expected to be the same as the `f
 
 ## List issues
 
-> Moved `weight` to [GitLab Premium](https://about.gitlab.com/pricing/) due to Starter/Bronze being [discontinued](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) in 13.9.
+> Moved `weight` to GitLab Premium in 13.9.
 
 Get all issues the authenticated user has access to. By default it
 returns only issues created by the current user. To get all issues,
@@ -233,7 +233,7 @@ that closed the issue still exists.
 
 ## List group issues
 
-> Moved `weight` to [GitLab Premium](https://about.gitlab.com/pricing/) due to Starter/Bronze being [discontinued](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) in 13.9.
+> Moved `weight` to GitLab Premium in 13.9.
 
 Get a list of a group's issues.
 
@@ -437,7 +437,7 @@ the issue still exists.
 
 ## List project issues
 
-> Moved `weight` to [GitLab Premium](https://about.gitlab.com/pricing/) due to Starter/Bronze being [discontinued](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) in 13.9.
+> Moved `weight` to GitLab Premium in 13.9.
 
 Get a list of a project's issues.
 
@@ -972,7 +972,7 @@ the issue still exists.
 
 ## New issue
 
-> Moved `weight` to [GitLab Premium](https://about.gitlab.com/pricing/) due to Starter/Bronze being [discontinued](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) in 13.9.
+> Moved `weight` to GitLab Premium in 13.9.
 
 Creates a new project issue.
 
@@ -1127,7 +1127,7 @@ See [Issues rate limits](../user/admin_area/settings/rate_limit_on_issues_creati
 
 ## Edit issue
 
-> Moved `weight` to [GitLab Premium](https://about.gitlab.com/pricing/) due to Starter/Bronze being [discontinued](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) in 13.9.
+> Moved `weight` to GitLab Premium in 13.9.
 
 Updates an existing project issue. This call is also used to mark an issue as
 closed.

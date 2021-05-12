@@ -11,8 +11,10 @@ describe('Package Files', () => {
 
   const findAllRows = () => wrapper.findAll('[data-testid="file-row"');
   const findFirstRow = () => findAllRows().at(0);
+  const findSecondRow = () => findAllRows().at(1);
   const findFirstRowDownloadLink = () => findFirstRow().find('[data-testid="download-link"');
   const findFirstRowCommitLink = () => findFirstRow().find('[data-testid="commit-link"');
+  const findSecondRowCommitLink = () => findSecondRow().find('[data-testid="commit-link"');
   const findFirstRowFileIcon = () => findFirstRow().find(FileIcon);
   const findFirstRowCreatedAt = () => findFirstRow().find(TimeAgoTooltip);
 
@@ -124,6 +126,15 @@ describe('Package Files', () => {
         createComponent(mavenFiles);
 
         expect(findFirstRowCommitLink().exists()).toBe(false);
+      });
+    });
+
+    describe('when only one file lacks an associated pipeline', () => {
+      it('renders the commit when it exists and not otherwise', () => {
+        createComponent([npmFiles[0], mavenFiles[0]]);
+
+        expect(findFirstRowCommitLink().exists()).toBe(true);
+        expect(findSecondRowCommitLink().exists()).toBe(false);
       });
     });
   });

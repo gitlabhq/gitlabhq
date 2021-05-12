@@ -2786,7 +2786,7 @@
   :tags: []
 - :name: service_desk_email_receiver
   :worker_name: ServiceDeskEmailReceiverWorker
-  :feature_category: :issue_tracking
+  :feature_category: :service_desk
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown

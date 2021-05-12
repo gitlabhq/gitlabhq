@@ -53,7 +53,7 @@ RSpec.describe API::Branches do
           end
 
           it 'determines only a limited number of merged branch names' do
-            expect(API::Entities::Branch).to receive(:represent).with(anything, has_up_to_merged_branch_names_count(2)).and_call_original
+            expect(API::Entities::Branch).to receive(:represent).with(anything, has_up_to_merged_branch_names_count(2)).at_least(:once).and_call_original
 
             get api(route, current_user), params: base_params.merge(per_page: 2)
 
@@ -111,7 +111,7 @@ RSpec.describe API::Branches do
             end
 
             it 'determines only a limited number of merged branch names' do
-              expect(API::Entities::Branch).to receive(:represent).with(anything, has_up_to_merged_branch_names_count(2)).and_call_original
+              expect(API::Entities::Branch).to receive(:represent).with(anything, has_up_to_merged_branch_names_count(2)).at_least(:once).and_call_original
 
               get api(route, current_user), params: base_params.merge(per_page: 2)
 

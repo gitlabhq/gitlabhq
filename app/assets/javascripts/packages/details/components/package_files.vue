@@ -92,6 +92,7 @@ export default {
 
       <template #cell(commit)="{ item }">
         <gl-link
+          v-if="item.pipeline && item.pipeline.project"
           :href="item.pipeline.project.commit_url"
           class="gl-text-gray-500"
           data-testid="commit-link"

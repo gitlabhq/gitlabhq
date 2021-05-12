@@ -24,13 +24,13 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     visit user_confirmation_path(confirmation_token: new_user_token)
   end
 
-  def fill_in_sign_up_form(new_user)
+  def fill_in_sign_up_form(new_user, submit_button_text = 'Register')
     fill_in 'new_user_first_name', with: new_user.first_name
     fill_in 'new_user_last_name', with: new_user.last_name
     fill_in 'new_user_username', with: new_user.username
     fill_in 'new_user_email', with: new_user.email
     fill_in 'new_user_password', with: new_user.password
-    click_button 'Register'
+    click_button submit_button_text
   end
 
   def fill_in_sign_in_form(user)
@@ -50,7 +50,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
       visit invite_path(group_invite.raw_invite_token)
     end
 
-    it 'renders sign in page with sign in notice' do
+    it 'renders sign up page with sign up notice' do
       expect(current_path).to eq(new_user_registration_path)
       expect(page).to have_content('To accept this invitation, create an account or sign in')
     end
@@ -149,30 +149,11 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
           end
         end
 
-        context 'when soft email confirmation is not enabled' do
-          before do
-            allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
-          end
+        it 'signs up and redirects to the group activity page with all the project/groups invitation automatically accepted' do
+          fill_in_sign_up_form(new_user)
+          fill_in_welcome_form
 
-          it 'signs up and redirects to the group activity page with all the project/groups invitation automatically accepted' do
-            fill_in_sign_up_form(new_user)
-            fill_in_welcome_form
-
-            expect(current_path).to eq(activity_group_path(group))
-          end
-        end
-
-        context 'when soft email confirmation is enabled' do
-          before do
-            allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
-          end
-
-          it 'signs up and redirects to to the group activity page with all the project/groups invitation automatically accepted' do
-            fill_in_sign_up_form(new_user)
-            fill_in_welcome_form
-
-            expect(current_path).to eq(activity_group_path(group))
-          end
+          expect(current_path).to eq(activity_group_path(group))
         end
 
         context 'the user sign-up using a different email address' do
@@ -207,6 +188,57 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
               expect(current_path).to eq(activity_group_path(group))
             end
           end
+        end
+      end
+    end
+
+    context 'with invite_signup_page_interaction experiment on', :experiment do
+      context 'with control experience' do
+        before do
+          stub_experiments(invite_signup_page_interaction: :control)
+        end
+
+        it 'lands on invite sign up page and tracks the accepted invite' do
+          expect(experiment(:invite_signup_page_interaction)).to track(:view)
+                                                                   .with_context(actor: group_invite)
+                                                                   .on_next_instance
+
+          visit invite_path(group_invite.raw_invite_token)
+
+          expect(current_path).to eq(new_user_registration_path)
+
+          expect(experiment(:invite_signup_page_interaction)).to track(:form_submission)
+                                                                   .with_context(actor: group_invite)
+                                                                   .on_next_instance
+
+          fill_in_sign_up_form(new_user, 'Register')
+
+          expect(current_path).to eq(users_sign_up_welcome_path)
+        end
+      end
+
+      context 'with candidate experience on .com' do
+        before do
+          allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+          stub_experiments(invite_signup_page_interaction: :candidate)
+        end
+
+        it 'lands on invite sign up page and tracks the accepted invite' do
+          expect(experiment(:invite_signup_page_interaction)).to track(:view)
+                                                                   .with_context(actor: group_invite)
+                                                                   .on_next_instance
+
+          visit invite_path(group_invite.raw_invite_token)
+
+          expect(current_path).to eq(new_users_sign_up_invite_path)
+
+          expect(experiment(:invite_signup_page_interaction)).to track(:form_submission)
+                                                                   .with_context(actor: group_invite)
+                                                                   .on_next_instance
+
+          fill_in_sign_up_form(new_user, 'Continue')
+
+          expect(current_path).to eq(users_sign_up_welcome_path)
         end
       end
     end
