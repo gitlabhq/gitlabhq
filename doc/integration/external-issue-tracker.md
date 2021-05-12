@@ -31,7 +31,7 @@ Visit the links below for details:
 - [Bugzilla](../user/project/integrations/bugzilla.md)
 - [Custom Issue Tracker](../user/project/integrations/custom_issue_tracker.md)
 - [Engineering Workflow Management](../user/project/integrations/ewm.md)
-- [Jira](../user/project/integrations/jira.md)
+- [Jira](../integration/jira/index.md)
 - [Redmine](../user/project/integrations/redmine.md)
 - [YouTrack](../user/project/integrations/youtrack.md)
 

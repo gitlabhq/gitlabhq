@@ -26,3 +26,8 @@ export const TrackingCategories = {
 
 export const SHOW_DELETE_SUCCESS_ALERT = 'showSuccessDeleteAlert';
 export const DELETE_PACKAGE_ERROR_MESSAGE = __('Something went wrong while deleting the package.');
+
+export const PACKAGE_ERROR_STATUS = 'error';
+export const PACKAGE_DEFAULT_STATUS = 'default';
+export const PACKAGE_HIDDEN_STATUS = 'hidden';
+export const PACKAGE_PROCESSING_STATUS = 'processing';

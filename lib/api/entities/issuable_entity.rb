@@ -24,7 +24,7 @@ module API
       # entity according to the current top-level entity options, such
       # as the current_user.
       def lazy_issuable_metadata
-        BatchLoader.for(object).batch(key: [current_user, :issuable_metadata]) do |models, loader, args|
+        BatchLoader.for(object).batch(key: [current_user, :issuable_metadata], replace_methods: false) do |models, loader, args|
           current_user = args[:key].first
 
           issuable_metadata = Gitlab::IssuableMetadata.new(current_user, models)

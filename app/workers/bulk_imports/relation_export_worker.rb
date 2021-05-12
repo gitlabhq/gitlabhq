@@ -11,17 +11,17 @@ module BulkImports
     tags :exclude_from_kubernetes
     sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION
 
-    def perform(user_id, exportable_id, exportable_class, relation)
+    def perform(user_id, portable_id, portable_class, relation)
       user = User.find(user_id)
-      exportable = exportable(exportable_id, exportable_class)
+      portable = portable(portable_id, portable_class)
 
-      RelationExportService.new(user, exportable, relation, jid).execute
+      RelationExportService.new(user, portable, relation, jid).execute
     end
 
     private
 
-    def exportable(exportable_id, exportable_class)
-      exportable_class.classify.constantize.find(exportable_id)
+    def portable(portable_id, portable_class)
+      portable_class.classify.constantize.find(portable_id)
     end
   end
 end

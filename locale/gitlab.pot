@@ -23359,6 +23359,9 @@ msgstr ""
 msgid "PackageRegistry|Install package version"
 msgstr ""
 
+msgid "PackageRegistry|Invalid Package: failed metadata extraction"
+msgstr ""
+
 msgid "PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab."
 msgstr ""
 
@@ -31067,6 +31070,9 @@ msgstr ""
 msgid "Subscription deletion failed."
 msgstr ""
 
+msgid "Subscription service outage"
+msgstr ""
+
 msgid "Subscription successfully applied to \"%{group_name}\""
 msgstr ""
 
@@ -31969,6 +31975,9 @@ msgid "The Advanced Search in GitLab is a powerful search service that saves you
 msgstr ""
 
 msgid "The Compliance Dashboard gives you the ability to see a group's merge request activity by providing a high-level view for all projects in the group."
+msgstr ""
+
+msgid "The GitLab subscription service (customers.gitlab.com) is currently experiencing an outage. You can monitor the status and get updates at %{linkStart}status.gitlab.com%{linkEnd}."
 msgstr ""
 
 msgid "The GitLab user to which the Jira user %{jiraDisplayName} will be mapped"

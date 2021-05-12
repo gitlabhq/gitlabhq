@@ -78,6 +78,9 @@ export default {
     imageName() {
       return this.item.name ? this.item.path : `${this.item.path}/ ${ROOT_IMAGE_TEXT}`;
     },
+    routerLinkEvent() {
+      return this.deleting ? '' : 'click';
+    },
   },
 };
 </script>
@@ -97,6 +100,7 @@ export default {
         class="gl-text-body gl-font-weight-bold"
         data-testid="details-link"
         data-qa-selector="registry_image_content"
+        :event="routerLinkEvent"
         :to="{ name: 'details', params: { id } }"
       >
         {{ imageName }}

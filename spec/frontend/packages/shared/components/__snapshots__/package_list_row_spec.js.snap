@@ -34,6 +34,8 @@ exports[`packages_list_row renders 1`] = `
             </gl-link-stub>
              
             <!---->
+             
+            <!---->
           </div>
            
           <!---->

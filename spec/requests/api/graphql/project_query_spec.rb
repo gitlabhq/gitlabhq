@@ -57,6 +57,22 @@ RSpec.describe 'getting project information' do
       end
     end
 
+    context 'topics' do
+      it 'includes empty topics array if no topics set' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:project, :topics)).to match([])
+      end
+
+      it 'includes topics array' do
+        project.update!(tag_list: 'topic1, topic2, topic3')
+
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:project, :topics)).to match(%w[topic1 topic2 topic3])
+      end
+    end
+
     it 'includes inherited members in project_members' do
       group_member = create(:group_member, group: group)
       project_member = create(:project_member, project: project)

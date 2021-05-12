@@ -48,7 +48,7 @@ module API
         detail 'This feature was introduced in GitLab 13.12'
       end
       post ':id/export_relations' do
-        response = ::BulkImports::ExportService.new(exportable: user_group, user: current_user).execute
+        response = ::BulkImports::ExportService.new(portable: user_group, user: current_user).execute
 
         if response.success?
           accepted!

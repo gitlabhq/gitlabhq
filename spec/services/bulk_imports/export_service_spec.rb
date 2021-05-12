@@ -10,12 +10,12 @@ RSpec.describe BulkImports::ExportService do
     group.add_owner(user)
   end
 
-  subject { described_class.new(exportable: group, user: user) }
+  subject { described_class.new(portable: group, user: user) }
 
   describe '#execute' do
     it 'schedules RelationExportWorker for each top level relation' do
       expect(subject).to receive(:execute).and_return(ServiceResponse.success).and_call_original
-      top_level_relations = BulkImports::Export.config(group).exportable_relations
+      top_level_relations = BulkImports::FileTransfer.config_for(group).portable_relations
 
       top_level_relations.each do |relation|
         expect(BulkImports::RelationExportWorker)
@@ -28,7 +28,7 @@ RSpec.describe BulkImports::ExportService do
 
     context 'when exception occurs' do
       it 'does not schedule RelationExportWorker' do
-        service = described_class.new(exportable: nil, user: user)
+        service = described_class.new(portable: nil, user: user)
 
         expect(service)
           .to receive(:execute)

@@ -50,6 +50,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       name: package.name,
       package_files: expected_package_files,
       package_type: package.package_type,
+      status: package.status,
       project_id: package.project_id,
       tags: package.tags.as_json,
       updated_at: package.updated_at,

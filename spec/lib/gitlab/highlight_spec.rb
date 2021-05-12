@@ -46,12 +46,20 @@ RSpec.describe Gitlab::Highlight do
       expect(result).to eq(%[<span id="LC1" class="line" lang="plaintext">plain text contents</span>])
     end
 
-    it 'returns plain version for long content' do
-      stub_config(extra: { 'maximum_text_highlight_size_kilobytes' => 0.0001 } ) # 1.024 bytes
+    context 'when content is too long to be highlighted' do
+      let(:result) { described_class.highlight(file_name, content) } # content is 44 bytes
 
-      result = described_class.highlight(file_name, content) # content is 44 bytes
+      before do
+        stub_config(extra: { 'maximum_text_highlight_size_kilobytes' => 0.0001 } ) # 1.024 bytes
+      end
 
-      expect(result).to eq(%[<span id="LC1" class="line" lang="">(make-pathname :defaults name</span>\n<span id="LC2" class="line" lang="">:type "assem")</span>])
+      it 'increments the metric for oversized files' do
+        expect { result }.to change { over_highlight_size_limit('text highlighter') }.by(1)
+      end
+
+      it 'returns plain version for long content' do
+        expect(result).to eq(%[<span id="LC1" class="line" lang="">(make-pathname :defaults name</span>\n<span id="LC2" class="line" lang="">:type "assem")</span>])
+      end
     end
 
     it 'highlights multi-line comments' do
@@ -166,6 +174,13 @@ RSpec.describe Gitlab::Highlight do
   def highlight_timeout_total(source)
     Gitlab::Metrics
       .counter(:highlight_timeout, 'Counts the times highlights have timed out')
+      .get(source: source)
+  end
+
+  def over_highlight_size_limit(source)
+    Gitlab::Metrics
+      .counter(:over_highlight_size_limit,
+               'Count the times text has been over the highlight size limit')
       .get(source: source)
   end
 end

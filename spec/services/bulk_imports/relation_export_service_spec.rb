@@ -77,7 +77,7 @@ RSpec.describe BulkImports::RelationExportService do
         it 'tracks exception' do
           expect(Gitlab::ErrorTracking)
             .to receive(:track_exception)
-            .with(exception_class, exportable_id: group.id, exportable_type: group.class.name)
+            .with(exception_class, portable_id: group.id, portable_type: group.class.name)
             .and_call_original
 
           subject.execute

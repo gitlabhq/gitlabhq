@@ -11,12 +11,17 @@ RSpec.describe Nav::TopNavHelper do
 
     let(:current_user) { nil }
     let(:current_project) { nil }
+    let(:current_group) { nil }
     let(:with_current_settings_admin_mode) { false }
     let(:with_header_link_admin_mode) { false }
+    let(:with_sherlock_enabled) { false }
     let(:with_projects) { false }
+    let(:with_groups) { false }
     let(:with_milestones) { false }
+    let(:with_snippets) { false }
+    let(:with_activity) { false }
 
-    let(:subject) { helper.top_nav_view_model(project: current_project) }
+    let(:subject) { helper.top_nav_view_model(project: current_project, group: current_group) }
 
     let(:active_title) { 'Menu' }
 
@@ -24,13 +29,17 @@ RSpec.describe Nav::TopNavHelper do
       allow(helper).to receive(:current_user) { current_user }
       allow(Gitlab::CurrentSettings).to receive(:admin_mode) { with_current_settings_admin_mode }
       allow(helper).to receive(:header_link?).with(:admin_mode) { with_header_link_admin_mode }
+      allow(Gitlab::Sherlock).to receive(:enabled?) { with_sherlock_enabled }
 
       # Defaulting all `dashboard_nav_link?` calls to false ensures the EE-specific behavior
       # is not enabled in this CE spec
       allow(helper).to receive(:dashboard_nav_link?).with(anything) { false }
 
       allow(helper).to receive(:dashboard_nav_link?).with(:projects) { with_projects }
+      allow(helper).to receive(:dashboard_nav_link?).with(:groups) { with_groups }
       allow(helper).to receive(:dashboard_nav_link?).with(:milestones) { with_milestones }
+      allow(helper).to receive(:dashboard_nav_link?).with(:snippets) { with_snippets }
+      allow(helper).to receive(:dashboard_nav_link?).with(:activity) { with_activity }
     end
 
     it 'has :activeTitle' do
@@ -39,13 +48,30 @@ RSpec.describe Nav::TopNavHelper do
 
     context 'when current_user is nil (anonymous)' do
       it 'has expected :primary' do
-        expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
+        expected_projects_item = ::Gitlab::Nav::TopNavMenuItem.build(
           href: '/explore',
           icon: 'project',
           id: 'project',
           title: 'Projects'
         )
-        expect(subject[:primary]).to eq([expected_primary])
+        expected_groups_item = ::Gitlab::Nav::TopNavMenuItem.build(
+          href: '/explore/groups',
+          icon: 'group',
+          id: 'groups',
+          title: 'Groups'
+        )
+        expected_snippets_item = ::Gitlab::Nav::TopNavMenuItem.build(
+          href: '/explore/snippets',
+          icon: 'snippet',
+          id: 'snippets',
+          title: 'Snippets'
+        )
+        expect(subject[:primary])
+          .to eq([
+                   expected_projects_item,
+                   expected_groups_item,
+                   expected_snippets_item
+                 ])
       end
     end
 
@@ -124,7 +150,7 @@ RSpec.describe Nav::TopNavHelper do
             let_it_be(:project) { build_stubbed(:project) }
 
             let(:current_project) { project }
-            let(:avatar_url) { 'avatar_url' }
+            let(:avatar_url) { 'project_avatar_url' }
 
             before do
               allow(project).to receive(:persisted?) { true }
@@ -146,6 +172,87 @@ RSpec.describe Nav::TopNavHelper do
         end
       end
 
+      context 'with groups' do
+        let(:with_groups) { true }
+        let(:groups_view) { subject[:views][:groups] }
+
+        it 'has expected :primary' do
+          expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
+            css_class: 'qa-groups-dropdown',
+            data: {
+              track_event: 'click_dropdown',
+              track_label: 'groups_dropdown'
+            },
+            icon: 'group',
+            id: 'groups',
+            title: 'Groups',
+            view: 'groups'
+          )
+          expect(subject[:primary]).to eq([expected_primary])
+        end
+
+        context 'groups' do
+          it 'has expected :currentUserName' do
+            expect(groups_view[:currentUserName]).to eq(current_user.username)
+          end
+
+          it 'has expected :namespace' do
+            expect(groups_view[:namespace]).to eq('groups')
+          end
+
+          it 'has expected :linksPrimary' do
+            expected_links_primary = [
+              ::Gitlab::Nav::TopNavMenuItem.build(
+                href: '/dashboard/groups',
+                id: 'your',
+                title: 'Your groups'
+              ),
+              ::Gitlab::Nav::TopNavMenuItem.build(
+                href: '/explore/groups',
+                id: 'explore',
+                title: 'Explore groups'
+              )
+            ]
+            expect(groups_view[:linksPrimary]).to eq(expected_links_primary)
+          end
+
+          it 'has expected :linksSecondary' do
+            expected_links_secondary = [
+              ::Gitlab::Nav::TopNavMenuItem.build(
+                href: '/groups/new#create-group-pane',
+                id: 'create',
+                title: 'Create group'
+              )
+            ]
+            expect(groups_view[:linksSecondary]).to eq(expected_links_secondary)
+          end
+
+          context 'with persisted group' do
+            let_it_be(:group) { build_stubbed(:group) }
+
+            let(:current_group) { group }
+            let(:avatar_url) { 'group_avatar_url' }
+
+            before do
+              allow(group).to receive(:persisted?) { true }
+              allow(group).to receive(:avatar_url) { avatar_url }
+            end
+
+            it 'has expected :container' do
+              expected_container = {
+                avatarUrl: avatar_url,
+                id: group.id,
+                name: group.name,
+                namespace: group.full_name,
+                webUrl: group_path(group)
+              }
+
+              expect(groups_view[:currentItem]).to eq(expected_container)
+            end
+          end
+        end
+      end
+
       context 'with milestones' do
         let(:with_milestones) { true }
 
@@ -160,6 +267,61 @@ RSpec.describe Nav::TopNavHelper do
             title: 'Milestones'
           )
           expect(subject[:primary]).to eq([expected_primary])
+        end
+      end
+
+      context 'with snippets' do
+        let(:with_snippets) { true }
+
+        it 'has expected :primary' do
+          expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
+            data: {
+              qa_selector: 'snippets_link'
+            },
+            href: '/dashboard/snippets',
+            icon: 'snippet',
+            id: 'snippets',
+            title: 'Snippets'
+          )
+          expect(subject[:primary]).to eq([expected_primary])
+        end
+      end
+
+      context 'with activity' do
+        let(:with_activity) { true }
+
+        it 'has expected :primary' do
+          expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
+            data: {
+              qa_selector: 'activity_link'
+            },
+            href: '/dashboard/activity',
+            icon: 'history',
+            id: 'activity',
+            title: 'Activity'
+          )
+          expect(subject[:primary]).to eq([expected_primary])
+        end
+      end
+
+      context 'when sherlock is enabled' do
+        let(:with_sherlock_enabled) { true }
+
+        before do
+          # Note: We have to mock the sherlock route because the route is conditional on
+          # sherlock being enabled, but it parsed at Rails load time and can't be overridden
+          # in a spec.
+          allow(helper).to receive(:sherlock_transactions_path) { '/fake_sherlock_path' }
+        end
+
+        it 'has sherlock as last :secondary item' do
+          expected_sherlock_item = ::Gitlab::Nav::TopNavMenuItem.build(
+            id: 'sherlock',
+            title: 'Sherlock Transactions',
+            icon: 'admin',
+            href: '/fake_sherlock_path'
+          )
+          expect(subject[:secondary].last).to eq(expected_sherlock_item)
         end
       end
     end

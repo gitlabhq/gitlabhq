@@ -1,5 +1,6 @@
 import { GlFormCheckbox, GlSprintf, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import DeleteButton from '~/registry/explorer/components/delete_button.vue';
@@ -72,8 +73,15 @@ describe('tags list row', () => {
       expect(findCheckbox().exists()).toBe(false);
     });
 
-    it('is disabled when the digest is missing', () => {
-      mountComponent({ tag: { ...tag, digest: null } });
+    it.each`
+      digest   | disabled
+      ${'foo'} | ${true}
+      ${null}  | ${false}
+      ${null}  | ${true}
+      ${'foo'} | ${true}
+    `('is disabled when the digest $digest and disabled is $disabled', ({ digest, disabled }) => {
+      mountComponent({ tag: { ...tag, digest }, disabled });
+
       expect(findCheckbox().attributes('disabled')).toBe('true');
     });
 
@@ -140,6 +148,12 @@ describe('tags list row', () => {
         text: tag.location,
         title: tag.location,
       });
+    });
+
+    it('is disabled when the component is disabled', () => {
+      mountComponent({ ...defaultProps, disabled: true });
+
+      expect(findClipboardButton().attributes('disabled')).toBe('true');
     });
   });
 
@@ -266,15 +280,19 @@ describe('tags list row', () => {
     });
 
     it.each`
-      canDelete | digest
-      ${true}   | ${null}
-      ${false}  | ${'foo'}
-      ${false}  | ${null}
-    `('is disabled when canDelete is $canDelete and digest is $digest', ({ canDelete, digest }) => {
-      mountComponent({ ...defaultProps, tag: { ...tag, canDelete, digest } });
+      canDelete | digest   | disabled
+      ${true}   | ${null}  | ${true}
+      ${false}  | ${'foo'} | ${true}
+      ${false}  | ${null}  | ${true}
+      ${true}   | ${'foo'} | ${true}
+    `(
+      'is disabled when canDelete is $canDelete and digest is $digest and disabled is $disabled',
+      ({ canDelete, digest, disabled }) => {
+        mountComponent({ ...defaultProps, tag: { ...tag, canDelete, digest }, disabled });
 
-      expect(findDeleteButton().attributes('disabled')).toBe('true');
-    });
+        expect(findDeleteButton().attributes('disabled')).toBe('true');
+      },
+    );
 
     it('delete event emits delete', () => {
       mountComponent();
@@ -287,13 +305,10 @@ describe('tags list row', () => {
 
   describe('details rows', () => {
     describe('when the tag has a digest', () => {
-      beforeEach(() => {
+      it('has 3 details rows', async () => {
         mountComponent();
+        await nextTick();
 
-        return wrapper.vm.$nextTick();
-      });
-
-      it('has 3 details rows', () => {
         expect(findDetailsRows().length).toBe(3);
       });
 
@@ -303,17 +318,37 @@ describe('tags list row', () => {
         ${'manifest detail'}       | ${findManifestDetail}      | ${'Manifest digest: sha256:2cf3d2fdac1b04a14301d47d51cb88dcd26714c74f91440eeee99ce399089062'}             | ${'log'}        | ${true}
         ${'configuration detail'}  | ${findConfigurationDetail} | ${'Configuration digest: sha256:c2613843ab33aabf847965442b13a8b55a56ae28837ce182627c0716eb08c02b'}        | ${'cloud-gear'} | ${true}
       `('$name details row', ({ finderFunction, text, icon, clipboard }) => {
-        it(`has ${text} as text`, () => {
+        it(`has ${text} as text`, async () => {
+          mountComponent();
+          await nextTick();
+
           expect(finderFunction().text()).toMatchInterpolatedText(text);
         });
 
-        it(`has the ${icon} icon`, () => {
+        it(`has the ${icon} icon`, async () => {
+          mountComponent();
+          await nextTick();
+
           expect(finderFunction().props('icon')).toBe(icon);
         });
 
-        it(`is ${clipboard} that clipboard button exist`, () => {
-          expect(finderFunction().find(ClipboardButton).exists()).toBe(clipboard);
-        });
+        if (clipboard) {
+          it(`clipboard button exist`, async () => {
+            mountComponent();
+            await nextTick();
+
+            expect(finderFunction().find(ClipboardButton).exists()).toBe(clipboard);
+          });
+
+          it('is disabled when the component is disabled', async () => {
+            mountComponent({ ...defaultProps, disabled: true });
+            await nextTick();
+
+            expect(finderFunction().findComponent(ClipboardButton).attributes('disabled')).toBe(
+              'true',
+            );
+          });
+        }
       });
     });
 
@@ -321,7 +356,7 @@ describe('tags list row', () => {
       it('hides the details rows', async () => {
         mountComponent({ tag: { ...tag, digest: null } });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
         expect(findDetailsRows().length).toBe(0);
       });
     });

@@ -20,7 +20,7 @@ module Packages
       rescue ::Packages::Nuget::MetadataExtractionService::ExtractionError,
              ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError => e
         Gitlab::ErrorTracking.log_exception(e, project_id: package_file.project_id)
-        package_file.package.destroy!
+        package_file.package.update_column(:status, :error)
       end
     end
   end

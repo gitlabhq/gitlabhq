@@ -201,17 +201,31 @@ RSpec.describe DeploymentsFinder do
         it 'adds `id` sorting as the second order column' do
           order_value = subject.order_values[1]
 
-          expect(order_value.to_sql).to eq(Deployment.arel_table[:id].desc.to_sql)
+          expect(order_value.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
         end
 
-        it 'uses the `id DESC` as tie-breaker when ordering' do
+        it 'uses the `id ASC` as tie-breaker when ordering' do
           updated_at = Time.now
 
           deployment_1 = create(:deployment, :success, project: project, updated_at: updated_at)
           deployment_2 = create(:deployment, :success, project: project, updated_at: updated_at)
           deployment_3 = create(:deployment, :success, project: project, updated_at: updated_at)
 
-          expect(subject).to eq([deployment_3, deployment_2, deployment_1])
+          expect(subject).to eq([deployment_1, deployment_2, deployment_3])
+        end
+
+        context 'when sort direction is desc' do
+          let(:params) { { **base_params, updated_after: 1.day.ago, order_by: 'updated_at', sort: 'desc' } }
+
+          it 'uses the `id DESC` as tie-breaker when ordering' do
+            updated_at = Time.now
+
+            deployment_1 = create(:deployment, :success, project: project, updated_at: updated_at)
+            deployment_2 = create(:deployment, :success, project: project, updated_at: updated_at)
+            deployment_3 = create(:deployment, :success, project: project, updated_at: updated_at)
+
+            expect(subject).to eq([deployment_3, deployment_2, deployment_1])
+          end
         end
       end
 
@@ -228,7 +242,7 @@ RSpec.describe DeploymentsFinder do
 
         it 'sorts by `updated_at`' do
           expect(subject.order_values.first.to_sql).to eq(Deployment.arel_table[:updated_at].asc.to_sql)
-          expect(subject.order_values.second.to_sql).to eq(Deployment.arel_table[:id].desc.to_sql)
+          expect(subject.order_values.second.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
         end
 
         context 'when deployments_finder_implicitly_enforce_ordering_for_updated_at_filter feature flag is disabled' do

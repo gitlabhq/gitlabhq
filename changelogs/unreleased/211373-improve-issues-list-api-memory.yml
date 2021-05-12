@@ -1,0 +1,5 @@
+---
+title: Improve memory consumption of issuable APIs
+merge_request: 61561
+author:
+type: performance

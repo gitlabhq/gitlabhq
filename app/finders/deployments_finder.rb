@@ -131,20 +131,22 @@ class DeploymentsFinder
   end
 
   def optimize_sort_params!(sort_params)
+    sort_direction = sort_params.each_value.first
+
     # Implicitly enforce the ordering when filtered by `updated_at` column for performance optimization.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/325627#note_552417509.
     # We remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/328500.
     if filter_by_updated_at? && implicitly_enforce_ordering_for_updated_at_filter?
-      sort_params.replace('updated_at' => sort_params.each_value.first)
+      sort_params.replace('updated_at' => sort_direction)
     end
 
     if sort_params['created_at'] || sort_params['iid']
       # Sorting by `id` produces the same result as sorting by `created_at` or `iid`
-      sort_params.replace(id: sort_params.each_value.first)
+      sort_params.replace(id: sort_direction)
     elsif sort_params['updated_at']
       # This adds the order as a tie-breaker when multiple rows have the same updated_at value.
       # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20848.
-      sort_params.merge!(id: :desc)
+      sort_params.merge!(id: sort_direction)
     end
   end
 

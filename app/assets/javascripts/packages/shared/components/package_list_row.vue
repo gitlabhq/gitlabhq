@@ -1,7 +1,9 @@
 <script>
 import { GlButton, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { PACKAGE_ERROR_STATUS, PACKAGE_DEFAULT_STATUS } from '../constants';
 import { getPackageTypeLabel } from '../utils';
 import PackagePath from './package_path.vue';
 import PackageTags from './package_tags.vue';
@@ -70,21 +72,44 @@ export default {
     hasProjectLink() {
       return Boolean(this.packageEntity.project_path);
     },
+    showWarningIcon() {
+      return this.packageEntity.status === PACKAGE_ERROR_STATUS;
+    },
+    disabledRow() {
+      return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;
+    },
+    disabledDeleteButton() {
+      return this.disabledRow || !this.packageEntity._links.delete_api_path;
+    },
+  },
+  i18n: {
+    erroredPackageText: s__('PackageRegistry|Invalid Package: failed metadata extraction'),
   },
 };
 </script>
 
 <template>
-  <list-item data-qa-selector="package_row">
+  <list-item data-qa-selector="package_row" :disabled="disabledRow">
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
         <gl-link
           :href="packageLink"
           class="gl-text-body gl-min-w-0"
           data-qa-selector="package_link"
+          :disabled="disabledRow"
         >
           <gl-truncate :text="packageEntity.name" />
         </gl-link>
+
+        <gl-button
+          v-if="showWarningIcon"
+          v-gl-tooltip="{ title: $options.i18n.erroredPackageText }"
+          class="gl-hover-bg-transparent!"
+          icon="warning"
+          category="tertiary"
+          data-testid="warning-icon"
+          :aria-label="__('Warning')"
+        />
 
         <package-tags
           v-if="packageEntity.tags && packageEntity.tags.length"
@@ -109,7 +134,11 @@ export default {
           {{ packageType }}
         </component>
 
-        <package-path v-if="hasProjectLink" :path="packageEntity.project_path" />
+        <package-path
+          v-if="hasProjectLink"
+          :path="packageEntity.project_path"
+          :disabled="disabledRow"
+        />
       </div>
     </template>
 
@@ -137,7 +166,7 @@ export default {
         variant="danger"
         :title="s__('PackageRegistry|Remove package')"
         :aria-label="s__('PackageRegistry|Remove package')"
-        :disabled="!packageEntity._links.delete_api_path"
+        :disabled="disabledDeleteButton"
         @click="$emit('packageToDelete', packageEntity)"
       />
     </template>

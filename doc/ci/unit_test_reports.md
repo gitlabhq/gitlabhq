@@ -336,14 +336,21 @@ If parsing JUnit report XML results in an error, an indicator is shown next to t
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0 behind the `:junit_pipeline_screenshots_view` feature flag, disabled by default.
 > - The feature flag was removed and was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/216979) in GitLab 13.12.
 
-If JUnit report format XML files contain an `attachment` tag, GitLab parses the attachment.
+Upload your screenshots as [artifacts](yaml/README.md#artifactsreportsjunit) to GitLab. If JUnit
+report format XML files contain an `attachment` tag, GitLab parses the attachment. Note that:
 
-```xml
-<testcase time="1.00" name="Test">
-  <system-out>[[ATTACHMENT|/absolute/path/to/some/file]]</system-out>
-</testcase>
-```
+- The `attachment` tag **must** contain the absolute path to the screenshots you uploaded. For
+  example:
 
-Upload your screenshots as [artifacts](yaml/README.md#artifactsreportsjunit) to GitLab. The `attachment` tag **must** contain the absolute path to the screenshots you uploaded.
+  ```xml
+  <testcase time="1.00" name="Test">
+    <system-out>[[ATTACHMENT|/absolute/path/to/some/file]]</system-out>
+  </testcase>
+  ```
 
-A link to the test case attachment will appear in the test case details in [the pipeline test report](#viewing-unit-test-reports-on-gitlab).
+- You should set the job that uploads the screenshot to
+  [`artifacts:when: on_failure`](yaml/README.md#artifactswhen) so that it uploads a screenshot when
+  a test fails.
+
+A link to the test case attachment appears in the test case details in
+[the pipeline test report](#viewing-unit-test-reports-on-gitlab).

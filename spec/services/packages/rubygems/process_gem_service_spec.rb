@@ -16,12 +16,11 @@ RSpec.describe Packages::Rubygems::ProcessGemService do
   describe '#execute' do
     subject { service.execute }
 
-    context 'no gem file', :aggregate_failures do
+    context 'no gem file' do
       let(:package_file) { nil }
 
       it 'returns an error' do
-        expect(subject.error?).to be(true)
-        expect(subject.message).to eq('Gem was not processed')
+        expect { subject }.to raise_error(::Packages::Rubygems::ProcessGemService::ExtractionError, 'Gem was not processed - package_file is not set')
       end
     end
 

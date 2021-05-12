@@ -4,9 +4,9 @@ module BulkImports
   class RelationExportService
     include Gitlab::ImportExport::CommandLineUtil
 
-    def initialize(user, exportable, relation, jid)
+    def initialize(user, portable, relation, jid)
       @user = user
-      @exportable = exportable
+      @portable = portable
       @relation = relation
       @jid = jid
     end
@@ -22,28 +22,28 @@ module BulkImports
 
     private
 
-    attr_reader :user, :exportable, :relation, :jid
+    attr_reader :user, :portable, :relation, :jid
 
     def find_or_create_export!
       validate_user_permissions!
 
-      export = exportable.bulk_import_exports.safe_find_or_create_by!(relation: relation)
+      export = portable.bulk_import_exports.safe_find_or_create_by!(relation: relation)
       export.update!(status_event: 'start', jid: jid)
 
       yield export
 
       export.update!(status_event: 'finish', error: nil)
     rescue StandardError => e
-      Gitlab::ErrorTracking.track_exception(e, exportable_id: exportable.id, exportable_type: exportable.class.name)
+      Gitlab::ErrorTracking.track_exception(e, portable_id: portable.id, portable_type: portable.class.name)
 
       export&.update(status_event: 'fail_op', error: e.class)
     end
 
     def validate_user_permissions!
-      ability = "admin_#{exportable.to_ability_name}"
+      ability = "admin_#{portable.to_ability_name}"
 
-      user.can?(ability, exportable) ||
-        raise(::Gitlab::ImportExport::Error.permission_error(user, exportable))
+      user.can?(ability, portable) ||
+        raise(::Gitlab::ImportExport::Error.permission_error(user, portable))
     end
 
     def remove_existing_export_file!(export)
@@ -72,23 +72,23 @@ module BulkImports
       upload.save!
     end
 
-    def export_config
-      @export_config ||= Export.config(exportable)
+    def config
+      @config ||= FileTransfer.config_for(portable)
     end
 
     def export_path
-      @export_path ||= export_config.export_path
+      @export_path ||= config.export_path
     end
 
-    def exportable_tree
-      @exportable_tree ||= export_config.exportable_tree
+    def portable_tree
+      @portable_tree ||= config.portable_tree
     end
 
     # rubocop: disable CodeReuse/Serializer
     def serializer
       @serializer ||= ::Gitlab::ImportExport::JSON::StreamingSerializer.new(
-        exportable,
-        exportable_tree,
+        portable,
+        portable_tree,
         json_writer,
         exportable_path: ''
       )

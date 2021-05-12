@@ -15,7 +15,7 @@ module BulkImports
     validates :group, presence: true, unless: :project
     validates :relation, :status, presence: true
 
-    validate :exportable_relation?
+    validate :portable_relation?
 
     state_machine :status, initial: :started do
       state :started, value: 0
@@ -36,34 +36,25 @@ module BulkImports
       end
     end
 
-    def self.config(exportable)
-      case exportable
-      when ::Project
-        Exports::ProjectConfig.new(exportable)
-      when ::Group
-        Exports::GroupConfig.new(exportable)
-      end
+    def portable_relation?
+      return unless portable
+
+      errors.add(:relation, 'Unsupported portable relation') unless config.portable_relations.include?(relation)
     end
 
-    def exportable_relation?
-      return unless exportable
-
-      errors.add(:relation, 'Unsupported exportable relation') unless config.exportable_relations.include?(relation)
-    end
-
-    def exportable
-      strong_memoize(:exportable) do
+    def portable
+      strong_memoize(:portable) do
         project || group
       end
     end
 
     def relation_definition
-      config.exportable_tree[:include].find { |include| include[relation.to_sym] }
+      config.portable_tree[:include].find { |include| include[relation.to_sym] }
     end
 
     def config
       strong_memoize(:config) do
-        self.class.config(exportable)
+        FileTransfer.config_for(portable)
       end
     end
   end

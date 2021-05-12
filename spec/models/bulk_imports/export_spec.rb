@@ -47,12 +47,12 @@ RSpec.describe BulkImports::Export, type: :model do
     end
   end
 
-  describe '#exportable' do
+  describe '#portable' do
     context 'when associated with project' do
       it 'returns project' do
         export = create(:bulk_import_export, project: create(:project), group: nil)
 
-        expect(export.exportable).to be_instance_of(Project)
+        expect(export.portable).to be_instance_of(Project)
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe BulkImports::Export, type: :model do
       it 'returns group' do
         export = create(:bulk_import_export)
 
-        expect(export.exportable).to be_instance_of(Group)
+        expect(export.portable).to be_instance_of(Group)
       end
     end
   end
@@ -70,7 +70,7 @@ RSpec.describe BulkImports::Export, type: :model do
       it 'returns project config' do
         export = create(:bulk_import_export, project: create(:project), group: nil)
 
-        expect(export.config).to be_instance_of(BulkImports::Exports::ProjectConfig)
+        expect(export.config).to be_instance_of(BulkImports::FileTransfer::ProjectConfig)
       end
     end
 
@@ -78,7 +78,7 @@ RSpec.describe BulkImports::Export, type: :model do
       it 'returns group config' do
         export = create(:bulk_import_export)
 
-        expect(export.config).to be_instance_of(BulkImports::Exports::GroupConfig)
+        expect(export.config).to be_instance_of(BulkImports::FileTransfer::GroupConfig)
       end
     end
   end

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module BulkImports
-  module Exports
+  module FileTransfer
     class GroupConfig < BaseConfig
       def base_export_path
-        exportable.full_path
+        portable.full_path
       end
 
       def import_export_yaml

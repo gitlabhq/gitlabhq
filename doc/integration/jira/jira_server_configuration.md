@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jira Server credentials **(FREE)**
 
-To [integrate Jira with GitLab](../../user/project/integrations/jira.md), you must
+To [integrate Jira with GitLab](index.md), you must
 create a Jira user account for your Jira projects to access projects in GitLab.
 This Jira user account must have write access to your Jira projects. To create the
 credentials, you must:

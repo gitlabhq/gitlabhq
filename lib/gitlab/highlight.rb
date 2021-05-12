@@ -11,7 +11,11 @@ module Gitlab
     end
 
     def self.too_large?(size)
-      size.to_i > Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
+      return false unless size.to_i > Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
+
+      over_highlight_size_limit.increment(source: "text highlighter") if Feature.enabled?(:track_file_size_over_highlight_limit)
+
+      true
     end
 
     attr_reader :blob_name
@@ -94,6 +98,13 @@ module Gitlab
       @highlight_timeout ||= Gitlab::Metrics.counter(
         :highlight_timeout,
         'Counts the times highlights have timed out'
+      )
+    end
+
+    def self.over_highlight_size_limit
+      @over_highlight_size_limit ||= Gitlab::Metrics.counter(
+        :over_highlight_size_limit,
+        'Count the times files have been over the highlight size limit'
       )
     end
   end

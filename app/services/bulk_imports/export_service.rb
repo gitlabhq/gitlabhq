@@ -2,14 +2,14 @@
 
 module BulkImports
   class ExportService
-    def initialize(exportable:, user:)
-      @exportable = exportable
+    def initialize(portable:, user:)
+      @portable = portable
       @current_user = user
     end
 
     def execute
-      Export.config(exportable).exportable_relations.each do |relation|
-        RelationExportWorker.perform_async(current_user.id, exportable.id, exportable.class.name, relation)
+      FileTransfer.config_for(portable).portable_relations.each do |relation|
+        RelationExportWorker.perform_async(current_user.id, portable.id, portable.class.name, relation)
       end
 
       ServiceResponse.success
@@ -22,6 +22,6 @@ module BulkImports
 
     private
 
-    attr_reader :exportable, :current_user
+    attr_reader :portable, :current_user
   end
 end

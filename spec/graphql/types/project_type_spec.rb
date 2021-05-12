@@ -14,7 +14,7 @@ RSpec.describe GitlabSchema.types['Project'] do
   it 'has the expected fields' do
     expected_fields = %w[
       user_permissions id full_path path name_with_namespace
-      name description description_html tag_list ssh_url_to_repo
+      name description description_html tag_list topics ssh_url_to_repo
       http_url_to_repo web_url star_count forks_count
       created_at last_activity_at archived visibility
       container_registry_enabled shared_runners_enabled

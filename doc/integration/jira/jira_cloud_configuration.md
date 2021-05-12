@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Create an API token in Jira on Atlassian cloud **(FREE)**
 
-You need an API token to [integrate with Jira](../../user/project/integrations/jira.md)
+You need an API token to [integrate with Jira](index.md)
 on Atlassian cloud. To create the API token:
 
 1. Sign in to [`id.atlassian.com`](https://id.atlassian.com/manage-profile/security/api-tokens)

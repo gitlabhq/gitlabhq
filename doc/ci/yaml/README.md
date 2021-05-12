@@ -3858,7 +3858,9 @@ failure.
 `artifacts:when` can be set to one of the following values:
 
 1. `on_success` (default): Upload artifacts only when the job succeeds.
-1. `on_failure`: Upload artifacts only when the job fails.
+1. `on_failure`: Upload artifacts only when the job fails. Useful, for example, when
+   [uploading artifacts](../unit_test_reports.md#viewing-junit-screenshots-on-gitlab) required to
+   troubleshoot failing tests.
 1. `always`: Always upload artifacts.
 
 For example, to upload artifacts only when a job fails:

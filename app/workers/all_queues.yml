@@ -1354,7 +1354,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags:
   - :exclude_from_kubernetes
 - :name: pipeline_background:archive_trace
