@@ -100,7 +100,7 @@ module NotificationRecipients
       # Get project/group users with CUSTOM notification level
       # rubocop: disable CodeReuse/ActiveRecord
       def add_custom_notifications
-        return new_add_custom_notifications if Feature.enabled?(:notification_setting_recipient_refactor, project)
+        return new_add_custom_notifications if Feature.enabled?(:notification_setting_recipient_refactor, project, default_enabled: :yaml)
 
         user_ids = []
 
@@ -172,7 +172,7 @@ module NotificationRecipients
       # Get project users with WATCH notification level
       # rubocop: disable CodeReuse/ActiveRecord
       def project_watchers
-        return new_project_watchers if Feature.enabled?(:notification_setting_recipient_refactor, project)
+        return new_project_watchers if Feature.enabled?(:notification_setting_recipient_refactor, project, default_enabled: :yaml)
 
         project_members_ids = user_ids_notifiable_on(project)
 
@@ -200,7 +200,7 @@ module NotificationRecipients
 
       # rubocop: disable CodeReuse/ActiveRecord
       def group_watchers
-        return new_group_watchers if Feature.enabled?(:notification_setting_recipient_refactor, project)
+        return new_group_watchers if Feature.enabled?(:notification_setting_recipient_refactor, project, default_enabled: :yaml)
 
         user_ids_with_group_global = user_ids_notifiable_on(group, :global)
         user_ids = user_ids_with_global_level_watch(user_ids_with_group_global)

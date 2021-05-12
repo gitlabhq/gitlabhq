@@ -84,13 +84,13 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 ### Global rollout on production
 
-- [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature. If there is no risk that the feature affects usability or server loads, skip to the global rollout.
+- [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature.
   - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout.
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --actors`
   - If the feature flag in code does **NOT** have [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform time-based rollout (**random** rollout).
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage>`
-- [ ] Enable the feature globally on production environment.
-  - [ ] `/chatops run feature set <feature-flag-name> true`
+  - Enable the feature globally on production environment.
+    - [ ] `/chatops run feature set <feature-flag-name> true`
 - [ ] Announce on [the feature issue](ISSUE LINK) that the feature has been globally enabled.
 - [ ] Cross-post chatops slack command to `#support_gitlab-com`.
   ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)) and in your team channel

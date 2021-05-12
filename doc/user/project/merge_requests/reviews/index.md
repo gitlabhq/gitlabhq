@@ -31,6 +31,27 @@ GitLab displays open merge requests, with tabs to filter the list by open and cl
 You can [search and filter](../../../search/index.md#filtering-issue-and-merge-request-lists),
 the results, or select a merge request to begin a review.
 
+## Bulk edit merge requests at the project level
+
+Users with permission level of [Developer or higher](../../../permissions.md) can manage merge requests.
+
+When bulk editing merge requests in a project, you can edit the following attributes:
+
+- Status (open/closed)
+- Assignee
+- Milestone
+- Labels
+- Subscriptions
+
+To update multiple project merge requests at the same time:
+
+1. In a project, go to **Merge requests**.
+1. Click **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
+   editable fields.
+1. Select the checkboxes next to each merge request you want to edit.
+1. Select the appropriate fields and their values from the sidebar.
+1. Click **Update all**.
+
 ## Review a merge request
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab Premium 11.4.

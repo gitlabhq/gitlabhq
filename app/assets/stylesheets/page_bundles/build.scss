@@ -11,10 +11,6 @@
     color: var(--orange-600, $orange-600);
     background-color: var(--orange-50, $orange-50);
     border: 1px solid var(--border-color, $border-color);
-    padding: 3px 12px;
-    margin: auto;
-    align-items: center;
-    z-index: 1;
 
     .with-performance-bar & {
       top: $header-height + $performance-bar-height;

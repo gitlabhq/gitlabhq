@@ -5094,6 +5094,9 @@ msgstr ""
 msgid "Billing|Group"
 msgstr ""
 
+msgid "Billing|Group invite"
+msgstr ""
+
 msgid "Billing|No users to display."
 msgstr ""
 

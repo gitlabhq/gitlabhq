@@ -142,6 +142,33 @@ Follow these examples to form your new issue URL with prefilled fields.
 - For a new issue in the GitLab Community Edition project with a pre-filled title,
   a pre-filled description, and the confidential flag set, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true`
 
+## Bulk edit issues at the project level
+
+> - Assigning epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
+> - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
+> - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
+
+Users with permission level of [Reporter or higher](../../permissions.md) can manage issues.
+
+When bulk editing issues in a project, you can edit the following attributes:
+
+- Status (open/closed)
+- Assignee
+- [Epic](../../group/epics/index.md)
+- [Milestone](../milestones/index.md)
+- [Labels](../labels.md)
+- [Health status](#health-status)
+- Notification subscription
+- [Iteration](../../group/iterations/index.md)
+
+To update multiple project issues at the same time:
+
+1. In a project, go to **Issues > List**.
+1. Click **Edit issues**. A sidebar on the right-hand side of your screen appears with editable fields.
+1. Select the checkboxes next to each issue you want to edit.
+1. Select the appropriate fields and their values from the sidebar.
+1. Click **Update all**.
+
 ## Moving issues
 
 Moving an issue copies it to the target project, and closes it in the originating project.

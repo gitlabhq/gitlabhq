@@ -41,7 +41,7 @@ export default {
 
 <template>
   <div
-    class="build-job position-relative"
+    class="build-job gl-relative"
     :class="{
       retried: job.retried,
       active: isActive,
@@ -56,7 +56,7 @@ export default {
       <gl-icon
         v-if="isActive"
         name="arrow-right"
-        class="js-arrow-right icon-arrow-right position-absolute d-block"
+        class="js-arrow-right icon-arrow-right gl-absolute gl-display-block"
       />
 
       <ci-icon :status="job.status" />

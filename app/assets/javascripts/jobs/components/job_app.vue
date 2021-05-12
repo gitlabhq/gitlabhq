@@ -201,7 +201,7 @@ export default {
 </script>
 <template>
   <div>
-    <gl-loading-icon v-if="isLoading" size="lg" class="qa-loading-animation prepend-top-20" />
+    <gl-loading-icon v-if="isLoading" size="lg" class="qa-loading-animation gl-mt-6" />
 
     <template v-else-if="shouldRenderContent">
       <div class="build-page" data-testid="job-content">
@@ -272,17 +272,17 @@ export default {
 
         <div
           v-if="job.archived"
-          class="gl-mt-3 archived-job"
-          :class="{ 'sticky-top border-bottom-0': hasTrace }"
+          class="gl-mt-3 gl-py-2 gl-px-3 gl-align-items-center gl-z-index-1 gl-m-auto archived-job"
+          :class="{ 'sticky-top gl-border-bottom-0': hasTrace }"
           data-testid="archived-job"
         >
-          <gl-icon name="lock" class="align-text-bottom" />
+          <gl-icon name="lock" class="gl-vertical-align-bottom" />
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
         <!-- job log -->
         <div
           v-if="hasTrace"
-          class="build-trace-container position-relative"
+          class="build-trace-container gl-relative"
           :class="{ 'gl-mt-3': !job.archived }"
         >
           <log-top-bar

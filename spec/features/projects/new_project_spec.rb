@@ -5,50 +5,48 @@ require 'spec_helper'
 RSpec.describe 'New project', :js do
   include Select2Helper
 
-  context 'as a user' do
-    let(:user) { create(:user) }
+  shared_examples 'combined_menu: feature flag examples' do
+    context 'as a user' do
+      let(:user) { create(:user) }
 
-    before do
-      sign_in(user)
-    end
-
-    context 'new repo experiment', :experiment do
-      it 'when in control renders "project"' do
-        stub_experiments(new_repo: :control)
-
-        visit new_project_path
-
-        find('li.header-new.dropdown').click
-
-        page.within('li.header-new.dropdown') do
-          expect(page).to have_selector('a', text: 'New project')
-          expect(page).to have_no_selector('a', text: 'New project/repository')
-        end
-
-        expect(page).to have_selector('h3', text: 'Create blank project')
-        expect(page).to have_no_selector('h3', text: 'Create blank project/repository')
+      before do
+        sign_in(user)
       end
 
-      it 'when in candidate renders "project/repository"' do
-        stub_experiments(new_repo: :candidate)
+      context 'new repo experiment', :experiment do
+        it 'when in control renders "project"' do
+          stub_experiments(new_repo: :control)
 
-        visit new_project_path
+          visit new_project_path
 
-        find('li.header-new.dropdown').click
+          find('li.header-new.dropdown').click
 
-        page.within('li.header-new.dropdown') do
-          expect(page).to have_selector('a', text: 'New project/repository')
+          page.within('li.header-new.dropdown') do
+            expect(page).to have_selector('a', text: 'New project')
+            expect(page).to have_no_selector('a', text: 'New project/repository')
+          end
+
+          expect(page).to have_selector('h3', text: 'Create blank project')
+          expect(page).to have_no_selector('h3', text: 'Create blank project/repository')
         end
 
-        expect(page).to have_selector('h3', text: 'Create blank project/repository')
-      end
+        it 'when in candidate renders "project/repository"' do
+          stub_experiments(new_repo: :candidate)
 
-      context 'with combined_menu feature disabled' do
-        before do
-          stub_feature_flags(combined_menu: false)
+          visit new_project_path
+
+          find('li.header-new.dropdown').click
+
+          page.within('li.header-new.dropdown') do
+            expect(page).to have_selector('a', text: 'New project/repository')
+          end
+
+          expect(page).to have_selector('h3', text: 'Create blank project/repository')
         end
 
         it 'when in control it renders "project" in the new projects dropdown' do
+          pending_on_combined_menu_flag
+
           stub_experiments(new_repo: :control)
 
           visit new_project_path
@@ -64,6 +62,8 @@ RSpec.describe 'New project', :js do
         end
 
         it 'when in candidate it renders "project/repository" in the new projects dropdown' do
+          pending_on_combined_menu_flag
+
           stub_experiments(new_repo: :candidate)
 
           visit new_project_path
@@ -76,347 +76,373 @@ RSpec.describe 'New project', :js do
           end
         end
       end
-    end
 
-    it 'shows a message if multiple levels are restricted' do
-      Gitlab::CurrentSettings.update!(
-        restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL]
-      )
+      it 'shows a message if multiple levels are restricted' do
+        Gitlab::CurrentSettings.update!(
+          restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL]
+        )
 
-      visit new_project_path
-      find('[data-qa-selector="blank_project_link"]').click
-
-      expect(page).to have_content 'Other visibility settings have been disabled by the administrator.'
-    end
-
-    it 'shows a message if all levels are restricted' do
-      Gitlab::CurrentSettings.update!(
-        restricted_visibility_levels: Gitlab::VisibilityLevel.values
-      )
-
-      visit new_project_path
-      find('[data-qa-selector="blank_project_link"]').click
-
-      expect(page).to have_content 'Visibility settings have been disabled by the administrator.'
-    end
-  end
-
-  context 'as an admin' do
-    let(:user) { create(:admin) }
-
-    before do
-      sign_in(user)
-    end
-
-    it 'shows "New project" page', :js do
-      visit new_project_path
-      find('[data-qa-selector="blank_project_link"]').click
-
-      expect(page).to have_content('Project name')
-      expect(page).to have_content('Project URL')
-      expect(page).to have_content('Project slug')
-
-      click_link('New project')
-      find('[data-qa-selector="import_project_link"]').click
-
-      expect(page).to have_link('GitHub')
-      expect(page).to have_link('Bitbucket')
-      expect(page).to have_link('GitLab.com')
-      expect(page).to have_button('Repo by URL')
-      expect(page).to have_link('GitLab export')
-    end
-
-    describe 'manifest import option' do
-      before do
-        visit new_project_path
-
-        find('[data-qa-selector="import_project_link"]').click
-      end
-
-      it { expect(page).to have_link('Manifest file') }
-    end
-
-    context 'Visibility level selector', :js do
-      Gitlab::VisibilityLevel.options.each do |key, level|
-        it "sets selector to #{key}" do
-          stub_application_setting(default_project_visibility: level)
-
-          visit new_project_path
-          find('[data-qa-selector="blank_project_link"]').click
-          page.within('#blank-project-pane') do
-            expect(find_field("project_visibility_level_#{level}")).to be_checked
-          end
-        end
-
-        it "saves visibility level #{level} on validation error" do
-          visit new_project_path
-          find('[data-qa-selector="blank_project_link"]').click
-
-          choose(key)
-          click_button('Create project')
-          page.within('#blank-project-pane') do
-            expect(find_field("project_visibility_level_#{level}")).to be_checked
-          end
-        end
-      end
-
-      context 'when group visibility is private but default is internal' do
-        let_it_be(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
-
-        before do
-          stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
-        end
-
-        context 'when admin mode is enabled', :enable_admin_mode do
-          it 'has private selected' do
-            visit new_project_path(namespace_id: group.id)
-            find('[data-qa-selector="blank_project_link"]').click
-
-            page.within('#blank-project-pane') do
-              expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
-            end
-          end
-        end
-
-        context 'when admin mode is disabled' do
-          it 'is not allowed' do
-            visit new_project_path(namespace_id: group.id)
-
-            expect(page).to have_content('Not Found')
-          end
-        end
-      end
-
-      context 'when group visibility is public but user requests private' do
-        let_it_be(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-
-        before do
-          stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
-        end
-
-        context 'when admin mode is enabled', :enable_admin_mode do
-          it 'has private selected' do
-            visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
-            find('[data-qa-selector="blank_project_link"]').click
-
-            page.within('#blank-project-pane') do
-              expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
-            end
-          end
-        end
-
-        context 'when admin mode is disabled' do
-          it 'is not allowed' do
-            visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
-
-            expect(page).to have_content('Not Found')
-          end
-        end
-      end
-    end
-
-    context 'Readme selector' do
-      it 'shows the initialize with Readme checkbox on "Blank project" tab' do
         visit new_project_path
         find('[data-qa-selector="blank_project_link"]').click
 
-        expect(page).to have_css('input#project_initialize_with_readme')
-        expect(page).to have_content('Initialize repository with a README')
+        expect(page).to have_content 'Other visibility settings have been disabled by the administrator.'
       end
 
-      it 'does not show the initialize with Readme checkbox on "Create from template" tab' do
+      it 'shows a message if all levels are restricted' do
+        Gitlab::CurrentSettings.update!(
+          restricted_visibility_levels: Gitlab::VisibilityLevel.values
+        )
+
         visit new_project_path
-        find('[data-qa-selector="create_from_template_link"]').click
-        first('.choose-template').click
+        find('[data-qa-selector="blank_project_link"]').click
 
-        page.within '.project-fields-form' do
-          expect(page).not_to have_css('input#project_initialize_with_readme')
-          expect(page).not_to have_content('Initialize repository with a README')
-        end
-      end
-
-      it 'does not show the initialize with Readme checkbox on "Import project" tab' do
-        visit new_project_path
-        find('[data-qa-selector="import_project_link"]').click
-        first('.js-import-git-toggle-button').click
-
-        page.within '#import-project-pane' do
-          expect(page).not_to have_css('input#project_initialize_with_readme')
-          expect(page).not_to have_content('Initialize repository with a README')
-        end
+        expect(page).to have_content 'Visibility settings have been disabled by the administrator.'
       end
     end
 
-    context 'Namespace selector' do
-      context 'with user namespace' do
+    context 'as an admin' do
+      let(:user) { create(:admin) }
+
+      before do
+        sign_in(user)
+      end
+
+      it 'shows "New project" page', :js do
+        visit new_project_path
+        find('[data-qa-selector="blank_project_link"]').click
+
+        expect(page).to have_content('Project name')
+        expect(page).to have_content('Project URL')
+        expect(page).to have_content('Project slug')
+
+        click_link('New project')
+        find('[data-qa-selector="import_project_link"]').click
+
+        expect(page).to have_link('GitHub')
+        expect(page).to have_link('Bitbucket')
+        expect(page).to have_link('GitLab.com')
+        expect(page).to have_button('Repo by URL')
+        expect(page).to have_link('GitLab export')
+      end
+
+      describe 'manifest import option' do
         before do
           visit new_project_path
-          find('[data-qa-selector="blank_project_link"]').click
+
+          find('[data-qa-selector="import_project_link"]').click
         end
 
-        it 'selects the user namespace' do
-          page.within('#blank-project-pane') do
-            expect(page).to have_select('project[namespace_id]', visible: false, selected: user.username)
+        it 'has Manifest file' do
+          expect(page).to have_link('Manifest file')
+        end
+      end
+
+      context 'Visibility level selector', :js do
+        Gitlab::VisibilityLevel.options.each do |key, level|
+          it "sets selector to #{key}" do
+            stub_application_setting(default_project_visibility: level)
+
+            visit new_project_path
+            find('[data-qa-selector="blank_project_link"]').click
+            page.within('#blank-project-pane') do
+              expect(find_field("project_visibility_level_#{level}")).to be_checked
+            end
+          end
+
+          it "saves visibility level #{level} on validation error" do
+            visit new_project_path
+            find('[data-qa-selector="blank_project_link"]').click
+
+            choose(key)
+            click_button('Create project')
+            page.within('#blank-project-pane') do
+              expect(find_field("project_visibility_level_#{level}")).to be_checked
+            end
+          end
+        end
+
+        context 'when group visibility is private but default is internal' do
+          let_it_be(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+
+          before do
+            stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+          end
+
+          context 'when admin mode is enabled', :enable_admin_mode do
+            it 'has private selected' do
+              visit new_project_path(namespace_id: group.id)
+              find('[data-qa-selector="blank_project_link"]').click
+
+              page.within('#blank-project-pane') do
+                expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+              end
+            end
+          end
+
+          context 'when admin mode is disabled' do
+            it 'is not allowed' do
+              visit new_project_path(namespace_id: group.id)
+
+              expect(page).to have_content('Not Found')
+            end
+          end
+        end
+
+        context 'when group visibility is public but user requests private' do
+          let_it_be(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+
+          before do
+            stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+          end
+
+          context 'when admin mode is enabled', :enable_admin_mode do
+            it 'has private selected' do
+              visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
+              find('[data-qa-selector="blank_project_link"]').click
+
+              page.within('#blank-project-pane') do
+                expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+              end
+            end
+          end
+
+          context 'when admin mode is disabled' do
+            it 'is not allowed' do
+              visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
+
+              expect(page).to have_content('Not Found')
+            end
           end
         end
       end
 
-      context 'with group namespace' do
-        let(:group) { create(:group, :private) }
-
-        before do
-          group.add_owner(user)
-          visit new_project_path(namespace_id: group.id)
+      context 'Readme selector' do
+        it 'shows the initialize with Readme checkbox on "Blank project" tab' do
+          visit new_project_path
           find('[data-qa-selector="blank_project_link"]').click
+
+          expect(page).to have_css('input#project_initialize_with_readme')
+          expect(page).to have_content('Initialize repository with a README')
         end
 
-        it 'selects the group namespace' do
-          page.within('#blank-project-pane') do
-            expect(page).to have_select('project[namespace_id]', visible: false, selected: group.name)
+        it 'does not show the initialize with Readme checkbox on "Create from template" tab' do
+          visit new_project_path
+          find('[data-qa-selector="create_from_template_link"]').click
+          first('.choose-template').click
+
+          page.within '.project-fields-form' do
+            expect(page).not_to have_css('input#project_initialize_with_readme')
+            expect(page).not_to have_content('Initialize repository with a README')
           end
         end
-      end
 
-      context 'with subgroup namespace' do
-        let(:group) { create(:group) }
-        let(:subgroup) { create(:group, parent: group) }
-
-        before do
-          group.add_maintainer(user)
-          visit new_project_path(namespace_id: subgroup.id)
-          find('[data-qa-selector="blank_project_link"]').click
-        end
-
-        it 'selects the group namespace' do
-          page.within('#blank-project-pane') do
-            expect(page).to have_select('project[namespace_id]', visible: false, selected: subgroup.full_path)
-          end
-        end
-      end
-
-      context 'when changing namespaces dynamically', :js do
-        let(:public_group) { create(:group, :public) }
-        let(:internal_group) { create(:group, :internal) }
-        let(:private_group) { create(:group, :private) }
-
-        before do
-          public_group.add_owner(user)
-          internal_group.add_owner(user)
-          private_group.add_owner(user)
-          visit new_project_path(namespace_id: public_group.id)
-          find('[data-qa-selector="blank_project_link"]').click
-        end
-
-        it 'enables the correct visibility options' do
-          select2(user.namespace_id, from: '#project_namespace_id')
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
-
-          select2(public_group.id, from: '#project_namespace_id')
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
-
-          select2(internal_group.id, from: '#project_namespace_id')
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
-
-          select2(private_group.id, from: '#project_namespace_id')
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
-        end
-      end
-    end
-
-    context 'Import project options', :js do
-      before do
-        visit new_project_path
-        find('[data-qa-selector="import_project_link"]').click
-      end
-
-      context 'from git repository url, "Repo by URL"' do
-        before do
+        it 'does not show the initialize with Readme checkbox on "Import project" tab' do
+          visit new_project_path
+          find('[data-qa-selector="import_project_link"]').click
           first('.js-import-git-toggle-button').click
-        end
 
-        it 'does not autocomplete sensitive git repo URL' do
-          autocomplete = find('#project_import_url')['autocomplete']
-
-          expect(autocomplete).to eq('off')
-        end
-
-        it 'shows import instructions' do
-          git_import_instructions = first('.js-toggle-content')
-
-          expect(git_import_instructions).to be_visible
-          expect(git_import_instructions).to have_content 'Git repository URL'
-        end
-
-        it 'reports error if repo URL does not end with .git' do
-          fill_in 'project_import_url', with: 'http://foo/bar'
-          fill_in 'project_name', with: 'import-project-without-git-suffix'
-          fill_in 'project_path', with: 'import-project-without-git-suffix'
-
-          click_button 'Create project'
-
-          expect(page).to have_text('Please provide a valid URL ending with .git')
-        end
-
-        it 'keeps "Import project" tab open after form validation error' do
-          collision_project = create(:project, name: 'test-name-collision', namespace: user.namespace)
-
-          fill_in 'project_import_url', with: collision_project.http_url_to_repo
-          fill_in 'project_name', with: collision_project.name
-
-          click_on 'Create project'
-
-          expect(page).to have_css('#import-project-pane.active')
-          expect(page).not_to have_css('.toggle-import-form.hide')
+          page.within '#import-project-pane' do
+            expect(page).not_to have_css('input#project_initialize_with_readme')
+            expect(page).not_to have_content('Initialize repository with a README')
+          end
         end
       end
 
-      context 'from GitHub' do
-        before do
-          first('.js-import-github').click
+      context 'Namespace selector' do
+        context 'with user namespace' do
+          before do
+            visit new_project_path
+            find('[data-qa-selector="blank_project_link"]').click
+          end
+
+          it 'selects the user namespace' do
+            page.within('#blank-project-pane') do
+              expect(page).to have_select('project[namespace_id]', visible: false, selected: user.username)
+            end
+          end
         end
 
-        it 'shows import instructions' do
-          expect(page).to have_content('Authenticate with GitHub')
-          expect(current_path).to eq new_import_github_path
+        context 'with group namespace' do
+          let(:group) { create(:group, :private) }
+
+          before do
+            group.add_owner(user)
+            visit new_project_path(namespace_id: group.id)
+            find('[data-qa-selector="blank_project_link"]').click
+          end
+
+          it 'selects the group namespace' do
+            page.within('#blank-project-pane') do
+              expect(page).to have_select('project[namespace_id]', visible: false, selected: group.name)
+            end
+          end
+        end
+
+        context 'with subgroup namespace' do
+          let(:group) { create(:group) }
+          let(:subgroup) { create(:group, parent: group) }
+
+          before do
+            group.add_maintainer(user)
+            visit new_project_path(namespace_id: subgroup.id)
+            find('[data-qa-selector="blank_project_link"]').click
+          end
+
+          it 'selects the group namespace' do
+            page.within('#blank-project-pane') do
+              expect(page).to have_select('project[namespace_id]', visible: false, selected: subgroup.full_path)
+            end
+          end
+        end
+
+        context 'when changing namespaces dynamically', :js do
+          let(:public_group) { create(:group, :public) }
+          let(:internal_group) { create(:group, :internal) }
+          let(:private_group) { create(:group, :private) }
+
+          before do
+            public_group.add_owner(user)
+            internal_group.add_owner(user)
+            private_group.add_owner(user)
+            visit new_project_path(namespace_id: public_group.id)
+            find('[data-qa-selector="blank_project_link"]').click
+          end
+
+          it 'enables the correct visibility options' do
+            select2(user.namespace_id, from: '#project_namespace_id')
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
+
+            select2(public_group.id, from: '#project_namespace_id')
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
+
+            select2(internal_group.id, from: '#project_namespace_id')
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
+
+            select2(private_group.id, from: '#project_namespace_id')
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).to be_disabled
+            expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
+          end
         end
       end
 
-      context 'from manifest file' do
+      context 'Import project options', :js do
         before do
-          first('.import_manifest').click
+          visit new_project_path
+          find('[data-qa-selector="import_project_link"]').click
         end
 
-        it 'shows import instructions' do
-          expect(page).to have_content('Manifest file import')
-          expect(current_path).to eq new_import_manifest_path
+        context 'from git repository url, "Repo by URL"' do
+          before do
+            first('.js-import-git-toggle-button').click
+          end
+
+          it 'does not autocomplete sensitive git repo URL' do
+            autocomplete = find('#project_import_url')['autocomplete']
+
+            expect(autocomplete).to eq('off')
+          end
+
+          it 'shows import instructions' do
+            git_import_instructions = first('.js-toggle-content')
+
+            expect(git_import_instructions).to be_visible
+            expect(git_import_instructions).to have_content 'Git repository URL'
+          end
+
+          it 'reports error if repo URL does not end with .git' do
+            fill_in 'project_import_url', with: 'http://foo/bar'
+            fill_in 'project_name', with: 'import-project-without-git-suffix'
+            fill_in 'project_path', with: 'import-project-without-git-suffix'
+
+            click_button 'Create project'
+
+            expect(page).to have_text('Please provide a valid URL ending with .git')
+          end
+
+          it 'keeps "Import project" tab open after form validation error' do
+            collision_project = create(:project, name: 'test-name-collision', namespace: user.namespace)
+
+            fill_in 'project_import_url', with: collision_project.http_url_to_repo
+            fill_in 'project_name', with: collision_project.name
+
+            click_on 'Create project'
+
+            expect(page).to have_css('#import-project-pane.active')
+            expect(page).not_to have_css('.toggle-import-form.hide')
+          end
+        end
+
+        context 'from GitHub' do
+          before do
+            first('.js-import-github').click
+          end
+
+          it 'shows import instructions' do
+            expect(page).to have_content('Authenticate with GitHub')
+            expect(current_path).to eq new_import_github_path
+          end
+        end
+
+        context 'from manifest file' do
+          before do
+            first('.import_manifest').click
+          end
+
+          it 'shows import instructions' do
+            expect(page).to have_content('Manifest file import')
+            expect(current_path).to eq new_import_manifest_path
+          end
         end
       end
-    end
 
-    context 'Namespace selector' do
-      context 'with group with DEVELOPER_MAINTAINER_PROJECT_ACCESS project_creation_level' do
-        let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+      context 'Namespace selector' do
+        context 'with group with DEVELOPER_MAINTAINER_PROJECT_ACCESS project_creation_level' do
+          let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
 
-        before do
-          group.add_developer(user)
-          visit new_project_path(namespace_id: group.id)
-          find('[data-qa-selector="blank_project_link"]').click
-        end
+          before do
+            group.add_developer(user)
+            visit new_project_path(namespace_id: group.id)
+            find('[data-qa-selector="blank_project_link"]').click
+          end
 
-        it 'selects the group namespace' do
-          page.within('#blank-project-pane') do
-            expect(page).to have_select('project[namespace_id]', visible: false, selected: group.full_path)
+          it 'selects the group namespace' do
+            page.within('#blank-project-pane') do
+              expect(page).to have_select('project[namespace_id]', visible: false, selected: group.full_path)
+            end
           end
         end
       end
     end
+  end
+
+  context 'with combined_menu: feature flag on' do
+    let(:needs_rewrite_for_combined_menu_flag_on) { true }
+
+    before do
+      stub_feature_flags(combined_menu: true)
+    end
+
+    it_behaves_like 'combined_menu: feature flag examples'
+  end
+
+  context 'with combined_menu feature flag off' do
+    let(:needs_rewrite_for_combined_menu_flag_on) { false }
+
+    before do
+      stub_feature_flags(combined_menu: false)
+    end
+
+    it_behaves_like 'combined_menu: feature flag examples'
+  end
+
+  def pending_on_combined_menu_flag
+    pending 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587' if needs_rewrite_for_combined_menu_flag_on
   end
 end
