@@ -125,17 +125,17 @@ module CycleAnalyticsHelpers
       target_branch: 'master'
     }
 
-    mr = MergeRequests::CreateService.new(project, user, opts).execute
+    mr = MergeRequests::CreateService.new(project: project, current_user: user, params: opts).execute
     NewMergeRequestWorker.new.perform(mr, user)
     mr
   end
 
   def merge_merge_requests_closing_issue(user, project, issue)
     merge_requests = Issues::ReferencedMergeRequestsService
-                       .new(project, user)
+                       .new(project: project, current_user: user)
                        .closed_by_merge_requests(issue)
 
-    merge_requests.each { |merge_request| MergeRequests::MergeService.new(project, user, sha: merge_request.diff_head_sha).execute(merge_request) }
+    merge_requests.each { |merge_request| MergeRequests::MergeService.new(project: project, current_user: user, params: { sha: merge_request.diff_head_sha }).execute(merge_request) }
   end
 
   def deploy_master(user, project, environment: 'production')

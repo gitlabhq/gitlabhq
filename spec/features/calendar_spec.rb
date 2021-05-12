@@ -146,7 +146,7 @@ RSpec.describe 'Contributions Calendar', :js do
 
     describe '1 issue creation calendar activity' do
       before do
-        Issues::CreateService.new(contributed_project, user, issue_params).execute
+        Issues::CreateService.new(project: contributed_project, current_user: user, params: issue_params).execute
       end
 
       it_behaves_like 'a day with activity', contribution_count: 1
@@ -181,7 +181,7 @@ RSpec.describe 'Contributions Calendar', :js do
         push_code_contribution
 
         travel_to(Date.yesterday) do
-          Issues::CreateService.new(contributed_project, user, issue_params).execute
+          Issues::CreateService.new(project: contributed_project, current_user: user, params: issue_params).execute
         end
       end
       include_context 'visit user page'

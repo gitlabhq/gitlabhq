@@ -20,7 +20,7 @@ RSpec.describe Issues::CloseService do
   end
 
   describe '#execute' do
-    let(:service) { described_class.new(project, user) }
+    let(:service) { described_class.new(project: project, current_user: user) }
 
     it 'checks if the user is authorized to update the issue' do
       expect(service).to receive(:can?).with(user, :update_issue, issue)
@@ -87,7 +87,7 @@ RSpec.describe Issues::CloseService do
           project.reload
           expect(project.external_issue_tracker).to receive(:close_issue)
 
-          described_class.new(project, user).close_issue(external_issue)
+          described_class.new(project: project, current_user: user).close_issue(external_issue)
         end
       end
 
@@ -98,7 +98,7 @@ RSpec.describe Issues::CloseService do
           project.reload
           expect(project.external_issue_tracker).not_to receive(:close_issue)
 
-          described_class.new(project, user).close_issue(external_issue)
+          described_class.new(project: project, current_user: user).close_issue(external_issue)
         end
       end
 
@@ -109,7 +109,7 @@ RSpec.describe Issues::CloseService do
           project.reload
           expect(project.external_issue_tracker).not_to receive(:close_issue)
 
-          described_class.new(project, user).close_issue(external_issue)
+          described_class.new(project: project, current_user: user).close_issue(external_issue)
         end
       end
     end
@@ -117,7 +117,7 @@ RSpec.describe Issues::CloseService do
     context "closed by a merge request", :sidekiq_might_not_need_inline do
       subject(:close_issue) do
         perform_enqueued_jobs do
-          described_class.new(project, user).close_issue(issue, closed_via: closing_merge_request)
+          described_class.new(project: project, current_user: user).close_issue(issue, closed_via: closing_merge_request)
         end
       end
 
@@ -186,7 +186,7 @@ RSpec.describe Issues::CloseService do
     context "closed by a commit", :sidekiq_might_not_need_inline do
       it 'mentions closure via a commit' do
         perform_enqueued_jobs do
-          described_class.new(project, user).close_issue(issue, closed_via: closing_commit)
+          described_class.new(project: project, current_user: user).close_issue(issue, closed_via: closing_commit)
         end
 
         email = ActionMailer::Base.deliveries.last
@@ -200,7 +200,7 @@ RSpec.describe Issues::CloseService do
         it 'does not mention the commit id' do
           project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
           perform_enqueued_jobs do
-            described_class.new(project, user).close_issue(issue, closed_via: closing_commit)
+            described_class.new(project: project, current_user: user).close_issue(issue, closed_via: closing_commit)
           end
 
           email = ActionMailer::Base.deliveries.last
@@ -216,7 +216,7 @@ RSpec.describe Issues::CloseService do
     context "valid params" do
       subject(:close_issue) do
         perform_enqueued_jobs do
-          described_class.new(project, user).close_issue(issue)
+          described_class.new(project: project, current_user: user).close_issue(issue)
         end
       end
 
@@ -325,7 +325,7 @@ RSpec.describe Issues::CloseService do
         expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
         expect(project).to receive(:execute_services).with(an_instance_of(Hash), :issue_hooks)
 
-        described_class.new(project, user).close_issue(issue)
+        described_class.new(project: project, current_user: user).close_issue(issue)
       end
     end
 
@@ -336,7 +336,7 @@ RSpec.describe Issues::CloseService do
         expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
         expect(project).to receive(:execute_services).with(an_instance_of(Hash), :confidential_issue_hooks)
 
-        described_class.new(project, user).close_issue(issue)
+        described_class.new(project: project, current_user: user).close_issue(issue)
       end
     end
 

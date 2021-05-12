@@ -8,7 +8,7 @@ RSpec.describe MergeRequests::CreatePipelineService do
   let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
-  let(:service) { described_class.new(project, actor, params) }
+  let(:service) { described_class.new(project: project, current_user: actor, params: params) }
   let(:actor) { user }
   let(:params) { {} }
 

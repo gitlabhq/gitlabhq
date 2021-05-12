@@ -8,7 +8,7 @@ RSpec.describe MergeRequests::RequestReviewService do
   let(:merge_request) { create(:merge_request, reviewers: [user]) }
   let(:reviewer) { merge_request.find_reviewer(user) }
   let(:project) { merge_request.project }
-  let(:service) { described_class.new(project, current_user) }
+  let(:service) { described_class.new(project: project, current_user: current_user) }
   let(:result) { service.execute(merge_request, user) }
   let(:todo_service) { spy('todo service') }
   let(:notification_service) { spy('notification service') }
@@ -26,7 +26,7 @@ RSpec.describe MergeRequests::RequestReviewService do
 
   describe '#execute' do
     describe 'invalid permissions' do
-      let(:service) { described_class.new(project, create(:user)) }
+      let(:service) { described_class.new(project: project, current_user: create(:user)) }
 
       it 'returns an error' do
         expect(result[:status]).to eq :error

@@ -7,7 +7,7 @@ RSpec.describe Notes::CopyService do
     let_it_be(:noteable) { create(:issue) }
 
     it 'validates that we cannot copy notes to the same Noteable' do
-      expect { described_class.new(noteable, noteable) }.to raise_error(ArgumentError)
+      expect { described_class.new(nil, noteable, noteable) }.to raise_error(ArgumentError)
     end
   end
 

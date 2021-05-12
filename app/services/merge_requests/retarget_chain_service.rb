@@ -24,9 +24,11 @@ module MergeRequests
         next unless can?(current_user, :update_merge_request, other_merge_request.source_project)
 
         ::MergeRequests::UpdateService
-          .new(other_merge_request.source_project, current_user,
-            target_branch: merge_request.target_branch,
-            target_branch_was_deleted: true)
+          .new(project: other_merge_request.source_project, current_user: current_user,
+               params: {
+                 target_branch: merge_request.target_branch,
+                 target_branch_was_deleted: true
+               })
           .execute(other_merge_request)
       end
     end

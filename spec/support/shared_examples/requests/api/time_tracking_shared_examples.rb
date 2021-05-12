@@ -128,7 +128,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
 
     if issuable_name == 'merge_request'
       it 'calls update service with :use_specialized_service param' do
-        expect(::MergeRequests::UpdateService).to receive(:new).with(project, user, hash_including(use_specialized_service: true))
+        expect(::MergeRequests::UpdateService).to receive(:new).with(project: project, current_user: user, params: hash_including(use_specialized_service: true))
 
         post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user), params: { duration: '2h' }
       end
@@ -136,7 +136,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
 
     if issuable_name == 'issue'
       it 'calls update service without :use_specialized_service param' do
-        expect(::Issues::UpdateService).to receive(:new).with(project, user, hash_not_including(use_specialized_service: true))
+        expect(::Issues::UpdateService).to receive(:new).with(project: project, current_user: user, params: hash_not_including(use_specialized_service: true))
 
         post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user), params: { duration: '2h' }
       end

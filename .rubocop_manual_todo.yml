@@ -2094,6 +2094,7 @@ Gitlab/NamespacedClass:
     - 'app/services/auto_merge_service.rb'
     - 'app/services/base_container_service.rb'
     - 'app/services/base_count_service.rb'
+    - 'app/services/base_project_service.rb'
     - 'app/services/base_renderer.rb'
     - 'app/services/base_service.rb'
     - 'app/services/bulk_create_integration_service.rb'

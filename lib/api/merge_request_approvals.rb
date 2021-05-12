@@ -54,7 +54,7 @@ module API
 
           success =
             ::MergeRequests::ApprovalService
-              .new(user_project, current_user, params)
+              .new(project: user_project, current_user: current_user, params: params)
               .execute(merge_request)
 
           unauthorized! unless success
@@ -67,7 +67,7 @@ module API
           merge_request = find_merge_request_with_access(params[:merge_request_iid], :approve_merge_request)
 
           success = ::MergeRequests::RemoveApprovalService
-            .new(user_project, current_user)
+            .new(project: user_project, current_user: current_user)
             .execute(merge_request)
 
           not_found! unless success

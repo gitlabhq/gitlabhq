@@ -26,7 +26,7 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
     project.add_developer(user3)
   end
 
-  let(:service) { described_class.new(project, user, opts) }
+  let(:service) { described_class.new(project: project, current_user: user, params: opts) }
   let(:opts) { { assignee_ids: [user2.id] } }
 
   describe 'execute' do
@@ -37,7 +37,7 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
 
     context 'when the parameters are valid' do
       it 'updates the MR, and queues the more expensive work for later' do
-        expect_next(MergeRequests::HandleAssigneesChangeService, project, user) do |service|
+        expect_next(MergeRequests::HandleAssigneesChangeService, project: project, current_user: user) do |service|
           expect(service)
             .to receive(:async_execute)
             .with(merge_request, [user3], execute_hooks: true)
@@ -56,7 +56,7 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
       end
 
       it 'is more efficient than using the full update-service' do
-        allow_next(MergeRequests::HandleAssigneesChangeService, project, user) do |service|
+        allow_next(MergeRequests::HandleAssigneesChangeService, project: project, current_user: user) do |service|
           expect(service)
             .to receive(:async_execute)
             .with(merge_request, [user3], execute_hooks: true)
@@ -69,7 +69,7 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
                           source_project: merge_request.project,
                           author: merge_request.author)
 
-        update_service = ::MergeRequests::UpdateService.new(project, user, opts)
+        update_service = ::MergeRequests::UpdateService.new(project: project, current_user: user, params: opts)
 
         expect { service.execute(merge_request) }
           .to issue_fewer_queries_than { update_service.execute(other_mr) }

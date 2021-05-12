@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::SquashService do
   include GitHelpers
 
-  let(:service) { described_class.new(project, user, { merge_request: merge_request }) }
+  let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request }) }
   let(:user) { project.owner }
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository.raw }
@@ -62,7 +62,7 @@ RSpec.describe MergeRequests::SquashService do
       end
 
       it 'will still perform the squash when a custom squash commit message has been provided' do
-        service = described_class.new(project, user, { merge_request: merge_request, squash_commit_message: 'A custom commit message' })
+        service = described_class.new(project: project, current_user: user, params: { merge_request: merge_request, squash_commit_message: 'A custom commit message' })
 
         expect(merge_request.target_project.repository).to receive(:squash).and_return('sha')
 
@@ -98,7 +98,7 @@ RSpec.describe MergeRequests::SquashService do
       end
 
       context 'if a message was provided' do
-        let(:service) { described_class.new(project, user, { merge_request: merge_request, squash_commit_message: message }) }
+        let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request, squash_commit_message: message }) }
         let(:message) { 'My custom message' }
         let(:squash_sha) { service.execute[:squash_sha] }
 

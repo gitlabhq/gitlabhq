@@ -255,9 +255,9 @@ module API
         issue_params = convert_parameters_from_legacy_format(issue_params)
 
         begin
-          issue = ::Issues::CreateService.new(user_project,
-                                              current_user,
-                                              issue_params.merge(request: request, api: true)).execute
+          issue = ::Issues::CreateService.new(project: user_project,
+                                              current_user: current_user,
+                                              params: issue_params.merge(request: request, api: true)).execute
 
           if issue.spam?
             render_api_error!({ error: 'Spam detected' }, 400)
@@ -298,9 +298,9 @@ module API
 
         update_params = convert_parameters_from_legacy_format(update_params)
 
-        issue = ::Issues::UpdateService.new(user_project,
-                                            current_user,
-                                            update_params).execute(issue)
+        issue = ::Issues::UpdateService.new(project: user_project,
+                                            current_user: current_user,
+                                            params: update_params).execute(issue)
 
         render_spam_error! if issue.spam?
 
@@ -328,7 +328,7 @@ module API
 
         authorize! :update_issue, issue
 
-        if ::Issues::ReorderService.new(user_project, current_user, params).execute(issue)
+        if ::Issues::ReorderService.new(project: user_project, current_user: current_user, params: params).execute(issue)
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         else
           render_api_error!({ error: 'Unprocessable Entity' }, 422)
@@ -354,7 +354,7 @@ module API
         not_found!('Project') unless new_project
 
         begin
-          issue = ::Issues::MoveService.new(user_project, current_user).execute(issue, new_project)
+          issue = ::Issues::MoveService.new(project: user_project, current_user: current_user).execute(issue, new_project)
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         rescue ::Issues::MoveService::MoveError => error
           render_api_error!(error.message, 400)
@@ -374,7 +374,7 @@ module API
         authorize!(:destroy_issue, issue)
 
         destroy_conditionally!(issue) do |issue|
-          Issuable::DestroyService.new(user_project, current_user).execute(issue)
+          Issuable::DestroyService.new(project: user_project, current_user: current_user).execute(issue)
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -388,7 +388,7 @@ module API
       get ':id/issues/:issue_iid/related_merge_requests' do
         issue = find_project_issue(params[:issue_iid])
 
-        merge_requests = ::Issues::ReferencedMergeRequestsService.new(user_project, current_user)
+        merge_requests = ::Issues::ReferencedMergeRequestsService.new(project: user_project, current_user: current_user)
           .execute(issue)
           .first
 

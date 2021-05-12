@@ -7,7 +7,7 @@ RSpec.describe MergeRequests::AssignIssuesService do
   let(:project) { create(:project, :public, :repository) }
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project, author: user, description: "fixes #{issue.to_reference}") }
-  let(:service) { described_class.new(project, user, merge_request: merge_request) }
+  let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request }) }
 
   before do
     project.add_developer(user)
@@ -37,10 +37,12 @@ RSpec.describe MergeRequests::AssignIssuesService do
 
   it 'accepts precomputed data for closes_issues' do
     issue2 = create(:issue, project: project)
-    service2 = described_class.new(project,
-                                   user,
-                                   merge_request: merge_request,
-                                   closes_issues: [issue, issue2])
+    service2 = described_class.new(project: project,
+                                   current_user: user,
+                                   params: {
+                                     merge_request: merge_request,
+                                     closes_issues: [issue, issue2]
+                                   })
 
     expect(service2.assignable_issues.count).to eq 2
   end
@@ -52,10 +54,12 @@ RSpec.describe MergeRequests::AssignIssuesService do
   it 'ignores external issues' do
     external_issue = ExternalIssue.new('JIRA-123', project)
     service = described_class.new(
-      project,
-      user,
-      merge_request: merge_request,
-      closes_issues: [external_issue]
+      project: project,
+      current_user: user,
+      params: {
+        merge_request: merge_request,
+        closes_issues: [external_issue]
+      }
     )
 
     expect(service.assignable_issues.count).to eq 0

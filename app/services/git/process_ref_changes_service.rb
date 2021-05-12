@@ -77,7 +77,7 @@ module Git
     def merge_request_branches_for(ref_type, changes)
       return [] if ref_type == :tag
 
-      MergeRequests::PushedBranchesService.new(project, current_user, changes: changes).execute
+      MergeRequests::PushedBranchesService.new(project: project, current_user: current_user, params: { changes: changes }).execute
     end
   end
 end

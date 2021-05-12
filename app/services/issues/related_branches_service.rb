@@ -30,7 +30,7 @@ module Issues
 
     def branches_with_merge_request_for(issue)
       Issues::ReferencedMergeRequestsService
-        .new(project, current_user)
+        .new(project: project, current_user: current_user)
         .referenced_merge_requests(issue)
         .map(&:source_branch)
     end

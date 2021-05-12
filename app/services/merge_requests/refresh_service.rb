@@ -62,7 +62,7 @@ module MergeRequests
       # the latest diff state as the last _valid_ one.
       merge_requests_for_source_branch.reject(&:source_branch_exists?).each do |mr|
         MergeRequests::CloseService
-          .new(mr.target_project, @current_user)
+          .new(project: mr.target_project, current_user: @current_user)
           .execute(mr)
       end
     end
@@ -96,7 +96,7 @@ module MergeRequests
         merge_request.merge_commit_sha = analyzer.get_merge_commit(merge_request.diff_head_sha)
 
         MergeRequests::PostMergeService
-          .new(merge_request.target_project, @current_user)
+          .new(project: merge_request.target_project, current_user: @current_user)
           .execute(merge_request)
       end
     end
@@ -109,7 +109,7 @@ module MergeRequests
 
       merge_requests_for_forks.find_each do |mr|
         LinkLfsObjectsService
-          .new(mr.target_project)
+          .new(project: mr.target_project)
           .execute(mr, oldrev: @push.oldrev, newrev: @push.newrev)
       end
     end

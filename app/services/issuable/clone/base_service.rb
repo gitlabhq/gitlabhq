@@ -65,7 +65,7 @@ module Issuable
       end
 
       def close_issue
-        close_service = Issues::CloseService.new(old_project, current_user)
+        close_service = Issues::CloseService.new(project: old_project, current_user: current_user)
         close_service.execute(original_entity, notifications: false, system_note: false)
       end
 

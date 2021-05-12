@@ -146,7 +146,7 @@ RSpec.shared_examples 'issues move service' do |group|
           params.merge!(move_after_id: issue1.id, move_before_id: issue2.id)
 
           match_params = { move_between_ids: [issue1.id, issue2.id], board_group_id: parent.id }
-          expect(Issues::UpdateService).to receive(:new).with(issue.project, user, match_params).and_return(double(execute: build(:issue)))
+          expect(Issues::UpdateService).to receive(:new).with(project: issue.project, current_user: user, params: match_params).and_return(double(execute: build(:issue)))
 
           described_class.new(parent, user, params).execute(issue)
         end

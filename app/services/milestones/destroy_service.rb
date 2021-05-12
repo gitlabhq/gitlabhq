@@ -7,11 +7,11 @@ module Milestones
         update_params = { milestone: nil, skip_milestone_email: true }
 
         milestone.issues.each do |issue|
-          Issues::UpdateService.new(parent, current_user, update_params).execute(issue)
+          Issues::UpdateService.new(project: parent, current_user: current_user, params: update_params).execute(issue)
         end
 
         milestone.merge_requests.each do |merge_request|
-          MergeRequests::UpdateService.new(parent, current_user, update_params).execute(merge_request)
+          MergeRequests::UpdateService.new(project: parent, current_user: current_user, params: update_params).execute(merge_request)
         end
 
         log_destroy_event_for(milestone)

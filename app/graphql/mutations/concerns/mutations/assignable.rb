@@ -33,9 +33,9 @@ module Mutations
 
     def assign!(resource, users, operation_mode)
       update_service_class.new(
-        resource.project,
-        current_user,
-        assignee_ids: assignee_ids(resource, users, operation_mode)
+        project: resource.project,
+        current_user: current_user,
+        params: { assignee_ids: assignee_ids(resource, users, operation_mode) }
       ).execute(resource)
     end
 

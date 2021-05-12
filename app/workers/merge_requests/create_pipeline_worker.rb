@@ -23,7 +23,7 @@ module MergeRequests
       merge_request = MergeRequest.find_by_id(merge_request_id)
       return unless merge_request
 
-      MergeRequests::CreatePipelineService.new(project, user).execute(merge_request)
+      MergeRequests::CreatePipelineService.new(project: project, current_user: user).execute(merge_request)
       merge_request.update_head_pipeline
     end
   end

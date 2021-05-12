@@ -17,7 +17,7 @@ RSpec.describe MergeRequests::MergeService do
   end
 
   describe '#execute' do
-    let(:service) { described_class.new(project, user, merge_params) }
+    let(:service) { described_class.new(project: project, current_user: user, params: merge_params) }
     let(:merge_params) do
       { commit_message: 'Awesome message', sha: merge_request.diff_head_sha }
     end
@@ -228,7 +228,7 @@ RSpec.describe MergeRequests::MergeService do
     context 'source branch removal' do
       context 'when the source branch is protected' do
         let(:service) do
-          described_class.new(project, user, merge_params.merge('should_remove_source_branch' => true))
+          described_class.new(project: project, current_user: user, params: merge_params.merge('should_remove_source_branch' => true))
         end
 
         before do
@@ -244,7 +244,7 @@ RSpec.describe MergeRequests::MergeService do
 
       context 'when the source branch is the default branch' do
         let(:service) do
-          described_class.new(project, user, merge_params.merge('should_remove_source_branch' => true))
+          described_class.new(project: project, current_user: user, params: merge_params.merge('should_remove_source_branch' => true))
         end
 
         before do
@@ -270,7 +270,7 @@ RSpec.describe MergeRequests::MergeService do
           end
 
           context 'when the merger set the source branch not to be removed' do
-            let(:service) { described_class.new(project, user, merge_params.merge('should_remove_source_branch' => false)) }
+            let(:service) { described_class.new(project: project, current_user: user, params: merge_params.merge('should_remove_source_branch' => false)) }
 
             it 'does not delete the source branch' do
               expect(::MergeRequests::DeleteSourceBranchWorker).not_to receive(:perform_async)
@@ -282,7 +282,7 @@ RSpec.describe MergeRequests::MergeService do
 
         context 'when MR merger set the source branch to be removed' do
           let(:service) do
-            described_class.new(project, user, merge_params.merge('should_remove_source_branch' => true))
+            described_class.new(project: project, current_user: user, params: merge_params.merge('should_remove_source_branch' => true))
           end
 
           it 'removes the source branch using the current user' do
@@ -330,7 +330,7 @@ RSpec.describe MergeRequests::MergeService do
         unauthorized_user = create(:user)
         project.add_reporter(unauthorized_user)
 
-        service = described_class.new(project, unauthorized_user)
+        service = described_class.new(project: project, current_user: unauthorized_user)
 
         service.execute(merge_request)
 

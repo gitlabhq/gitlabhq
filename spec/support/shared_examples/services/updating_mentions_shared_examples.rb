@@ -15,7 +15,7 @@ RSpec.shared_examples 'updating mentions' do |service_class|
 
   def update_mentionable(opts)
     perform_enqueued_jobs do
-      service_class.new(project, user, opts).execute(mentionable)
+      service_class.new(project: project, current_user: user, params: opts).execute(mentionable)
     end
 
     mentionable.reload

@@ -224,7 +224,7 @@ module API
         mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch)
         mr_params = convert_parameters_from_legacy_format(mr_params)
 
-        merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
+        merge_request = ::MergeRequests::CreateService.new(project: user_project, current_user: current_user, params: mr_params).execute
 
         handle_merge_request_errors!(merge_request)
 
@@ -243,7 +243,7 @@ module API
         authorize!(:destroy_merge_request, merge_request)
 
         destroy_conditionally!(merge_request) do |merge_request|
-          Issuable::DestroyService.new(user_project, current_user).execute(merge_request)
+          Issuable::DestroyService.new(project: user_project, current_user: current_user).execute(merge_request)
         end
       end
 
@@ -335,7 +335,7 @@ module API
         authorize!(:update_merge_request, merge_request)
 
         project = merge_request.target_project
-        result = ::MergeRequests::AddContextService.new(project, current_user, merge_request: merge_request, commits: commit_ids).execute
+        result = ::MergeRequests::AddContextService.new(project: project, current_user: current_user, params: { merge_request: merge_request, commits: commit_ids }).execute
 
         if result.instance_of?(Array)
           present result, with: Entities::Commit
@@ -398,7 +398,7 @@ module API
       end
       post ':id/merge_requests/:merge_request_iid/pipelines', feature_category: :continuous_integration do
         pipeline = ::MergeRequests::CreatePipelineService
-          .new(user_project, current_user, allow_duplicate: true)
+          .new(project: user_project, current_user: current_user, params: { allow_duplicate: true })
           .execute(find_merge_request_with_access(params[:merge_request_iid]))
 
         if pipeline.nil?
@@ -439,7 +439,7 @@ module API
                     ::MergeRequests::UpdateService
                   end
 
-        merge_request = service.new(user_project, current_user, mr_params).execute(merge_request)
+        merge_request = service.new(project: user_project, current_user: current_user, params: mr_params).execute(merge_request)
 
         handle_merge_request_errors!(merge_request)
 
@@ -489,7 +489,7 @@ module API
 
         if immediately_mergeable
           ::MergeRequests::MergeService
-            .new(merge_request.target_project, current_user, merge_params)
+            .new(project: merge_request.target_project, current_user: current_user, params: merge_params)
             .execute(merge_request)
         elsif automatically_mergeable
           AutoMergeService.new(merge_request.target_project, current_user, merge_params)

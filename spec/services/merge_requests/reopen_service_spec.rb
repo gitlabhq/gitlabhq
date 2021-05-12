@@ -20,7 +20,7 @@ RSpec.describe MergeRequests::ReopenService do
     it_behaves_like 'merge request reviewers cache counters invalidator'
 
     context 'valid params' do
-      let(:service) { described_class.new(project, user, {}) }
+      let(:service) { described_class.new(project: project, current_user: user) }
 
       before do
         allow(service).to receive(:execute_hooks)
@@ -65,7 +65,7 @@ RSpec.describe MergeRequests::ReopenService do
     it 'caches merge request closing issues' do
       expect(merge_request).to receive(:cache_merge_request_closes_issues!)
 
-      described_class.new(project, user, {}).execute(merge_request)
+      described_class.new(project: project, current_user: user).execute(merge_request)
     end
 
     it 'updates metrics' do
@@ -78,7 +78,7 @@ RSpec.describe MergeRequests::ReopenService do
 
       expect(service).to receive(:reopen)
 
-      described_class.new(project, user, {}).execute(merge_request)
+      described_class.new(project: project, current_user: user).execute(merge_request)
     end
 
     it 'calls the merge request activity counter' do
@@ -86,11 +86,11 @@ RSpec.describe MergeRequests::ReopenService do
         .to receive(:track_reopen_mr_action)
         .with(user: user)
 
-      described_class.new(project, user, {}).execute(merge_request)
+      described_class.new(project: project, current_user: user).execute(merge_request)
     end
 
     it 'refreshes the number of open merge requests for a valid MR' do
-      service = described_class.new(project, user, {})
+      service = described_class.new(project: project, current_user: user)
 
       expect { service.execute(merge_request) }
         .to change { project.open_merge_requests_count }.from(0).to(1)
@@ -99,7 +99,7 @@ RSpec.describe MergeRequests::ReopenService do
     context 'current user is not authorized to reopen merge request' do
       before do
         perform_enqueued_jobs do
-          @merge_request = described_class.new(project, guest).execute(merge_request)
+          @merge_request = described_class.new(project: project, current_user: guest).execute(merge_request)
         end
       end
 

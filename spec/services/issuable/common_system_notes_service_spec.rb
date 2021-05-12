@@ -23,7 +23,7 @@ RSpec.describe Issuable::CommonSystemNotesService do
       end
 
       it 'creates a resource label event' do
-        described_class.new(project, user).execute(issuable, old_labels: [])
+        described_class.new(project: project, current_user: user).execute(issuable, old_labels: [])
         event = issuable.reload.resource_label_events.last
 
         expect(event).not_to be_nil
@@ -66,7 +66,7 @@ RSpec.describe Issuable::CommonSystemNotesService do
   context 'on issuable create' do
     let(:issuable) { build(:issue, project: project) }
 
-    subject { described_class.new(project, user).execute(issuable, old_labels: [], is_update: false) }
+    subject { described_class.new(project: project, current_user: user).execute(issuable, old_labels: [], is_update: false) }
 
     it 'does not create system note for title and description' do
       issuable.save!

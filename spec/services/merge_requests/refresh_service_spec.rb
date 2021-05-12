@@ -64,7 +64,7 @@ RSpec.describe MergeRequests::RefreshService do
     end
 
     context 'push to origin repo source branch' do
-      let(:refresh_service) { service.new(@project, @user) }
+      let(:refresh_service) { service.new(project: @project, current_user: @user) }
       let(:notification_service) { spy('notification_service') }
 
       before do
@@ -187,7 +187,7 @@ RSpec.describe MergeRequests::RefreshService do
     context 'when pipeline exists for the source branch' do
       let!(:pipeline) { create(:ci_empty_pipeline, ref: @merge_request.source_branch, project: @project, sha: @commits.first.sha)}
 
-      subject { service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master') }
+      subject { service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/master') }
 
       it 'updates the head_pipeline_id for @merge_request', :sidekiq_might_not_need_inline do
         expect { subject }.to change { @merge_request.reload.head_pipeline_id }.from(nil).to(pipeline.id)
@@ -203,7 +203,7 @@ RSpec.describe MergeRequests::RefreshService do
         stub_ci_pipeline_yaml_file(config)
       end
 
-      subject { service.new(project, @user).execute(@oldrev, @newrev, ref) }
+      subject { service.new(project: project, current_user: @user).execute(@oldrev, @newrev, ref) }
 
       let(:ref) { 'refs/heads/master' }
       let(:project) { @project }
@@ -291,11 +291,11 @@ RSpec.describe MergeRequests::RefreshService do
         context "when MergeRequestUpdateWorker is retried by an exception" do
           it 'does not re-create a duplicate detached merge request pipeline' do
             expect do
-              service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master')
+              service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/master')
             end.to change { @merge_request.pipelines_for_merge_request.count }.by(1)
 
             expect do
-              service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master')
+              service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/master')
             end.not_to change { @merge_request.pipelines_for_merge_request.count }
           end
         end
@@ -365,7 +365,7 @@ RSpec.describe MergeRequests::RefreshService do
     end
 
     context 'push to origin repo source branch' do
-      let(:refresh_service) { service.new(@project, @user) }
+      let(:refresh_service) { service.new(project: @project, current_user: @user) }
       let(:notification_service) { spy('notification_service') }
 
       before do
@@ -397,7 +397,7 @@ RSpec.describe MergeRequests::RefreshService do
     context 'push to origin repo target branch', :sidekiq_might_not_need_inline do
       context 'when all MRs to the target branch had diffs' do
         before do
-          service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
           reload_mrs
         end
 
@@ -426,7 +426,7 @@ RSpec.describe MergeRequests::RefreshService do
           # feature all along.
           empty_fork_merge_request.update_columns(target_branch: 'feature')
 
-          service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
           reload_mrs
           empty_fork_merge_request.reload
         end
@@ -449,7 +449,7 @@ RSpec.describe MergeRequests::RefreshService do
           # Merge master -> feature branch
           @project.repository.merge(@user, @merge_request.diff_head_sha, @merge_request, 'Test message')
           commit = @project.repository.commit('feature')
-          service.new(@project, @user).execute(@oldrev, commit.id, 'refs/heads/feature')
+          service.new(project: @project, current_user: @user).execute(@oldrev, commit.id, 'refs/heads/feature')
           reload_mrs
         end
 
@@ -467,7 +467,7 @@ RSpec.describe MergeRequests::RefreshService do
     end
 
     context 'push to fork repo source branch', :sidekiq_might_not_need_inline do
-      let(:refresh_service) { service.new(@fork_project, @user) }
+      let(:refresh_service) { service.new(project: @fork_project, current_user: @user) }
 
       def refresh
         allow(refresh_service).to receive(:execute_hooks)
@@ -534,7 +534,7 @@ RSpec.describe MergeRequests::RefreshService do
     context 'push to fork repo target branch', :sidekiq_might_not_need_inline do
       describe 'changes to merge requests' do
         before do
-          service.new(@fork_project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          service.new(project: @fork_project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
           reload_mrs
         end
 
@@ -551,7 +551,7 @@ RSpec.describe MergeRequests::RefreshService do
       describe 'merge request diff' do
         it 'does not reload the diff of the merge request made from fork' do
           expect do
-            service.new(@fork_project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+            service.new(project: @fork_project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
           end.not_to change { @fork_merge_request.reload.merge_request_diff }
         end
       end
@@ -582,28 +582,28 @@ RSpec.describe MergeRequests::RefreshService do
 
       it 'reloads a new diff for a push to the forked project' do
         expect do
-          service.new(@fork_project, @user).execute(@oldrev, first_commit, 'refs/heads/master')
+          service.new(project: @fork_project, current_user: @user).execute(@oldrev, first_commit, 'refs/heads/master')
           reload_mrs
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
       end
 
       it 'reloads a new diff for a force push to the source branch' do
         expect do
-          service.new(@fork_project, @user).execute(@oldrev, force_push_commit, 'refs/heads/master')
+          service.new(project: @fork_project, current_user: @user).execute(@oldrev, force_push_commit, 'refs/heads/master')
           reload_mrs
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
       end
 
       it 'reloads a new diff for a force push to the target branch' do
         expect do
-          service.new(@project, @user).execute(@oldrev, force_push_commit, 'refs/heads/master')
+          service.new(project: @project, current_user: @user).execute(@oldrev, force_push_commit, 'refs/heads/master')
           reload_mrs
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
       end
 
       it 'reloads a new diff for a push to the target project that contains a commit in the MR' do
         expect do
-          service.new(@project, @user).execute(@oldrev, first_commit, 'refs/heads/master')
+          service.new(project: @project, current_user: @user).execute(@oldrev, first_commit, 'refs/heads/master')
           reload_mrs
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
       end
@@ -614,7 +614,7 @@ RSpec.describe MergeRequests::RefreshService do
                                                      branch_name: 'master')
 
         expect do
-          service.new(@project, @user).execute(@newrev, new_commit, 'refs/heads/master')
+          service.new(project: @project, current_user: @user).execute(@newrev, new_commit, 'refs/heads/master')
           reload_mrs
         end.not_to change { forked_master_mr.merge_request_diffs.count }
       end
@@ -623,7 +623,7 @@ RSpec.describe MergeRequests::RefreshService do
     context 'push to origin repo target branch after fork project was removed' do
       before do
         @fork_project.destroy!
-        service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+        service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
         reload_mrs
       end
 
@@ -639,7 +639,7 @@ RSpec.describe MergeRequests::RefreshService do
     end
 
     context 'push new branch that exists in a merge request' do
-      let(:refresh_service) { service.new(@fork_project, @user) }
+      let(:refresh_service) { service.new(project: @fork_project, current_user: @user) }
 
       it 'refreshes the merge request', :sidekiq_might_not_need_inline do
         expect(refresh_service).to receive(:execute_hooks)
@@ -688,7 +688,7 @@ RSpec.describe MergeRequests::RefreshService do
                                  source_branch: 'close-by-commit',
                                  source_project: project)
 
-          refresh_service = service.new(project, user)
+          refresh_service = service.new(project: project, current_user: user)
           allow(refresh_service).to receive(:execute_hooks)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
@@ -711,7 +711,7 @@ RSpec.describe MergeRequests::RefreshService do
                                  source_branch: 'close-by-commit',
                                  source_project: forked_project)
 
-          refresh_service = service.new(forked_project, user)
+          refresh_service = service.new(project: forked_project, current_user: user)
           allow(refresh_service).to receive(:execute_hooks)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
@@ -722,7 +722,7 @@ RSpec.describe MergeRequests::RefreshService do
     end
 
     context 'marking the merge request as draft' do
-      let(:refresh_service) { service.new(@project, @user) }
+      let(:refresh_service) { service.new(project: @project, current_user: @user) }
 
       before do
         allow(refresh_service).to receive(:execute_hooks)
@@ -802,7 +802,7 @@ RSpec.describe MergeRequests::RefreshService do
   end
 
   describe 'updating merge_commit' do
-    let(:service) { described_class.new(project, user) }
+    let(:service) { described_class.new(project: project, current_user: user) }
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
 
@@ -890,7 +890,7 @@ RSpec.describe MergeRequests::RefreshService do
     end
 
     let(:auto_merge_strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS }
-    let(:refresh_service) { service.new(project, user) }
+    let(:refresh_service) { service.new(project: project, current_user: user) }
 
     before do
       target_project.merge_method = merge_method

@@ -9,7 +9,7 @@ RSpec.describe ::MergeRequests::AddTodoWhenBuildFailsService do
   let(:ref) { merge_request.source_branch }
 
   let(:service) do
-    described_class.new(project, user, commit_message: 'Awesome message')
+    described_class.new(project: project, current_user: user, params: { commit_message: 'Awesome message' })
   end
 
   let(:todo_service) { spy('todo service') }

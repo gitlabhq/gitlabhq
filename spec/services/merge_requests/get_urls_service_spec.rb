@@ -6,7 +6,7 @@ RSpec.describe MergeRequests::GetUrlsService do
   include ProjectForksHelper
 
   let(:project) { create(:project, :public, :repository) }
-  let(:service) { described_class.new(project) }
+  let(:service) { described_class.new(project: project) }
   let(:source_branch) { "merge-test" }
   let(:new_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{source_branch}" }
   let(:show_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/#{merge_request.iid}" }
@@ -106,7 +106,7 @@ RSpec.describe MergeRequests::GetUrlsService do
       let!(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project, source_branch: source_branch) }
       let(:changes) { existing_branch_changes }
       # Source project is now the forked one
-      let(:service) { described_class.new(forked_project) }
+      let(:service) { described_class.new(project: forked_project) }
 
       before do
         allow(forked_project).to receive(:empty_repo?).and_return(false)

@@ -29,7 +29,7 @@ module Gitlab
       private
 
       def close_issue(issue:)
-        Issues::CloseService.new(project, current_user).execute(issue)
+        Issues::CloseService.new(project: project, current_user: current_user).execute(issue)
       end
 
       def presenter(issue)

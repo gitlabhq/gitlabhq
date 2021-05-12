@@ -10,7 +10,7 @@ RSpec.describe MergeRequests::HandleAssigneesChangeService do
   let_it_be(:old_assignees) { create_list(:user, 3) }
 
   let(:options) { {} }
-  let(:service) { described_class.new(project, user) }
+  let(:service) { described_class.new(project: project, current_user: user) }
 
   before_all do
     project.add_maintainer(user)

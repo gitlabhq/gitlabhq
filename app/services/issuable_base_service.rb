@@ -1,11 +1,21 @@
 # frozen_string_literal: true
 
-class IssuableBaseService < BaseService
+class IssuableBaseService < ::BaseProjectService
   private
+
+  def self.constructor_container_arg(value)
+    # TODO: Dynamically determining the type of a constructor arg based on the class is an antipattern,
+    # but the root cause is that Epics::BaseService has some issues that inheritance may not be the
+    # appropriate pattern. See more details in comments at the top of Epics::BaseService#initialize.
+    # Follow on issue to address this:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/328438
+
+    { project: value }
+  end
 
   attr_accessor :params, :skip_milestone_email
 
-  def initialize(project, user = nil, params = {})
+  def initialize(project:, current_user: nil, params: {})
     super
 
     @skip_milestone_email = @params.delete(:skip_milestone_email)
@@ -343,9 +353,13 @@ class IssuableBaseService < BaseService
   def change_state(issuable)
     case params.delete(:state_event)
     when 'reopen'
-      reopen_service.new(project, current_user, {}).execute(issuable)
+      service_class = reopen_service
     when 'close'
-      close_service.new(project, current_user, {}).execute(issuable)
+      service_class = close_service
+    end
+
+    if service_class
+      service_class.new(**service_class.constructor_container_arg(project), current_user: current_user).execute(issuable)
     end
   end
 
@@ -406,7 +420,7 @@ class IssuableBaseService < BaseService
   end
 
   def create_system_notes(issuable, **options)
-    Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, **options)
+    Issuable::CommonSystemNotesService.new(project: project, current_user: current_user).execute(issuable, **options)
   end
 
   def associations_before_update(issuable)

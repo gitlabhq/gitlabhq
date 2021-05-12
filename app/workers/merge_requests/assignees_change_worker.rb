@@ -21,7 +21,7 @@ class MergeRequests::AssigneesChangeWorker
     return if users.blank?
 
     ::MergeRequests::HandleAssigneesChangeService
-      .new(merge_request.target_project, current_user)
+      .new(project: merge_request.target_project, current_user: current_user)
       .execute(merge_request, users, execute_hooks: true)
   rescue ActiveRecord::RecordNotFound
   end

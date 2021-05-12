@@ -531,7 +531,7 @@ RSpec.describe Projects::MergeRequestsController do
                                      sha: merge_request.diff_head_sha,
                                      merge_request: merge_request }
 
-          expect_next_instance_of(MergeRequests::SquashService, project, user, expected_squash_params) do |squash_service|
+          expect_next_instance_of(MergeRequests::SquashService, project: project, current_user: user, params: expected_squash_params) do |squash_service|
             expect(squash_service).to receive(:execute).and_return({
               status: :success,
               squash_sha: SecureRandom.hex(20)
@@ -1831,7 +1831,7 @@ RSpec.describe Projects::MergeRequestsController do
 
     it 'calls MergeRequests::AssignIssuesService' do
       expect(MergeRequests::AssignIssuesService).to receive(:new)
-        .with(project, user, merge_request: merge_request)
+        .with(project: project, current_user: user, params: { merge_request: merge_request })
         .and_return(double(execute: { count: 1 }))
 
       post_assign_issues

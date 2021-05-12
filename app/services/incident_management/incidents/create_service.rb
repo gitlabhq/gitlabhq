@@ -15,11 +15,13 @@ module IncidentManagement
 
       def execute
         issue = Issues::CreateService.new(
-          project,
-          current_user,
-          title: title,
-          description: description,
-          issue_type: ISSUE_TYPE
+          project: project,
+          current_user: current_user,
+          params: {
+            title: title,
+            description: description,
+            issue_type: ISSUE_TYPE
+          }
         ).execute
 
         return error(issue.errors.full_messages.to_sentence, issue) unless issue.valid?

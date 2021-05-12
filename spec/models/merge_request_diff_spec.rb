@@ -61,7 +61,7 @@ RSpec.describe MergeRequestDiff do
 
       let_it_be(:merge_head) do
         MergeRequests::MergeToRefService
-          .new(merge_request.project, merge_request.author)
+          .new(project: merge_request.project, current_user: merge_request.author)
           .execute(merge_request)
 
         merge_request.create_merge_head_diff

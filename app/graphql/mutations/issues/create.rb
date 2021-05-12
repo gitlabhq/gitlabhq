@@ -73,7 +73,7 @@ module Mutations
         project = authorized_find!(project_path)
         params = build_create_issue_params(attributes.merge(author_id: current_user.id))
 
-        issue = ::Issues::CreateService.new(project, current_user, params).execute
+        issue = ::Issues::CreateService.new(project: project, current_user: current_user, params: params).execute
 
         if issue.spam?
           issue.errors.add(:base, 'Spam detected.')

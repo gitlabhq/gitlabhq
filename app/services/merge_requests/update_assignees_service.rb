@@ -20,7 +20,7 @@ module MergeRequests
 
       # Defer the more expensive operations (handle_assignee_changes) to the background
       MergeRequests::HandleAssigneesChangeService
-        .new(project, current_user)
+        .new(project: project, current_user: current_user)
         .async_execute(merge_request, old_assignees, execute_hooks: true)
 
       merge_request

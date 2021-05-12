@@ -204,7 +204,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
       end
 
       it "correctly generates the right diff between versions" do
-        MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
+        MergeRequests::MergeToRefService.new(project: project, current_user: merge_request.author).execute(merge_request)
 
         expect_next_instance_of(CompareService) do |service|
           expect(service).to receive(:execute).with(

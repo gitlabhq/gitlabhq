@@ -245,7 +245,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def update
-    @merge_request = ::MergeRequests::UpdateService.new(project, current_user, merge_request_update_params).execute(@merge_request)
+    @merge_request = ::MergeRequests::UpdateService.new(project: project, current_user: current_user, params: merge_request_update_params).execute(@merge_request)
 
     respond_to do |format|
       format.html do
@@ -274,7 +274,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def remove_wip
     @merge_request = ::MergeRequests::UpdateService
-      .new(project, current_user, wip_event: 'unwip')
+      .new(project: project, current_user: current_user, params: { wip_event: 'unwip' })
       .execute(@merge_request)
 
     render json: serialize_widget(@merge_request)
@@ -309,7 +309,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def assign_related_issues
-    result = ::MergeRequests::AssignIssuesService.new(project, current_user, merge_request: @merge_request).execute
+    result = ::MergeRequests::AssignIssuesService.new(project: project, current_user: current_user, params: { merge_request: @merge_request }).execute
 
     case result[:count]
     when 0
@@ -421,7 +421,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       return :failed
     end
 
-    merge_service = ::MergeRequests::MergeService.new(@project, current_user, merge_params)
+    merge_service = ::MergeRequests::MergeService.new(project: @project, current_user: current_user, params: merge_params)
 
     unless merge_service.hooks_validation_pass?(@merge_request)
       return :hook_validation_error

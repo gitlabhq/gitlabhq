@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class LinkLfsObjectsService < ::BaseService
+  class LinkLfsObjectsService < ::BaseProjectService
     def execute(merge_request, oldrev: merge_request.diff_base_sha, newrev: merge_request.diff_head_sha)
       return if merge_request.source_project == project
       return if no_changes?(oldrev, newrev)

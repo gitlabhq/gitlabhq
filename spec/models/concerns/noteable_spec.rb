@@ -288,7 +288,7 @@ RSpec.describe Noteable do
     end
 
     before do
-      MergeRequests::MergeToRefService.new(merge_request.project, merge_request.author).execute(merge_request)
+      MergeRequests::MergeToRefService.new(project: merge_request.project, current_user: merge_request.author).execute(merge_request)
       Discussions::CaptureDiffNotePositionsService.new(merge_request).execute
     end
 

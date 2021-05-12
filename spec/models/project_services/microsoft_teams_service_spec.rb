@@ -73,7 +73,7 @@ RSpec.describe MicrosoftTeamsService do
     context 'with issue events' do
       let(:opts) { { title: 'Awesome issue', description: 'please fix' } }
       let(:issues_sample_data) do
-        service = Issues::CreateService.new(project, user, opts)
+        service = Issues::CreateService.new(project: project, current_user: user, params: opts)
         issue = service.execute
         service.hook_data(issue, 'open')
       end
@@ -96,7 +96,7 @@ RSpec.describe MicrosoftTeamsService do
       end
 
       let(:merge_sample_data) do
-        service = MergeRequests::CreateService.new(project, user, opts)
+        service = MergeRequests::CreateService.new(project: project, current_user: user, params: opts)
         merge_request = service.execute
         service.hook_data(merge_request, 'open')
       end

@@ -75,7 +75,7 @@ RSpec.describe Issues::ReorderService do
           match_params = { move_between_ids: [issue2.id, issue3.id], board_group_id: group.id }
 
           expect(Issues::UpdateService)
-            .to receive(:new).with(project, user, match_params)
+            .to receive(:new).with(project: project, current_user: user, params: match_params)
             .and_return(double(execute: build(:issue)))
 
           subject.execute(issue1)
@@ -95,6 +95,6 @@ RSpec.describe Issues::ReorderService do
   end
 
   def service(params)
-    described_class.new(project, user, params)
+    described_class.new(project: project, current_user: user, params: params)
   end
 end

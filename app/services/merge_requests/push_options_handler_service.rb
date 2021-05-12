@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class PushOptionsHandlerService
+  class PushOptionsHandlerService < ::BaseProjectService
     LIMIT = 10
 
-    attr_reader :current_user, :errors, :changes,
-                :project, :push_options, :target_project
+    attr_reader :errors, :changes,
+                :push_options, :target_project
 
-    def initialize(project, current_user, changes, push_options)
-      @project = project
+    def initialize(project:, current_user:, params: {}, changes:, push_options:)
+      super(project: project, current_user: current_user, params: params)
+
       @target_project = @project.default_merge_request_target
-      @current_user = current_user
       @changes = Gitlab::ChangesList.new(changes)
       @push_options = push_options
       @errors = []
@@ -95,16 +95,16 @@ module MergeRequests
 
       # Use BuildService to assign the standard attributes of a merge request
       merge_request = ::MergeRequests::BuildService.new(
-        project,
-        current_user,
-        create_params(branch)
+        project: project,
+        current_user: current_user,
+        params: create_params(branch)
       ).execute
 
       unless merge_request.errors.present?
         merge_request = ::MergeRequests::CreateService.new(
-          project,
-          current_user,
-          merge_request.attributes.merge(assignees: merge_request.assignees,
+          project: project,
+          current_user: current_user,
+          params: merge_request.attributes.merge(assignees: merge_request.assignees,
                                          label_ids: merge_request.label_ids)
         ).execute
       end
@@ -114,9 +114,9 @@ module MergeRequests
 
     def update!(merge_request)
       merge_request = ::MergeRequests::UpdateService.new(
-        target_project,
-        current_user,
-        update_params(merge_request)
+        project: target_project,
+        current_user: current_user,
+        params: update_params(merge_request)
       ).execute(merge_request)
 
       collect_errors_from_merge_request(merge_request) unless merge_request.valid?

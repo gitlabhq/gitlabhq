@@ -9,7 +9,7 @@ RSpec.describe MergeRequests::AddSpentTimeService do
 
   let(:duration) { 1500 }
   let(:params) { { spend_time: { duration: duration, user_id: user.id } } }
-  let(:service) { described_class.new(project, user, params) }
+  let(:service) { described_class.new(project: project, current_user: user, params: params) }
 
   describe '#execute' do
     before do
@@ -44,7 +44,7 @@ RSpec.describe MergeRequests::AddSpentTimeService do
     it 'is more efficient than using the full update-service' do
       other_mr = create(:merge_request, :simple, :unique_branches, source_project: project)
 
-      update_service = ::MergeRequests::UpdateService.new(project, user, params)
+      update_service = ::MergeRequests::UpdateService.new(project: project, current_user: user, params: params)
       other_mr.reload
 
       expect { service.execute(merge_request) }

@@ -77,12 +77,14 @@ module Gitlab
 
         def create_issue!
           @issue = Issues::CreateService.new(
-            project,
-            User.support_bot,
-            title: mail.subject,
-            description: message_including_template,
-            confidential: true,
-            external_author: from_address
+            project: project,
+            current_user: User.support_bot,
+            params: {
+              title: mail.subject,
+              description: message_including_template,
+              confidential: true,
+              external_author: from_address
+            }
           ).execute
 
           raise InvalidIssueError unless @issue.persisted?

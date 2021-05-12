@@ -21,7 +21,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         }
       end
 
-      let(:service) { described_class.new(project, user, opts) }
+      let(:service) { described_class.new(project: project, current_user: user, params: opts) }
       let(:merge_request) { service.execute }
 
       before do
@@ -347,12 +347,12 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         }
       end
 
-      let(:issuable) { described_class.new(project, user, params).execute }
+      let(:issuable) { described_class.new(project: project, current_user: user, params: params).execute }
     end
 
     context 'Quick actions' do
       context 'with assignee and milestone in params and command' do
-        let(:merge_request) { described_class.new(project, user, opts).execute }
+        let(:merge_request) { described_class.new(project: project, current_user: user, params: opts).execute }
         let(:milestone) { create(:milestone, project: project) }
 
         let(:opts) do
@@ -390,7 +390,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         it 'removes assignee_id when user id is invalid' do
           opts = { title: 'Title', description: 'Description', assignee_ids: [-1] }
 
-          merge_request = described_class.new(project, user, opts).execute
+          merge_request = described_class.new(project: project, current_user: user, params: opts).execute
 
           expect(merge_request.assignee_ids).to be_empty
         end
@@ -398,7 +398,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         it 'removes assignee_id when user id is 0' do
           opts = { title: 'Title', description: 'Description', assignee_ids: [0] }
 
-          merge_request = described_class.new(project, user, opts).execute
+          merge_request = described_class.new(project: project, current_user: user, params: opts).execute
 
           expect(merge_request.assignee_ids).to be_empty
         end
@@ -407,7 +407,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           project.add_maintainer(user2)
           opts = { title: 'Title', description: 'Description', assignee_ids: [user2.id] }
 
-          merge_request = described_class.new(project, user, opts).execute
+          merge_request = described_class.new(project: project, current_user: user, params: opts).execute
 
           expect(merge_request.assignees).to eq([user2])
         end
@@ -426,7 +426,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           it 'invalidates open merge request counter for assignees when merge request is assigned' do
             project.add_maintainer(user2)
 
-            described_class.new(project, user, opts).execute
+            described_class.new(project: project, current_user: user, params: opts).execute
 
             expect(user2.assigned_open_merge_requests_count).to eq 1
           end
@@ -445,7 +445,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
               project.update!(visibility_level: level)
               opts = { title: 'Title', description: 'Description', assignee_ids: [user2.id] }
 
-              merge_request = described_class.new(project, user, opts).execute
+              merge_request = described_class.new(project: project, current_user: user, params: opts).execute
 
               expect(merge_request.assignee_id).to be_nil
             end
@@ -473,7 +473,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
 
         it 'raises an error' do
-          expect { described_class.new(project, user, opts).execute }
+          expect { described_class.new(project: project, current_user: user, params: opts).execute }
             .to raise_error Gitlab::Access::AccessDeniedError
         end
       end
@@ -485,7 +485,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
 
         it 'raises an error' do
-          expect { described_class.new(project, user, opts).execute }
+          expect { described_class.new(project: project, current_user: user, params: opts).execute }
             .to raise_error Gitlab::Access::AccessDeniedError
         end
       end
@@ -497,7 +497,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
 
         it 'creates the merge request', :sidekiq_might_not_need_inline do
-          merge_request = described_class.new(project, user, opts).execute
+          merge_request = described_class.new(project: project, current_user: user, params: opts).execute
 
           expect(merge_request).to be_persisted
         end
@@ -505,7 +505,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         it 'does not create the merge request when the target project is archived' do
           target_project.update!(archived: true)
 
-          expect { described_class.new(project, user, opts).execute }
+          expect { described_class.new(project: project, current_user: user, params: opts).execute }
             .to raise_error Gitlab::Access::AccessDeniedError
         end
       end
@@ -529,7 +529,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
       end
 
       it 'ignores source_project_id' do
-        merge_request = described_class.new(project, user, opts).execute
+        merge_request = described_class.new(project: project, current_user: user, params: opts).execute
 
         expect(merge_request.source_project_id).to eq(project.id)
       end

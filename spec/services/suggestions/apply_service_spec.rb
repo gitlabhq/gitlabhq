@@ -398,7 +398,7 @@ RSpec.describe Suggestions::ApplyService do
           suggestion.reload
           expect(result[:status]).to eq(:success)
 
-          refresh = MergeRequests::RefreshService.new(project, user)
+          refresh = MergeRequests::RefreshService.new(project: project, current_user: user)
           refresh.execute(merge_request.diff_head_sha,
                           suggestion.commit_id,
                           merge_request.source_branch_ref)

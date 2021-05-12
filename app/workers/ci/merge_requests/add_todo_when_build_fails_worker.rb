@@ -17,7 +17,7 @@ module Ci
 
         return unless job && project
 
-        ::MergeRequests::AddTodoWhenBuildFailsService.new(job.project, nil).execute(job)
+        ::MergeRequests::AddTodoWhenBuildFailsService.new(project: job.project).execute(job)
       end
     end
   end

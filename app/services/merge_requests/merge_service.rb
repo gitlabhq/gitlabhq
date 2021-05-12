@@ -17,7 +17,7 @@ module MergeRequests
 
     def execute(merge_request, options = {})
       if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
-        FfMergeService.new(project, current_user, params).execute(merge_request)
+        FfMergeService.new(project: project, current_user: current_user, params: params).execute(merge_request)
         return
       end
 
@@ -111,7 +111,7 @@ module MergeRequests
 
     def after_merge
       log_info("Post merge started on JID #{merge_jid} with state #{state}")
-      MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
+      MergeRequests::PostMergeService.new(project: project, current_user: current_user).execute(merge_request)
       log_info("Post merge finished on JID #{merge_jid} with state #{state}")
 
       if delete_source_branch?

@@ -9,7 +9,7 @@ RSpec.describe MergeRequests::PostMergeService do
   let_it_be(:merge_request, reload: true) { create(:merge_request, assignees: [user]) }
   let_it_be(:project) { merge_request.project }
 
-  subject { described_class.new(project, user).execute(merge_request) }
+  subject { described_class.new(project: project, current_user: user).execute(merge_request) }
 
   before do
     project.add_maintainer(user)

@@ -30,7 +30,7 @@ module Boards
       end
 
       def create_issue(params)
-        ::Issues::CreateService.new(project, current_user, params).execute
+        ::Issues::CreateService.new(project: project, current_user: current_user, params: params).execute
       end
     end
   end

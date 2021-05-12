@@ -15,7 +15,7 @@ class NewMergeRequestWorker # rubocop:disable Scalability/IdempotentWorker
     return unless objects_found?(merge_request_id, user_id)
 
     MergeRequests::AfterCreateService
-      .new(issuable.target_project, user)
+      .new(project: issuable.target_project, current_user: user)
       .execute(issuable)
   end
 

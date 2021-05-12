@@ -7,7 +7,7 @@ RSpec.describe MergeRequests::ResolvedDiscussionNotificationService do
   let(:user) { create(:user) }
   let(:project) { merge_request.project }
 
-  subject { described_class.new(project, user) }
+  subject { described_class.new(project: project, current_user: user) }
 
   describe "#execute" do
     context "when not all discussions are resolved" do

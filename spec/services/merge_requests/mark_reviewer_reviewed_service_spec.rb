@@ -7,7 +7,7 @@ RSpec.describe MergeRequests::MarkReviewerReviewedService do
   let(:merge_request) { create(:merge_request, reviewers: [current_user]) }
   let(:reviewer) { merge_request.merge_request_reviewers.find_by(user_id: current_user.id) }
   let(:project) { merge_request.project }
-  let(:service) { described_class.new(project, current_user) }
+  let(:service) { described_class.new(project: project, current_user: current_user) }
   let(:result) { service.execute(merge_request) }
 
   before do
@@ -16,7 +16,7 @@ RSpec.describe MergeRequests::MarkReviewerReviewedService do
 
   describe '#execute' do
     describe 'invalid permissions' do
-      let(:service) { described_class.new(project, create(:user)) }
+      let(:service) { described_class.new(project: project, current_user: create(:user)) }
 
       it 'returns an error' do
         expect(result[:status]).to eq :error
@@ -24,7 +24,7 @@ RSpec.describe MergeRequests::MarkReviewerReviewedService do
     end
 
     describe 'reviewer does not exist' do
-      let(:service) { described_class.new(project, create(:user)) }
+      let(:service) { described_class.new(project: project, current_user: create(:user)) }
 
       it 'returns an error' do
         expect(result[:status]).to eq :error

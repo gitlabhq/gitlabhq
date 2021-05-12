@@ -29,7 +29,7 @@ module Ci
       pipeline.reset_source_bridge!(current_user)
 
       ::MergeRequests::AddTodoWhenBuildFailsService
-        .new(project, current_user)
+        .new(project: project, current_user: current_user)
         .close_all(pipeline)
 
       Ci::ProcessPipelineService

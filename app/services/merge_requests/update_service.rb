@@ -4,7 +4,7 @@ module MergeRequests
   class UpdateService < MergeRequests::BaseService
     extend ::Gitlab::Utils::Override
 
-    def initialize(project, user = nil, params = {})
+    def initialize(project:, current_user: nil, params: {})
       super
 
       @target_branch_was_deleted = @params.delete(:target_branch_was_deleted)
@@ -222,7 +222,7 @@ module MergeRequests
 
     def handle_assignees_change(merge_request, old_assignees)
       MergeRequests::HandleAssigneesChangeService
-        .new(project, current_user)
+        .new(project: project, current_user: current_user)
         .async_execute(merge_request, old_assignees)
     end
 
@@ -304,11 +304,11 @@ module MergeRequests
 
     def assignees_service
       @assignees_service ||= ::MergeRequests::UpdateAssigneesService
-        .new(project, current_user, params)
+        .new(project: project, current_user: current_user, params: params)
     end
 
     def add_time_spent_service
-      @add_time_spent_service ||= ::MergeRequests::AddSpentTimeService.new(project, current_user, params)
+      @add_time_spent_service ||= ::MergeRequests::AddSpentTimeService.new(project: project, current_user: current_user, params: params)
     end
   end
 end

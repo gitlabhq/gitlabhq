@@ -56,7 +56,7 @@ module AlertManagement
       return if issue.blank? || issue.closed?
 
       ::Issues::CloseService
-        .new(project, User.alert_bot)
+        .new(project: project, current_user: User.alert_bot)
         .execute(issue, system_note: false)
 
       SystemNoteService.auto_resolve_prometheus_alert(issue, project, User.alert_bot) if issue.reset.closed?

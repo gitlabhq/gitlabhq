@@ -157,7 +157,7 @@ module MergeRequests
 
     def merge_to_ref
       params = { allow_conflicts: Feature.enabled?(:display_merge_conflicts_in_diff, project) }
-      result = MergeRequests::MergeToRefService.new(project, merge_request.author, params).execute(merge_request)
+      result = MergeRequests::MergeToRefService.new(project: project, current_user: merge_request.author, params: params).execute(merge_request)
 
       result[:status] == :success
     end

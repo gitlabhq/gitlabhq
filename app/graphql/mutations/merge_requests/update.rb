@@ -29,7 +29,7 @@ module Mutations
         attributes = args.compact
 
         ::MergeRequests::UpdateService
-          .new(merge_request.project, current_user, attributes)
+          .new(project: merge_request.project, current_user: current_user, params: attributes)
           .execute(merge_request)
 
         errors = errors_on_object(merge_request)

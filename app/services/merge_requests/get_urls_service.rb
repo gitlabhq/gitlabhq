@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class GetUrlsService < BaseService
-    attr_reader :project
-
-    def initialize(project)
-      @project = project
-    end
-
+  class GetUrlsService < BaseProjectService
     def execute(changes)
       return [] unless project&.printing_merge_request_link_enabled
 

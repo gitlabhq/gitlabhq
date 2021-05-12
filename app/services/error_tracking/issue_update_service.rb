@@ -35,7 +35,7 @@ module ErrorTracking
 
     def close_issue(issue)
       Issues::CloseService
-        .new(project, current_user)
+        .new(project: project, current_user: current_user)
         .execute(issue, system_note: false)
     end
 

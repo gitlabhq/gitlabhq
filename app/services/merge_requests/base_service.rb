@@ -147,7 +147,7 @@ module MergeRequests
       if async
         MergeRequests::CreatePipelineWorker.perform_async(project.id, user.id, merge_request.id)
       else
-        MergeRequests::CreatePipelineService.new(project, user).execute(merge_request)
+        MergeRequests::CreatePipelineService.new(project: project, current_user: user).execute(merge_request)
       end
     end
 

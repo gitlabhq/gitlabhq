@@ -74,7 +74,7 @@ RSpec.describe MergeRequests::MergeToRefService do
 
   describe '#execute' do
     let(:service) do
-      described_class.new(project, user, **params)
+      described_class.new(project: project, current_user: user, params: params)
     end
 
     let(:params) { { commit_message: 'Awesome message', should_remove_source_branch: true, sha: merge_request.diff_head_sha } }
@@ -111,11 +111,11 @@ RSpec.describe MergeRequests::MergeToRefService do
       end
 
       let(:merge_ref_service) do
-        described_class.new(project, user, {})
+        described_class.new(project: project, current_user: user)
       end
 
       let(:merge_service) do
-        MergeRequests::MergeService.new(project, user, { sha: merge_request.diff_head_sha })
+        MergeRequests::MergeService.new(project: project, current_user: user, params: { sha: merge_request.diff_head_sha })
       end
 
       context 'when merge commit' do

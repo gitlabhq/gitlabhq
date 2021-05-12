@@ -3653,7 +3653,7 @@ RSpec.describe Ci::Build do
   end
 
   describe 'state transition when build fails' do
-    let(:service) { ::MergeRequests::AddTodoWhenBuildFailsService.new(project, user) }
+    let(:service) { ::MergeRequests::AddTodoWhenBuildFailsService.new(project: project, current_user: user) }
 
     before do
       allow(::MergeRequests::AddTodoWhenBuildFailsService).to receive(:new).and_return(service)

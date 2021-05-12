@@ -122,7 +122,7 @@ module Issues
       canonical_issue = IssuesFinder.new(current_user).find_by(id: canonical_issue_id)
 
       if canonical_issue
-        Issues::DuplicateService.new(project, current_user).execute(issue, canonical_issue)
+        Issues::DuplicateService.new(project: project, current_user: current_user).execute(issue, canonical_issue)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -135,7 +135,7 @@ module Issues
           target_project != issue.project
 
       update(issue)
-      Issues::MoveService.new(project, current_user).execute(issue, target_project)
+      Issues::MoveService.new(project: project, current_user: current_user).execute(issue, target_project)
     end
 
     private
@@ -151,14 +151,14 @@ module Issues
 
       # we've pre-empted this from running in #execute, so let's go ahead and update the Issue now.
       update(issue)
-      Issues::CloneService.new(project, current_user).execute(issue, target_project, with_notes: with_notes)
+      Issues::CloneService.new(project: project, current_user: current_user).execute(issue, target_project, with_notes: with_notes)
     end
 
     def create_merge_request_from_quick_action
       create_merge_request_params = params.delete(:create_merge_request)
       return unless create_merge_request_params
 
-      MergeRequests::CreateFromIssueService.new(project, current_user, create_merge_request_params).execute
+      MergeRequests::CreateFromIssueService.new(project: project, current_user: current_user, mr_params: create_merge_request_params).execute
     end
 
     def handle_milestone_change(issue)

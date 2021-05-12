@@ -239,7 +239,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
 
         threads << Thread.new do
           Sidekiq::Worker.skipping_transaction_check do
-            @merge_request = MergeRequests::CreateService.new(project, user, merge_request_params).execute
+            @merge_request = MergeRequests::CreateService.new(project: project, current_user: user, params: merge_request_params).execute
           end
         end
 

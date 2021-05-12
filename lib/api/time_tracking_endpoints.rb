@@ -37,7 +37,7 @@ module API
           custom_params = declared_params(include_missing: false)
           custom_params.merge!(attrs)
 
-          issuable = update_service.new(user_project, current_user, custom_params).execute(load_issuable)
+          issuable = update_service.new(project: user_project, current_user: current_user, params: custom_params).execute(load_issuable)
           if issuable.valid?
             present issuable, with: Entities::IssuableTimeStats
           else

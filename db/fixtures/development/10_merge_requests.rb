@@ -36,7 +36,7 @@ Gitlab::Seeder.quiet do
       break unless developer
 
       Sidekiq::Worker.skipping_transaction_check do
-        MergeRequests::CreateService.new(project, developer, params).execute
+        MergeRequests::CreateService.new(project: project, current_user: developer, params: params).execute
       rescue Repository::AmbiguousRefError
         # Ignore pipelines creation errors for now, we can doing that after
         # https://gitlab.com/gitlab-org/gitlab-foss/issues/55966. will be resolved.
@@ -55,7 +55,7 @@ Gitlab::Seeder.quiet do
     title: 'Can be automatically merged'
   }
   Sidekiq::Worker.skipping_transaction_check do
-    MergeRequests::CreateService.new(project, User.admins.first, params).execute
+    MergeRequests::CreateService.new(project: project, current_user: User.admins.first, params: params).execute
   end
   print '.'
 
@@ -65,7 +65,7 @@ Gitlab::Seeder.quiet do
     title: 'Cannot be automatically merged'
   }
   Sidekiq::Worker.skipping_transaction_check do
-    MergeRequests::CreateService.new(project, User.admins.first, params).execute
+    MergeRequests::CreateService.new(project: project, current_user: User.admins.first, params: params).execute
   end
   print '.'
 end

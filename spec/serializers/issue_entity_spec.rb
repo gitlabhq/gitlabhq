@@ -29,7 +29,7 @@ RSpec.describe IssueEntity do
     before do
       project.add_developer(member)
       public_project.add_developer(member)
-      Issues::MoveService.new(public_project, member).execute(issue, project)
+      Issues::MoveService.new(project: public_project, current_user: member).execute(issue, project)
     end
 
     context 'when user cannot read target project' do
@@ -61,7 +61,7 @@ RSpec.describe IssueEntity do
 
     before do
       Issues::DuplicateService
-        .new(project, member)
+        .new(project: project, current_user: member)
         .execute(issue, new_issue)
     end
 

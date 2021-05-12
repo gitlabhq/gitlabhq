@@ -9,7 +9,7 @@ RSpec.describe MergeRequests::ApprovalService do
     let(:project)       { merge_request.project }
     let!(:todo)         { create(:todo, user: user, project: project, target: merge_request) }
 
-    subject(:service) { described_class.new(project, user) }
+    subject(:service) { described_class.new(project: project, current_user: user) }
 
     before do
       project.add_developer(user)
