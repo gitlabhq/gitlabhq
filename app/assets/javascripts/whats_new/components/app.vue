@@ -63,7 +63,7 @@ export default {
     <gl-drawer
       ref="drawer"
       v-gl-resize-observer="handleResize"
-      class="whats-new-drawer"
+      class="whats-new-drawer gl-reset-line-height"
       :z-index="700"
       :open="open"
       @close="closeDrawer"

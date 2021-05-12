@@ -2,6 +2,7 @@
   margin-top: $header-height;
   @include gl-shadow-none;
   overflow-y: hidden;
+  width: 500px;
 
   .gl-infinite-scroll-legend {
     @include gl-display-none;

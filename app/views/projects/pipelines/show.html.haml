@@ -11,6 +11,10 @@
 
 .js-pipeline-container{ data: { controller_action: "#{controller.action_name}" } }
   #js-pipeline-header-vue.pipeline-header-container{ data: { full_path: @project.full_path, pipeline_iid: @pipeline.iid, pipeline_id: @pipeline.id, pipelines_path: project_pipelines_path(@project) } }
+
+  - if @pipeline.failed? && @pipeline.user_not_verified?
+    #js-cc-validation-required-alert
+
   - if @pipeline.commit.present?
     = render "projects/pipelines/info", commit: @pipeline.commit
 

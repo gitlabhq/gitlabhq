@@ -15699,6 +15699,9 @@ msgstr ""
 msgid "GroupRoadmap|To widen your search, change or remove filters; from %{startDate} to %{endDate}."
 msgstr ""
 
+msgid "GroupSAML|%{strongOpen}Warning%{strongClose} - Enabling %{linkStart}SSO enforcement%{linkEnd} can reduce security risks."
+msgstr ""
+
 msgid "GroupSAML|Active SAML Group Links (%{count})"
 msgstr ""
 

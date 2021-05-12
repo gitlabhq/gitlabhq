@@ -34,10 +34,11 @@ export default {
 </script>
 
 <template>
-  <div class="gl-py-6 gl-px-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100">
+  <div class="gl-py-6 gl-px-6 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100">
     <gl-link
       :href="feature.url"
       target="_blank"
+      class="gl-display-block"
       data-track-event="click_whats_new_item"
       :data-track-label="feature.title"
       :data-track-property="feature.url"
@@ -52,12 +53,12 @@ export default {
     <gl-link
       :href="feature.url"
       target="_blank"
-      class="whats-new-item-title-link"
+      class="whats-new-item-title-link gl-display-block gl-mt-4 gl-mb-1"
       data-track-event="click_whats_new_item"
       :data-track-label="feature.title"
       :data-track-property="feature.url"
     >
-      <h5 class="gl-font-lg gl-mb-1" data-test-id="feature-title">{{ feature.title }}</h5>
+      <h5 class="gl-font-lg gl-my-0" data-test-id="feature-title">{{ feature.title }}</h5>
     </gl-link>
     <div v-if="releaseDate" class="gl-mb-3" data-testid="release-date">{{ releaseDate }}</div>
     <div v-if="feature.packages" class="gl-mb-3">
