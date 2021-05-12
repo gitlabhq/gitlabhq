@@ -13585,6 +13585,7 @@ Values for YAML processor result.
 | Value | Description |
 | ----- | ----------- |
 | <a id="cirunnerstatusactive"></a>`ACTIVE` | A runner that is active. |
+| <a id="cirunnerstatusnot_connected"></a>`NOT_CONNECTED` | A runner that is not connected. |
 | <a id="cirunnerstatusoffline"></a>`OFFLINE` | A runner that is offline. |
 | <a id="cirunnerstatusonline"></a>`ONLINE` | A runner that is online. |
 | <a id="cirunnerstatuspaused"></a>`PAUSED` | A runner that is paused. |

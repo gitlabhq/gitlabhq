@@ -1285,7 +1285,7 @@ RSpec.describe Group do
     end
   end
 
-  describe '#members_with_parents' do
+  shared_examples_for 'members_with_parents' do
     let!(:group) { create(:group, :nested) }
     let!(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
     let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
@@ -1305,6 +1305,50 @@ RSpec.describe Group do
       it 'returns shared with group members' do
         expect(shared_group.members_with_parents).to(
           include(developer))
+      end
+    end
+  end
+
+  describe '#members_with_parents' do
+    it_behaves_like 'members_with_parents'
+  end
+
+  describe '#authorizable_members_with_parents' do
+    let(:group) { create(:group) }
+
+    it_behaves_like 'members_with_parents'
+
+    context 'members with associated user but also having invite_token' do
+      let!(:member) { create(:group_member, :developer, :invited, user: create(:user), group: group) }
+
+      it 'includes such members in the result' do
+        expect(group.authorizable_members_with_parents).to include(member)
+      end
+    end
+
+    context 'invited members' do
+      let!(:member) { create(:group_member, :developer, :invited, group: group) }
+
+      it 'does not include such members in the result' do
+        expect(group.authorizable_members_with_parents).not_to include(member)
+      end
+    end
+
+    context 'members from group shares' do
+      let(:shared_group) { group }
+      let(:shared_with_group) { create(:group) }
+
+      before do
+        create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_group)
+      end
+
+      context 'an invited member that is part of the shared_with_group' do
+        let!(:member) { create(:group_member, :developer, :invited, group: shared_with_group) }
+
+        it 'does not include such members in the result' do
+          expect(shared_group.authorizable_members_with_parents).not_to(
+            include(member))
+        end
       end
     end
   end

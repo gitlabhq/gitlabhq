@@ -10,6 +10,7 @@ module Projects::AlertManagementHelper
       'empty-alert-svg-path' => image_path('illustrations/alert-management-empty-state.svg'),
       'user-can-enable-alert-management' => can?(current_user, :admin_operations, project).to_s,
       'alert-management-enabled' => alert_management_enabled?(project).to_s,
+      'has-managed-prometheus' => has_managed_prometheus?(project).to_s,
       'text-query': params[:search],
       'assignee-username-query': params[:assignee_username]
     }
@@ -26,6 +27,10 @@ module Projects::AlertManagementHelper
   end
 
   private
+
+  def has_managed_prometheus?(project)
+    project.prometheus_service&.prometheus_available? == true
+  end
 
   def alert_management_enabled?(project)
     !!(

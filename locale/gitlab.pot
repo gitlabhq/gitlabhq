@@ -1394,6 +1394,9 @@ msgstr ""
 msgid "A description is required"
 msgstr ""
 
+msgid "A different reason"
+msgstr ""
+
 msgid "A file has been changed."
 msgstr ""
 
@@ -5052,6 +5055,9 @@ msgstr ""
 msgid "Billings|As a user on a free or trial namespace, you'll need to verify your account with a credit card to run pipelines. This is required to help prevent cryptomining attacks on GitLab infrastructure. %{strongStart}GitLab will not charge or store your credit card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
+msgid "Billings|To discourage and reduce abuse GitLab will require some users to provide a valid credit card to use free pipeline minutes on GitLab.com. To use free pipeline minutes, you will need to validate your account with a credit card. %{strongStart}GitLab will not add permanent charges to your credit card as we will only use it for validation.%{strongEnd}"
+msgstr ""
+
 msgid "Billings|User Verification Required"
 msgstr ""
 
@@ -5062,9 +5068,6 @@ msgid "Billings|Verify User Account"
 msgstr ""
 
 msgid "Billings|Verify account"
-msgstr ""
-
-msgid "Billings|Your user account has been flagged for potential abuse for running a large number of concurrent pipelines. To continue to run a large number of concurrent pipelines, you'll need to validate your account with a credit card. %{strongStart}GitLab will not charge your credit card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
 msgid "Billings|Your user account has been successfully verified. You will now be able to run pipelines on any free or trial namespace."
@@ -16420,7 +16423,22 @@ msgstr ""
 msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)"
 msgstr ""
 
+msgid "I want to explore GitLab to see if it’s worth switching to"
+msgstr ""
+
+msgid "I want to learn the basics of Git"
+msgstr ""
+
+msgid "I want to move my repository to GitLab from somewhere else"
+msgstr ""
+
+msgid "I want to use GitLab CI with my existing repository"
+msgstr ""
+
 msgid "I'd like to receive updates about GitLab via email"
+msgstr ""
+
+msgid "I'm signing up for GitLab because:"
 msgstr ""
 
 msgid "ID"
@@ -18433,6 +18451,9 @@ msgid "Iteration|cannot be more than 500 years in the future"
 msgstr ""
 
 msgid "I’m familiar with the basics of DevOps."
+msgstr ""
+
+msgid "I’m joining my team who’s already on GitLab"
 msgstr ""
 
 msgid "I’m not familiar with the basics of DevOps."
@@ -20884,6 +20905,9 @@ msgid "Metrics|Expand panel"
 msgstr ""
 
 msgid "Metrics|For grouping similar metrics"
+msgstr ""
+
+msgid "Metrics|GitLab-managed Prometheus is deprecated and %{linkStart}scheduled for removal%{linkEnd}. Following this removal, your existing alerts will continue to function as part of the new cluster integration. However, you will no longer be able to add new alerts or edit existing alerts from the metrics dashboard."
 msgstr ""
 
 msgid "Metrics|Invalid time range, please verify."
@@ -24530,6 +24554,9 @@ msgid "Please select at least one filter to see results"
 msgstr ""
 
 msgid "Please select what should be included in each exported requirement."
+msgstr ""
+
+msgid "Please select..."
 msgstr ""
 
 msgid "Please set a new password before proceeding."
@@ -36498,6 +36525,9 @@ msgid "Who will be using this GitLab subscription?"
 msgstr ""
 
 msgid "Who will be using this GitLab trial?"
+msgstr ""
+
+msgid "Why are you signing up? (Optional)"
 msgstr ""
 
 msgid "Wiki"

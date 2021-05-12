@@ -227,6 +227,50 @@ Hovering over a stage item displays a popover with the following information:
 - Start event description for the given stage
 - End event description
 
+### Stream overview
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321438) in GitLab 13.11.
+
+![Value Stream Analytics Overview](img/vsa_overview_stage_v13_11.png "VSA overview")
+
+The stream overview provides access to key metrics and charts summarizing all the stages in the value stream
+based on selected filters.
+
+Shown metrics and charts includes:
+
+- [Lead time](#how-metrics-are-measured)
+- [Cycle time](#how-metrics-are-measured)
+- [Days to completion chart](#days-to-completion-chart)
+- [Tasks by type chart](#type-of-work---tasks-by-type-chart)
+
+### Stage table
+
+> Sorting the stage table [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301082) in GitLab 13.12.
+
+![Value Stream Analytics Stage table](img/vsa_stage_table_v13_12.png "VSA stage table")
+
+The stage table shows a list of related workflow items for the selected stage. This can include:
+
+- CI/CD jobs
+- Issues
+- Merge requests
+- Pipelines
+
+The stage table also includes the **Time** column, which shows how long it takes each item to pass
+through the selected value stream stage.
+
+The stage table is not displayed on the stream [Overview](#stream-overview).
+The workflow item column (first column) is ordered by end event.
+
+To sort the stage table by a table column, select the table header.
+You can sort in ascending or descending order. To find items that spent the most time in a stage,
+potentially causing bottlenecks in your value stream, sort the table by the **Time** column.
+From there, select individual items to drill in and investigate how delays are happening.
+To see which items the stage most recently, sort by the work item column on the left.
+
+The table displays up to 20 items at a time. If there are more than 20 items, you can use the
+**Prev** and **Next** buttons to navigate through the pages.
+
 ### Adding a stage
 
 In the following example we're creating a new stage that measures and tracks issues from creation

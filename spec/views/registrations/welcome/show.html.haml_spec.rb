@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'registrations/welcome/show' do
   let(:is_gitlab_com) { false }
 
-  let_it_be(:user) { User.new }
+  let_it_be(:user) { create(:user) }
 
   before do
     allow(view).to receive(:current_user).and_return(user)

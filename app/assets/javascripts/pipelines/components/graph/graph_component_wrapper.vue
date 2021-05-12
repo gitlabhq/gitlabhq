@@ -111,7 +111,12 @@ export default {
         this.reportFailure({ type: LOAD_FAILURE, skipSentry: true });
         reportToSentry(
           this.$options.name,
-          `type: ${LOAD_FAILURE}, info: ${serializeLoadErrors(err)}`,
+          `| type: ${LOAD_FAILURE} |  
+          | rawError: ${JSON.stringify(err)} | 
+          | info: ${serializeLoadErrors(err)} | 
+          | graphqlResourceEtag: ${this.graphqlResourceEtag} | 
+          | projectPath: ${this.projectPath} | 
+          | iid: ${this.pipelineIid} |`,
         );
       },
       result({ error }) {

@@ -45,7 +45,8 @@ RSpec.describe EnvironmentsHelper do
         'custom_dashboard_base_path' => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT,
         'operations_settings_path' => project_settings_operations_path(project),
         'can_access_operations_settings' => 'true',
-        'panel_preview_endpoint' => project_metrics_dashboards_builder_path(project, format: :json)
+        'panel_preview_endpoint' => project_metrics_dashboards_builder_path(project, format: :json),
+        'has_managed_prometheus' => 'false'
       )
     end
 
@@ -117,6 +118,52 @@ RSpec.describe EnvironmentsHelper do
 
         it 'uses correct path for metrics_dashboard_base_path' do
           expect(metrics_data['metrics_dashboard_base_path']).to eq(project_metrics_dashboard_path(project))
+        end
+      end
+    end
+
+    context 'has_managed_prometheus' do
+      context 'without prometheus service' do
+        it "doesn't have managed prometheus" do
+          expect(metrics_data).to include(
+            'has_managed_prometheus' => 'false'
+          )
+        end
+      end
+
+      context 'with prometheus service' do
+        let_it_be(:prometheus_service) { create(:prometheus_service, project: project) }
+
+        context 'when manual prometheus service is active' do
+          it "doesn't have managed prometheus" do
+            prometheus_service.update!(manual_configuration: true)
+
+            expect(metrics_data).to include(
+              'has_managed_prometheus' => 'false'
+            )
+          end
+        end
+
+        context 'when prometheus service is inactive' do
+          it "doesn't have managed prometheus" do
+            prometheus_service.update!(manual_configuration: false)
+
+            expect(metrics_data).to include(
+              'has_managed_prometheus' => 'false'
+            )
+          end
+        end
+
+        context 'when a cluster prometheus is available' do
+          let(:cluster) { create(:cluster, projects: [project]) }
+
+          it 'has managed prometheus' do
+            create(:clusters_applications_prometheus, :installed, cluster: cluster)
+
+            expect(metrics_data).to include(
+              'has_managed_prometheus' => 'true'
+            )
+          end
         end
       end
     end

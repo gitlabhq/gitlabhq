@@ -25,10 +25,12 @@ RSpec.describe Ci::RunnersFinder do
       end
 
       context 'filter by status' do
-        it 'calls the corresponding scope on Ci::Runner' do
-          expect(Ci::Runner).to receive(:paused).and_call_original
+        Ci::Runner::AVAILABLE_STATUSES.each do |status|
+          it "calls the corresponding :#{status} scope on Ci::Runner" do
+            expect(Ci::Runner).to receive(status.to_sym).and_call_original
 
-          described_class.new(current_user: admin, params: { status_status: 'paused' }).execute
+            described_class.new(current_user: admin, params: { status_status: status }).execute
+          end
         end
       end
 

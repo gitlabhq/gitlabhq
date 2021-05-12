@@ -62,7 +62,8 @@ module EnvironmentsHelper
       'validate_query_path'         => validate_query_project_prometheus_metrics_path(project),
       'custom_metrics_available'    => "#{custom_metrics_available?(project)}",
       'prometheus_alerts_available' => "#{can?(current_user, :read_prometheus_alerts, project)}",
-      'dashboard_timezone'          => project.metrics_setting_dashboard_timezone.to_s.upcase
+      'dashboard_timezone'          => project.metrics_setting_dashboard_timezone.to_s.upcase,
+      'has_managed_prometheus'      => has_managed_prometheus?(project).to_s
     }
   end
 
@@ -76,6 +77,10 @@ module EnvironmentsHelper
       'prometheus_status'           => "#{environment.prometheus_status}",
       'environment_state'           => "#{environment.state}"
     }
+  end
+
+  def has_managed_prometheus?(project)
+    project.prometheus_service&.prometheus_available? == true
   end
 
   def metrics_dashboard_base_path(environment, project)

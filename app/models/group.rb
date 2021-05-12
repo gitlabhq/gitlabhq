@@ -450,6 +450,20 @@ class Group < Namespace
                .where(source_id: id)
   end
 
+  def authorizable_members_with_parents
+    source_ids =
+      if has_parent?
+        self_and_ancestors.reorder(nil).select(:id)
+      else
+        id
+      end
+
+    group_hierarchy_members = GroupMember.where(source_id: source_ids)
+
+    GroupMember.from_union([group_hierarchy_members,
+                            members_from_self_and_ancestor_group_shares]).authorizable
+  end
+
   def members_with_parents
     # Avoids an unnecessary SELECT when the group has no parents
     source_ids =

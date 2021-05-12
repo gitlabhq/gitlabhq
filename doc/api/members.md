@@ -289,7 +289,8 @@ Example response:
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root",
     "last_activity_on": "2021-01-27",
-    "membership_type": "group_member"
+    "membership_type": "group_member",
+    "removable": true
   },
   {
     "id": 2,
@@ -300,7 +301,8 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "email": "john@example.com",
     "last_activity_on": "2021-01-25",
-    "membership_type": "group_member"
+    "membership_type": "group_member",
+    "removable": true
   },
   {
     "id": 3,
@@ -310,7 +312,8 @@ Example response:
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root",
     "last_activity_on": "2021-01-20",
-    "membership_type": "group_invite"
+    "membership_type": "group_invite",
+    "removable": false
   }
 ]
 ```

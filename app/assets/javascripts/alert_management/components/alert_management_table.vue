@@ -17,6 +17,7 @@ import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue';
+import AlertsDeprecationWarning from '~/vue_shared/components/alerts_deprecation_warning.vue';
 import {
   tdClass,
   thClass,
@@ -96,6 +97,7 @@ export default {
   severityLabels: SEVERITY_LEVELS,
   statusTabs: ALERTS_STATUS_TABS,
   components: {
+    AlertsDeprecationWarning,
     GlAlert,
     GlLoadingIcon,
     GlTable,
@@ -272,6 +274,8 @@ export default {
         </template>
       </gl-sprintf>
     </gl-alert>
+
+    <alerts-deprecation-warning />
 
     <paginated-table-with-search-and-tabs
       :show-error-msg="showErrorMsg"

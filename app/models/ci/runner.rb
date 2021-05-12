@@ -39,7 +39,7 @@ module Ci
 
     AVAILABLE_TYPES_LEGACY = %w[specific shared].freeze
     AVAILABLE_TYPES = runner_types.keys.freeze
-    AVAILABLE_STATUSES = %w[active paused online offline].freeze
+    AVAILABLE_STATUSES = %w[active paused online offline not_connected].freeze
     AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
 
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
@@ -65,6 +65,7 @@ module Ci
     # did `contacted_at <= ?` the query would effectively have to do a seq
     # scan.
     scope :offline, -> { where.not(id: online) }
+    scope :not_connected, -> { where(contacted_at: nil) }
     scope :ordered, -> { order(id: :desc) }
 
     scope :with_recent_runner_queue, -> { where('contacted_at > ?', recent_queue_deadline) }

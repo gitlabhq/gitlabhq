@@ -8,6 +8,7 @@ import invalidUrl from '~/lib/utils/invalid_url';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
+import AlertsDeprecationWarning from '~/vue_shared/components/alerts_deprecation_warning.vue';
 import { defaultTimeRange } from '~/vue_shared/constants';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { metricStates, keyboardShortcutKeys } from '../constants';
@@ -28,6 +29,7 @@ import VariablesSection from './variables_section.vue';
 
 export default {
   components: {
+    AlertsDeprecationWarning,
     VueDraggable,
     DashboardHeader,
     DashboardPanel,
@@ -394,6 +396,8 @@ export default {
 
 <template>
   <div class="prometheus-graphs" data-qa-selector="prometheus_graphs">
+    <alerts-deprecation-warning />
+
     <dashboard-header
       v-if="showHeader"
       ref="prometheusGraphsHeader"
