@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :chat_name, class: 'ChatName' do
-    user factory: :user
-    service factory: :service
+    user
+    integration
 
     team_id { 'T0001' }
     team_domain { 'Awesome Team' }

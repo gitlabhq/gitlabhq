@@ -70,6 +70,20 @@ RSpec.describe PipelineDetailsEntity do
           expect(subject[:flags][:retryable]).to eq false
         end
       end
+
+      it 'does not contain code_quality_build_path in details' do
+        expect(subject[:details]).not_to include :code_quality_build_path
+      end
+
+      context 'when option code_quality_walkthrough is set and pipeline is a success' do
+        let(:entity) do
+          described_class.represent(pipeline, request: request, code_quality_walkthrough: true)
+        end
+
+        it 'contains details.code_quality_build_path' do
+          expect(subject[:details]).to include :code_quality_build_path
+        end
+      end
     end
 
     context 'when pipeline is cancelable' do

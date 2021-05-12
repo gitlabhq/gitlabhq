@@ -1,0 +1,174 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`When the code_quality_walkthrough URL parameter is present Code Quality Walkthrough Step component commit_ci_file step renders a popover 1`] = `
+<div>
+  <gl-popover-stub
+    container="viewport"
+    cssclasses=""
+    offset="90"
+    placement="right"
+    show=""
+    target="#js-code-quality-walkthrough"
+    triggers="manual"
+  >
+     
+    <gl-sprintf-stub
+      message="To begin with code quality, we first need to create a new CI file using our code editor. We added a code quality template in the code editor to help you get started %{emojiStart}wink%{emojiEnd} .%{lineBreak}Take some time to review the template, when you are ready, use the %{strongStart}commit changes%{strongEnd} button at the bottom of the page."
+    />
+     
+    <div
+      class="gl-mt-2 gl-text-right"
+    >
+      <gl-button-stub
+        buttontextclasses=""
+        category="tertiary"
+        href=""
+        icon=""
+        size="medium"
+        variant="link"
+      >
+        
+        Got it
+      
+      </gl-button-stub>
+    </div>
+  </gl-popover-stub>
+   
+  <!---->
+</div>
+`;
+
+exports[`When the code_quality_walkthrough URL parameter is present Code Quality Walkthrough Step component failed_pipeline step renders a popover 1`] = `
+<div>
+  <gl-popover-stub
+    container="viewport"
+    cssclasses=""
+    offset="98"
+    placement="bottom"
+    show=""
+    target="#js-code-quality-walkthrough"
+    triggers="manual"
+  >
+     
+    <gl-sprintf-stub
+      message="Your job failed. No worries - this happens. Let's view the logs, and see how we can fix it."
+    />
+     
+    <div
+      class="gl-mt-2 gl-text-right"
+    >
+      <gl-button-stub
+        buttontextclasses=""
+        category="tertiary"
+        href="/group/project/-/jobs/:id?code_quality_walkthrough=true"
+        icon=""
+        size="medium"
+        variant="link"
+      >
+        
+        View the logs
+      
+      </gl-button-stub>
+    </div>
+  </gl-popover-stub>
+   
+  <!---->
+</div>
+`;
+
+exports[`When the code_quality_walkthrough URL parameter is present Code Quality Walkthrough Step component running_pipeline step renders a popover 1`] = `
+<div>
+  <gl-popover-stub
+    container="viewport"
+    cssclasses=""
+    offset="97"
+    placement="bottom"
+    show=""
+    target="#js-code-quality-walkthrough"
+    triggers="manual"
+  >
+     
+    <gl-sprintf-stub
+      message="Your pipeline can take a few minutes to run. If you enabled email notifications, you'll receive an email with your pipeline status. In the meantime, why don't you get some coffee? You earned it!"
+    />
+     
+    <div
+      class="gl-mt-2 gl-text-right"
+    >
+      <gl-button-stub
+        buttontextclasses=""
+        category="tertiary"
+        href=""
+        icon=""
+        size="medium"
+        variant="link"
+      >
+        
+        Got it
+      
+      </gl-button-stub>
+    </div>
+  </gl-popover-stub>
+   
+  <!---->
+</div>
+`;
+
+exports[`When the code_quality_walkthrough URL parameter is present Code Quality Walkthrough Step component success_pipeline step renders a popover 1`] = `
+<div>
+  <gl-popover-stub
+    container="viewport"
+    cssclasses=""
+    offset="98"
+    placement="bottom"
+    show=""
+    target="#js-code-quality-walkthrough"
+    triggers="manual"
+  >
+     
+    <gl-sprintf-stub
+      message="A code quality job will now run every time you or your team members commit changes to your project. You can view the results of the code quality job in the job logs."
+    />
+     
+    <div
+      class="gl-mt-2 gl-text-right"
+    >
+      <gl-button-stub
+        buttontextclasses=""
+        category="tertiary"
+        href="/group/project/-/jobs/:id?code_quality_walkthrough=true"
+        icon=""
+        size="medium"
+        variant="link"
+      >
+        
+        View the logs
+      
+      </gl-button-stub>
+    </div>
+  </gl-popover-stub>
+   
+  <!---->
+</div>
+`;
+
+exports[`When the code_quality_walkthrough URL parameter is present Code Quality Walkthrough Step component troubleshoot_job step renders an alert 1`] = `
+<div>
+  <!---->
+   
+  <gl-alert-stub
+    class="gl-my-5"
+    dismissible="true"
+    dismisslabel="Dismiss"
+    primarybuttontext="Read the documentation"
+    secondarybuttonlink=""
+    secondarybuttontext=""
+    title="Troubleshoot your code quality job"
+    variant="tip"
+  >
+    
+    Not sure how to fix your failed job? We have compiled some tips on how to troubleshoot code quality jobs in the documentation.
+  
+  </gl-alert-stub>
+</div>
+`;

@@ -1,16 +1,19 @@
 - breadcrumb_title _("Repository")
 - page_title _("New File"), @path.presence, @ref
 
-%h3.page-title.blob-new-page-title
-  New file
+%h3.page-title.blob-new-page-title#js-code-quality-walkthrough
+  = _('New file')
+  .js-code-quality-walkthrough{ data: { step: 'commit_ci_file' } }
 .file-editor
   = form_tag(project_create_blob_path(@project, @id), method: :post, class: 'js-edit-blob-form js-new-blob-form js-quick-submit js-requires-input', data: blob_editor_paths(@project)) do
     = render 'projects/blob/editor', ref: @ref
     = render 'shared/new_commit_form', placeholder: "Add new file"
 
+    - if params[:code_quality_walkthrough]
+      = hidden_field_tag 'code_quality_walkthrough', 'true'
     = hidden_field_tag 'content', '', id: 'file-content'
     = render 'projects/commit_button', ref: @ref,
-              cancel_path: project_tree_path(@project, @id)
+      cancel_path: project_tree_path(@project, @id)
     - if should_suggest_gitlab_ci_yml?
       .js-suggest-gitlab-ci-yml-commit-changes{ data: { target: '#commit-changes',
         merge_request_path: params[:mr_path],

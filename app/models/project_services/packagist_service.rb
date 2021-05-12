@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PackagistService < Service
+class PackagistService < Integration
   prop_accessor :username, :token, :server
 
   validates :username, presence: true, if: :activated?

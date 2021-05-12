@@ -179,6 +179,15 @@ The following are PostgreSQL upgrade validation tests we performed.
 
 The following are additional validation tests we performed.
 
+### May 2021
+
+[Test failover with object storage replication enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/330362):
+
+- Description: At the time of testing, Geo's object storage replication functionality was in beta. We tested that object storage replication works as intended and that the data was present on the new primary after a failover.
+- Outcome: The test was successful. Data in object storage was replicated and present after a failover.
+- Follow up issues:
+  - [Geo: Failing to replicate initial Monitoring project](https://gitlab.com/gitlab-org/gitlab/-/issues/330485)
+
 ### August 2020
 
 [Test Gitaly Cluster on a Geo Deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/223210):

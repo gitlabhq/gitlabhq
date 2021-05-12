@@ -288,6 +288,17 @@ RSpec.describe Projects::PipelinesController do
         get :index, params: { namespace_id: project.namespace, project_id: project }
       end
     end
+
+    context 'code_quality_walkthrough experiment' do
+      it 'tracks the view', :experiment do
+        expect(experiment(:code_quality_walkthrough))
+          .to track(:view, property: project.root_ancestor.id.to_s)
+          .with_context(namespace: project.root_ancestor)
+          .on_next_instance
+
+        get :index, params: { namespace_id: project.namespace, project_id: project }
+      end
+    end
   end
 
   describe 'GET #show' do

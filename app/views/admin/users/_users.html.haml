@@ -68,7 +68,7 @@
               = link_to admin_users_path(sort: value, filter: params[:filter], search_query: params[:search_query]) do
                 = title
 
-- if Feature.enabled?(:vue_admin_users)
+- if Feature.enabled?(:vue_admin_users, default_enabled: :yaml)
   #js-admin-users-app{ data: admin_users_data_attributes(@users) }
     .gl-spinner-container.gl-my-7
       %span.gl-vertical-align-bottom.gl-spinner.gl-spinner-dark.gl-spinner-lg{ aria: { label: _('Loading') } }

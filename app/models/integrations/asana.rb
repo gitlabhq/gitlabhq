@@ -3,7 +3,7 @@
 require 'asana'
 
 module Integrations
-  class Asana < Service
+  class Asana < Integration
     include ActionView::Helpers::UrlHelper
 
     prop_accessor :api_key, :restrict_to_branch

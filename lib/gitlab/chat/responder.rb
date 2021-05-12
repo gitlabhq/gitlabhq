@@ -11,9 +11,9 @@ module Gitlab
       #
       # build - A `Ci::Build` that executed a chat command.
       def self.responder_for(build)
-        service = build.pipeline.chat_data&.chat_name&.service
+        integration = build.pipeline.chat_data&.chat_name&.integration
 
-        if (responder = service.try(:chat_responder))
+        if (responder = integration.try(:chat_responder))
           responder.new(build)
         end
       end

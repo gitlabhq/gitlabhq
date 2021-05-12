@@ -74,7 +74,7 @@ module Gitlab
         import_export_upload = @importable.import_export_upload
 
         if import_export_upload.remote_import_url.present?
-          download(remote_import_url, @archive_file)
+          download(import_export_upload.remote_import_url, @archive_file)
         else
           download_or_copy_upload(import_export_upload.import_file, @archive_file)
         end

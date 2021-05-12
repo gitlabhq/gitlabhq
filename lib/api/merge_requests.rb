@@ -201,7 +201,11 @@ module API
         options = serializer_options_for(merge_requests).merge(project: user_project)
         options[:project] = user_project
 
-        present merge_requests, options
+        if Feature.enabled?(:api_caching_merge_requests, user_project, type: :development, default_enabled: :yaml)
+          present_cached merge_requests, expires_in: 10.minutes, **options
+        else
+          present merge_requests, options
+        end
       end
 
       desc 'Create a merge request' do

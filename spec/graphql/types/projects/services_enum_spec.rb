@@ -11,5 +11,5 @@ RSpec.describe GitlabSchema.types['ServiceType'] do
 end
 
 def available_services_enum
-  ::Service.available_services_types(include_dev: false).map(&:underscore).map(&:upcase)
+  ::Integration.available_services_types(include_dev: false).map(&:underscore).map(&:upcase)
 end

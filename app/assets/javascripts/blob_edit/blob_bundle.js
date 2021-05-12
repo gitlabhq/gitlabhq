@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
+import initCodeQualityWalkthrough from '~/code_quality_walkthrough';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
@@ -35,6 +36,13 @@ const initPopovers = () => {
         });
       });
     }
+  }
+};
+
+const initCodeQualityWalkthroughStep = () => {
+  const codeQualityWalkthroughEl = document.querySelector('.js-code-quality-walkthrough');
+  if (codeQualityWalkthroughEl) {
+    initCodeQualityWalkthrough(codeQualityWalkthroughEl);
   }
 };
 
@@ -74,6 +82,7 @@ export default () => {
           isMarkdown,
         });
         initPopovers();
+        initCodeQualityWalkthroughStep();
       })
       .catch((e) => createFlash(e));
 

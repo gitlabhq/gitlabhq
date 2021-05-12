@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DatadogService < Service
+class DatadogService < Integration
   DEFAULT_SITE = 'datadoghq.com'
   URL_TEMPLATE = 'https://webhooks-http-intake.logs.%{datadog_site}/v1/input/'
   URL_TEMPLATE_API_KEYS = 'https://app.%{datadog_site}/account/settings#api'

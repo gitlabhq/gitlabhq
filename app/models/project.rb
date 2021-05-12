@@ -19,6 +19,7 @@ class Project < ApplicationRecord
   include Presentable
   include HasRepository
   include HasWiki
+  include HasIntegrations
   include CanMoveRepositoryStorage
   include Routable
   include GroupDescendant
@@ -33,7 +34,6 @@ class Project < ApplicationRecord
   include OptionallySearch
   include FromUnion
   include IgnorableColumns
-  include Integration
   include Repositories::CanHousekeepRepository
   include EachBatch
   include GitlabRoutingHelper
@@ -224,7 +224,7 @@ class Project < ApplicationRecord
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues
   has_many :labels, class_name: 'ProjectLabel'
-  has_many :services
+  has_many :integrations
   has_many :events
   has_many :milestones
   has_many :iterations
@@ -527,7 +527,7 @@ class Project < ApplicationRecord
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
-  scope :with_active_jira_services, -> { joins(:services).merge(::JiraService.active) } # rubocop:disable CodeReuse/ServiceClass
+  scope :with_active_jira_services, -> { joins(:integrations).merge(::JiraService.active) } # rubocop:disable CodeReuse/ServiceClass
   scope :with_jira_dvcs_cloud, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: true)) }
   scope :with_jira_dvcs_server, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false)) }
   scope :inc_routes, -> { includes(:route, namespace: :route) }
@@ -1341,7 +1341,7 @@ class Project < ApplicationRecord
 
     return unless has_external_issue_tracker?
 
-    @external_issue_tracker ||= services.external_issue_trackers.first
+    @external_issue_tracker ||= integrations.external_issue_trackers.first
   end
 
   def external_references_supported?
@@ -1357,11 +1357,11 @@ class Project < ApplicationRecord
 
     return unless has_external_wiki?
 
-    @external_wiki ||= services.external_wikis.first
+    @external_wiki ||= integrations.external_wikis.first
   end
 
   def find_or_initialize_services
-    available_services_names = Service.available_services_names - disabled_services
+    available_services_names = Integration.available_services_names - disabled_services
 
     available_services_names.map do |service_name|
       find_or_initialize_service(service_name)
@@ -1377,7 +1377,7 @@ class Project < ApplicationRecord
   def find_or_initialize_service(name)
     return if disabled_services.include?(name)
 
-    find_service(services, name) || build_from_instance_or_template(name) || build_service(name)
+    find_service(integrations, name) || build_from_instance_or_template(name) || build_service(name)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -1390,7 +1390,7 @@ class Project < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def ci_services
-    services.where(category: :ci)
+    integrations.where(category: :ci)
   end
 
   def ci_service
@@ -1398,7 +1398,7 @@ class Project < ApplicationRecord
   end
 
   def monitoring_services
-    services.where(category: :monitoring)
+    integrations.where(category: :monitoring)
   end
 
   def monitoring_service
@@ -1476,8 +1476,8 @@ class Project < ApplicationRecord
   def execute_services(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
     run_after_commit_or_now do
-      services.public_send(hooks_scope).each do |service| # rubocop:disable GitlabSecurity/PublicSend
-        service.async_execute(data)
+      integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
+        integration.async_execute(data)
       end
     end
   end
@@ -1487,7 +1487,7 @@ class Project < ApplicationRecord
   end
 
   def has_active_services?(hooks_scope = :push_hooks)
-    services.public_send(hooks_scope).any? # rubocop:disable GitlabSecurity/PublicSend
+    integrations.public_send(hooks_scope).any? # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def feature_usage
@@ -2596,22 +2596,22 @@ class Project < ApplicationRecord
 
   def build_from_instance_or_template(name)
     instance = find_service(services_instances, name)
-    return Service.build_from_integration(instance, project_id: id) if instance
+    return Integration.build_from_integration(instance, project_id: id) if instance
 
     template = find_service(services_templates, name)
-    return Service.build_from_integration(template, project_id: id) if template
+    return Integration.build_from_integration(template, project_id: id) if template
   end
 
   def build_service(name)
-    Service.service_name_to_model(name).new(project_id: id)
+    Integration.service_name_to_model(name).new(project_id: id)
   end
 
   def services_templates
-    @services_templates ||= Service.for_template
+    @services_templates ||= Integration.for_template
   end
 
   def services_instances
-    @services_instances ||= Service.for_instance
+    @services_instances ||= Integration.for_instance
   end
 
   def closest_namespace_setting(name)
@@ -2748,11 +2748,11 @@ class Project < ApplicationRecord
   end
 
   def cache_has_external_wiki
-    update_column(:has_external_wiki, services.external_wikis.any?) if Gitlab::Database.read_write?
+    update_column(:has_external_wiki, integrations.external_wikis.any?) if Gitlab::Database.read_write?
   end
 
   def cache_has_external_issue_tracker
-    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?) if Gitlab::Database.read_write?
+    update_column(:has_external_issue_tracker, integrations.external_issue_trackers.any?) if Gitlab::Database.read_write?
   end
 
   def active_runners_with_tags

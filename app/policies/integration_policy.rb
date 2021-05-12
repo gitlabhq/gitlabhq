@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class ServicePolicy < BasePolicy
+class IntegrationPolicy < BasePolicy
   delegate(:project)
 end

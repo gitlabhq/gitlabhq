@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ConfluenceService < Service
+class ConfluenceService < Integration
   include ActionView::Helpers::UrlHelper
 
   VALID_SCHEME_MATCH = %r{\Ahttps?\Z}.freeze

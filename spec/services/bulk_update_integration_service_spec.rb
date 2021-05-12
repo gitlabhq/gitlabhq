@@ -11,7 +11,7 @@ RSpec.describe BulkUpdateIntegrationService do
 
   let(:excluded_attributes) { %w[id project_id group_id inherit_from_id instance template created_at updated_at] }
   let(:batch) do
-    Service.inherited_descendants_from_self_or_ancestors_from(subgroup_integration).where(id: group_integration.id..integration.id)
+    Integration.inherited_descendants_from_self_or_ancestors_from(subgroup_integration).where(id: group_integration.id..integration.id)
   end
 
   let_it_be(:group) { create(:group) }

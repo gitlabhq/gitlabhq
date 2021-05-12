@@ -60,7 +60,7 @@ RSpec.describe Projects::MattermostsController do
 
       it 'redirects to the new page' do
         subject
-        service = project.services.last
+        service = project.integrations.last
 
         expect(subject).to redirect_to(edit_project_service_url(project, service))
       end

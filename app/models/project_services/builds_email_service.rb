@@ -2,7 +2,7 @@
 
 # This class is to be removed with 9.1
 # We should also by then remove BuildsEmailService from database
-class BuildsEmailService < Service
+class BuildsEmailService < Integration
   def self.to_param
     'builds_email'
   end

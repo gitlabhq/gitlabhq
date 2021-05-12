@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ServicePolicy, :models do
+RSpec.describe IntegrationPolicy, :models do
   let_it_be(:user) { create(:user) }
 
   let(:project) { integration.project }

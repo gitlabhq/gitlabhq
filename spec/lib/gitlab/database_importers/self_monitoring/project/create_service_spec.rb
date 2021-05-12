@@ -137,11 +137,11 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService
       it 'creates a Prometheus service' do
         expect(result[:status]).to eq(:success)
 
-        services = result[:project].reload.services
+        integrations = result[:project].reload.integrations
 
-        expect(services.count).to eq(1)
+        expect(integrations.count).to eq(1)
         # Ensures PrometheusService#self_monitoring_project? is true
-        expect(services.first.allow_local_api_url?).to be_truthy
+        expect(integrations.first.allow_local_api_url?).to be_truthy
       end
 
       it 'creates an environment for the project' do

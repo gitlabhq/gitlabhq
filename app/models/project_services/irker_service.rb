@@ -2,7 +2,7 @@
 
 require 'uri'
 
-class IrkerService < Service
+class IrkerService < Integration
   prop_accessor :server_host, :server_port, :default_irc_uri
   prop_accessor :recipients, :channels
   boolean_accessor :colorize_messages

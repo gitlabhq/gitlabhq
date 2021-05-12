@@ -22,7 +22,7 @@ class Projects::ServicesController < Projects::ApplicationController
   feature_category :integrations
 
   def edit
-    @default_integration = Service.default_integration(service.type, project)
+    @default_integration = Integration.default_integration(service.type, project)
   end
 
   def update

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class EmailsOnPushService < Service
+class EmailsOnPushService < Integration
   include NotificationBranchSelection
 
   RECIPIENTS_LIMIT = 750

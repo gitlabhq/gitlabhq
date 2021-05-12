@@ -1,3 +1,4 @@
+import '~/commons';
 import { GlButton, GlEmptyState, GlFilteredSearch, GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -6,6 +7,7 @@ import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
+import { getExperimentVariant } from '~/experimentation/utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
@@ -19,6 +21,10 @@ import TablePagination from '~/vue_shared/components/pagination/table_pagination
 import { stageReply, users, mockSearch, branches } from './mock_data';
 
 jest.mock('~/flash');
+jest.mock('~/experimentation/utils', () => ({
+  ...jest.requireActual('~/experimentation/utils'),
+  getExperimentVariant: jest.fn().mockReturnValue('control'),
+}));
 
 const mockProjectPath = 'twitter/flight';
 const mockProjectId = '21';
@@ -41,6 +47,7 @@ describe('Pipelines', () => {
     ciLintPath: '/ci/lint',
     resetCachePath: `${mockProjectPath}/settings/ci_cd/reset_cache`,
     newPipelinePath: `${mockProjectPath}/pipelines/new`,
+    codeQualityPagePath: `${mockProjectPath}/-/new/master?commit_message=Add+.gitlab-ci.yml+and+create+a+code+quality+job&file_name=.gitlab-ci.yml&template=Code-Quality`,
   };
 
   const noPermissions = {
@@ -549,6 +556,19 @@ describe('Pipelines', () => {
         expect(findEmptyState().find(GlButton).attributes('href')).toBe(
           '/help/ci/quick_start/index.md',
         );
+      });
+
+      describe('when the code_quality_walkthrough experiment is active', () => {
+        beforeAll(() => {
+          getExperimentVariant.mockReturnValue('candidate');
+        });
+
+        it('renders another CTA button', () => {
+          expect(findEmptyState().findComponent(GlButton).text()).toBe('Add a code quality job');
+          expect(findEmptyState().findComponent(GlButton).attributes('href')).toBe(
+            paths.codeQualityPagePath,
+          );
+        });
       });
 
       it('does not render filtered search', () => {

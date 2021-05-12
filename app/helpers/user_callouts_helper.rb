@@ -44,7 +44,7 @@ module UserCalloutsHelper
   def show_service_templates_deprecated_callout?
     !Gitlab.com? &&
     current_user&.admin? &&
-    Service.for_template.active.exists? &&
+    Integration.for_template.active.exists? &&
     !user_dismissed?(SERVICE_TEMPLATES_DEPRECATED_CALLOUT)
   end
 

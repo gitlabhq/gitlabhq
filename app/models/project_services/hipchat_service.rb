@@ -3,7 +3,7 @@
 # This service is scheduled for removal. All records must
 # be deleted before the class can be removed.
 # https://gitlab.com/gitlab-org/gitlab/-/issues/27954
-class HipchatService < Service
+class HipchatService < Integration
   before_save :prevent_save
 
   def self.to_param

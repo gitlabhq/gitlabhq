@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PivotaltrackerService < Service
+class PivotaltrackerService < Integration
   API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/source_commits'
 
   prop_accessor :token, :restrict_to_branch

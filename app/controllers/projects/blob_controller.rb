@@ -31,6 +31,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :validate_diff_params, only: :diff
   before_action :set_last_commit_sha, only: [:edit, :update]
+  before_action :track_experiment, only: :create
 
   track_redis_hll_event :create, :update, name: 'g_edit_by_sfe'
 
@@ -46,7 +47,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def create
     create_commit(Files::CreateService, success_notice: _("The file has been successfully created."),
-                                        success_path: -> { project_blob_path(@project, File.join(@branch_name, @file_path)) },
+                                        success_path: -> { create_success_path },
                                         failure_view: :new,
                                         failure_path: project_new_blob_path(@project, @ref))
   end
@@ -263,5 +264,19 @@ class Projects::BlobController < Projects::ApplicationController
   override :visitor_id
   def visitor_id
     current_user&.id
+  end
+
+  def create_success_path
+    if params[:code_quality_walkthrough]
+      project_pipelines_path(@project, code_quality_walkthrough: true)
+    else
+      project_blob_path(@project, File.join(@branch_name, @file_path))
+    end
+  end
+
+  def track_experiment
+    return unless params[:code_quality_walkthrough]
+
+    experiment(:code_quality_walkthrough, namespace: @project.root_ancestor).track(:commit_created)
   end
 end

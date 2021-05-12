@@ -9,12 +9,12 @@ class Admin::ServicesController < Admin::ApplicationController
   feature_category :integrations
 
   def index
-    @activated_services = Service.for_template.active.sort_by(&:title)
-    @existing_instance_types = Service.for_instance.pluck(:type) # rubocop: disable CodeReuse/ActiveRecord
+    @activated_services = Integration.for_template.active.sort_by(&:title)
+    @existing_instance_types = Integration.for_instance.pluck(:type) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   def edit
-    if integration.nil? || Service.instance_exists_for?(integration.type)
+    if integration.nil? || Integration.instance_exists_for?(integration.type)
       redirect_to admin_application_settings_services_path,
         alert: "Service is unknown or it doesn't exist"
     end
@@ -35,7 +35,7 @@ class Admin::ServicesController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def integration
-    @integration ||= Service.find_by(id: params[:id], template: true)
+    @integration ||= Integration.find_by(id: params[:id], template: true)
     @service ||= @integration # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/329759
   end
   alias_method :service, :integration

@@ -4,6 +4,8 @@ export const groupPackageSettingsMock = {
       packageSettings: {
         mavenDuplicatesAllowed: true,
         mavenDuplicateExceptionRegex: '',
+        genericDuplicatesAllowed: true,
+        genericDuplicateExceptionRegex: '',
       },
     },
   },
@@ -15,6 +17,8 @@ export const groupPackageSettingsMutationMock = (override) => ({
       packageSettings: {
         mavenDuplicatesAllowed: true,
         mavenDuplicateExceptionRegex: 'latest[main]something',
+        genericDuplicatesAllowed: true,
+        genericDuplicateExceptionRegex: 'latest[main]somethingGeneric',
       },
       errors: [],
       ...override,

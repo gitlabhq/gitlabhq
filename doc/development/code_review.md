@@ -373,6 +373,9 @@ if necessary. If blocked by one or more open MRs, set an [MR dependency](../user
   "Looks good to me", or "Just a couple things to address."
 - Let the author know if changes are required following your review.
 
+WARNING:
+**If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
+
 ### Merging a merge request
 
 Before taking the decision to merge:
@@ -401,6 +404,9 @@ your own suggestions to the merge request. Note that:
 
 When ready to merge:
 
+WARNING:
+**If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
+
 - Consider using the [Squash and
   merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
   feature when the merge request has a lot of commits.
@@ -409,17 +415,6 @@ When ready to merge:
   messy commit history, it will be more efficient to squash commits instead of
   circling back with the author about that. Otherwise, if the MR only has a few commits, we'll
   be respecting the author's setting by not squashing them.
-
-WARNING:
-**If the merge request is from a fork, review all changes thoroughly for malicious code before
-starting a [Pipeline for Merged Results](../ci/merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project).**
-Pay particular attention to new dependencies and dependency updates, such as Ruby gems and Node packages.
-While changes to files like `Gemfile.lock` or `yarn.lock` might appear trivial, they could lead to the
-fetching of malicious packages.
-If the MR source branch is more than 100 commits behind the target branch, ask the author to rebase it.
-Review links and images, especially in documentation MRs.
-When in doubt, ask someone from `@gitlab-com/gl-security/appsec` to review the merge request **before starting any merge request pipeline**.
-
 - Start a new merge request pipeline with the `Run pipeline` button in the merge
   request's "Pipelines" tab, and enable "Merge When Pipeline Succeeds" (MWPS).
   Note that:
@@ -444,6 +439,45 @@ This results in faster review/merge cycles because maintainers don't have to ask
 for a final rebase: instead, they only have to start a MR pipeline and set MWPS.
 This step brings us very close to the actual Merge Trains feature by testing the
 Merge Results against the latest `master` at the time of the pipeline creation.
+
+### Community contributions
+
+WARNING:
+**Review all changes thoroughly for malicious code before starting a
+[Pipeline for Merged Results](../ci/merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project).**
+
+When reviewing merge requests added by wider community contributors:
+
+- Pay particular attention to new dependencies and dependency updates, such as Ruby gems and Node packages.
+  While changes to files like `Gemfile.lock` or `yarn.lock` might appear trivial, they could lead to the
+  fetching of malicious packages.
+- Review links and images, especially in documentation MRs.
+- When in doubt, ask someone from `@gitlab-com/gl-security/appsec` to review the merge request **before manually starting any merge request pipeline**.
+
+If the MR source branch is more than 1,000 commits behind the target branch:
+
+- Ask the author to rebase it, or consider taking a bias-for-action and rebasing it yourself
+  if the MR has "Allows commits from members who can merge to the target branch" enabled.
+- Reviewing MRs in the context of recent changes can help prevent hidden runtime conflicts and
+  promote consistency. Depending on the nature of the change, you might also want to rebase if the
+  MR is less than 1,000 commits behind.
+- A forced push could throw off the contributor, so it's a good idea to communicate that you've performed a rebase,
+  or check with the contributor first when they're actively working on the MR.
+- The rebase can usually be done inside GitLab with the `/rebase` [quick action](../user/project/quick_actions.md).
+
+When an MR needs further changes but the author is not responding for a long period of time,
+or unable to finish the MR, we can take it over in accordance with our
+[Closing policy for issues and merge requests](contributing/#closing-policy-for-issues-and-merge-requests):
+
+1. Add a comment to their MR saying you'll take it over to be able to get it merged.
+1. Add the label `~"coach will finish"` to their MR.
+1. Create a new feature branch from the main branch.
+1. Merge their branch into your new feature branch.
+1. Open a new merge request to merge your feature branch into the main branch.
+1. Link the community MR from your MR and label it as `~"Community contribution"`.
+1. Make any necessary final adjustments and ping the contributor to give them the chance to review your changes, and to make them aware that their content is being merged into the main branch.
+1. Make sure the content complies with all the merge request guidelines.
+1. Follow the regular review process as we do for any merge request.
 
 ### The right balance
 

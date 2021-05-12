@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Assembla < Service
+  class Assembla < Integration
     prop_accessor :token, :subdomain
     validates :token, presence: true, if: :activated?
 

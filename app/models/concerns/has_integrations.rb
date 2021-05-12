@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-module Integration
+module HasIntegrations
   extend ActiveSupport::Concern
 
   class_methods do
     def with_custom_integration_for(integration, page = nil, per = nil)
-      custom_integration_project_ids = Service
+      custom_integration_project_ids = Integration
         .select(:project_id)
         .where(type: integration.type)
         .where(inherit_from_id: nil)
@@ -17,13 +17,13 @@ module Integration
     end
 
     def without_integration(integration)
-      services = Service
+      integrations = Integration
         .select('1')
         .where('services.project_id = projects.id')
         .where(type: integration.type)
 
       Project
-        .where('NOT EXISTS (?)', services)
+        .where('NOT EXISTS (?)', integrations)
         .where(pending_delete: false)
         .where(archived: false)
     end

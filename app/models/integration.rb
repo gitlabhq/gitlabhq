@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# To add new service you should build a class inherited from Service
+# To add new integration you should build a class inherited from Integration
 # and implement a set of methods
-class Service < ApplicationRecord
+class Integration < ApplicationRecord
   include Sortable
   include Importable
   include ProjectServicesLoggable
@@ -10,19 +10,22 @@ class Service < ApplicationRecord
   include FromUnion
   include EachBatch
 
-  SERVICE_NAMES = %w[
+  # TODO Rename the table: https://gitlab.com/gitlab-org/gitlab/-/issues/201856
+  self.table_name = 'services'
+
+  INTEGRATION_NAMES = %w[
     asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
     drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack
   ].freeze
 
-  PROJECT_SPECIFIC_SERVICE_NAMES = %w[
+  PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
     datadog jenkins
   ].freeze
 
-  # Fake services to help with local development.
-  DEV_SERVICE_NAMES = %w[
+  # Fake integrations to help with local development.
+  DEV_INTEGRATION_NAMES = %w[
     mock_ci mock_monitoring
   ].freeze
 
@@ -49,9 +52,9 @@ class Service < ApplicationRecord
 
   after_commit :reset_updated_properties
 
-  belongs_to :project, inverse_of: :services
-  belongs_to :group, inverse_of: :services
-  has_one :service_hook
+  belongs_to :project, inverse_of: :integrations
+  belongs_to :group, inverse_of: :integrations
+  has_one :service_hook, inverse_of: :integration, foreign_key: :service_id
 
   validates :project_id, presence: true, unless: -> { template? || instance_level? || group_level? }
   validates :group_id, presence: true, unless: -> { template? || instance_level? || project_level? }
@@ -216,17 +219,17 @@ class Service < ApplicationRecord
   end
 
   def self.services_names
-    SERVICE_NAMES
+    INTEGRATION_NAMES
   end
 
   def self.dev_services_names
     return [] unless Rails.env.development?
 
-    DEV_SERVICE_NAMES
+    DEV_INTEGRATION_NAMES
   end
 
   def self.project_specific_services_names
-    PROJECT_SPECIFIC_SERVICE_NAMES
+    PROJECT_SPECIFIC_INTEGRATION_NAMES
   end
 
   # Returns a list of available service types.
@@ -258,19 +261,19 @@ class Service < ApplicationRecord
   private_class_method :service_type_to_model
 
   def self.build_from_integration(integration, project_id: nil, group_id: nil)
-    service = integration.dup
+    new_integration = integration.dup
 
     if integration.supports_data_fields?
       data_fields = integration.data_fields.dup
-      data_fields.service = service
+      data_fields.integration = new_integration
     end
 
-    service.template = false
-    service.instance = false
-    service.project_id = project_id
-    service.group_id = group_id
-    service.inherit_from_id = integration.id if integration.instance_level? || integration.group_level?
-    service
+    new_integration.template = false
+    new_integration.instance = false
+    new_integration.project_id = project_id
+    new_integration.group_id = group_id
+    new_integration.inherit_from_id = integration.id if integration.instance_level? || integration.group_level?
+    new_integration
   end
 
   def self.instance_exists_for?(type)
@@ -368,7 +371,7 @@ class Service < ApplicationRecord
 
   # Expose a list of fields in the JSON endpoint.
   #
-  # This list is used in `Service#as_json(only: json_fields)`.
+  # This list is used in `Integration#as_json(only: json_fields)`.
   def json_fields
     %w[active]
   end
@@ -435,7 +438,7 @@ class Service < ApplicationRecord
     { success: result.present?, result: result }
   end
 
-  # Disable test for instance-level and group-level services.
+  # Disable test for instance-level and group-level integrations.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/213138
   def can_test?
     !(instance_level? || group_level?)
@@ -460,7 +463,7 @@ class Service < ApplicationRecord
   # Returns a hash of the properties that have been assigned a new value since last save,
   # indicating their original values (attr => original value).
   # ActiveRecord does not provide a mechanism to track changes in serialized keys,
-  # so we need a specific implementation for service properties.
+  # so we need a specific implementation for integration properties.
   # This allows to track changes to properties set with the accessor methods,
   # but not direct manipulation of properties hash.
   def updated_properties
@@ -510,4 +513,4 @@ class Service < ApplicationRecord
   end
 end
 
-Service.prepend_mod_with('Service')
+Integration.prepend_mod_with('Integration')

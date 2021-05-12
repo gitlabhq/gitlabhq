@@ -7,6 +7,7 @@ class ContainerRepository < ApplicationRecord
   include Sortable
 
   WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
+  REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze
 
   belongs_to :project
 
@@ -31,12 +32,30 @@ class ContainerRepository < ApplicationRecord
   scope :for_project_id, ->(project_id) { where(project_id: project_id) }
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :waiting_for_cleanup, -> { where(expiration_policy_cleanup_status: WAITING_CLEANUP_STATUSES) }
+  scope :expiration_policy_started_at_nil_or_before, ->(timestamp) { where('expiration_policy_started_at < ? OR expiration_policy_started_at IS NULL', timestamp) }
 
   def self.exists_by_path?(path)
     where(
       project: path.repository_project,
       name: path.repository_name
     ).exists?
+  end
+
+  def self.with_enabled_policy
+    joins("INNER JOIN container_expiration_policies ON container_repositories.project_id = container_expiration_policies.project_id")
+      .where(container_expiration_policies: { enabled: true })
+  end
+
+  def self.requiring_cleanup
+    where(
+      container_repositories: { expiration_policy_cleanup_status: REQUIRING_CLEANUP_STATUSES },
+      project_id: ::ContainerExpirationPolicy.runnable_schedules
+                                             .select(:project_id)
+    )
+  end
+
+  def self.with_unfinished_cleanup
+    with_enabled_policy.cleanup_unfinished
   end
 
   # rubocop: disable CodeReuse/ServiceClass

@@ -94,6 +94,11 @@ export default {
       type: Object,
       required: true,
     },
+    codeQualityPagePath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -331,6 +336,7 @@ export default {
         v-else-if="stateToRender === $options.stateMap.emptyState"
         :empty-state-svg-path="emptyStateSvgPath"
         :can-set-ci="canCreatePipeline"
+        :code-quality-page-path="codeQualityPagePath"
       />
 
       <gl-empty-state

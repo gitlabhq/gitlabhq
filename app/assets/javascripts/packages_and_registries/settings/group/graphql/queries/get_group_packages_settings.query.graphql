@@ -3,6 +3,8 @@ query getGroupPackagesSettings($fullPath: ID!) {
     packageSettings {
       mavenDuplicatesAllowed
       mavenDuplicateExceptionRegex
+      genericDuplicatesAllowed
+      genericDuplicateExceptionRegex
     }
   }
 }

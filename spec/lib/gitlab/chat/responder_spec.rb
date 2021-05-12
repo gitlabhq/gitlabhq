@@ -16,8 +16,8 @@ RSpec.describe Gitlab::Chat::Responder do
       it 'returns the responder for the build' do
         pipeline = create(:ci_pipeline)
         build = create(:ci_build, pipeline: pipeline)
-        service = double(:service, chat_responder: Gitlab::Chat::Responder::Slack)
-        chat_name = double(:chat_name, service: service)
+        integration = double(:integration, chat_responder: Gitlab::Chat::Responder::Slack)
+        chat_name = double(:chat_name, integration: integration)
         chat_data = double(:chat_data, chat_name: chat_name)
 
         allow(pipeline)

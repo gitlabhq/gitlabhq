@@ -10,7 +10,7 @@ RSpec.describe Admin::IntegrationsController do
   end
 
   describe '#edit' do
-    Service.available_services_names.each do |integration_name|
+    Integration.available_services_names.each do |integration_name|
       context "#{integration_name}" do
         it 'successfully displays the template' do
           get :edit, params: { id: integration_name }
@@ -27,7 +27,7 @@ RSpec.describe Admin::IntegrationsController do
       end
 
       it 'returns 404' do
-        get :edit, params: { id: Service.available_services_names.sample }
+        get :edit, params: { id: Integration.available_services_names.sample }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

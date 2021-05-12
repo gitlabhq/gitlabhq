@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class IssueTrackerService < Service
+class IssueTrackerService < Integration
   validate :one_issue_tracker, if: :activated?, on: :manual_change
 
   # TODO: we can probably just delegate as part of
@@ -143,7 +143,7 @@ class IssueTrackerService < Service
     return if template? || instance?
     return if project.blank?
 
-    if project.services.external_issue_trackers.where.not(id: id).any?
+    if project.integrations.external_issue_trackers.where.not(id: id).any?
       errors.add(:base, _('Another issue tracker is already in use. Only one issue tracker service can be active at a time'))
     end
   end

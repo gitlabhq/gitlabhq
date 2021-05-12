@@ -11,10 +11,10 @@ class PropagateIntegrationInheritDescendantWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(integration_id, min_id, max_id)
-    integration = Service.find_by_id(integration_id)
+    integration = Integration.find_by_id(integration_id)
     return unless integration
 
-    batch = Service.inherited_descendants_from_self_or_ancestors_from(integration).where(id: min_id..max_id)
+    batch = Integration.inherited_descendants_from_self_or_ancestors_from(integration).where(id: min_id..max_id)
 
     BulkUpdateIntegrationService.new(integration, batch).execute
   end

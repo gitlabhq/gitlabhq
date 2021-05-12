@@ -11,7 +11,7 @@ class PropagateIntegrationGroupWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(integration_id, min_id, max_id)
-    integration = Service.find_by_id(integration_id)
+    integration = Integration.find_by_id(integration_id)
     return unless integration
 
     batch = if integration.instance_level?

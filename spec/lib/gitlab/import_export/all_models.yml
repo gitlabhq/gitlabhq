@@ -303,7 +303,7 @@ deploy_keys:
 - user
 - deploy_keys_projects
 - projects
-services:
+integrations:
 - project
 - service_hook
 - jira_tracker_data
@@ -356,7 +356,7 @@ project:
 - management_clusters
 - boards
 - last_event
-- services
+- integrations
 - campfire_service
 - confluence_service
 - datadog_service

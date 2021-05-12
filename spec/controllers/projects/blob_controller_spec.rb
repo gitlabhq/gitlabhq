@@ -464,11 +464,36 @@ RSpec.describe Projects::BlobController do
       sign_in(user)
     end
 
-    it_behaves_like 'tracking unique hll events' do
-      subject(:request) { post :create, params: default_params }
+    subject(:request) { post :create, params: default_params }
 
+    it_behaves_like 'tracking unique hll events' do
       let(:target_id) { 'g_edit_by_sfe' }
       let(:expected_type) { instance_of(Integer) }
+    end
+
+    it 'redirects to blob' do
+      request
+
+      expect(response).to redirect_to(project_blob_path(project, 'master/docs/EXAMPLE_FILE'))
+    end
+
+    context 'when code_quality_walkthrough param is present' do
+      let(:default_params) { super().merge(code_quality_walkthrough: true) }
+
+      it 'redirects to the pipelines page' do
+        request
+
+        expect(response).to redirect_to(project_pipelines_path(project, code_quality_walkthrough: true))
+      end
+
+      it 'creates an "commit_created" experiment tracking event' do
+        experiment = double(track: true)
+        expect(controller).to receive(:experiment).with(:code_quality_walkthrough, namespace: project.root_ancestor).and_return(experiment)
+
+        request
+
+        expect(experiment).to have_received(:track).with(:commit_created)
+      end
     end
   end
 end

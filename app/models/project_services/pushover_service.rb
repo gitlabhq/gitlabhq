@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PushoverService < Service
+class PushoverService < Integration
   BASE_URI = 'https://api.pushover.net/1'
 
   prop_accessor :api_key, :user_key, :device, :priority, :sound

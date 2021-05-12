@@ -31,6 +31,10 @@ RSpec.describe Issuable::DestroyService do
       it_behaves_like 'service deleting todos' do
         let(:issuable) { issue }
       end
+
+      it_behaves_like 'service deleting label links' do
+        let(:issuable) { issue }
+      end
     end
 
     context 'when issuable is a merge request' do
@@ -52,6 +56,10 @@ RSpec.describe Issuable::DestroyService do
       end
 
       it_behaves_like 'service deleting todos' do
+        let(:issuable) { merge_request }
+      end
+
+      it_behaves_like 'service deleting label links' do
         let(:issuable) { merge_request }
       end
     end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :service do
+  factory :integration, aliases: [:service] do
     project
-    type { 'Service' }
+    type { 'Integration' }
   end
 
   factory :custom_issue_tracker_service, class: 'CustomIssueTrackerService' do
@@ -65,15 +65,15 @@ FactoryBot.define do
       deployment_type { 'cloud' }
     end
 
-    before(:create) do |service, evaluator|
+    after(:build) do |integration, evaluator|
       if evaluator.create_data
-        create(:jira_tracker_data, service: service,
-               url: evaluator.url, api_url: evaluator.api_url,
-               jira_issue_transition_automatic: evaluator.jira_issue_transition_automatic,
-               jira_issue_transition_id: evaluator.jira_issue_transition_id,
-               username: evaluator.username, password: evaluator.password, issues_enabled: evaluator.issues_enabled,
-               project_key: evaluator.project_key, vulnerabilities_enabled: evaluator.vulnerabilities_enabled,
-               vulnerabilities_issuetype: evaluator.vulnerabilities_issuetype, deployment_type: evaluator.deployment_type
+        integration.jira_tracker_data = build(:jira_tracker_data,
+          integration: integration, url: evaluator.url, api_url: evaluator.api_url,
+          jira_issue_transition_automatic: evaluator.jira_issue_transition_automatic,
+          jira_issue_transition_id: evaluator.jira_issue_transition_id,
+          username: evaluator.username, password: evaluator.password, issues_enabled: evaluator.issues_enabled,
+          project_key: evaluator.project_key, vulnerabilities_enabled: evaluator.vulnerabilities_enabled,
+          vulnerabilities_issuetype: evaluator.vulnerabilities_issuetype, deployment_type: evaluator.deployment_type
         )
       end
     end
@@ -117,10 +117,11 @@ FactoryBot.define do
       new_issue_url { 'http://new-issue.example.com' }
     end
 
-    before(:create) do |service, evaluator|
+    after(:build) do |integration, evaluator|
       if evaluator.create_data
-        create(:issue_tracker_data, service: service,
-               project_url: evaluator.project_url, issues_url: evaluator.issues_url, new_issue_url: evaluator.new_issue_url
+        integration.issue_tracker_data = build(:issue_tracker_data,
+          integration: integration, project_url: evaluator.project_url,
+          issues_url: evaluator.issues_url, new_issue_url: evaluator.new_issue_url
         )
       end
     end
@@ -145,9 +146,9 @@ FactoryBot.define do
       project_identifier_code { 'PRJ-1' }
     end
 
-    before(:create) do |service, evaluator|
-      create(:open_project_tracker_data, service: service,
-        url: evaluator.url, api_url: evaluator.api_url, token: evaluator.token,
+    after(:build) do |integration, evaluator|
+      integration.open_project_tracker_data = build(:open_project_tracker_data,
+        integration: integration, url: evaluator.url, api_url: evaluator.api_url, token: evaluator.token,
         closed_status_id: evaluator.closed_status_id, project_identifier_code: evaluator.project_identifier_code
       )
     end
@@ -180,7 +181,7 @@ FactoryBot.define do
     issue_tracker_data { nil }
     create_data { false }
 
-    after(:build) do |service|
+    after(:build) do
       IssueTrackerService.skip_callback(:validation, :before, :handle_properties)
     end
 

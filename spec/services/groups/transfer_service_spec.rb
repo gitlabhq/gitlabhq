@@ -274,7 +274,7 @@ RSpec.describe Groups::TransferService do
         end
 
         context 'with a group integration' do
-          let(:new_created_integration) { Service.find_by(group: group) }
+          let(:new_created_integration) { Integration.find_by(group: group) }
 
           context 'with an inherited integration' do
             let_it_be(:instance_integration) { create(:slack_service, :instance, webhook: 'http://project.slack.com') }
@@ -283,7 +283,7 @@ RSpec.describe Groups::TransferService do
             it 'replaces inherited integrations', :aggregate_failures do
               expect(new_created_integration.webhook).to eq(new_parent_group_integration.webhook)
               expect(PropagateIntegrationWorker).to have_received(:perform_async).with(new_created_integration.id)
-              expect(Service.count).to eq(3)
+              expect(Integration.count).to eq(3)
             end
           end
 

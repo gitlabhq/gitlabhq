@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe ServiceHook do
   describe 'associations' do
-    it { is_expected.to belong_to :service }
+    it { is_expected.to belong_to :integration }
   end
 
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:service) }
+    it { is_expected.to validate_presence_of(:integration) }
   end
 
   describe 'execute' do

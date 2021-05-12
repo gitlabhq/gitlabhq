@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integration do
+RSpec.describe HasIntegrations do
   let_it_be(:project_1) { create(:project) }
   let_it_be(:project_2) { create(:project) }
   let_it_be(:project_3) { create(:project) }

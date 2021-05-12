@@ -564,18 +564,18 @@ RSpec.describe Projects::CreateService, '#execute' do
       let!(:template_integration) { create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/') }
 
       it 'creates a service from the template' do
-        expect(project.services.count).to eq(1)
-        expect(project.services.first.api_url).to eq(template_integration.api_url)
-        expect(project.services.first.inherit_from_id).to be_nil
+        expect(project.integrations.count).to eq(1)
+        expect(project.integrations.first.api_url).to eq(template_integration.api_url)
+        expect(project.integrations.first.inherit_from_id).to be_nil
       end
 
       context 'with an active instance-level integration' do
         let!(:instance_integration) { create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/') }
 
         it 'creates a service from the instance-level integration' do
-          expect(project.services.count).to eq(1)
-          expect(project.services.first.api_url).to eq(instance_integration.api_url)
-          expect(project.services.first.inherit_from_id).to eq(instance_integration.id)
+          expect(project.integrations.count).to eq(1)
+          expect(project.integrations.first.api_url).to eq(instance_integration.api_url)
+          expect(project.integrations.first.inherit_from_id).to eq(instance_integration.id)
         end
 
         context 'with an active group-level integration' do
@@ -594,9 +594,9 @@ RSpec.describe Projects::CreateService, '#execute' do
           end
 
           it 'creates a service from the group-level integration' do
-            expect(project.services.count).to eq(1)
-            expect(project.services.first.api_url).to eq(group_integration.api_url)
-            expect(project.services.first.inherit_from_id).to eq(group_integration.id)
+            expect(project.integrations.count).to eq(1)
+            expect(project.integrations.first.api_url).to eq(group_integration.api_url)
+            expect(project.integrations.first.inherit_from_id).to eq(group_integration.id)
           end
 
           context 'with an active subgroup' do
@@ -615,9 +615,9 @@ RSpec.describe Projects::CreateService, '#execute' do
             end
 
             it 'creates a service from the subgroup-level integration' do
-              expect(project.services.count).to eq(1)
-              expect(project.services.first.api_url).to eq(subgroup_integration.api_url)
-              expect(project.services.first.inherit_from_id).to eq(subgroup_integration.id)
+              expect(project.integrations.count).to eq(1)
+              expect(project.integrations.first.api_url).to eq(subgroup_integration.api_url)
+              expect(project.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
             end
           end
         end

@@ -12,6 +12,6 @@ class PropagateIntegrationWorker
   # TODO: Keep overwrite parameter for backwards compatibility. Remove after >= 14.0
   # https://gitlab.com/gitlab-org/gitlab/-/issues/255382
   def perform(integration_id, overwrite = nil)
-    Admin::PropagateIntegrationService.propagate(Service.find(integration_id))
+    Admin::PropagateIntegrationService.propagate(Integration.find(integration_id))
   end
 end

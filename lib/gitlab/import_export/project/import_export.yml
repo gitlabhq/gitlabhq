@@ -132,6 +132,7 @@ excluded_attributes:
     - :avatar
     - :import_type
     - :import_source
+    - :integrations
     - :mirror
     - :runners_token
     - :runners_token_encrypted

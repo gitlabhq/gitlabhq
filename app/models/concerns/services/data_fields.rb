@@ -5,11 +5,11 @@ module Services
     extend ActiveSupport::Concern
 
     included do
-      belongs_to :service
+      belongs_to :integration, inverse_of: self.name.underscore.to_sym, foreign_key: :service_id
 
-      delegate :activated?, to: :service, allow_nil: true
+      delegate :activated?, to: :integration, allow_nil: true
 
-      validates :service, presence: true
+      validates :integration, presence: true
     end
 
     class_methods do

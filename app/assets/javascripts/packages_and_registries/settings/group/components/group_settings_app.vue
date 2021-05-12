@@ -1,7 +1,8 @@
 <script>
 import { GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
+import DuplicatesSettings from '~/packages_and_registries/settings/group/components/duplicates_settings.vue';
+import GenericSettings from '~/packages_and_registries/settings/group/components/generic_settings.vue';
 import MavenSettings from '~/packages_and_registries/settings/group/components/maven_settings.vue';
-
 import {
   PACKAGE_SETTINGS_HEADER,
   PACKAGE_SETTINGS_DESCRIPTION,
@@ -30,6 +31,8 @@ export default {
     GlLink,
     SettingsBlock,
     MavenSettings,
+    GenericSettings,
+    DuplicatesSettings,
   },
   inject: ['defaultExpanded', 'groupPath'],
   apollo: {
@@ -128,13 +131,32 @@ export default {
         </span>
       </template>
       <template #default>
-        <maven-settings
-          :maven-duplicates-allowed="packageSettings.mavenDuplicatesAllowed"
-          :maven-duplicate-exception-regex="packageSettings.mavenDuplicateExceptionRegex"
-          :maven-duplicate-exception-regex-error="errors.mavenDuplicateExceptionRegex"
-          :loading="isLoading"
-          @update="updateSettings"
-        />
+        <maven-settings data-testid="maven-settings">
+          <template #default="{ modelNames }">
+            <duplicates-settings
+              :duplicates-allowed="packageSettings.mavenDuplicatesAllowed"
+              :duplicate-exception-regex="packageSettings.mavenDuplicateExceptionRegex"
+              :duplicate-exception-regex-error="errors.mavenDuplicateExceptionRegex"
+              :model-names="modelNames"
+              :loading="isLoading"
+              toggle-qa-selector="allow_duplicates_toggle"
+              label-qa-selector="allow_duplicates_label"
+              @update="updateSettings"
+            />
+          </template>
+        </maven-settings>
+        <generic-settings class="gl-mt-6" data-testid="generic-settings">
+          <template #default="{ modelNames }">
+            <duplicates-settings
+              :duplicates-allowed="packageSettings.genericDuplicatesAllowed"
+              :duplicate-exception-regex="packageSettings.genericDuplicateExceptionRegex"
+              :duplicate-exception-regex-error="errors.genericDuplicateExceptionRegex"
+              :model-names="modelNames"
+              :loading="isLoading"
+              @update="updateSettings"
+            />
+          </template>
+        </generic-settings>
       </template>
     </settings-block>
   </div>

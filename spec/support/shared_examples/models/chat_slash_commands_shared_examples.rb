@@ -81,7 +81,7 @@ RSpec.shared_examples 'chat slash commands service' do
       end
 
       context 'when the user is authenticated' do
-        let!(:chat_name) { create(:chat_name, service: subject) }
+        let!(:chat_name) { create(:chat_name, integration: subject) }
         let(:params) { { token: 'token', team_id: chat_name.team_id, user_id: chat_name.chat_id } }
 
         subject do

@@ -72,7 +72,7 @@ module API
         success Entities::ProjectServiceBasic
       end
       get ":id/services" do
-        services = user_project.services.active
+        services = user_project.integrations.active
 
         present services, with: Entities::ProjectServiceBasic
       end
@@ -133,7 +133,7 @@ module API
     TRIGGER_SERVICES.each do |service_slug, settings|
       helpers do
         def slash_command_service(project, service_slug, params)
-          project.services.active.find do |service|
+          project.integrations.active.find do |service|
             service.try(:token) == params[:token] && service.to_param == service_slug.underscore
           end
         end

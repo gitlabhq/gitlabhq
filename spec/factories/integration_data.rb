@@ -4,15 +4,15 @@
 # The factories are used when creating integrations.
 FactoryBot.define do
   factory :jira_tracker_data do
-    service
+    integration factory: :jira_service
   end
 
   factory :issue_tracker_data do
-    service
+    integration
   end
 
   factory :open_project_tracker_data do
-    service
+    integration factory: :open_project_service
     url { 'http://openproject.example.com'}
     token { 'supersecret' }
     project_identifier_code { 'PRJ-1' }

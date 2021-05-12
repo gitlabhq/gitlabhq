@@ -433,8 +433,8 @@ RSpec.describe JiraService do
     context 'when data are stored in both properties and separated fields' do
       let(:properties) { data_params }
       let(:service) do
-        create(:jira_service, :without_properties_callback, active: false, properties: properties).tap do |service|
-          create(:jira_tracker_data, data_params.merge(service: service))
+        create(:jira_service, :without_properties_callback, active: false, properties: properties).tap do |integration|
+          create(:jira_tracker_data, data_params.merge(integration: integration))
         end
       end
 

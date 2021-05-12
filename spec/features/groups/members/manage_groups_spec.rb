@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Groups > Members > Manage groups', :js do
   include Select2Helper
   include Spec::Support::Helpers::Features::MembersHelpers
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
   let_it_be(:user) { create(:user) }
 
@@ -13,17 +14,21 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
   end
 
   context 'with invite_members_group_modal disabled' do
+    before do
+      stub_feature_flags(invite_members_group_modal: false)
+    end
+
     context 'when group link does not exist' do
       let_it_be(:group) { create(:group) }
       let_it_be(:group_to_add) { create(:group) }
 
       before do
-        stub_feature_flags(invite_members_group_modal: false)
         group.add_owner(user)
+        group_to_add.add_owner(user)
         visit group_group_members_path(group)
       end
 
-      it 'add group to group' do
+      it 'can share group with group' do
         add_group(group_to_add.id, 'Reporter')
 
         click_groups_tab
@@ -44,7 +49,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
       group_to_add.add_owner(user)
 
       visit group_group_members_path(group)
-      invite_group(group_to_add.name, 'Reporter')
+      invite_group(group_to_add.name, role: 'Reporter')
 
       click_groups_tab
 
@@ -145,21 +150,6 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
       select(role, from: "shared_group_access")
       click_button "Invite"
     end
-  end
-
-  def invite_group(name, role)
-    click_on 'Invite a group'
-
-    click_on 'Select a group'
-    wait_for_requests
-    click_button name
-
-    click_button 'Guest'
-    wait_for_requests
-    click_button role
-
-    click_button 'Invite'
-    page.refresh
   end
 
   def click_groups_tab

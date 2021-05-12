@@ -37,7 +37,7 @@ module Groups
       Group.transaction do
         if @group.save
           @group.add_owner(current_user)
-          Service.create_from_active_default_integrations(@group, :group_id)
+          Integration.create_from_active_default_integrations(@group, :group_id)
           OnboardingProgress.onboard(@group)
         end
       end

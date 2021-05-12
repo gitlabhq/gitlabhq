@@ -10,14 +10,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 When we describe GitLab analytics, we use the following terms:
 
-- **Cycle time:** The duration of your value stream, from start to finish. Often displayed in combination with "lead time." GitLab measures cycle time from issue creation to issue close. GitLab displays cycle time in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
+- **Cycle time:** The duration of only the execution work alone. Often displayed in combination with "lead time," which is longer. GitLab measures cycle time from issue first merge request creation to issue close. This approach underestimates lead time because merge request creation is always later than commit time. GitLab displays cycle time in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
+- **Deploys:** The total number of successful deployments to production in the given time frame (across all applicable projects). GitLab displays deploys in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
 - **DORA (DevOps Research and Assessment)** ["Four Keys"](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance):
   - **Speed/Velocity**
 
-    - **Deployment Frequency:** How often an organization successfully releases to production. GitLab
-      measures this as the number of deployments to a
+    - **Deployment frequency:** The average number of successful deployments to production per period.
+      This effectively measures how often you are delivering value to end users. A higher deployment
+      frequency means you are able to get feedback and iterate more quickly in delivering
+      improvements and features faster. GitLab measures this as the number of deployments to a
       [production environment](../../ci/environments/index.md#deployment-tier-of-environments) in
       the given time period.
+      GitLab displays deployment frequency in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
     - **Lead Time for Changes:** The time it takes for a commit to get into production. (1) GitLab
       measures this as the median duration between merge request merge and deployment to a
       [production environment](../../ci/environments/index.md#deployment-tier-of-environments) for
@@ -47,7 +51,7 @@ When we describe GitLab analytics, we use the following terms:
       - All incidents are related to a [production environment](../../ci/environments/index.md#deployment-tier-of-environments).
       - Incidents and deployments have a strictly one-to-one relationship (meaning any incident is related to only one production deployment, and any production deployment is related to no more than one incident).
 
-- **Lead time:** The duration of the work itself. For more information, read [Lead time for changes](#lead-time-for-changes). Often displayed in combination with "cycle time." GitLab measures from issue first merge request creation to issue close. This approach under-estimates lead time because merge request creation is always later than commit time. GitLab displays lead time in  [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
+- **Lead time:** The duration of your value stream, from start to finish. Different from [Lead time for changes](#lead-time-for-changes). Often displayed in combination with "cycle time," which is shorter. GitLab measures lead time from issue creation to issue close. GitLab displays lead time in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
 - **MTTC (Mean Time to Change):** The average duration between idea and delivery. GitLab measures MTTC from issue creation to the issue's latest related merge request's deployment to production.
 - **MTTD (Mean Time to Detect):** The average duration that a bug goes undetected in production. GitLab measures MTTD from deployment of bug to issue creation.
 - **MTTM (Mean Time To Merge):** The average lifespan of a merge request. GitLab measures MTTM from merge request creation to merge request merge (and closed/un-merged merge requests are excluded). For more information, see [Merge Request Analytics](merge_request_analytics.md).

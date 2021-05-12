@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe ChatNames::FindUserService, :clean_gitlab_redis_shared_state do
   describe '#execute' do
-    let(:service) { create(:service) }
+    let(:integration) { create(:service) }
 
-    subject { described_class.new(service, params).execute }
+    subject { described_class.new(integration, params).execute }
 
     context 'find user mapping' do
       let(:user) { create(:user) }
-      let!(:chat_name) { create(:chat_name, user: user, service: service) }
+      let!(:chat_name) { create(:chat_name, user: user, integration: integration) }
 
       context 'when existing user is requested' do
         let(:params) { { team_id: chat_name.team_id, user_id: chat_name.chat_id } }
@@ -28,7 +28,7 @@ RSpec.describe ChatNames::FindUserService, :clean_gitlab_redis_shared_state do
         end
 
         it 'only updates an existing timestamp once within a certain time frame' do
-          service = described_class.new(service, params)
+          service = described_class.new(integration, params)
 
           expect(chat_name.last_used_at).to be_nil
 

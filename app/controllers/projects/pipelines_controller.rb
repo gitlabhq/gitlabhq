@@ -59,6 +59,17 @@ class Projects::PipelinesController < Projects::ApplicationController
           e.try {}
           e.track(:view, value: project.namespace_id)
         end
+        experiment(:code_quality_walkthrough, namespace: project.root_ancestor) do |e|
+          e.exclude! unless current_user
+          e.exclude! unless can?(current_user, :create_pipeline, project)
+          e.exclude! unless project.root_ancestor.recent?
+          e.exclude! if @pipelines_count.to_i > 0
+          e.exclude! if helpers.has_gitlab_ci?(project)
+
+          e.use {}
+          e.try {}
+          e.track(:view, property: project.root_ancestor.id.to_s)
+        end
       end
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
@@ -223,7 +234,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     PipelineSerializer
       .new(project: @project, current_user: @current_user)
       .with_pagination(request, response)
-      .represent(@pipelines, disable_coverage: true, preload: true)
+      .represent(@pipelines, disable_coverage: true, preload: true, code_quality_walkthrough: params[:code_quality_walkthrough].present?)
   end
 
   def render_show

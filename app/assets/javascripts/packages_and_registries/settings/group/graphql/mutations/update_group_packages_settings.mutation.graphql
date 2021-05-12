@@ -3,6 +3,8 @@ mutation updateNamespacePackageSettings($input: UpdateNamespacePackageSettingsIn
     packageSettings {
       mavenDuplicatesAllowed
       mavenDuplicateExceptionRegex
+      genericDuplicatesAllowed
+      genericDuplicateExceptionRegex
     }
     errors
   }

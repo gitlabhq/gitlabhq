@@ -52,7 +52,7 @@ RSpec.describe API::MergeRequests do
     end
 
     context 'when authenticated' do
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/330335' do
         control = ActiveRecord::QueryRecorder.new do
           get api(endpoint_path, user)
         end
@@ -142,7 +142,7 @@ RSpec.describe API::MergeRequests do
             expect(json_response.last['labels'].first).to match_schema('/public_api/v4/label_basic')
           end
 
-          it 'avoids N+1 queries' do
+          it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/330335' do
             path = endpoint_path + "?with_labels_details=true"
 
             control = ActiveRecord::QueryRecorder.new do
@@ -973,6 +973,14 @@ RSpec.describe API::MergeRequests do
 
     it_behaves_like 'merge requests list'
 
+    context 'when :api_caching_merge_requests is disabled' do
+      before do
+        stub_feature_flags(api_caching_merge_requests: false)
+      end
+
+      it_behaves_like 'merge requests list'
+    end
+
     it "returns 404 for non public projects" do
       project = create(:project, :private)
 
@@ -1049,7 +1057,7 @@ RSpec.describe API::MergeRequests do
 
       include_context 'with merge requests'
 
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/330335' do
         control = ActiveRecord::QueryRecorder.new do
           get api("/projects/#{project.id}/merge_requests", user)
         end.count

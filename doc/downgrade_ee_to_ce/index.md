@@ -31,7 +31,7 @@ Completed 500 Internal Server Error in 497ms (ActiveRecord: 32.2ms)
 
 ActionView::Template::Error (The single-table inheritance mechanism failed to locate the subclass: 'GithubService'. This
 error is raised because the column 'type' is reserved for storing the class in case of inheritance. Please rename this
-column if you didn't intend it to be used for storing the inheritance class or overwrite Service.inheritance_column to
+column if you didn't intend it to be used for storing the inheritance class or overwrite Integration.inheritance_column to
 use another column for that information.)
 ```
 
@@ -42,13 +42,13 @@ to avoid getting this error, you need to remove all instances of the
 **Omnibus Installation**
 
 ```shell
-sudo gitlab-rails runner "Service.where(type: ['GithubService']).delete_all"
+sudo gitlab-rails runner "Integration.where(type: ['GithubService']).delete_all"
 ```
 
 **Source Installation**
 
 ```shell
-bundle exec rails runner "Service.where(type: ['GithubService']).delete_all" production
+bundle exec rails runner "Integration.where(type: ['GithubService']).delete_all" production
 ```
 
 NOTE:

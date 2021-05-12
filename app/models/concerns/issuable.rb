@@ -63,7 +63,7 @@ module Issuable
 
     has_many :note_authors, -> { distinct }, through: :notes, source: :author
 
-    has_many :label_links, as: :target, dependent: :destroy, inverse_of: :target # rubocop:disable Cop/ActiveRecordDependent
+    has_many :label_links, as: :target, inverse_of: :target
     has_many :labels, through: :label_links
     has_many :todos, as: :target
 

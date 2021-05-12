@@ -139,6 +139,17 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     add_special_file_path(file_name: ci_config_path_or_default)
   end
 
+  def add_code_quality_ci_yml_path
+    add_special_file_path(
+      file_name: ci_config_path_or_default,
+      commit_message: s_("CommitMessage|Add %{file_name} and create a code quality job") % { file_name: ci_config_path_or_default },
+      additional_params: {
+        template: 'Code-Quality',
+        code_quality_walkthrough: true
+      }
+    )
+  end
+
   def license_short_name
     license = repository.license
     license&.nickname || license&.name || 'LICENSE'
@@ -468,14 +479,15 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-  def add_special_file_path(file_name:, commit_message: nil, branch_name: nil)
+  def add_special_file_path(file_name:, commit_message: nil, branch_name: nil, additional_params: {})
     commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name }
     project_new_blob_path(
       project,
       default_branch_or_main,
       file_name:      file_name,
       commit_message: commit_message,
-      branch_name:    branch_name
+      branch_name:    branch_name,
+      **additional_params
     )
   end
 end

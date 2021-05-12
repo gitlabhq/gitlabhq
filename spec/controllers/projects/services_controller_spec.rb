@@ -19,7 +19,7 @@ RSpec.describe Projects::ServicesController do
   describe '#test' do
     context 'when can_test? returns false' do
       it 'renders 404' do
-        allow_any_instance_of(Service).to receive(:can_test?).and_return(false)
+        allow_any_instance_of(Integration).to receive(:can_test?).and_return(false)
 
         put :test, params: project_params
 

@@ -3,6 +3,6 @@
 FactoryBot.define do
   factory :service_hook do
     url { generate(:url) }
-    service
+    integration
   end
 end

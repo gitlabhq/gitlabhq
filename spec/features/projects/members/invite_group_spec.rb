@@ -6,6 +6,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
   include Select2Helper
   include ActionView::Helpers::DateHelper
   include Spec::Support::Helpers::Features::MembersHelpers
+  include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
   let(:maintainer) { create(:user) }
 
@@ -88,12 +89,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
 
           expect(page).not_to have_link 'Groups'
 
-          click_on 'Invite a group'
-
-          click_on 'Select a group'
-          wait_for_requests
-          click_button group_to_share_with.name
-          click_button 'Invite'
+          invite_group(group_to_share_with.name)
 
           visit project_project_members_path(project)
 
@@ -172,14 +168,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
 
       visit project_project_members_path(project)
 
-      click_on 'Invite a group'
-      click_on 'Select a group'
-      wait_for_requests
-      click_button group.name
-      fill_in 'YYYY-MM-DD', with: 5.days.from_now.strftime('%Y-%m-%d')
-      click_button 'Invite'
-
-      page.refresh
+      invite_group(group.name, role: 'Guest', expires_at: 5.days.from_now)
     end
 
     it 'the group link shows the expiration time with a warning class' do

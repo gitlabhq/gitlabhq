@@ -18,7 +18,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
-    it { is_expected.to have_many(:services) }
+    it { is_expected.to have_many(:integrations) }
     it { is_expected.to have_many(:events) }
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
@@ -1076,14 +1076,14 @@ RSpec.describe Project, factory_default: :keep do
     it 'returns nil and does not query services when there is no external issue tracker' do
       project = create(:project)
 
-      expect(project).not_to receive(:services)
+      expect(project).not_to receive(:integrations)
       expect(project.external_issue_tracker).to eq(nil)
     end
 
     it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
       project = create(:redmine_project)
 
-      expect(project).to receive(:services).once.and_call_original
+      expect(project).to receive(:integrations).once.and_call_original
       2.times { expect(project.external_issue_tracker).to be_a_kind_of(RedmineService) }
     end
   end
@@ -1116,7 +1116,7 @@ RSpec.describe Project, factory_default: :keep do
 
       it 'becomes false when external issue tracker service is destroyed' do
         expect do
-          Service.find(service.id).delete
+          Integration.find(service.id).delete
         end.to change { subject }.to(false)
       end
 
@@ -1133,7 +1133,7 @@ RSpec.describe Project, factory_default: :keep do
 
         it 'does not become false when external issue tracker service is destroyed' do
           expect do
-            Service.find(service.id).delete
+            Integration.find(service.id).delete
           end.not_to change { subject }
         end
 
@@ -1191,7 +1191,7 @@ RSpec.describe Project, factory_default: :keep do
 
       it 'becomes false if the external wiki service is destroyed' do
         expect do
-          Service.find(service.id).delete
+          Integration.find(service.id).delete
         end.to change { subject }.to(false)
       end
 
@@ -5800,16 +5800,16 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'avoids N+1 database queries with more available services' do
-      allow(Service).to receive(:available_services_names).and_return(%w[pushover])
+      allow(Integration).to receive(:available_services_names).and_return(%w[pushover])
       control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_services }
 
-      allow(Service).to receive(:available_services_names).and_call_original
+      allow(Integration).to receive(:available_services_names).and_call_original
       expect { subject.find_or_initialize_services }.not_to exceed_query_limit(control_count)
     end
 
     context 'with disabled services' do
       before do
-        allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover teamcity])
+        allow(Integration).to receive(:available_services_names).and_return(%w[prometheus pushover teamcity])
         allow(subject).to receive(:disabled_services).and_return(%w[prometheus])
       end
 
@@ -5844,11 +5844,11 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#find_or_initialize_service' do
     it 'avoids N+1 database queries' do
-      allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover])
+      allow(Integration).to receive(:available_services_names).and_return(%w[prometheus pushover])
 
       control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_service('prometheus') }.count
 
-      allow(Service).to receive(:available_services_names).and_call_original
+      allow(Integration).to receive(:available_services_names).and_call_original
 
       expect { subject.find_or_initialize_service('prometheus') }.not_to exceed_query_limit(control_count)
     end
@@ -6479,13 +6479,13 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe 'with services and chat names' do
+  describe 'with integrations and chat names' do
     subject { create(:project) }
 
-    let(:service) { create(:service, project: subject) }
+    let(:integration) { create(:service, project: subject) }
 
     before do
-      create_list(:chat_name, 5, service: service)
+      create_list(:chat_name, 5, integration: integration)
     end
 
     it 'removes chat names on removal' do

@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Integrations::StiType do
 
       it 'forms SQL SELECT statements correctly' do
         sql_statements = types.map do |type|
-          Service.where(type: type).to_sql
+          Integration.where(type: type).to_sql
         end
 
         expect(sql_statements).to all(eq(expected_sql))
@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Integrations::StiType do
 
       it 'forms SQL CREATE statements correctly' do
         sql_statements = types.map do |type|
-          record = ActiveRecord::QueryRecorder.new { Service.insert({ type: type }) }
+          record = ActiveRecord::QueryRecorder.new { Integration.insert({ type: type }) }
           record.log.first
         end
 
@@ -69,7 +69,7 @@ RSpec.describe Gitlab::Integrations::StiType do
 
       it 'forms SQL DELETE statements correctly' do
         sql_statements = types.map do |type|
-          record = ActiveRecord::QueryRecorder.new { Service.delete_by(type: type) }
+          record = ActiveRecord::QueryRecorder.new { Integration.delete_by(type: type) }
           record.log.first
         end
 
@@ -93,7 +93,7 @@ RSpec.describe Gitlab::Integrations::StiType do
       create(:service, type: 'AsanaService')
 
       types.each do |type|
-        expect(Service.find_by(type: type)).to be_kind_of(Integrations::Asana)
+        expect(Integration.find_by(type: type)).to be_kind_of(Integrations::Asana)
       end
     end
   end

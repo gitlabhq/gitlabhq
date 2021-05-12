@@ -5055,6 +5055,9 @@ msgstr ""
 msgid "Billings|User Verification Required"
 msgstr ""
 
+msgid "Billings|User successfully verified"
+msgstr ""
+
 msgid "Billings|Verify User Account"
 msgstr ""
 
@@ -5062,6 +5065,9 @@ msgid "Billings|Verify account"
 msgstr ""
 
 msgid "Billings|Your user account has been flagged for potential abuse for running a large number of concurrent pipelines. To continue to run a large number of concurrent pipelines, you'll need to validate your account with a credit card. %{strongStart}GitLab will not charge your credit card, it will only be used for validation.%{strongEnd}"
+msgstr ""
+
+msgid "Billings|Your user account has been successfully verified. You will now be able to run pipelines on any free or trial namespace."
 msgstr ""
 
 msgid "Billing|An email address is only visible for users with public emails."
@@ -8087,6 +8093,9 @@ msgid "CommitBoxTitle|Commit"
 msgstr ""
 
 msgid "CommitMessage|Add %{file_name}"
+msgstr ""
+
+msgid "CommitMessage|Add %{file_name} and create a code quality job"
 msgstr ""
 
 msgid "CommitWidget|authored"
@@ -19385,6 +19394,9 @@ msgstr ""
 msgid "Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}."
 msgstr ""
 
+msgid "Let's talk!"
+msgstr ""
+
 msgid "License"
 msgstr ""
 
@@ -23425,6 +23437,9 @@ msgstr ""
 msgid "PackageRegistry|RubyGems"
 msgstr ""
 
+msgid "PackageRegistry|Settings for Generic packages"
+msgstr ""
+
 msgid "PackageRegistry|Settings for Maven packages"
 msgstr ""
 
@@ -23980,6 +23995,9 @@ msgstr ""
 msgid "Pipelines|API"
 msgstr ""
 
+msgid "Pipelines|Add a code quality job"
+msgstr ""
+
 msgid "Pipelines|Are you sure you want to run this pipeline?"
 msgstr ""
 
@@ -24035,6 +24053,9 @@ msgid "Pipelines|Group %{namespace_name} has exceeded its pipeline minutes quota
 msgstr ""
 
 msgid "Pipelines|If you are unsure, please ask a project maintainer to review it for you."
+msgstr ""
+
+msgid "Pipelines|Improve code quality with GitLab CI/CD"
 msgstr ""
 
 msgid "Pipelines|It is recommended the code is reviewed thoroughly before running this pipeline with the parent project's CI resource."
@@ -24113,6 +24134,9 @@ msgid "Pipelines|This pipeline will run code originating from a forked project m
 msgstr ""
 
 msgid "Pipelines|This project is not currently set up to run pipelines."
+msgstr ""
+
+msgid "Pipelines|To keep your codebase simple, readable, and accessible to contributors, use GitLab CI/CD to analyze your code quality with every push to your project."
 msgstr ""
 
 msgid "Pipelines|Token"
@@ -36105,6 +36129,9 @@ msgstr ""
 msgid "We heard back from your device. You have been authenticated."
 msgstr ""
 
+msgid "We love speaking to our users. Got more to say about your GitLab experiences?"
+msgstr ""
+
 msgid "We recommend cloud-based mobile authenticator apps such as Authy, Duo Mobile, and LastPass. They can restore access if you lose your hardware device."
 msgstr ""
 
@@ -38005,6 +38032,45 @@ msgid "closed"
 msgstr ""
 
 msgid "closed issue"
+msgstr ""
+
+msgid "codeQualityWalkthrough|A code quality job will now run every time you or your team members commit changes to your project. You can view the results of the code quality job in the job logs."
+msgstr ""
+
+msgid "codeQualityWalkthrough|Congrats! Your first pipeline is running %{emojiStart}zap%{emojiEnd}"
+msgstr ""
+
+msgid "codeQualityWalkthrough|Got it"
+msgstr ""
+
+msgid "codeQualityWalkthrough|Let's start by creating a new CI file."
+msgstr ""
+
+msgid "codeQualityWalkthrough|Not sure how to fix your failed job? We have compiled some tips on how to troubleshoot code quality jobs in the documentation."
+msgstr ""
+
+msgid "codeQualityWalkthrough|Read the documentation"
+msgstr ""
+
+msgid "codeQualityWalkthrough|Something went wrong. %{emojiStart}thinking%{emojiEnd} Let's fix it."
+msgstr ""
+
+msgid "codeQualityWalkthrough|To begin with code quality, we first need to create a new CI file using our code editor. We added a code quality template in the code editor to help you get started %{emojiStart}wink%{emojiEnd} .%{lineBreak}Take some time to review the template, when you are ready, use the %{strongStart}commit changes%{strongEnd} button at the bottom of the page."
+msgstr ""
+
+msgid "codeQualityWalkthrough|Troubleshoot your code quality job"
+msgstr ""
+
+msgid "codeQualityWalkthrough|View the logs"
+msgstr ""
+
+msgid "codeQualityWalkthrough|Well done! You've just automated your code quality review. %{emojiStart}raised_hands%{emojiEnd}"
+msgstr ""
+
+msgid "codeQualityWalkthrough|Your job failed. No worries - this happens. Let's view the logs, and see how we can fix it."
+msgstr ""
+
+msgid "codeQualityWalkthrough|Your pipeline can take a few minutes to run. If you enabled email notifications, you'll receive an email with your pipeline status. In the meantime, why don't you get some coffee? You earned it!"
 msgstr ""
 
 msgid "collect usage information"

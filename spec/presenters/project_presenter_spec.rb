@@ -794,6 +794,12 @@ RSpec.describe ProjectPresenter do
     end
   end
 
+  describe '#add_code_quality_ci_yml_path' do
+    subject { presenter.add_code_quality_ci_yml_path }
+
+    it { is_expected.to match(/code_quality_walkthrough=true.*template=Code-Quality/) }
+  end
+
   describe 'empty_repo_upload_experiment?' do
     subject { presenter.empty_repo_upload_experiment? }
 

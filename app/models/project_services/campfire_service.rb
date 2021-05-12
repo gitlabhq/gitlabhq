@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CampfireService < Service
+class CampfireService < Integration
   prop_accessor :token, :subdomain, :room
   validates :token, presence: true, if: :activated?
 

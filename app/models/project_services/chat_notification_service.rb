@@ -2,7 +2,7 @@
 
 # Base class for Chat notifications services
 # This class is not meant to be used directly, but only to inherit from.
-class ChatNotificationService < Service
+class ChatNotificationService < Integration
   include ChatMessage
   include NotificationBranchSelection
 

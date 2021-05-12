@@ -49,7 +49,7 @@ RSpec.describe MattermostSlashCommandsService do
         end
 
         it 'saves the service' do
-          expect { subject }.to change { project.services.count }.by(1)
+          expect { subject }.to change { project.integrations.count }.by(1)
         end
 
         it 'saves the token' do

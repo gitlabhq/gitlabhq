@@ -34,7 +34,7 @@ class Group < Namespace
   has_many :members_and_requesters, as: :source, class_name: 'GroupMember'
 
   has_many :milestones
-  has_many :services
+  has_many :integrations
   has_many :shared_group_links, foreign_key: :shared_with_group_id, class_name: 'GroupGroupLink'
   has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink'
   has_many :shared_groups, through: :shared_group_links, source: :shared_group
@@ -165,12 +165,12 @@ class Group < Namespace
     end
 
     def without_integration(integration)
-      services = Service
+      integrations = Integration
         .select('1')
         .where('services.group_id = namespaces.id')
         .where(type: integration.type)
 
-      where('NOT EXISTS (?)', services)
+      where('NOT EXISTS (?)', integrations)
     end
 
     # This method can be used only if all groups have the same top-level
