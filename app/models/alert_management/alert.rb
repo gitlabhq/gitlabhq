@@ -20,7 +20,6 @@ module AlertManagement
       resolved: 2,
       ignored: 3
     }.freeze
-    private_constant :STATUSES
 
     STATUS_DESCRIPTIONS = {
       triggered: 'Investigation has not started',

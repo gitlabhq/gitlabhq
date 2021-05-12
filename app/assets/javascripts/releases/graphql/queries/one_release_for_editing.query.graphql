@@ -1,4 +1,4 @@
-#import "./release_for_editing.fragment.graphql"
+#import "../fragments/release_for_editing.fragment.graphql"
 
 query oneReleaseForEditing($fullPath: ID!, $tagName: String!) {
   project(fullPath: $fullPath) {

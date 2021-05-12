@@ -87,7 +87,7 @@ Selectors have the format `type`:`search string`. The crawler will search for th
 
 While the browser-based crawler crawls modern web applications efficiently, vulnerability detection is still managed by the standard DAST/Zed Attack Proxy (ZAP) solution.
 
-THe crawler runs the target website in a browser with DAST/ZAP configured as the proxy server. This ensures that all requests and responses made by the browser are passively scanned by DAST/ZAP.
+The crawler runs the target website in a browser with DAST/ZAP configured as the proxy server. This ensures that all requests and responses made by the browser are passively scanned by DAST/ZAP.
 When running a full scan, active vulnerability checks executed by DAST/ZAP do not use a browser. This difference in how vulnerabilities are checked can cause issues that require certain features of the target website to be disabled to ensure the scan works as intended.
 
 For example, for a target website that contains forms with Anti-CSRF tokens, a passive scan will scan as intended because the browser displays pages/forms as if a user is viewing the page.
@@ -95,7 +95,7 @@ However, active vulnerability checks run in a full scan will not be able to subm
 
 ## Managing scan time
 
-It is expected that running the browser-based crawler will result in better coverage for many web applications, when compared to the normal GitLab DAST solution,.
+It is expected that running the browser-based crawler will result in better coverage for many web applications, when compared to the normal GitLab DAST solution.
 This can come at a cost of increased scan time.
 
 You can manage the trade-off between coverage and scan time with the following measures:

@@ -32,6 +32,9 @@ export default {
       import('ee_component/sidebar/components/sidebar_iteration_widget.vue'),
   },
   inject: {
+    multipleAssigneesFeatureAvailable: {
+      default: false,
+    },
     epicFeatureAvailable: {
       default: false,
     },
@@ -83,7 +86,7 @@ export default {
         :iid="activeBoardItem.iid"
         :full-path="fullPath"
         :initial-assignees="activeBoardItem.assignees"
-        class="assignee"
+        :allow-multiple-assignees="multipleAssigneesFeatureAvailable"
         @assignees-updated="setAssignees"
       />
       <board-sidebar-epic-select v-if="epicFeatureAvailable" class="epic" />

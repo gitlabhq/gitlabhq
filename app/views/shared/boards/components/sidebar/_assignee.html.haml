@@ -6,5 +6,5 @@
     %sidebar-assignees-widget{ ":iid" => "String(issue.iid)",
       ":full-path" => "issue.path.split('/-/')[0].substring(1).replace(`#{relative_url}`, '')",
       ":initial-assignees" => "issue.assignees",
-      ":multiple-assignees" => "!Boolean(#{dropdown_options[:data][:"max-select"]})",
+      ":allow-multiple-assignees" => "!Boolean(#{dropdown_options[:data][:"max-select"]})",
       "@assignees-updated" => "setAssignees" }

@@ -65,6 +65,7 @@ describe('Sidebar assignees widget', () => {
         iid: '1',
         issuableId: 0,
         fullPath: '/mygroup/myProject',
+        allowMultipleAssignees: true,
         ...props,
       },
       provide: {

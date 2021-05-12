@@ -485,27 +485,6 @@ RSpec.describe MergeRequestDiff do
             'files/whitespace'
           ])
         end
-
-        context 'when sort_diffs feature flag is disabled' do
-          before do
-            stub_feature_flags(sort_diffs: false)
-          end
-
-          it 'does not sort diff files directory first' do
-            expect(diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options).diff_file_paths).to eq([
-              '.DS_Store',
-              '.gitattributes',
-              '.gitignore',
-              '.gitmodules',
-              'CHANGELOG',
-              'README',
-              'bar/branch-test.txt',
-              'custom-highlighting/test.gitlab-custom',
-              'encoding/iso8859.txt',
-              'files/.DS_Store'
-            ])
-          end
-        end
       end
     end
 
@@ -580,37 +559,6 @@ RSpec.describe MergeRequestDiff do
             'gitlab-grack',
             'gitlab-shell'
           ])
-        end
-
-        context 'when sort_diffs feature flag is disabled' do
-          before do
-            stub_feature_flags(sort_diffs: false)
-          end
-
-          it 'does not sort diff files directory first' do
-            expect(diff_with_commits.diffs(diff_options).diff_file_paths).to eq([
-              '.DS_Store',
-              '.gitattributes',
-              '.gitignore',
-              '.gitmodules',
-              'CHANGELOG',
-              'README',
-              'bar/branch-test.txt',
-              'custom-highlighting/test.gitlab-custom',
-              'encoding/iso8859.txt',
-              'files/.DS_Store',
-              'files/images/wm.svg',
-              'files/js/commit.coffee',
-              'files/lfs/lfs_object.iso',
-              'files/ruby/popen.rb',
-              'files/ruby/regex.rb',
-              'files/whitespace',
-              'foo/bar/.gitkeep',
-              'gitlab-grack',
-              'gitlab-shell',
-              'with space/README.md'
-            ])
-          end
         end
       end
     end
@@ -716,40 +664,6 @@ RSpec.describe MergeRequestDiff do
           'gitlab-grack',
           'gitlab-shell'
         ])
-      end
-
-      context 'when sort_diffs feature flag is disabled' do
-        before do
-          stub_feature_flags(sort_diffs: false)
-        end
-
-        it 'persists diff files unsorted by directory first' do
-          mr_diff = create(:merge_request).merge_request_diff
-          diff_files_paths = mr_diff.merge_request_diff_files.map { |file| file.new_path.presence || file.old_path }
-
-          expect(diff_files_paths).to eq([
-            '.DS_Store',
-            '.gitattributes',
-            '.gitignore',
-            '.gitmodules',
-            'CHANGELOG',
-            'README',
-            'bar/branch-test.txt',
-            'custom-highlighting/test.gitlab-custom',
-            'encoding/iso8859.txt',
-            'files/.DS_Store',
-            'files/images/wm.svg',
-            'files/js/commit.coffee',
-            'files/lfs/lfs_object.iso',
-            'files/ruby/popen.rb',
-            'files/ruby/regex.rb',
-            'files/whitespace',
-            'foo/bar/.gitkeep',
-            'gitlab-grack',
-            'gitlab-shell',
-            'with space/README.md'
-          ])
-        end
       end
 
       it 'expands collapsed diffs before saving' do

@@ -1,8 +1,0 @@
----
-name: limit_epic_groups_query
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59360
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327624
-milestone: '13.12'
-type: development
-group: group::product planning
-default_enabled: false

@@ -119,11 +119,11 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
   describe GraphQL::Query, type: :request do
     include GraphqlHelpers
 
-    all_releases_query_path = 'releases/queries/all_releases.query.graphql'
-    one_release_query_path = 'releases/queries/one_release.query.graphql'
-    one_release_for_editing_query_path = 'releases/queries/one_release_for_editing.query.graphql'
-    release_fragment_path = 'releases/queries/release.fragment.graphql'
-    release_for_editing_fragment_path = 'releases/queries/release_for_editing.fragment.graphql'
+    all_releases_query_path = 'releases/graphql/queries/all_releases.query.graphql'
+    one_release_query_path = 'releases/graphql/queries/one_release.query.graphql'
+    one_release_for_editing_query_path = 'releases/graphql/queries/one_release_for_editing.query.graphql'
+    release_fragment_path = 'releases/graphql/fragments/release.fragment.graphql'
+    release_for_editing_fragment_path = 'releases/graphql/fragments/release_for_editing.fragment.graphql'
 
     before(:all) do
       clean_frontend_fixtures('graphql/releases/')

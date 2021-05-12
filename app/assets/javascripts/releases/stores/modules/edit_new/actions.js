@@ -1,11 +1,11 @@
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
-import createReleaseMutation from '~/releases/queries/create_release.mutation.graphql';
-import createReleaseAssetLinkMutation from '~/releases/queries/create_release_link.mutation.graphql';
-import deleteReleaseAssetLinkMutation from '~/releases/queries/delete_release_link.mutation.graphql';
-import oneReleaseForEditingQuery from '~/releases/queries/one_release_for_editing.query.graphql';
-import updateReleaseMutation from '~/releases/queries/update_release.mutation.graphql';
+import createReleaseMutation from '~/releases/graphql/mutations/create_release.mutation.graphql';
+import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_release_link.mutation.graphql';
+import deleteReleaseAssetLinkMutation from '~/releases/graphql/mutations/delete_release_link.mutation.graphql';
+import updateReleaseMutation from '~/releases/graphql/mutations/update_release.mutation.graphql';
+import oneReleaseForEditingQuery from '~/releases/graphql/queries/one_release_for_editing.query.graphql';
 import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
 import * as types from './mutation_types';
 

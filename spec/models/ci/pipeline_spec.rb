@@ -68,14 +68,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     describe '#downloadable_artifacts' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:downloadable_artifact) { create(:ci_job_artifact, :codequality, job: build) }
+      let_it_be(:expired_artifact) { create(:ci_job_artifact, :junit, :expired, job: build) }
+      let_it_be(:undownloadable_artifact) { create(:ci_job_artifact, :trace, job: build) }
 
-      it 'returns downloadable artifacts that have not expired' do
-        downloadable_artifact = create(:ci_job_artifact, :codequality, job: build)
-        _expired_artifact = create(:ci_job_artifact, :junit, :expired, job: build)
-        _undownloadable_artifact = create(:ci_job_artifact, :trace, job: build)
+      context 'when artifacts are locked' do
+        it 'returns downloadable artifacts including locked artifacts' do
+          expect(pipeline.downloadable_artifacts).to contain_exactly(downloadable_artifact, expired_artifact)
+        end
+      end
 
-        expect(pipeline.downloadable_artifacts).to contain_exactly(downloadable_artifact)
+      context 'when artifacts are unlocked' do
+        it 'returns only downloadable artifacts not expired' do
+          expired_artifact.job.pipeline.unlocked!
+
+          expect(pipeline.reload.downloadable_artifacts).to contain_exactly(downloadable_artifact)
+        end
       end
     end
   end

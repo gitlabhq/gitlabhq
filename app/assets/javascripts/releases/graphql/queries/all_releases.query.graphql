@@ -1,4 +1,4 @@
-#import "./release.fragment.graphql"
+#import "../fragments/release.fragment.graphql"
 
 query allReleases(
   $fullPath: ID!

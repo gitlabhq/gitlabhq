@@ -4,9 +4,9 @@ import testAction from 'helpers/vuex_action_helper';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
-import createReleaseAssetLinkMutation from '~/releases/queries/create_release_link.mutation.graphql';
-import deleteReleaseAssetLinkMutation from '~/releases/queries/delete_release_link.mutation.graphql';
-import updateReleaseMutation from '~/releases/queries/update_release.mutation.graphql';
+import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_release_link.mutation.graphql';
+import deleteReleaseAssetLinkMutation from '~/releases/graphql/mutations/delete_release_link.mutation.graphql';
+import updateReleaseMutation from '~/releases/graphql/mutations/update_release.mutation.graphql';
 import * as actions from '~/releases/stores/modules/edit_new/actions';
 import * as types from '~/releases/stores/modules/edit_new/mutation_types';
 import createState from '~/releases/stores/modules/edit_new/state';
@@ -28,7 +28,7 @@ jest.mock('~/releases/util', () => ({
 }));
 
 const originalOneReleaseForEditingQueryResponse = getJSONFixture(
-  'graphql/releases/queries/one_release_for_editing.query.graphql.json',
+  'graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json',
 );
 
 describe('Release edit/new actions', () => {

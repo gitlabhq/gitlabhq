@@ -10,7 +10,7 @@ const originalRelease = getJSONFixture('api/releases/release.json');
 const originalReleases = [originalRelease];
 
 const graphqlReleasesResponse = getJSONFixture(
-  'graphql/releases/queries/all_releases.query.graphql.json',
+  'graphql/releases/graphql/queries/all_releases.query.graphql.json',
 );
 
 describe('Releases Store Mutations', () => {

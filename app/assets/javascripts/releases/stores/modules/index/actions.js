@@ -1,7 +1,7 @@
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 import { PAGE_SIZE } from '~/releases/constants';
-import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
+import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
 import { gqClient, convertAllReleasesGraphQLResponse } from '~/releases/util';
 import * as types from './mutation_types';
 

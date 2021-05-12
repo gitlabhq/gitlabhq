@@ -14,7 +14,7 @@
 
 
 
-/label ~"feature" ~"group::" ~"section::"  ~"Category::" ~"GitLab Core"/~"GitLab Premium"/~"GitLab Ultimate"
+/label ~"feature" ~"group::" ~"section::"  ~"Category::" ~"GitLab Free"/~"GitLab Premium"/~"GitLab Ultimate"
 
 
 <!--- Use the following resources to find the appropriate labels:

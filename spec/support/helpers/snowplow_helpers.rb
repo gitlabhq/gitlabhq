@@ -60,6 +60,10 @@ module SnowplowHelpers
       .with(category, action, **kwargs).at_least(:once)
   end
 
+  def match_snowplow_context_schema(schema_path:, context:)
+    expect(context).to match_snowplow_schema(schema_path)
+  end
+
   # Asserts that no call to `Gitlab::Tracking#event` was made.
   #
   # Example:

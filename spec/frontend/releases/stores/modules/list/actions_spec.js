@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import { getJSONFixture } from 'helpers/fixtures';
 import testAction from 'helpers/vuex_action_helper';
 import { PAGE_SIZE } from '~/releases/constants';
-import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
+import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
 import {
   fetchReleases,
   receiveReleasesError,
@@ -13,7 +13,7 @@ import createState from '~/releases/stores/modules/index/state';
 import { gqClient, convertAllReleasesGraphQLResponse } from '~/releases/util';
 
 const originalGraphqlReleasesResponse = getJSONFixture(
-  'graphql/releases/queries/all_releases.query.graphql.json',
+  'graphql/releases/graphql/queries/all_releases.query.graphql.json',
 );
 
 describe('Releases State actions', () => {

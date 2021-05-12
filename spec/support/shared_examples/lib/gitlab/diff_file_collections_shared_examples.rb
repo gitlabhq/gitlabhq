@@ -166,16 +166,6 @@ shared_examples_for 'sortable diff files' do
       it 'returns sorted diff files' do
         expect(raw_diff_files_paths).to eq(sorted_diff_files_paths)
       end
-
-      context 'when sort_diffs feature flag is disabled' do
-        before do
-          stub_feature_flags(sort_diffs: false)
-        end
-
-        it 'returns unsorted diff files' do
-          expect(raw_diff_files_paths).to eq(unsorted_diff_files_paths)
-        end
-      end
     end
   end
 end

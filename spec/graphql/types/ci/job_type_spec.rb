@@ -37,6 +37,7 @@ RSpec.describe Types::Ci::JobType do
       stage
       started_at
       status
+      stuck
       tags
       triggered
       userPermissions

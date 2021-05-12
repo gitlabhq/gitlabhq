@@ -36,7 +36,7 @@ rake gitlab:ldap:check[50]
 
 ## Run a group sync **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in GitLab 12.2.
 
 The following task runs a [group sync](../auth/ldap/index.md#group-sync) immediately. This is valuable
 when you'd like to update all configured group memberships against LDAP without
@@ -81,9 +81,10 @@ main:
 
 `main` is the LDAP server ID. Together, the unique provider is `ldapmain`.
 
-> **Warning**: If you input an incorrect new provider, users cannot sign in.
-If this happens, run the task again with the incorrect provider
-as the `old_provider` and the correct provider as the `new_provider`.
+WARNING:
+If you input an incorrect new provider, users cannot sign in. If this happens,
+run the task again with the incorrect provider as the `old_provider` and the
+correct provider as the `new_provider`.
 
 **Omnibus Installation**
 

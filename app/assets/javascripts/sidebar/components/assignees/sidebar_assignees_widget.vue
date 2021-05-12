@@ -71,8 +71,7 @@ export default {
     },
     allowMultipleAssignees: {
       type: Boolean,
-      required: false,
-      default: true,
+      required: true,
     },
   },
   data() {

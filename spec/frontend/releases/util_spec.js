@@ -7,13 +7,13 @@ import {
 } from '~/releases/util';
 
 const originalAllReleasesQueryResponse = getJSONFixture(
-  'graphql/releases/queries/all_releases.query.graphql.json',
+  'graphql/releases/graphql/queries/all_releases.query.graphql.json',
 );
 const originalOneReleaseQueryResponse = getJSONFixture(
-  'graphql/releases/queries/one_release.query.graphql.json',
+  'graphql/releases/graphql/queries/one_release.query.graphql.json',
 );
 const originalOneReleaseForEditingQueryResponse = getJSONFixture(
-  'graphql/releases/queries/one_release_for_editing.query.graphql.json',
+  'graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json',
 );
 
 describe('releases/util.js', () => {

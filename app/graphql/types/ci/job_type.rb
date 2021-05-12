@@ -71,6 +71,8 @@ module Types
             description: 'Indicates the job can be canceled.'
       field :active, GraphQL::BOOLEAN_TYPE, null: false, method: :active?,
             description: 'Indicates the job is active.'
+      field :stuck, GraphQL::BOOLEAN_TYPE, null: false, method: :stuck?,
+            description: 'Indicates the job is stuck.'
       field :coverage, GraphQL::FLOAT_TYPE, null: true,
             description: 'Coverage level of the job.'
       field :created_by_tag, GraphQL::BOOLEAN_TYPE, null: false,

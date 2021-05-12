@@ -1,0 +1,5 @@
+---
+title: Fix downloadable artifacts for pipeline
+merge_request: 60836
+author:
+type: fixed

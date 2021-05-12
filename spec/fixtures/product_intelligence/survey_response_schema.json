@@ -1,0 +1,52 @@
+{
+  "description": "Schema for a Gitlab survey_response event",
+  "self": {
+    "vendor": "com.gitlab",
+    "name": "survey_response",
+    "version": "1-0-0",
+    "format": "jsonschema"
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["survey_id", "response"],
+  "properties": {
+    "survey_id": {
+      "description": "Survey ID",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647
+    },
+    "response": {
+      "description": "Response",
+      "type": "string",
+      "maxLength": 10000
+    },
+    "instance_id": {
+      "description": "Instance ID",
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 2147483647
+    },
+    "user_id": {
+      "description": "User ID",
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 2147483647
+    },
+    "email": {
+      "description": "Email",
+      "type": ["string", "null"],
+      "maxLength": 255
+    },
+    "name": {
+      "description": "Name",
+      "type": ["string", "null"],
+      "maxLength": 255
+    },
+    "username": {
+      "description": "Username",
+      "type": ["string", "null"],
+      "maxLength": 255
+    }
+  }
+}
