@@ -1,7 +1,8 @@
 <script>
 import { GlFilteredSearch } from '@gitlab/ui';
 import { map } from 'lodash';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
+import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import PipelineBranchNameToken from './tokens/pipeline_branch_name_token.vue';
 import PipelineStatusToken from './tokens/pipeline_status_token.vue';
 import PipelineTagNameToken from './tokens/pipeline_tag_name_token.vue';
@@ -43,7 +44,7 @@ export default {
           title: s__('Pipeline|Trigger author'),
           unique: true,
           token: PipelineTriggerAuthorToken,
-          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          operators: OPERATOR_IS_ONLY,
           projectId: this.projectId,
         },
         {
@@ -52,7 +53,7 @@ export default {
           title: s__('Pipeline|Branch name'),
           unique: true,
           token: PipelineBranchNameToken,
-          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          operators: OPERATOR_IS_ONLY,
           projectId: this.projectId,
           disabled: this.selectedTypes.includes(this.$options.tagType),
         },
@@ -62,7 +63,7 @@ export default {
           title: s__('Pipeline|Tag name'),
           unique: true,
           token: PipelineTagNameToken,
-          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          operators: OPERATOR_IS_ONLY,
           projectId: this.projectId,
           disabled: this.selectedTypes.includes(this.$options.branchType),
         },
@@ -72,7 +73,7 @@ export default {
           title: s__('Pipeline|Status'),
           unique: true,
           token: PipelineStatusToken,
-          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          operators: OPERATOR_IS_ONLY,
         },
       ];
     },

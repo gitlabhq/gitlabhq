@@ -138,7 +138,7 @@ export default {
           />
         </div>
         <div class="commit-detail flex-list">
-          <div class="commit-content qa-commit-content">
+          <div class="commit-content" data-qa-selector="commit_content">
             <a
               :href="commit.commit_url"
               class="commit-row-message item-title"

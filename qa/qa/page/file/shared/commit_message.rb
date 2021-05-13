@@ -11,7 +11,7 @@ module QA
             super
 
             base.view 'app/views/shared/_commit_message_container.html.haml' do
-              element :commit_message, "text_area_tag 'commit_message'" # rubocop:disable QA/ElementWithPattern
+              element :commit_message_field
             end
 
             base.view 'app/views/projects/commits/_commit.html.haml' do
@@ -20,7 +20,7 @@ module QA
           end
 
           def add_commit_message(message)
-            fill_in 'commit_message', with: message
+            fill_element(:commit_message_field, message)
           end
 
           def has_commit_message?(text)

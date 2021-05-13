@@ -1,4 +1,7 @@
-import { OPERATOR_IS, OPERATOR_IS_NOT } from '~/issues_list/constants';
+import {
+  OPERATOR_IS,
+  OPERATOR_IS_NOT,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const locationSearch = [
   '?search=find+issues',

@@ -4,6 +4,7 @@ import Api from '~/api';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
+import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import { initialPaginationState, defaultI18n, defaultPageSize } from './constants';
@@ -105,7 +106,7 @@ export default {
           unique: true,
           symbol: '@',
           token: AuthorToken,
-          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          operators: OPERATOR_IS_ONLY,
           fetchPath: this.projectPath,
           fetchAuthors: Api.projectUsers.bind(Api),
         },
@@ -116,7 +117,7 @@ export default {
           unique: true,
           symbol: '@',
           token: AuthorToken,
-          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          operators: OPERATOR_IS_ONLY,
           fetchPath: this.projectPath,
           fetchAuthors: Api.projectUsers.bind(Api),
         },

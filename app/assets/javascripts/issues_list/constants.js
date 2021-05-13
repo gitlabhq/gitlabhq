@@ -3,6 +3,8 @@ import {
   FILTER_ANY,
   FILTER_CURRENT,
   FILTER_NONE,
+  OPERATOR_IS,
+  OPERATOR_IS_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 // Maps sort order as it appears in the URL query to API `order_by` and `sort` params.
@@ -60,6 +62,13 @@ export const availableSortOptionsJira = [
 
 export const i18n = {
   calendarLabel: __('Subscribe to calendar'),
+  closed: __('CLOSED'),
+  closedMoved: __('CLOSED (MOVED)'),
+  confidentialNo: __('No'),
+  confidentialYes: __('Yes'),
+  downvotes: __('Downvotes'),
+  editIssues: __('Edit issues'),
+  errorFetchingIssues: __('An error occurred while loading issues'),
   jiraIntegrationMessage: s__(
     'JiraService|%{jiraDocsLinkStart}Enable the Jira integration%{jiraDocsLinkEnd} to view your Jira issues in GitLab.',
   ),
@@ -82,8 +91,11 @@ export const i18n = {
   noIssuesSignedOutTitle: __('There are no issues to show'),
   noSearchResultsDescription: __('To widen your search, change or remove filters above'),
   noSearchResultsTitle: __('Sorry, your filter produced no results'),
+  relatedMergeRequests: __('Related merge requests'),
   reorderError: __('An error occurred while reordering issues.'),
   rssLabel: __('Subscribe to RSS feed'),
+  searchPlaceholder: __('Search or filter results…'),
+  upvotes: __('Upvotes'),
 };
 
 export const JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY = 'jira-import-success-alert-hide-map';
@@ -245,10 +257,6 @@ export const urlSortParams = {
 };
 
 export const MAX_LIST_SIZE = 10;
-
-export const FILTERED_SEARCH_TERM = 'filtered-search-term';
-export const OPERATOR_IS = '=';
-export const OPERATOR_IS_NOT = '!=';
 
 export const NORMAL_FILTER = 'normalFilter';
 export const SPECIAL_FILTER = 'specialFilter';

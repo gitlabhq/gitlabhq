@@ -43,6 +43,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     projectPath,
     projectNamespace,
     runnerHelpPagePath,
+    totalBranches,
     ymlHelpPagePath,
   } = el?.dataset;
 
@@ -100,6 +101,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
       projectPath,
       projectNamespace,
       runnerHelpPagePath,
+      totalBranches: parseInt(totalBranches, 10),
       ymlHelpPagePath,
     },
     render(h) {

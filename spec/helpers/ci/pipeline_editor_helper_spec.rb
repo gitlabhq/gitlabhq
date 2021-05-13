@@ -55,6 +55,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-full-path" => project.full_path,
           "project-namespace" => project.namespace.full_path,
           "runner-help-page-path" => help_page_path('ci/runners/README'),
+          "total-branches" => project.repository.branches.length,
           "yml-help-page-path" => help_page_path('ci/yaml/README')
         })
       end
@@ -81,6 +82,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-full-path" => project.full_path,
           "project-namespace" => project.namespace.full_path,
           "runner-help-page-path" => help_page_path('ci/runners/README'),
+          "total-branches" => 0,
           "yml-help-page-path" => help_page_path('ci/yaml/README')
         })
       end

@@ -1,27 +1,8 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-comments: false
+redirect_to: '../../../topics/index.md'
 ---
 
-# Git introduction
+This document was removed. See our [topics](../../../topics/index.md) for similar content.
 
-## Intro
-
-<https://git-scm.com/about>
-
-- Distributed version control
-  - Does not rely on connection to a central server
-  - Many copies of the complete history
-- Powerful branching and merging
-- Adapts to nearly any workflow
-- Fast, reliable and stable file format
-
-## Help
-
-Use the tools at your disposal when you get stuck.
-
-- Use '`git help <command>`' command
-- Use Google
-- Read documentation at <https://git-scm.com>
+<!-- This redirect file can be deleted after <2021-08-13>. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->

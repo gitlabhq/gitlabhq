@@ -1,6 +1,6 @@
 %div
   - if @merge_request.description.present?
-    .description.qa-description{ class: can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : '' }
+    .description{ class: can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : '' , data: { qa_selector: 'description_content' } }
       .md
         = markdown_field(@merge_request, :description)
       %textarea.hidden.js-task-list-field{ data: { value: @merge_request.description } }

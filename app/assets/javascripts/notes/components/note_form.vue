@@ -367,21 +367,11 @@ export default {
           <p v-if="showResolveDiscussionToggle">
             <label>
               <template v-if="discussionResolved">
-                <input
-                  v-model="isUnresolving"
-                  type="checkbox"
-                  class="js-unresolve-checkbox"
-                  data-qa-selector="unresolve_review_discussion_checkbox"
-                />
+                <input v-model="isUnresolving" type="checkbox" class="js-unresolve-checkbox" />
                 {{ __('Unresolve thread') }}
               </template>
               <template v-else>
-                <input
-                  v-model="isResolving"
-                  type="checkbox"
-                  class="js-resolve-checkbox"
-                  data-qa-selector="resolve_review_discussion_checkbox"
-                />
+                <input v-model="isResolving" type="checkbox" class="js-resolve-checkbox" />
                 {{ __('Resolve thread') }}
               </template>
             </label>

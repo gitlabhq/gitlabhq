@@ -653,6 +653,7 @@ registry.gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/pmd-apex:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/security-code-scan:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/sobelow:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/spotbugs:2
 ```
@@ -682,7 +683,7 @@ Support for custom certificate authorities was introduced in the following versi
 | `phpcs-security-audit` | [v2.8.2](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit/-/releases/v2.8.2) |
 | `pmd-apex`             | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex/-/releases/v2.1.0)             |
 | `security-code-scan`   | [v2.7.3](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/releases/v2.7.3)   |
-| `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/releases/v0.0.1)   |
+| `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1)   |
 | `sobelow`              | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0)              |
 | `spotbugs`             | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1)             |
 

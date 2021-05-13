@@ -1095,6 +1095,8 @@ module Ci
           merge_request.modified_paths
         elsif branch_updated?
           push_details.modified_paths
+        elsif external_pull_request? && ::Feature.enabled?(:ci_modified_paths_of_external_prs, project, default_enabled: :yaml)
+          external_pull_request.modified_paths
         end
       end
     end
@@ -1117,6 +1119,10 @@ module Ci
 
     def merge_request?
       merge_request_id.present?
+    end
+
+    def external_pull_request?
+      external_pull_request_id.present?
     end
 
     def detached_merge_request_pipeline?

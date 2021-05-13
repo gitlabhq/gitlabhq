@@ -206,6 +206,7 @@ export default {
           :class="classNameMapCellLeft"
           data-testid="left-line-number"
           class="diff-td diff-line-num"
+          data-qa-selector="new_diff_line_link"
         >
           <template v-if="!isLeftConflictMarker">
             <span
@@ -220,7 +221,7 @@ export default {
                 tabindex="0"
                 :draggable="!line.left.commentsDisabled && glFeatures.dragCommentSelection"
                 type="button"
-                class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button qa-diff-comment"
+                class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button"
                 data-qa-selector="diff_comment_button"
                 :class="{ 'gl-cursor-grab': dragging }"
                 :disabled="line.left.commentsDisabled"
@@ -327,7 +328,7 @@ export default {
                 tabindex="0"
                 :draggable="!line.right.commentsDisabled && glFeatures.dragCommentSelection"
                 type="button"
-                class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button qa-diff-comment"
+                class="add-diff-note unified-diff-components-diff-note-button note-button js-add-diff-note-button"
                 :class="{ 'gl-cursor-grab': dragging }"
                 :disabled="line.right.commentsDisabled"
                 :aria-disabled="line.right.commentsDisabled"

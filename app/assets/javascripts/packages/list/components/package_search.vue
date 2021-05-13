@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
+import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 import { sortableFields } from '../utils';
@@ -14,7 +15,7 @@ export default {
       title: s__('PackageRegistry|Type'),
       unique: true,
       token: PackageTypeToken,
-      operators: [{ value: '=', description: __('is'), default: 'true' }],
+      operators: OPERATOR_IS_ONLY,
     },
   ],
   components: { RegistrySearch, UrlSync },

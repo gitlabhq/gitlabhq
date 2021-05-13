@@ -1,6 +1,7 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { mockLabels } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 import Api from '~/api';
+import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import BranchToken from '~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
@@ -84,7 +85,7 @@ export const mockBranchToken = {
   title: 'Source Branch',
   unique: true,
   token: BranchToken,
-  operators: [{ value: '=', description: 'is', default: 'true' }],
+  operators: OPERATOR_IS_ONLY,
   fetchBranches: Api.branches.bind(Api),
 };
 
@@ -95,7 +96,7 @@ export const mockAuthorToken = {
   unique: false,
   symbol: '@',
   token: AuthorToken,
-  operators: [{ value: '=', description: 'is', default: 'true' }],
+  operators: OPERATOR_IS_ONLY,
   fetchPath: 'gitlab-org/gitlab-test',
   fetchAuthors: Api.projectUsers.bind(Api),
 };
@@ -116,7 +117,7 @@ export const mockLabelToken = {
   unique: false,
   symbol: '~',
   token: LabelToken,
-  operators: [{ value: '=', description: 'is', default: 'true' }],
+  operators: OPERATOR_IS_ONLY,
   fetchLabels: () => Promise.resolve(mockLabels),
 };
 
@@ -127,7 +128,7 @@ export const mockMilestoneToken = {
   unique: true,
   symbol: '%',
   token: MilestoneToken,
-  operators: [{ value: '=', description: 'is', default: 'true' }],
+  operators: OPERATOR_IS_ONLY,
   fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
 };
 
@@ -138,7 +139,7 @@ export const mockEpicToken = {
   unique: true,
   symbol: '&',
   token: EpicToken,
-  operators: [{ value: '=', description: 'is', default: 'true' }],
+  operators: OPERATOR_IS_ONLY,
   idProperty: 'iid',
   fetchEpics: () => Promise.resolve({ data: mockEpics }),
 };
@@ -149,7 +150,7 @@ export const mockReactionEmojiToken = {
   title: 'My-Reaction',
   unique: true,
   token: EmojiToken,
-  operators: [{ value: '=', description: 'is', default: 'true' }],
+  operators: OPERATOR_IS_ONLY,
   fetchEmojis: () => Promise.resolve(mockEmojis),
 };
 
@@ -159,7 +160,7 @@ export const mockMembershipToken = {
   title: 'Membership',
   token: GlFilteredSearchToken,
   unique: true,
-  operators: [{ value: '=', description: 'is' }],
+  operators: OPERATOR_IS_ONLY,
   options: [
     { value: 'exclude', title: 'Direct' },
     { value: 'only', title: 'Inherited' },

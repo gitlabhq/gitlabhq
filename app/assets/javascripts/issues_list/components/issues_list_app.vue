@@ -38,8 +38,19 @@ import {
 } from '~/issues_list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase, getParameterByName } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
-import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  DEFAULT_NONE_ANY,
+  OPERATOR_IS_ONLY,
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_CONFIDENTIAL,
+  TOKEN_TITLE_EPIC,
+  TOKEN_TITLE_ITERATION,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
+  TOKEN_TITLE_WEIGHT,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import EpicToken from '~/vue_shared/components/filtered_search_bar/tokens/epic_token.vue';
@@ -178,7 +189,7 @@ export default {
       const tokens = [
         {
           type: 'author_username',
-          title: __('Author'),
+          title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
           token: AuthorToken,
           dataType: 'user',
@@ -188,7 +199,7 @@ export default {
         },
         {
           type: 'assignee_username',
-          title: __('Assignee'),
+          title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
           token: AuthorToken,
           dataType: 'user',
@@ -198,7 +209,7 @@ export default {
         },
         {
           type: 'milestone',
-          title: __('Milestone'),
+          title: TOKEN_TITLE_MILESTONE,
           icon: 'clock',
           token: MilestoneToken,
           unique: true,
@@ -207,7 +218,7 @@ export default {
         },
         {
           type: 'labels',
-          title: __('Label'),
+          title: TOKEN_TITLE_LABEL,
           icon: 'labels',
           token: LabelToken,
           defaultLabels: [],
@@ -215,23 +226,23 @@ export default {
         },
         {
           type: 'my_reaction_emoji',
-          title: __('My-Reaction'),
+          title: TOKEN_TITLE_MY_REACTION,
           icon: 'thumb-up',
           token: EmojiToken,
           unique: true,
-          operators: [{ value: '=', description: __('is') }],
+          operators: OPERATOR_IS_ONLY,
           fetchEmojis: this.fetchEmojis,
         },
         {
           type: 'confidential',
-          title: __('Confidential'),
+          title: TOKEN_TITLE_CONFIDENTIAL,
           icon: 'eye-slash',
           token: GlFilteredSearchToken,
           unique: true,
-          operators: [{ value: '=', description: __('is') }],
+          operators: OPERATOR_IS_ONLY,
           options: [
-            { icon: 'eye-slash', value: 'yes', title: __('Yes') },
-            { icon: 'eye', value: 'no', title: __('No') },
+            { icon: 'eye-slash', value: 'yes', title: this.$options.i18n.confidentialYes },
+            { icon: 'eye', value: 'no', title: this.$options.i18n.confidentialNo },
           ],
         },
       ];
@@ -239,7 +250,7 @@ export default {
       if (this.projectIterationsPath) {
         tokens.push({
           type: 'iteration',
-          title: __('Iteration'),
+          title: TOKEN_TITLE_ITERATION,
           icon: 'iteration',
           token: IterationToken,
           unique: true,
@@ -250,7 +261,7 @@ export default {
       if (this.groupEpicsPath) {
         tokens.push({
           type: 'epic_id',
-          title: __('Epic'),
+          title: TOKEN_TITLE_EPIC,
           icon: 'epic',
           token: EpicToken,
           unique: true,
@@ -261,7 +272,7 @@ export default {
       if (this.hasIssueWeightsFeature) {
         tokens.push({
           type: 'weight',
-          title: __('Weight'),
+          title: TOKEN_TITLE_WEIGHT,
           icon: 'weight',
           token: WeightToken,
           unique: true,
@@ -371,7 +382,7 @@ export default {
           this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
         })
         .catch(() => {
-          createFlash({ message: __('An error occurred while loading issues') });
+          createFlash({ message: this.$options.i18n.errorFetchingIssues });
         })
         .finally(() => {
           this.isLoading = false;
@@ -382,10 +393,10 @@ export default {
     },
     getStatus(issue) {
       if (issue.closedAt && issue.movedToId) {
-        return __('CLOSED (MOVED)');
+        return this.$options.i18n.closedMoved;
       }
       if (issue.closedAt) {
-        return __('CLOSED');
+        return this.$options.i18n.closed;
       }
       return undefined;
     },
@@ -474,7 +485,7 @@ export default {
     <issuable-list
       :namespace="projectPath"
       recent-searches-storage-key="issues"
-      :search-input-placeholder="__('Search or filter results…')"
+      :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
       :initial-filter-value="filterTokens"
       :sort-options="sortOptions"
@@ -525,7 +536,7 @@ export default {
           :disabled="isBulkEditButtonDisabled"
           @click="handleBulkUpdateClick"
         >
-          {{ __('Edit issues') }}
+          {{ $options.i18n.editIssues }}
         </gl-button>
         <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
           {{ $options.i18n.newIssueLabel }}
@@ -545,7 +556,7 @@ export default {
           v-if="issuable.mergeRequestsCount"
           v-gl-tooltip
           class="gl-display-none gl-sm-display-block"
-          :title="__('Related merge requests')"
+          :title="$options.i18n.relatedMergeRequests"
           data-testid="issuable-mr"
         >
           <gl-icon name="merge-request" />
@@ -555,7 +566,7 @@ export default {
           v-if="issuable.upvotes"
           v-gl-tooltip
           class="gl-display-none gl-sm-display-block"
-          :title="__('Upvotes')"
+          :title="$options.i18n.upvotes"
           data-testid="issuable-upvotes"
         >
           <gl-icon name="thumb-up" />
@@ -565,7 +576,7 @@ export default {
           v-if="issuable.downvotes"
           v-gl-tooltip
           class="gl-display-none gl-sm-display-block"
-          :title="__('Downvotes')"
+          :title="$options.i18n.downvotes"
           data-testid="issuable-downvotes"
         >
           <gl-icon name="thumb-down" />

@@ -13,7 +13,7 @@
 
 variables:
   SECURE_BINARIES_ANALYZERS: >-
-    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec,
+    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec, semgrep,
     bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python,
     klar, clair-vulnerabilities-db,
     license-finder,
@@ -133,6 +133,13 @@ secrets:
           $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "3"
+
+semgrep:
+  extends: .download_images
+  only:
+    variables:
+      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
+          $SECURE_BINARIES_ANALYZERS =~ /\bsemgrep\b/
 
 sobelow:
   extends: .download_images

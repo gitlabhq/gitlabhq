@@ -35,7 +35,7 @@ export default {
   <gl-dropdown
     :header-text="n__('%d pending comment', '%d pending comments', draftsCount)"
     dropup
-    toggle-class="qa-review-preview-toggle"
+    data-qa-selector="review_preview_dropdown"
   >
     <template #button-content>
       {{ __('Pending comments') }}

@@ -139,17 +139,53 @@ export const mergeUnwrappedCiConfig = (mergedConfig) => {
 };
 
 export const mockProjectBranches = {
-  __typename: 'Project',
-  repository: {
-    __typename: 'Repository',
-    branches: [
-      { __typename: 'Branch', name: 'main' },
-      { __typename: 'Branch', name: 'develop' },
-      { __typename: 'Branch', name: 'production' },
-      { __typename: 'Branch', name: 'test' },
-    ],
+  data: {
+    project: {
+      repository: {
+        branchNames: [
+          'main',
+          'develop',
+          'production',
+          'test',
+          'better-feature',
+          'feature-abc',
+          'update-ci',
+          'mock-feature',
+          'test-merge-request',
+          'staging',
+        ],
+      },
+    },
   },
 };
+
+export const mockTotalBranchResults =
+  mockProjectBranches.data.project.repository.branchNames.length;
+
+export const mockSearchBranches = {
+  data: {
+    project: {
+      repository: {
+        branchNames: ['test', 'better-feature', 'update-ci', 'test-merge-request'],
+      },
+    },
+  },
+};
+
+export const mockTotalSearchResults = mockSearchBranches.data.project.repository.branchNames.length;
+
+export const mockEmptySearchBranches = {
+  data: {
+    project: {
+      repository: {
+        branchNames: [],
+      },
+    },
+  },
+};
+
+export const mockBranchPaginationLimit = 10;
+export const mockTotalBranches = 20; // must be greater than mockBranchPaginationLimit to test pagination
 
 export const mockProjectPipeline = {
   pipeline: {

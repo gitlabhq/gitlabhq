@@ -3606,8 +3606,8 @@ third party ports for other languages like JavaScript, Python, Ruby, and so on.
 
 ##### `artifacts:reports:codequality`
 
-> - Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5.
-> - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) in GitLab 13.2.
+> - Introduced in GitLab 11.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
 > - Requires GitLab Runner 11.5 and above.
 
 The `codequality` report collects [Code Quality issues](../../user/project/merge_requests/code_quality.md)

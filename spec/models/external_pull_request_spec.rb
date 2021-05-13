@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ExternalPullRequest do
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:source_branch) { 'the-branch' }
   let(:status) { :open }
 
@@ -215,6 +216,20 @@ RSpec.describe ExternalPullRequest do
         target_repository: 'repository-1')
 
       expect(pull_request).not_to be_from_fork
+    end
+  end
+
+  describe '#modified_paths' do
+    let(:pull_request) do
+      build(:external_pull_request, project: project, target_sha: '281d3a7', source_sha: '498214d')
+    end
+
+    subject(:modified_paths) { pull_request.modified_paths }
+
+    it 'returns modified paths' do
+      expect(modified_paths).to eq ['bar/branch-test.txt',
+                                    'files/js/commit.coffee',
+                                    'with space/README.md']
     end
   end
 end

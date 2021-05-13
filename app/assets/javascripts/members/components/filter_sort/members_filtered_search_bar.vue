@@ -5,6 +5,7 @@ import { getParameterByName, urlParamsToObject } from '~/lib/utils/common_utils'
 import { setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { SEARCH_TOKEN_TYPE, SORT_PARAM } from '~/members/constants';
+import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 export default {
@@ -17,7 +18,7 @@ export default {
       title: s__('Members|2FA'),
       token: GlFilteredSearchToken,
       unique: true,
-      operators: [{ value: '=', description: 'is' }],
+      operators: OPERATOR_IS_ONLY,
       options: [
         { value: 'enabled', title: s__('Members|Enabled') },
         { value: 'disabled', title: s__('Members|Disabled') },
@@ -30,7 +31,7 @@ export default {
       title: s__('Members|Membership'),
       token: GlFilteredSearchToken,
       unique: true,
-      operators: [{ value: '=', description: 'is' }],
+      operators: OPERATOR_IS_ONLY,
       options: [
         { value: 'exclude', title: s__('Members|Direct') },
         { value: 'only', title: s__('Members|Inherited') },

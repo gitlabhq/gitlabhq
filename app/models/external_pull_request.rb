@@ -72,6 +72,10 @@ class ExternalPullRequest < ApplicationRecord
     end
   end
 
+  def modified_paths
+    project.repository.diff_stats(target_sha, source_sha).paths
+  end
+
   private
 
   def actual_source_branch_sha

@@ -13,6 +13,7 @@ import axios from '~/lib/utils/axios_utils';
 import {
   DEFAULT_LABEL_NONE,
   DEFAULT_LABEL_ANY,
+  DEFAULT_NONE_ANY,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 
@@ -137,7 +138,7 @@ describe('EmojiToken', () => {
   });
 
   describe('template', () => {
-    const defaultEmojis = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
+    const defaultEmojis = DEFAULT_NONE_ANY;
 
     beforeEach(async () => {
       wrapper = createComponent({

@@ -29,12 +29,8 @@ default:
   before_script:
     - cd ${CI_PROJECT_DIR}/my_folder_with_terraform_content
 
-stages:
-  - init_and_plan
-  - cloudrail
-
 init_and_plan:
-  stage: init_and_plan
+  stage: build
   image: registry.gitlab.com/gitlab-org/terraform-images/releases/0.13
   rules:
     - if: $SAST_DISABLED
@@ -52,7 +48,7 @@ init_and_plan:
       - ./**/.terraform
 
 cloudrail_scan:
-  stage: cloudrail
+  stage: test
   image: indeni/cloudrail-cli:1.2.44
   rules:
     - if: $SAST_DISABLED
