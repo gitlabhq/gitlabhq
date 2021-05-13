@@ -28867,6 +28867,9 @@ msgstr ""
 msgid "SecurityReports|Configure security testing"
 msgstr ""
 
+msgid "SecurityReports|Coverage fuzzing"
+msgstr ""
+
 msgid "SecurityReports|Create Jira issue"
 msgstr ""
 
@@ -28883,9 +28886,6 @@ msgid "SecurityReports|Dismissed '%{vulnerabilityName}'. Turn off the hide dismi
 msgstr ""
 
 msgid "SecurityReports|Download %{artifactName}"
-msgstr ""
-
-msgid "SecurityReports|Download Report"
 msgstr ""
 
 msgid "SecurityReports|Download results"
@@ -28907,9 +28907,6 @@ msgid "SecurityReports|Error fetching the vulnerability list. Please check your 
 msgstr ""
 
 msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
-msgstr ""
-
-msgid "SecurityReports|Fuzzing artifacts"
 msgstr ""
 
 msgid "SecurityReports|Hide dismissed"

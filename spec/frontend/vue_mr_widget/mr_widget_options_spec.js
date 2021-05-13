@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { securityReportDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
+import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
 import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
@@ -12,7 +12,7 @@ import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/consta
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
-import securityReportDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_download_paths.query.graphql';
+import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_merge_request_download_paths.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData from './mock_data';
 
@@ -830,8 +830,8 @@ describe('MrWidgetOptions', () => {
         return createComponent(mrData, {
           apolloProvider: createMockApollo([
             [
-              securityReportDownloadPathsQuery,
-              async () => ({ data: securityReportDownloadPathsQueryResponse }),
+              securityReportMergeRequestDownloadPathsQuery,
+              async () => ({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
             ],
           ]),
         });

@@ -8,7 +8,7 @@ import {
   urlParams,
   urlParamsWithSpecialValues,
 } from 'jest/issues_list/mock_data';
-import { sortParams } from '~/issues_list/constants';
+import { urlSortParams } from '~/issues_list/constants';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -19,9 +19,9 @@ import {
 } from '~/issues_list/utils';
 
 describe('getSortKey', () => {
-  it.each(Object.keys(sortParams))('returns %s given the correct inputs', (sortKey) => {
-    const { order_by, sort } = sortParams[sortKey];
-    expect(getSortKey(order_by, sort)).toBe(sortKey);
+  it.each(Object.keys(urlSortParams))('returns %s given the correct inputs', (sortKey) => {
+    const { sort } = urlSortParams[sortKey];
+    expect(getSortKey(sort)).toBe(sortKey);
   });
 });
 

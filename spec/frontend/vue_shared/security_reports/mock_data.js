@@ -322,7 +322,7 @@ export const secretScanningDiffSuccessMock = {
   head_report_created_at: '2020-01-10T10:00:00.000Z',
 };
 
-export const securityReportDownloadPathsQueryNoArtifactsResponse = {
+export const securityReportMergeRequestDownloadPathsQueryNoArtifactsResponse = {
   project: {
     mergeRequest: {
       headPipeline: {
@@ -447,8 +447,6 @@ export const securityReportMergeRequestDownloadPathsQueryResponse = {
   },
 };
 
-export const securityReportDownloadPathsQueryResponse = securityReportMergeRequestDownloadPathsQueryResponse;
-
 export const securityReportPipelineDownloadPathsQueryResponse = {
   project: {
     pipeline: {
@@ -556,7 +554,7 @@ export const securityReportPipelineDownloadPathsQueryResponse = {
 };
 
 /**
- * These correspond to SAST jobs in the securityReportDownloadPathsQueryResponse above.
+ * These correspond to SAST jobs in the securityReportMergeRequestDownloadPathsQueryResponse above.
  */
 export const sastArtifacts = [
   {
@@ -572,7 +570,7 @@ export const sastArtifacts = [
 ];
 
 /**
- * These correspond to Secret Detection jobs in the securityReportDownloadPathsQueryResponse above.
+ * These correspond to Secret Detection jobs in the securityReportMergeRequestDownloadPathsQueryResponse above.
  */
 export const secretDetectionArtifacts = [
   {
@@ -589,7 +587,7 @@ export const expectedDownloadDropdownProps = {
 };
 
 /**
- * These correspond to any jobs with zip archives in the securityReportDownloadPathsQueryResponse above.
+ * These correspond to any jobs with zip archives in the securityReportMergeRequestDownloadPathsQueryResponse above.
  */
 export const archiveArtifacts = [
   {
@@ -600,7 +598,7 @@ export const archiveArtifacts = [
 ];
 
 /**
- * These correspond to any jobs with trace data in the securityReportDownloadPathsQueryResponse above.
+ * These correspond to any jobs with trace data in the securityReportMergeRequestDownloadPathsQueryResponse above.
  */
 export const traceArtifacts = [
   {
@@ -626,7 +624,7 @@ export const traceArtifacts = [
 ];
 
 /**
- * These correspond to any jobs with metadata data in the securityReportDownloadPathsQueryResponse above.
+ * These correspond to any jobs with metadata data in the securityReportMergeRequestDownloadPathsQueryResponse above.
  */
 export const metadataArtifacts = [
   {

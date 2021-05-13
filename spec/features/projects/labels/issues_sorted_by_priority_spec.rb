@@ -33,14 +33,14 @@ RSpec.describe 'Issue prioritization' do
       sign_in user
       visit project_issues_path(project, sort: 'label_priority')
 
+      wait_for_requests
+
       # Ensure we are indicating that issues are sorted by priority
-      expect(page).to have_selector('.dropdown', text: 'Label priority')
+      expect(page).to have_button 'Label priority'
 
-      page.within('.issues-holder') do
-        issue_titles = all('.issues-list .issue-title-text').map(&:text)
+      issue_titles = all('.issues-list .issue-title-text').map(&:text)
 
-        expect(issue_titles).to eq(%w(issue_4 issue_3 issue_5 issue_2 issue_1))
-      end
+      expect(issue_titles).to eq(%w(issue_4 issue_3 issue_5 issue_2 issue_1))
     end
   end
 
@@ -72,15 +72,15 @@ RSpec.describe 'Issue prioritization' do
       sign_in user
       visit project_issues_path(project, sort: 'label_priority')
 
-      expect(page).to have_selector('.dropdown', text: 'Label priority')
+      wait_for_requests
 
-      page.within('.issues-holder') do
-        issue_titles = all('.issues-list .issue-title-text').map(&:text)
+      expect(page).to have_button 'Label priority'
 
-        expect(issue_titles[0..1]).to contain_exactly('issue_5', 'issue_8')
-        expect(issue_titles[2..4]).to contain_exactly('issue_1', 'issue_3', 'issue_7')
-        expect(issue_titles[5..-1]).to eq(%w(issue_2 issue_4 issue_6))
-      end
+      issue_titles = all('.issues-list .issue-title-text').map(&:text)
+
+      expect(issue_titles[0..1]).to contain_exactly('issue_5', 'issue_8')
+      expect(issue_titles[2..4]).to contain_exactly('issue_1', 'issue_3', 'issue_7')
+      expect(issue_titles[5..-1]).to eq(%w(issue_2 issue_4 issue_6))
     end
   end
 end

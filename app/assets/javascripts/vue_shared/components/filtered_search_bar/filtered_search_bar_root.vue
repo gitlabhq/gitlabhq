@@ -93,9 +93,9 @@ export default {
             sortBy.sortDirection.descending === this.initialSortBy,
         )
         .pop();
-      selectedSortDirection = this.initialSortBy.endsWith('_desc')
-        ? SortDirection.descending
-        : SortDirection.ascending;
+      selectedSortDirection = Object.keys(selectedSortOption.sortDirection).find(
+        (key) => selectedSortOption.sortDirection[key] === this.initialSortBy,
+      );
     }
 
     return {

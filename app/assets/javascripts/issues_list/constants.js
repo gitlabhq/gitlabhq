@@ -88,21 +88,22 @@ export const i18n = {
 
 export const JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY = 'jira-import-success-alert-hide-map';
 
-export const BLOCKING_ISSUES_ASC = 'BLOCKING_ISSUES_ASC';
+export const PARAM_PAGE = 'page';
+export const PARAM_SORT = 'sort';
+export const PARAM_STATE = 'state';
+
 export const BLOCKING_ISSUES_DESC = 'BLOCKING_ISSUES_DESC';
 export const CREATED_ASC = 'CREATED_ASC';
 export const CREATED_DESC = 'CREATED_DESC';
 export const DUE_DATE_ASC = 'DUE_DATE_ASC';
 export const DUE_DATE_DESC = 'DUE_DATE_DESC';
-export const LABEL_PRIORITY_ASC = 'LABEL_PRIORITY_ASC';
 export const LABEL_PRIORITY_DESC = 'LABEL_PRIORITY_DESC';
 export const MILESTONE_DUE_ASC = 'MILESTONE_DUE_ASC';
 export const MILESTONE_DUE_DESC = 'MILESTONE_DUE_DESC';
 export const POPULARITY_ASC = 'POPULARITY_ASC';
 export const POPULARITY_DESC = 'POPULARITY_DESC';
-export const PRIORITY_ASC = 'PRIORITY_ASC';
 export const PRIORITY_DESC = 'PRIORITY_DESC';
-export const RELATIVE_POSITION_ASC = 'RELATIVE_POSITION_ASC';
+export const RELATIVE_POSITION_DESC = 'RELATIVE_POSITION_DESC';
 export const UPDATED_ASC = 'UPDATED_ASC';
 export const UPDATED_DESC = 'UPDATED_DESC';
 export const WEIGHT_ASC = 'WEIGHT_ASC';
@@ -111,13 +112,19 @@ export const WEIGHT_DESC = 'WEIGHT_DESC';
 const SORT_ASC = 'asc';
 const SORT_DESC = 'desc';
 
+const CREATED_DATE_SORT = 'created_date';
+const CREATED_ASC_SORT = 'created_asc';
+const UPDATED_DESC_SORT = 'updated_desc';
+const UPDATED_ASC_SORT = 'updated_asc';
+const MILESTONE_SORT = 'milestone';
+const MILESTONE_DUE_DESC_SORT = 'milestone_due_desc';
+const DUE_DATE_DESC_SORT = 'due_date_desc';
+const POPULARITY_ASC_SORT = 'popularity_asc';
+const WEIGHT_DESC_SORT = 'weight_desc';
+const BLOCKING_ISSUES_DESC_SORT = 'blocking_issues_desc';
 const BLOCKING_ISSUES = 'blocking_issues';
 
-export const sortParams = {
-  [PRIORITY_ASC]: {
-    order_by: PRIORITY,
-    sort: SORT_ASC,
-  },
+export const apiSortParams = {
   [PRIORITY_DESC]: {
     order_by: PRIORITY,
     sort: SORT_DESC,
@@ -162,15 +169,11 @@ export const sortParams = {
     order_by: POPULARITY,
     sort: SORT_DESC,
   },
-  [LABEL_PRIORITY_ASC]: {
-    order_by: LABEL_PRIORITY,
-    sort: SORT_ASC,
-  },
   [LABEL_PRIORITY_DESC]: {
     order_by: LABEL_PRIORITY,
     sort: SORT_DESC,
   },
-  [RELATIVE_POSITION_ASC]: {
+  [RELATIVE_POSITION_DESC]: {
     order_by: RELATIVE_POSITION,
     per_page: 100,
     sort: SORT_ASC,
@@ -183,13 +186,61 @@ export const sortParams = {
     order_by: WEIGHT,
     sort: SORT_DESC,
   },
-  [BLOCKING_ISSUES_ASC]: {
-    order_by: BLOCKING_ISSUES,
-    sort: SORT_ASC,
-  },
   [BLOCKING_ISSUES_DESC]: {
     order_by: BLOCKING_ISSUES,
     sort: SORT_DESC,
+  },
+};
+
+export const urlSortParams = {
+  [PRIORITY_DESC]: {
+    sort: PRIORITY,
+  },
+  [CREATED_ASC]: {
+    sort: CREATED_ASC_SORT,
+  },
+  [CREATED_DESC]: {
+    sort: CREATED_DATE_SORT,
+  },
+  [UPDATED_ASC]: {
+    sort: UPDATED_ASC_SORT,
+  },
+  [UPDATED_DESC]: {
+    sort: UPDATED_DESC_SORT,
+  },
+  [MILESTONE_DUE_ASC]: {
+    sort: MILESTONE_SORT,
+  },
+  [MILESTONE_DUE_DESC]: {
+    sort: MILESTONE_DUE_DESC_SORT,
+  },
+  [DUE_DATE_ASC]: {
+    sort: DUE_DATE,
+  },
+  [DUE_DATE_DESC]: {
+    sort: DUE_DATE_DESC_SORT,
+  },
+  [POPULARITY_ASC]: {
+    sort: POPULARITY_ASC_SORT,
+  },
+  [POPULARITY_DESC]: {
+    sort: POPULARITY,
+  },
+  [LABEL_PRIORITY_DESC]: {
+    sort: LABEL_PRIORITY,
+  },
+  [RELATIVE_POSITION_DESC]: {
+    sort: RELATIVE_POSITION,
+    per_page: 100,
+  },
+  [WEIGHT_ASC]: {
+    sort: WEIGHT,
+  },
+  [WEIGHT_DESC]: {
+    sort: WEIGHT_DESC_SORT,
+  },
+  [BLOCKING_ISSUES_DESC]: {
+    sort: BLOCKING_ISSUES_DESC_SORT,
   },
 };
 

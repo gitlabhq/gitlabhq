@@ -1,5 +1,4 @@
 import {
-  BLOCKING_ISSUES_ASC,
   BLOCKING_ISSUES_DESC,
   CREATED_ASC,
   CREATED_DESC,
@@ -7,30 +6,26 @@ import {
   DUE_DATE_DESC,
   FILTERED_SEARCH_TERM,
   filters,
-  LABEL_PRIORITY_ASC,
   LABEL_PRIORITY_DESC,
   MILESTONE_DUE_ASC,
   MILESTONE_DUE_DESC,
   NORMAL_FILTER,
   POPULARITY_ASC,
   POPULARITY_DESC,
-  PRIORITY_ASC,
   PRIORITY_DESC,
-  RELATIVE_POSITION_ASC,
-  sortParams,
+  RELATIVE_POSITION_DESC,
   SPECIAL_FILTER,
   SPECIAL_FILTER_VALUES,
   UPDATED_ASC,
   UPDATED_DESC,
+  urlSortParams,
   WEIGHT_ASC,
   WEIGHT_DESC,
 } from '~/issues_list/constants';
 import { __ } from '~/locale';
 
-export const getSortKey = (orderBy, sort) =>
-  Object.keys(sortParams).find(
-    (key) => sortParams[key].order_by === orderBy && sortParams[key].sort === sort,
-  );
+export const getSortKey = (sort) =>
+  Object.keys(urlSortParams).find((key) => urlSortParams[key].sort === sort);
 
 export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) => {
   const sortOptions = [
@@ -38,7 +33,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       id: 1,
       title: __('Priority'),
       sortDirection: {
-        ascending: PRIORITY_ASC,
+        ascending: PRIORITY_DESC,
         descending: PRIORITY_DESC,
       },
     },
@@ -86,7 +81,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       id: 7,
       title: __('Label priority'),
       sortDirection: {
-        ascending: LABEL_PRIORITY_ASC,
+        ascending: LABEL_PRIORITY_DESC,
         descending: LABEL_PRIORITY_DESC,
       },
     },
@@ -94,8 +89,8 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       id: 8,
       title: __('Manual'),
       sortDirection: {
-        ascending: RELATIVE_POSITION_ASC,
-        descending: RELATIVE_POSITION_ASC,
+        ascending: RELATIVE_POSITION_DESC,
+        descending: RELATIVE_POSITION_DESC,
       },
     },
   ];
@@ -116,7 +111,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       id: 10,
       title: __('Blocking'),
       sortDirection: {
-        ascending: BLOCKING_ISSUES_ASC,
+        ascending: BLOCKING_ISSUES_DESC,
         descending: BLOCKING_ISSUES_DESC,
       },
     });
