@@ -5054,25 +5054,22 @@ msgstr ""
 msgid "BillingPlan|Upgrade for free"
 msgstr ""
 
-msgid "Billings|As a user on a free or trial namespace, you'll need to verify your account with a credit card to run pipelines. This is required to help prevent cryptomining attacks on GitLab infrastructure. %{strongStart}GitLab will not charge or store your credit card, it will only be used for validation.%{strongEnd}"
+msgid "Billings|To use free pipeline minutes, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge or store your credit card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
-msgid "Billings|To discourage and reduce abuse GitLab will require some users to provide a valid credit card to use free pipeline minutes on GitLab.com. To use free pipeline minutes, you will need to validate your account with a credit card. %{strongStart}GitLab will not add permanent charges to your credit card as we will only use it for validation.%{strongEnd}"
+msgid "Billings|User successfully validated"
 msgstr ""
 
-msgid "Billings|User Verification Required"
+msgid "Billings|User validation required"
 msgstr ""
 
-msgid "Billings|User successfully verified"
+msgid "Billings|Validate account"
 msgstr ""
 
-msgid "Billings|Verify User Account"
+msgid "Billings|Validate user account"
 msgstr ""
 
-msgid "Billings|Verify account"
-msgstr ""
-
-msgid "Billings|Your user account has been successfully verified. You will now be able to run pipelines on any free or trial namespace."
+msgid "Billings|Your user account has been successfully validated. You can now use free pipeline minutes."
 msgstr ""
 
 msgid "Billing|An email address is only visible for users with public emails."

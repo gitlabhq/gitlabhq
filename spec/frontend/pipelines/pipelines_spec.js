@@ -94,7 +94,10 @@ describe('Pipelines', () => {
   beforeAll(() => {
     origWindowLocation = window.location;
     delete window.location;
-    window.location = { search: '' };
+    window.location = {
+      search: '',
+      protocol: 'https:',
+    };
   });
 
   afterAll(() => {

@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require Rails.root.join('db', 'post_migrate', '20210511142748_schedule_drop_invalid_vulnerabilities2.rb')
 
-RSpec.describe Gitlab::BackgroundMigration::DropInvalidVulnerabilities, schema: 20201110110454 do
+RSpec.describe ScheduleDropInvalidVulnerabilities2, :migration do
   let_it_be(:background_migration_jobs) { table(:background_migration_jobs) }
+
   let_it_be(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let_it_be(:users) { table(:users) }
   let_it_be(:user) { create_user! }
@@ -48,32 +50,24 @@ RSpec.describe Gitlab::BackgroundMigration::DropInvalidVulnerabilities, schema: 
     )
   end
 
-  let(:succeeded_status) { 1 }
-  let(:pending_status) { 0 }
-
-  it 'drops Vulnerabilities without any Findings' do
-    expect(vulnerabilities.pluck(:id)).to eq([vulnerability_with_finding.id, vulnerability_without_finding.id])
-
-    expect { subject.perform(vulnerability_with_finding.id, vulnerability_without_finding.id) }.to change(vulnerabilities, :count).by(-1)
-
-    expect(vulnerabilities.pluck(:id)).to eq([vulnerability_with_finding.id])
+  before do
+    stub_const("#{described_class}::BATCH_SIZE", 1)
   end
 
-  it 'marks jobs as done' do
-    background_migration_jobs.create!(
-      class_name: 'DropInvalidVulnerabilities',
-      arguments: [vulnerability_with_finding.id, vulnerability_with_finding.id]
-    )
+  around do |example|
+    freeze_time { Sidekiq::Testing.fake! { example.run } }
+  end
 
-    background_migration_jobs.create!(
-      class_name: 'DropInvalidVulnerabilities',
-      arguments: [vulnerability_without_finding.id, vulnerability_without_finding.id]
-    )
+  it 'schedules background migrations' do
+    migrate!
 
-    subject.perform(vulnerability_with_finding.id, vulnerability_with_finding.id)
+    expect(background_migration_jobs.count).to eq(2)
+    expect(background_migration_jobs.first.arguments).to eq([vulnerability_with_finding.id, vulnerability_with_finding.id])
+    expect(background_migration_jobs.second.arguments).to eq([vulnerability_without_finding.id, vulnerability_without_finding.id])
 
-    expect(background_migration_jobs.first.status).to eq(succeeded_status)
-    expect(background_migration_jobs.second.status).to eq(pending_status)
+    expect(BackgroundMigrationWorker.jobs.size).to eq(2)
+    expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, vulnerability_with_finding.id, vulnerability_with_finding.id)
+    expect(described_class::MIGRATION).to be_scheduled_delayed_migration(4.minutes, vulnerability_without_finding.id, vulnerability_without_finding.id)
   end
 
   private

@@ -68,7 +68,7 @@ export default {
   <local-storage-sync v-model="isExpanded" :storage-key="$options.localDrawerKey" as-json>
     <aside
       aria-live="polite"
-      class="gl-fixed gl-right-0 gl-bg-gray-10 gl-shadow-drawer gl-transition-medium gl-border-l-solid gl-border-1 gl-border-gray-100 gl-h-full gl-z-index-9999 gl-overflow-y-auto"
+      class="gl-fixed gl-right-0 gl-bg-gray-10 gl-shadow-drawer gl-transition-medium gl-border-l-solid gl-border-1 gl-border-gray-100 gl-h-full gl-z-index-3 gl-overflow-y-auto"
       :style="rootStyle"
     >
       <gl-button

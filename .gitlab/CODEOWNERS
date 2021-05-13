@@ -330,3 +330,6 @@ Dangerfile @gl-quality/eng-prod
 
 [Workhorse]
 /workhorse/ @jacobvosmaer-gitlab @nick.thomas @nolith @patrickbajao
+
+[Application Security]
+/lib/gitlab/content_security_policy/ @gitlab-com/gl-security/appsec

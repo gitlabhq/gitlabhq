@@ -6923,11 +6923,6 @@ RSpec.describe Project, factory_default: :keep do
   describe '#default_branch_or_main' do
     let(:project) { create(:project, :repository) }
 
-    before do
-      # Stubbing it as true since the FF disabled for tests globally
-      stub_feature_flags(main_branch_over_master: true)
-    end
-
     it 'returns default branch' do
       expect(project.default_branch_or_main).to eq(project.default_branch)
     end
@@ -6935,18 +6930,8 @@ RSpec.describe Project, factory_default: :keep do
     context 'when default branch is nil' do
       let(:project) { create(:project, :empty_repo) }
 
-      it 'returns main' do
-        expect(project.default_branch_or_main).to eq('main')
-      end
-
-      context 'main_branch_over_master is disabled' do
-        before do
-          stub_feature_flags(main_branch_over_master: false)
-        end
-
-        it 'returns master' do
-          expect(project.default_branch_or_main).to eq('master')
-        end
+      it 'returns Gitlab::DefaultBranch.value' do
+        expect(project.default_branch_or_main).to eq(Gitlab::DefaultBranch.value)
       end
     end
   end

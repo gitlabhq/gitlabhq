@@ -21,6 +21,17 @@ class Gitlab::BackgroundMigration::DropInvalidVulnerabilities
       .left_joins(:findings)
       .where(vulnerability_occurrences: { vulnerability_id: nil })
       .delete_all
+
+    mark_job_as_succeeded(start_id, end_id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  private
+
+  def mark_job_as_succeeded(*arguments)
+    Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(
+      'DropInvalidVulnerabilities',
+      arguments
+    )
+  end
 end

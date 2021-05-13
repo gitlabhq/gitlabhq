@@ -536,7 +536,11 @@ func TestApiContentTypeBlock(t *testing.T) {
 func TestAPIFalsePositivesAreProxied(t *testing.T) {
 	goodResponse := []byte(`<html></html>`)
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get(secret.RequestHeader) != "" && r.Method != "GET" {
+		url := r.URL.String()
+		if url[len(url)-1] == '/' {
+			w.WriteHeader(500)
+			w.Write([]byte("PreAuthorize request included a trailing slash"))
+		} else if r.Header.Get(secret.RequestHeader) != "" && r.Method != "GET" {
 			w.WriteHeader(500)
 			w.Write([]byte("non-GET request went through PreAuthorize handler"))
 		} else {

@@ -168,7 +168,10 @@ func singleJoiningSlash(a, b string) string {
 
 // joinURLPath is taken from reverseproxy.go:joinURLPath
 func joinURLPath(a *url.URL, b string) (path string, rawpath string) {
-	if a.RawPath == "" && b == "" {
+	// Avoid adding a trailing slash if the suffix is empty
+	if b == "" {
+		return a.Path, a.RawPath
+	} else if a.RawPath == "" {
 		return singleJoiningSlash(a.Path, b), ""
 	}
 

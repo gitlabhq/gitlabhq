@@ -140,6 +140,7 @@ export default {
       </div>
       <div class="gl-p-2">
         <gl-button
+          is-unsafe-link
           :href="codeDownloadUrl"
           :title="$options.i18n.downloadButton"
           icon="download"
