@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import initCompareAutocomplete from '~/compare_autocomplete';
 import axios from '~/lib/utils/axios_utils';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
+import initCompareAutocomplete from './compare_autocomplete';
 import initTargetProjectDropdown from './target_project_dropdown';
 
 const updateCommitList = (url, $loadingIndicator, $commitList, params) => {

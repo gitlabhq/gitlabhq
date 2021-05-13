@@ -83,7 +83,15 @@ module Gitlab
         end
 
         def route_hash
-          @route_hash ||= Rails.application.routes.recognize_path(request.url, { method: request.request_method }) rescue {}
+          @route_hash ||= Rails.application.routes.recognize_path(request_url, { method: request.request_method }) rescue {}
+        end
+
+        def request_url
+          request.url.chomp('/')
+        end
+
+        def request_path
+          @request_path ||= request.path.chomp('/')
         end
 
         def relative_url
@@ -100,7 +108,7 @@ module Gitlab
         def workhorse_passthrough_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
           return false unless request.post? &&
-            request.path.end_with?('.git/git-upload-pack')
+            request_path.end_with?('.git/git-upload-pack')
 
           ALLOWLISTED_GIT_READ_ONLY_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end
@@ -120,14 +128,14 @@ module Gitlab
         # https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/repositories/lfs_api_controller.rb#L106
         def lfs_batch_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
-          return unless request.path.end_with?('/info/lfs/objects/batch')
+          return unless request_path.end_with?('/info/lfs/objects/batch')
 
           ALLOWLISTED_GIT_LFS_BATCH_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end
 
         def session_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
-          return false unless request.post? && request.path.end_with?('/users/sign_out',
+          return false unless request.post? && request_path.end_with?('/users/sign_out',
             '/admin/session', '/admin/session/destroy')
 
           ALLOWLISTED_SESSION_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])

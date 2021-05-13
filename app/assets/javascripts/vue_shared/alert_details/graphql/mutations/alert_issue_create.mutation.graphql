@@ -3,6 +3,7 @@ mutation createAlertIssue($projectPath: ID!, $iid: String!) {
     errors
     issue {
       iid
+      webUrl
     }
   }
 }

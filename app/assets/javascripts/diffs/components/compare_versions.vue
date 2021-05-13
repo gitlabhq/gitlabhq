@@ -142,7 +142,7 @@ export default {
         </gl-button-group>
       </div>
       <gl-sprintf
-        v-else-if="hasSourceVersions"
+        v-else-if="!commit && hasSourceVersions"
         class="d-flex align-items-center compare-versions-container"
         :message="s__('MergeRequest|Compare %{target} and %{source}')"
       >

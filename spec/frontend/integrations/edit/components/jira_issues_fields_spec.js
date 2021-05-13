@@ -136,7 +136,7 @@ describe('JiraIssuesFields', () => {
 
     describe('Vulnerabilities creation', () => {
       beforeEach(() => {
-        createComponent({ provide: { glFeatures: { jiraForVulnerabilities: true } } });
+        createComponent();
       });
 
       it.each([true, false])(
@@ -177,18 +177,6 @@ describe('JiraIssuesFields', () => {
         await findJiraForVulnerabilities().vm.$emit('request-get-issue-types');
 
         expect(eventHubEmitSpy).toHaveBeenCalledWith('getJiraIssueTypes');
-      });
-
-      describe('with "jiraForVulnerabilities" feature flag disabled', () => {
-        beforeEach(async () => {
-          createComponent({
-            provide: { glFeatures: { jiraForVulnerabilities: false } },
-          });
-        });
-
-        it('does not show section', () => {
-          expect(findJiraForVulnerabilities().exists()).toBe(false);
-        });
       });
     });
   });

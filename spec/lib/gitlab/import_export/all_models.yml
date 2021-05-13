@@ -125,6 +125,7 @@ project_members:
 - source
 - project
 merge_requests:
+- status_check_responses
 - subscriptions
 - award_emoji
 - author

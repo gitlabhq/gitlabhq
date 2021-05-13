@@ -129,7 +129,7 @@ export default {
     <input type="hidden" :name="paramsName" :value="selectedRevision" />
     <gl-dropdown
       class="gl-w-full gl-font-monospace"
-      toggle-class="form-control compare-dropdown-toggle js-compare-dropdown gl-min-w-0"
+      toggle-class="form-control compare-dropdown-toggle gl-min-w-0"
       :text="selectedRevision"
       :header-text="s__('CompareRevisions|Select Git revision')"
       :loading="loading"

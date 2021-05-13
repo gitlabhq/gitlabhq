@@ -105,3 +105,137 @@ It returns `false` when called from the group that locked the attribute.
 
 When `include_self: true` is specified, it returns `true` when called from the group that locked the attribute.
 This would be relevant, for example, when checking if an attribute is locked from a project.
+
+## Display cascading settings on the frontend
+
+There are a few Rails view helpers, HAML partials, and JavaScript functions that can be used to display a cascading setting on the frontend.
+
+### Rails view helpers
+
+[`cascading_namespace_setting_locked?`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/helpers/namespaces_helper.rb#L86)  
+
+Calls through to the [`_locked?` method](#_locked-method) to check if the setting is locked.  
+
+| Argument    | Description                                                                      | Type                                                                              | Required (default value) |
+|:------------|:---------------------------------------------------------------------------------|:----------------------------------------------------------------------------------|:-------------------------|
+| `attribute` | Name of the setting. For example, `:delayed_project_removal`.                    | `String` or `Symbol`                                                              | `true`                   |
+| `group`     | Current group.                                                                   | [`Group`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/group.rb) | `true`                   |
+| `**args`    | Additional arguments to pass through to the [`_locked?` method](#_locked-method) |                                                                                   | `false`                  |
+
+### HAML partials
+
+[`_enforcement_checkbox.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_enforcement_checkbox.html.haml)  
+
+Renders the enforcement checkbox.  
+
+| Local            | Description                                                                                                                                                                                                                                                | Type                                                                                           | Required (default value)                        |
+|:-----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------|:------------------------------------------------|
+| `attribute`      | Name of the setting. For example, `:delayed_project_removal`.                                                                                                                                                                                              | `String` or `Symbol`                                                                           | `true`                                          |
+| `form`           | [Rails FormBuilder object](https://apidock.com/rails/ActionView/Helpers/FormBuilder).                                                                                                                                                                      | [`ActionView::Helpers::FormBuilder`](https://apidock.com/rails/ActionView/Helpers/FormBuilder) | `true`                                          |
+| `setting_locked` | If the setting is locked by an ancestor group or admin setting. Can be calculated with [`cascading_namespace_setting_locked?`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/helpers/namespaces_helper.rb#L86). | `Boolean`                                                                                      | `true`                                          |
+| `help_text`      | Text shown below the checkbox.                                                                                                                                                                                                                             | `String`                                                                                       | `false` (Subgroups cannot change this setting.) |
+
+[`_setting_label_checkbox.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_setting_label_checkbox.html.haml)  
+
+Renders the label for a checkbox setting.  
+
+| Local                  | Description                                                                                                                                                                                                                                                | Type                                                                                           | Required (default value) |
+|:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------|:-------------------------|
+| `attribute`            | Name of the setting. For example, `:delayed_project_removal`.                                                                                                                                                                                              | `String` or `Symbol`                                                                           | `true`                   |
+| `form`                 | [Rails FormBuilder object](https://apidock.com/rails/ActionView/Helpers/FormBuilder).                                                                                                                                                                      | [`ActionView::Helpers::FormBuilder`](https://apidock.com/rails/ActionView/Helpers/FormBuilder) | `true`                   |
+| `setting_locked`       | If the setting is locked by an ancestor group or admin setting. Can be calculated with [`cascading_namespace_setting_locked?`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/helpers/namespaces_helper.rb#L86). | `Boolean`                                                                                      | `true`                   |
+| `settings_path_helper` | Lambda function that generates a path to the ancestor setting. For example, `settings_path_helper: -> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }`                                                           | `Lambda`                                                                                       | `true`                   |
+| `help_text`            | Text shown below the checkbox.                                                                                                                                                                                                                             | `String`                                                                                       | `false` (`nil`)          |
+
+[`_setting_label_fieldset.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_setting_label_fieldset.html.haml)  
+
+Renders the label for a fieldset setting.  
+
+| Local                  | Description                                                                                                                                                                                                          | Type                 | Required (default value) |
+|:-----------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------|:-------------------------|
+| `attribute`            | Name of the setting. For example, `:delayed_project_removal`.                                                                                                                                                        | `String` or `Symbol` | `true`                   |
+| `setting_locked`       | If the setting is locked. Can be calculated with [`cascading_namespace_setting_locked?`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/helpers/namespaces_helper.rb#L86). | `Boolean`            | `true`                   |
+| `settings_path_helper` | Lambda function that generates a path to the ancestor setting. For example, `-> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }`                                           | `Lambda`             | `true`                   |
+| `help_text`            | Text shown below the checkbox.                                                                                                                                                                                       | `String`             | `false` (`nil`)          |
+
+[`_lock_popovers.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/b73353e47e283a7d9c9eda5bdedb345dcfb685b6/app/views/shared/namespaces/cascading_settings/_lock_popovers.html.haml)  
+
+Renders the mount element needed to initialize the JavaScript used to display the popover when hovering over the lock icon. This partial is only needed once per page.  
+
+### JavaScript
+
+[`initCascadingSettingsLockPopovers`](https://gitlab.com/gitlab-org/gitlab/-/blob/b73353e47e283a7d9c9eda5bdedb345dcfb685b6/app/assets/javascripts/namespaces/cascading_settings/index.js#L4)  
+
+Initializes the JavaScript needed to display the popover when hovering over the lock icon (**{lock}**).
+This function should be imported and called in the [page-specific JavaScript](fe_guide/performance.md#page-specific-javascript).
+
+### Put it all together
+
+```haml
+-# app/views/groups/edit.html.haml
+
+= render 'shared/namespaces/cascading_settings/lock_popovers'
+
+- delayed_project_removal_locked = cascading_namespace_setting_locked?(:delayed_project_removal, @group)
+- merge_method_locked = cascading_namespace_setting_locked?(:merge_method, @group)
+
+= form_for @group do |f|
+  .form-group{ data: { testid: 'delayed-project-removal-form-group' } }
+    .gl-form-checkbox.custom-control.custom-checkbox
+      = f.check_box :delayed_project_removal, checked: @group.namespace_settings.delayed_project_removal?, disabled: delayed_project_removal_locked, class: 'custom-control-input'
+      = render 'shared/namespaces/cascading_settings/setting_label_checkbox', attribute: :delayed_project_removal,
+          group: @group,
+          form: f,
+          setting_locked: delayed_project_removal_locked,
+          settings_path_helper: -> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') },
+          help_text: s_('Settings|Projects will be permanently deleted after a 7-day delay. Inherited by subgroups.') do
+        = s_('Settings|Enable delayed project removal')
+      = render 'shared/namespaces/cascading_settings/enforcement_checkbox',
+          attribute: :delayed_project_removal,
+          group: @group,
+          form: f,
+          setting_locked: delayed_project_removal_locked
+
+  %fieldset.form-group
+    = render 'shared/namespaces/cascading_settings/setting_label_fieldset', attribute: :merge_method,
+        group: @group,
+        setting_locked: merge_method_locked,
+        settings_path_helper: -> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') },
+        help_text: s_('Settings|Determine what happens to the commit history when you merge a merge request.') do
+      = s_('Settings|Merge method')
+
+    .gl-form-radio.custom-control.custom-radio
+      = f.radio_button :merge_method, :merge, class: "custom-control-input", disabled: merge_method_locked
+      = f.label :merge_method_merge, class: 'custom-control-label' do
+        = s_('Settings|Merge commit')
+        %p.help-text
+          = s_('Settings|Every merge creates a merge commit.')
+
+    .gl-form-radio.custom-control.custom-radio
+      = f.radio_button :merge_method, :rebase_merge, class: "custom-control-input", disabled: merge_method_locked
+      = f.label :merge_method_rebase_merge, class: 'custom-control-label' do
+        = s_('Settings|Merge commit with semi-linear history')
+        %p.help-text
+          = s_('Settings|Every merge creates a merge commit.')
+
+    .gl-form-radio.custom-control.custom-radio
+      = f.radio_button :merge_method, :ff, class: "custom-control-input", disabled: merge_method_locked
+      = f.label :merge_method_ff, class: 'custom-control-label' do
+        = s_('Settings|Fast-forward merge')
+        %p.help-text
+          = s_('Settings|No merge commits are created.')
+
+    = render 'shared/namespaces/cascading_settings/enforcement_checkbox',
+      attribute: :merge_method,
+      group: @group,
+      form: f,
+      setting_locked: merge_method_locked
+```
+
+```javascript
+// app/assets/javascripts/pages/groups/edit/index.js
+
+import { initCascadingSettingsLockPopovers } from '~/namespaces/cascading_settings';
+
+initCascadingSettingsLockPopovers();
+```

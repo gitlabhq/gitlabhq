@@ -1,6 +1,5 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import JiraUpgradeCta from './jira_upgrade_cta.vue';
 
@@ -16,7 +15,6 @@ export default {
     JiraIssueCreationVulnerabilities: () =>
       import('ee_component/integrations/edit/components/jira_issue_creation_vulnerabilities.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     showJiraIssuesIntegration: {
       type: Boolean,
@@ -76,7 +74,7 @@ export default {
       return !this.enableJiraIssues || Boolean(this.projectKey) || !this.validated;
     },
     showJiraVulnerabilitiesOptions() {
-      return this.showJiraVulnerabilitiesIntegration && this.glFeatures.jiraForVulnerabilities;
+      return this.showJiraVulnerabilitiesIntegration;
     },
     showUltimateUpgrade() {
       return this.showJiraIssuesIntegration && !this.showJiraVulnerabilitiesIntegration;

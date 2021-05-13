@@ -17973,6 +17973,21 @@ CREATE SEQUENCE sprints_id_seq
 
 ALTER SEQUENCE sprints_id_seq OWNED BY sprints.id;
 
+CREATE TABLE status_check_responses (
+    id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    external_approval_rule_id bigint NOT NULL
+);
+
+CREATE SEQUENCE status_check_responses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE status_check_responses_id_seq OWNED BY status_check_responses.id;
+
 CREATE TABLE status_page_published_incidents (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -20082,6 +20097,8 @@ ALTER TABLE ONLY spam_logs ALTER COLUMN id SET DEFAULT nextval('spam_logs_id_seq
 
 ALTER TABLE ONLY sprints ALTER COLUMN id SET DEFAULT nextval('sprints_id_seq'::regclass);
 
+ALTER TABLE ONLY status_check_responses ALTER COLUMN id SET DEFAULT nextval('status_check_responses_id_seq'::regclass);
+
 ALTER TABLE ONLY status_page_published_incidents ALTER COLUMN id SET DEFAULT nextval('status_page_published_incidents_id_seq'::regclass);
 
 ALTER TABLE ONLY status_page_settings ALTER COLUMN project_id SET DEFAULT nextval('status_page_settings_project_id_seq'::regclass);
@@ -21694,6 +21711,9 @@ ALTER TABLE ONLY spam_logs
 
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT sprints_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY status_check_responses
+    ADD CONSTRAINT status_check_responses_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY status_page_published_incidents
     ADD CONSTRAINT status_page_published_incidents_pkey PRIMARY KEY (id);
@@ -24359,6 +24379,10 @@ CREATE INDEX index_sprints_on_title ON sprints USING btree (title);
 
 CREATE INDEX index_sprints_on_title_trigram ON sprints USING gin (title gin_trgm_ops);
 
+CREATE INDEX index_status_check_responses_on_external_approval_rule_id ON status_check_responses USING btree (external_approval_rule_id);
+
+CREATE INDEX index_status_check_responses_on_merge_request_id ON status_check_responses USING btree (merge_request_id);
+
 CREATE UNIQUE INDEX index_status_page_published_incidents_on_issue_id ON status_page_published_incidents USING btree (issue_id);
 
 CREATE INDEX index_status_page_settings_on_project_id ON status_page_settings USING btree (project_id);
@@ -25124,6 +25148,9 @@ ALTER TABLE ONLY ci_unit_test_failures
 ALTER TABLE ONLY project_pages_metadata
     ADD CONSTRAINT fk_0fd5b22688 FOREIGN KEY (pages_deployment_id) REFERENCES pages_deployments(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY status_check_responses
+    ADD CONSTRAINT fk_116e7e7369 FOREIGN KEY (external_approval_rule_id) REFERENCES external_approval_rules(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_11e3ebfcdd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -25768,6 +25795,9 @@ ALTER TABLE ONLY boards
 
 ALTER TABLE ONLY ci_pipeline_variables
     ADD CONSTRAINT fk_f29c5f4380 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY status_check_responses
+    ADD CONSTRAINT fk_f3953d86c6 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_f4d25ba00c FOREIGN KEY (version_id) REFERENCES design_management_versions(id) ON DELETE CASCADE;

@@ -46,7 +46,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
       >
         <!---->
         
-          Cancel automatic merge
+          Cancel
         
       </a>
     </h4>
@@ -138,7 +138,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
       >
         <!---->
         
-          Cancel automatic merge
+          Cancel
         
       </a>
     </h4>

@@ -19,8 +19,11 @@ describe('CompareVersions', () => {
   const targetBranchName = 'tmp-wine-dev';
   const { commit } = getDiffWithCommit();
 
-  const createWrapper = (props = {}, commitArgs = {}) => {
-    store.state.diffs.commit = { ...store.state.diffs.commit, ...commitArgs };
+  const createWrapper = (props = {}, commitArgs = {}, createCommit = true) => {
+    if (createCommit) {
+      store.state.diffs.commit = { ...store.state.diffs.commit, ...commitArgs };
+    }
+
     wrapper = mount(CompareVersionsComponent, {
       localVue,
       store,
@@ -59,7 +62,7 @@ describe('CompareVersions', () => {
 
   describe('template', () => {
     beforeEach(() => {
-      createWrapper();
+      createWrapper({}, {}, false);
     });
 
     it('should render Tree List toggle button with correct attribute values', () => {

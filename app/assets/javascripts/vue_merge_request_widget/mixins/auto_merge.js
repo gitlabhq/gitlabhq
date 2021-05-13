@@ -9,7 +9,7 @@ export default {
       return s__('mrWidget|to be merged automatically when the pipeline succeeds');
     },
     cancelButtonText() {
-      return s__('mrWidget|Cancel automatic merge');
+      return s__('mrWidget|Cancel');
     },
   },
 };

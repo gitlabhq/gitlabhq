@@ -267,6 +267,11 @@ msgid_plural "%d issues successfully imported with the label"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d layer"
 msgid_plural "%d layers"
 msgstr[0] ""
@@ -9344,6 +9349,9 @@ msgid "Create group"
 msgstr ""
 
 msgid "Create group label"
+msgstr ""
+
+msgid "Create incident"
 msgstr ""
 
 msgid "Create issue"
@@ -32717,6 +32725,9 @@ msgstr ""
 msgid "There was an error fetching configuration for charts"
 msgstr ""
 
+msgid "There was an error fetching content, please refresh the page"
+msgstr ""
+
 msgid "There was an error fetching data for the selected stage"
 msgstr ""
 
@@ -33456,6 +33467,9 @@ msgid "ThreatMonitoring|Environment"
 msgstr ""
 
 msgid "ThreatMonitoring|Events"
+msgstr ""
+
+msgid "ThreatMonitoring|Failed to create incident, please try again."
 msgstr ""
 
 msgid "ThreatMonitoring|Hide dismissed alerts"
@@ -35613,6 +35627,9 @@ msgid "ValueStreamAnalytics|Number of new issues created."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Total number of deploys to production."
+msgstr ""
+
+msgid "ValueStreamEvent|Items in stage"
 msgstr ""
 
 msgid "ValueStreamEvent|Stage time (median)"
@@ -38651,7 +38668,7 @@ msgstr ""
 msgid "mrWidget|Are you adding technical debt or code vulnerabilities?"
 msgstr ""
 
-msgid "mrWidget|Cancel automatic merge"
+msgid "mrWidget|Cancel"
 msgstr ""
 
 msgid "mrWidget|Check out branch"
