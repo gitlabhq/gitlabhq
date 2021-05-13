@@ -67,7 +67,7 @@ When using:
 - CI/CD Variables or [`rules`](yaml/README.md#rulesif) to control job behavior, the value of
   the [`$CI_PIPELINE_SOURCE` predefined variable](variables/predefined_variables.md) is
   `pipeline` for multi-project pipeline triggered through the API with `CI_JOB_TOKEN`.
-- [`only/except`](yaml/README.md#onlyexcept-basic) to control job behavior, use the
+- [`only/except`](yaml/README.md#only--except) to control job behavior, use the
   `pipelines` keyword.
 
 ## Creating multi-project pipelines from `.gitlab-ci.yml`
@@ -113,7 +113,7 @@ When using:
   the [`$CI_PIPELINE_SOURCE` predefined variable](variables/predefined_variables.md) is
   `pipeline` for multi-project pipelines triggered with a bridge job (using the
   [`trigger:`](yaml/README.md#trigger) keyword).
-- [`only/except`](yaml/README.md#onlyexcept-basic) to control job behavior, use the
+- [`only/except`](yaml/README.md#only--except) to control job behavior, use the
   `pipelines` keyword.
 
 In the example, `staging` is marked as successful as soon as a downstream pipeline

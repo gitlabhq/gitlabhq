@@ -656,7 +656,7 @@ To view details of vulnerabilities detected by DAST:
 ### Customizing the DAST settings
 
 WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#only--except)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 
 The DAST settings can be changed through CI/CD variables by using the

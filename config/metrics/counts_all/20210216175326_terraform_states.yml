@@ -1,8 +1,8 @@
 ---
 key_path: counts.terraform_states
-description: Count of GitLab Managed Terraform States used
+description: Count of GitLab Managed Terraform States
 product_section: ops
-product_stage:
+product_stage: configure
 product_group: group::configure
 product_category: infrastructure_as_code
 value_type: number
@@ -13,4 +13,5 @@ distribution:
 - ce
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

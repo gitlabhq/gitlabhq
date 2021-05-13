@@ -38,33 +38,37 @@ module API
         optional :page_token, type: String, desc: 'Name of branch to start the paginaition from'
       end
       get ':id/repository/branches' do
-        user_project.preload_protected_branches
+        ff_enabled = Feature.enabled?(:api_caching_rate_limit_branches, user_project, default_enabled: :yaml)
 
-        repository = user_project.repository
+        cache_action_if(ff_enabled, [user_project, :branches, current_user, declared_params], expires_in: 30.seconds) do
+          user_project.preload_protected_branches
 
-        branches_finder = BranchesFinder.new(repository, declared_params(include_missing: false))
-        branches = Gitlab::Pagination::GitalyKeysetPager.new(self, user_project).paginate(branches_finder)
+          repository = user_project.repository
 
-        merged_branch_names = repository.merged_branch_names(branches.map(&:name))
+          branches_finder = BranchesFinder.new(repository, declared_params(include_missing: false))
+          branches = Gitlab::Pagination::GitalyKeysetPager.new(self, user_project).paginate(branches_finder)
 
-        if Feature.enabled?(:api_caching_branches, user_project, type: :development, default_enabled: :yaml)
-          present_cached(
-            branches,
-            with: Entities::Branch,
-            current_user: current_user,
-            project: user_project,
-            merged_branch_names: merged_branch_names,
-            expires_in: 10.minutes,
-            cache_context: -> (branch) { [current_user&.cache_key, merged_branch_names.include?(branch.name)] }
-          )
-        else
-          present(
-            branches,
-            with: Entities::Branch,
-            current_user: current_user,
-            project: user_project,
-            merged_branch_names: merged_branch_names
-          )
+          merged_branch_names = repository.merged_branch_names(branches.map(&:name))
+
+          if Feature.enabled?(:api_caching_branches, user_project, type: :development, default_enabled: :yaml)
+            present_cached(
+              branches,
+              with: Entities::Branch,
+              current_user: current_user,
+              project: user_project,
+              merged_branch_names: merged_branch_names,
+              expires_in: 10.minutes,
+              cache_context: -> (branch) { [current_user&.cache_key, merged_branch_names.include?(branch.name)] }
+            )
+          else
+            present(
+              branches,
+              with: Entities::Branch,
+              current_user: current_user,
+              project: user_project,
+              merged_branch_names: merged_branch_names
+            )
+          end
         end
       end
 

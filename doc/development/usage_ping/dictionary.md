@@ -456,7 +456,7 @@ Tiers: `free`
 
 ### `counts.auto_devops_enabled`
 
-Projects with Auto DevOps template enabled
+Projects with Auto DevOps template enabled (excluding implicit Auto DevOps enabled and Auto DevOps template includes)
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175229_auto_devops_enabled.yml)
 
@@ -464,7 +464,7 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.boards`
 
@@ -792,7 +792,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.clusters_disabled`
 
-Total GitLab Managed disabled clusters
+Number of Kubernetes clusters attached to GitLab currently disabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175242_clusters_disabled.yml)
 
@@ -804,7 +804,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.clusters_enabled`
 
-Total GitLab Managed clusters currently enabled
+Number of Kubernetes clusters attached to GitLab currently enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175234_clusters_enabled.yml)
 
@@ -2892,7 +2892,7 @@ Tiers: `free`
 
 ### `counts.kubernetes_agent_gitops_sync`
 
-Count of GitOps Sync events
+Count of events when an Agent is asked to synchronize the manifests or its configuration
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175328_kubernetes_agent_gitops_sync.yml)
 
@@ -2916,7 +2916,7 @@ Tiers: `premium`, `ultimate`
 
 ### `counts.kubernetes_agents`
 
-Count of Kubernetes agents
+Count of Kubernetes registered agents
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175316_kubernetes_agents.yml)
 
@@ -5204,7 +5204,7 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.projects_with_terraform_states`
 
@@ -5216,7 +5216,7 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.projects_with_tracing_enabled`
 
@@ -6032,11 +6032,11 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.terraform_states`
 
-Count of GitLab Managed Terraform States used
+Count of GitLab Managed Terraform States
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216175326_terraform_states.yml)
 
@@ -6044,7 +6044,7 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.todos`
 
@@ -7764,15 +7764,15 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_secrets_management.i_ci_secrets_management_vault_build_created_monthly`
 
-Missing description
+Monthly active users creating pipelines that that have the Vault JWT with it.'
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184251_i_ci_secrets_management_vault_build_created_monthly.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216184251_i_ci_secrets_management_vault_build_created_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_secrets_management.i_ci_secrets_management_vault_build_created_weekly`
 
@@ -7836,15 +7836,15 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_build_monthly`
 
-Missing description
+Count of pipelines using the Auto Build template
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184534_p_ci_templates_auto_devops_build_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_build_weekly`
 
@@ -7860,15 +7860,15 @@ Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_latest_monthly`
 
-Missing description
+Count of pipelines using the latest Auto Deploy template
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184542_p_ci_templates_auto_devops_deploy_latest_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_latest_weekly`
 
@@ -7884,15 +7884,15 @@ Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_monthly`
 
-Missing description
+Count of pipelines using the stable Auto Deploy template
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184538_p_ci_templates_auto_devops_deploy_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_deploy_weekly`
 
@@ -7908,15 +7908,15 @@ Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_monthly`
 
-Missing description
+Count of pipelines using the Auto DevOps template
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184523_p_ci_templates_auto_devops_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_auto_devops_weekly`
 
@@ -7980,15 +7980,15 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_build_monthly`
 
-Missing description
+Count of pipelines with implicit Auto Build runs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184502_p_ci_templates_implicit_auto_devops_build_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_build_weekly`
 
@@ -8004,15 +8004,15 @@ Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_deploy_monthly`
 
-Missing description
+Count of pipelines with implicit Auto Deploy runs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184506_p_ci_templates_implicit_auto_devops_deploy_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_deploy_weekly`
 
@@ -8028,15 +8028,15 @@ Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_monthly`
 
-Missing description
+Count of pipelines with implicit Auto DevOps runs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184458_p_ci_templates_implicit_auto_devops_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_weekly`
 
@@ -8148,15 +8148,15 @@ Tiers:
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_terraform_base_latest_monthly`
 
-Missing description
+Count of pipelines that include the terraform base template from GitLab
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184555_p_ci_templates_terraform_base_latest_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.ci_templates.p_ci_templates_terraform_base_latest_weekly`
 
@@ -14268,15 +14268,15 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly`
 
-Missing description
+Monthly active users of GitLab Managed Terraform states
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184259_p_terraform_state_api_unique_users_monthly.yml)
 
-Group: ``
+Group: `group::configure`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.terraform.p_terraform_state_api_unique_users_weekly`
 
@@ -16936,7 +16936,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.configure.clusters_management_project`
 
-Total GitLab Managed clusters with defined cluster management project
+Number of Kubernetes clusters with clusters management project being set
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216175413_clusters_management_project.yml)
 
@@ -17056,7 +17056,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.configure.projects_slack_notifications_active`
 
-Unique projects with Slack webhook enabled
+Unique projects created in the past 28 days that have Slack notifications enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175436_projects_slack_notifications_active.yml)
 
@@ -17064,11 +17064,11 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.configure.projects_slack_slash_active`
 
-Unique projects with Slack ‘/’ commands enabled
+Unique projects created in the past 28 days that have Slack ‘/’ commands enabled
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216175437_projects_slack_slash_active.yml)
 
@@ -17076,7 +17076,7 @@ Group: `group::configure`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.configure.projects_with_prometheus_alerts`
 

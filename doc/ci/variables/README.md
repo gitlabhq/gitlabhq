@@ -642,7 +642,7 @@ CI/CD variables with multi-line values are not supported.
 
 ## CI/CD variable expressions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/README.md#onlyexcept-advanced)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/README.md#onlyvariables--exceptvariables)
 > - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3 with [the `rules` keyword](../yaml/README.md#rules)
 
 Use variable expressions to limit which jobs are created
@@ -651,7 +651,7 @@ in a pipeline after changes are pushed to GitLab.
 In `.gitlab-ci.yml`, variable expressions work with both:
 
 - [`rules`](../yaml/README.md#rules), which is the recommended approach, and
-- [`only` and `except`](../yaml/README.md#onlyexcept-basic), which are candidates for deprecation.
+- [`only` and `except`](../yaml/README.md#only--except), which are candidates for deprecation.
 
 This is particularly useful in combination with variables and triggered
 pipeline variables.
@@ -672,7 +672,7 @@ If any of the conditions in `variables` evaluates to true when using `only`,
 a new job is created. If any of the expressions evaluates to true
 when `except` is being used, a job is not created.
 
-This follows the usual rules for [`only` / `except` policies](../yaml/README.md#onlyexcept-advanced).
+This follows the usual rules for [`only` / `except` policies](../yaml/README.md#onlyvariables--exceptvariables).
 
 ### Syntax of CI/CD variable expressions
 

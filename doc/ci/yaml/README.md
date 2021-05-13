@@ -36,14 +36,14 @@ The keywords available for jobs are:
 | [`coverage`](#coverage)             | Code coverage settings for a given job. |
 | [`dependencies`](#dependencies)     | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from. |
 | [`environment`](#environment)       | Name of an environment to which the job deploys. |
-| [`except`](#onlyexcept-basic)       | Limit when jobs are not created. |
+| [`except`](#only--except)             | Control when jobs are not created. |
 | [`extends`](#extends)               | Configuration entries that this job inherits from. |
 | [`image`](#image)                   | Use Docker images. |
 | [`include`](#include)               | Include external YAML files. |
 | [`inherit`](#inherit)               | Select which global defaults all jobs inherit. |
 | [`interruptible`](#interruptible)   | Defines if a job can be canceled when made redundant by a newer run. |
 | [`needs`](#needs)                   | Execute jobs earlier than the stage ordering. |
-| [`only`](#onlyexcept-basic)         | Limit when jobs are created. |
+| [`only`](#only--except)               | Control when jobs are created. |
 | [`pages`](#pages)                   | Upload the result of a job to use with GitLab Pages. |
 | [`parallel`](#parallel)             | How many instances of a job should be run in parallel. |
 | [`release`](#release)               | Instructs the runner to generate a [release](../../user/project/releases/index.md) object. |
@@ -1104,7 +1104,7 @@ is either included or excluded from the pipeline, depending on the configuration
 The job can also have [certain attributes](#rules-attributes)
 added to it.
 
-`rules` replaces [`only/except`](#onlyexcept-basic) and they can't be used together
+`rules` replaces [`only/except`](#only--except) and they can't be used together
 in the same job. If you configure one job to use both keywords, the linter returns a
 `key may not be used with rules` error.
 
@@ -1137,8 +1137,8 @@ Available rule clauses are:
 
 | Clause                     | Description                                                                                                                        |
 |----------------------------|------------------------------------------------------------------------------------------------------------------------------------|
-| [`if`](#rulesif)           | Add or exclude jobs from a pipeline by evaluating an `if` statement. Similar to [`only:variables`](#onlyvariablesexceptvariables). |
-| [`changes`](#ruleschanges) | Add or exclude jobs from a pipeline based on what files are changed. Same as [`only:changes`](#onlychangesexceptchanges).          |
+| [`if`](#rulesif)           | Add or exclude jobs from a pipeline by evaluating an `if` statement. Similar to [`only:variables`](#onlyvariables--exceptvariables). |
+| [`changes`](#ruleschanges) | Add or exclude jobs from a pipeline based on what files are changed. Same as [`only:changes`](#onlychanges--exceptchanges).          |
 | [`exists`](#rulesexists)   | Add or exclude jobs from a pipeline based on the presence of specific files.                                                       |
 
 Rules are evaluated in order until a match is found. If a match is found, the attributes
@@ -1295,7 +1295,7 @@ job-with-rules:
 For every change pushed to the branch, duplicate pipelines run. One
 branch pipeline runs a single job (`job-with-no-rules`), and one merge request pipeline
 runs the other job (`job-with-rules`). Jobs with no rules default
-to [`except: merge_requests`](#onlyexcept-basic), so `job-with-no-rules`
+to [`except: merge_requests`](#only--except), so `job-with-no-rules`
 runs in all cases except merge requests.
 
 #### `rules:if`
@@ -1344,7 +1344,7 @@ Some details regarding the logic that determines the `when` for the job:
 
 ##### Common `if` clauses for `rules`
 
-For behavior similar to the [`only`/`except` keywords](#onlyexcept-basic), you can
+For behavior similar to the [`only`/`except` keywords](#only--except), you can
 check the value of the `$CI_PIPELINE_SOURCE` variable:
 
 | Value                         | Description                                                                                                                                                                                                                      |
@@ -1406,7 +1406,7 @@ Other commonly used variables for `if` clauses:
 Use `rules:changes` to specify when to add a job to a pipeline by checking for
 changes to specific files.
 
-`rules: changes` works the same way as [`only: changes` and `except: changes`](#onlychangesexceptchanges).
+`rules: changes` works the same way as [`only: changes` and `except: changes`](#onlychanges--exceptchanges).
 It accepts an array of paths. You should use `rules: changes` only with branch
 pipelines or merge request pipelines. For example, it's common to use `rules: changes`
 with merge request pipelines:
@@ -1437,7 +1437,7 @@ rules:
   - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH
 ```
 
-To implement a rule similar to [`except:changes`](#onlychangesexceptchanges),
+To implement a rule similar to [`except:changes`](#onlychanges--exceptchanges),
 use `when: never`.
 
 WARNING:
@@ -1597,318 +1597,162 @@ WARNING:
 [Before GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/230938),
 rules that use both `||` and `&&` may evaluate with an unexpected order of operations.
 
-### `only`/`except` (basic)
+### `only` / `except`
 
 NOTE:
-`only` and `except` are not being actively developed. To define when
-to add jobs to pipelines, use [`rules`](#rules).
+`only` and `except` are not being actively developed. [`rules`](#rules) is the preferred
+keyword to control when to add jobs to pipelines.
 
-`only` and `except` are two keywords that determine when to add jobs to pipelines:
+You can use `only` and `except` to control when to add jobs to pipelines.
 
-1. `only` defines the names of branches and tags the job runs for.
-1. `except` defines the names of branches and tags the job does
-    **not** run for.
+- Use `only` to define when a job runs.
+- Use `except` to define when a job **does not** run.
 
-A few rules apply to the usage of job policy:
+Four keywords can be used with `only` and `except`:
 
-- `only` and `except` are inclusive. If both `only` and `except` are defined
-   in a job specification, the ref is filtered by `only` and `except`.
-- `only` and `except` can use regular expressions ([supported regexp syntax](#supported-onlyexcept-regexp-syntax)).
-- `only` and `except` can specify a repository path to filter jobs for forks.
+- [`refs`](#onlyrefs--exceptrefs)
+- [`variables`](#onlyvariables--exceptvariables)
+- [`changes`](#onlychanges--exceptchanges)
+- [`kubernetes`](#onlykubernetes--exceptkubernetes)
 
-In addition, `only` and `except` can use these keywords:
+See [control jobs with `only` and `except`](../jobs/job_control.md#specify-when-jobs-run-with-only-and-except)
+for more details and examples.
 
-| **Value**                | **Description**                                                                                                                                                                                                                  |
-|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `api`                    | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline).                                                                                                                                    |
-| `branches`               | When the Git reference for a pipeline is a branch.                                                                                                                                                                               |
-| `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command.                                                                                                                                                 |
-| `external`               | When you use CI services other than GitLab.                                                                                                                                                                                        |
-| `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)).                                           |
-| `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md). |
-| `pipelines`              | For [multi-project pipelines](../multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../multi_project_pipelines.md#triggering-multi-project-pipelines-through-api), or the [`trigger`](#trigger) keyword. |
-| `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags.                                                                                                                                                  |
-| `schedules`              | For [scheduled pipelines](../pipelines/schedules.md).                                                                                                                                                                            |
-| `tags`                   | When the Git reference for a pipeline is a tag.                                                                                                                                                                                  |
-| `triggers`               | For pipelines created by using a [trigger token](../triggers/README.md#trigger-token).                                                                                                                                           |
-| `web`                    | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section.                                                                                                       |
+#### `only:refs` / `except:refs`
 
-Scheduled pipelines run on specific branches, so jobs configured with `only: branches`
-run on scheduled pipelines too. Add `except: schedules` to prevent jobs with `only: branches`
-from running on scheduled pipelines.
+Use the `only:refs` and `except:refs` keywords to control when to add jobs to a
+pipeline based on branch names or pipeline types.
 
-In the following example, `job` runs only for refs that start with `issue-`.
-All branches are skipped:
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-```yaml
-job:
-  # use regexp
-  only:
-    - /^issue-.*$/
-  # use special keyword
-  except:
-    - branches
-```
+**Possible inputs**: An array including any number of:
 
-Pattern matching is case-sensitive by default. Use the `i` flag modifier, like
-`/pattern/i`, to make a pattern case-insensitive:
+- Branch names, for example `main` or `my-feature-branch`.
+- [Regular expressions](../jobs/job_control.md#only--except-regex-syntax)
+  that match against branch names, for example `/^feature-.*/`.
+- The following keywords:
 
-```yaml
-job:
-  # use regexp
-  only:
-    - /^issue-.*$/i
-  # use special keyword
-  except:
-    - branches
-```
+  | **Value**                | **Description** |
+  | -------------------------|-----------------|
+  | `api`                    | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline). |
+  | `branches`               | When the Git reference for a pipeline is a branch. |
+  | `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command. |
+  | `external`               | When you use CI services other than GitLab. |
+  | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
+  | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md). |
+  | `pipelines`              | For [multi-project pipelines](../multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../multi_project_pipelines.md#triggering-multi-project-pipelines-through-api), or the [`trigger`](#trigger) keyword. |
+  | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
+  | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
+  | `tags`                   | When the Git reference for a pipeline is a tag. |
+  | `triggers`               | For pipelines created by using a [trigger token](../triggers/README.md#trigger-token). |
+  | `web`                    | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section. |
 
-In the following example, `job` runs only for:
-
-- Git tags
-- [Triggers](../triggers/README.md#trigger-token)
-- [Scheduled pipelines](../pipelines/schedules.md)
-
-```yaml
-job:
-  # use special keywords
-  only:
-    - tags
-    - triggers
-    - schedules
-```
-
-To execute jobs only for the parent repository and not forks:
-
-```yaml
-job:
-  only:
-    - branches@gitlab-org/gitlab
-  except:
-    - master@gitlab-org/gitlab
-    - /^release/.*$/@gitlab-org/gitlab
-```
-
-This example runs `job` for all branches on `gitlab-org/gitlab`,
-except `master` and branches that start with `release/`.
-
-If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by
-default. If the job does not have an `except` rule, it's empty.
-
-For example, `job1` and `job2` are essentially the same:
+**Example of `only:refs` and `except:refs`**:
 
 ```yaml
 job1:
-  script: echo 'test'
+  script: echo
+  only:
+    - main
+    - /^issue-.*$/
+    - merge_requests
 
 job2:
-  script: echo 'test'
-  only: ['branches', 'tags']
-```
-
-#### Regular expressions
-
-The `@` symbol denotes the beginning of a ref's repository path.
-To match a ref name that contains the `@` character in a regular expression,
-you must use the hex character code match `\x40`.
-
-Only the tag or branch name can be matched by a regular expression.
-The repository path, if given, is always matched literally.
-
-To match the tag or branch name,
-the entire ref name part of the pattern must be a regular expression surrounded by `/`.
-For example, you can't use `issue-/.*/` to match all tag names or branch names
-that begin with `issue-`, but you can use `/issue-.*/`.
-
-Regular expression flags must be appended after the closing `/`.
-
-NOTE:
-Use anchors `^` and `$` to avoid the regular expression
-matching only a substring of the tag name or branch name.
-For example, `/^issue-.*$/` is equivalent to `/^issue-/`,
-while just `/issue/` would also match a branch called `severe-issues`.
-
-#### Supported `only`/`except` regexp syntax
-
-In GitLab 11.9.4, GitLab began internally converting the regexp used
-in `only` and `except` keywords to [RE2](https://github.com/google/re2/wiki/Syntax).
-
-[RE2](https://github.com/google/re2/wiki/Syntax) limits the set of available features
-due to computational complexity, and some features, like negative lookaheads, became unavailable.
-Only a subset of features provided by [Ruby Regexp](https://ruby-doc.org/core/Regexp.html)
-are now supported.
-
-From GitLab 11.9.7 to GitLab 12.0, GitLab provided a feature flag to
-let you use unsafe regexp syntax. After migrating to safe syntax, you should disable
-this feature flag again:
-
-```ruby
-Feature.enable(:allow_unsafe_ruby_regexp)
-```
-
-### `only`/`except` (advanced)
-
-GitLab supports multiple strategies, and it's possible to use an
-array or a hash configuration scheme.
-
-Four keys are available:
-
-- `refs`
-- `variables`
-- `changes`
-- `kubernetes`
-
-If you use multiple keys under `only` or `except`, the keys are evaluated as a
-single conjoined expression. That is:
-
-- `only:` includes the job if **all** of the keys have at least one condition that matches.
-- `except:` excludes the job if **any** of the keys have at least one condition that matches.
-
-With `only`, individual keys are logically joined by an `AND`. A job is added to
-the pipeline if the following is true:
-
-- `(any listed refs are true) AND (any listed variables are true) AND (any listed changes are true) AND (any chosen Kubernetes status matches)`
-
-In the following example, the `test` job is `only` created when **all** of the following are true:
-
-- The pipeline is [scheduled](../pipelines/schedules.md) **or** runs for `master`.
-- The `variables` keyword matches.
-- The `kubernetes` service is active on the project.
-
-```yaml
-test:
-  script: npm run test
-  only:
-    refs:
-      - master
-      - schedules
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /run-end-to-end-tests/
-    kubernetes: active
-```
-
-With `except`, individual keys are logically joined by an `OR`. A job is **not**
-added if the following is true:
-
-- `(any listed refs are true) OR (any listed variables are true) OR (any listed changes are true) OR (a chosen Kubernetes status matches)`
-
-In the following example, the `test` job is **not** created when **any** of the following are true:
-
-- The pipeline runs for the `master` branch.
-- There are changes to the `README.md` file in the root directory of the repository.
-
-```yaml
-test:
-  script: npm run test
+  script: echo
   except:
-    refs:
-      - master
-    changes:
-      - "README.md"
+    - main
+    - /^stable-branch.*$/
+    - schedules
 ```
 
-#### `only:refs`/`except:refs`
+**Additional details:**
 
-> `refs` policy introduced in GitLab 10.0.
+- Scheduled pipelines run on specific branches, so jobs configured with `only: branches`
+  run on scheduled pipelines too. Add `except: schedules` to prevent jobs with `only: branches`
+  from running on scheduled pipelines.
+- `only` or `except` used without any other keywords are equivalent to `only: refs`
+  or `except: refs`. For example, the following two jobs configurations have the same
+  behavior:
 
-The `refs` strategy can take the same values as the
-[simplified only/except configuration](#onlyexcept-basic).
+  ```yaml
+  job1:
+    script: echo
+    only:
+      - branches
 
-In the following example, the `deploy` job is created only when the
-pipeline is [scheduled](../pipelines/schedules.md) or runs for the `master` branch:
+  job2:
+    script: echo
+    only:
+      refs:
+        - branches
+  ```
 
-```yaml
-deploy:
-  only:
-    refs:
-      - master
-      - schedules
-```
+- If a job does not use `only`, `except`, or [`rules`](#rules), then `only` is set to `branches`
+  and `tags` by default.
 
-#### `only:kubernetes`/`except:kubernetes`
+  For example, `job1` and `job2` are equivalent:
 
-> `kubernetes` policy introduced in GitLab 10.0.
+  ```yaml
+  job1:
+    script: echo 'test'
 
-The `kubernetes` strategy accepts only the `active` keyword.
+  job2:
+    script: echo 'test'
+    only:
+    - branches
+    - tags
+  ```
 
-In the following example, the `deploy` job is created only when the
-Kubernetes service is active in the project:
+#### `only:variables` / `except:variables`
 
-```yaml
-deploy:
-  only:
-    kubernetes: active
-```
+Use the `only:variables` or `except:variables` keywords to control when to add jobs
+to a pipeline, based on the status of [CI/CD variables](../variables/README.md).
 
-#### `only:variables`/`except:variables`
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-> `variables` policy introduced in GitLab 10.7.
+**Possible inputs**: An array of [CI/CD variable expressions](../variables/README.md#cicd-variable-expressions).
 
-The `variables` keyword defines variable expressions.
-
-These expressions determine whether or not a job should be created.
-
-Examples of variable expressions:
+**Example of `only:variables`**:
 
 ```yaml
 deploy:
   script: cap staging deploy
   only:
-    refs:
-      - branches
     variables:
       - $RELEASE == "staging"
       - $STAGING
 ```
 
-Another use case is excluding jobs depending on a commit message:
+**Related topics**:
 
-```yaml
-end-to-end:
-  script: rake test:end-to-end
-  except:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
-```
+- [`only:variables` and `except:variables` examples](../jobs/job_control.md#only-variables--except-variables-examples).
 
-You can use [parentheses](../variables/README.md#parentheses) with `&&` and `||` to build more complicated variable expressions.
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3:
+#### `only:changes` / `except:changes`
 
-```yaml
-job1:
-  script:
-    - echo This rule uses parentheses.
-  only:
-    variables:
-      - ($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
-```
-
-#### `only:changes`/`except:changes`
-
-> `changes` policy [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/19232) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/19232) in GitLab 11.4.
 
 Use the `changes` keyword with `only` to run a job, or with `except` to skip a job,
 when a Git push event modifies a file.
 
-Use `only:changes` with pipelines triggered by the following refs only:
+Use `changes` in pipelines with the following refs:
 
 - `branches`
 - `external_pull_requests`
-- `merge_requests` (see additional details about [using `only:changes` with pipelines for merge requests](#use-onlychanges-with-pipelines-for-merge-requests))
+- `merge_requests` (see additional details about [using `only:changes` with pipelines for merge requests](../jobs/job_control.md#use-onlychanges-with-pipelines-for-merge-requests))
 
-WARNING:
-In pipelines with [sources other than the three above](../variables/predefined_variables.md)
-`changes` can't determine if a given file is new or old and always returns `true`.
-You can configure jobs to use `only: changes` with other `only: refs` keywords. However,
-those jobs ignore the changes and always run.
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-In the following example, when you push commits to an existing branch, the `docker build` job
-runs only if any of these files change:
+**Possible inputs**: An array including any number of:
 
-- The `Dockerfile` file.
-- Files in the `docker/scripts/` directory.
-- Files and subdirectories in the `dockerfiles` directory.
-- Files with `rb`, `py`, `sh` extensions in the `more_scripts` directory.
+- Paths to files.
+- Wildcard paths for single directories, for example `path/to/directory/*`, or a directory
+  and all its subdirectories, for example `path/to/directory/**/*`.
+- Wildcard ([glob](https://en.wikipedia.org/wiki/Glob_(programming))) paths for all
+  files with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
+- Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
+  For example `"*.json"` or `"**/*.json"`.
+
+Example of `only:changes`:
 
 ```yaml
 docker build:
@@ -1923,110 +1767,40 @@ docker build:
       - more_scripts/*.{rb,py,sh}
 ```
 
-WARNING:
-If you use `only:changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
-you should [also use `only:merge_requests`](#use-onlychanges-with-pipelines-for-merge-requests). Otherwise it may not work as expected.
+**Additional details**:
 
-You can also use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-patterns to match multiple files in either the root directory
-of the repository, or in _any_ directory in the repository. However, they must be wrapped
-in double quotes or GitLab can't parse them:
+- If you use refs other than `branches`, `external_pull_requests`, or `merge_requests`,
+  `changes` can't determine if a given file is new or old and always returns `true`.
+- If you use `only: changes` with other refs, jobs ignore the changes and always run.
+- If you use `except: changes` with other refs, jobs ignore the changes and never run.
+
+**Related topics**:
+
+- [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
+- If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
+  you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-pipelines-for-merge-requests).
+- Use `changes` with [new branches or tags *without* pipelines for merge requests](../jobs/job_control.md#use-onlychanges-without-pipelines-for-merge-requests).
+- Use `changes` with [scheduled pipelines](../jobs/job_control.md#use-onlychanges-with-scheduled-pipelines).
+
+#### `only:kubernetes` / `except:kubernetes`
+
+Use `only:kubernetes` or `except:kubernetes` to control if jobs are added to the pipeline
+when the Kubernetes service is active in the project.
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**: The `kubernetes` strategy accepts only the `active` keyword.
+
+Example of `only:kubernetes`:
 
 ```yaml
-test:
-  script: npm run test
+deploy:
   only:
-    refs:
-      - branches
-    changes:
-      - "*.json"
-      - "**/*.sql"
+    kubernetes: active
 ```
 
-You can skip a job if a change is detected in any file with a
-`.md` extension in the root directory of the repository:
-
-```yaml
-build:
-  script: npm run build
-  except:
-    changes:
-      - "*.md"
-```
-
-If you change multiple files, but only one file ends in `.md`,
-the `build` job is still skipped. The job does not run for any of the files.
-
-Read more about how to use this feature with:
-
-- [New branches or tags *without* pipelines for merge requests](#use-onlychanges-without-pipelines-for-merge-requests).
-- [Scheduled pipelines](#use-onlychanges-with-scheduled-pipelines).
-
-##### Use `only:changes` with pipelines for merge requests
-
-With [pipelines for merge requests](../merge_request_pipelines/index.md),
-it's possible to define a job to be created based on files modified
-in a merge request.
-
-Use this keyword with `only: [merge_requests]` so GitLab can find the correct base
-SHA of the source branch. File differences are correctly calculated from any further
-commits, and all changes in the merge requests are properly tested in pipelines.
-
-For example:
-
-```yaml
-docker build service one:
-  script: docker build -t my-service-one-image:$CI_COMMIT_REF_SLUG .
-  only:
-    refs:
-      - merge_requests
-    changes:
-      - Dockerfile
-      - service-one/**/*
-```
-
-In this scenario, if a merge request changes
-files in the `service-one` directory or the `Dockerfile`, GitLab creates
-the `docker build service one` job.
-
-For example:
-
-```yaml
-docker build service one:
-  script: docker build -t my-service-one-image:$CI_COMMIT_REF_SLUG .
-  only:
-    changes:
-      - Dockerfile
-      - service-one/**/*
-```
-
-In this example, the pipeline might fail because of changes to a file in `service-one/**/*`.
-
-A later commit that doesn't have changes in `service-one/**/*`
-but does have changes to the `Dockerfile` can pass. The job
-only tests the changes to the `Dockerfile`.
-
-GitLab checks the **most recent pipeline** that **passed**. If the merge request is mergeable,
-it doesn't matter that an earlier pipeline failed because of a change that has not been corrected.
-
-When you use this configuration, ensure that the most recent pipeline
-properly corrects any failures from previous pipelines.
-
-##### Use `only:changes` without pipelines for merge requests
-
-Without [pipelines for merge requests](../merge_request_pipelines/index.md), pipelines
-run on branches or tags that don't have an explicit association with a merge request.
-In this case, a previous SHA is used to calculate the diff, which is equivalent to `git diff HEAD~`.
-This can result in some unexpected behavior, including:
-
-- When pushing a new branch or a new tag to GitLab, the policy always evaluates to true.
-- When pushing a new commit, the changed files are calculated by using the previous commit
-  as the base SHA.
-
-##### Use `only:changes` with scheduled pipelines
-
-`only:changes` always evaluates as true in [Scheduled pipelines](../pipelines/schedules.md).
-All files are considered to have changed when a scheduled pipeline runs.
+In this example, the `deploy` job runs only when the Kubernetes service is active
+in the project.
 
 ### `needs`
 
@@ -2295,7 +2069,7 @@ This feature might not be available to you. Check the **version history** note a
 To need a job that sometimes does not exist in the pipeline, add `optional: true`
 to the `needs` configuration. If not defined, `optional: false` is the default.
 
-Jobs that use [`rules`](#rules), [`only`, or `except`](#onlyexcept-basic), might
+Jobs that use [`rules`](#rules), [`only`, or `except`](#only--except), might
 not always exist in a pipeline. When the pipeline starts, it checks the `needs`
 relationships before running. Without `optional: true`, needs relationships that
 point to a job that does not exist stops the pipeline from starting and causes a pipeline
@@ -2769,8 +2543,8 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `environment:name`
 - `environment:action`
 
-Additionally, both jobs should have matching [`rules`](#onlyexcept-basic)
-or [`only/except`](#onlyexcept-basic) configuration.
+Additionally, both jobs should have matching [`rules`](#only--except)
+or [`only/except`](#only--except) configuration.
 
 In the examples above, if the configuration is not identical:
 

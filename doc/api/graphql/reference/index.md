@@ -8608,7 +8608,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `GeoNode.lfsObjectRegistries`
 
-Find LFS object registries on this Geo node. Available only when feature flag `geo_lfs_object_replication` is enabled.
+Find LFS object registries on this Geo node.
 
 Returns [`LfsObjectRegistryConnection`](#lfsobjectregistryconnection).
 

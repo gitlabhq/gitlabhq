@@ -26,7 +26,7 @@ depending on which trigger method is used.
 | `pipeline`                  | Using the `trigger:` keyword in the CI/CD configuration file, or using the trigger API with `$CI_JOB_TOKEN`. |
 | `trigger`                   | Using the trigger API using a generated trigger token |
 
-This also applies when using the `pipelines` or `triggers` keywords with the legacy [`only/except` basic syntax](../yaml/README.md#onlyexcept-basic).
+This also applies when using the `pipelines` or `triggers` keywords with the legacy [`only/except` basic syntax](../yaml/README.md#only--except).
 
 ### Trigger token
 

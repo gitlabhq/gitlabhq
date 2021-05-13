@@ -244,8 +244,8 @@ include:
 See the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) for information on available jobs.
 
 WARNING:
-Auto DevOps templates using the [`only`](../../ci/yaml/README.md#onlyexcept-basic) or
-[`except`](../../ci/yaml/README.md#onlyexcept-basic) syntax have switched
+Auto DevOps templates using the [`only`](../../ci/yaml/README.md#only--except) or
+[`except`](../../ci/yaml/README.md#only--except) syntax have switched
 to the [`rules`](../../ci/yaml/README.md#rules) syntax, starting in
 [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213336).
 If your `.gitlab-ci.yml` extends these Auto DevOps templates and override the `only` or

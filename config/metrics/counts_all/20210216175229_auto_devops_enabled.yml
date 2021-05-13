@@ -1,8 +1,8 @@
 ---
 key_path: counts.auto_devops_enabled
-description: Projects with Auto DevOps template enabled
+description: Projects with Auto DevOps template enabled (excluding implicit Auto DevOps enabled and Auto DevOps template includes)
 product_section: ops
-product_stage:
+product_stage: configure
 product_group: group::configure
 product_category: auto_devops
 value_type: number
@@ -11,6 +11,8 @@ time_frame: all
 data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

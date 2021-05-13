@@ -1,8 +1,8 @@
 ---
 key_path: counts.clusters_enabled
-description: Total GitLab Managed clusters currently enabled
+description: Number of Kubernetes clusters attached to GitLab currently enabled
 product_section: ops
-product_stage:
+product_stage: configure
 product_group: group::configure
 product_category: kubernetes_management
 value_type: number
@@ -16,4 +16,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

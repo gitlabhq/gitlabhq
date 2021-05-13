@@ -127,7 +127,7 @@ job2:
 
 #### Use `rules` instead of `only` or `except`
 
-Avoid using [`only` or `except`](../../ci/yaml/README.md#onlyexcept-basic) if possible.
+Avoid using [`only` or `except`](../../ci/yaml/README.md#only--except) if possible.
 Only and except is not being developed any more, and [`rules`](../../ci/yaml/README.md#rules)
 is now the preferred syntax:
 

@@ -11,6 +11,11 @@ module API
       # @return [ActiveSupport::Duration]
       DEFAULT_EXPIRY = 1.day
 
+      # @return [Hash]
+      DEFAULT_CACHE_OPTIONS = {
+        race_condition_ttl: 5.seconds
+      }.freeze
+
       # @return [ActiveSupport::Cache::Store]
       def cache
         Rails.cache
@@ -63,7 +68,58 @@ module API
         body Gitlab::Json::PrecompiledJson.new(json)
       end
 
+      # Action caching implementation
+      #
+      # This allows you to wrap an entire API endpoint call in a cache, useful
+      # for short TTL caches to effectively rate-limit an endpoint. The block
+      # will be converted to JSON and cached, and returns a
+      # `Gitlab::Json::PrecompiledJson` object which will be exported without
+      # secondary conversion.
+      #
+      # @param key [Object] any object that can be converted into a cache key
+      # @param expires_in [ActiveSupport::Duration, Integer] an expiry time for the cache entry
+      # @return [Gitlab::Json::PrecompiledJson]
+      def cache_action(key, **cache_opts)
+        json = cache.fetch(key, **apply_default_cache_options(cache_opts)) do
+          response = yield
+
+          if response.is_a?(Gitlab::Json::PrecompiledJson)
+            response.to_s
+          else
+            Gitlab::Json.dump(response.as_json)
+          end
+        end
+
+        body Gitlab::Json::PrecompiledJson.new(json)
+      end
+
+      # Conditionally cache an action
+      #
+      # Perform a `cache_action` only if the conditional passes
+      def cache_action_if(conditional, *opts, **kwargs)
+        if conditional
+          cache_action(*opts, **kwargs) do
+            yield
+          end
+        else
+          yield
+        end
+      end
+
+      # Conditionally cache an action
+      #
+      # Perform a `cache_action` unless the conditional passes
+      def cache_action_unless(conditional, *opts, **kwargs)
+        cache_action_if(!conditional, *opts, **kwargs) do
+          yield
+        end
+      end
+
       private
+
+      def apply_default_cache_options(opts = {})
+        DEFAULT_CACHE_OPTIONS.merge(opts)
+      end
 
       # Optionally uses a `Proc` to add context to a cache key
       #

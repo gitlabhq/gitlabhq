@@ -1,6 +1,7 @@
 ---
 key_path: usage_activity_by_stage_monthly.configure.clusters_management_project
-description: Total GitLab Managed clusters with defined cluster management project
+name: "count_distinct_user_id_from_management_project_clusters"
+description: Number of Kubernetes clusters with clusters management project being set
 product_section: ops
 product_stage: configure
 product_group: group::configure
@@ -8,7 +9,7 @@ product_category: kubernetes_management
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: database
 distribution:
 - ce
 - ee
@@ -16,5 +17,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true
-name: "count_distinct_user_id_from_<adjective describing: '(clusters.management_project_id IS NOT NULL)'>_clusters"

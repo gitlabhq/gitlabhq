@@ -270,7 +270,7 @@ container_scanning_new:
 ```
 
 WARNING:
-GitLab 13.0 and later doesn't support [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic).
+GitLab 13.0 and later doesn't support [`only` and `except`](../../../ci/yaml/README.md#only--except).
 When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules)
 instead.
 
