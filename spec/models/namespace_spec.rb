@@ -212,6 +212,54 @@ RSpec.describe Namespace do
     end
   end
 
+  describe "after_commit :expire_child_caches" do
+    let(:namespace) { create(:group) }
+
+    it "expires the child caches when updated" do
+      child_1 = create(:group, parent: namespace, updated_at: 1.week.ago)
+      child_2 = create(:group, parent: namespace, updated_at: 1.day.ago)
+      grandchild = create(:group, parent: child_1, updated_at: 1.week.ago)
+      project_1 = create(:project, namespace: namespace, updated_at: 2.days.ago)
+      project_2 = create(:project, namespace: child_1, updated_at: 3.days.ago)
+      project_3 = create(:project, namespace: grandchild, updated_at: 4.years.ago)
+
+      freeze_time do
+        namespace.update!(path: "foo")
+
+        [namespace, child_1, child_2, grandchild, project_1, project_2, project_3].each do |record|
+          expect(record.reload.updated_at).to eq(Time.zone.now)
+        end
+      end
+    end
+
+    it "expires on name changes" do
+      expect(namespace).to receive(:expire_child_caches).once
+
+      namespace.update!(name: "Foo")
+    end
+
+    it "expires on path changes" do
+      expect(namespace).to receive(:expire_child_caches).once
+
+      namespace.update!(path: "bar")
+    end
+
+    it "expires on parent changes" do
+      expect(namespace).to receive(:expire_child_caches).once
+
+      namespace.update!(parent: create(:group))
+    end
+
+    it "doesn't expire on other field changes" do
+      expect(namespace).not_to receive(:expire_child_caches)
+
+      namespace.update!(
+        description: "Foo bar",
+        max_artifacts_size: 10
+      )
+    end
+  end
+
   describe '#visibility_level_field' do
     it { expect(namespace.visibility_level_field).to eq(:visibility_level) }
   end

@@ -118,7 +118,7 @@ To enable Secret Detection for GitLab 13.1 and later, you must include the
 `Secret-Detection.gitlab-ci.yml` template that's provided as a part of your GitLab installation. For
 GitLab versions earlier than 11.9, you can copy and use the job as defined in that template.
 
-Add the following to your `.gitlab-ci.yml` file:
+Ensure your `.gitlab-ci.yml` file has a `stage` called `test`, and add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:

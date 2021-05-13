@@ -16318,9 +16318,6 @@ msgstr ""
 msgid "Hide shared projects"
 msgstr ""
 
-msgid "Hide stage"
-msgstr ""
-
 msgid "Hide value"
 msgid_plural "Hide values"
 msgstr[0] ""
@@ -20527,9 +20524,6 @@ msgid "Merge options"
 msgstr ""
 
 msgid "Merge request"
-msgstr ""
-
-msgid "Merge request %{iid} authored by %{authorName}"
 msgstr ""
 
 msgid "Merge request %{mr_link} was reviewed by %{mr_author}"
@@ -27233,9 +27227,6 @@ msgid "Remove secondary node"
 msgstr ""
 
 msgid "Remove spent time"
-msgstr ""
-
-msgid "Remove stage"
 msgstr ""
 
 msgid "Remove time estimate"
@@ -34065,9 +34056,6 @@ msgid "Too many namespaces enabled. You will need to manage them via the console
 msgstr ""
 
 msgid "Too many projects enabled. You will need to manage them via the console or the API."
-msgstr ""
-
-msgid "Too much data"
 msgstr ""
 
 msgid "Topics (optional)"

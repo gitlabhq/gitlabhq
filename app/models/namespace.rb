@@ -14,6 +14,7 @@ class Namespace < ApplicationRecord
   include IgnorableColumns
   include Namespaces::Traversal::Recursive
   include Namespaces::Traversal::Linear
+  include EachBatch
 
   ignore_column :delayed_project_removal, remove_with: '14.1', remove_after: '2021-05-22'
 
@@ -88,6 +89,10 @@ class Namespace < ApplicationRecord
   after_update :move_dir, if: :saved_change_to_path_or_parent?
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
+  after_commit :expire_child_caches, on: :update, if: -> {
+    Feature.enabled?(:cached_route_lookups, self, type: :ops, default_enabled: :yaml) &&
+      saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?
+  }
 
   scope :for_user, -> { where(type: nil) }
   scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
@@ -421,6 +426,16 @@ class Namespace < ApplicationRecord
   end
 
   private
+
+  def expire_child_caches
+    Namespace.where(id: descendants).each_batch do |namespaces|
+      namespaces.touch_all
+    end
+
+    all_projects.each_batch do |projects|
+      projects.touch_all
+    end
+  end
 
   def all_projects_with_pages
     if all_projects.pages_metadata_not_migrated.exists?

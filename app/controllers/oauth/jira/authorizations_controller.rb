@@ -16,7 +16,7 @@ class Oauth::Jira::AuthorizationsController < ApplicationController
 
     redirect_to oauth_authorization_path(client_id: params['client_id'],
                                          response_type: 'code',
-                                         scope: params['scope'],
+                                         scope: normalize_scope(params['scope']),
                                          redirect_uri: oauth_jira_callback_url)
   end
 
@@ -47,5 +47,13 @@ class Oauth::Jira::AuthorizationsController < ApplicationController
     end
   rescue Doorkeeper::Errors::DoorkeeperError => e
     render status: :unauthorized, body: e.type
+  end
+
+  private
+
+  # When using the GitHub Enterprise connector in Jira we receive the "repo" scope,
+  # this doesn't exist in GitLab but we can map it to our "api" scope.
+  def normalize_scope(scope)
+    scope == 'repo' ? 'api' : scope
   end
 end

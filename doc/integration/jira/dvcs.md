@@ -72,7 +72,7 @@ for the groups you specify, into Jira. This import takes a few minutes and, afte
 it completes, refreshes every 60 minutes:
 
 1. Ensure you have completed the [GitLab configuration](#configure-a-gitlab-application-for-dvcs).
-1. Go to your DVCS account:
+1. Go to your DVCS accounts:
    - *For Jira Server,* go to **Settings (gear) > Applications > DVCS accounts**.
    - *For Jira Cloud,* go to **Settings (gear) > Products > DVCS accounts**.
 1. To create a new integration, select the appropriate value for **Host**:
@@ -94,7 +94,10 @@ it completes, refreshes every 60 minutes:
 1. For **Client ID**, use the **Application ID** value from the previous section.
 1. For **Client Secret**, use the **Secret** value from the previous section.
 1. Ensure that the rest of the checkboxes are checked.
-1. Select **Add** to complete and create the integration.
+1. Select **Add** and then **Continue** to create the DVCS account.
+1. Jira redirects to GitLab where you have to confirm the authorization,
+   and then GitLab redirects back to Jira where you should see the synced
+   projects show up inside the new account.
 
 To connect additional GitLab projects from other GitLab top-level groups, or
 personal namespaces, repeat the previous steps with additional Jira DVCS accounts.
