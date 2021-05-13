@@ -34,7 +34,7 @@ module EnvironmentsHelper
   def environment_logs_data(project, environment)
     {
       "environment_name": environment.name,
-      "environments_path": project_environments_path(project, format: :json),
+      "environments_path": api_v4_projects_environments_path(id: project.id),
       "environment_id": environment.id,
       "cluster_applications_documentation_path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack'),
       "clusters_path": project_clusters_path(project, format: :json)

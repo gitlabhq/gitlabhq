@@ -2,6 +2,7 @@
 import dateFormat from 'dateformat';
 import $ from 'jquery';
 import Pikaday from 'pikaday';
+import initDatePicker from '~/behaviors/date_picker';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { __ } from '~/locale';
 import boardsStore from './boards/stores/boards_store';
@@ -168,38 +169,8 @@ class DueDateSelect {
 
 export default class DueDateSelectors {
   constructor() {
-    this.initMilestoneDatePicker();
+    initDatePicker();
     this.initIssuableSelect();
-  }
-  // eslint-disable-next-line class-methods-use-this
-  initMilestoneDatePicker() {
-    $('.datepicker').each(function initPikadayMilestone() {
-      const $datePicker = $(this);
-      const datePickerVal = $datePicker.val();
-
-      const calendar = new Pikaday({
-        field: $datePicker.get(0),
-        theme: 'gitlab-theme animate-picker',
-        format: 'yyyy-mm-dd',
-        container: $datePicker.parent().get(0),
-        parse: (dateString) => parsePikadayDate(dateString),
-        toString: (date) => pikadayToString(date),
-        onSelect(dateText) {
-          $datePicker.val(calendar.toString(dateText));
-        },
-        firstDay: gon.first_day_of_week,
-      });
-
-      calendar.setDate(parsePikadayDate(datePickerVal));
-
-      $datePicker.data('pikaday', calendar);
-    });
-
-    $('.js-clear-due-date,.js-clear-start-date').on('click', (e) => {
-      e.preventDefault();
-      const calendar = $(e.target).siblings('.datepicker').data('pikaday');
-      calendar.setDate(null);
-    });
   }
   // eslint-disable-next-line class-methods-use-this
   initIssuableSelect() {

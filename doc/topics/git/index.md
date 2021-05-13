@@ -39,7 +39,7 @@ The following resources can help you get started with Git:
   - [Squashing commits](../gitlab_flow.md#squashing-commits-with-rebase)
   - [Squash-and-merge](../../user/project/merge_requests/squash_and_merge.md)
   - [Signing commits](../../user/project/repository/gpg_signed_commits/index.md)
-- [Git stash](../../university/training/topics/stash.md)
+- [Git stash](stash.md)
 - [Git file blame](../../user/project/repository/git_blame.md)
 - [Git file history](../../user/project/repository/git_history.md)
 - [Git tags](tags.md)

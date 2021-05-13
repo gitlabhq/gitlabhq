@@ -1,31 +1,8 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-comments: false
+redirect_to: '../../../topics/git/feature_branching.md'
 ---
 
-# Feature branching
+This document was moved to [another location](../../../topics/git/feature_branching.md).
 
-- Efficient parallel workflow for teams
-- Develop each feature in a branch
-- Keeps changes isolated
-- Consider a 1-to-1 link to issues
-- Push branches to the server frequently
-  - Hint: This is a cheap backup for your work-in-progress code
-
-## Feature branching sample workflow
-
-1. Create a new feature branch called 'squash_some_bugs'
-1. Edit '`bugs.rb`' and remove all the bugs.
-1. Commit
-1. Push
-
-```shell
-git checkout -b squash_some_bugs
-# Edit `bugs.rb`
-git status
-git add bugs.rb
-git commit -m 'Fix some buggy code'
-git push origin squash_some_bugs
-```
+<!-- This redirect file can be deleted after <2021-08-13>. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->

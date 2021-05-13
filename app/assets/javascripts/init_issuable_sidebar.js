@@ -1,7 +1,6 @@
 /* eslint-disable no-new */
 
 import { mountSidebarLabels, getSidebarOptions } from '~/sidebar/mount_sidebar';
-import DueDateSelectors from './due_date_select';
 import IssuableContext from './issuable_context';
 import LabelsSelect from './labels_select';
 import MilestoneSelect from './milestone_select';
@@ -19,7 +18,6 @@ export default () => {
   });
   new LabelsSelect();
   new IssuableContext(sidebarOptions.currentUser);
-  new DueDateSelectors();
   Sidebar.initialize();
 
   mountSidebarLabels();

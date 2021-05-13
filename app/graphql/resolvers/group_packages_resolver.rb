@@ -1,26 +1,19 @@
 # frozen_string_literal: true
+# rubocop: disable Graphql/ResolverType
 
 module Resolvers
-  class GroupPackagesResolver < BaseResolver
-    type Types::Packages::PackageType.connection_type, null: true
+  class GroupPackagesResolver < PackagesBaseResolver
+    # The GraphQL type is defined in the extended class
 
     argument :sort, Types::Packages::PackageGroupSortEnum,
       description: 'Sort packages by this criteria.',
       required: false,
       default_value: :created_desc
 
-    SORT_TO_PARAMS_MAP = {
-      created_desc: { order_by: 'created', sort: 'desc' },
-      created_asc: { order_by: 'created', sort: 'asc' },
-      name_desc: { order_by: 'name', sort: 'desc' },
-      name_asc: { order_by: 'name', sort: 'asc' },
-      version_desc: { order_by: 'version', sort: 'desc' },
-      version_asc: { order_by: 'version', sort: 'asc' },
-      type_desc: { order_by: 'type', sort: 'desc' },
-      type_asc: { order_by: 'type', sort: 'asc' },
+    GROUP_SORT_TO_PARAMS_MAP = SORT_TO_PARAMS_MAP.merge({
       project_path_desc: { order_by: 'project_path', sort: 'desc' },
       project_path_asc: { order_by: 'project_path', sort: 'asc' }
-    }.freeze
+    }).freeze
 
     def ready?(**args)
       context[self.class] ||= { executions: 0 }
@@ -30,16 +23,11 @@ module Resolvers
       super
     end
 
-    def resolve(sort:)
+    def resolve(sort:, **filters)
       return unless packages_available?
 
-      ::Packages::GroupPackagesFinder.new(current_user, object, SORT_TO_PARAMS_MAP[sort]).execute
-    end
-
-    private
-
-    def packages_available?
-      ::Gitlab.config.packages.enabled
+      ::Packages::GroupPackagesFinder.new(current_user, object, filters.merge(GROUP_SORT_TO_PARAMS_MAP.fetch(sort))).execute
     end
   end
 end
+# rubocop: enable Graphql/ResolverType

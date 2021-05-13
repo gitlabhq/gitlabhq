@@ -191,7 +191,7 @@ describe('Logs Store actions', () => {
     });
 
     it('should commit RECEIVE_ENVIRONMENTS_DATA_SUCCESS mutation on correct data', () => {
-      mock.onGet(mockEnvironmentsEndpoint).replyOnce(200, { environments: mockEnvironments });
+      mock.onGet(mockEnvironmentsEndpoint).replyOnce(200, mockEnvironments);
       return testAction(
         fetchEnvironments,
         mockEnvironmentsEndpoint,

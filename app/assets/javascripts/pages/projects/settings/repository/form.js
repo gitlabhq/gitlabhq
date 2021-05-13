@@ -1,7 +1,7 @@
 /* eslint-disable no-new */
 
+import initDatePicker from '~/behaviors/date_picker';
 import initDeployKeys from '~/deploy_keys';
-import DueDateSelectors from '~/due_date_select';
 import fileUpload from '~/lib/utils/file_upload';
 import ProtectedBranchCreate from '~/protected_branches/protected_branch_create';
 import ProtectedBranchEditList from '~/protected_branches/protected_branch_edit_list';
@@ -16,6 +16,6 @@ export default () => {
   initSettingsPanels();
   new ProtectedBranchCreate({ hasLicense: false });
   new ProtectedBranchEditList();
-  new DueDateSelectors();
+  initDatePicker(); // Used for deploy token "expires at" field
   fileUpload('.js-choose-file', '.js-object-map-input');
 };

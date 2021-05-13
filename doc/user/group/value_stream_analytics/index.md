@@ -226,6 +226,8 @@ Hovering over a stage item displays a popover with the following information:
 
 - Start event description for the given stage
 - End event description
+- Median time items took to complete the stage
+- Number of items that completed the stage
 
 ### Stream overview
 
@@ -255,6 +257,9 @@ The stage table shows a list of related workflow items for the selected stage. T
 - Issues
 - Merge requests
 - Pipelines
+
+A little badge next to the workflow items table header shows the number of workflow items that
+completed the selected stage.
 
 The stage table also includes the **Time** column, which shows how long it takes each item to pass
 through the selected value stream stage.

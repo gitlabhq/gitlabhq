@@ -5,7 +5,7 @@ module Ci
     extend Gitlab::Ci::Model
     include Importable
     include StripAttribute
-    include Schedulable
+    include CronSchedulable
     include Limitable
     include EachBatch
 
@@ -51,36 +51,14 @@ module Ci
       update_attribute(:active, false)
     end
 
-    ##
-    # The `next_run_at` column is set to the actual execution date of `PipelineScheduleWorker`.
-    # This way, a schedule like `*/1 * * * *` won't be triggered in a short interval
-    # when PipelineScheduleWorker runs irregularly by Sidekiq Memory Killer.
-    def set_next_run_at
-      now = Time.zone.now
-      ideal_next_run = ideal_next_run_from(now)
-
-      self.next_run_at = if ideal_next_run == cron_worker_next_run_from(now)
-                           ideal_next_run
-                         else
-                           cron_worker_next_run_from(ideal_next_run)
-                         end
-    end
-
     def job_variables
       variables&.map(&:to_runner_variable) || []
     end
 
     private
 
-    def ideal_next_run_from(start_time)
-      Gitlab::Ci::CronParser.new(cron, cron_timezone)
-                            .next_time_from(start_time)
-    end
-
-    def cron_worker_next_run_from(start_time)
-      Gitlab::Ci::CronParser.new(Settings.cron_jobs['pipeline_schedule_worker']['cron'],
-                                Time.zone.name)
-                            .next_time_from(start_time)
+    def worker_cron_expression
+      Settings.cron_jobs['pipeline_schedule_worker']['cron']
     end
   end
 end

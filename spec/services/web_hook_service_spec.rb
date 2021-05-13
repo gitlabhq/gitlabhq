@@ -240,6 +240,25 @@ RSpec.describe WebHookService do
         it 'does not change the disabled_until attribute' do
           expect { service_instance.execute }.not_to change(project_hook, :disabled_until)
         end
+
+        it 'does not allow the failure count to overflow' do
+          project_hook.update!(recent_failures: 32767)
+
+          expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+        end
+
+        context 'when the web_hooks_disable_failed FF is disabled' do
+          before do
+            # Hook will only be executed if the flag is disabled.
+            stub_feature_flags(web_hooks_disable_failed: false)
+          end
+
+          it 'does not allow the failure count to overflow' do
+            project_hook.update!(recent_failures: 32767)
+
+            expect { service_instance.execute }.not_to change(project_hook, :recent_failures)
+          end
+        end
       end
 
       context 'with exception' do

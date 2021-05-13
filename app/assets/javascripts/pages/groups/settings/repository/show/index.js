@@ -1,7 +1,8 @@
-import DueDateSelectors from '~/due_date_select';
+import initDatePicker from '~/behaviors/date_picker';
 import initSettingsPanels from '~/settings_panels';
 
 // Initialize expandable settings panels
 initSettingsPanels();
 
-new DueDateSelectors(); // eslint-disable-line no-new
+// Used for deploy tokens "expires at" field
+initDatePicker();

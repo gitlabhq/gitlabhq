@@ -265,6 +265,11 @@ To remove a billable user:
 1. In the row for the user you want to remove, on the right side, select the ellipsis and **Remove user**.
 1. Re-type the username and select **Remove user**.
 
+If you add a member to a group by using the [share a group with another group](../../user/group/index.md#share-a-group-with-another-group) feature, you can't remove the member by using this method. Instead, you can either:
+
+- Remove the member from the shared group. You must be a group owner to do this.
+- From the group's membership page, remove access from the entire shared group.
+
 ## CI pipeline minutes
 
 CI pipeline minutes are the execution time for your

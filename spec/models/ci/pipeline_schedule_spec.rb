@@ -126,40 +126,12 @@ RSpec.describe Ci::PipelineSchedule do
       end
     end
 
-    context 'when pipeline schedule runs every minute' do
-      let(:pipeline_schedule) { create(:ci_pipeline_schedule, :every_minute) }
-
-      it "updates next_run_at to the sidekiq worker's execution time" do
-        travel_to(Time.zone.parse("2019-06-01 12:18:00+0000")) do
-          expect(pipeline_schedule.next_run_at).to eq(cron_worker_next_run_at)
-        end
-      end
-    end
-
     context 'when there are two different pipeline schedules in different time zones' do
       let(:pipeline_schedule_1) { create(:ci_pipeline_schedule, :weekly, cron_timezone: 'Eastern Time (US & Canada)') }
       let(:pipeline_schedule_2) { create(:ci_pipeline_schedule, :weekly, cron_timezone: 'UTC') }
 
       it 'sets different next_run_at' do
         expect(pipeline_schedule_1.next_run_at).not_to eq(pipeline_schedule_2.next_run_at)
-      end
-    end
-
-    context 'when there are two different pipeline schedules in the same time zones' do
-      let(:pipeline_schedule_1) { create(:ci_pipeline_schedule, :weekly, cron_timezone: 'UTC') }
-      let(:pipeline_schedule_2) { create(:ci_pipeline_schedule, :weekly, cron_timezone: 'UTC') }
-
-      it 'sets the sames next_run_at' do
-        expect(pipeline_schedule_1.next_run_at).to eq(pipeline_schedule_2.next_run_at)
-      end
-    end
-
-    context 'when updates cron of exsisted pipeline schedule' do
-      let(:new_cron) { '0 0 1 1 *' }
-
-      it 'updates next_run_at automatically' do
-        expect { pipeline_schedule.update!(cron: new_cron) }
-          .to change { pipeline_schedule.next_run_at }
       end
     end
   end

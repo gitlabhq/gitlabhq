@@ -6,7 +6,7 @@ RSpec.describe Resolvers::ProjectPackagesResolver do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
 
   let(:args) do
     { sort: :created_desc }
@@ -15,36 +15,6 @@ RSpec.describe Resolvers::ProjectPackagesResolver do
   describe '#resolve' do
     subject { resolve(described_class, ctx: { current_user: user }, obj: project, args: args).to_a }
 
-    context 'without sort' do
-      let_it_be(:package) { create(:package, project: project) }
-
-      it { is_expected.to contain_exactly(package) }
-    end
-
-    context 'with a sort argument' do
-      let_it_be(:sort_repository) do
-        create(:conan_package, name: 'bar', project: project, created_at: 1.day.ago, version: "1.0.0")
-      end
-
-      let_it_be(:sort_repository2) do
-        create(:maven_package, name: 'foo', project: project, created_at: 1.hour.ago, version: "2.0.0")
-      end
-
-      [:created_desc, :name_desc, :version_desc, :type_asc].each do |order|
-        context "#{order}" do
-          let(:args) { { sort: order } }
-
-          it { is_expected.to eq([sort_repository2, sort_repository]) }
-        end
-      end
-
-      [:created_asc, :name_asc, :version_asc, :type_desc].each do |order|
-        context "#{order}" do
-          let(:args) { { sort: order } }
-
-          it { is_expected.to eq([sort_repository, sort_repository2]) }
-        end
-      end
-    end
+    it_behaves_like 'group and projects packages resolver'
   end
 end

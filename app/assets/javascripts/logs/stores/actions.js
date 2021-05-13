@@ -127,7 +127,7 @@ export const fetchEnvironments = ({ commit, dispatch }, environmentsPath) => {
   return axios
     .get(environmentsPath)
     .then(({ data }) => {
-      commit(types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS, data.environments);
+      commit(types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS, data);
       dispatch('fetchLogs', tracking.ENVIRONMENT_SELECTED);
     })
     .catch(() => {

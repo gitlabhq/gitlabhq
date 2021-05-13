@@ -27,6 +27,7 @@ class WebHookService
 
   REQUEST_BODY_SIZE_LIMIT = 25.megabytes
   GITLAB_EVENT_HEADER = 'X-Gitlab-Event'
+  MAX_FAILURES = 100
 
   attr_accessor :hook, :data, :hook_name, :request_options
 
@@ -141,7 +142,7 @@ class WebHookService
       next_backoff = hook.next_backoff
       hook.update!(disabled_until: next_backoff.from_now, backoff_count: hook.backoff_count + 1)
     else
-      hook.update!(recent_failures: hook.recent_failures + 1)
+      hook.update!(recent_failures: hook.recent_failures + 1) if hook.recent_failures < MAX_FAILURES
     end
   end
 
