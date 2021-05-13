@@ -229,7 +229,9 @@ The following Elasticsearch settings are available:
 | `Elasticsearch indexing`                              | Enables or disables Elasticsearch indexing and creates an empty index if one does not already exist. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
 | `Pause Elasticsearch indexing`                        | Enables or disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until resumed. |
 | `Search with Elasticsearch enabled`                   | Enables or disables using Elasticsearch in search. |
-| `URL`                                                 | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., `http://host1, https://host2:9200`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). Special characters in the username or password should use [percentage encoding](https://en.wikipedia.org/wiki/Percent-encoding). |
+| `URL`                                                 | The URL of your Elasticsearch instance. Use a comma-separated list to support clustering (for example, `http://host1, https://host2:9200`). If your Elasticsearch instance is password-protected, use the `Username` and `Password` fields described below. Alternatively, use inline credentials such as `http://<username>:<password>@<elastic_host>:9200/`. |
+| `Username`                                                 | The `username` of your Elasticsearch instance. |
+| `Password`                                                 | The password of your Elasticsearch instance. |
 | `Number of Elasticsearch shards`                      | Elasticsearch indexes are split into multiple shards for performance reasons. In general, you should use at least 5 shards, and indexes with tens of millions of documents need to have more shards ([see below](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). |
 | `Number of Elasticsearch replicas`                    | Each Elasticsearch shard can have a number of replicas. These are a complete copy of the shard, and can provide increased query performance or resilience against hardware failure. Increasing this value will greatly increase total disk space required by the index. |
 | `Limit namespaces and projects that can be indexed`   | Enabling this will allow you to select namespaces and projects to index. All other namespaces and projects will use database search instead. Please note that if you enable this option but do not select any namespaces or projects, none will be indexed. [Read more below](#limiting-namespaces-and-projects).
@@ -326,15 +328,56 @@ index alias to it which becomes the new `primary` index. At the end, we resume t
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in GitLab 13.2.
 > - A scheduled index deletion and the ability to cancel it was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38914) in GitLab 13.3.
+> - Support for retries during reindexing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55681) in GitLab 13.12.
 
-Under **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
+To trigger the reindexing process:
+
+1. Sign in to your GitLab instance as an administrator.
+1. Go to **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**.
+1. Select **Trigger cluster reindexing**.
 
 Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.
 
-WARNING:
-After the reindexing is completed, the original index will be scheduled to be deleted after 14 days. You can cancel this action by pressing the cancel button.
+After this process is completed, the original index is scheduled to be deleted after
+14 days. You can cancel this action by pressing the **Cancel** button on the same
+page you triggered the reindexing process.
 
 While the reindexing is running, you will be able to follow its progress under that same section.
+
+#### Elasticsearch zero-downtime reindexing
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55681) in GitLab 13.12.
+
+The following reindex settings are available in **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**:
+
+- [Slice multiplier](#slice-multiplier)
+- [Maximum running slices](#maximum-running-slices)
+
+##### Slice multiplier
+
+The slice multiplier calculates the [number of slices during reindexing](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html#docs-reindex-slice).
+
+GitLab uses [manual slicing](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html#docs-reindex-manual-slice)
+to control the reindex efficiently and safely, which enables users to retry only
+failed slices.
+
+The multiplier defaults to `2` and applies to the number of shards per index.
+For example, if this value is `2` and your index has 20 shards, then the
+reindex task is split into 40 slices.
+
+##### Maximum running slices
+
+The maximum running slices parameter defaults to `60` and corresponds to the
+maximum number of slices allowed to run concurrently during Elasticsearch
+reindexing.
+
+Setting this value too high can have adverse performance impacts as your cluster
+may become heavily saturated with searches and writes. Setting this value too
+low may lead the reindexing process to take a very long time to complete.
+
+The best value for this will depend on your cluster size, whether you're willing
+to accept some degraded search performance during reindexing, and how important
+it is for the reindex to finish quickly and unpause indexing.
 
 ### Mark the most recent reindex job as failed and resume the indexing
 

@@ -2777,9 +2777,6 @@ msgstr ""
 msgid "Advanced Search"
 msgstr ""
 
-msgid "Advanced Search with Elasticsearch"
-msgstr ""
-
 msgid "Advanced Settings"
 msgstr ""
 
@@ -8425,6 +8422,9 @@ msgstr ""
 msgid "Configure repository mirroring."
 msgstr ""
 
+msgid "Configure settings for Advanced Search with Elasticsearch."
+msgstr ""
+
 msgid "Configure specific limits for Packages API requests that supersede the general user and IP rate limits."
 msgstr ""
 
@@ -11943,6 +11943,9 @@ msgid "Elasticsearch reindexing is already in progress"
 msgstr ""
 
 msgid "Elasticsearch reindexing triggered"
+msgstr ""
+
+msgid "Elasticsearch reindexing was not started: %{errors}"
 msgstr ""
 
 msgid "Elasticsearch returned status code: %{status_code}"
@@ -20266,6 +20269,9 @@ msgstr ""
 msgid "Maximum push size (MB)"
 msgstr ""
 
+msgid "Maximum running slices"
+msgstr ""
+
 msgid "Maximum size limit for a single commit."
 msgstr ""
 
@@ -23650,6 +23656,9 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
+msgid "Password (for password-protected Elasticsearch servers)"
+msgstr ""
+
 msgid "Password (optional)"
 msgstr ""
 
@@ -26985,7 +26994,7 @@ msgstr ""
 msgid "Regulate approvals by authors/committers. Affects all projects."
 msgstr ""
 
-msgid "Reindexing Status: %{status}"
+msgid "Reindexing Status: %{status} (Slice multiplier: %{multiplier}, Maximum running slices: %{max_slices})"
 msgstr ""
 
 msgid "Rejected (closed)"
@@ -30110,6 +30119,9 @@ msgstr ""
 msgid "SlackService|This service allows users to perform common operations on this project by entering slash commands in Slack."
 msgstr ""
 
+msgid "Slice multiplier"
+msgstr ""
+
 msgid "Smartcard"
 msgstr ""
 
@@ -32282,6 +32294,9 @@ msgstr ""
 msgid "The maximum file size is %{size}."
 msgstr ""
 
+msgid "The maximum number of slices allowed to run concurrently during Elasticsearch reindexing. Learn more about %{max_slices_running_link_start}maximum running slices configuration%{max_slices_link_end}."
+msgstr ""
+
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
 msgstr ""
 
@@ -33039,9 +33054,6 @@ msgid "This feature is part of your GitLab Ultimate trial."
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"
-msgstr ""
-
-msgid "This feature should be used with an index that was created after 13.0"
 msgstr ""
 
 msgid "This field is required."
@@ -34241,6 +34253,9 @@ msgstr ""
 msgid "Trigger cluster reindexing"
 msgstr ""
 
+msgid "Trigger cluster reindexing. This feature should be used with an index that was created after 13.0."
+msgstr ""
+
 msgid "Trigger manual job"
 msgstr ""
 
@@ -35201,6 +35216,9 @@ msgstr ""
 msgid "Used programming language"
 msgstr ""
 
+msgid "Used to calculate the number of slices during reindexing. The multiplier will be applied to the number of shards per index. Learn more about %{slice_multiplier_link_start}slice multiplier configuration%{slice_multiplier_link_end}."
+msgstr ""
+
 msgid "Used to help configure your identity provider"
 msgstr ""
 
@@ -35460,6 +35478,9 @@ msgid "UserProfile|at"
 msgstr ""
 
 msgid "UserProfile|made a private contribution"
+msgstr ""
+
+msgid "Username (for password-protected Elasticsearch servers)"
 msgstr ""
 
 msgid "Username (optional)"

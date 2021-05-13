@@ -460,10 +460,13 @@ configured to act as a remote proxy and add the `Gitlab-DAST-Permission` header.
 
 ### API scan
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10928) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10928) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
+> - A new DAST API scanning engine was introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10.
 
 Using an API specification as a scan's target is a useful way to seed URLs for scanning an API.
 Vulnerability rules in an API scan are different than those in a normal website scan.
+
+A new DAST API scanning engine is available in GitLab 13.12 and later. For more details, see [DAST API scanning engine](../dast_api). The new scanning engine supports REST, SOAP, GraphQL, and generic APIs using forms, XML, and JSON. Testing can be performed using OpenAPI, Postman Collections, and HTTP Archive (HAR) documents.
 
 #### Specification format
 

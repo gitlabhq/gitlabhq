@@ -37,6 +37,7 @@ GitLab uses the following tools to scan and report known vulnerabilities found i
 | [Dependency List](dependency_list/index.md) **(ULTIMATE)**                   | View your project's dependencies and their known vulnerabilities.      |
 | [Dependency Scanning](dependency_scanning/index.md) **(ULTIMATE)**           | Analyze your dependencies for known vulnerabilities.                   |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) **(ULTIMATE)**  | Analyze running web applications for known vulnerabilities.            |
+| [DAST API](dast_api/index.md) **(ULTIMATE)**  | Analyze running web APIs for known vulnerabilities.            |
 | [API fuzzing](api_fuzzing/index.md) **(ULTIMATE)**                           | Find unknown bugs and vulnerabilities in web APIs with fuzzing.        |
 | [Secret Detection](secret_detection/index.md)                                | Analyze Git history for leaked secrets.                                |
 | [Security Dashboard](security_dashboard/index.md) **(ULTIMATE)**             | View vulnerabilities in all your projects and groups.                  |
@@ -103,19 +104,6 @@ you may need to override the default `rules:` configuration to add:
 rules:
   - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 ```
-
-## Security Scanning with Auto DevOps
-
-When [Auto DevOps](../../topics/autodevops/) is enabled, all GitLab Security scanning tools are configured using default settings.
-
-- [Auto SAST](../../topics/autodevops/stages.md#auto-sast)
-- [Auto Secret Detection](../../topics/autodevops/stages.md#auto-secret-detection)
-- [Auto DAST](../../topics/autodevops/stages.md#auto-dast)
-- [Auto Dependency Scanning](../../topics/autodevops/stages.md#auto-dependency-scanning)
-- [Auto License Compliance](../../topics/autodevops/stages.md#auto-license-compliance)
-- [Auto Container Scanning](../../topics/autodevops/stages.md#auto-container-scanning)
-
-While you cannot directly customize Auto DevOps, you can [include the Auto DevOps template in your project's `.gitlab-ci.yml` file](../../topics/autodevops/customize.md#customizing-gitlab-ciyml).
 
 ## Default behavior of GitLab security scanning tools
 

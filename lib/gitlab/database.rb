@@ -243,23 +243,13 @@ module Gitlab
     # pool_size - The size of the DB pool.
     # host - An optional host name to use instead of the default one.
     def self.create_connection_pool(pool_size, host = nil, port = nil)
-      env = Rails.env
-      original_config = ActiveRecord::Base.configurations.to_h
+      original_config = Gitlab::Database.config
 
-      env_config = original_config[env].with_indifferent_access.merge(pool: pool_size)
+      env_config = original_config.merge(pool: pool_size)
       env_config[:host] = host if host
       env_config[:port] = port if port
 
-      config = ActiveRecord::DatabaseConfigurations.new(
-        original_config.merge(env => env_config)
-      )
-
-      spec =
-        ActiveRecord::
-          ConnectionAdapters::
-          ConnectionSpecification::Resolver.new(config).spec(env.to_sym)
-
-      ActiveRecord::ConnectionAdapters::ConnectionPool.new(spec)
+      ActiveRecord::ConnectionAdapters::ConnectionHandler.new.establish_connection(env_config)
     end
 
     def self.connection
