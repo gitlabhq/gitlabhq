@@ -57,7 +57,7 @@ component has 2 indicators:
 The calculation to a ratio then happens as follows:
 
 ```math
-\frac {operations\_meeting\_apdex + (total\_operations - operations\_with_\errors)} {total\_apdex\_measurements + total\_operations}
+\frac {operations\_meeting\_apdex + (total\_operations - operations\_with\_errors)} {total\_apdex\_measurements + total\_operations}
 ```
 
 *Caveat:* Not all components are included, causing the

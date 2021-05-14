@@ -3,8 +3,8 @@
 - ref = local_assigns.fetch(:ref) { merge_request&.source_branch }
 - can_update_merge_request = can?(current_user, :update_merge_request, @merge_request)
 
-- commits = @commits
-- context_commits = @context_commits
+- commits = @commits&.map { |commit| commit.present(current_user: current_user) }
+- context_commits = @context_commits&.map { |commit| commit.present(current_user: current_user) }
 - hidden = @hidden_commit_count
 
 - commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, daily_commits|
@@ -14,7 +14,10 @@
 
   %li.commits-row{ data: { day: day } }
     %ul.content-list.commit-list.flex-list
-      = render partial: 'projects/commits/commit', collection: daily_commits, locals: { project: project, ref: ref, merge_request: merge_request }
+      - if Feature.enabled?(:cached_commits, project, default_enabled: :yaml)
+        = render partial: 'projects/commits/commit', collection: daily_commits, locals: { project: project, ref: ref, merge_request: merge_request }, cached: -> (commit) { commit_partial_cache_key(commit, ref: ref, merge_request: merge_request, request: request) }
+      - else
+        = render partial: 'projects/commits/commit', collection: daily_commits, locals: { project: project, ref: ref, merge_request: merge_request }
 
 - if context_commits.present?
   %li.commit-header.js-commit-header
@@ -25,7 +28,10 @@
 
   %li.commits-row
     %ul.content-list.commit-list.flex-list
-      = render partial: 'projects/commits/commit', collection: context_commits, locals: { project: project, ref: ref, merge_request: merge_request }
+      - if Feature.enabled?(:cached_commits, project, default_enabled: :yaml)
+        = render partial: 'projects/commits/commit', collection: context_commits, locals: { project: project, ref: ref, merge_request: merge_request }, cached: -> (commit) { commit_partial_cache_key(commit, ref: ref, merge_request: merge_request, request: request) }
+      - else
+        = render partial: 'projects/commits/commit', collection: context_commits, locals: { project: project, ref: ref, merge_request: merge_request }
 
 - if hidden > 0
   %li.gl-alert.gl-alert-warning

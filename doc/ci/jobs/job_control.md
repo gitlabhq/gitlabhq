@@ -63,7 +63,7 @@ except `main` and branches that start with `release/`.
 
 ### `only: variables` / `except: variables` examples
 
-You can use `except:variables` to exclude jobs based on a commit message:
+You can use [`except:variables`](../yaml/README.md#onlyvariables--exceptvariables) to exclude jobs based on a commit message:
 
 ```yaml
 end-to-end:
@@ -221,6 +221,48 @@ test:
       - main
     changes:
       - "README.md"
+```
+
+## Use predefined CI/CD variables to run jobs only in specific pipeline types
+
+You can use [predefined CI/CD variables](../variables/predefined_variables.md) to choose
+which pipeline types jobs run in, with:
+
+- [`rules`](../yaml/README.md#rules)
+- [`only:variables`](../yaml/README.md#onlyvariables--exceptvariables)
+- [`except:variables`](../yaml/README.md#onlyvariables--exceptvariables)
+
+The following table lists some of the variables that you can use, and the pipeline
+types the variables can control for:
+
+- Branch pipelines that run for Git `push` events to a branch, like new commits or tags.
+- Tag pipelines that run only when a new Git tag is pushed to a branch.
+- [Merge request pipelines](../merge_request_pipelines/index.md) that run for changes
+  to a merge request, like new commits or selecting the **Run pipeline** button
+  in a merge request's pipelines tab.
+- [Scheduled pipelines](../pipelines/schedules.md).
+
+| Variables                                  | Branch | Tag | Merge request | Scheduled |
+|--------------------------------------------|--------|-----|---------------|-----------|
+| `CI_COMMIT_BRANCH`                         | Yes    |     |               | Yes       |
+| `CI_COMMIT_TAG`                            |        | Yes |               | Yes, if the scheduled pipeline is configured to run on a tag. |
+| `CI_PIPELINE_SOURCE = push`                | Yes    | Yes |               |           |
+| `CI_PIPELINE_SOURCE = scheduled`           |        |     |               | Yes       |
+| `CI_PIPELINE_SOURCE = merge_request_event` |        |     | Yes           |           |
+| `CI_MERGE_REQUEST_IID`                     |        |     | Yes           |           |
+
+For example, to configure a job to run for merge request pipelines and scheduled pipelines,
+but not branch or tag pipelines:
+
+```yaml
+job1:
+  script:
+    - echo
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "scheduled"
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: never
 ```
 
 ## Regular expressions

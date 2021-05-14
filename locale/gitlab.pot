@@ -6334,7 +6334,7 @@ msgstr ""
 msgid "Choose File..."
 msgstr ""
 
-msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
+msgid "Choose a branch/tag (e.g. %{branch}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
 msgstr ""
 
 msgid "Choose a file"
@@ -17894,7 +17894,7 @@ msgstr ""
 msgid "InviteEmail|As a guest, you can view projects, leave comments, and create issues."
 msgstr ""
 
-msgid "InviteEmail|As a maintainer, you have full access to projects. You can push commits to master and deploy to production."
+msgid "InviteEmail|As a maintainer, you have full access to projects. You can push commits to the default branch and deploy to production."
 msgstr ""
 
 msgid "InviteEmail|As a reporter, you can view projects and reports, and leave comments on issues."

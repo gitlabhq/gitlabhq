@@ -266,7 +266,7 @@ To remove a deprecated metric:
    [fixtures](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/spec/support/usage_data_helpers.rb#L540)
    used to test
    [`UsageDataController#create`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/3760ef28/spec/controllers/usage_data_controller_spec.rb#L75)
-   endpoint, and assure that test suite does not fail when metric that you wish to remove is not included into test payload.  
+   endpoint, and assure that test suite does not fail when metric that you wish to remove is not included into test payload.
 
 1. Create an issue in the
    [GitLab Data Team project](https://gitlab.com/gitlab-data/analytics/-/issues).
@@ -276,7 +276,7 @@ To remove a deprecated metric:
    This step can be skipped if verification done during [deprecation process](#3-deprecate-a-metric)
    reported that metric is not required by any data transformation in Snowflake data warehouse nor it is
    used by any of SiSense dashboards.
-  
+
 1. After you verify the metric can be safely removed,
    update the attributes of the metric's YAML definition:
 
@@ -1024,7 +1024,13 @@ On GitLab.com, we have DangerBot setup to monitor Product Intelligence related f
 
 ### 10. Verify your metric
 
-On GitLab.com, the Product Intelligence team regularly monitors Usage Ping. They may alert you that your metrics need further optimization to run quicker and with greater success. You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "SaaS" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
+On GitLab.com, the Product Intelligence team regularly [monitors Usage Ping](https://gitlab.com/groups/gitlab-org/-/epics/6000).
+They may alert you that your metrics need further optimization to run quicker and with greater success.
+
+The Usage Ping JSON payload for GitLab.com is shared in the
+[#g_product_intelligence](https://gitlab.slack.com/archives/CL3A7GFPF) Slack channel every week.
+
+You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "SaaS" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
 
 ### Usage Ping local setup
 

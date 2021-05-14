@@ -91,7 +91,9 @@ export default {
         data-testid="stuck-icon"
       />
 
-      <div class="gl-display-flex gl-align-items-center">
+      <div
+        class="gl-display-flex gl-align-items-center gl-lg-justify-content-start gl-justify-content-end"
+      >
         <div v-if="jobRef" class="gl-max-w-15 gl-text-truncate">
           <gl-icon
             v-if="createdByTag"

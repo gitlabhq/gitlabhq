@@ -1,8 +1,8 @@
 /* eslint-disable no-inner-declarations, no-param-reassign */
+const path = require('path');
 const chalk = require('chalk');
 const argumentsParser = require('commander');
 const glob = require('glob');
-const path = require('path');
 const webpack = require('webpack');
 const IS_EE = require('./helpers/is_ee_env');
 const webpackConfig = require('./webpack.config.js');

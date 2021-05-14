@@ -315,7 +315,7 @@ class Snippet < ApplicationRecord
 
   override :default_branch
   def default_branch
-    super || Gitlab::DefaultBranch.value(project: project)
+    super || Gitlab::DefaultBranch.value(object: project)
   end
 
   def repository_storage

@@ -1,5 +1,8 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, uniqWith, isEqual } from 'lodash';
+import AccessorUtilities from '~/lib/utils/accessor';
 import { queryToObject } from '~/lib/utils/url_utility';
+
+import { MAX_RECENT_TOKENS_SIZE } from './constants';
 
 /**
  * Strips enclosing quotations from a string if it has one.
@@ -161,4 +164,39 @@ export function urlQueryToFilter(query = '') {
 
     return { ...memo, [filterName]: { value, operator } };
   }, {});
+}
+
+/**
+ * Returns array of token values from localStorage
+ * based on provided recentTokenValuesStorageKey
+ *
+ * @param {String} recentTokenValuesStorageKey
+ * @returns
+ */
+export function getRecentlyUsedTokenValues(recentTokenValuesStorageKey) {
+  let recentlyUsedTokenValues = [];
+  if (AccessorUtilities.isLocalStorageAccessSafe()) {
+    recentlyUsedTokenValues = JSON.parse(localStorage.getItem(recentTokenValuesStorageKey)) || [];
+  }
+  return recentlyUsedTokenValues;
+}
+
+/**
+ * Sets provided token value to recently used array
+ * within localStorage for provided recentTokenValuesStorageKey
+ *
+ * @param {String} recentTokenValuesStorageKey
+ * @param {Object} tokenValue
+ */
+export function setTokenValueToRecentlyUsed(recentTokenValuesStorageKey, tokenValue) {
+  const recentlyUsedTokenValues = getRecentlyUsedTokenValues(recentTokenValuesStorageKey);
+
+  recentlyUsedTokenValues.splice(0, 0, { ...tokenValue });
+
+  if (AccessorUtilities.isLocalStorageAccessSafe()) {
+    localStorage.setItem(
+      recentTokenValuesStorageKey,
+      JSON.stringify(uniqWith(recentlyUsedTokenValues, isEqual).slice(0, MAX_RECENT_TOKENS_SIZE)),
+    );
+  }
 }

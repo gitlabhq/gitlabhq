@@ -1,5 +1,5 @@
-const fs = require('fs');
 const crypto = require('crypto');
+const fs = require('fs');
 const path = require('path');
 
 const CACHE_PATHS = [

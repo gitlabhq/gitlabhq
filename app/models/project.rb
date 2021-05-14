@@ -2539,7 +2539,7 @@ class Project < ApplicationRecord
   def default_branch_or_main
     return default_branch if default_branch
 
-    Gitlab::DefaultBranch.value(project: self)
+    Gitlab::DefaultBranch.value(object: self)
   end
 
   def ci_config_path_or_default

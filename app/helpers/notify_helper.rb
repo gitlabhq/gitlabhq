@@ -18,7 +18,7 @@ module NotifyHelper
     when "Developer"
       s_("InviteEmail|As a developer, you have full access to projects, so you can take an idea from concept to production.")
     when "Maintainer"
-      s_("InviteEmail|As a maintainer, you have full access to projects. You can push commits to master and deploy to production.")
+      s_("InviteEmail|As a maintainer, you have full access to projects. You can push commits to the default branch and deploy to production.")
     when "Owner"
       s_("InviteEmail|As an owner, you have full access to projects and can manage access to the group, including inviting new members.")
     when "Minimal Access"

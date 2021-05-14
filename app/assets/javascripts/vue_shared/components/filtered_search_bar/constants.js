@@ -1,6 +1,7 @@
 import { __ } from '~/locale';
 
 export const DEBOUNCE_DELAY = 200;
+export const MAX_RECENT_TOKENS_SIZE = 3;
 
 export const FILTER_NONE = 'None';
 export const FILTER_ANY = 'Any';

@@ -1,11 +1,11 @@
 const fs = require('fs');
+const path = require('path');
 
 const SOURCEGRAPH_VERSION = require('@sourcegraph/code-host-integration/package.json').version;
 
 const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const glob = require('glob');
-const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
 const VUE_VERSION = require('vue/package.json').version;

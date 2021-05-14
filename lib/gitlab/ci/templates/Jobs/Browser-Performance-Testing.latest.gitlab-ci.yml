@@ -1,0 +1,77 @@
+# Read more about the feature here: https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html
+
+browser_performance:
+  stage: performance
+  image: docker:19.03.12
+  allow_failure: true
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    SITESPEED_IMAGE: sitespeedio/sitespeed.io
+    SITESPEED_VERSION: 14.1.0
+    SITESPEED_OPTIONS: ''
+  services:
+    - docker:19.03.12-dind
+  script:
+    - |
+      if ! docker info &>/dev/null; then
+        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+          export DOCKER_HOST='tcp://localhost:2375'
+        fi
+      fi
+    - export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
+    - mkdir gitlab-exporter
+    # Busybox wget does not support proxied HTTPS, get the real thing.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/287611.
+    - (env | grep -i _proxy= 2>&1 >/dev/null) && apk --no-cache add wget
+    - wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
+    - mkdir sitespeed-results
+    - |
+      function propagate_env_vars() {
+        CURRENT_ENV=$(printenv)
+
+        for VAR_NAME; do
+          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
+        done
+      }
+    - |
+      if [ -f .gitlab-urls.txt ]
+      then
+        sed -i -e 's@^@'"$CI_ENVIRONMENT_URL"'@' .gitlab-urls.txt
+        docker run \
+          $(propagate_env_vars \
+            auto_proxy \
+            https_proxy \
+            http_proxy \
+            no_proxy \
+            AUTO_PROXY \
+            HTTPS_PROXY \
+            HTTP_PROXY \
+            NO_PROXY \
+          ) \
+          --shm-size=1g --rm -v "$(pwd)":/sitespeed.io $SITESPEED_IMAGE:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --cpu --outputFolder sitespeed-results .gitlab-urls.txt $SITESPEED_OPTIONS
+      else
+        docker run \
+          $(propagate_env_vars \
+            auto_proxy \
+            https_proxy \
+            http_proxy \
+            no_proxy \
+            AUTO_PROXY \
+            HTTPS_PROXY \
+            HTTP_PROXY \
+            NO_PROXY \
+          ) \
+          --shm-size=1g --rm -v "$(pwd)":/sitespeed.io $SITESPEED_IMAGE:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --cpu --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL" $SITESPEED_OPTIONS
+      fi
+    - mv sitespeed-results/data/performance.json browser-performance.json
+  artifacts:
+    paths:
+      - sitespeed-results/
+    reports:
+      browser_performance: browser-performance.json
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$PERFORMANCE_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'

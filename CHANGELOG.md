@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.11.4 (2021-05-14)
+
+### Fixed (3 changes)
+
+- Fix N+1 SQL queries in PipelinesController#show. !60794
+- Omit trailing slash when proxying pre-authorized routes with no suffix. !61638
+- Omit trailing slash when checking allowed requests in the read-only middleware. !61641
+
+
 ## 13.11.3 (2021-04-30)
 
 ### Fixed (1 change)
