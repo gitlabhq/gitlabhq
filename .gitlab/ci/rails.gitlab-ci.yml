@@ -8,7 +8,8 @@
 
 .minimal-bundle-install:
   script:
-    - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
+    - export BUNDLE_WITHOUT="${BUNDLE_WITHOUT}:default:test:puma:unicorn:kerberos:metrics:omnibus:ed25519"
+    - bundle_install_script
 
 .base-script:
   script:

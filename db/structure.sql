@@ -9051,7 +9051,8 @@ CREATE TABLE analytics_cycle_analytics_project_stages (
     end_event_label_id bigint,
     hidden boolean DEFAULT false NOT NULL,
     custom boolean DEFAULT true NOT NULL,
-    name character varying(255) NOT NULL
+    name character varying(255) NOT NULL,
+    project_value_stream_id bigint NOT NULL
 );
 
 CREATE SEQUENCE analytics_cycle_analytics_project_stages_id_seq
@@ -9062,6 +9063,24 @@ CREATE SEQUENCE analytics_cycle_analytics_project_stages_id_seq
     CACHE 1;
 
 ALTER SEQUENCE analytics_cycle_analytics_project_stages_id_seq OWNED BY analytics_cycle_analytics_project_stages.id;
+
+CREATE TABLE analytics_cycle_analytics_project_value_streams (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_9b1970a898 CHECK ((char_length(name) <= 100))
+);
+
+CREATE SEQUENCE analytics_cycle_analytics_project_value_streams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE analytics_cycle_analytics_project_value_streams_id_seq OWNED BY analytics_cycle_analytics_project_value_streams.id;
 
 CREATE TABLE analytics_devops_adoption_segment_selections (
     id bigint NOT NULL,
@@ -19369,6 +19388,8 @@ ALTER TABLE ONLY analytics_cycle_analytics_group_value_streams ALTER COLUMN id S
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_stages ALTER COLUMN id SET DEFAULT nextval('analytics_cycle_analytics_project_stages_id_seq'::regclass);
 
+ALTER TABLE ONLY analytics_cycle_analytics_project_value_streams ALTER COLUMN id SET DEFAULT nextval('analytics_cycle_analytics_project_value_streams_id_seq'::regclass);
+
 ALTER TABLE ONLY analytics_devops_adoption_segment_selections ALTER COLUMN id SET DEFAULT nextval('analytics_devops_adoption_segment_selections_id_seq'::regclass);
 
 ALTER TABLE ONLY analytics_devops_adoption_segments ALTER COLUMN id SET DEFAULT nextval('analytics_devops_adoption_segments_id_seq'::regclass);
@@ -20448,6 +20469,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_group_value_streams
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_stages
     ADD CONSTRAINT analytics_cycle_analytics_project_stages_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY analytics_cycle_analytics_project_value_streams
+    ADD CONSTRAINT analytics_cycle_analytics_project_value_streams_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY analytics_devops_adoption_segment_selections
     ADD CONSTRAINT analytics_devops_adoption_segment_selections_pkey PRIMARY KEY (id);
@@ -22261,6 +22285,10 @@ CREATE UNIQUE INDEX index_analytics_ca_project_stages_on_project_id_and_name ON 
 CREATE INDEX index_analytics_ca_project_stages_on_relative_position ON analytics_cycle_analytics_project_stages USING btree (relative_position);
 
 CREATE INDEX index_analytics_ca_project_stages_on_start_event_label_id ON analytics_cycle_analytics_project_stages USING btree (start_event_label_id);
+
+CREATE INDEX index_analytics_ca_project_stages_on_value_stream_id ON analytics_cycle_analytics_project_stages USING btree (project_value_stream_id);
+
+CREATE UNIQUE INDEX index_analytics_ca_project_value_streams_on_project_id_and_name ON analytics_cycle_analytics_project_value_streams USING btree (project_id, name);
 
 CREATE INDEX index_analytics_cycle_analytics_group_stages_custom_only ON analytics_cycle_analytics_group_stages USING btree (id) WHERE (custom = true);
 
@@ -26519,6 +26547,9 @@ ALTER TABLE ONLY namespace_admin_notes
 ALTER TABLE ONLY web_hook_logs_archived
     ADD CONSTRAINT fk_rails_666826e111 FOREIGN KEY (web_hook_id) REFERENCES web_hooks(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY analytics_cycle_analytics_project_value_streams
+    ADD CONSTRAINT fk_rails_669f4ba293 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY jira_imports
     ADD CONSTRAINT fk_rails_675d38c03b FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE SET NULL;
 
@@ -26620,6 +26651,9 @@ ALTER TABLE ONLY ci_subscriptions_projects
 
 ALTER TABLE ONLY terraform_states
     ADD CONSTRAINT fk_rails_78f54ca485 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY analytics_cycle_analytics_project_stages
+    ADD CONSTRAINT fk_rails_796a7dbc9c FOREIGN KEY (project_value_stream_id) REFERENCES analytics_cycle_analytics_project_value_streams(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY software_license_policies
     ADD CONSTRAINT fk_rails_7a7a2a92de FOREIGN KEY (software_license_id) REFERENCES software_licenses(id) ON DELETE CASCADE;

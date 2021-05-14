@@ -196,6 +196,65 @@ NOTE:
 The maximum import file size can be set by the Administrator, default is `0` (unlimited)..
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin UI](../user/admin_area/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8.
 
+## Import a file from a remote object storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
+
+This endpoint is behind a feature flag that is disabled by default.
+
+To enable this endpoint:
+
+```ruby
+Feature.enable(:import_project_from_remote_file)
+```
+
+To disable this endpoint:
+
+```ruby
+Feature.disable(:import_project_from_remote_file)
+```
+
+```plaintext
+POST /projects/remote-import
+```
+
+| Attribute         | Type           | Required | Description                              |
+| ----------------- | -------------- | -------- | ---------------------------------------- |
+| `namespace`       | integer/string | no       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
+| `name`            | string         | no       | The name of the project to import. If not provided, defaults to the path of the project. |
+| `url`             | string         | yes      | URL for the file to import. |
+| `path`            | string         | yes      | Name and path for the new project. |
+| `overwrite`       | boolean        | no       | Whether to overwrite a project with the same path when importing. Defaults to `false`. |
+| `override_params` | Hash           | no       | Supports all fields defined in the [Project API](projects.md). |
+
+The passed override parameters take precedence over all values defined in the export file.
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/remote-import" \
+  --data '{"url":"https://remoteobject/file?token=123123","path":"remote-project"}'
+```
+
+```json
+{
+  "id": 1,
+  "description": null,
+  "name": "remote-project",
+  "name_with_namespace": "Administrator / remote-project",
+  "path": "remote-project",
+  "path_with_namespace": "root/remote-project",
+  "created_at": "2018-02-13T09:05:58.023Z",
+  "import_status": "scheduled",
+  "correlation_id": "mezklWso3Za",
+  "failed_relations": [],
+  "import_error": null
+}
+```
+
+The `ContentType` header must return a valid number. The maximum file size is 10 gigabytes.
+The `ContentLength` header must be `application/gzip`.
+
 ## Import status
 
 Get the status of an import.

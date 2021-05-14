@@ -3,6 +3,9 @@
   - if @user.blocked_pending_approval?
     %span.cred
       = s_('AdminUsers|(Pending approval)')
+  - elsif @user.banned?
+    %span.cred
+      = s_('AdminUsers|(Banned)')
   - elsif @user.blocked?
     %span.cred
       = s_('AdminUsers|(Blocked)')

@@ -267,6 +267,15 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
         get '/cycle_analytics', to: redirect('%{namespace_id}/%{project_id}/-/value_stream_analytics')
 
+        namespace :analytics do
+          resource :cycle_analytics, only: :show, path: 'value_stream_analytics'
+          scope module: :cycle_analytics, as: 'cycle_analytics', path: 'value_stream_analytics' do
+            resources :value_streams, only: [:index] do
+              resources :stages, only: [:index]
+            end
+          end
+        end
+
         concerns :clusterable
 
         namespace :serverless do

@@ -21,6 +21,8 @@ namespace :admin do
       get :keys
       put :block
       put :unblock
+      put :ban
+      put :unban
       put :deactivate
       put :activate
       put :unlock

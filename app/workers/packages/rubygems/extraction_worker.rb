@@ -19,7 +19,7 @@ module Packages
 
         ::Packages::Rubygems::ProcessGemService.new(package_file).execute
 
-      rescue ::Packages::Rubygems::ProcessGemService::ExtractionError => e
+      rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e, project_id: package_file.project_id)
         package_file.package.update_column(:status, :error)
       end

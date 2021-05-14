@@ -27,6 +27,7 @@ module Analytics
         scope :default_stages, -> { where(custom: false) }
         scope :ordered, -> { order(:relative_position, :id) }
         scope :for_list, -> { includes(:start_event_label, :end_event_label).ordered }
+        scope :by_value_stream, -> (value_stream) { where(value_stream_id: value_stream.id) }
       end
 
       def parent=(_)

@@ -103,5 +103,14 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker do
         it_behaves_like 'handling the metadata error'
       end
     end
+
+    context 'handles a processing an unaccounted for error' do
+      before do
+        expect(::Packages::Nuget::UpdatePackageFromMetadataService).to receive(:new)
+          .and_raise(Zip::Error)
+      end
+
+      it_behaves_like 'handling the metadata error', exception_class: Zip::Error
+    end
   end
 end

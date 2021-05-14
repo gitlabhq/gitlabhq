@@ -85,6 +85,7 @@ RSpec.describe 'Admin::Users' do
             expect(page).to have_link('2FA Disabled', href: admin_users_path(filter: 'two_factor_disabled'))
             expect(page).to have_link('External', href: admin_users_path(filter: 'external'))
             expect(page).to have_link('Blocked', href: admin_users_path(filter: 'blocked'))
+            expect(page).to have_link('Banned', href: admin_users_path(filter: 'banned'))
             expect(page).to have_link('Deactivated', href: admin_users_path(filter: 'deactivated'))
             expect(page).to have_link('Without projects', href: admin_users_path(filter: 'wop'))
           end

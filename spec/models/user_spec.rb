@@ -728,6 +728,7 @@ RSpec.describe User do
       let_it_be(:blocked_user) { create(:user, :blocked) }
       let_it_be(:ldap_blocked_user) { create(:omniauth_user, :ldap_blocked) }
       let_it_be(:blocked_pending_approval_user) { create(:user, :blocked_pending_approval) }
+      let_it_be(:banned_user) { create(:user, :banned) }
 
       describe '.blocked' do
         subject { described_class.blocked }
@@ -738,7 +739,7 @@ RSpec.describe User do
             ldap_blocked_user
           )
 
-          expect(subject).not_to include(active_user, blocked_pending_approval_user)
+          expect(subject).not_to include(active_user, blocked_pending_approval_user, banned_user)
         end
       end
 
@@ -747,6 +748,14 @@ RSpec.describe User do
 
         it 'returns only pending approval users' do
           expect(subject).to contain_exactly(blocked_pending_approval_user)
+        end
+      end
+
+      describe '.banned' do
+        subject { described_class.banned }
+
+        it 'returns only banned users' do
+          expect(subject).to contain_exactly(banned_user)
         end
       end
     end
@@ -1932,6 +1941,12 @@ RSpec.describe User do
       expect(described_class).to receive(:blocked).and_return([user])
 
       expect(described_class.filter_items('blocked')).to include user
+    end
+
+    it 'filters by banned' do
+      expect(described_class).to receive(:banned).and_return([user])
+
+      expect(described_class.filter_items('banned')).to include user
     end
 
     it 'filters by blocked pending approval' do

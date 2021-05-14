@@ -14,26 +14,30 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu do
     describe 'Releases' do
       let(:item_id) { :releases }
 
-      context 'when project repository is empty' do
-        it 'does not include releases menu item' do
-          allow(project).to receive(:empty_repo?).and_return(true)
+      specify { is_expected.to be_nil }
 
-          is_expected.to be_nil
+      context 'when feature flag :sidebar_refactor is disabled' do
+        before do
+          stub_feature_flags(sidebar_refactor: false)
         end
-      end
 
-      context 'when project repository is not empty' do
-        context 'when user can download code' do
-          it 'includes releases menu item' do
-            is_expected.to be_present
+        context 'when project repository is empty' do
+          it 'does not include releases menu item' do
+            allow(project).to receive(:empty_repo?).and_return(true)
+
+            is_expected.to be_nil
           end
         end
 
-        context 'when user cannot download code' do
-          let(:user) { nil }
+        context 'when project repository is not empty' do
+          context 'when user can download code' do
+            specify { is_expected.not_to be_nil }
+          end
 
-          it 'does not include releases menu item' do
-            is_expected.to be_nil
+          context 'when user cannot download code' do
+            let(:user) { nil }
+
+            specify { is_expected.to be_nil }
           end
         end
       end

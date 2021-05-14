@@ -32,6 +32,17 @@ RSpec.describe Groups::Settings::CiCdController do
         expect(response).to render_template(:show)
         expect(assigns(:group_runners)).to match_array([runner_group, runner_project_1, runner_project_2, runner_project_3])
       end
+
+      it 'paginates runners' do
+        stub_const("Groups::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE", 1)
+
+        create(:ci_runner)
+
+        get :show, params: { group_id: group }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:group_runners).count).to be(1)
+      end
     end
 
     context 'when user is not owner' do

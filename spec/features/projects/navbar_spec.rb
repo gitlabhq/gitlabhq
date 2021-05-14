@@ -91,8 +91,6 @@ RSpec.describe 'Project navbar' do
         _('Error Tracking'),
         _('Alerts'),
         _('Incidents'),
-        _('Environments'),
-        _('Feature Flags'),
         _('Product Analytics')
       ]
     end
@@ -102,7 +100,6 @@ RSpec.describe 'Project navbar' do
         nav_item: _('Project information'),
         nav_sub_items: [
           _('Activity'),
-          _('Releases'),
           _('Labels')
         ]
       }
@@ -129,6 +126,18 @@ RSpec.describe 'Project navbar' do
             _('Kubernetes clusters'),
             _('Serverless platform'),
             _('Terraform')
+          ]
+        }
+      )
+
+      insert_after_nav_item(
+        _('Security & Compliance'),
+        new_nav_item: {
+          nav_item: _('Deployments'),
+          nav_sub_items: [
+            _('Feature Flags'),
+            _('Environments'),
+            _('Releases')
           ]
         }
       )

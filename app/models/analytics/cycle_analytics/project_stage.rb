@@ -7,9 +7,12 @@ module Analytics
 
       validates :project, presence: true
       belongs_to :project
+      belongs_to :value_stream, class_name: 'Analytics::CycleAnalytics::ProjectValueStream', foreign_key: :project_value_stream_id
 
       alias_attribute :parent, :project
       alias_attribute :parent_id, :project_id
+
+      alias_attribute :value_stream_id, :project_value_stream_id
 
       delegate :group, to: :project
 

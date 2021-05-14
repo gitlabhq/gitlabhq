@@ -795,6 +795,10 @@ aren't in the message with ID `1 pipeline`.
 
 ## Adding a new language
 
+A new language should only be added as an option in User Preferences once at least 10% of the
+strings have been translated and approved. Even though a larger number of strings may have been
+translated, only the approved translations display in the GitLab UI.
+
 NOTE:
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221012) in GitLab 13.3:
 Languages with less than 2% of translations are not available in the UI.

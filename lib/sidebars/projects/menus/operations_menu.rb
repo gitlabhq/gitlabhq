@@ -196,7 +196,8 @@ module Sidebars
         end
 
         def environments_menu_item
-          unless can?(context.current_user, :read_environment, context.project)
+          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
+            !can?(context.current_user, :read_environment, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :environments)
           end
 
@@ -210,7 +211,8 @@ module Sidebars
         end
 
         def feature_flags_menu_item
-          unless can?(context.current_user, :read_feature_flag, context.project)
+          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
+            !can?(context.current_user, :read_feature_flag, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :feature_flags)
           end
 

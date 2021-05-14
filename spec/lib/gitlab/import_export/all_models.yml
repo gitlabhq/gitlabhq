@@ -352,6 +352,7 @@ project:
 - cluster_project
 - creator
 - cycle_analytics_stages
+- value_streams
 - group
 - namespace
 - management_clusters

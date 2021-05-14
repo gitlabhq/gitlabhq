@@ -28,6 +28,11 @@
       = link_to admin_users_path(filter: "blocked") do
         = s_('AdminUsers|Blocked')
         %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.blocked)
+    - if ban_feature_available?
+      = nav_link(html_options: { class: active_when(params[:filter] == 'banned') }) do
+        = link_to admin_users_path(filter: "banned") do
+          = s_('AdminUsers|Banned')
+          %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.banned)
     = nav_link(html_options: { class: "#{active_when(params[:filter] == 'blocked_pending_approval')} filter-blocked-pending-approval" }) do
       = link_to admin_users_path(filter: "blocked_pending_approval"), data: { qa_selector: 'pending_approval_tab' } do
         = s_('AdminUsers|Pending approval')

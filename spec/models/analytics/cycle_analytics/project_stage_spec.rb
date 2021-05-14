@@ -17,6 +17,7 @@ RSpec.describe Analytics::CycleAnalytics::ProjectStage do
   end
 
   it_behaves_like 'value stream analytics stage' do
+    let(:factory) { :cycle_analytics_project_stage }
     let(:parent) { build(:project) }
     let(:parent_name) { :project }
   end

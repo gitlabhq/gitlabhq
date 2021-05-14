@@ -218,8 +218,8 @@ danger-review:
   stage: test
   needs: []
   before_script:
-    - source ./scripts/utils.sh
-    - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --with danger"
+    - source scripts/utils.sh
+    - bundle_install_script "--with danger"
     - run_timed_command "retry yarn install --frozen-lockfile"
   script:
     - >

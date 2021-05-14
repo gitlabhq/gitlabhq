@@ -113,7 +113,8 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:lfs_file_locks) }
     it { is_expected.to have_many(:project_deploy_tokens) }
     it { is_expected.to have_many(:deploy_tokens).through(:project_deploy_tokens) }
-    it { is_expected.to have_many(:cycle_analytics_stages) }
+    it { is_expected.to have_many(:cycle_analytics_stages).inverse_of(:project) }
+    it { is_expected.to have_many(:value_streams).inverse_of(:project) }
     it { is_expected.to have_many(:external_pull_requests) }
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }

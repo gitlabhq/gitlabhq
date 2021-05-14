@@ -2,17 +2,9 @@
 
 export SETUP_DB=${SETUP_DB:-true}
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
-export BUNDLE_INSTALL_FLAGS=${BUNDLE_INSTALL_FLAGS:-"--without=production development --jobs=$(nproc) --path=vendor --retry=3 --quiet"}
 
 if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
-  bundle --version
-  bundle config set clean 'true'
-  run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS}"
-  run_timed_command "bundle check"
-  # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
-  # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).
-  # Uncomment the following line if multiple versions of PG are tested in the same pipeline.
-  run_timed_command "bundle pristine pg"
+  bundle_install_script
 fi
 
 cp config/gitlab.yml.example config/gitlab.yml

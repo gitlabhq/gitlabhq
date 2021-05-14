@@ -37,6 +37,20 @@ RSpec.describe Packages::Rubygems::ExtractionWorker, type: :worker do
       expect(package.reload).to be_error
     end
 
+    it 'handles processing an unaccounted for error', :aggregate_failures do
+      expect(::Packages::Rubygems::ProcessGemService).to receive(:new)
+        .and_raise(Zip::Error)
+
+      expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+        instance_of(Zip::Error),
+        project_id: package.project_id
+      )
+
+      subject
+
+      expect(package.reload).to be_error
+    end
+
     context 'returns when there is no package file' do
       let(:package_file_id) { 999999 }
 

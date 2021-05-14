@@ -84,9 +84,7 @@ module Sidebars
         end
 
         def releases_menu_item
-          if !can?(context.current_user, :read_release, context.project) || context.project.empty_repo?
-            return ::Sidebars::NilMenuItem.new(item_id: :releases)
-          end
+          return ::Sidebars::NilMenuItem.new(item_id: :releases) unless show_releases?
 
           ::Sidebars::MenuItem.new(
             title: _('Releases'),
@@ -95,6 +93,12 @@ module Sidebars
             active_routes: { controller: :releases },
             container_html_options: { class: 'shortcuts-project-releases' }
           )
+        end
+
+        def show_releases?
+          Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) &&
+            can?(context.current_user, :read_release, context.project) &&
+            !context.project.empty_repo?
         end
 
         def labels_menu_item

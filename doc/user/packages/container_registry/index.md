@@ -698,6 +698,13 @@ You can, however, remove the Container Registry for a project:
 
 The **Packages & Registries > Container Registry** entry is removed from the project's sidebar.
 
+## Manifest lists and garbage collection
+
+Manifest lists are commonly used for creating multi-architecture images. If you rely on manifest
+lists, you should tag all the individual manifests referenced by a list in their respective
+repositories, and not just the manifest list itself. This ensures that those manifests aren't
+garbage collected, as long as they have at least one tag pointing to them.
+
 ## Troubleshooting the GitLab Container Registry
 
 ### Docker connection error

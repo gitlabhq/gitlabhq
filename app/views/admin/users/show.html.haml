@@ -176,6 +176,20 @@
         - if @user.blocked_pending_approval?
           = render 'admin/users/approve_user', user: @user
           = render 'admin/users/reject_pending_user', user: @user
+        - elsif @user.banned?
+          .gl-card.border-info.gl-mb-5
+            .gl-card-header.gl-bg-blue-500.gl-text-white
+              = _('This user is banned')
+            .gl-card-body
+              %p= _('A banned user cannot:')
+              %ul
+                %li= _('Log in')
+                %li= _('Access Git repositories')
+              - link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path("user/admin_area/moderate_users", anchor: "ban-a-user") }
+              = s_('AdminUsers|Learn more about %{link_start}banned users.%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+              %p
+              %button.btn.gl-button.btn-info.js-confirm-modal-button{ data: user_unban_data(@user) }
+                = s_('AdminUsers|Unban user')
         - else
           .gl-card.border-info.gl-mb-5
             .gl-card-header.gl-bg-blue-500.gl-text-white
@@ -190,6 +204,7 @@
                 = s_('AdminUsers|Unblock user')
       - elsif !@user.internal?
         = render 'admin/users/block_user', user: @user
+        = render 'admin/users/ban_user', user: @user
 
       - if @user.access_locked?
         .card.border-info.gl-mb-5

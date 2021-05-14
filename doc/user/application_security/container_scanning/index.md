@@ -501,29 +501,38 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
 #### Automating container scanning vulnerability database updates with a pipeline
 
-For those using Clair, it can be worthwhile to set up a [scheduled pipeline](../../../ci/pipelines/schedules.md)
-to build a new version of the vulnerabilities database on a preset schedule. Automating
-this with a pipeline means you do not have to do it manually each time. You can use the following
-`.gitlab-yml.ci` as a template:
+We recommend that you set up a [scheduled pipeline](../../../ci/pipelines/schedules.md)
+to fetch the latest vulnerabilities database on a preset schedule. Because the Clair scanner is
+deprecated, the latest vulnerabilities are currently only available for the Trivy scanner.
+Automating this with a pipeline means you do not have to do it manually each time. You can use the
+following `.gitlab-yml.ci` example as a template.
 
 ```yaml
+variables:
+  # If using Clair, uncomment the following 2 lines and comment the Trivy lines below
+  # SOURCE_IMAGE: arminc/clair-db:latest
+  # TARGET_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH/clair-vulnerabilities-db
+
+  # If using Trivy, uncomment the following 3 lines and comment the Clair lines above
+  CS_MAJOR_VERSION: 4 # ensure that this value matches the one you use in your scanning jobs
+  SOURCE_IMAGE: registry.gitlab.com/gitlab-org/security-products/analyzers/container-scanning:$CS_MAJOR_VERSION
+  TARGET_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH/gitlab-container-scanning
+
 image: docker:stable
 
-stages:
-  - build
-
-build_latest_vulnerabilities:
-  stage: build
+update-vulnerabilities-db:
   services:
-    - docker:19.03.12-dind
+    - docker:19-dind
   script:
-    - docker pull arminc/clair-db:latest
-    - docker tag arminc/clair-db:latest $CI_REGISTRY/namespace/clair-vulnerabilities-db
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker push $CI_REGISTRY/namespace/clair-vulnerabilities-db
+    - docker pull $SOURCE_IMAGE
+    - docker tag $SOURCE_IMAGE $TARGET_IMAGE
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
+    - docker push $TARGET_IMAGE
 ```
 
-The above template works for a GitLab Docker registry running on a local installation, however, if you're using a non-GitLab Docker registry, you need to change the `$CI_REGISTRY` value and the `docker login` credentials to match the details of your local registry.
+The above template works for a GitLab Docker registry running on a local installation. However, if
+you're using a non-GitLab Docker registry, you must change the `$CI_REGISTRY` value and the
+`docker login` credentials to match your local registry's details.
 
 ## Running the standalone container scanning tool
 

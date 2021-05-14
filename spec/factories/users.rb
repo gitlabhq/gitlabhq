@@ -27,6 +27,10 @@ FactoryBot.define do
       after(:build) { |user, _| user.block_pending_approval! }
     end
 
+    trait :banned do
+      after(:build) { |user, _| user.ban! }
+    end
+
     trait :ldap_blocked do
       after(:build) { |user, _| user.ldap_block! }
     end
