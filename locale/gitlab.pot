@@ -6949,6 +6949,12 @@ msgstr ""
 msgid "ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster."
 msgstr ""
 
+msgid "ClusterIntegration|Allows GitLab to query a specifically configured in-cluster Elasticsearch for pod logs."
+msgstr ""
+
+msgid "ClusterIntegration|Allows GitLab to query a specifically configured in-cluster Prometheus for metrics."
+msgstr ""
+
 msgid "ClusterIntegration|Alternatively, "
 msgstr ""
 
@@ -6989,9 +6995,6 @@ msgid "ClusterIntegration|Authentication Error"
 msgstr ""
 
 msgid "ClusterIntegration|Base domain"
-msgstr ""
-
-msgid "ClusterIntegration|Before you enable this integration, follow the %{link_start}documented process%{link_end}."
 msgstr ""
 
 msgid "ClusterIntegration|Blocking mode"
@@ -7159,6 +7162,9 @@ msgstr ""
 msgid "ClusterIntegration|Enable Cloud Run for Anthos"
 msgstr ""
 
+msgid "ClusterIntegration|Enable Elastic Stack integration"
+msgstr ""
+
 msgid "ClusterIntegration|Enable Prometheus integration"
 msgstr ""
 
@@ -7306,7 +7312,7 @@ msgstr ""
 msgid "ClusterIntegration|Integration enabled"
 msgstr ""
 
-msgid "ClusterIntegration|Integrations enable you to integrate your cluster as part of your GitLab workflow."
+msgid "ClusterIntegration|Integrations allow you to use applications installed in your cluster as part of your GitLab workflow."
 msgstr ""
 
 msgid "ClusterIntegration|Issuer Email"
@@ -10591,6 +10597,9 @@ msgid "Delete %{name}"
 msgstr ""
 
 msgid "Delete Comment"
+msgstr ""
+
+msgid "Delete Key"
 msgstr ""
 
 msgid "Delete Value Stream"

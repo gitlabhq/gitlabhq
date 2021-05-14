@@ -10,7 +10,9 @@ GitLab provides several ways to integrate applications to your
 Kubernetes cluster.
 
 To enable cluster integrations, first add a Kubernetes cluster to a GitLab
-[project](../project/clusters/add_remove_clusters.md) or [group](../group/clusters/index.md#group-level-kubernetes-clusters).
+[project](../project/clusters/add_remove_clusters.md) or
+[group](../group/clusters/index.md#group-level-kubernetes-clusters) or
+[instance](../instance/clusters/index.md).
 
 ## Prometheus cluster integration
 
@@ -20,33 +22,33 @@ You can integrate your Kubernetes cluster with
 [Prometheus](https://prometheus.io/) for monitoring key metrics of your
 apps directly from the GitLab UI.
 
-[Alerts](../../operations/metrics/alerts.md) are not currently
-supported.
+[Alerts](../../operations/metrics/alerts.md) can be configured the same way as
+for [external Prometheus instances](../../operations/metrics/alerts.md#external-prometheus-instances).
 
-Once enabled, you will see metrics from services available in the
+Once enabled, you can see metrics from services available in the
 [metrics library](../project/integrations/prometheus_library/index.md).
 
-Prerequisites:
+### Prometheus Prerequisites
 
-To benefit from this integration, you must have Prometheus
-installed in your cluster with the following requirements:
+To use this integration:
 
-1. Prometheus must be installed inside the `gitlab-managed-apps` namespace.
+1. Prometheus must be installed in your cluster in the `gitlab-managed-apps` namespace.
 1. The `Service` resource for Prometheus must be named `prometheus-prometheus-server`.
 
-You can use the following commands to install Prometheus to meet the requirements for cluster integrations:
+You can manage your Prometheus however you like, but as an example, you can set
+it up using [Helm](https://helm.sh/) as follows:
 
 ```shell
-# Create the require Kubernetes namespace
+# Create the required Kubernetes namespace
 kubectl create ns gitlab-managed-apps
 
 # Download Helm chart values that is compatible with the requirements above.
-# You should substitute the tag that corresponds to the GitLab version in the url
+# You should substitute the tag that corresponds to the GitLab version in the URL
 # - https://gitlab.com/gitlab-org/gitlab/-/raw/<tag>/vendor/prometheus/values.yaml
 #
 wget https://gitlab.com/gitlab-org/gitlab/-/raw/v13.9.0-ee/vendor/prometheus/values.yaml
 
-# Add the Prometheus community helm repo
+# Add the Prometheus community Helm chart repository
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
 # Install Prometheus
@@ -64,6 +66,65 @@ To enable the Prometheus integration for your cluster:
       - For a [project-level cluster](../project/clusters/index.md), navigate to your project's
       **Operations > Kubernetes**.
       - For a [group-level cluster](../group/clusters/index.md), navigate to your group's
+      **Kubernetes** page.
+      - For an [instance-level cluster](../instance/clusters/index.md), navigate to your instance's
+      **Kubernetes** page.
+1. Select the **Integrations** tab.
+1. Check the **Enable Prometheus integration** checkbox.
+1. Click **Save changes**.
+1. Go to the **Health** tab to see your cluster's metrics.
+
+## Elastic Stack cluster integration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61077) in GitLab 13.12.
+
+You can integrate your cluster with [Elastic
+Stack](https://www.elastic.co/elastic-stack) to index and [query your pod
+logs](../project/clusters/kubernetes_pod_logs.md).
+
+### Elastic Stack Prerequisites
+
+To use this integration:
+
+1. Elasticsearch 7.x or must be installed in your cluster in the
+   `gitlab-managed-apps` namespace.
+1. The `Service` resource must be called `elastic-stack-elasticsearch-master`
+   and expose the Elasticsearch API on port `9200`.
+1. The logs are expected to be [Filebeat container logs](https://www.elastic.co/guide/en/beats/filebeat/7.x/filebeat-input-container.html)
+   following the [7.x log structure](https://www.elastic.co/guide/en/beats/filebeat/7.x/exported-fields-log.html)
+   and include [Kubernetes metadata](https://www.elastic.co/guide/en/beats/filebeat/7.x/add-kubernetes-metadata.html).
+
+You can manage your Elastic Stack however you like, but as an example, you can
+use [this Elastic Stack chart](https://gitlab.com/gitlab-org/charts/elastic-stack) to get up and
+running:
+
+```shell
+# Create the required Kubernetes namespace
+kubectl create namespace gitlab-managed-apps
+
+# Download Helm chart values that is compatible with the requirements above.
+# You should substitute the tag that corresponds to the GitLab version in the URL
+# - https://gitlab.com/gitlab-org/gitlab/-/raw/<tag>/vendor/elastic_stack/values.yaml
+#
+wget https://gitlab.com/gitlab-org/gitlab/-/raw/v13.9.0-ee/vendor/elastic_stack/values.yaml
+
+# Add the GitLab Helm chart repository
+helm repo add gitlab https://charts.gitlab.io
+
+# Install Elastic Stack
+helm install prometheus gitlab/elastic-stack -n gitlab-managed-apps --values values.yaml
+```
+
+### Enable Elastic Stack integration for your cluster
+
+To enable the Elastic Stack integration for your cluster:
+
+1. Go to the cluster's page:
+      - For a [project-level cluster](../project/clusters/index.md), navigate to your project's
+      **Operations > Kubernetes**.
+      - For a [group-level cluster](../group/clusters/index.md), navigate to your group's
+      **Kubernetes** page.
+      - For an [instance-level cluster](../instance/clusters/index.md), navigate to your instance's
       **Kubernetes** page.
 1. Select the **Integrations** tab.
 1. Check the **Enable Prometheus integration** checkbox.

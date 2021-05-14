@@ -1087,7 +1087,7 @@ POST /groups/:id/hooks
 | `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events |
 | `job_events`                 | boolean        | no       | Trigger hook on job events |
 | `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
-| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki events |
+| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
 | `releases_events`            | boolean        | no       | Trigger hook on release events |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
@@ -1116,7 +1116,7 @@ PUT /groups/:id/hooks/:hook_id
 | `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events |
 | `job_events`                 | boolean        | no       | Trigger hook on job events |
 | `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
-| `wiki_events`                | boolean        | no       | Trigger hook on wiki events |
+| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
 | `releases_events`            | boolean        | no       | Trigger hook on release events |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |

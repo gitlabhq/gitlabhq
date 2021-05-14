@@ -65,7 +65,7 @@ GitLab [Auto Build](../../../topics/autodevops/stages.md#auto-build)
 and [Container Registry](../../../user/packages/container_registry/index.md).
 
 1. Go to **ecs-demo** project on GitLab.
-1. Click **Setup up CI/CD**. It brings you to a [`.gitlab-ci.yml`](../../README.md#getting-started)
+1. Click **Setup up CI/CD**. It brings you to a `.gitlab-ci.yml`
    creation form.
 1. Copy and paste the following content into the empty `.gitlab-ci.yml`. This defines
    [a pipeline for continuous deployment to ECS](../index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs).

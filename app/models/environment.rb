@@ -406,7 +406,7 @@ class Environment < ApplicationRecord
   end
 
   def elastic_stack_available?
-    !!deployment_platform&.cluster&.application_elastic_stack_available?
+    !!deployment_platform&.cluster&.elastic_stack_available?
   end
 
   def rollout_status

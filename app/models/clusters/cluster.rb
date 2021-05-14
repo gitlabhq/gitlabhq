@@ -52,6 +52,7 @@ module Clusters
     has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', inverse_of: :cluster, autosave: true
 
     has_one :integration_prometheus, class_name: 'Clusters::Integrations::Prometheus', inverse_of: :cluster
+    has_one :integration_elastic_stack, class_name: 'Clusters::Integrations::ElasticStack', inverse_of: :cluster
 
     def self.has_one_cluster_application(name) # rubocop:disable Naming/PredicateName
       application = APPLICATIONS[name.to_s]
@@ -104,6 +105,7 @@ module Clusters
     delegate :available?, to: :application_ingress, prefix: true, allow_nil: true
     delegate :available?, to: :application_knative, prefix: true, allow_nil: true
     delegate :available?, to: :application_elastic_stack, prefix: true, allow_nil: true
+    delegate :available?, to: :integration_elastic_stack, prefix: true, allow_nil: true
     delegate :external_ip, to: :application_ingress, prefix: true, allow_nil: true
     delegate :external_hostname, to: :application_ingress, prefix: true, allow_nil: true
 
@@ -284,6 +286,10 @@ module Clusters
       integration_prometheus || build_integration_prometheus
     end
 
+    def find_or_build_integration_elastic_stack
+      integration_elastic_stack || build_integration_elastic_stack
+    end
+
     def provider
       if gcp?
         provider_gcp
@@ -316,6 +322,22 @@ module Clusters
 
     def kubeclient
       platform_kubernetes.kubeclient if kubernetes?
+    end
+
+    def elastic_stack_adapter
+      application_elastic_stack || integration_elastic_stack
+    end
+
+    def elasticsearch_client
+      elastic_stack_adapter&.elasticsearch_client
+    end
+
+    def elastic_stack_available?
+      if application_elastic_stack_available? || integration_elastic_stack_available?
+        true
+      else
+        false
+      end
     end
 
     def kubernetes_namespace_for(environment, deployable: environment.last_deployable)

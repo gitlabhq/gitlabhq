@@ -11719,6 +11719,15 @@ CREATE SEQUENCE clusters_id_seq
 
 ALTER SEQUENCE clusters_id_seq OWNED BY clusters.id;
 
+CREATE TABLE clusters_integration_elasticstack (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    cluster_id bigint NOT NULL,
+    enabled boolean DEFAULT false NOT NULL,
+    chart_version text,
+    CONSTRAINT check_f8d671ce04 CHECK ((char_length(chart_version) <= 10))
+);
+
 CREATE TABLE clusters_integration_prometheus (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -20796,6 +20805,9 @@ ALTER TABLE ONLY clusters_applications_prometheus
 ALTER TABLE ONLY clusters_applications_runners
     ADD CONSTRAINT clusters_applications_runners_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY clusters_integration_elasticstack
+    ADD CONSTRAINT clusters_integration_elasticstack_pkey PRIMARY KEY (cluster_id);
+
 ALTER TABLE ONLY clusters_integration_prometheus
     ADD CONSTRAINT clusters_integration_prometheus_pkey PRIMARY KEY (cluster_id);
 
@@ -27063,6 +27075,9 @@ ALTER TABLE ONLY boards_epic_board_positions
 
 ALTER TABLE ONLY vulnerability_finding_links
     ADD CONSTRAINT fk_rails_cbdfde27ce FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY clusters_integration_elasticstack
+    ADD CONSTRAINT fk_rails_cc5ba8f658 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues_self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_cc5d88bbb0 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

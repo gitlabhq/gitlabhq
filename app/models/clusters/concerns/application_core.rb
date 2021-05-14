@@ -6,6 +6,8 @@ module Clusters
       extend ActiveSupport::Concern
 
       included do
+        include ::Clusters::Concerns::KubernetesLogger
+
         belongs_to :cluster, class_name: 'Clusters::Cluster', foreign_key: :cluster_id
 
         validates :cluster, presence: true
@@ -78,24 +80,6 @@ module Clusters
         def post_uninstall
           # Override if your application needs any action after
           # being uninstalled by Helm
-        end
-
-        def logger
-          @logger ||= Gitlab::Kubernetes::Logger.build
-        end
-
-        def log_exception(error, event)
-          logger.error({
-            exception: error.class.name,
-            status_code: error.error_code,
-            cluster_id: cluster&.id,
-            application_id: id,
-            class_name: self.class.name,
-            event: event,
-            message: error.message
-          })
-
-          Gitlab::ErrorTracking.track_exception(error, cluster_id: cluster&.id, application_id: id)
         end
       end
     end

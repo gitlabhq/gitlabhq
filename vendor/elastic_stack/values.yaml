@@ -11,6 +11,14 @@ elasticsearch:
 
 filebeat:
   enabled: true
+  extraVolumes:
+    - name: varlog
+      hostPath:
+        path: /var/log
+  extraVolumeMounts:
+    - name: varlog
+      mountPath: /var/log
+      readOnly: true
   filebeatConfig:
     filebeat.yml: |
       output.file.enabled: false
@@ -22,6 +30,28 @@ filebeat:
         index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
       filebeat.inputs:
       - type: container
+        format: cri
+        paths:
+          - '/var/log/containers/*.log'
+        json.keys_under_root: true
+        json.ignore_decoding_error: true
+        processors:
+          - add_id:
+              target_field: tie_breaker_id
+          - add_cloud_metadata: ~
+          - add_kubernetes_metadata:
+              host: ${NODE_NAME}
+              matchers:
+              - logs_path:
+                  logs_path: "/var/log/containers/"
+          - decode_json_fields:
+              fields: ["message"]
+              when:
+                equals:
+                  kubernetes.container.namespace: "gitlab-managed-apps"
+                  kubernetes.container.name: "modsecurity-log"
+      - type: container
+        format: docker
         paths:
           - '/var/lib/docker/containers/*/*.log'
         json.keys_under_root: true

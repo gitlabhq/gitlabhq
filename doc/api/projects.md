@@ -2222,7 +2222,7 @@ PUT /projects/:id/hooks/:hook_id
 | `tag_push_events`            | boolean        | **{dotted-circle}** No | Trigger hook on tag push events. |
 | `token`                      | string         | **{dotted-circle}** No | Secret token to validate received payloads; this isn't returned in the response. |
 | `url`                        | string         | **{check-circle}** Yes | The hook URL. |
-| `wiki_events`                | boolean        | **{dotted-circle}** No | Trigger hook on wiki events. |
+| `wiki_page_events`           | boolean        | **{dotted-circle}** No | Trigger hook on wiki page events. |
 | `releases_events`            | boolean        | **{dotted-circle}** No | Trigger hook on release events. |
 
 ### Delete project hook

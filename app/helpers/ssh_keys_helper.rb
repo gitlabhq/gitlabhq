@@ -12,7 +12,10 @@ module SshKeysHelper
             message: _('This action cannot be undone, and will permanently delete the %{key} SSH key') % { key: key.title },
             okVariant: 'danger',
             okTitle: _('Delete')
-        }
+        },
+        toggle: 'tooltip',
+        placement: 'top',
+        container: 'body'
     }
   end
 end

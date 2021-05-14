@@ -834,10 +834,10 @@ GfmAutoComplete.Members = {
     const lowercaseQuery = query.toLowerCase();
     const { nameOrUsernameStartsWith, nameOrUsernameIncludes } = GfmAutoComplete.Members;
 
-    return sortBy(members, [
+    return sortBy(
+      members.filter((member) => nameOrUsernameIncludes(member, lowercaseQuery)),
       (member) => (nameOrUsernameStartsWith(member, lowercaseQuery) ? -1 : 0),
-      (member) => (nameOrUsernameIncludes(member, lowercaseQuery) ? -1 : 0),
-    ]);
+    );
   },
 };
 GfmAutoComplete.Labels = {

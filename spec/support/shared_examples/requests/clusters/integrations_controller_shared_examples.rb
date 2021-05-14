@@ -2,7 +2,7 @@
 
 RSpec.shared_examples '#create_or_update action' do
   let(:params) do
-    { integration: { application_type: Clusters::Applications::Prometheus.application_name, enabled: true } }
+    { integration: { application_type: 'prometheus', enabled: true } }
   end
 
   let(:path) { raise NotImplementedError }
