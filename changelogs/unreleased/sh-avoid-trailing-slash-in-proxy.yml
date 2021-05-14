@@ -1,5 +1,0 @@
----
-title: Omit trailing slash when proxying pre-authorized routes with no suffix
-merge_request: 61638
-author:
-type: fixed
