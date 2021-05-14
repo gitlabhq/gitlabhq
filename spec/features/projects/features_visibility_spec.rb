@@ -54,17 +54,30 @@ RSpec.describe 'Edit Project Settings' do
     end
 
     context 'When external issue tracker is enabled and issues disabled on project settings' do
-      it 'hides issues tab and show labels tab' do
+      before do
         project.issues_enabled = false
         project.save!
         allow_next_instance_of(Project) do |instance|
           allow(instance).to receive(:external_issue_tracker).and_return(JiraService.new)
         end
+      end
 
+      it 'hides issues tab' do
         visit project_path(project)
 
         expect(page).not_to have_selector('.shortcuts-issues')
-        expect(page).to have_selector('.shortcuts-labels')
+        expect(page).not_to have_selector('.shortcuts-labels')
+      end
+
+      context 'when feature flag :sidebar_refactor is disabled' do
+        it 'hides issues tab and show labels tab' do
+          stub_feature_flags(sidebar_refactor: false)
+
+          visit project_path(project)
+
+          expect(page).not_to have_selector('.shortcuts-issues')
+          expect(page).to have_selector('.shortcuts-labels')
+        end
       end
     end
 

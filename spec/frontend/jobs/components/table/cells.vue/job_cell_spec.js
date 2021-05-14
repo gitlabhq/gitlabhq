@@ -7,6 +7,7 @@ import { mockJobsInTable } from '../../../mock_data';
 const mockJob = mockJobsInTable[0];
 const mockJobCreatedByTag = mockJobsInTable[1];
 const mockJobLimitedAccess = mockJobsInTable[2];
+const mockStuckJob = mockJobsInTable[3];
 
 describe('Job Cell', () => {
   let wrapper;
@@ -17,6 +18,7 @@ describe('Job Cell', () => {
   const findJobSha = () => wrapper.findByTestId('job-sha');
   const findLabelIcon = () => wrapper.findByTestId('label-icon');
   const findForkIcon = () => wrapper.findByTestId('fork-icon');
+  const findStuckIcon = () => wrapper.findByTestId('stuck-icon');
   const findAllTagBadges = () => wrapper.findAllByTestId('job-tag-badge');
 
   const findBadgeById = (id) => wrapper.findByTestId(id);
@@ -118,6 +120,21 @@ describe('Job Cell', () => {
 
       expect(findBadgeById(testId).exists()).toBe(true);
       expect(findBadgeById(testId).text()).toBe(text);
+    });
+  });
+
+  describe('Job icons', () => {
+    it('stuck icon is not shown if job is not stuck', () => {
+      createComponent();
+
+      expect(findStuckIcon().exists()).toBe(false);
+    });
+
+    it('stuck icon is shown if job is stuck', () => {
+      createComponent(mockStuckJob);
+
+      expect(findStuckIcon().exists()).toBe(true);
+      expect(findStuckIcon().attributes('name')).toBe('warning');
     });
   });
 });

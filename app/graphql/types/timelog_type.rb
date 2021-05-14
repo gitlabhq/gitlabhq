@@ -43,5 +43,9 @@ module Types
     def issue
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Issue, object.issue_id).find
     end
+
+    def spent_at
+      object.spent_at || object.created_at
+    end
   end
 end

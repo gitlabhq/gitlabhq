@@ -256,7 +256,9 @@ RSpec.describe Tooling::Danger::ProjectHelper do
     subject { project_helper.all_ee_changes }
 
     it 'returns all changed files starting with ee/' do
-      expect(fake_helper).to receive(:all_changed_files).and_return(%w[fr/ee/beer.rb ee/wine.rb ee/lib/ido.rb ee.k])
+      changes = double
+      expect(project_helper).to receive(:changes).and_return(changes)
+      expect(changes).to receive(:files).and_return(%w[fr/ee/beer.rb ee/wine.rb ee/lib/ido.rb ee.k])
 
       is_expected.to match_array(%w[ee/wine.rb ee/lib/ido.rb])
     end

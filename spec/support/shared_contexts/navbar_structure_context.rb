@@ -73,7 +73,6 @@ RSpec.shared_context 'project navbar structure' do
         nav_sub_items: [
           _('List'),
           _('Boards'),
-          _('Labels'),
           _('Service Desk'),
           _('Milestones'),
           (_('Iterations') if Gitlab.ee?)

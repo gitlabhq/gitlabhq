@@ -367,16 +367,16 @@ function mountSubscriptionsComponent() {
 
 function mountTimeTrackingComponent() {
   const el = document.getElementById('issuable-time-tracker');
+  const { id, issuableType } = getSidebarOptions();
 
   if (!el) return;
 
   // eslint-disable-next-line no-new
   new Vue({
     el,
-    components: {
-      SidebarTimeTracking,
-    },
-    render: (createElement) => createElement('sidebar-time-tracking', {}),
+    apolloProvider,
+    provide: { issuableId: id, issuableType },
+    render: (createElement) => createElement(SidebarTimeTracking, {}),
   });
 }
 

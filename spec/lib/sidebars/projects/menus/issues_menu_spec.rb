@@ -65,4 +65,22 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu do
       end
     end
   end
+
+  describe 'Menu Items' do
+    subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
+
+    describe 'Labels' do
+      let(:item_id) { :labels }
+
+      specify { is_expected.to be_nil }
+
+      context 'when feature flag :sidebar_refactor is disabled' do
+        before do
+          stub_feature_flags(sidebar_refactor: false)
+        end
+
+        specify { is_expected.not_to be_nil }
+      end
+    end
+  end
 end

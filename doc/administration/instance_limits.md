@@ -112,6 +112,49 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 - GitLab.com: Free members may invite 20 members per day.
 - Self-managed: Invites are not limited.
 
+### Webhook calls
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61151) in GitLab 13.12.
+> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-rate-limiting-for-webhooks). **(FREE SELF)**
+
+Limit the number of times any given webhook can be called per minute.
+This only applies to project and group webhooks.
+
+Calls over the rate limit are logged into `auth.log`.
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.actual_limits.update!(web_hook_calls: 10)
+```
+
+Set the limit to `0` to disable it.
+
+- **Default rate limit**: Disabled.
+
+#### Enable or disable rate limiting for webhooks **(FREE SELF)**
+
+Rate limiting for webhooks is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:web_hooks_rate_limit)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:web_hooks_rate_limit)
+```
+
 ## Gitaly concurrency limit
 
 Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly's configuration file.

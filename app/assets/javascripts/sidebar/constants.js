@@ -21,8 +21,10 @@ import updateIssueSubscriptionMutation from '~/sidebar/queries/update_issue_subs
 import updateMergeRequestSubscriptionMutation from '~/sidebar/queries/update_merge_request_subscription.mutation.graphql';
 import getIssueAssignees from '~/vue_shared/components/sidebar/queries/get_issue_assignees.query.graphql';
 import issueParticipantsQuery from '~/vue_shared/components/sidebar/queries/get_issue_participants.query.graphql';
+import getIssueTimelogsQuery from '~/vue_shared/components/sidebar/queries/get_issue_timelogs.query.graphql';
 import getMergeRequestAssignees from '~/vue_shared/components/sidebar/queries/get_mr_assignees.query.graphql';
 import getMergeRequestParticipants from '~/vue_shared/components/sidebar/queries/get_mr_participants.query.graphql';
+import getMrTimelogsQuery from '~/vue_shared/components/sidebar/queries/get_mr_timelogs.query.graphql';
 import updateIssueAssigneesMutation from '~/vue_shared/components/sidebar/queries/update_issue_assignees.mutation.graphql';
 import updateMergeRequestAssigneesMutation from '~/vue_shared/components/sidebar/queries/update_mr_assignees.mutation.graphql';
 
@@ -120,5 +122,14 @@ export const startDateQueries = {
   [IssuableType.Epic]: {
     query: epicStartDateQuery,
     mutation: updateEpicStartDateMutation,
+  },
+};
+
+export const timelogQueries = {
+  [IssuableType.Issue]: {
+    query: getIssueTimelogsQuery,
+  },
+  [IssuableType.MergeRequest]: {
+    query: getMrTimelogsQuery,
   },
 };

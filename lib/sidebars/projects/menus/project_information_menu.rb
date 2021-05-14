@@ -9,6 +9,7 @@ module Sidebars
           add_item(details_menu_item)
           add_item(activity_menu_item)
           add_item(releases_menu_item)
+          add_item(labels_menu_item)
 
           true
         end
@@ -93,6 +94,19 @@ module Sidebars
             item_id: :releases,
             active_routes: { controller: :releases },
             container_html_options: { class: 'shortcuts-project-releases' }
+          )
+        end
+
+        def labels_menu_item
+          if Feature.disabled?(:sidebar_refactor, context.current_user)
+            return ::Sidebars::NilMenuItem.new(item_id: :labels)
+          end
+
+          ::Sidebars::MenuItem.new(
+            title: _('Labels'),
+            link: project_labels_path(context.project),
+            active_routes: { controller: :labels },
+            item_id: :labels
           )
         end
       end

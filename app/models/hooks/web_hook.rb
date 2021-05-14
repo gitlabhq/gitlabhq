@@ -75,6 +75,11 @@ class WebHook < ApplicationRecord
     update!(recent_failures: 0, disabled_until: nil, backoff_count: 0)
   end
 
+  # Overridden in ProjectHook and GroupHook, other webhooks are not rate-limited.
+  def rate_limit
+    nil
+  end
+
   private
 
   def web_hooks_disable_failed?

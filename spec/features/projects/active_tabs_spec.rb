@@ -69,20 +69,37 @@ RSpec.describe 'Project active tab' do
   end
 
   context 'on project Issues' do
+    let(:feature_flag_value) { true }
+
     before do
+      stub_feature_flags(sidebar_refactor: feature_flag_value)
+
       visit project_issues_path(project)
     end
 
     it_behaves_like 'page has active tab', 'Issues'
 
-    %w(Milestones Labels).each do |sub_menu|
-      context "on project Issues/#{sub_menu}" do
-        before do
-          click_tab(sub_menu)
-        end
+    context "on project Issues/Milestones" do
+      before do
+        click_tab('Milestones')
+      end
 
-        it_behaves_like 'page has active tab', 'Issues'
-        it_behaves_like 'page has active sub tab', sub_menu
+      it_behaves_like 'page has active tab', 'Issues'
+      it_behaves_like 'page has active sub tab', 'Milestones'
+    end
+
+    context 'when feature flag is disabled' do
+      let(:feature_flag_value) { false }
+
+      %w(Milestones Labels).each do |sub_menu|
+        context "on project Issues/#{sub_menu}" do
+          before do
+            click_tab(sub_menu)
+          end
+
+          it_behaves_like 'page has active tab', 'Issues'
+          it_behaves_like 'page has active sub tab', sub_menu
+        end
       end
     end
   end

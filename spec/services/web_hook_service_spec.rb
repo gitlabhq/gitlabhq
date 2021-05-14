@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe WebHookService do
   include StubRequests
 
-  let(:project) { create(:project) }
-  let(:project_hook) { create(:project_hook) }
+  let_it_be(:project) { create(:project) }
+  let_it_be_with_reload(:project_hook) { create(:project_hook, project: project) }
+
   let(:headers) do
     {
       'Content-Type' => 'application/json',
@@ -60,12 +61,8 @@ RSpec.describe WebHookService do
   end
 
   describe '#execute' do
-    before do
-      project.hooks << [project_hook]
-    end
-
     context 'when token is defined' do
-      let(:project_hook) { create(:project_hook, :token) }
+      let_it_be(:project_hook) { create(:project_hook, :token) }
 
       it 'POSTs to the webhook URL' do
         stub_full_request(project_hook.url, method: :post)
@@ -89,8 +86,8 @@ RSpec.describe WebHookService do
     end
 
     context 'when auth credentials are present' do
-      let(:url) {'https://example.org'}
-      let(:project_hook) { create(:project_hook, url: 'https://demo:demo@example.org/') }
+      let_it_be(:url) {'https://example.org'}
+      let_it_be(:project_hook) { create(:project_hook, url: 'https://demo:demo@example.org/') }
 
       it 'uses the credentials' do
         stub_full_request(url, method: :post)
@@ -104,8 +101,8 @@ RSpec.describe WebHookService do
     end
 
     context 'when auth credentials are partial present' do
-      let(:url) {'https://example.org'}
-      let(:project_hook) { create(:project_hook, url: 'https://demo@example.org/') }
+      let_it_be(:url) {'https://example.org'}
+      let_it_be(:project_hook) { create(:project_hook, url: 'https://demo@example.org/') }
 
       it 'uses the credentials anyways' do
         stub_full_request(url, method: :post)
@@ -147,7 +144,7 @@ RSpec.describe WebHookService do
     end
 
     context 'when url is not encoded' do
-      let(:project_hook) { create(:project_hook, url: 'http://server.com/my path/') }
+      let_it_be(:project_hook) { create(:project_hook, url: 'http://server.com/my path/') }
 
       it 'handles exceptions' do
         expect(service_instance.execute).to eq(status: :error, message: 'bad URI(is not URI?): "http://server.com/my path/"')
@@ -340,12 +337,98 @@ RSpec.describe WebHookService do
   end
 
   describe '#async_execute' do
-    let(:system_hook) { create(:system_hook) }
+    def expect_to_perform_worker(hook)
+      expect(WebHookWorker).to receive(:perform_async).with(hook.id, data, 'push_hooks')
+    end
 
-    it 'enqueue WebHookWorker' do
-      expect(WebHookWorker).to receive(:perform_async).with(project_hook.id, data, 'push_hooks')
+    def expect_to_rate_limit(hook, threshold:, throttled: false)
+      expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+        .with(:web_hook_calls, scope: [hook], threshold: threshold)
+        .and_return(throttled)
+    end
 
-      described_class.new(project_hook, data, 'push_hooks').async_execute
+    context 'when rate limiting is not configured' do
+      it 'queues a worker without tracking the call' do
+        expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+        expect_to_perform_worker(project_hook)
+
+        service_instance.async_execute
+      end
+    end
+
+    context 'when rate limiting is configured' do
+      let_it_be(:threshold) { 3 }
+      let_it_be(:plan_limits) { create(:plan_limits, :default_plan, web_hook_calls: threshold) }
+
+      it 'queues a worker and tracks the call' do
+        expect_to_rate_limit(project_hook, threshold: threshold)
+        expect_to_perform_worker(project_hook)
+
+        service_instance.async_execute
+      end
+
+      context 'when the hook is throttled (via mock)' do
+        before do
+          expect_to_rate_limit(project_hook, threshold: threshold, throttled: true)
+        end
+
+        it 'does not queue a worker and logs an error' do
+          expect(WebHookWorker).not_to receive(:perform_async)
+
+          payload = {
+            message: 'Webhook rate limit exceeded',
+            hook_id: project_hook.id,
+            hook_type: 'ProjectHook',
+            hook_name: 'push_hooks'
+          }
+
+          expect(Gitlab::AuthLogger).to receive(:error).with(payload)
+          expect(Gitlab::AppLogger).to receive(:error).with(payload)
+
+          service_instance.async_execute
+        end
+      end
+
+      context 'when the hook is throttled (via Redis)', :clean_gitlab_redis_cache do
+        before do
+          # Set a high interval to avoid intermittent failures in CI
+          allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits).and_return(
+            web_hook_calls: { interval: 1.day }
+          )
+
+          expect_to_perform_worker(project_hook).exactly(threshold).times
+
+          threshold.times { service_instance.async_execute }
+        end
+
+        it 'stops queueing workers and logs errors' do
+          expect(Gitlab::AuthLogger).to receive(:error).twice
+          expect(Gitlab::AppLogger).to receive(:error).twice
+
+          2.times { service_instance.async_execute }
+        end
+
+        it 'still queues workers for other hooks' do
+          other_hook = create(:project_hook)
+
+          expect_to_perform_worker(other_hook)
+
+          described_class.new(other_hook, data, :push_hooks).async_execute
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(web_hooks_rate_limit: false)
+        end
+
+        it 'queues a worker without tracking the call' do
+          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+          expect_to_perform_worker(project_hook)
+
+          service_instance.async_execute
+        end
+      end
     end
   end
 end

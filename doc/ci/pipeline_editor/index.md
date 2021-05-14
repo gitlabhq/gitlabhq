@@ -15,6 +15,7 @@ the `.gitlab-ci.yml` file in the root of your repository. To access the editor, 
 
 From the pipeline editor page you can:
 
+- Select the branch to work from. [Introduced in GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/326189), disabled by default.
 - [Validate](#validate-ci-configuration) your configuration syntax while editing the file.
 - Do a deeper [lint](#lint-ci-configuration) of your configuration, that verifies it with any configuration
   added with the [`include`](../yaml/README.md#include) keyword.

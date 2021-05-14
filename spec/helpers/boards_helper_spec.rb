@@ -36,7 +36,7 @@ RSpec.describe BoardsHelper do
   end
 
   describe '#board_base_url' do
-    context 'when project board' do
+    context 'when group board' do
       it 'generates the correct url' do
         assign(:board, group_board)
         assign(:group, base_group)
@@ -51,6 +51,43 @@ RSpec.describe BoardsHelper do
         assign(:project, project)
 
         expect(helper.board_base_url).to eq "/#{project.full_path}/-/boards"
+      end
+    end
+  end
+
+  describe '#current_board_namespace' do
+    context 'when group board' do
+      it 'returns the correct namespace' do
+        assign(:board, group_board)
+        assign(:group, base_group)
+
+        expect(helper.current_board_namespace).to be(base_group)
+      end
+    end
+
+    context 'project under group' do
+      context 'when project board' do
+        it 'returns the correct namespace' do
+          assign(:project, project)
+          assign(:board, project_board)
+
+          expect(helper.current_board_namespace).to be(project.parent)
+        end
+      end
+    end
+
+    context 'project under user namespace' do
+      let_it_be(:project_under_user) { create(:project, namespace: user.namespace) }
+
+      context 'when project board' do
+        let_it_be(:project_board) { create(:board, project: project_under_user) }
+
+        it 'returns the correct namespace' do
+          assign(:project, project_under_user)
+          assign(:board, project_board)
+
+          expect(helper.current_board_namespace).to be(user.namespace)
+        end
       end
     end
   end

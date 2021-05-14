@@ -672,11 +672,11 @@ $system-note-svg-size: 16px;
   align-items: center;
   margin-left: 10px;
   color: $gray-400;
+  margin-top: -4px;
 
   @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     float: none;
     margin-left: 0;
-    transform: translateY(-4px);
   }
 }
 

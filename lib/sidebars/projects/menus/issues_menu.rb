@@ -98,6 +98,10 @@ module Sidebars
         end
 
         def labels_menu_item
+          if Feature.enabled?(:sidebar_refactor, context.current_user)
+            return ::Sidebars::NilMenuItem.new(item_id: :labels)
+          end
+
           ::Sidebars::MenuItem.new(
             title: _('Labels'),
             link: project_labels_path(context.project),

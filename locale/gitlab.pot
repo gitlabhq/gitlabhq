@@ -18761,6 +18761,9 @@ msgstr ""
 msgid "Jobs|Create CI/CD configuration file"
 msgstr ""
 
+msgid "Jobs|Job is stuck. Check runners."
+msgstr ""
+
 msgid "Jobs|Jobs are the building blocks of a GitLab CI/CD pipeline. Each job has a specific task, like testing code. To set up jobs in a CI/CD pipeline, add a CI/CD configuration file to your project."
 msgstr ""
 
@@ -30676,6 +30679,9 @@ msgstr ""
 msgid "Speed up your pipelines with Needs relationships"
 msgstr ""
 
+msgid "Spent At"
+msgstr ""
+
 msgid "Squash commit message"
 msgstr ""
 
@@ -33574,6 +33580,9 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
+msgid "Time Spent"
+msgstr ""
+
 msgid "Time based: Yes"
 msgstr ""
 
@@ -33623,6 +33632,9 @@ msgid "Time to subtract exceeds the total time spent"
 msgstr ""
 
 msgid "Time tracking"
+msgstr ""
+
+msgid "Time tracking report"
 msgstr ""
 
 msgid "Time until first merge request"

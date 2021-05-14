@@ -33,7 +33,8 @@ class Deployment < ApplicationRecord
 
   scope :for_environment, -> (environment) { where(environment_id: environment) }
   scope :for_environment_name, -> (project, name) do
-    where(environment_id: Environment.select(:id).where(project: project, name: name))
+    where('deployments.environment_id = (?)',
+      Environment.select(:id).where(project: project, name: name).limit(1))
   end
 
   scope :for_status, -> (status) { where(status: status) }

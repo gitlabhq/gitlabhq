@@ -40,12 +40,23 @@ export default class TaskList {
       taskListField.value = taskListField.dataset.value;
     });
 
-    $(this.taskListContainerSelector).taskList('enable');
-    $(document).on('tasklist:changed', this.taskListContainerSelector, this.updateHandler);
+    this.enable();
   }
 
   getTaskListTarget(e) {
     return e && e.currentTarget ? $(e.currentTarget) : $(this.taskListContainerSelector);
+  }
+
+  // Disable any task items that don't have a data-sourcepos attribute, on the
+  // assumption that if it doesn't then it wasn't generated from our markdown parser.
+  // This covers the case of markdown not being able to handle task lists inside
+  // markdown tables. It also includes hand coded HTML lists.
+  disableNonMarkdownTaskListItems(e) {
+    this.getTaskListTarget(e)
+      .find('.task-list-item')
+      .not('[data-sourcepos]')
+      .find('.task-list-item-checkbox')
+      .prop('disabled', true);
   }
 
   disableTaskListItems(e) {
@@ -54,6 +65,12 @@ export default class TaskList {
 
   enableTaskListItems(e) {
     this.getTaskListTarget(e).taskList('enable');
+    this.disableNonMarkdownTaskListItems(e);
+  }
+
+  enable() {
+    this.enableTaskListItems();
+    $(document).on('tasklist:changed', this.taskListContainerSelector, this.updateHandler);
   }
 
   disable() {

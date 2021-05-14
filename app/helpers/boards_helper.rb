@@ -89,6 +89,10 @@ module BoardsHelper
     @current_board_parent ||= @group || @project
   end
 
+  def current_board_namespace
+    @current_board_namespace = board.group_board? ? @group : @project.namespace
+  end
+
   def can_update?
     can?(current_user, :admin_issue, board)
   end

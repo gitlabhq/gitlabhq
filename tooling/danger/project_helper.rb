@@ -168,7 +168,7 @@ module Tooling
       end
 
       def all_ee_changes
-        helper.all_changed_files.grep(%r{\Aee/})
+        changes.files.grep(%r{\Aee/})
       end
 
       def project_name

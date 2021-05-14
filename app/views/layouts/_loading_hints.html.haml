@@ -1,10 +1,11 @@
-- if ActionController::Base.asset_host
-  %link{ rel: 'dns-prefetch', href: ActionController::Base.asset_host }
-  %link{ rel: 'preconnect', href: ActionController::Base.asset_host, crossorigin: '' }
-- if user_application_theme == 'gl-dark'
-  %link{ { rel: 'preload', href: stylesheet_url('application_dark'), as: 'style' }, ActionController::Base.asset_host ? { crossorigin: 'anonymous' } : {} }
-- else
-  %link{ { rel: 'preload', href: stylesheet_url('application'), as: 'style' }, ActionController::Base.asset_host ? { crossorigin: 'anonymous' } : {} }
-%link{ { rel: 'preload', href: stylesheet_url("highlight/themes/#{user_color_scheme}"), as: 'style' }, ActionController::Base.asset_host ? { crossorigin: 'anonymous' } : {} }
-- if Gitlab::CurrentSettings.snowplow_enabled? && Gitlab::CurrentSettings.snowplow_collector_hostname
-  %link{ rel: 'preconnect', href: Gitlab::CurrentSettings.snowplow_collector_hostname, crossorigin: '' }
+= cache_if(Feature.enabled?(:cached_loading_hints, current_user), [ActionController::Base.asset_host, user_application_theme, user_color_scheme], expires_in: 1.minute) do
+  - if ActionController::Base.asset_host
+    %link{ rel: 'dns-prefetch', href: ActionController::Base.asset_host }
+    %link{ rel: 'preconnect', href: ActionController::Base.asset_host, crossorigin: '' }
+  - if user_application_theme == 'gl-dark'
+    %link{ { rel: 'preload', href: stylesheet_url('application_dark'), as: 'style' }, ActionController::Base.asset_host ? { crossorigin: 'anonymous' } : {} }
+  - else
+    %link{ { rel: 'preload', href: stylesheet_url('application'), as: 'style' }, ActionController::Base.asset_host ? { crossorigin: 'anonymous' } : {} }
+  %link{ { rel: 'preload', href: stylesheet_url("highlight/themes/#{user_color_scheme}"), as: 'style' }, ActionController::Base.asset_host ? { crossorigin: 'anonymous' } : {} }
+  - if Gitlab::CurrentSettings.snowplow_enabled? && Gitlab::CurrentSettings.snowplow_collector_hostname
+    %link{ rel: 'preconnect', href: Gitlab::CurrentSettings.snowplow_collector_hostname, crossorigin: '' }

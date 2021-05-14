@@ -59,6 +59,7 @@ query getJobs($fullPath: ID!, $statuses: [CiJobStatus!]) {
         playable
         cancelable
         active
+        stuck
         userPermissions {
           readBuild
         }

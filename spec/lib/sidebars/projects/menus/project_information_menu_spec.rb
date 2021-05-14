@@ -8,30 +8,48 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu do
   let(:user) { project.owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 
-  describe 'Releases' do
-    subject { described_class.new(context).renderable_items.index { |e| e.item_id == :releases } }
+  describe 'Menu Items' do
+    subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
-    context 'when project repository is empty' do
-      it 'does not include releases menu item' do
-        allow(project).to receive(:empty_repo?).and_return(true)
+    describe 'Releases' do
+      let(:item_id) { :releases }
 
-        is_expected.to be_nil
+      context 'when project repository is empty' do
+        it 'does not include releases menu item' do
+          allow(project).to receive(:empty_repo?).and_return(true)
+
+          is_expected.to be_nil
+        end
+      end
+
+      context 'when project repository is not empty' do
+        context 'when user can download code' do
+          it 'includes releases menu item' do
+            is_expected.to be_present
+          end
+        end
+
+        context 'when user cannot download code' do
+          let(:user) { nil }
+
+          it 'does not include releases menu item' do
+            is_expected.to be_nil
+          end
+        end
       end
     end
 
-    context 'when project repository is not empty' do
-      context 'when user can download code' do
-        it 'includes releases menu item' do
-          is_expected.to be_present
-        end
-      end
+    describe 'Labels' do
+      let(:item_id) { :labels }
 
-      context 'when user cannot download code' do
-        let(:user) { nil }
+      specify { is_expected.not_to be_nil }
 
-        it 'does not include releases menu item' do
-          is_expected.to be_nil
+      context 'when feature flag :sidebar_refactor is disabled' do
+        before do
+          stub_feature_flags(sidebar_refactor: false)
         end
+
+        specify { is_expected.to be_nil }
       end
     end
   end
