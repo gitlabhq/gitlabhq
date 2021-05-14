@@ -51,6 +51,7 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.helm_package_regex }, if: :helm?
   validates :name, format: { with: Gitlab::Regex.npm_package_name_regex }, if: :npm?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
+  validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
   validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
   validates :name, inclusion: { in: %w[incoming] }, if: :debian_incoming?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
@@ -59,7 +60,7 @@ class Packages::Package < ApplicationRecord
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
   validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :golang?
   validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :helm?
-  validates :version, format: { with: Gitlab::Regex.semver_regex }, if: -> { composer_tag_version? || npm? }
+  validates :version, format: { with: Gitlab::Regex.semver_regex }, if: -> { composer_tag_version? || npm? || terraform_module? }
 
   validates :version,
     presence: true,
@@ -73,7 +74,7 @@ class Packages::Package < ApplicationRecord
 
   enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5,
                        composer: 6, generic: 7, golang: 8, debian: 9,
-                       rubygems: 10, helm: 11 }
+                       rubygems: 10, helm: 11, terraform_module: 12 }
 
   enum status: { default: 0, hidden: 1, processing: 2, error: 3 }
 
@@ -85,6 +86,7 @@ class Packages::Package < ApplicationRecord
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
+  scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }
   scope :with_status, ->(status) { where(status: status) }
   scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
   scope :installable, -> { with_status(INSTALLABLE_STATUSES) }

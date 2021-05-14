@@ -47,3 +47,6 @@
 - i_package_tag_delete_package
 - i_package_tag_pull_package
 - i_package_tag_push_package
+- i_package_terraform_module_delete_package
+- i_package_terraform_module_pull_package
+- i_package_terraform_module_push_package

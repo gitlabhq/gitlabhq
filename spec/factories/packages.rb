@@ -129,6 +129,25 @@ FactoryBot.define do
       end
     end
 
+    factory :terraform_module_package do
+      sequence(:name) { |n| "module-#{n}/system" }
+      version { '1.0.0' }
+      package_type { :terraform_module }
+
+      after :create do |package|
+        create :package_file, :terraform_module, package: package
+      end
+
+      trait :with_build do
+        after :create do |package|
+          user = package.project.creator
+          pipeline = create(:ci_pipeline, user: user)
+          create(:ci_build, user: user, pipeline: pipeline)
+          create :package_build_info, package: package, pipeline: pipeline
+        end
+      end
+    end
+
     factory :nuget_package do
       sequence(:name) { |n| "NugetPackage#{n}"}
       sequence(:version) { |n| "1.0.#{n}" }

@@ -298,6 +298,7 @@ The value of the variable must:
   - Characters from the Base64 alphabet (RFC4648).
   - The `@` and `:` characters ([In GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63043) and later).
   - The `.` character ([In GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29022) and later).
+  - The `~` character ([In GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61517) and later).
 - Not match the name of an existing predefined or custom CI/CD variable.
 
 ### Protect a CI/CD variable

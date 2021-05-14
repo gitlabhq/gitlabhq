@@ -17103,10 +17103,10 @@ msgstr ""
 msgid "InProductMarketing|That's all it takes to get going with GitLab, but if you're new to working with Git, check out our %{basics_link} for helpful tips and tricks for getting started."
 msgstr ""
 
-msgid "InProductMarketing|This is email %{series} of 3 in the %{track} series."
+msgid "InProductMarketing|This is email %{current_series} of %{total_series} in the %{track} series."
 msgstr ""
 
-msgid "InProductMarketing|This is email %{series} of 3 in the %{track} series. To disable notification emails sent by your local GitLab instance, either contact your administrator or %{unsubscribe_link}."
+msgid "InProductMarketing|This is email %{current_series} of %{total_series} in the %{track} series. To disable notification emails sent by your local GitLab instance, either contact your administrator or %{unsubscribe_link}."
 msgstr ""
 
 msgid "InProductMarketing|Ticketmaster decreased their CI build time by 15X"
@@ -20182,6 +20182,9 @@ msgid "Maximum NuGet package file size in bytes"
 msgstr ""
 
 msgid "Maximum PyPI package file size in bytes"
+msgstr ""
+
+msgid "Maximum Terraform Module package file size in bytes"
 msgstr ""
 
 msgid "Maximum Users"

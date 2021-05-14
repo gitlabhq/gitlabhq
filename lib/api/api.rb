@@ -241,6 +241,7 @@ module API
       mount ::API::ProjectTemplates
       mount ::API::Terraform::State
       mount ::API::Terraform::StateVersion
+      mount ::API::Terraform::Modules::V1::Packages
       mount ::API::PersonalAccessTokens
       mount ::API::ProtectedBranches
       mount ::API::ProtectedTags

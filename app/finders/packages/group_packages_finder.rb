@@ -32,6 +32,7 @@ module Packages
       packages = filter_with_version(packages)
       packages = filter_by_package_type(packages)
       packages = filter_by_package_name(packages)
+      packages = filter_by_package_version(packages)
       installable_only ? packages.installable : filter_by_status(packages)
     end
 

@@ -163,43 +163,43 @@
                   %table{ border: "0", cellpadding: "0", cellspacing: "0", role: "presentation", width: "100%" }
                     %tr
                       %td{ align: "left", style: "padding: 0 20px;" }
-                        = about_link('mailers/in_product_marketing', 'gitlab-logo-gray-rgb.png', 200)
+                        = about_link('mailers/in_product_marketing/gitlab-logo-gray-rgb.png', 200)
                     %tr
                       %td{ "aria-hidden" => "true", height: "30", style: "font-size: 0; line-height: 0;" }
                     %tr{ style: "background-color: #ffffff;" }
                       %td{ style: "color: #424242; padding: 10px 30px; text-align: center; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;font-size: 16px; line-height: 22px; border: 1px solid #dddddd" }
                         %p
-                          = in_product_marketing_progress(@track, @series, format: :html).html_safe
+                          = @message.progress.html_safe
                     %tr
                       %td{ bgcolor: "#ffffff", height: "auto", style: "max-width: 600px; width: 100%; text-align: center; height: 200px; padding: 25px 15px; mso-line-height-rule: exactly; min-height: 40px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;", valign: "middle", width: "100%" }
-                        = in_product_marketing_logo(@track, @series)
+                        = inline_image_link(@message.logo_path, { width: '150', style: 'width: 150px;' })
                         %h1{ style: "font-size: 40px; line-height: 46x; color: #000000; padding: 20px 0 0 0; font-weight: normal;" }
-                          = in_product_marketing_title(@track, @series)
+                          = @message.title
                         %h2{ style: "font-size: 28px; line-height: 34px; color: #000000; padding: 0; font-weight: 400;" }
-                          = in_product_marketing_subtitle(@track, @series)
+                          = @message.subtitle
                     %tr
                       %td{ style: "padding: 10px 20px 30px 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif; color:#000000; font-size: 18px; line-height: 24px;" }
                         %p{ style: "margin: 0 0 20px 0;" }
-                          = in_product_marketing_body_line1(@track, @series, format: :html).html_safe
-                        - in_product_marketing_body_line2(@track, @series, format: :html)&.tap do |line|
+                          = @message.body_line1.html_safe
+                        - @message.body_line2&.tap do |line|
                           %p{ style: "margin: 0 0 20px 0;" }
                             = line.html_safe
                     %tr
                       %td{ align: "center", style: "padding: 10px 20px 80px 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;" }
-                        .cta_link= cta_link(@track, @series, @group, format: :html)
+                        .cta_link= @message.cta_link
                     %tr{ style: "background-color: #ffffff;" }
                       %td{ align: "center", style: "padding:75px 20px 25px;" }
-                        = about_link('', 'gitlab_logo.png', 80)
+                        = about_link('gitlab_logo.png', 80)
                     %tr{ style: "background-color: #ffffff;" }
                       %td{ align: "center", style: "padding:0px ;" }
                     %tr{ style: "background-color: #ffffff;" }
                       %td{ align: "center", style: "padding:0px 10px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif; " }
                         %span.footernav{ style: "color: #6e49cb; font-size: 16px; line-height: 26px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;" }
-                          = footer_links(format: :html).join('&nbsp;' * 3 + '|' + '&nbsp;' * 4).html_safe
+                          = @message.footer_links.join('&nbsp;' * 3 + '|' + '&nbsp;' * 4).html_safe
                     %tr{ style: "background-color:#ffffff;" }
                       %td{ align: "center", style: "padding: 40px 30px 20px 30px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;" }
-                        .address= address(format: :html)
+                        .address= @message.address
                     %tr{ style: "background-color: #ffffff;" }
                       %td{ align: "left", style: "padding:20px 30px 20px 30px;" }
                         %span.footernav{ style: "color: #6e49cb; font-size: 14px; line-height: 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif; color:#424242;" }
-                          = unsubscribe(@track, @series, format: :html).html_safe
+                          = @message.unsubscribe.html_safe

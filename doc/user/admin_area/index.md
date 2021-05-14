@@ -126,6 +126,7 @@ For each user, the following are listed:
 1. Username
 1. Email address
 1. Project membership count
+1. Group membership count ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276215) in GitLab 13.12)
 1. Date of account creation
 1. Date of last activity
 

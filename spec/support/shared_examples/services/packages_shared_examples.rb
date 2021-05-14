@@ -205,6 +205,7 @@ RSpec.shared_examples 'filters on each package_type' do |is_project: false|
   let_it_be(:package9) { create(:debian_package, project: project) }
   let_it_be(:package10) { create(:rubygems_package, project: project) }
   let_it_be(:package11) { create(:helm_package, project: project) }
+  let_it_be(:package12) { create(:terraform_module_package, project: project) }
 
   Packages::Package.package_types.keys.each do |package_type|
     context "for package type #{package_type}" do

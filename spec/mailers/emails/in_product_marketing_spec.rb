@@ -5,7 +5,6 @@ require 'email_spec'
 
 RSpec.describe Emails::InProductMarketing do
   include EmailSpec::Matchers
-  include InProductMarketingHelper
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
@@ -62,11 +61,13 @@ RSpec.describe Emails::InProductMarketing do
 
     with_them do
       it 'has the correct subject and content' do
+        message = Gitlab::Email::Message::InProductMarketing.for(track).new(group: group, series: series)
+
         aggregate_failures do
-          is_expected.to have_subject(subject_line(track, series))
-          is_expected.to have_body_text(in_product_marketing_title(track, series))
-          is_expected.to have_body_text(in_product_marketing_subtitle(track, series))
-          is_expected.to have_body_text(in_product_marketing_cta_text(track, series))
+          is_expected.to have_subject(message.subject_line)
+          is_expected.to have_body_text(message.title)
+          is_expected.to have_body_text(message.subtitle)
+          is_expected.to have_body_text(CGI.unescapeHTML(message.cta_link))
         end
       end
     end

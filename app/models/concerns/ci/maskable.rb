@@ -9,9 +9,9 @@ module Ci
     # * No variables
     # * No spaces
     # * Minimal length of 8 characters
-    # * Characters must be from the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'
+    # * Characters must be from the Base64 alphabet (RFC4648) with the addition of '@', ':', '.', and '~'
     # * Absolutely no fun is allowed
-    REGEX = /\A[a-zA-Z0-9_+=\/@:.-]{8,}\z/.freeze
+    REGEX = /\A[a-zA-Z0-9_+=\/@:.~-]{8,}\z/.freeze
 
     included do
       validates :masked, inclusion: { in: [true, false] }

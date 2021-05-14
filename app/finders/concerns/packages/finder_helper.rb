@@ -42,7 +42,7 @@ module Packages
     end
 
     def filter_by_package_type(packages)
-      return packages unless package_type
+      return packages.without_package_type(:terraform_module) unless package_type
       raise InvalidPackageTypeError unless ::Packages::Package.package_types.key?(package_type)
 
       packages.with_package_type(package_type)
@@ -52,6 +52,12 @@ module Packages
       return packages unless params[:package_name].present?
 
       packages.search_by_name(params[:package_name])
+    end
+
+    def filter_by_package_version(packages)
+      return packages unless params[:package_version].present?
+
+      packages.with_version(params[:package_version])
     end
 
     def filter_with_version(packages)

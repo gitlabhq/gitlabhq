@@ -45,6 +45,9 @@
                     = f.label :pypi_max_file_size, _('Maximum PyPI package file size in bytes'), class: 'label-bold'
                     = f.number_field :pypi_max_file_size, class: 'form-control gl-form-input'
                   .form-group
+                    = f.label :terraform_module_max_file_size, _('Maximum Terraform Module package file size in bytes'), class: 'label-bold'
+                    = f.number_field :terraform_module_max_file_size, class: 'form-control gl-form-input'
+                  .form-group
                     = f.label :generic_packages_max_file_size, _('Generic package file size in bytes'), class: 'label-bold'
                     = f.number_field :generic_packages_max_file_size, class: 'form-control gl-form-input'
                   = f.submit _('Save %{name} size limits').html_safe % { name: plan.name.capitalize }, class: 'btn gl-button btn-confirm'

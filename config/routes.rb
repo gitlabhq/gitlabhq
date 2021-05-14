@@ -77,6 +77,9 @@ Rails.application.routes.draw do
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
+  # Terraform service discovery
+  get '.well-known/terraform.json' => 'terraform/services#index', as: :terraform_services
+
   # Begin of the /-/ scope.
   # Use this scope for all new global routes.
   scope path: '-' do

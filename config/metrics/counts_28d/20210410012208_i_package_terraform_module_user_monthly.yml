@@ -1,0 +1,20 @@
+---
+key_path: redis_hll_counters.user_packages.i_package_terraform_module_user_monthly
+description: Number of distinct users creating Terraform Module packages in recent 28 days
+product_section: ops
+product_stage: configure
+product_group: group::configure
+product_category: infrastructure_as_code
+value_type: number
+status: implemented
+milestone: '13.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55018
+time_frame: 28d
+data_source: redis_hll
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

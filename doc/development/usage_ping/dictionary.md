@@ -3754,6 +3754,42 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `counts.package_events_i_package_terraform_module_delete_package`
+
+Total count of Terraform Module packages delete events
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210410012200_package_events_i_package_terraform_module_delete_package.yml)
+
+Group: `group::configure`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.package_events_i_package_terraform_module_pull_package`
+
+Total count of pull Terraform Module packages events
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210410012202_package_events_i_package_terraform_module_pull_package.yml)
+
+Group: `group::configure`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.package_events_i_package_terraform_module_push_package`
+
+Total count of push Terraform Module packages events
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210410012204_package_events_i_package_terraform_module_push_package.yml)
+
+Group: `group::configure`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.packages`
 
 Number of packages
@@ -9898,6 +9934,30 @@ Status: `data_available`
 
 Tiers:
 
+### `redis_hll_counters.deploy_token_packages.i_package_terraform_module_deploy_token_monthly`
+
+Number of distinct users authorized via deploy token creating Terraform Module packages in recent 28 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210410012206_i_package_terraform_module_deploy_token_monthly.yml)
+
+Group: `group::configure`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.deploy_token_packages.i_package_terraform_module_deploy_token_weekly`
+
+Number of distinct users authorized via deploy token creating Terraform Module packages in recent 7 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210410012207_i_package_terraform_module_deploy_token_weekly.yml)
+
+Group: `group::configure`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly`
 
 Missing description
@@ -14865,6 +14925,30 @@ Group: ``
 Status: `data_available`
 
 Tiers:
+
+### `redis_hll_counters.user_packages.i_package_terraform_module_user_monthly`
+
+Number of distinct users creating Terraform Module packages in recent 28 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210410012208_i_package_terraform_module_user_monthly.yml)
+
+Group: `group::configure`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.user_packages.i_package_terraform_module_user_weekly`
+
+Number of distinct users creating Terraform Module packages in recent 7 days
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210410012209_i_package_terraform_module_user_weekly.yml)
+
+Group: `group::configure`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly`
 

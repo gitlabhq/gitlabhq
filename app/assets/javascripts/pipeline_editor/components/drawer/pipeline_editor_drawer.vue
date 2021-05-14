@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      isExpanded: true,
+      isExpanded: false,
       topPosition: 0,
     };
   },
@@ -49,8 +49,18 @@ export default {
   },
   mounted() {
     this.setTopPosition();
+    this.setInitialExpandState();
   },
   methods: {
+    setInitialExpandState() {
+      // We check in the local storage and if no value is defined, we want the default
+      // to be true. We want to explicitly set it to true here so that the drawer
+      // animates to open on load.
+      const localValue = localStorage.getItem(this.$options.localDrawerKey);
+      if (localValue === null) {
+        this.isExpanded = true;
+      }
+    },
     setTopPosition() {
       const navbarEl = document.querySelector('.js-navbar');
 
@@ -68,7 +78,7 @@ export default {
   <local-storage-sync v-model="isExpanded" :storage-key="$options.localDrawerKey" as-json>
     <aside
       aria-live="polite"
-      class="gl-fixed gl-right-0 gl-bg-gray-10 gl-shadow-drawer gl-transition-medium gl-border-l-solid gl-border-1 gl-border-gray-100 gl-h-full gl-z-index-3 gl-overflow-y-auto"
+      class="gl-fixed gl-right-0 gl-bg-gray-10 gl-shadow-drawer gl-transition-property-width gl-transition-duration-medium gl-border-l-solid gl-border-1 gl-border-gray-100 gl-h-full gl-z-index-3 gl-overflow-y-auto"
       :style="rootStyle"
     >
       <gl-button

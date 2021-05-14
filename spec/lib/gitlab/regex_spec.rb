@@ -427,6 +427,19 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('%2e%2e%2fmy_package') }
   end
 
+  describe '.terraform_module_package_name_regex' do
+    subject { described_class.terraform_module_package_name_regex }
+
+    it { is_expected.to match('my-module/my-system') }
+    it { is_expected.to match('my/module') }
+    it { is_expected.not_to match('my-module') }
+    it { is_expected.not_to match('My-Module') }
+    it { is_expected.not_to match('my_module') }
+    it { is_expected.not_to match('my.module') }
+    it { is_expected.not_to match('../../../my-module') }
+    it { is_expected.not_to match('%2e%2e%2fmy-module') }
+  end
+
   describe '.pypi_version_regex' do
     subject { described_class.pypi_version_regex }
 

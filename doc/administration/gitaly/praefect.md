@@ -1401,6 +1401,13 @@ praefect['reconciliation_scheduling_interval'] = '0' # disable the feature
 
 ### Manual reconciliation
 
+WARNING:
+The `reconcile` sub-command is deprecated and scheduled for removal in GitLab 14.0. Use
+[automatic reconciliation](#automatic-reconciliation) instead. Manual reconciliation may
+produce excess replication jobs and is limited in functionality. Manual reconciliation does
+not work when [repository-specific primary nodes](#repository-specific-primary-nodes) are
+enabled.
+
 The Praefect `reconcile` sub-command allows for the manual reconciliation between two Gitaly nodes. The
 command replicates every repository on a later version on the reference storage to the target storage.
 

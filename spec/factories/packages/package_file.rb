@@ -254,6 +254,13 @@ FactoryBot.define do
       size { 400.kilobytes }
     end
 
+    trait(:terraform_module) do
+      file_fixture { 'spec/fixtures/packages/terraform_module/module-system-v1.0.0.tgz' }
+      file_name { 'module-system-v1.0.0.tgz' }
+      file_sha1 { 'abf850accb1947c0c0e3ef4b441b771bb5c9ae3c' }
+      size { 806.bytes }
+    end
+
     trait(:nuget) do
       package
       file_fixture { 'spec/fixtures/packages/nuget/package.nupkg' }

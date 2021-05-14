@@ -112,6 +112,7 @@ export default {
       :empty-text="s__('AdminUsers|No users found')"
       show-empty
       stacked="md"
+      data-qa-selector="user_row_content"
     >
       <template #cell(name)="{ item: user }">
         <user-avatar :user="user" :admin-user-path="paths.adminUser" />

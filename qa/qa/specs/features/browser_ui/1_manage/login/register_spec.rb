@@ -138,7 +138,7 @@ module QA
         Page::Admin::Overview::Users::Index.perform do |index|
           index.click_pending_approval_tab
           index.search_user(user.username)
-          index.click_user(user.username)
+          index.click_user(user.name)
         end
 
         Page::Admin::Overview::Users::Show.perform do |show|

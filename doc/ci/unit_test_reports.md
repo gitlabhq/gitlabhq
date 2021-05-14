@@ -349,8 +349,8 @@ report format XML files contain an `attachment` tag, GitLab parses the attachmen
   ```
 
 - You should set the job that uploads the screenshot to
-  [`artifacts:when: on_failure`](yaml/README.md#artifactswhen) so that it uploads a screenshot when
-  a test fails.
+  [`artifacts:when: always`](yaml/README.md#artifactswhen) so that it still uploads a screenshot
+  when a test fails.
 
 A link to the test case attachment appears in the test case details in
 [the pipeline test report](#viewing-unit-test-reports-on-gitlab).

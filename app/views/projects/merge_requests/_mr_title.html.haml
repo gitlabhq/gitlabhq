@@ -2,48 +2,50 @@
 - can_update_merge_request = can?(current_user, :update_merge_request, @merge_request)
 - can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
+- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden]
 
-- if @merge_request.closed_or_merged_without_fork?
-  .gl-alert.gl-alert-danger.gl-mb-5
-    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    .gl-alert-body
-      The source project of this merge request has been removed.
+= cache_if(Feature.enabled?(:cached_mr_title, @project, default_enabled: :yaml), cache_key, expires_in: 1.day) do
+  - if @merge_request.closed_or_merged_without_fork?
+    .gl-alert.gl-alert-danger.gl-mb-5
+      = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-body
+        The source project of this merge request has been removed.
 
-.detail-page-header.border-bottom-0.pt-0.pb-0
-  .detail-page-header-body
-    = render "shared/issuable/status_box", issuable: @merge_request
+  .detail-page-header.border-bottom-0.pt-0.pb-0
+    .detail-page-header-body
+      = render "shared/issuable/status_box", issuable: @merge_request
 
-    .issuable-meta
-      #js-issuable-header-warnings
-      = issuable_meta(@merge_request, @project)
+      .issuable-meta
+        #js-issuable-header-warnings
+        = issuable_meta(@merge_request, @project)
 
-    %a.gl-button.btn.btn-default.btn-icon.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
-      = sprite_icon('chevron-double-lg-left')
+      %a.gl-button.btn.btn-default.btn-icon.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
+        = sprite_icon('chevron-double-lg-left')
 
-  .detail-page-header-actions.js-issuable-actions
-    .clearfix.dropdown
-      %button.gl-button.btn.btn-default.float-left.gl-md-display-none.gl-w-full{ type: "button", data: { toggle: "dropdown" } }
-        Options
-        = sprite_icon('chevron-down', css_class: 'gl-text-gray-500')
-      .dropdown-menu.dropdown-menu-right
-        %ul
-          - if can_update_merge_request
-            %li= link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-            - if @merge_request.opened?
-              %li
-                = link_to @merge_request.work_in_progress? ? _('Mark as ready') : _('Mark as draft'), toggle_draft_merge_request_path(@merge_request), method: :put, class: "js-draft-toggle-button"
-            %li{ class: [merge_request_button_visibility(@merge_request, true), 'js-close-item'] }
-              = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, title: 'Close merge request'
-          - if can_reopen_merge_request
-            %li{ class: merge_request_button_visibility(@merge_request, false) }
-              = link_to 'Reopen', merge_request_path(@merge_request, merge_request: { state_event: :reopen }), method: :put, title: 'Reopen merge request'
-          - unless @merge_request.merged? || current_user == @merge_request.author
-            %li= link_to 'Report abuse', new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
+    .detail-page-header-actions.js-issuable-actions
+      .clearfix.dropdown
+        %button.gl-button.btn.btn-default.float-left.gl-md-display-none.gl-w-full{ type: "button", data: { toggle: "dropdown" } }
+          Options
+          = sprite_icon('chevron-down', css_class: 'gl-text-gray-500')
+        .dropdown-menu.dropdown-menu-right
+          %ul
+            - if can_update_merge_request
+              %li= link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+              - if @merge_request.opened?
+                %li
+                  = link_to @merge_request.work_in_progress? ? _('Mark as ready') : _('Mark as draft'), toggle_draft_merge_request_path(@merge_request), method: :put, class: "js-draft-toggle-button"
+              %li{ class: [merge_request_button_visibility(@merge_request, true), 'js-close-item'] }
+                = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, title: 'Close merge request'
+            - if can_reopen_merge_request
+              %li{ class: merge_request_button_visibility(@merge_request, false) }
+                = link_to 'Reopen', merge_request_path(@merge_request, merge_request: { state_event: :reopen }), method: :put, title: 'Reopen merge request'
+            - unless @merge_request.merged? || current_user == @merge_request.author
+              %li= link_to 'Report abuse', new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
 
-      - if can_update_merge_request
-        = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), class: "d-none d-md-block btn gl-button btn-default btn-grouped js-issuable-edit", data: { qa_selector: "edit_button" }
+        - if can_update_merge_request
+          = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), class: "d-none d-md-block btn gl-button btn-default btn-grouped js-issuable-edit", data: { qa_selector: "edit_button" }
 
-      - if can_update_merge_request && !are_close_and_open_buttons_hidden
-        = render 'projects/merge_requests/close_reopen_draft_report_toggle'
-      - elsif !@merge_request.merged?
-        = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-md-display-block gl-button btn btn-default float-right gl-ml-3', title: _('Report abuse')
+        - if can_update_merge_request && !are_close_and_open_buttons_hidden
+          = render 'projects/merge_requests/close_reopen_draft_report_toggle'
+        - elsif !@merge_request.merged?
+          = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-md-display-block gl-button btn btn-default float-right gl-ml-3', title: _('Report abuse')

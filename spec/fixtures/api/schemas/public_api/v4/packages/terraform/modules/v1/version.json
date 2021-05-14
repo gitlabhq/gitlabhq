@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "required": ["version", "submodules", "root"],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "submodules": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "root": {
+      "type": "object",
+      "required": ["dependencies", "providers"],
+      "properties": {
+        "dependencies": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "providers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "version"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -208,6 +208,19 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.not_to allow_value("@scope%2e%2e%fpackage").for(:name) }
         it { is_expected.not_to allow_value("@scope/sub/package").for(:name) }
       end
+
+      context 'terraform module package' do
+        subject { build_stubbed(:terraform_module_package) }
+
+        it { is_expected.to allow_value('my-module/my-system').for(:name) }
+        it { is_expected.to allow_value('my/module').for(:name) }
+        it { is_expected.not_to allow_value('my-module').for(:name) }
+        it { is_expected.not_to allow_value('My-Module').for(:name) }
+        it { is_expected.not_to allow_value('my_module').for(:name) }
+        it { is_expected.not_to allow_value('my.module').for(:name) }
+        it { is_expected.not_to allow_value('../../../my-module').for(:name) }
+        it { is_expected.not_to allow_value('%2e%2e%2fmy-module').for(:name) }
+      end
     end
 
     describe '#version' do
@@ -395,6 +408,7 @@ RSpec.describe Packages::Package, type: :model do
       end
 
       it_behaves_like 'validating version to be SemVer compliant for', :npm_package
+      it_behaves_like 'validating version to be SemVer compliant for', :terraform_module_package
 
       context 'nuget package' do
         it_behaves_like 'validating version to be SemVer compliant for', :nuget_package
@@ -490,6 +504,26 @@ RSpec.describe Packages::Package, type: :model do
     it 'will raise error if not found' do
       expect { subject.by_name_and_file_name('foo', 'foo-5.5.5.tgz') }.to raise_error(ActiveRecord::RecordNotFound)
     end
+  end
+
+  describe '.with_package_type' do
+    let!(:package1) { create(:terraform_module_package) }
+    let!(:package2) { create(:npm_package) }
+    let(:package_type) { :terraform_module }
+
+    subject { described_class.with_package_type(package_type) }
+
+    it { is_expected.to eq([package1]) }
+  end
+
+  describe '.without_package_type' do
+    let!(:package1) { create(:npm_package) }
+    let!(:package2) { create(:terraform_module_package) }
+    let(:package_type) { :terraform_module }
+
+    subject { described_class.without_package_type(package_type) }
+
+    it { is_expected.to eq([package1]) }
   end
 
   context 'version scopes' do

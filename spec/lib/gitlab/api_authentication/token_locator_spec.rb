@@ -73,6 +73,90 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator do
       end
     end
 
+    context 'with :http_bearer_token' do
+      let(:type) { :http_bearer_token }
+
+      context 'without credentials' do
+        let(:request) { double(headers: {}) }
+
+        it 'returns nil' do
+          expect(subject).to be_nil
+        end
+      end
+
+      context 'with credentials' do
+        let(:password) { 'bar' }
+        let(:request) { double(headers: { "Authorization" => "Bearer #{password}" }) }
+
+        it 'returns the credentials' do
+          expect(subject.password).to eq(password)
+        end
+      end
+    end
+
+    context 'with :http_deploy_token_header' do
+      let(:type) { :http_deploy_token_header }
+
+      context 'without credentials' do
+        let(:request) { double(headers: {}) }
+
+        it 'returns nil' do
+          expect(subject).to be(nil)
+        end
+      end
+
+      context 'with credentials' do
+        let(:password) { 'bar' }
+        let(:request) { double(headers: { 'Deploy-Token' => password }) }
+
+        it 'returns the credentials' do
+          expect(subject.password).to eq(password)
+        end
+      end
+    end
+
+    context 'with :http_job_token_header' do
+      let(:type) { :http_job_token_header }
+
+      context 'without credentials' do
+        let(:request) { double(headers: {}) }
+
+        it 'returns nil' do
+          expect(subject).to be(nil)
+        end
+      end
+
+      context 'with credentials' do
+        let(:password) { 'bar' }
+        let(:request) { double(headers: { 'Job-Token' => password }) }
+
+        it 'returns the credentials' do
+          expect(subject.password).to eq(password)
+        end
+      end
+    end
+
+    context 'with :http_private_token_header' do
+      let(:type) { :http_private_token_header }
+
+      context 'without credentials' do
+        let(:request) { double(headers: {}) }
+
+        it 'returns nil' do
+          expect(subject).to be(nil)
+        end
+      end
+
+      context 'with credentials' do
+        let(:password) { 'bar' }
+        let(:request) { double(headers: { 'Private-Token' => password }) }
+
+        it 'returns the credentials' do
+          expect(subject.password).to eq(password)
+        end
+      end
+    end
+
     context 'with :token_param' do
       let(:type) { :token_param }
 

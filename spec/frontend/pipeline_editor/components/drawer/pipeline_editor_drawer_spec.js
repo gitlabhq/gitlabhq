@@ -38,6 +38,16 @@ describe('Pipeline editor drawer', () => {
     localStorage.clear();
   });
 
+  it('it sets the drawer to be opened by default', async () => {
+    createComponent();
+
+    expect(findDrawerContent().exists()).toBe(false);
+
+    await nextTick();
+
+    expect(findDrawerContent().exists()).toBe(true);
+  });
+
   describe('when the drawer is collapsed', () => {
     beforeEach(async () => {
       createComponent();
@@ -100,10 +110,15 @@ describe('Pipeline editor drawer', () => {
 
   describe('local storage', () => {
     it('saves the drawer expanded value to local storage', async () => {
+      localStorage.setItem(DRAWER_EXPANDED_KEY, 'false');
+
       createComponent();
       await clickToggleBtn();
 
-      expect(localStorage.setItem.mock.calls).toEqual([[DRAWER_EXPANDED_KEY, 'false']]);
+      expect(localStorage.setItem.mock.calls).toEqual([
+        [DRAWER_EXPANDED_KEY, 'false'],
+        [DRAWER_EXPANDED_KEY, 'true'],
+      ]);
     });
 
     it('loads the drawer collapsed when local storage is set to `false`, ', async () => {

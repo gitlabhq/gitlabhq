@@ -18809,6 +18809,8 @@ CREATE TABLE vulnerability_finding_evidence_requests (
     vulnerability_finding_evidence_id bigint NOT NULL,
     method text,
     url text,
+    body text,
+    CONSTRAINT check_7e37f2d01a CHECK ((char_length(body) <= 2048)),
     CONSTRAINT check_8152fbb236 CHECK ((char_length(url) <= 2048)),
     CONSTRAINT check_d9d11300f4 CHECK ((char_length(method) <= 32))
 );

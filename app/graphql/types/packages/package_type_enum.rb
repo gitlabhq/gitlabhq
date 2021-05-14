@@ -5,7 +5,8 @@ module Types
     class PackageTypeEnum < BaseEnum
       PACKAGE_TYPE_NAMES = {
         pypi: 'PyPI',
-        npm: 'npm'
+        npm: 'npm',
+        terraform_module: 'Terraform Module'
       }.freeze
 
       ::Packages::Package.package_types.keys.each do |package_type|
