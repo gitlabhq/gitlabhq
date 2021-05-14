@@ -64,7 +64,7 @@ using Docker-in-Docker.
 
 1. First, set up GitLab Runner with a
    [Docker-in-Docker build](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker).
-1. Configure the default Browser Performance Testing CI job as follows in your `.gitlab-ci.yml` file:
+1. Configure the default Browser Performance Testing CI/CD job as follows in your `.gitlab-ci.yml` file:
 
    ```yaml
    include:
@@ -75,17 +75,19 @@ using Docker-in-Docker.
        URL: https://example.com
    ```
 
-NOTE:
-For versions before 12.4, see the information for [older GitLab versions](#gitlab-versions-123-and-older).
-If you are using a Kubernetes cluster, use [`template: Jobs/Browser-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml)
-instead.
+WARNING:
+In GitLab 14.0 and later, the job [is scheduled to be renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914)
+from `performance` to `browser_performance`.
 
-The above example creates a `performance` job in your CI/CD pipeline and runs
-sitespeed.io against the webpage you defined in `URL` to gather key metrics.
+The above example:
 
-The example uses a CI/CD template that is included in all GitLab installations since
-12.4, but it doesn't work with Kubernetes clusters. If you are using GitLab 12.3
-or older, you must [add the configuration manually](#gitlab-versions-123-and-older)
+- Creates a `performance` job in your CI/CD pipeline and runs sitespeed.io against the webpage you
+  defined in `URL` to gather key metrics.
+- Uses a template that doesn't work with Kubernetes clusters. If you are using a Kubernetes cluster,
+  use [`template: Jobs/Browser-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml)
+   instead.
+- Uses a CI/CD template that is included in all GitLab installations since 12.4. If you are using
+  GitLab 12.3 or earlier, you must [add the configuration manually](#gitlab-versions-132-and-earlier).
 
 The template uses the [GitLab plugin for sitespeed.io](https://gitlab.com/gitlab-org/gl-performance),
 and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../../../ci/yaml/README.md#artifactsreportsperformance)
@@ -181,63 +183,62 @@ performance:
     URL: environment_url.txt
 ```
 
-### GitLab versions 12.3 and older
+### GitLab versions 13.2 and earlier
 
-Browser Performance Testing has gone through several changes since it's introduction.
+Browser Performance Testing has gone through several changes since its introduction.
 In this section we detail these changes and how you can run the test based on your
 GitLab version:
 
+- In 13.2 the feature was renamed from `Performance` to `Browser Performance` with additional
+  template CI/CD variables.
 - In GitLab 12.4 [a job template was made available](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Browser-Performance.gitlab-ci.yml).
-- In 13.2 the feature was renamed from `Performance` to `Browser Performance` with
-additional template CI/CD variables. The job name in the template is still `performance`
-for compatibility reasons, but may be renamed to match in a future iteration.
 - For 11.5 to 12.3 no template is available and the job has to be defined manually as follows:
 
-```yaml
-performance:
-  stage: performance
-  image: docker:git
-  variables:
-    URL: https://example.com
-    SITESPEED_VERSION: 14.1.0
-    SITESPEED_OPTIONS: ''
-  services:
-    - docker:stable-dind
-  script:
-    - mkdir gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
-    - mkdir sitespeed-results
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL $SITESPEED_OPTIONS
-    - mv sitespeed-results/data/performance.json performance.json
-  artifacts:
-    paths:
-      - performance.json
-      - sitespeed-results/
-    reports:
-      performance: performance.json
-```
+  ```yaml
+  performance:
+    stage: performance
+    image: docker:git
+    variables:
+      URL: https://example.com
+      SITESPEED_VERSION: 14.1.0
+      SITESPEED_OPTIONS: ''
+    services:
+      - docker:stable-dind
+    script:
+      - mkdir gitlab-exporter
+      - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
+      - mkdir sitespeed-results
+      - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL $SITESPEED_OPTIONS
+      - mv sitespeed-results/data/performance.json performance.json
+    artifacts:
+      paths:
+        - performance.json
+        - sitespeed-results/
+      reports:
+        performance: performance.json
+  ```
 
 - For 11.4 and earlier the job should be defined as follows:
 
-```yaml
-performance:
-  stage: performance
-  image: docker:git
-  variables:
-    URL: https://example.com
-  services:
-    - docker:stable-dind
-  script:
-    - mkdir gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
-    - mkdir sitespeed-results
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
-    - mv sitespeed-results/data/performance.json performance.json
-  artifacts:
-    paths:
-      - performance.json
-      - sitespeed-results/
-```
+  ```yaml
+  performance:
+    stage: performance
+    image: docker:git
+    variables:
+      URL: https://example.com
+    services:
+      - docker:stable-dind
+    script:
+      - mkdir gitlab-exporter
+      - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
+      - mkdir sitespeed-results
+      - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
+      - mv sitespeed-results/data/performance.json performance.json
+    artifacts:
+      paths:
+        - performance.json
+        - sitespeed-results/
+  ```
 
 Upgrading to the latest version and using the templates is recommended, to ensure
 you receive the latest updates, including updates to the sitespeed.io versions.

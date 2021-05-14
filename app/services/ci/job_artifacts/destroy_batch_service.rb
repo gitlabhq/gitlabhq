@@ -23,8 +23,8 @@ module Ci
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def execute
-        return success(destroyed_artifacts_count: artifacts_count) if @job_artifacts.empty?
+      def execute(update_stats: true)
+        return success(destroyed_artifacts_count: 0, statistics_updates: {}) if @job_artifacts.empty?
 
         Ci::DeletedObject.transaction do
           Ci::DeletedObject.bulk_import(@job_artifacts, @pick_up_at)
@@ -33,10 +33,11 @@ module Ci
         end
 
         # This is executed outside of the transaction because it depends on Redis
-        update_project_statistics
+        update_project_statistics! if update_stats
         increment_monitoring_statistics(artifacts_count)
 
-        success(destroyed_artifacts_count: artifacts_count)
+        success(destroyed_artifacts_count: artifacts_count,
+          statistics_updates: affected_project_statistics)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -45,12 +46,20 @@ module Ci
       # This method is implemented in EE and it must do only database work
       def destroy_related_records(artifacts); end
 
-      def update_project_statistics
-        artifacts_by_project = @job_artifacts.group_by(&:project)
-        artifacts_by_project.each do |project, artifacts|
-          delta = -artifacts.sum { |artifact| artifact.size.to_i }
-          ProjectStatistics.increment_statistic(
-            project, Ci::JobArtifact.project_statistics_name, delta)
+      # using ! here since this can't be called inside a transaction
+      def update_project_statistics!
+        affected_project_statistics.each do |project, delta|
+          project.increment_statistic_value(Ci::JobArtifact.project_statistics_name, delta)
+        end
+      end
+
+      def affected_project_statistics
+        strong_memoize(:affected_project_statistics) do
+          artifacts_by_project = @job_artifacts.group_by(&:project)
+          artifacts_by_project.each.with_object({}) do |(project, artifacts), accumulator|
+            delta = -artifacts.sum { |artifact| artifact.size.to_i }
+            accumulator[project] = delta
+          end
         end
       end
 

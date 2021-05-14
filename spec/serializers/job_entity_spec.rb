@@ -21,6 +21,10 @@ RSpec.describe JobEntity do
 
   subject { entity.as_json }
 
+  it 'contains complete to indicate if a pipeline is completed' do
+    expect(subject).to include(:complete)
+  end
+
   it 'contains paths to job page action' do
     expect(subject).to include(:build_path)
   end

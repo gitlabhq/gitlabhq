@@ -261,6 +261,22 @@ module Ci
       self.where(project: project).sum(:size)
     end
 
+    ##
+    # FastDestroyAll concerns
+    # rubocop: disable CodeReuse/ServiceClass
+    def self.begin_fast_destroy
+      service = ::Ci::JobArtifacts::DestroyAssociationsService.new(self)
+      service.destroy_records
+      service
+    end
+    # rubocop: enable CodeReuse/ServiceClass
+
+    ##
+    # FastDestroyAll concerns
+    def self.finalize_fast_destroy(service)
+      service.update_statistics
+    end
+
     def local_store?
       [nil, ::JobArtifactUploader::Store::LOCAL].include?(self.file_store)
     end

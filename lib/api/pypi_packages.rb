@@ -24,25 +24,6 @@ module API
       render_api_error!(e.message, 400)
     end
 
-    helpers do
-      def packages_finder(project = authorized_user_project)
-        project
-          .packages
-          .pypi
-          .has_version
-          .processed
-      end
-
-      def find_package_versions
-        packages = packages_finder
-          .with_normalized_pypi_name(params[:package_name])
-
-        not_found!('Package') if packages.empty?
-
-        packages
-      end
-    end
-
     before do
       require_packages_enabled!
     end
@@ -71,7 +52,7 @@ module API
           project = unauthorized_user_project!
 
           filename = "#{params[:file_identifier]}.#{params[:format]}"
-          package = packages_finder(project).by_file_name_and_sha256(filename, params[:sha256])
+          package = Packages::Pypi::PackageFinder.new(current_user, project, { filename: filename, sha256: params[:sha256] }).execute
           package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: false).execute
 
           track_package_event('pull_package', :pypi)
@@ -95,7 +76,7 @@ module API
 
           track_package_event('list_package', :pypi)
 
-          packages = find_package_versions
+          packages = Packages::Pypi::PackagesFinder.new(current_user, authorized_user_project, { package_name: params[:package_name] }).execute!
           presenter = ::Packages::Pypi::PackagePresenter.new(packages, authorized_user_project)
 
           # Adjusts grape output format

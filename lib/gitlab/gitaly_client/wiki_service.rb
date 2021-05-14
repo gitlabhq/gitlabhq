@@ -119,30 +119,6 @@ module Gitlab
         pages
       end
 
-      # options:
-      #  :page     - The Integer page number.
-      #  :per_page - The number of items per page.
-      #  :limit    - Total number of items to return.
-      def page_versions(page_path, options)
-        request = Gitaly::WikiGetPageVersionsRequest.new(
-          repository: @gitaly_repo,
-          page_path: encode_binary(page_path),
-          page: options[:page] || 1,
-          per_page: options[:per_page] || Gitlab::Git::Wiki::DEFAULT_PAGINATION
-        )
-
-        stream = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_page_versions, request, timeout: GitalyClient.medium_timeout)
-
-        versions = []
-        stream.each do |message|
-          message.versions.each do |version|
-            versions << new_wiki_page_version(version)
-          end
-        end
-
-        versions
-      end
-
       private
 
       # If a block is given and the yielded value is truthy, iteration will be

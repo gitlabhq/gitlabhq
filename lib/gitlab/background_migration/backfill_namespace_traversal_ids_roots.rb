@@ -22,7 +22,16 @@ module Gitlab
           .where("traversal_ids = '{}'")
 
         ranged_query.each_batch(of: sub_batch_size) do |sub_batch|
-          sub_batch.update_all('traversal_ids = ARRAY[id]')
+          first, last = sub_batch.pluck(Arel.sql('min(id), max(id)')).first
+
+          # The query need to be reconstructed because .each_batch modifies the default scope
+          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/330510
+          Namespace.unscoped
+                   .base_query
+                   .where(id: first..last)
+                   .where("traversal_ids = '{}'")
+                   .update_all('traversal_ids = ARRAY[id]')
+
           sleep PAUSE_SECONDS
         end
 

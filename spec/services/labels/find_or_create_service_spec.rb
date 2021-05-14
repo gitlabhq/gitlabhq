@@ -25,6 +25,35 @@ RSpec.describe Labels::FindOrCreateService do
           project.add_developer(user)
         end
 
+        context 'when existing_labels_by_title is provided' do
+          let(:preloaded_label) { build(:label, title: 'Security') }
+
+          before do
+            params.merge!(
+              existing_labels_by_title: {
+                'Security' => preloaded_label
+              })
+          end
+
+          context 'when label exists' do
+            it 'returns preloaded label' do
+              expect(service.execute).to eq preloaded_label
+            end
+          end
+
+          context 'when label does not exists' do
+            before do
+              params[:title] = 'Audit'
+            end
+
+            it 'does not generates additional label search' do
+              service.execute
+
+              expect(LabelsFinder).not_to receive(:new)
+            end
+          end
+        end
+
         context 'when label does not exist at group level' do
           it 'creates a new label at project level' do
             expect { service.execute }.to change(project.labels, :count).by(1)

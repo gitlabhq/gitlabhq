@@ -9,10 +9,9 @@ RSpec.describe ::Packages::Maven::PackageFinder do
   let_it_be_with_refind(:package) { create(:maven_package, project: project) }
 
   let(:param_path) { nil }
-  let(:param_project) { nil }
-  let(:param_group) { nil }
+  let(:project_or_group) { nil }
   let(:param_order_by_package_file) { false }
-  let(:finder) { described_class.new(param_path, user, project: param_project, group: param_group, order_by_package_file: param_order_by_package_file) }
+  let(:finder) { described_class.new(user, project_or_group, path: param_path, order_by_package_file: param_order_by_package_file) }
 
   before do
     group.add_developer(user)
@@ -49,13 +48,13 @@ RSpec.describe ::Packages::Maven::PackageFinder do
       end
 
       context 'within the project' do
-        let(:param_project) { project }
+        let(:project_or_group) { project }
 
         it_behaves_like 'handling valid and invalid paths'
       end
 
       context 'within a group' do
-        let(:param_group) { group }
+        let(:project_or_group) { group }
 
         it_behaves_like 'handling valid and invalid paths'
       end
@@ -77,7 +76,7 @@ RSpec.describe ::Packages::Maven::PackageFinder do
         let_it_be(:package2) { create(:maven_package, project: project2, name: package_name, version: nil) }
         let_it_be(:package3) { create(:maven_package, project: project3, name: package_name, version: nil) }
 
-        let(:param_group) { group }
+        let(:project_or_group) { group }
         let(:param_path) { package_name }
 
         before do
@@ -116,7 +115,7 @@ RSpec.describe ::Packages::Maven::PackageFinder do
     it_behaves_like 'Packages::Maven::PackageFinder examples'
 
     it 'uses CTE in the query' do
-      sql = described_class.new('some_path', user, group: group).send(:packages_with_path).to_sql
+      sql = described_class.new(user, group, path: package.maven_metadatum.path).send(:packages).to_sql
 
       expect(sql).to include('WITH "maven_metadata_by_path" AS')
     end

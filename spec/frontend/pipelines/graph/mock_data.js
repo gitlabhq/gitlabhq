@@ -8,6 +8,7 @@ export const mockPipelineResponse = {
         __typename: 'Pipeline',
         id: 163,
         iid: '22',
+        complete: true,
         usesNeeds: true,
         downstream: null,
         upstream: null,
@@ -570,6 +571,7 @@ export const wrappedPipelineReturn = {
         __typename: 'Pipeline',
         id: 'gid://gitlab/Ci::Pipeline/175',
         iid: '38',
+        complete: true,
         usesNeeds: true,
         downstream: {
           __typename: 'PipelineConnection',

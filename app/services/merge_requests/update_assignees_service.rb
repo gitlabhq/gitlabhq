@@ -45,7 +45,7 @@ module MergeRequests
     end
 
     def assignee_ids
-      params.fetch(:assignee_ids).first(1)
+      params.fetch(:assignee_ids).reject { _1 == 0 }.first(1)
     end
 
     def params

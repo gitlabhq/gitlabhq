@@ -43,7 +43,7 @@ To learn what you can do with an epic, see [Manage epics](manage_epics.md). Poss
 
 - [Create an epic](manage_epics.md#create-an-epic)
 - [Edit an epic](manage_epics.md#edit-an-epic)
-- [Bulk-edit epics](../bulk_editing/index.md#bulk-edit-epics)
+- [Bulk-edit epics](manage_epics.md#bulk-edit-epics)
 - [Delete an epic](manage_epics.md#delete-an-epic)
 - [Close an epic](manage_epics.md#close-an-epic)
 - [Reopen a closed epic](manage_epics.md#reopen-a-closed-epic)

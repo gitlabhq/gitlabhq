@@ -17,6 +17,7 @@ module Ci
     include FromUnion
     include UpdatedAtFilterable
     include EachBatch
+    include FastDestroyAll::Helpers
 
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 
@@ -125,6 +126,8 @@ module Ci
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
 
     after_create :keep_around_commits, unless: :importing?
+
+    use_fast_destroy :job_artifacts
 
     # We use `Enums::Ci::Pipeline.sources` here so that EE can more easily extend
     # this `Hash` with new values.

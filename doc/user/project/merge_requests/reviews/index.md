@@ -52,6 +52,26 @@ To update multiple project merge requests at the same time:
 1. Select the appropriate fields and their values from the sidebar.
 1. Click **Update all**.
 
+## Bulk edit merge requests at the group level
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12719) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+
+Users with permission level of [Developer or higher](../../../permissions.md) can manage merge requests.
+
+When bulk editing merge requests in a group, you can edit the following attributes:
+
+- Milestone
+- Labels
+
+To update multiple group merge requests at the same time:
+
+1. In a group, go to **Merge requests**.
+1. Click **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
+   editable fields.
+1. Select the checkboxes next to each merge request you want to edit.
+1. Select the appropriate fields and their values from the sidebar.
+1. Click **Update all**.
+
 ## Review a merge request
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab Premium 11.4.

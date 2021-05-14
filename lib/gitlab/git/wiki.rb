@@ -96,22 +96,6 @@ module Gitlab
         end
       end
 
-      # options:
-      #  :page     - The Integer page number.
-      #  :per_page - The number of items per page.
-      #  :limit    - Total number of items to return.
-      def page_versions(page_path, options = {})
-        versions = wrapped_gitaly_errors do
-          gitaly_wiki_client.page_versions(page_path, options)
-        end
-
-        # Gitaly uses gollum-lib to get the versions. Gollum defaults to 20
-        # per page, but also fetches 20 if `limit` or `per_page` < 20.
-        # Slicing returns an array with the expected number of items.
-        slice_bound = options[:limit] || options[:per_page] || DEFAULT_PAGINATION
-        versions[0..slice_bound]
-      end
-
       def count_page_versions(page_path)
         @repository.count_commits(ref: 'HEAD', path: page_path)
       end

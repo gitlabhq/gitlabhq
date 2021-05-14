@@ -184,9 +184,9 @@ RSpec.describe Issues::BuildService do
         end
 
         it 'cannot set invalid type' do
-          expect do
-            build_issue(issue_type: 'invalid type')
-          end.to raise_error(ArgumentError, "'invalid type' is not a valid issue_type")
+          issue = build_issue(issue_type: 'invalid type')
+
+          expect(issue).to be_issue
         end
       end
     end

@@ -92,10 +92,9 @@ module API
                                   !params[:path].include?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
 
         ::Packages::Maven::PackageFinder.new(
-          params[:path],
           current_user,
-          project: project,
-          group: group,
+          project || group,
+          path: params[:path],
           order_by_package_file: order_by_package_file
         ).execute!
       end

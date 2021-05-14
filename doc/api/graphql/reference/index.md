@@ -8024,6 +8024,8 @@ A specific version in which designs were added, modified or deleted.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="designversionauthor"></a>`author` | [`UserCore!`](#usercore) | Author of the version. |
+| <a id="designversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the version was created. |
 | <a id="designversiondesigns"></a>`designs` | [`DesignConnection!`](#designconnection) | All designs that were changed in the version. (see [Connections](#connections)) |
 | <a id="designversionid"></a>`id` | [`ID!`](#id) | ID of the design version. |
 | <a id="designversionsha"></a>`sha` | [`ID!`](#id) | SHA of the design version. |
@@ -10623,6 +10625,7 @@ Information about pagination in a connection.
 | <a id="pipelinecodequalityreports"></a>`codeQualityReports` | [`CodeQualityDegradationConnection`](#codequalitydegradationconnection) | Code Quality degradations reported on the pipeline. (see [Connections](#connections)) |
 | <a id="pipelinecommitpath"></a>`commitPath` | [`String`](#string) | Path to the commit that triggered the pipeline. |
 | <a id="pipelinecommittedat"></a>`committedAt` | [`Time`](#time) | Timestamp of the pipeline's commit. |
+| <a id="pipelinecomplete"></a>`complete` | [`Boolean!`](#boolean) | Indicates if a pipeline is complete. |
 | <a id="pipelineconfigsource"></a>`configSource` | [`PipelineConfigSourceEnum`](#pipelineconfigsourceenum) | Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE, COMPLIANCE_SOURCE). |
 | <a id="pipelinecoverage"></a>`coverage` | [`Float`](#float) | Coverage percentage. |
 | <a id="pipelinecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the pipeline's creation. |

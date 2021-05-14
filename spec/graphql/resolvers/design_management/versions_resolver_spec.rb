@@ -41,6 +41,20 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
         it 'returns the ordered versions' do
           expect(result.to_a).to eq(all_versions)
         end
+
+        context 'loading associations' do
+          it 'prevents N+1 queries when loading author' do
+            control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+              resolve_versions(object).items.map(&:author)
+            end.count
+
+            create_list(:design_version, 3, issue: issue)
+
+            expect do
+              resolve_versions(object).items.map(&:author)
+            end.not_to exceed_all_query_limit(control_count)
+          end
+        end
       end
 
       context 'when constrained' do

@@ -2154,7 +2154,7 @@ RSpec.describe API::MergeRequests do
     end
   end
 
-  describe 'PUT /projects/:id/merge_reuests/:merge_request_iid' do
+  describe 'PUT /projects/:id/merge_requests/:merge_request_iid' do
     it_behaves_like 'issuable update endpoint' do
       let(:entity) { merge_request }
     end
@@ -2173,6 +2173,68 @@ RSpec.describe API::MergeRequests do
         expect(json_response['assignees']).to contain_exactly(
           a_hash_including('name' => user2.name)
         )
+      end
+    end
+
+    context 'when assignee_id=user2.id' do
+      let(:params) do
+        {
+          assignee_id: user2.id
+        }
+      end
+
+      it 'sets the assignees' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['assignees']).to contain_exactly(
+          a_hash_including('name' => user2.name)
+        )
+      end
+    end
+
+    context 'when only assignee_ids are provided, and the list is empty' do
+      let(:params) do
+        {
+          assignee_ids: []
+        }
+      end
+
+      it 'clears the assignees' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['assignees']).to be_empty
+      end
+    end
+
+    context 'when only assignee_ids are provided, and the list contains the sentinel value' do
+      let(:params) do
+        {
+          assignee_ids: [0]
+        }
+      end
+
+      it 'clears the assignees' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['assignees']).to be_empty
+      end
+    end
+
+    context 'when only assignee_id=0' do
+      let(:params) do
+        {
+          assignee_id: 0
+        }
+      end
+
+      it 'clears the assignees' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['assignees']).to be_empty
       end
     end
 

@@ -28,7 +28,6 @@ module Issues
       # because we do allow users that cannot admin issues to set confidential flag when creating an issue
       unless can_admin_issuable?(issue)
         params.delete(:confidential)
-        params.delete(:issue_type)
       end
     end
 

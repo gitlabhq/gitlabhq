@@ -32,6 +32,10 @@ module Types
             null: false,
             description: 'A particular design as of this version, provided it is visible at this version.',
             resolver: ::Resolvers::DesignManagement::Version::DesignsAtVersionResolver.single
+
+      field :author, Types::UserType, null: false, description: 'Author of the version.'
+      field :created_at, Types::TimeType, null: false,
+            description: 'Timestamp of when the version was created.'
     end
   end
 end

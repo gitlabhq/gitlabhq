@@ -920,6 +920,7 @@ export default {
   cancel_path: '/root/ci-mock/-/jobs/4757/cancel',
   new_issue_path: '/root/ci-mock/issues/new',
   playable: false,
+  complete: true,
   created_at: threeWeeksAgo.toISOString(),
   updated_at: threeWeeksAgo.toISOString(),
   finished_at: threeWeeksAgo.toISOString(),

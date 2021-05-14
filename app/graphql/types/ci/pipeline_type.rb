@@ -24,6 +24,9 @@ module Types
       field :before_sha, GraphQL::STRING_TYPE, null: true,
             description: 'Base SHA of the source branch.'
 
+      field :complete, GraphQL::BOOLEAN_TYPE, null: false, method: :complete?,
+            description: 'Indicates if a pipeline is complete.'
+
       field :status, PipelineStatusEnum, null: false,
             description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
 

@@ -32,7 +32,7 @@
   - if page_canonical_link
     %link{ rel: 'canonical', href: page_canonical_link }
 
-  = webpack_preload_asset_tag("monaco")
+  = yield :monaco_tag
 
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 

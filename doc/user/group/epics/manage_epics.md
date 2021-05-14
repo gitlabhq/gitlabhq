@@ -60,10 +60,21 @@ To edit an epics' start date, due date, or labels:
 1. Select **Edit** next to each section in the epic sidebar.
 1. Select the dates or labels for your epic.
 
-## Bulk-edit epics
+## Bulk edit epics
 
-You can edit multiple epics at once. To learn how to do it, visit
-[Bulk editing issues, epics, and merge requests at the group level](../bulk_editing/index.md#bulk-edit-epics).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7250) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+
+Users with permission level of [Reporter or higher](../../permissions.md) can manage epics.
+
+When bulk editing epics in a group, you can edit their labels.
+
+To update multiple epics at the same time:
+
+1. In a group, go to **Epics > List**.
+1. Click **Edit epics**. A sidebar on the right-hand side of your screen appears with editable fields.
+1. Check the checkboxes next to each epic you want to edit.
+1. Select the appropriate fields and their values from the sidebar.
+1. Click **Update all**.
 
 ## Delete an epic
 

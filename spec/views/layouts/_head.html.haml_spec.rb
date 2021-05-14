@@ -62,12 +62,6 @@ RSpec.describe 'layouts/_head' do
     expect(rendered).to match('<link rel="stylesheet" media="print" href="/stylesheets/highlight/themes/solarised-light.css" />')
   end
 
-  it 'preloads Monaco' do
-    render
-
-    expect(rendered).to match('<link rel="preload" href="/assets/webpack/monaco.chunk.js" as="script" type="text/javascript">')
-  end
-
   context 'when an asset_host is set and snowplow url is set' do
     let(:asset_host) { 'http://test.host' }
     let(:snowplow_collector_hostname) { 'www.snow.plow' }

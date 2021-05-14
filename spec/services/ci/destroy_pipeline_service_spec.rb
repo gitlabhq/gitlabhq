@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ::Ci::DestroyPipelineService do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let!(:pipeline) { create(:ci_pipeline, :success, project: project, sha: project.commit.id) }
 
   subject { described_class.new(project, user).execute(pipeline) }
@@ -59,6 +60,10 @@ RSpec.describe ::Ci::DestroyPipelineService do
           subject
 
           expect { artifact.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+
+        it 'inserts deleted objects for object storage files' do
+          expect { subject }.to change { Ci::DeletedObject.count }
         end
       end
     end

@@ -195,7 +195,6 @@ export default {
   <div
     class="alert-assignees gl-py-5 gl-w-70p"
     :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': !sidebarCollapsed }"
-    style="width: 70%"
   >
     <template v-if="sidebarCollapsed">
       <div

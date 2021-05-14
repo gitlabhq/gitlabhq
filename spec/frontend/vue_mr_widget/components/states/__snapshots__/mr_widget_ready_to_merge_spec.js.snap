@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReadyToMerge with a mismatched SHA warns the user to refresh to review 1`] = `"<gl-sprintf-stub message=\\"New changes were added. %{linkStart}Reload the page to review them%{linkEnd}\\"></gl-sprintf-stub>"`;

@@ -6936,6 +6936,32 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#increment_statistic_value' do
+    let(:project) { build_stubbed(:project) }
+
+    subject(:increment) do
+      project.increment_statistic_value(:build_artifacts_size, -10)
+    end
+
+    it 'increments the value' do
+      expect(ProjectStatistics)
+        .to receive(:increment_statistic)
+        .with(project, :build_artifacts_size, -10)
+
+      increment
+    end
+
+    context 'when the project is scheduled for removal' do
+      let(:project) { build_stubbed(:project, pending_delete: true) }
+
+      it 'does not increment the value' do
+        expect(ProjectStatistics).not_to receive(:increment_statistic)
+
+        increment
+      end
+    end
+  end
+
   def finish_job(export_job)
     export_job.start
     export_job.finish

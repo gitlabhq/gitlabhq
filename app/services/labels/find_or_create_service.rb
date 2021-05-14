@@ -6,7 +6,7 @@ module Labels
       @current_user = current_user
       @parent = parent
       @available_labels = params.delete(:available_labels)
-      @existing_labels_by_title = params.delete(:existing_labels_by_title) || {}
+      @existing_labels_by_title = params.delete(:existing_labels_by_title)
       @params = params.dup.with_indifferent_access
     end
 
@@ -45,7 +45,9 @@ module Labels
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_existing_label(title)
-      existing_labels_by_title[title] || available_labels.find_by(title: title)
+      return existing_labels_by_title[title] if existing_labels_by_title
+
+      available_labels.find_by(title: title)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

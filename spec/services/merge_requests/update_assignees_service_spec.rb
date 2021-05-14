@@ -36,6 +36,22 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
     end
 
     context 'when the parameters are valid' do
+      context 'when using sentinel values' do
+        let(:opts) { { assignee_ids: [0] } }
+
+        it 'removes all assignees' do
+          expect { update_merge_request }.to change(merge_request, :assignees).to([])
+        end
+      end
+
+      context 'the assignee_ids parameter is the empty list' do
+        let(:opts) { { assignee_ids: [] } }
+
+        it 'removes all assignees' do
+          expect { update_merge_request }.to change(merge_request, :assignees).to([])
+        end
+      end
+
       it 'updates the MR, and queues the more expensive work for later' do
         expect_next(MergeRequests::HandleAssigneesChangeService, project: project, current_user: user) do |service|
           expect(service)

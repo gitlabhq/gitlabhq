@@ -33,6 +33,7 @@ RSpec.describe 'Getting versions related to an issue' do
   let(:version_params) { nil }
 
   let(:version_query_fields) { ['edges { node { sha } }'] }
+  let(:edges_path) { %w[project issue designCollection versions edges] }
 
   let(:project) { issue.project }
   let(:current_user) { owner }
@@ -50,8 +51,7 @@ RSpec.describe 'Getting versions related to an issue' do
   end
 
   def response_values(data = graphql_data, key = 'sha')
-    path = %w[project issue designCollection versions edges]
-    data.dig(*path).map { |e| e.dig('node', key) }
+    data.dig(*edges_path).map { |e| e.dig('node', key) }
   end
 
   before do
@@ -62,6 +62,19 @@ RSpec.describe 'Getting versions related to an issue' do
     post_graphql(query, current_user: current_user)
 
     expect(response_values).to match_array([version_a, version_b, version_c, version_d].map(&:sha))
+  end
+
+  context 'with all fields requested' do
+    let(:version_query_fields) do
+      ['edges { node { id sha createdAt author { id } } }']
+    end
+
+    it 'returns correct data' do
+      post_graphql(query, current_user: current_user)
+
+      keys = graphql_data.dig(*edges_path).first['node'].keys
+      expect(keys).to match_array(%w(id sha createdAt author))
+    end
   end
 
   describe 'filter by sha' do
