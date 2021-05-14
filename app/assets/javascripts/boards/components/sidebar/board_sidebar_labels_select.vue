@@ -1,10 +1,12 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
+import Api from '~/api';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
 
@@ -14,7 +16,13 @@ export default {
     LabelsSelect,
     GlLabel,
   },
-  inject: ['labelsFetchPath', 'labelsManagePath', 'labelsFilterBasePath'],
+  inject: {
+    labelsFetchPath: {
+      default: null,
+    },
+    labelsManagePath: {},
+    labelsFilterBasePath: {},
+  },
   data() {
     return {
       loading: false,
@@ -37,6 +45,32 @@ export default {
         ...label,
         scoped: isScopedLabel(label),
       }));
+    },
+    fetchPath() {
+      /*
+       Labels fetched in epic boards are always group-level labels
+       and the correct path are passed from the backend (injected through labelsFetchPath)
+    
+       For issue boards, we should always include project-level labels and use a different endpoint.
+       (it requires knowing the project path of a selected issue.)
+    
+       Note 1. that we will be using GraphQL to fetch labels when we create a labels select widget.
+       And this component will be removed _wholesale_ https://gitlab.com/gitlab-org/gitlab/-/issues/300653.
+
+       Note 2. Moreover, 'fetchPath' needs to be used as a key for 'labels-select' component to force updates.
+       'labels-select' has its own vuex store and initializes the passed props as states
+       and these states aren't reactively bound to the passed props.
+      */
+
+      const projectLabelsFetchPath = mergeUrlParams(
+        { include_ancestor_groups: true },
+        Api.buildUrl(Api.projectLabelsPath).replace(
+          ':namespace_path/:project_path',
+          this.projectPathForActiveIssue,
+        ),
+      );
+
+      return this.labelsFetchPath || projectLabelsFetchPath;
     },
   },
   methods: {
@@ -100,12 +134,13 @@ export default {
     <template #default="{ edit }">
       <labels-select
         ref="labelsSelect"
+        :key="fetchPath"
         :allow-label-edit="false"
         :allow-label-create="false"
         :allow-multiselect="true"
         :allow-scoped-labels="true"
         :selected-labels="selectedLabels"
-        :labels-fetch-path="labelsFetchPath"
+        :labels-fetch-path="fetchPath"
         :labels-manage-path="labelsManagePath"
         :labels-filter-base-path="labelsFilterBasePath"
         :labels-list-title="__('Select label')"

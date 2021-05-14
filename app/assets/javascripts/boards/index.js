@@ -97,7 +97,6 @@ export default () => {
       currentUserId: gon.current_user_id || null,
       canUpdate: parseBoolean($boardApp.dataset.canUpdate),
       canAdminList: parseBoolean($boardApp.dataset.canAdminList),
-      labelsFetchPath: $boardApp.dataset.labelsFetchPath,
       labelsManagePath: $boardApp.dataset.labelsManagePath,
       labelsFilterBasePath: $boardApp.dataset.labelsFilterBasePath,
       timeTrackingLimitToHours: parseBoolean($boardApp.dataset.timeTrackingLimitToHours),

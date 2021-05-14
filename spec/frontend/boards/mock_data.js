@@ -151,6 +151,8 @@ export const rawIssue = {
   },
 };
 
+export const mockIssueFullPath = 'gitlab-org/test-subgroup/gitlab-test';
+
 export const mockIssue = {
   id: 'gid://gitlab/Issue/436',
   iid: '27',
@@ -159,8 +161,8 @@ export const mockIssue = {
   timeEstimate: 0,
   weight: null,
   confidential: false,
-  referencePath: 'gitlab-org/test-subgroup/gitlab-test#27',
-  path: '/gitlab-org/test-subgroup/gitlab-test/-/issues/27',
+  referencePath: `${mockIssueFullPath}#27`,
+  path: `/${mockIssueFullPath}/-/issues/27`,
   assignees,
   labels: [
     {

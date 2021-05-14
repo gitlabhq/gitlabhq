@@ -7,7 +7,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
 import getUserCallouts from '../../graphql/queries/get_user_callouts.query.graphql';
-import { reportToSentry } from '../../utils';
+import { reportToSentry, reportMessageToSentry } from '../../utils';
 import { listByLayers } from '../parsing_utils';
 import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';
 import PipelineGraph from './graph_component.vue';
@@ -109,14 +109,16 @@ export default {
       },
       error(err) {
         this.reportFailure({ type: LOAD_FAILURE, skipSentry: true });
-        reportToSentry(
+
+        reportMessageToSentry(
           this.$options.name,
-          `| type: ${LOAD_FAILURE} |  
-          | rawError: ${JSON.stringify(err)} | 
-          | info: ${serializeLoadErrors(err)} | 
-          | graphqlResourceEtag: ${this.graphqlResourceEtag} | 
-          | projectPath: ${this.projectPath} | 
-          | iid: ${this.pipelineIid} |`,
+          `| type: ${LOAD_FAILURE} , info: ${serializeLoadErrors(err)}`,
+          {
+            projectPath: this.projectPath,
+            pipelineIid: this.pipelineIid,
+            pipelineStages: this.pipeline?.stages?.length || 0,
+            nbOfDownstreams: this.pipeline?.downstream?.length || 0,
+          },
         );
       },
       result({ error }) {
