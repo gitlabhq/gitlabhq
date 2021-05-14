@@ -6,6 +6,7 @@ module Ci
     include Importable
     include Ci::HasStatus
     include Gitlab::OptimisticLocking
+    include Presentable
 
     enum status: Ci::HasStatus::STATUSES_ENUM
 
@@ -22,12 +23,6 @@ module Ci
     scope :ordered, -> { order(position: :asc) }
     scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
     scope :by_name, ->(names) { where(name: names) }
-    scope :with_latest_and_retried_statuses, -> do
-      includes(
-        latest_statuses: [:pipeline, project: :namespace],
-        retried_statuses: [:pipeline, project: :namespace]
-      )
-    end
 
     with_options unless: :importing? do
       validates :project, presence: true

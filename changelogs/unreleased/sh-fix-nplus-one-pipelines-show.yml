@@ -1,0 +1,5 @@
+---
+title: Fix N+1 SQL queries in PipelinesController#show
+merge_request: 60794
+author:
+type: fixed

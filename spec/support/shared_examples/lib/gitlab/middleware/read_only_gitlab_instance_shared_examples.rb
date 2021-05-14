@@ -70,8 +70,23 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
         expect(subject).not_to disallow_request
       end
 
+      it 'expects a POST internal request with trailing slash to be allowed' do
+        expect(Rails.application.routes).not_to receive(:recognize_path)
+        response = request.post("/api/#{API::API.version}/internal/")
+
+        expect(response).not_to be_redirect
+        expect(subject).not_to disallow_request
+      end
+
       it 'expects a graphql request to be allowed' do
         response = request.post("/api/graphql")
+
+        expect(response).not_to be_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects a graphql request with trailing slash to be allowed' do
+        response = request.post("/api/graphql/")
 
         expect(response).not_to be_redirect
         expect(subject).not_to disallow_request
@@ -84,6 +99,13 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
 
         it 'expects a graphql request to be allowed' do
           response = request.post("/gitlab/api/graphql")
+
+          expect(response).not_to be_redirect
+          expect(subject).not_to disallow_request
+        end
+
+        it 'expects a graphql request with trailing slash to be allowed' do
+          response = request.post("/gitlab/api/graphql/")
 
           expect(response).not_to be_redirect
           expect(subject).not_to disallow_request
@@ -119,6 +141,19 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
             expect(response).not_to be_redirect
             expect(subject).not_to disallow_request
           end
+
+          it 'allows requests with trailing slash' do
+            path = File.join(mounted_at, 'admin/sidekiq')
+            response = request.post("#{path}/")
+
+            expect(response).not_to be_redirect
+            expect(subject).not_to disallow_request
+
+            response = request.get("#{path}/")
+
+            expect(response).not_to be_redirect
+            expect(subject).not_to disallow_request
+          end
         end
       end
 
@@ -138,6 +173,14 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
           expect(response).not_to be_redirect
           expect(subject).not_to disallow_request
         end
+
+        it "expects a POST #{description} URL with trailing slash to be allowed" do
+          expect(Rails.application.routes).to receive(:recognize_path).and_call_original
+          response = request.post("#{path}/")
+
+          expect(response).not_to be_redirect
+          expect(subject).not_to disallow_request
+        end
       end
 
       where(:description, :path) do
@@ -153,11 +196,18 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
           expect(response).to be_redirect
           expect(subject).to disallow_request
         end
+
+        it "expects a POST #{description} URL with trailing slash not to be allowed" do
+          response = request.post("#{path}/")
+
+          expect(response).to be_redirect
+          expect(subject).to disallow_request
+        end
       end
     end
   end
 
-  context 'json requests to a read-only GitLab instance' do
+  context 'JSON requests to a read-only GitLab instance' do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'application/json' }, ['OK']] } }
     let(:content_json) { { 'CONTENT_TYPE' => 'application/json' } }
 

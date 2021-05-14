@@ -1,0 +1,5 @@
+---
+title: Omit trailing slash when checking allowed requests in the read-only middleware
+merge_request: 61641
+author:
+type: fixed
