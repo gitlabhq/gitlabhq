@@ -517,8 +517,6 @@ removed, or promoted to regular features at any time.
 Experimental features available are:
 
 - Enable scanning of iOS and Android apps using the [MobSF analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/).
-- Enable the [semgrep analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/).
-  - Semgrep may be inconsistent when reporting vulnerabilities found in minified JavaScript files.
 
 #### Enable experimental features
 

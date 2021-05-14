@@ -38,18 +38,6 @@ RSpec.describe MergeRequests::HandleAssigneesChangeService do
 
       async_execute
     end
-
-    context 'when async_handle_merge_request_assignees_change feature is disabled' do
-      before do
-        stub_feature_flags(async_handle_merge_request_assignees_change: false)
-      end
-
-      it 'calls #execute' do
-        expect(service).to receive(:execute).with(merge_request, old_assignees, options)
-
-        async_execute
-      end
-    end
   end
 
   describe '#execute' do

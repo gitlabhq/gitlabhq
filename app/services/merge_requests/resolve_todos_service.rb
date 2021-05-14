@@ -10,11 +10,7 @@ module MergeRequests
     end
 
     def async_execute
-      if Feature.enabled?(:resolve_merge_request_todos_async, merge_request.target_project, default_enabled: :yaml)
-        MergeRequests::ResolveTodosWorker.perform_async(merge_request.id, user.id)
-      else
-        execute
-      end
+      MergeRequests::ResolveTodosWorker.perform_async(merge_request.id, user.id)
     end
 
     def execute

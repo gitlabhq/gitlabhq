@@ -23,18 +23,6 @@ RSpec.describe MergeRequests::ResolveTodosService do
 
       async_execute
     end
-
-    context 'when resolve_merge_request_todos_async feature is disabled' do
-      before do
-        stub_feature_flags(resolve_merge_request_todos_async: false)
-      end
-
-      it 'calls #execute' do
-        expect(service).to receive(:execute)
-
-        async_execute
-      end
-    end
   end
 
   describe '#execute' do

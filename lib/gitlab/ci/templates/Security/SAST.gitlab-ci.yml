@@ -287,8 +287,7 @@ semgrep-sast:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /semgrep/ &&
-          $SAST_EXPERIMENTAL_FEATURES == 'true'
+          $SAST_DEFAULT_ANALYZERS =~ /semgrep/
       exists:
         - '**/*.py'
         - '**/*.js'
