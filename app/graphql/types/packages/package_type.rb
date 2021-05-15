@@ -47,6 +47,8 @@ module Types
           object.conan_metadatum
         when 'maven'
           object.maven_metadatum
+        when 'nuget'
+          object.nuget_metadatum
         else
           nil
         end

@@ -5129,6 +5129,9 @@ msgstr ""
 msgid "Billing|An error occurred while removing a billable member"
 msgstr ""
 
+msgid "Billing|Cannot remove user"
+msgstr ""
+
 msgid "Billing|Direct memberships"
 msgstr ""
 
@@ -5139,6 +5142,9 @@ msgid "Billing|Group"
 msgstr ""
 
 msgid "Billing|Group invite"
+msgstr ""
+
+msgid "Billing|Members who were invited via a group invitation cannot be removed. You can either remove the entire group, or ask an Owner of the invited group to remove the member."
 msgstr ""
 
 msgid "Billing|No users to display."
@@ -22742,6 +22748,9 @@ msgid "Oh no!"
 msgstr ""
 
 msgid "Ok, let's go"
+msgstr ""
+
+msgid "Okay"
 msgstr ""
 
 msgid "Oldest first"

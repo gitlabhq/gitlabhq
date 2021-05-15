@@ -341,6 +341,7 @@ db:check-schema:
     - .rails:rules:ee-mr-and-default-branch-only
   script:
     - source scripts/schema_changed.sh
+    - scripts/validate_migration_timestamps
 
 db:check-migrations:
   extends:

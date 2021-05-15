@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "licenseUrl", "projectUrl", "iconUrl"],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "licenseUrl": {
+      "type": "string"
+    },
+    "projectUrl": {
+      "type": "string"
+    },
+    "iconUrl": {
+      "type": "string"
+    }
+  }
+}
