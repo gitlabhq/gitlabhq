@@ -79,7 +79,7 @@ RSpec.describe 'Dashboard Todos' do
       end
 
       it 'has not "All done" message' do
-        expect(page).not_to have_selector('.todos-all-done')
+        expect(page).not_to have_selector('.empty-state')
       end
     end
 

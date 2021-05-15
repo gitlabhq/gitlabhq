@@ -110,10 +110,8 @@ module TodosHelper
         'alert'
       end
 
-    content_tag(:span, nil, class: 'target-status') do
-      content_tag(:span, nil, class: "status-box status-box-#{type}-#{todo.target.state.to_s.dasherize}") do
-        todo.target.state.to_s.capitalize
-      end
+    tag.span class: "gl-my-0 gl-px-2 status-box status-box-#{type}-#{todo.target.state.to_s.dasherize}" do
+      todo.target.state.to_s.capitalize
     end
   end
 

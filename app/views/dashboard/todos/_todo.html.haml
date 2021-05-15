@@ -1,61 +1,61 @@
-%li{ class: "todo todo-#{todo.done? ? 'done' : 'pending'}", id: dom_id(todo), data: { url: todo_target_path(todo) } }
-  .todo-avatar
-    = author_avatar(todo, size: 40)
+%li.todo{ class: "todo-#{todo.done? ? 'done' : 'pending'}", id: dom_id(todo), data: { url: todo_target_path(todo) } }
+  .gl-display-flex.gl-flex-direction-row
+    .todo-avatar.gl-display-none.gl-sm-display-inline-block
+      = author_avatar(todo, size: 40)
 
-  .todo-item.todo-block.align-self-center{ data: { qa_selector: "todo_item_container" } }
-    .todo-title
-      - if todo_author_display?(todo)
-        = todo_target_state_pill(todo)
+    .todo-item.gl-w-full.gl-align-self-center{ data: { qa_selector: "todo_item_container" } }
+      .todo-title.gl-mb-3.gl-md-mb-0
+        - if todo_author_display?(todo)
+          = todo_target_state_pill(todo)
 
-        %span.title-item.author-name.bold
-          - if todo.author
-            = link_to_author(todo, self_added: todo.self_added?)
+          %span.title-item.author-name.bold
+            - if todo.author
+              = link_to_author(todo, self_added: todo.self_added?)
+            - else
+              (removed)
+
+        %span.title-item.action-name{ data: { qa_selector: "todo_action_name_content" } }
+          = todo_action_name(todo)
+
+        %span.title-item.todo-label.todo-target-link
+          - if todo.target
+            = todo_target_link(todo)
           - else
-            (removed)
+            = _("(removed)")
 
-      %span.title-item.action-name{ data: { qa_selector: "todo_action_name_content" } }
-        = todo_action_name(todo)
+        %span.title-item.todo-target-title{ data: { qa_selector: "todo_target_title_content" } }
+          = todo_target_title(todo)
 
-      %span.title-item.todo-label.todo-target-link
-        - if todo.target
-          = todo_target_link(todo)
-        - else
-          = _("(removed)")
+        %span.title-item.todo-project.todo-label
+          at
+          = todo_parent_path(todo)
 
-      %span.title-item.todo-target-title{ data: { qa_selector: "todo_target_title_content" } }
-        = todo_target_title(todo)
+        - if todo.self_assigned?
+          %span.title-item.action-name
+            = todo_self_addressing(todo)
 
-      %span.title-item.todo-project.todo-label
-        at
-        = todo_parent_path(todo)
+        %span.title-item
+          &middot;
 
-      - if todo.self_assigned?
-        %span.title-item.action-name
-          = todo_self_addressing(todo)
+        %span.title-item.todo-timestamp
+          #{time_ago_with_tooltip(todo.created_at)}
+          = todo_due_date(todo)
 
-      %span.title-item
-        &middot;
+      - if todo.note.present?
+        .todo-body
+          .todo-note.break-word
+            .md
+              = first_line_in_markdown(todo, :body, 150, project: todo.project)
 
-      %span.title-item.todo-timestamp
-        #{time_ago_with_tooltip(todo.created_at)}
-        = todo_due_date(todo)
-
-    - if todo.note.present?
-      .todo-body
-        .todo-note.break-word
-          .md
-            = first_line_in_markdown(todo, :body, 150, project: todo.project)
-
-  - if todo.pending?
-    .todo-actions
-      = link_to dashboard_todo_path(todo), method: :delete, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-done-todo', data: { href: dashboard_todo_path(todo) } do
-        Done
-        %span.gl-spinner.ml-1
-      = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-undo-todo hidden', data: { href: restore_dashboard_todo_path(todo) } do
-        Undo
-        %span.gl-spinner.ml-1
-  - else
-    .todo-actions
-      = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-add-todo', data: { href: restore_dashboard_todo_path(todo) } do
-        Add a to do
-        %span.gl-spinner.ml-1
+    .todo-actions.gl-ml-3
+      - if todo.pending?
+        = link_to dashboard_todo_path(todo), method: :delete, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-done-todo', data: { href: dashboard_todo_path(todo) } do
+          Done
+          %span.gl-spinner.ml-1
+        = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-undo-todo hidden', data: { href: restore_dashboard_todo_path(todo) } do
+          Undo
+          %span.gl-spinner.ml-1
+      - else
+        = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-add-todo', data: { href: restore_dashboard_todo_path(todo) } do
+          Add a to do
+          %span.gl-spinner.ml-1
