@@ -1752,7 +1752,7 @@ Use `changes` in pipelines with the following refs:
 - Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
   For example `"*.json"` or `"**/*.json"`.
 
-Example of `only:changes`:
+**Example of `only:changes`**:
 
 ```yaml
 docker build:
@@ -1791,7 +1791,7 @@ when the Kubernetes service is active in the project.
 
 **Possible inputs**: The `kubernetes` strategy accepts only the `active` keyword.
 
-Example of `only:kubernetes`:
+**Example of `only:kubernetes`**:
 
 ```yaml
 deploy:

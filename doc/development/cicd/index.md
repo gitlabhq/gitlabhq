@@ -11,6 +11,9 @@ Development guides that are specific to CI/CD are listed here.
 
 If you are creating new CI/CD templates, please read [the development guide for GitLab CI/CD templates](templates.md).
 
+See the [CI/CD YAML reference documentation guide](cicd_reference_documentation_guide.md)
+to learn how to update the [reference page](../../ci/yaml/README.md).
+
 ## CI Architecture overview
 
 The following is a simplified diagram of the CI architecture. Some details are left out in order to focus on
