@@ -1,0 +1,5 @@
+---
+title: 'GithubImporter: Fix "ArgumentError: string contains null byte"'
+merge_request: 61480
+author:
+type: fixed

@@ -175,7 +175,7 @@ In an upcoming release, Audit Events for Git push events will be enabled
 by default. Follow our [Partitioning strategy for Audit Events epic](https://gitlab.com/groups/gitlab-org/-/epics/3206) for updates.
 
 If you still wish to enable **Repository push** events in your instance, follow
-the steps bellow.
+the steps below.
 
 **In Omnibus installations:**
 

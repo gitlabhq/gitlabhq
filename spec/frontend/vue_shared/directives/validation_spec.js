@@ -240,14 +240,16 @@ describe('initForm', () => {
     },
   };
 
+  const EXPECTED_FIELDS = {
+    name: { value: 'lorem', required: true, state: null, feedback: null },
+    description: { value: 'ipsum', required: false, state: true, feedback: null },
+  };
+
   it('returns form object', () => {
     expect(initForm(MOCK_FORM)).toMatchObject({
       state: false,
       showValidation: false,
-      fields: {
-        name: { value: 'lorem', required: true, state: null, feedback: null },
-        description: { value: 'ipsum', required: false, state: true, feedback: null },
-      },
+      fields: EXPECTED_FIELDS,
     });
   });
 
@@ -266,10 +268,7 @@ describe('initForm', () => {
     expect(initForm(form)).toMatchObject({
       state: false,
       showValidation: false,
-      fields: {
-        name: { value: 'lorem', required: true, state: null, feedback: null },
-        description: { value: 'ipsum', required: false, state: true, feedback: null },
-      },
+      fields: EXPECTED_FIELDS,
       ...customFormObject,
     });
   });
@@ -284,10 +283,7 @@ describe('initForm', () => {
     expect(initForm(form)).toMatchObject({
       state: true,
       showValidation: true,
-      fields: {
-        name: { value: 'lorem', required: true, state: null, feedback: null },
-        description: { value: 'ipsum', required: false, state: true, feedback: null },
-      },
+      fields: EXPECTED_FIELDS,
     });
   });
 });

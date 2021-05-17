@@ -3,7 +3,7 @@
 module Gitlab
   module GithubImport
     class MarkdownText
-      attr_reader :text, :author, :exists
+      include Gitlab::EncodingHelper
 
       def self.format(*args)
         new(*args).to_s
@@ -19,6 +19,15 @@ module Gitlab
       end
 
       def to_s
+        # Gitlab::EncodingHelper#clean remove `null` chars from the string
+        clean(format)
+      end
+
+      private
+
+      attr_reader :text, :author, :exists
+
+      def format
         if author&.login.present? && !exists
           "*Created by: #{author.login}*\n\n#{text}"
         else

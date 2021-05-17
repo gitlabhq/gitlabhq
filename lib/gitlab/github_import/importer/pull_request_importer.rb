@@ -44,8 +44,7 @@ module Gitlab
         def create_merge_request
           author_id, author_found = user_finder.author_id_for(pull_request)
 
-          description = MarkdownText
-            .format(pull_request.description, pull_request.author, author_found)
+          description = MarkdownText.format(pull_request.description, pull_request.author, author_found)
 
           attributes = {
             iid: pull_request.iid,

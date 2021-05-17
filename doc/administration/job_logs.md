@@ -130,12 +130,26 @@ find /var/opt/gitlab/gitlab-rails/shared/artifacts -name "job.log" -mtime +60 -d
 
 ## Incremental logging architecture
 
-NOTE:
-This beta feature is off by default. See below for how to [enable or disable](#enabling-incremental-logging) it.
+> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+> - Enabled on GitLab.com.
+> - [Recommended for production use](https://gitlab.com/groups/gitlab-org/-/epics/4275) in GitLab 13.6.
+> - [Recommended for production use with AWS S3](https://gitlab.com/gitlab-org/gitlab/-/issues/273498) in GitLab 13.7.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-incremental-logging). **(FREE SELF)**
 
-By combining the process with object storage settings, we can completely bypass
-the local file storage. This is a useful option if GitLab is installed as
-cloud-native, for example on Kubernetes.
+Job logs are sent from the GitLab Runner in chunks and cached temporarily on disk
+in `/var/opt/gitlab/gitlab-ci/builds` by Omnibus GitLab. After the job completes,
+a background job archives the job log. The log is moved to `/var/opt/gitlab/gitlab-rails/shared/artifacts/`
+by default, or to object storage if configured.
+
+In a [scaled-out architecture](reference_architectures/index.md) with Rails and Sidekiq running on more than one 
+server, these two locations on the filesystem have to be shared using NFS.
+
+To eliminate both filesystem requirements:
+
+- Enable the incremental logging feature, which uses Redis instead of disk space for temporary caching of job logs.
+- Configure [object storage](job_artifacts.md#object-storage-settings) for storing archived job logs.
+
+### Technical details
 
 The data flow is the same as described in the [data flow section](#data-flow)
 with one change: _the stored path of the first two phases is different_. This incremental
@@ -157,67 +171,39 @@ Here is the detailed data flow:
 1. The Sidekiq worker archives the log to object storage and cleans up the log
    in Redis and a persistent store (object storage or the database).
 
-### Enabling incremental logging
+### Limitations
 
-The following commands are to be issued in a Rails console:
+- [Redis cluster is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/224171).
+- You must configure [object storage for CI/CD artifacts, logs, and builds](job_artifacts.md#object-storage-settings)
+  before you enable the feature flag. After the flag is enabled, files cannot be written
+  to disk, and there is no protection against misconfiguration.
+- There is [an epic tracking other potential limitations and improvements](https://gitlab.com/groups/gitlab-org/-/epics/3791).
 
-```shell
-# Omnibus GitLab
-gitlab-rails console
+### Enable or disable incremental logging **(FREE SELF)**
 
-# Installation from source
-cd /home/git/gitlab
-sudo -u git -H bin/rails console -e production
-```
+Incremental logging is under development, but ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](feature_flags.md)
+can enable it.
 
-**To check if incremental logging (trace) is enabled:**
+Before you enable the feature flag:
 
-```ruby
-Feature.enabled?(:ci_enable_live_trace)
-```
+- Review [the limitations of incremental logging](#limitations).
+- [Enable object storage](job_artifacts.md#object-storage-settings).
 
-**To enable incremental logging (trace):**
+To enable incremental logging:
 
 ```ruby
 Feature.enable(:ci_enable_live_trace)
 ```
 
-NOTE:
-The transition period is handled gracefully. Upcoming logs are
-generated with the incremental architecture, and on-going logs stay with the
-legacy architecture, which means that on-going logs aren't forcibly
-re-generated with the incremental architecture.
+Running jobs' logs continue to be written to disk, but new jobs use
+incremental logging.
 
-**To disable incremental logging (trace):**
+To disable incremental logging:
 
 ```ruby
-Feature.disable('ci_enable_live_trace')
+Feature.disable(:ci_enable_live_trace)
 ```
 
-NOTE:
-The transition period is handled gracefully. Upcoming logs are generated
-with the legacy architecture, and on-going incremental logs stay with the incremental
-architecture, which means that on-going incremental logs aren't forcibly re-generated
-with the legacy architecture.
-
-### Potential implications
-
-In some cases, having data stored on Redis could incur data loss:
-
-1. **Case 1: When all data in Redis are accidentally flushed**
-   - On going incremental logs could be recovered by re-sending logs (this is
-     supported by all versions of GitLab Runner).
-   - Finished jobs which have not archived incremental logs lose the last part
-     (~128KB) of log data.
-
-1. **Case 2: When Sidekiq workers fail to archive (e.g., there was a bug that
-   prevents archiving process, Sidekiq inconsistency, etc.)**
-   - All log data in Redis is deleted after one week. If the
-     Sidekiq workers can't finish by the expiry date, the part of log data is lost.
-
-Another issue that might arise is that it could consume all memory on the Redis
-instance. If the number of jobs is 1000, 128MB (128KB * 1000) is consumed.
-
-Also, it could pressure the database replication lag. `INSERT`s are generated to
-indicate that we have log chunk. `UPDATE`s with 128KB of data is issued once we
-receive multiple chunks.
+Running jobs continue to use incremental logging, but new jobs write to the disk.
