@@ -34,7 +34,7 @@ review-build-cng:
     - job: compile-production-assets
       artifacts: false
   script:
-    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
+    - ./scripts/trigger-build cng
 
 .review-workflow-base:
   extends:
@@ -42,7 +42,6 @@ review-build-cng:
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
-    REVIEW_APPS_DOMAIN: "temp.gitlab-review.app"  # FIXME: using temporary domain
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
     GITLAB_HELM_CHART_REF: "v4.6.3"
   environment:

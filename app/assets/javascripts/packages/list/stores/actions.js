@@ -8,6 +8,7 @@ import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
   MISSING_DELETE_PATH_ERROR,
+  TERRAFORM_SEARCH_TYPE,
 } from '../constants';
 import { getNewPaginationPage } from '../utils';
 import * as types from './mutation_types';
@@ -27,8 +28,9 @@ export const requestPackagesList = ({ dispatch, state }, params = {}) => {
 
   const { page = DEFAULT_PAGE, per_page = DEFAULT_PAGE_SIZE } = params;
   const { sort, orderBy } = state.sorting;
-
-  const type = state.filter.find((f) => f.type === 'type');
+  const type = state.config.forceTerraform
+    ? TERRAFORM_SEARCH_TYPE
+    : state.filter.find((f) => f.type === 'type');
   const name = state.filter.find((f) => f.type === 'filtered-search-term');
   const packageFilters = { package_type: type?.value?.data, package_name: name?.value?.data };
 

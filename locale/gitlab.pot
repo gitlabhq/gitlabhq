@@ -5099,10 +5099,7 @@ msgstr ""
 msgid "BillingPlan|Upgrade for free"
 msgstr ""
 
-msgid "Billings|To use free pipeline minutes on shared runners, you’ll need to validate your account with a credit card. If you prefer not to provide a credit card, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge or store your credit card, it will only be used for validation.%{strongEnd}"
-msgstr ""
-
-msgid "Billings|To use free pipeline minutes on shared runners, you’ll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge or store your credit card, it will only be used for validation.%{strongEnd}"
+msgid "Billings|To use free pipeline minutes, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge or store your credit card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
 msgid "Billings|User successfully validated"

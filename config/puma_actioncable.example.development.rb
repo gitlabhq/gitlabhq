@@ -80,14 +80,10 @@ tag 'gitlab-actioncable-puma-worker'
 worker_timeout 60
 
 # https://github.com/puma/puma/blob/master/5.0-Upgrade.md#lower-latency-better-throughput
-if defined?(wait_for_less_busy_worker)
-  wait_for_less_busy_worker ENV.fetch('PUMA_WAIT_FOR_LESS_BUSY_WORKER', 0.001).to_f
-end
+wait_for_less_busy_worker ENV.fetch('PUMA_WAIT_FOR_LESS_BUSY_WORKER', 0.001).to_f
 
 # https://github.com/puma/puma/blob/master/5.0-Upgrade.md#nakayoshi_fork
-if defined?(nakayoshi_fork)
-  nakayoshi_fork unless ENV['DISABLE_PUMA_NAKAYOSHI_FORK'] == 'true'
-end
+nakayoshi_fork unless ENV['DISABLE_PUMA_NAKAYOSHI_FORK'] == 'true'
 
 # Use json formatter
 require_relative "/home/git/gitlab/lib/gitlab/puma_logging/json_formatter"

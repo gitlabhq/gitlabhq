@@ -334,8 +334,7 @@ class IssuableFinder
     return items if items.is_a?(ActiveRecord::NullRelation)
 
     if use_cte_for_search?
-      cte = Gitlab::SQL::RecursiveCTE.new(klass.table_name)
-      cte << items
+      cte = Gitlab::SQL::CTE.new(klass.table_name, items)
 
       items = klass.with(cte.to_arel).from(klass.table_name)
     end

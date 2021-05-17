@@ -121,6 +121,32 @@ describe('Actions Package list store', () => {
         },
       );
     });
+
+    it('should force the terraform_module type when forceTerraform is true', (done) => {
+      testAction(
+        actions.requestPackagesList,
+        undefined,
+        { config: { isGroupPage: false, resourceId: 1, forceTerraform: true }, sorting, filter },
+        [],
+        [
+          { type: 'setLoading', payload: true },
+          { type: 'receivePackagesListSuccess', payload: { data: 'foo', headers } },
+          { type: 'setLoading', payload: false },
+        ],
+        () => {
+          expect(Api.projectPackages).toHaveBeenCalledWith(1, {
+            params: {
+              page: 1,
+              per_page: 20,
+              sort: sorting.sort,
+              order_by: sorting.orderBy,
+              package_type: 'terraform_module',
+            },
+          });
+          done();
+        },
+      );
+    });
   });
 
   describe('receivePackagesListSuccess', () => {

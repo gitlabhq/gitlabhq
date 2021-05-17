@@ -9,7 +9,7 @@ Vue.use(Translate);
 export default () => {
   const el = document.getElementById('js-vue-packages-list');
   const store = createStore();
-  store.dispatch('setInitialState', el.dataset);
+  store.dispatch('setInitialState', { ...el.dataset, forceTerraform: true });
 
   return new Vue({
     el,

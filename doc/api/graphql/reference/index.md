@@ -85,7 +85,7 @@ Returns [`DesignManagement!`](#designmanagement).
 
 ### `Query.devopsAdoptionSegments`
 
-Get configured DevOps adoption segments on the instance.
+Get configured DevOps adoption segments on the instance. **BETA** This endpoint is subject to change without notice.
 
 Returns [`DevopsAdoptionSegmentConnection`](#devopsadoptionsegmentconnection).
 
@@ -742,6 +742,8 @@ Input type: `BoardListUpdateLimitMetricsInput`
 
 ### `Mutation.bulkFindOrCreateDevopsAdoptionSegments`
 
+**BETA** This endpoint is subject to change without notice.
+
 Input type: `BulkFindOrCreateDevopsAdoptionSegmentsInput`
 
 #### Arguments
@@ -1073,6 +1075,8 @@ Input type: `CreateCustomEmojiInput`
 | <a id="mutationcreatecustomemojierrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.createDevopsAdoptionSegment`
+
+**BETA** This endpoint is subject to change without notice.
 
 Input type: `CreateDevopsAdoptionSegmentInput`
 
@@ -1654,6 +1658,8 @@ Input type: `DeleteAnnotationInput`
 | <a id="mutationdeleteannotationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.deleteDevopsAdoptionSegment`
+
+**BETA** This endpoint is subject to change without notice.
 
 Input type: `DeleteDevopsAdoptionSegmentInput`
 
@@ -5799,6 +5805,29 @@ The edge type for [`PackageTag`](#packagetag).
 | ---- | ---- | ----------- |
 | <a id="packagetagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="packagetagedgenode"></a>`node` | [`PackageTag`](#packagetag) | The item at the end of the edge. |
+
+#### `PathLockConnection`
+
+The connection type for [`PathLock`](#pathlock).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pathlockconnectionedges"></a>`edges` | [`[PathLockEdge]`](#pathlockedge) | A list of edges. |
+| <a id="pathlockconnectionnodes"></a>`nodes` | [`[PathLock]`](#pathlock) | A list of nodes. |
+| <a id="pathlockconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PathLockEdge`
+
+The edge type for [`PathLock`](#pathlock).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pathlockedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pathlockedgenode"></a>`node` | [`PathLock`](#pathlock) | The item at the end of the edge. |
 
 #### `PipelineArtifactRegistryConnection`
 
@@ -10626,6 +10655,18 @@ Information about pagination in a connection.
 | <a id="pageinfohaspreviouspage"></a>`hasPreviousPage` | [`Boolean!`](#boolean) | When paginating backwards, are there more items?. |
 | <a id="pageinfostartcursor"></a>`startCursor` | [`String`](#string) | When paginating backwards, the cursor to continue. |
 
+### `PathLock`
+
+Represents a file or directory in the project repository that has been locked.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pathlockid"></a>`id` | [`PathLockID!`](#pathlockid) | ID of the path lock. |
+| <a id="pathlockpath"></a>`path` | [`String`](#string) | The locked path. |
+| <a id="pathlockuser"></a>`user` | [`UserCore`](#usercore) | The user that has locked this path. |
+
 ### `Pipeline`
 
 #### Fields
@@ -10841,6 +10882,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectonlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
 | <a id="projectopenissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
+| <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
 | <a id="projectprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
 | <a id="projectpublicjobs"></a>`publicJobs` | [`Boolean`](#boolean) | Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts. |
@@ -11655,6 +11697,7 @@ Represents a Project Membership.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectpermissionsadminoperations"></a>`adminOperations` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_operations` on this resource. |
+| <a id="projectpermissionsadminpathlocks"></a>`adminPathLocks` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_path_locks` on this resource. |
 | <a id="projectpermissionsadminproject"></a>`adminProject` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_project` on this resource. |
 | <a id="projectpermissionsadminremotemirror"></a>`adminRemoteMirror` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_remote_mirror` on this resource. |
 | <a id="projectpermissionsadminwiki"></a>`adminWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_wiki` on this resource. |
@@ -15055,6 +15098,12 @@ An example `PackagesPackageFileID` is: `"gid://gitlab/Packages::PackageFile/1"`.
 A `PackagesPackageID` is a global ID. It is encoded as a string.
 
 An example `PackagesPackageID` is: `"gid://gitlab/Packages::Package/1"`.
+
+### `PathLockID`
+
+A `PathLockID` is a global ID. It is encoded as a string.
+
+An example `PathLockID` is: `"gid://gitlab/PathLock/1"`.
 
 ### `PayloadAlertFieldPathSegment`
 

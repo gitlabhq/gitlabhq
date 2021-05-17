@@ -27,3 +27,5 @@ module Types
     end
   end
 end
+
+::Types::PermissionTypes::Project.prepend_mod_with('Types::PermissionTypes::Project')

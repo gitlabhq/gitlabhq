@@ -172,7 +172,7 @@ module Trigger
     end
 
     def trigger_token
-      ENV['BUILD_TRIGGER_TOKEN']
+      ENV['CI_JOB_TOKEN']
     end
 
     def extra_variables

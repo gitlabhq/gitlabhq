@@ -1178,6 +1178,7 @@ RSpec.describe IssuesFinder do
 
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
+          expect(finder.execute.to_sql).to match(/^WITH "issues" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
         end
       end
 
@@ -1186,6 +1187,7 @@ RSpec.describe IssuesFinder do
 
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
+          expect(finder.execute.to_sql).to match(/^WITH "issues" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
         end
       end
     end
