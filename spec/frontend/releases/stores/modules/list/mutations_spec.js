@@ -1,10 +1,9 @@
 import { getJSONFixture } from 'helpers/fixtures';
-import { parseIntPagination, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import * as types from '~/releases/stores/modules/index/mutation_types';
 import mutations from '~/releases/stores/modules/index/mutations';
 import createState from '~/releases/stores/modules/index/state';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
-import { pageInfoHeadersWithoutPagination } from '../../../mock_data';
 
 const originalRelease = getJSONFixture('api/releases/release.json');
 const originalReleases = [originalRelease];
@@ -15,14 +14,12 @@ const graphqlReleasesResponse = getJSONFixture(
 
 describe('Releases Store Mutations', () => {
   let stateCopy;
-  let restPageInfo;
-  let graphQlPageInfo;
+  let pageInfo;
   let releases;
 
   beforeEach(() => {
     stateCopy = createState({});
-    restPageInfo = parseIntPagination(pageInfoHeadersWithoutPagination);
-    graphQlPageInfo = convertAllReleasesGraphQLResponse(graphqlReleasesResponse).paginationInfo;
+    pageInfo = convertAllReleasesGraphQLResponse(graphqlReleasesResponse).paginationInfo;
     releases = convertObjectPropsToCamelCase(originalReleases, { deep: true });
   });
 
@@ -37,8 +34,7 @@ describe('Releases Store Mutations', () => {
   describe('RECEIVE_RELEASES_SUCCESS', () => {
     beforeEach(() => {
       mutations[types.RECEIVE_RELEASES_SUCCESS](stateCopy, {
-        restPageInfo,
-        graphQlPageInfo,
+        pageInfo,
         data: releases,
       });
     });
@@ -55,20 +51,15 @@ describe('Releases Store Mutations', () => {
       expect(stateCopy.releases).toEqual(releases);
     });
 
-    it('sets restPageInfo', () => {
-      expect(stateCopy.restPageInfo).toEqual(restPageInfo);
-    });
-
-    it('sets graphQlPageInfo', () => {
-      expect(stateCopy.graphQlPageInfo).toEqual(graphQlPageInfo);
+    it('sets pageInfo', () => {
+      expect(stateCopy.pageInfo).toEqual(pageInfo);
     });
   });
 
   describe('RECEIVE_RELEASES_ERROR', () => {
     it('resets data', () => {
       mutations[types.RECEIVE_RELEASES_SUCCESS](stateCopy, {
-        restPageInfo,
-        graphQlPageInfo,
+        pageInfo,
         data: releases,
       });
 
@@ -76,8 +67,7 @@ describe('Releases Store Mutations', () => {
 
       expect(stateCopy.isLoading).toEqual(false);
       expect(stateCopy.releases).toEqual([]);
-      expect(stateCopy.restPageInfo).toEqual({});
-      expect(stateCopy.graphQlPageInfo).toEqual({});
+      expect(stateCopy.pageInfo).toEqual({});
     });
   });
 

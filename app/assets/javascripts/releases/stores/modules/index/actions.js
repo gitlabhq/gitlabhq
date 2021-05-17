@@ -45,11 +45,11 @@ export const fetchReleases = ({ dispatch, commit, state }, { before, after }) =>
       },
     })
     .then((response) => {
-      const { data, paginationInfo: graphQlPageInfo } = convertAllReleasesGraphQLResponse(response);
+      const { data, paginationInfo: pageInfo } = convertAllReleasesGraphQLResponse(response);
 
       commit(types.RECEIVE_RELEASES_SUCCESS, {
         data,
-        graphQlPageInfo,
+        pageInfo,
       });
     })
     .catch(() => dispatch('receiveReleasesError'));

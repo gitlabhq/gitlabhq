@@ -112,9 +112,6 @@ sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdb
   libcurl4-openssl-dev libicu-dev logrotate rsync python-docutils pkg-config cmake runit-systemd
 ```
 
-Ubuntu 14.04 (Trusty Tahr) doesn't have the `libre2-dev` package available, but
-you can [install re2 manually](https://github.com/google/re2/wiki/Install).
-
 If you want to use Kerberos for user authentication, install `libkrb5-dev`
 (if you don't know what Kerberos is, you can assume you don't need it):
 

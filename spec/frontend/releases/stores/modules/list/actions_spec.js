@@ -141,7 +141,7 @@ describe('Releases State actions', () => {
               type: types.RECEIVE_RELEASES_SUCCESS,
               payload: {
                 data: convertedResponse.data,
-                graphQlPageInfo: convertedResponse.paginationInfo,
+                pageInfo: convertedResponse.paginationInfo,
               },
             },
           ],
