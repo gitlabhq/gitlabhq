@@ -42,10 +42,6 @@ module Issues
       ).execute(spam_params: spam_params)
     end
 
-    def after_update(issue)
-      IssuesChannel.broadcast_to(issue, event: 'updated') if Gitlab::ActionCable::Config.in_app? || Feature.enabled?(:broadcast_issue_updates, issue.project)
-    end
-
     def handle_changes(issue, options)
       old_associations = options.fetch(:old_associations, {})
       old_labels = old_associations.fetch(:labels, [])

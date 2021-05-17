@@ -14,6 +14,6 @@
     = render 'shared/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: "Write your release notes or drag files here…"
     = render 'shared/notes/hints'
   .error-alert
-  .gl-mt-3
-    = f.submit 'Save changes', class: 'btn gl-button btn-confirm'
+  .gl-mt-5.gl-display-flex
+    = f.submit 'Save changes', class: 'btn gl-button btn-confirm gl-mr-3'
     = link_to "Cancel", project_tag_path(@project, @tag.name), class: "btn gl-button btn-default btn-cancel"

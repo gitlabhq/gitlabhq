@@ -1024,10 +1024,8 @@ RSpec.describe Issues::UpdateService, :mailer do
           stub_feature_flags(broadcast_issue_updates: feature_flag_enabled)
 
           if should_broadcast
-            expect(IssuesChannel).to receive(:broadcast_to).with(issue, event: 'updated')
             expect(GraphqlTriggers).to receive(:issuable_assignees_updated).with(issue)
           else
-            expect(IssuesChannel).not_to receive(:broadcast_to)
             expect(GraphqlTriggers).not_to receive(:issuable_assignees_updated).with(issue)
           end
 

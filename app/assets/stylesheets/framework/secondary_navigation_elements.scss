@@ -182,6 +182,11 @@
         width: 100%;
       }
 
+      /* This resets the width of the control so that the search button doesn't wrap */
+      .gl-search-box-by-click .form-control {
+        width: 1%;
+      }
+
       .dropdown-menu-toggle {
         margin-bottom: 0;
       }

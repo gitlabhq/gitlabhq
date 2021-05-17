@@ -51,7 +51,7 @@
       = render layout: 'shared/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
         = render 'shared/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here…'), current_text: @release_description, qa_selector: 'release_notes_field'
         = render 'shared/notes/hints'
-  .form-actions
-    = button_tag s_('TagsPage|Create tag'), class: 'gl-button btn btn-confirm', data: { qa_selector: "create_tag_button" }
+  .form-actions.gl-display-flex
+    = button_tag s_('TagsPage|Create tag'), class: 'gl-button btn btn-confirm gl-mr-3', data: { qa_selector: "create_tag_button" }
     = link_to s_('TagsPage|Cancel'), project_tags_path(@project), class: 'gl-button btn btn-default btn-cancel'
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe
