@@ -11,10 +11,14 @@ module Banzai
         self.reference_type = :snippet
         self.object_class   = Snippet
 
-        def find_object(project, id)
+        def parent_records(project, ids)
           return unless project.is_a?(Project)
 
-          project.snippets.find_by(id: id)
+          project.snippets.where(id: ids.to_a)
+        end
+
+        def find_object(project, id)
+          reference_cache.records_per_parent[project][id]
         end
 
         def url_for_object(snippet, project)

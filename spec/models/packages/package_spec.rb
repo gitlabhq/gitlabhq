@@ -606,22 +606,6 @@ RSpec.describe Packages::Package, type: :model do
     end
   end
 
-  describe '.processed' do
-    let!(:package1) { create(:nuget_package) }
-    let!(:package2) { create(:npm_package) }
-    let!(:package3) { create(:nuget_package) }
-
-    subject { described_class.processed }
-
-    it { is_expected.to match_array([package1, package2, package3]) }
-
-    context 'with temporary packages' do
-      let!(:package1) { create(:nuget_package, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
-
-      it { is_expected.to match_array([package2, package3]) }
-    end
-  end
-
   describe '.limit_recent' do
     let!(:package1) { create(:nuget_package) }
     let!(:package2) { create(:nuget_package) }

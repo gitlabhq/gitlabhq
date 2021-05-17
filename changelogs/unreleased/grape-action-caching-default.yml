@@ -1,0 +1,5 @@
+---
+title: Apply rate-limit cache to branches endpoint
+merge_request: 61723
+author:
+type: performance

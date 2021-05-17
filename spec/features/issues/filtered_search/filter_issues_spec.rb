@@ -330,7 +330,7 @@ RSpec.describe 'Filter issues', :js do
 
     context 'issue label clicked' do
       it 'filters and displays in search bar' do
-        find('[data-qa-selector="issuable-label"]', text: multiple_words_label.title).click
+        click_link multiple_words_label.title
 
         expect_issues_list_count(1)
         expect_tokens([label_token("\"#{multiple_words_label.title}\"")])

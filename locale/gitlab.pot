@@ -978,6 +978,9 @@ msgstr ""
 msgid "%{user_name} profile page"
 msgstr ""
 
+msgid "%{username} changed the draft status of merge request %{mr_link}"
+msgstr ""
+
 msgid "%{username} has asked for a GitLab account on your instance %{host}:"
 msgstr ""
 
@@ -11797,7 +11800,7 @@ msgstr ""
 msgid "Draft merge requests can't be merged."
 msgstr ""
 
-msgid "Drop or %{linkStart}upload%{linkEnd} designs to attach"
+msgid "Drag your designs here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
 msgid "Drop or %{linkStart}upload%{linkEnd} file to attach"

@@ -1,2 +1,2 @@
-%p
-  = _('%{username} changed the draft status of merge request %{mr_reference}' % {username: sanitize_name(@updated_by_user.name), mr_reference: @merge_request.to_reference })
+%p= html_escape(_('%{username} changed the draft status of merge request %{mr_link}')) % { username: link_to(@updated_by_user.name, user_url(@updated_by_user)),
+    mr_link: merge_request_reference_link(@merge_request) }

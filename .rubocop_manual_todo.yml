@@ -2941,7 +2941,6 @@ Style/RegexpLiteralMixedPreserve:
     - 'app/models/concerns/ci/maskable.rb'
     - 'app/models/operations/feature_flag.rb'
     - 'app/models/packages/go/module.rb'
-    - 'app/models/project_services/chat_message/base_message.rb'
     - 'app/services/packages/conan/search_service.rb'
     - 'app/services/projects/update_remote_mirror_service.rb'
     - 'config/initializers/rspec_profiling.rb'

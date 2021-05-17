@@ -1,5 +1,5 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { getAllByRole } from '@testing-library/dom';
+import { getAllByRole, getByRole } from '@testing-library/dom';
 import { shallowMount, createLocalVue, mount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -25,6 +25,7 @@ describe('Issuable Time Tracking Report', () => {
     queryHandler = successIssueQueryHandler,
     issuableType = 'issue',
     mountFunction = shallowMount,
+    limitToHours = false,
   } = {}) => {
     fakeApollo = createMockApollo([
       [getIssueTimelogsQuery, queryHandler],
@@ -35,6 +36,7 @@ describe('Issuable Time Tracking Report', () => {
         issuableId: 1,
         issuableType,
       },
+      propsData: { limitToHours },
       localVue,
       apolloProvider: fakeApollo,
     });
@@ -92,6 +94,32 @@ describe('Issuable Time Tracking Report', () => {
       await waitForPromises();
 
       expect(getAllByRole(wrapper.element, 'row', { name: /Administrator/i })).toHaveLength(3);
+    });
+  });
+
+  describe('observes `limit display of time tracking units to hours` setting', () => {
+    describe('when false', () => {
+      beforeEach(() => {
+        mountComponent({ limitToHours: false, mountFunction: mount });
+      });
+
+      it('renders correct results', async () => {
+        await waitForPromises();
+
+        expect(getByRole(wrapper.element, 'columnheader', { name: /1d 30m/i })).not.toBeNull();
+      });
+    });
+
+    describe('when true', () => {
+      beforeEach(() => {
+        mountComponent({ limitToHours: true, mountFunction: mount });
+      });
+
+      it('renders correct results', async () => {
+        await waitForPromises();
+
+        expect(getByRole(wrapper.element, 'columnheader', { name: /8h 30m/i })).not.toBeNull();
+      });
     });
   });
 });

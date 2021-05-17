@@ -43,13 +43,12 @@ class ProjectsController < Projects::ApplicationController
 
   feature_category :projects, [
                      :index, :show, :new, :create, :edit, :update, :transfer,
-                     :destroy, :resolve, :archive, :unarchive, :toggle_star
+                     :destroy, :resolve, :archive, :unarchive, :toggle_star, :activity
                    ]
 
   feature_category :source_code_management, [:remove_fork, :housekeeping, :refs]
   feature_category :issue_tracking, [:preview_markdown, :new_issuable_address]
   feature_category :importers, [:export, :remove_export, :generate_new_export, :download_export]
-  feature_category :audit_events, [:activity]
   feature_category :code_review, [:unfoldered_environment_names]
 
   def index

@@ -6,7 +6,7 @@
 - issuable_mr        = @issuable_meta_data[issuable.id].merge_requests_count
 
 - if issuable_mr > 0
-  %li.issuable-mr.gl-display-none.gl-sm-display-block.has-tooltip{ title: _('Related merge requests') }
+  %li.issuable-mr.gl-display-none.gl-sm-display-block.has-tooltip{ title: _('Related merge requests'), data: { testid: 'merge-requests' } }
     = sprite_icon('merge-request', css_class: "gl-vertical-align-middle")
     = issuable_mr
 

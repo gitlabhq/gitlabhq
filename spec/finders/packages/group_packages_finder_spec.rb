@@ -122,7 +122,7 @@ RSpec.describe Packages::GroupPackagesFinder do
       end
 
       context 'when there are processing packages' do
-        let_it_be(:package4) { create(:nuget_package, project: project, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
+        let_it_be(:package4) { create(:nuget_package, :processing, project: project) }
 
         it { is_expected.to match_array([package1, package2]) }
       end

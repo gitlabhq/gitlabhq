@@ -240,7 +240,7 @@ RSpec.describe MicrosoftTeamsService do
 
         chat_service.execute(data)
 
-        message = ChatMessage::PipelineMessage.new(data)
+        message = Integrations::ChatMessage::PipelineMessage.new(data)
 
         expect(WebMock).to have_requested(:post, webhook_url)
           .with(body: hash_including({ summary: message.summary }))

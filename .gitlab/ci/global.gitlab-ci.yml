@@ -128,7 +128,7 @@
 
 .use-kaniko:
   image:
-    name: gcr.io/kaniko-project/executor:debug-v1.3.0
+    name: registry.gitlab.com/gitlab-org/gitlab-build-images:kaniko
     entrypoint: [""]
   before_script:
     - source scripts/utils.sh

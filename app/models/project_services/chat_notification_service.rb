@@ -185,19 +185,19 @@ class ChatNotificationService < Integration
   def get_message(object_kind, data)
     case object_kind
     when "push", "tag_push"
-      ChatMessage::PushMessage.new(data) if notify_for_ref?(data)
+      Integrations::ChatMessage::PushMessage.new(data) if notify_for_ref?(data)
     when "issue"
-      ChatMessage::IssueMessage.new(data) unless update?(data)
+      Integrations::ChatMessage::IssueMessage.new(data) unless update?(data)
     when "merge_request"
-      ChatMessage::MergeMessage.new(data) unless update?(data)
+      Integrations::ChatMessage::MergeMessage.new(data) unless update?(data)
     when "note"
-      ChatMessage::NoteMessage.new(data)
+      Integrations::ChatMessage::NoteMessage.new(data)
     when "pipeline"
-      ChatMessage::PipelineMessage.new(data) if should_pipeline_be_notified?(data)
+      Integrations::ChatMessage::PipelineMessage.new(data) if should_pipeline_be_notified?(data)
     when "wiki_page"
-      ChatMessage::WikiPageMessage.new(data)
+      Integrations::ChatMessage::WikiPageMessage.new(data)
     when "deployment"
-      ChatMessage::DeploymentMessage.new(data)
+      Integrations::ChatMessage::DeploymentMessage.new(data)
     end
   end
 

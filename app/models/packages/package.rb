@@ -117,11 +117,6 @@ class Packages::Package < ApplicationRecord
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
   scope :has_version, -> { where.not(version: nil) }
-  scope :processed, -> do
-    where.not(package_type: :nuget).or(
-      where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME)
-    )
-  end
   scope :preload_files, -> { preload(:package_files) }
   scope :last_of_each_version, -> { where(id: all.select('MAX(id) AS id').group(:version)) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }

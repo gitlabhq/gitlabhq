@@ -1,8 +1,0 @@
----
-name: pages_update_legacy_storage
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50683
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/296138
-milestone: '13.9'
-type: development
-group: group::release
-default_enabled: true

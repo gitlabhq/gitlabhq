@@ -10,7 +10,7 @@ module Packages
       private
 
       def packages
-        base.pypi.has_version.processed
+        base.pypi.has_version
       end
     end
   end

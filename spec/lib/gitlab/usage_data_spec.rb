@@ -1466,6 +1466,86 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
+  describe '.email_campaign_counts' do
+    subject { described_class.send(:email_campaign_counts) }
+
+    context 'when queries time out' do
+      before do
+        allow_any_instance_of(ActiveRecord::Relation)
+          .to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
+      end
+
+      it 'returns -1 for email campaign data' do
+        expected_data = {
+          "in_product_marketing_email_create_0_sent" => -1,
+          "in_product_marketing_email_create_0_cta_clicked" => -1,
+          "in_product_marketing_email_create_1_sent" => -1,
+          "in_product_marketing_email_create_1_cta_clicked" => -1,
+          "in_product_marketing_email_create_2_sent" => -1,
+          "in_product_marketing_email_create_2_cta_clicked" => -1,
+          "in_product_marketing_email_verify_0_sent" => -1,
+          "in_product_marketing_email_verify_0_cta_clicked" => -1,
+          "in_product_marketing_email_verify_1_sent" => -1,
+          "in_product_marketing_email_verify_1_cta_clicked" => -1,
+          "in_product_marketing_email_verify_2_sent" => -1,
+          "in_product_marketing_email_verify_2_cta_clicked" => -1,
+          "in_product_marketing_email_trial_0_sent" => -1,
+          "in_product_marketing_email_trial_0_cta_clicked" => -1,
+          "in_product_marketing_email_trial_1_sent" => -1,
+          "in_product_marketing_email_trial_1_cta_clicked" => -1,
+          "in_product_marketing_email_trial_2_sent" => -1,
+          "in_product_marketing_email_trial_2_cta_clicked" => -1,
+          "in_product_marketing_email_team_0_sent" => -1,
+          "in_product_marketing_email_team_0_cta_clicked" => -1,
+          "in_product_marketing_email_team_1_sent" => -1,
+          "in_product_marketing_email_team_1_cta_clicked" => -1,
+          "in_product_marketing_email_team_2_sent" => -1,
+          "in_product_marketing_email_team_2_cta_clicked" => -1
+        }
+
+        expect(subject).to eq(expected_data)
+      end
+    end
+
+    context 'when there are entries' do
+      before do
+        create(:in_product_marketing_email, track: :create, series: 0, cta_clicked_at: Time.zone.now)
+        create(:in_product_marketing_email, track: :verify, series: 0)
+      end
+
+      it 'gathers email campaign data' do
+        expected_data = {
+          "in_product_marketing_email_create_0_sent" => 1,
+          "in_product_marketing_email_create_0_cta_clicked" => 1,
+          "in_product_marketing_email_create_1_sent" => 0,
+          "in_product_marketing_email_create_1_cta_clicked" => 0,
+          "in_product_marketing_email_create_2_sent" => 0,
+          "in_product_marketing_email_create_2_cta_clicked" => 0,
+          "in_product_marketing_email_verify_0_sent" => 1,
+          "in_product_marketing_email_verify_0_cta_clicked" => 0,
+          "in_product_marketing_email_verify_1_sent" => 0,
+          "in_product_marketing_email_verify_1_cta_clicked" => 0,
+          "in_product_marketing_email_verify_2_sent" => 0,
+          "in_product_marketing_email_verify_2_cta_clicked" => 0,
+          "in_product_marketing_email_trial_0_sent" => 0,
+          "in_product_marketing_email_trial_0_cta_clicked" => 0,
+          "in_product_marketing_email_trial_1_sent" => 0,
+          "in_product_marketing_email_trial_1_cta_clicked" => 0,
+          "in_product_marketing_email_trial_2_sent" => 0,
+          "in_product_marketing_email_trial_2_cta_clicked" => 0,
+          "in_product_marketing_email_team_0_sent" => 0,
+          "in_product_marketing_email_team_0_cta_clicked" => 0,
+          "in_product_marketing_email_team_1_sent" => 0,
+          "in_product_marketing_email_team_1_cta_clicked" => 0,
+          "in_product_marketing_email_team_2_sent" => 0,
+          "in_product_marketing_email_team_2_cta_clicked" => 0
+        }
+
+        expect(subject).to eq(expected_data)
+      end
+    end
+  end
+
   describe '.snowplow_event_counts' do
     let_it_be(:time_period) { { collector_tstamp: 8.days.ago..1.day.ago } }
 

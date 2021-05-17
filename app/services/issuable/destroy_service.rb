@@ -26,25 +26,13 @@ module Issuable
     end
 
     def delete_todos(actor, issuable)
-      if Feature.enabled?(:destroy_issuable_todos_async, actor, default_enabled: :yaml)
-        TodosDestroyer::DestroyedIssuableWorker
-          .perform_async(issuable.id, issuable.class.name)
-      else
-        TodosDestroyer::DestroyedIssuableWorker
-          .new
-          .perform(issuable.id, issuable.class.name)
-      end
+      TodosDestroyer::DestroyedIssuableWorker
+        .perform_async(issuable.id, issuable.class.name)
     end
 
     def delete_label_links(actor, issuable)
-      if Feature.enabled?(:destroy_issuable_label_links_async, actor, default_enabled: :yaml)
-        Issuable::LabelLinksDestroyWorker
-          .perform_async(issuable.id, issuable.class.name)
-      else
-        Issuable::LabelLinksDestroyWorker
-          .new
-          .perform(issuable.id, issuable.class.name)
-      end
+      Issuable::LabelLinksDestroyWorker
+        .perform_async(issuable.id, issuable.class.name)
     end
   end
 end

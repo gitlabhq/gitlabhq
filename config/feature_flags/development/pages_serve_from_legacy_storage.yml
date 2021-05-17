@@ -1,8 +1,0 @@
----
-name: pages_serve_from_legacy_storage
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/297228
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/297524
-milestone: '13.8'
-type: development
-group: group::release
-default_enabled: true

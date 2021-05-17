@@ -58,6 +58,7 @@ RSpec.describe Banzai::Filter::References::ReferenceCache do
       # Since this is an issue filter that is not batching issue queries
       # across projects, we have to account for that.
       # 1 for both projects, 1 for issues in each project == 3
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
       max_count = control_count + 1
 
       expect do

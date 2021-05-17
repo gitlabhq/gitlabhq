@@ -11,10 +11,6 @@ module Gitlab
         super
       end
 
-      def local_store
-        @local_store ||= ::Gitlab::Pages::Stores::LocalStore.new(super)
-      end
-
       private
 
       def disk_access_denied?

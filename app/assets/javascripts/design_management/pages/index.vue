@@ -333,7 +333,7 @@ export default {
     ghostClass: 'gl-visibility-hidden',
   },
   i18n: {
-    dropzoneDescriptionText: __('Drop or %{linkStart}upload%{linkEnd} designs to attach'),
+    dropzoneDescriptionText: __('Drag your designs here or %{linkStart}click to upload%{linkEnd}.'),
   },
 };
 </script>

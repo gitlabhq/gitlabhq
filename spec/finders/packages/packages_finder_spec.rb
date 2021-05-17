@@ -76,7 +76,7 @@ RSpec.describe ::Packages::PackagesFinder do
     end
 
     context 'with processing packages' do
-      let_it_be(:nuget_package) { create(:nuget_package, project: project, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
+      let_it_be(:nuget_package) { create(:nuget_package, :processing, project: project) }
 
       it { is_expected.to match_array([conan_package, maven_package]) }
     end

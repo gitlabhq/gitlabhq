@@ -24,7 +24,7 @@ RSpec.describe ::Packages::PackageFinder do
     end
 
     context 'processing packages' do
-      let_it_be(:nuget_package) { create(:nuget_package, project: project, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
+      let_it_be(:nuget_package) { create(:nuget_package, :processing, project: project) }
       let(:package_id) { nuget_package.id }
 
       it 'are not returned' do

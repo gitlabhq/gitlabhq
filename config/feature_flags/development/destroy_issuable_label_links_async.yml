@@ -1,8 +1,0 @@
----
-name: destroy_issuable_label_links_async
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60487
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/325689
-milestone: '13.12'
-type: development
-group: group::code review
-default_enabled: false

@@ -190,7 +190,8 @@ module Gitlab
             user_preferences_usage,
             ingress_modsecurity_usage,
             container_expiration_policies_usage,
-            service_desk_counts
+            service_desk_counts,
+            email_campaign_counts
           ).tap do |data|
             data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
@@ -842,6 +843,28 @@ module Gitlab
             )
           )
         }
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def email_campaign_counts
+        # rubocop:disable UsageData/LargeTable
+        sent_emails = count(Users::InProductMarketingEmail.group(:track, :series))
+        clicked_emails = count(Users::InProductMarketingEmail.where.not(cta_clicked_at: nil).group(:track, :series))
+
+        series_amount = Namespaces::InProductMarketingEmailsService::INTERVAL_DAYS.count
+
+        Users::InProductMarketingEmail.tracks.keys.each_with_object({}) do |track, result|
+          # rubocop: enable UsageData/LargeTable:
+          0.upto(series_amount - 1).map do |series|
+            # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
+            sent_count = sent_emails.is_a?(Hash) ? sent_emails.fetch([track, series], 0) : sent_emails
+            clicked_count = clicked_emails.is_a?(Hash) ? clicked_emails.fetch([track, series], 0) : clicked_emails
+
+            result["in_product_marketing_email_#{track}_#{series}_sent"] = sent_count
+            result["in_product_marketing_email_#{track}_#{series}_cta_clicked"] = clicked_count
+          end
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

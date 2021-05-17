@@ -13,7 +13,6 @@ module Packages
         .including_project_route
         .including_tags
         .displayable
-        .processed
         .find(@package_id)
     end
   end

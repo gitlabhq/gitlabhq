@@ -92,7 +92,7 @@ module Gitlab
         end
 
         begin
-          run_block_with_transaction
+          run_block_with_lock_timeout
         rescue ActiveRecord::LockWaitTimeout
           if retry_with_lock_timeout?
             disable_idle_in_transaction_timeout if ActiveRecord::Base.connection.transaction_open?
@@ -121,7 +121,7 @@ module Gitlab
         block.call
       end
 
-      def run_block_with_transaction
+      def run_block_with_lock_timeout
         ActiveRecord::Base.transaction(requires_new: true) do
           execute("SET LOCAL lock_timeout TO '#{current_lock_timeout_in_ms}ms'")
 

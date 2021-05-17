@@ -65,6 +65,7 @@ module QA
     autoload :ApiFabricator, 'qa/resource/api_fabricator'
     autoload :Base, 'qa/resource/base'
 
+    autoload :GroupBase, 'qa/resource/group_base'
     autoload :Sandbox, 'qa/resource/sandbox'
     autoload :Group, 'qa/resource/group'
     autoload :Issue, 'qa/resource/issue'

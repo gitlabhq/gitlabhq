@@ -14,6 +14,13 @@ export default {
     GlTable,
   },
   inject: ['issuableId', 'issuableType'],
+  props: {
+    limitToHours: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
   data() {
     return { report: [], isLoading: true };
   },
@@ -60,7 +67,10 @@ export default {
     },
     formatTimeSpent(seconds) {
       const negative = seconds < 0;
-      return (negative ? '- ' : '') + stringifyTime(parseSeconds(seconds));
+      return (
+        (negative ? '- ' : '') +
+        stringifyTime(parseSeconds(seconds, { limitToHours: this.limitToHours }))
+      );
     },
   },
   fields: [

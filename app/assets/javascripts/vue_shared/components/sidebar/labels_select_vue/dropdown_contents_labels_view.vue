@@ -178,7 +178,7 @@ export default {
           class="labels-fetch-loading gl-align-items-center w-100 h-100"
           size="md"
         />
-        <ul v-else class="list-unstyled mb-0">
+        <ul v-else class="list-unstyled gl-mb-0 gl-word-break-word">
           <label-item
             v-for="(label, index) in visibleLabels"
             :key="label.id"

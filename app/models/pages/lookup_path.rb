@@ -62,17 +62,16 @@ module Pages
       }
     end
 
+    # TODO: remove support for legacy storage in 14.3 https://gitlab.com/gitlab-org/gitlab/-/issues/328712
+    # we support this till 14.3 to allow people to still use legacy storage if something goes very wrong
+    # on self-hosted installations, and we'll need some time to fix it
     def legacy_source
-      raise LegacyStorageDisabledError unless Feature.enabled?(:pages_serve_from_legacy_storage, default_enabled: true)
+      return unless ::Settings.pages.local_store.enabled
 
       {
         type: 'file',
         path: File.join(project.full_path, 'public/')
       }
-    rescue LegacyStorageDisabledError => e
-      Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
-
-      nil
     end
   end
 end

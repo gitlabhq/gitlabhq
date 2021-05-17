@@ -2134,6 +2134,294 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `counts.in_product_marketing_email_create_0_cta_clicked`
+
+Total clicks on the create track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510201919_in_product_marketing_email_create_0_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_create_0_sent`
+
+Total sent emails of the create track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510201537_in_product_marketing_email_create_0_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_create_1_cta_clicked`
+
+Total clicks on the create track's second email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510202356_in_product_marketing_email_create_1_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_create_1_sent`
+
+Total sent emails of the create track's second email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510202148_in_product_marketing_email_create_1_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_create_2_cta_clicked`
+
+Total clicks on the create track's third email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510202724_in_product_marketing_email_create_2_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_create_2_sent`
+
+Total sent emails of the create track's third email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510202604_in_product_marketing_email_create_2_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_team_0_cta_clicked`
+
+Total clicks on the team track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203143_in_product_marketing_email_team_0_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_team_0_sent`
+
+Total sent emails of the team track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203134_in_product_marketing_email_team_0_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_team_1_cta_clicked`
+
+Total clicks on the team track's second email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203203_in_product_marketing_email_team_1_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_team_1_sent`
+
+Total sent emails of the team track's second email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203153_in_product_marketing_email_team_1_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_team_2_cta_clicked`
+
+Total clicks on the team track's third email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203223_in_product_marketing_email_team_2_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_team_2_sent`
+
+Total sent emails of the team track's third email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203213_in_product_marketing_email_team_2_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_trial_0_cta_clicked`
+
+Total clicks on the verify trial's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203044_in_product_marketing_email_trial_0_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_trial_0_sent`
+
+Total sent emails of the trial track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203035_in_product_marketing_email_trial_0_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_trial_1_cta_clicked`
+
+Total clicks on the trial track's second email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203104_in_product_marketing_email_trial_1_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_trial_1_sent`
+
+Total sent emails of the trial track's second email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203054_in_product_marketing_email_trial_1_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_trial_2_cta_clicked`
+
+Total clicks on the trial track's third email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203124_in_product_marketing_email_trial_2_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_trial_2_sent`
+
+Total sent emails of the trial track's third email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203114_in_product_marketing_email_trial_2_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_verify_0_cta_clicked`
+
+Total clicks on the verify track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510202943_in_product_marketing_email_verify_0_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_verify_0_sent`
+
+Total sent emails of the verify track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510202807_in_product_marketing_email_verify_0_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_verify_1_cta_clicked`
+
+Total clicks on the verify track's second email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203005_in_product_marketing_email_verify_1_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_verify_1_sent`
+
+Total sent emails of the verify track's second email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510202955_in_product_marketing_email_verify_1_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_verify_2_cta_clicked`
+
+Total clicks on the verify track's third email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203025_in_product_marketing_email_verify_2_cta_clicked.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_verify_2_sent`
+
+Total sent emails of the verify track's third email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210510203015_in_product_marketing_email_verify_2_sent.yml)
+
+Group: `group::activation`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.in_review_folder`
 
 Missing description

@@ -9,6 +9,8 @@ RSpec.describe 'Service Desk Issue Tracker', :js do
   let_it_be(:support_bot) { User.support_bot }
 
   before do
+    stub_feature_flags(vue_issuables_list: true)
+
     # The following two conditions equate to Gitlab::ServiceDesk.supported == true
     allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
     allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)

@@ -114,6 +114,33 @@ RSpec.describe Spam::SpamVerdictService do
         end
       end
     end
+
+    context 'records metrics' do
+      let(:histogram) { instance_double(Prometheus::Client::Histogram) }
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:verdict, :error, :label) do
+        Spam::SpamConstants::ALLOW             |  false |  'ALLOW'
+        Spam::SpamConstants::ALLOW             |  true  |  'ERROR'
+        Spam::SpamConstants::CONDITIONAL_ALLOW |  false |  'CONDITIONAL_ALLOW'
+        Spam::SpamConstants::BLOCK_USER        |  false |  'BLOCK'
+        Spam::SpamConstants::DISALLOW          |  false |  'DISALLOW'
+        Spam::SpamConstants::NOOP              |  false |  'NOOP'
+      end
+
+      with_them do
+        before do
+          allow(Gitlab::Metrics).to receive(:histogram).with(:gitlab_spamcheck_request_duration_seconds, anything).and_return(histogram)
+          allow(service).to receive(:spamcheck_verdict).and_return([verdict, attribs, error])
+        end
+
+        it 'records duration with labels' do
+          expect(histogram).to receive(:observe).with(a_hash_including(result: label), anything)
+          subject
+        end
+      end
+    end
   end
 
   describe '#akismet_verdict' do
@@ -313,7 +340,7 @@ RSpec.describe Spam::SpamVerdictService do
           end
 
           it 'returns nil' do
-            expect(subject).to eq([ALLOW, attribs])
+            expect(subject).to eq([ALLOW, attribs, true])
           end
         end
 
@@ -335,7 +362,7 @@ RSpec.describe Spam::SpamVerdictService do
         end
 
         it 'returns nil' do
-          expect(subject).to eq([ALLOW, attribs])
+          expect(subject).to eq([ALLOW, attribs, true])
         end
       end
     end

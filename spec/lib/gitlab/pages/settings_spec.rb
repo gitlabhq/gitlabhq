@@ -47,12 +47,4 @@ RSpec.describe Gitlab::Pages::Settings do
       end
     end
   end
-
-  describe '#local_store' do
-    subject(:local_store) { described_class.new(settings).local_store }
-
-    it 'is an instance of Gitlab::Pages::Stores::LocalStore' do
-      expect(local_store).to be_a(Gitlab::Pages::Stores::LocalStore)
-    end
-  end
 end

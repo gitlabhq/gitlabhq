@@ -180,7 +180,7 @@ export default {
         :title="__('Time tracking report')"
         :hide-footer="true"
       >
-        <time-tracking-report />
+        <time-tracking-report :limit-to-hours="limitToHours" />
       </gl-modal>
       <transition name="help-state-toggle">
         <time-tracking-help-state v-if="showHelpState" />
