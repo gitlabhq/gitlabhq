@@ -13,8 +13,10 @@ import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
 import {
   apiSortParams,
   CREATED_DESC,
+  DUE_DATE_OVERDUE,
   PAGE_SIZE,
   PAGE_SIZE_MANUAL,
+  PARAM_DUE_DATE,
   RELATIVE_POSITION_DESC,
   urlSortParams,
 } from '~/issues_list/constants';
@@ -217,6 +219,16 @@ describe('IssuesListApp component', () => {
   });
 
   describe('initial url params', () => {
+    describe('due_date', () => {
+      it('is set from the url params', () => {
+        global.jsdom.reconfigure({ url: `${TEST_HOST}?${PARAM_DUE_DATE}=${DUE_DATE_OVERDUE}` });
+
+        wrapper = mountComponent();
+
+        expect(findIssuableList().props('urlParams')).toMatchObject({ due_date: DUE_DATE_OVERDUE });
+      });
+    });
+
     describe('page', () => {
       it('is set from the url params', () => {
         const page = 5;

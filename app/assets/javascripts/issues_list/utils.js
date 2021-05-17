@@ -4,6 +4,7 @@ import {
   CREATED_DESC,
   DUE_DATE_ASC,
   DUE_DATE_DESC,
+  DUE_DATE_VALUES,
   filters,
   LABEL_PRIORITY_DESC,
   MILESTONE_DUE_ASC,
@@ -21,11 +22,14 @@ import {
   WEIGHT_ASC,
   WEIGHT_DESC,
 } from '~/issues_list/constants';
+import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const getSortKey = (sort) =>
   Object.keys(urlSortParams).find((key) => urlSortParams[key].sort === sort);
+
+export const getDueDateValue = (value) => (DUE_DATE_VALUES.includes(value) ? value : undefined);
 
 export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) => {
   const sortOptions = [
@@ -167,28 +171,20 @@ export const getFilterTokens = (locationSearch) => {
   return filterTokens.concat(searchTokens);
 };
 
-const getFilterType = (data) =>
-  SPECIAL_FILTER_VALUES.includes(data) ? SPECIAL_FILTER : NORMAL_FILTER;
+const getFilterType = (data, tokenType = '') =>
+  SPECIAL_FILTER_VALUES.includes(data) ||
+  (tokenType === 'assignee_username' && isPositiveInteger(data))
+    ? SPECIAL_FILTER
+    : NORMAL_FILTER;
 
-export const convertToApiParams = (filterTokens) =>
+export const convertToParams = (filterTokens, paramType) =>
   filterTokens
     .filter((token) => token.type !== FILTERED_SEARCH_TERM)
     .reduce((acc, token) => {
-      const filterType = getFilterType(token.value.data);
-      const apiParam = filters[token.type].apiParam[token.value.operator][filterType];
+      const filterType = getFilterType(token.value.data, token.type);
+      const param = filters[token.type][paramType][token.value.operator]?.[filterType];
       return Object.assign(acc, {
-        [apiParam]: acc[apiParam] ? `${acc[apiParam]},${token.value.data}` : token.value.data,
-      });
-    }, {});
-
-export const convertToUrlParams = (filterTokens) =>
-  filterTokens
-    .filter((token) => token.type !== FILTERED_SEARCH_TERM)
-    .reduce((acc, token) => {
-      const filterType = getFilterType(token.value.data);
-      const urlParam = filters[token.type].urlParam[token.value.operator]?.[filterType];
-      return Object.assign(acc, {
-        [urlParam]: acc[urlParam] ? acc[urlParam].concat(token.value.data) : [token.value.data],
+        [param]: acc[param] ? [acc[param], token.value.data].flat() : token.value.data,
       });
     }, {});
 

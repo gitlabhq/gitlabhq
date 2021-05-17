@@ -8,7 +8,9 @@ export const locationSearch = [
   'author_username=homer',
   'not[author_username]=marge',
   'assignee_username[]=bart',
-  'not[assignee_username][]=lisa',
+  'assignee_username[]=lisa',
+  'not[assignee_username][]=patty',
+  'not[assignee_username][]=selma',
   'milestone_title=season+4',
   'not[milestone_title]=season+20',
   'label_name[]=cartoon',
@@ -26,7 +28,8 @@ export const locationSearch = [
 ].join('&');
 
 export const locationSearchWithSpecialValues = [
-  'assignee_id=None',
+  'assignee_id=123',
+  'assignee_username=bart',
   'my_reaction_emoji=None',
   'iteration_id=Current',
   'epic_id=None',
@@ -37,7 +40,9 @@ export const filteredTokens = [
   { type: 'author_username', value: { data: 'homer', operator: OPERATOR_IS } },
   { type: 'author_username', value: { data: 'marge', operator: OPERATOR_IS_NOT } },
   { type: 'assignee_username', value: { data: 'bart', operator: OPERATOR_IS } },
-  { type: 'assignee_username', value: { data: 'lisa', operator: OPERATOR_IS_NOT } },
+  { type: 'assignee_username', value: { data: 'lisa', operator: OPERATOR_IS } },
+  { type: 'assignee_username', value: { data: 'patty', operator: OPERATOR_IS_NOT } },
+  { type: 'assignee_username', value: { data: 'selma', operator: OPERATOR_IS_NOT } },
   { type: 'milestone', value: { data: 'season 4', operator: OPERATOR_IS } },
   { type: 'milestone', value: { data: 'season 20', operator: OPERATOR_IS_NOT } },
   { type: 'labels', value: { data: 'cartoon', operator: OPERATOR_IS } },
@@ -57,7 +62,8 @@ export const filteredTokens = [
 ];
 
 export const filteredTokensWithSpecialValues = [
-  { type: 'assignee_username', value: { data: 'None', operator: OPERATOR_IS } },
+  { type: 'assignee_username', value: { data: '123', operator: OPERATOR_IS } },
+  { type: 'assignee_username', value: { data: 'bart', operator: OPERATOR_IS } },
   { type: 'my_reaction_emoji', value: { data: 'None', operator: OPERATOR_IS } },
   { type: 'iteration', value: { data: 'Current', operator: OPERATOR_IS } },
   { type: 'epic_id', value: { data: 'None', operator: OPERATOR_IS } },
@@ -67,12 +73,12 @@ export const filteredTokensWithSpecialValues = [
 export const apiParams = {
   author_username: 'homer',
   'not[author_username]': 'marge',
-  assignee_username: 'bart',
-  'not[assignee_username]': 'lisa',
+  assignee_username: ['bart', 'lisa'],
+  'not[assignee_username]': ['patty', 'selma'],
   milestone: 'season 4',
   'not[milestone]': 'season 20',
-  labels: 'cartoon,tv',
-  'not[labels]': 'live action,drama',
+  labels: ['cartoon', 'tv'],
+  'not[labels]': ['live action', 'drama'],
   my_reaction_emoji: 'thumbsup',
   confidential: 'no',
   iteration_title: 'season: #4',
@@ -84,7 +90,8 @@ export const apiParams = {
 };
 
 export const apiParamsWithSpecialValues = {
-  assignee_id: 'None',
+  assignee_id: '123',
+  assignee_username: 'bart',
   my_reaction_emoji: 'None',
   iteration_id: 'Current',
   epic_id: 'None',
@@ -92,28 +99,29 @@ export const apiParamsWithSpecialValues = {
 };
 
 export const urlParams = {
-  author_username: ['homer'],
-  'not[author_username]': ['marge'],
-  'assignee_username[]': ['bart'],
-  'not[assignee_username][]': ['lisa'],
-  milestone_title: ['season 4'],
-  'not[milestone_title]': ['season 20'],
+  author_username: 'homer',
+  'not[author_username]': 'marge',
+  'assignee_username[]': ['bart', 'lisa'],
+  'not[assignee_username][]': ['patty', 'selma'],
+  milestone_title: 'season 4',
+  'not[milestone_title]': 'season 20',
   'label_name[]': ['cartoon', 'tv'],
   'not[label_name][]': ['live action', 'drama'],
-  my_reaction_emoji: ['thumbsup'],
-  confidential: ['no'],
-  iteration_title: ['season: #4'],
-  'not[iteration_title]': ['season: #20'],
-  epic_id: ['12'],
-  'not[epic_id]': ['34'],
-  weight: ['1'],
-  'not[weight]': ['3'],
+  my_reaction_emoji: 'thumbsup',
+  confidential: 'no',
+  iteration_title: 'season: #4',
+  'not[iteration_title]': 'season: #20',
+  epic_id: '12',
+  'not[epic_id]': '34',
+  weight: '1',
+  'not[weight]': '3',
 };
 
 export const urlParamsWithSpecialValues = {
-  assignee_id: ['None'],
-  my_reaction_emoji: ['None'],
-  iteration_id: ['Current'],
-  epic_id: ['None'],
-  weight: ['None'],
+  assignee_id: '123',
+  'assignee_username[]': 'bart',
+  my_reaction_emoji: 'None',
+  iteration_id: 'Current',
+  epic_id: 'None',
+  weight: 'None',
 };

@@ -52,7 +52,7 @@ Include details of the feature flag in the documentation:
   [by-project information](#features-enabled-by-project). Otherwise,
   do not say anything about it.
 - Say whether it's recommended for production use.
-- Document how to enable and disable it.
+- Document how to enable and disable it, preferably at the end of the file.
 - Add a warning to the user saying that the feature might be disabled.
 
 For example, for a feature disabled by default, disabled on GitLab.com, cannot
@@ -110,7 +110,7 @@ default:
   [by-project information](#features-enabled-by-project). Otherwise,
   do not say anything about it.
 - Say whether it's recommended for production use.
-- Document how to disable and enable it.
+- Document how to disable and enable it, preferably at the end of the file.
 - Add a warning to the user saying that the feature might be disabled.
 
 For example, for a feature initially deployed disabled by default, that became
@@ -169,7 +169,7 @@ For features enabled by default:
   [by-project information](#features-enabled-by-project). Otherwise,
   do not say anything about it.
 - Say whether it's recommended for production use.
-- Document how to disable and enable it.
+- Document how to disable and enable it, preferably at the end of the file.
 - Add a warning to the user saying that the feature might be disabled.
 
 For example, for a feature enabled by default, enabled on GitLab.com, that

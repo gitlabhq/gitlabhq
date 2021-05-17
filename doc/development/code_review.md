@@ -559,8 +559,9 @@ Enterprise Edition instance. This has some implications:
    1. Try to avoid that, and add to `ApplicationSetting` instead.
    1. Ensure that it is also
       [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml.html#adding-a-new-setting-to-gitlab-yml).
-1. **File system access** can be slow, so try to avoid
-   [shared files](shared_files.md) when an alternative solution is available.
+1. **File system access** is not possible in a [cloud-native architecture](architecture.md#adapting-existing-and-introducing-new-components).
+   Ensure that we support object storage for any file storage we need to perform. For more
+   information, see the [uploads documentation](uploads.md).
 
 ### Review turnaround time
 

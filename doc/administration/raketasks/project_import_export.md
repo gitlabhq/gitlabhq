@@ -53,5 +53,5 @@ Note the following:
 - The project import option must be enabled in
   application settings (`/admin/application_settings/general`) under **Import sources**, which is available
   under **Admin Area > Settings > Visibility and access controls**.
-- The exports are stored in a temporary [shared directory](../../development/shared_files.md)
-  and are deleted every 24 hours by a specific worker.
+- The exports are stored in a temporary directory and are deleted every
+  24 hours by a specific worker.

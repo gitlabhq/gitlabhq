@@ -12,7 +12,7 @@ FactoryBot.define do
     issue_tracker
   end
 
-  factory :emails_on_push_service do
+  factory :emails_on_push_service, class: 'Integrations::EmailsOnPush' do
     project
     type { 'EmailsOnPushService' }
     active { true }
@@ -79,7 +79,7 @@ FactoryBot.define do
     end
   end
 
-  factory :confluence_service do
+  factory :confluence_service, class: 'Integrations::Confluence' do
     project
     active { true }
     confluence_url { 'https://example.atlassian.net/wiki' }

@@ -100,9 +100,25 @@ export const i18n = {
 
 export const JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY = 'jira-import-success-alert-hide-map';
 
+export const PARAM_DUE_DATE = 'due_date';
 export const PARAM_PAGE = 'page';
 export const PARAM_SORT = 'sort';
 export const PARAM_STATE = 'state';
+
+export const DUE_DATE_NONE = '0';
+export const DUE_DATE_ANY = '';
+export const DUE_DATE_OVERDUE = 'overdue';
+export const DUE_DATE_WEEK = 'week';
+export const DUE_DATE_MONTH = 'month';
+export const DUE_DATE_NEXT_MONTH_AND_PREVIOUS_TWO_WEEKS = 'next_month_and_previous_two_weeks';
+export const DUE_DATE_VALUES = [
+  DUE_DATE_NONE,
+  DUE_DATE_ANY,
+  DUE_DATE_OVERDUE,
+  DUE_DATE_WEEK,
+  DUE_DATE_MONTH,
+  DUE_DATE_NEXT_MONTH_AND_PREVIOUS_TWO_WEEKS,
+];
 
 export const BLOCKING_ISSUES_DESC = 'BLOCKING_ISSUES_DESC';
 export const CREATED_ASC = 'CREATED_ASC';
@@ -258,13 +274,16 @@ export const urlSortParams = {
 
 export const MAX_LIST_SIZE = 10;
 
+export const API_PARAM = 'apiParam';
+export const URL_PARAM = 'urlParam';
 export const NORMAL_FILTER = 'normalFilter';
 export const SPECIAL_FILTER = 'specialFilter';
+export const ALTERNATIVE_FILTER = 'alternativeFilter';
 export const SPECIAL_FILTER_VALUES = [FILTER_NONE, FILTER_ANY, FILTER_CURRENT];
 
 export const filters = {
   author_username: {
-    apiParam: {
+    [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'author_username',
       },
@@ -272,7 +291,7 @@ export const filters = {
         [NORMAL_FILTER]: 'not[author_username]',
       },
     },
-    urlParam: {
+    [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'author_username',
       },
@@ -282,7 +301,7 @@ export const filters = {
     },
   },
   assignee_username: {
-    apiParam: {
+    [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'assignee_username',
         [SPECIAL_FILTER]: 'assignee_id',
@@ -291,10 +310,11 @@ export const filters = {
         [NORMAL_FILTER]: 'not[assignee_username]',
       },
     },
-    urlParam: {
+    [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'assignee_username[]',
         [SPECIAL_FILTER]: 'assignee_id',
+        [ALTERNATIVE_FILTER]: 'assignee_username',
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[assignee_username][]',
@@ -302,7 +322,7 @@ export const filters = {
     },
   },
   milestone: {
-    apiParam: {
+    [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'milestone',
       },
@@ -310,7 +330,7 @@ export const filters = {
         [NORMAL_FILTER]: 'not[milestone]',
       },
     },
-    urlParam: {
+    [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'milestone_title',
       },
@@ -320,7 +340,7 @@ export const filters = {
     },
   },
   labels: {
-    apiParam: {
+    [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'labels',
       },
@@ -328,7 +348,7 @@ export const filters = {
         [NORMAL_FILTER]: 'not[labels]',
       },
     },
-    urlParam: {
+    [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'label_name[]',
       },
@@ -338,13 +358,13 @@ export const filters = {
     },
   },
   my_reaction_emoji: {
-    apiParam: {
+    [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'my_reaction_emoji',
         [SPECIAL_FILTER]: 'my_reaction_emoji',
       },
     },
-    urlParam: {
+    [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'my_reaction_emoji',
         [SPECIAL_FILTER]: 'my_reaction_emoji',
@@ -352,19 +372,19 @@ export const filters = {
     },
   },
   confidential: {
-    apiParam: {
+    [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'confidential',
       },
     },
-    urlParam: {
+    [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'confidential',
       },
     },
   },
   iteration: {
-    apiParam: {
+    [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'iteration_title',
         [SPECIAL_FILTER]: 'iteration_id',
@@ -373,7 +393,7 @@ export const filters = {
         [NORMAL_FILTER]: 'not[iteration_title]',
       },
     },
-    urlParam: {
+    [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'iteration_title',
         [SPECIAL_FILTER]: 'iteration_id',
@@ -384,7 +404,7 @@ export const filters = {
     },
   },
   epic_id: {
-    apiParam: {
+    [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'epic_id',
         [SPECIAL_FILTER]: 'epic_id',
@@ -393,7 +413,7 @@ export const filters = {
         [NORMAL_FILTER]: 'not[epic_id]',
       },
     },
-    urlParam: {
+    [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'epic_id',
         [SPECIAL_FILTER]: 'epic_id',
@@ -404,7 +424,7 @@ export const filters = {
     },
   },
   weight: {
-    apiParam: {
+    [API_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'weight',
         [SPECIAL_FILTER]: 'weight',
@@ -413,7 +433,7 @@ export const filters = {
         [NORMAL_FILTER]: 'not[weight]',
       },
     },
-    urlParam: {
+    [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'weight',
         [SPECIAL_FILTER]: 'weight',

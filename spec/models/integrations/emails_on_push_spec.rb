@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EmailsOnPushService do
+RSpec.describe Integrations::EmailsOnPush do
   let_it_be(:project) { create_default(:project).freeze }
 
   describe 'Validations' do

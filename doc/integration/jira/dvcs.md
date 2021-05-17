@@ -18,7 +18,7 @@ are accessible.
 - **Jira Cloud**: Your instance must be accessible through the internet.
 - **Jira Server**: Your network must allow access to your instance.
 
-## Smart commits
+## Smart Commits
 
 When connecting GitLab with Jira with DVCS, you can process your Jira issues using
 special commands, called
@@ -31,11 +31,33 @@ in your commit messages. With Smart Commits, you can:
 
 Commands must be in the first line of the commit message. The
 [Jira Software documentation](https://support.atlassian.com/jira-software-cloud/docs/process-issues-with-smart-commits/)
-contains more information about how smart commits work, and what commands are available
+contains more information about how Smart Commits work, and what commands are available
 for your use.
 
-For smart commits to work, the committing user on GitLab must have a corresponding
+For Smart Commits to work, the committing user on GitLab must have a corresponding
 user on Jira with the same email address or username.
+
+### Smart Commit syntax
+
+Smart Commits should follow the pattern of:
+
+```plaintext
+<ISSUE_KEY> <ignored text> #<command> <optional command parameters>
+```
+
+Some examples:
+
+- Adding a comment to a Jira issue: `KEY-123 fixes a bug #comment Bug is fixed.`
+- Recording time tracking: `KEY-123 #time 2w 4d 10h 52m Tracking work time.`
+- Closing an issue: `KEY-123 #close Closing issue`
+
+A Smart Commit message must not span more than one line (no carriage returns) but
+you can still perform multiple actions in a single commit:
+
+- Time tracking, commenting, and transitioning to **Closed**:
+  `KEY-123 #time 2d 5h #comment Task completed ahead of schedule #close`.
+- Commenting, transitioning to **In-progress**, and time tracking:
+  `KEY-123 #comment started working on the issue #in-progress #time 12d 5h`.
 
 ## Configure a GitLab application for DVCS
 

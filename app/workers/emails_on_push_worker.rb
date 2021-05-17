@@ -58,7 +58,7 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
       end
     end
 
-    EmailsOnPushService.valid_recipients(recipients).each do |recipient|
+    Integrations::EmailsOnPush.valid_recipients(recipients).each do |recipient|
       send_email(
         recipient,
         project_id,

@@ -108,6 +108,7 @@ The way you install the Go indexer depends on your version of GitLab:
 - For Omnibus GitLab 11.8 or greater, see [Omnibus GitLab](#omnibus-gitlab).
 - For installations from source or older versions of Omnibus GitLab,
   [install the indexer from source](#from-source).
+- If you are using GitLab Development Kit, see [GDK Elasticsearch how-to](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md)
 
 ### Omnibus GitLab
 

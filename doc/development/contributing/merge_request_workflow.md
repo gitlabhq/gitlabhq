@@ -78,8 +78,7 @@ request is as follows:
 1. If your MR touches code that executes shell commands, reads or opens files, or
    handles paths to files on disk, make sure it adheres to the
    [shell command guidelines](../shell_commands.md)
-1. If your code creates new files on disk please read the
-   [shared files guidelines](../shared_files.md).
+1. If your code needs to handle file storage, see the [uploads documentation](../uploads.md).
 1. If your merge request adds one or more migrations, make sure to execute all
    migrations on a fresh database before the MR is reviewed. If the review leads
    to large changes in the MR, execute the migrations again once the review is complete.

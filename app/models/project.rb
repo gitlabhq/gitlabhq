@@ -153,11 +153,12 @@ class Project < ApplicationRecord
   has_one :asana_service, class_name: 'Integrations::Asana'
   has_one :assembla_service, class_name: 'Integrations::Assembla'
   has_one :bamboo_service, class_name: 'Integrations::Bamboo'
-  has_one :campfire_service
-  has_one :datadog_service
+  has_one :campfire_service, class_name: 'Integrations::Campfire'
+  has_one :confluence_service, class_name: 'Integrations::Confluence'
+  has_one :datadog_service, class_name: 'Integrations::Datadog'
+  has_one :emails_on_push_service, class_name: 'Integrations::EmailsOnPush'
   has_one :discord_service
   has_one :drone_ci_service
-  has_one :emails_on_push_service
   has_one :ewm_service
   has_one :pipelines_email_service
   has_one :irker_service
@@ -176,7 +177,6 @@ class Project < ApplicationRecord
   has_one :youtrack_service
   has_one :custom_issue_tracker_service
   has_one :bugzilla_service
-  has_one :confluence_service
   has_one :external_wiki_service
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_ci_service

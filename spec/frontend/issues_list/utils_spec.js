@@ -8,11 +8,11 @@ import {
   urlParams,
   urlParamsWithSpecialValues,
 } from 'jest/issues_list/mock_data';
-import { urlSortParams } from '~/issues_list/constants';
+import { API_PARAM, DUE_DATE_VALUES, URL_PARAM, urlSortParams } from '~/issues_list/constants';
 import {
-  convertToApiParams,
+  convertToParams,
   convertToSearchQuery,
-  convertToUrlParams,
+  getDueDateValue,
   getFilterTokens,
   getSortKey,
   getSortOptions,
@@ -22,6 +22,16 @@ describe('getSortKey', () => {
   it.each(Object.keys(urlSortParams))('returns %s given the correct inputs', (sortKey) => {
     const { sort } = urlSortParams[sortKey];
     expect(getSortKey(sort)).toBe(sortKey);
+  });
+});
+
+describe('getDueDateValue', () => {
+  it.each(DUE_DATE_VALUES)('returns the argument when it is `%s`', (value) => {
+    expect(getDueDateValue(value)).toBe(value);
+  });
+
+  it('returns undefined when the argument is invalid', () => {
+    expect(getDueDateValue('invalid value')).toBeUndefined();
   });
 });
 
@@ -70,23 +80,25 @@ describe('getFilterTokens', () => {
   });
 });
 
-describe('convertToApiParams', () => {
+describe('convertToParams', () => {
   it('returns api params given filtered tokens', () => {
-    expect(convertToApiParams(filteredTokens)).toEqual(apiParams);
+    expect(convertToParams(filteredTokens, API_PARAM)).toEqual(apiParams);
   });
 
   it('returns api params given filtered tokens with special values', () => {
-    expect(convertToApiParams(filteredTokensWithSpecialValues)).toEqual(apiParamsWithSpecialValues);
+    expect(convertToParams(filteredTokensWithSpecialValues, API_PARAM)).toEqual(
+      apiParamsWithSpecialValues,
+    );
   });
-});
 
-describe('convertToUrlParams', () => {
   it('returns url params given filtered tokens', () => {
-    expect(convertToUrlParams(filteredTokens)).toEqual(urlParams);
+    expect(convertToParams(filteredTokens, URL_PARAM)).toEqual(urlParams);
   });
 
   it('returns url params given filtered tokens with special values', () => {
-    expect(convertToUrlParams(filteredTokensWithSpecialValues)).toEqual(urlParamsWithSpecialValues);
+    expect(convertToParams(filteredTokensWithSpecialValues, URL_PARAM)).toEqual(
+      urlParamsWithSpecialValues,
+    );
   });
 });
 

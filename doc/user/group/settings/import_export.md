@@ -29,7 +29,7 @@ To enable GitLab import/export:
 
 Note the following:
 
-- Exports are stored in a temporary [shared directory](../../../development/shared_files.md) and are deleted every 24 hours by a specific worker.
+- Exports are stored in a temporary directory and are deleted every 24 hours by a specific worker.
 - To preserve group-level relationships from imported projects, run the Group Import/Export first, to allow projects to
 be imported into the desired group structure.
 - Imported groups are given a `private` visibility level, unless imported into a parent group.

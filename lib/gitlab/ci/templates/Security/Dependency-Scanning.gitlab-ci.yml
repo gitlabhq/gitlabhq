@@ -8,8 +8,8 @@ variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
-
   DS_DEFAULT_ANALYZERS: "bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python"
+  DS_EXCLUDED_ANALYZERS: ""
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
   DS_MAJOR_VERSION: 2
 
@@ -45,6 +45,8 @@ gemnasium-dependency_scanning:
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
+    - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/
@@ -71,6 +73,8 @@ gemnasium-maven-dependency_scanning:
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
+    - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium-maven/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/
@@ -91,6 +95,8 @@ gemnasium-python-dependency_scanning:
     DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
+      when: never
+    - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
@@ -120,6 +126,8 @@ bundler-audit-dependency_scanning:
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
+    - if: $DS_EXCLUDED_ANALYZERS =~ /bundler-audit/
+      when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /bundler-audit/
@@ -137,6 +145,8 @@ retire-js-dependency_scanning:
     DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/retire.js:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
+      when: never
+    - if: $DS_EXCLUDED_ANALYZERS =~ /retire.js/
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&

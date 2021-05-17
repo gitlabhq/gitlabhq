@@ -14553,8 +14553,8 @@ State of a test report.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="typeenumpersonal"></a>`personal` |  |
-| <a id="typeenumproject"></a>`project` |  |
+| <a id="typeenumpersonal"></a>`personal` | Snippet created independent of any project. |
+| <a id="typeenumproject"></a>`project` | Snippet related to a specific project. |
 
 ### `UserCalloutFeatureNameEnum`
 

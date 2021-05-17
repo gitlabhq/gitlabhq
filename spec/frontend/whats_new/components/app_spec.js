@@ -82,6 +82,7 @@ describe('App', () => {
     });
 
     const getDrawer = () => wrapper.find(GlDrawer);
+    const getBackdrop = () => wrapper.find('.whats-new-modal-backdrop');
 
     it('contains a drawer', () => {
       expect(getDrawer().exists()).toBe(true);
@@ -97,6 +98,11 @@ describe('App', () => {
 
     it('dispatches closeDrawer when clicking close', () => {
       getDrawer().vm.$emit('close');
+      expect(actions.closeDrawer).toHaveBeenCalled();
+    });
+
+    it('dispatches closeDrawer when clicking the backdrop', () => {
+      getBackdrop().trigger('click');
       expect(actions.closeDrawer).toHaveBeenCalled();
     });
 

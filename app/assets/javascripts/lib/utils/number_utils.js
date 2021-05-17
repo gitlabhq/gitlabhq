@@ -171,3 +171,13 @@ export const formattedChangeInPercent = (firstY, lastY, { nonFiniteResult = '-' 
 export const isNumeric = (value) => {
   return !Number.isNaN(parseInt(value, 10));
 };
+
+const numberRegex = /^[0-9]+$/;
+
+/**
+ * Checks whether the value is a positive number or 0, or a string with equivalent value
+ *
+ * @param value
+ * @return {boolean}
+ */
+export const isPositiveInteger = (value) => numberRegex.test(value);

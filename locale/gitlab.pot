@@ -1044,9 +1044,6 @@ msgstr ""
 msgid "'%{name}' Value Stream saved"
 msgstr ""
 
-msgid "'%{name}' stage already exists"
-msgstr ""
-
 msgid "'%{source}' is not a import source"
 msgstr ""
 
@@ -30745,12 +30742,6 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
-msgid "Stage data updated"
-msgstr ""
-
-msgid "Stage removed"
-msgstr ""
-
 msgid "StageName|Build"
 msgstr ""
 
@@ -32752,12 +32743,6 @@ msgstr ""
 msgid "There was a problem fetching users."
 msgstr ""
 
-msgid "There was a problem refreshing the data, please try again"
-msgstr ""
-
-msgid "There was a problem saving your custom stage, please try again"
-msgstr ""
-
 msgid "There was a problem sending the confirmation email"
 msgstr ""
 
@@ -32851,9 +32836,6 @@ msgstr ""
 msgid "There was an error removing the e-mail."
 msgstr ""
 
-msgid "There was an error removing your custom stage, please try again"
-msgstr ""
-
 msgid "There was an error resetting group pipeline minutes."
 msgstr ""
 
@@ -32894,9 +32876,6 @@ msgid "There was an error updating the dashboard, branch name is invalid."
 msgstr ""
 
 msgid "There was an error updating the dashboard, branch named: %{branch} already exists."
-msgstr ""
-
-msgid "There was an error updating the stage order. Please try reloading the page."
 msgstr ""
 
 msgid "There was an error when reseting email token."
@@ -37646,9 +37625,6 @@ msgid "Your comment could not be updated! Please check your network connection a
 msgstr ""
 
 msgid "Your comment will be discarded."
-msgstr ""
-
-msgid "Your custom stage '%{title}' was created"
 msgstr ""
 
 msgid "Your dashboard has been copied. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."

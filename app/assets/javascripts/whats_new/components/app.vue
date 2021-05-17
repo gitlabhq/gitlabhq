@@ -88,6 +88,6 @@ export default {
         <skeleton-loader />
       </div>
     </gl-drawer>
-    <div v-if="open" class="whats-new-modal-backdrop modal-backdrop"></div>
+    <div v-if="open" class="whats-new-modal-backdrop modal-backdrop" @click="closeDrawer"></div>
   </div>
 </template>

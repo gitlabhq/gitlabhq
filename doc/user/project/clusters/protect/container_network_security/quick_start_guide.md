@@ -149,5 +149,5 @@ necessary components with GMAv2 and the cluster management project.
 
 **Related documentation links:**
 
-- [GitLab Managed Apps v1 (GMAv1)](../../../../clusters/applications.md#install-with-one-click)
+- [GitLab Managed Apps v1 (GMAv1)](../../../../clusters/applications.md#install-with-one-click-deprecated)
 - [GitLab Managed Apps v2 (GMAv2)](../../../../clusters/management_project.md)

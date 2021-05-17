@@ -16,22 +16,25 @@ import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import {
+  API_PARAM,
   apiSortParams,
   CREATED_DESC,
   i18n,
   MAX_LIST_SIZE,
   PAGE_SIZE,
+  PARAM_DUE_DATE,
   PARAM_PAGE,
   PARAM_SORT,
   PARAM_STATE,
   RELATIVE_POSITION_DESC,
   UPDATED_DESC,
+  URL_PARAM,
   urlSortParams,
 } from '~/issues_list/constants';
 import {
-  convertToApiParams,
+  convertToParams,
   convertToSearchQuery,
-  convertToUrlParams,
+  getDueDateValue,
   getFilterTokens,
   getSortKey,
   getSortOptions,
@@ -113,6 +116,9 @@ export default {
     hasIssueWeightsFeature: {
       default: false,
     },
+    hasMultipleIssueAssigneesFeature: {
+      default: false,
+    },
     initialEmail: {
       default: '',
     },
@@ -155,6 +161,7 @@ export default {
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
 
     return {
+      dueDateFilter: getDueDateValue(getParameterByName(PARAM_DUE_DATE)),
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
       filterTokens: getFilterTokens(window.location.search),
       isLoading: false,
@@ -177,10 +184,10 @@ export default {
       return this.state === IssuableStates.Opened;
     },
     apiFilterParams() {
-      return convertToApiParams(this.filterTokens);
+      return convertToParams(this.filterTokens, API_PARAM);
     },
     urlFilterParams() {
-      return convertToUrlParams(this.filterTokens);
+      return convertToParams(this.filterTokens, URL_PARAM);
     },
     searchQuery() {
       return convertToSearchQuery(this.filterTokens) || undefined;
@@ -203,7 +210,7 @@ export default {
           icon: 'user',
           token: AuthorToken,
           dataType: 'user',
-          unique: true,
+          unique: !this.hasMultipleIssueAssigneesFeature,
           defaultAuthors: DEFAULT_NONE_ANY,
           fetchAuthors: this.fetchUsers,
         },
@@ -298,6 +305,7 @@ export default {
     },
     urlParams() {
       return {
+        due_date: this.dueDateFilter,
         page: this.page,
         search: this.searchQuery,
         state: this.state,
@@ -366,6 +374,7 @@ export default {
       return axios
         .get(this.endpoint, {
           params: {
+            due_date: this.dueDateFilter,
             page: this.page,
             per_page: PAGE_SIZE,
             search: this.searchQuery,

@@ -169,7 +169,8 @@ The following variables allow configuration of global dependency scanning settin
 | CI/CD variables             | Description |
 | ----------------------------|------------ |
 | `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. |
-| `DS_DEFAULT_ANALYZERS`      | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
+| `DS_EXCLUDED_ANALYZERS`      | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Dependency Scanning Analyzers](analyzers.md). |
+| `DS_DEFAULT_ANALYZERS`      | ([**DEPRECATED - use `DS_EXCLUDED_ANALYZERS` instead**](https://gitlab.com/gitlab-org/gitlab/-/issues/287691)) Override the names of the official default images. For more information, see [Dependency Scanning Analyzers](analyzers.md). |
 | `DS_EXCLUDED_PATHS`         | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `SECURE_LOG_LEVEL`          | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. Default: `info`. |
@@ -564,8 +565,8 @@ such references:
 ERROR: Could not find dependencies: <dependency-name>. You may need to run npm install
 ```
 
-As a workaround, remove the [`retire.js`](analyzers.md#selecting-specific-analyzers) analyzer from
-[DS_DEFAULT_ANALYZERS](#configuring-dependency-scanning).
+As a workaround, add the [`retire.js`](analyzers.md) analyzer to
+[`DS_EXCLUDED_ANALYZERS`](#configuring-dependency-scanning).
 
 ## Troubleshooting
 

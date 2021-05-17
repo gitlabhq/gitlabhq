@@ -4,27 +4,41 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Managed Apps **(FREE)**
+# GitLab Managed Apps (DEPRECATED) **(FREE)**
 
-GitLab provides **GitLab Managed Apps** for various
-applications which can be added directly to your configured cluster. These
-applications are needed for [Review Apps](../../ci/review_apps/index.md) and
-[deployments](../../ci/environments/index.md) when using [Auto DevOps](../../topics/autodevops/index.md).
-You can install them after you [create a cluster](../project/clusters/add_remove_clusters.md).
-GitLab provides GitLab Managed Apps [using CI/CD](#install-using-gitlab-cicd).
-GitLab Managed Apps with [one-click installations](#install-with-one-click)
-have been deprecated, and are scheduled for removal in GitLab 14.0.
+**GitLab Managed Apps** was created to help you configure applications in your
+cluster directly from GitLab. You could use this feature through two different
+methods: "one-click install" and "CI/CD template". Both methods are **deprecated**:
 
-## Install using GitLab CI/CD
+- The **one-click install** method was deprecated in GitLab 13.9 and **will be
+  removed** in GitLab 14.0.
+- The **CI/CD template method** was deprecated in GitLab 13.12 and is scheduled
+  to be removed in GitLab 15.0.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20822) in GitLab 12.6.
+Both methods were limiting as you couldn't fully customize your third-party apps installed
+through GitLab Managed Apps. Therefore, we decided to deprecate this feature and provide
+better alternatives to our users in future GitLab releases.
+
+Read the sections below according to the installation method you chose to
+learn how to proceed to keep your apps up and running:
+
+- [One-click install method](#install-with-one-click-deprecated)
+- [CI/CD template method](#install-using-gitlab-cicd-deprecated)
+
+## Install using GitLab CI/CD (DEPRECATED)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20822) in GitLab 12.6.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 WARNING:
-This is a _beta_ feature, and some applications might miss features to provide full integration with GitLab.
+The GitLab Managed Apps CI/CD installation method was [deprecated in 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/327908). 
+Your applications continue to work. However, we no longer support and maintain the GitLab CI/CD template for
+Managed Apps (`Managed-Cluster-Applications.gitlab-ci.yml`).
+As a replacement, we are working on a [cluster management project template](https://gitlab.com/gitlab-org/gitlab/-/issues/327908),
+still to be released.
 
-This primary method for installing applications to clusters allows users to install GitLab-managed
-applications using GitLab CI/CD. It also allows customization of the
-install using Helm `values.yaml` files.
+The CI/CD template was the primary method for installing applications to clusters via GitLab Managed Apps
+and customize them through Helm.
 
 Supported applications:
 
@@ -138,6 +152,8 @@ Note the following:
 
 ### Install Ingress using GitLab CI/CD
 
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
+
 To install Ingress, define the `.gitlab/managed-apps/config.yaml` file
 with:
 
@@ -161,6 +177,8 @@ and ping at least 2 people from the
 [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
 
 ### Install cert-manager using GitLab CI/CD
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 cert-manager is installed using GitLab CI/CD by defining configuration in
 `.gitlab/managed-apps/config.yaml`.
@@ -205,6 +223,8 @@ least 2 people from the
 [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
 
 ### Install Sentry using GitLab CI/CD
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 The Sentry Helm chart [recommends](https://github.com/helm/charts/blob/f6e5784f265dd459c5a77430185d0302ed372665/stable/sentry/values.yaml#L284-L285)
 at least 3 GB of available RAM for database migrations.
@@ -275,6 +295,8 @@ least 2 people from the
 
 ### Install PostHog using GitLab CI/CD
 
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
+
 [PostHog](https://posthog.com) 🦔 is a developer-friendly, open-source product analytics platform.
 
 To install PostHog into the `gitlab-managed-apps` namespace of your cluster,
@@ -325,7 +347,8 @@ If you run into issues,
 
 ### Install Prometheus using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25138) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25138) in GitLab 12.8.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 [Prometheus](https://prometheus.io/docs/introduction/overview/) is an
 open-source monitoring and alerting system for supervising your
@@ -351,6 +374,8 @@ GitLab APM group. If you run into unknown issues,
 least 2 people from the [APM group](https://about.gitlab.com/handbook/product/categories/#apm-group).
 
 ### Install GitLab Runner using GitLab CI/CD
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 GitLab Runner is installed using GitLab CI/CD by defining configuration in
 `.gitlab/managed-apps/config.yaml`.
@@ -390,7 +415,8 @@ least 2 people from the
 
 ### Install Cilium using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/22) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/22) in GitLab 12.8.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 [Cilium](https://cilium.io/) is a networking plugin for Kubernetes that you can use to implement
 support for [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
@@ -505,7 +531,8 @@ least 2 people from the
 
 ### Install Falco using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/91) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/91) in GitLab 13.1.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 GitLab Container Host Security Monitoring uses [Falco](https://falco.org/)
 as a runtime security tool that listens to the Linux kernel using eBPF. Falco parses system calls
@@ -601,7 +628,8 @@ least 2 people from the
 
 ### Install Vault using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9982) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9982) in GitLab 12.9.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 [HashiCorp Vault](https://www.vaultproject.io/) is a secrets management solution which
 can be used to safely manage and store passwords, credentials, certificates, and more. A Vault
@@ -703,7 +731,8 @@ least 2 people from the
 
 ### Install JupyterHub using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/40) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/40) in GitLab 12.8.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 JupyterHub is installed using GitLab CI/CD by defining configuration in
 `.gitlab/managed-apps/config.yaml` as follows:
@@ -760,7 +789,8 @@ least 2 people from the
 
 ### Install Elastic Stack using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25138) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25138) in GitLab 12.8.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 Elastic Stack is installed using GitLab CI/CD by defining configuration in
 `.gitlab/managed-apps/config.yaml`.
@@ -796,7 +826,8 @@ least 2 people from the [APM group](https://about.gitlab.com/handbook/product/ca
 
 ### Install Crossplane using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35675) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35675) in GitLab 12.9.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 Crossplane is installed using GitLab CI/CD by defining configuration in
 `.gitlab/managed-apps/config.yaml`.
@@ -827,7 +858,8 @@ If you run into issues,
 
 ### Install Fluentd using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/76) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/76) in GitLab 12.10.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 To install Fluentd into the `gitlab-managed-apps` namespace of your cluster using
 GitLab CI/CD, define the following configuration in `.gitlab/managed-apps/config.yaml`:
@@ -857,6 +889,8 @@ least 2 people from the
 [Container Security group](https://about.gitlab.com/handbook/product/categories/#container-security-group).
 
 ### Install Knative using GitLab CI/CD
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 To install Knative, define the `.gitlab/managed-apps/config.yaml` file
 with:
@@ -908,7 +942,8 @@ kubectl delete -f https://gitlab.com/gitlab-org/cluster-integration/cluster-appl
 
 ### Install AppArmor using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/100) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/100) in GitLab 13.1.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 13.12.
 
 To install AppArmor into the `gitlab-managed-apps` namespace of your cluster using
 GitLab CI/CD, define the following configuration in `.gitlab/managed-apps/config.yaml`:
@@ -998,13 +1033,13 @@ at least 2 people from the
 Logs produced by pods running **GitLab Managed Apps** can be browsed using
 [**Log Explorer**](../project/clusters/kubernetes_pod_logs.md).
 
-## Install with one click
+## Install with one click (DEPRECATED)
 
 WARNING:
-The one-click installation method is deprecated and scheduled for removal in [GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
-This removal does not affect installed applications to avoid breaking
-changes. Following GitLab 14.0, users can take ownership of already installed applications
-using our documentation.
+The one-click installation method was deprecated in GitLab 13.9 and will be removed in [GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
+The removal does not break nor uninstall any apps you have installed but removes the GitLab UI page
+for installing and updating your GitLab Managed Apps.
+Follow the process to [take ownership of your GitLab Managed Apps](#take-ownership-of-your-gitlab-managed-apps).
 
 Applications managed by GitLab are installed onto the `gitlab-managed-apps`
 namespace. This namespace:
@@ -1668,3 +1703,88 @@ Spawn failed: Timeout
 
 This is due to DigitalOcean imposing a few limits with regards to creating additional block storage volumes.
 [Learn more about DigitalOcean Block Storage Volumes limits.](https://www.digitalocean.com/docs/volumes/#limits)
+
+## Take ownership of your GitLab Managed Apps
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327803) in GitLab 13.12.
+
+With the removal of the [One-click install method](#install-with-one-click-deprecated) in GitLab 14.0,
+the **Applications** tab (under your project's  **Operations > Kubernetes**)
+will no longer be displayed:
+
+![GitLab Managed Apps - Applications tab](img/applications_tab_v13_12.png)
+
+This tab was dedicated to installing and maintaining GitLab Managed Apps.
+To continue managing your installed applications, one of the possible ways is to
+install [Helm](https://helm.sh/) locally, as described below.
+
+### View installed applications
+
+To view the applications you have installed in your cluster through GitLab Managed Apps,
+you need to verify the resources you have in the `gitlab-managed-apps` namespace.
+On your computer, [configure `kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/)
+to connect to your cluster, open the terminal and run:
+
+```shell
+kubectl get all -n gitlab-managed-apps
+```
+
+If there is no output or the namespace does not exist, you do not have any applications
+installed through GitLab Managed Apps. If this is the case, you have nothing else to do.
+
+### Identify the Helm version
+
+Next, verify which Helm version GitLab used to install your applications.
+
+#### For apps installed with Helm v3
+
+To list your apps installed with Helm v3, run:
+
+```shell
+kubectl get secrets -n gitlab-managed-apps | grep 'helm.sh/release'
+```
+
+You can manage these applications with Helm v3 and you don't need any further steps.
+
+All applications not listed with the command above were installed with Helm v2.
+
+#### For apps installed with Helm v2
+
+If you have apps installed with Helm v2, you can either:
+
+- A. Install Helm v3 and [upgrade your apps to Helm v3](https://helm.sh/docs/topics/v2_v3_migration/).
+- B. Install Helm v2 and keep using this Helm version, which is not recommended as Helm v2 was deprecated in favor of
+Helm v3.
+
+If you choose to keep using Helm v2 (B), follow the steps below to manage your apps:
+
+1. Install [Helm v2](https://v2.helm.sh/docs/install/) in your computer.
+1. Start a local Tiller server:
+
+   ```shell
+   export TILLER_NAMESPACE=gitlab-managed-apps
+   tiller -listen localhost:44134
+   ```
+
+1. In another tab, initialize your Helm client:
+
+   ```shell
+   export HELM_HOST="localhost:44134"
+   helm init --client-only
+   ```
+
+1. Now your environment is ready to manage your apps with Helm v2. For example, to list your releases:
+
+   ```shell
+   helm ls
+   ```
+
+### Cluster integrations
+
+Some applications were not only installed in your cluster by GitLab through Managed Apps but were also
+directly integrated with GitLab so that you could benefit from seeing, controlling, or getting notified
+about them through GitLab.
+To keep them integrated, read the documentation for:
+
+- [Prometheus cluster integration](integrations.md#prometheus-cluster-integration)
+- [Elastic Stack cluster integration](integrations.md#elastic-stack-cluster-integration)
