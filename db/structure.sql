@@ -14731,6 +14731,7 @@ CREATE TABLE merge_requests (
     squash_commit_sha bytea,
     sprint_id bigint,
     merge_ref_sha bytea,
+    draft boolean DEFAULT false NOT NULL,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -18860,7 +18861,9 @@ CREATE TABLE vulnerability_finding_evidence_responses (
     vulnerability_finding_evidence_id bigint NOT NULL,
     status_code integer,
     reason_phrase text,
-    CONSTRAINT check_58b124ab48 CHECK ((char_length(reason_phrase) <= 2048))
+    body text,
+    CONSTRAINT check_58b124ab48 CHECK ((char_length(reason_phrase) <= 2048)),
+    CONSTRAINT check_76bac0c32b CHECK ((char_length(body) <= 2048))
 );
 
 CREATE SEQUENCE vulnerability_finding_evidence_responses_id_seq

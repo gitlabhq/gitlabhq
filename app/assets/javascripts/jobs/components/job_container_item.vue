@@ -35,33 +35,40 @@ export default {
 
       return text;
     },
+    jobName() {
+      return this.job.name ? this.job.name : this.job.id;
+    },
+    classes() {
+      return {
+        retried: this.job.retried,
+        'gl-font-weight-bold': this.isActive,
+      };
+    },
+    dataTestId() {
+      return this.isActive ? 'active-job' : null;
+    },
   },
 };
 </script>
 
 <template>
-  <div
-    class="build-job gl-relative"
-    :class="{
-      retried: job.retried,
-      active: isActive,
-    }"
-  >
+  <div class="build-job gl-relative" :class="classes">
     <gl-link
       v-gl-tooltip:tooltip-container.left
       :href="job.status.details_path"
       :title="tooltipText"
-      class="js-job-link gl-display-flex gl-align-items-center"
+      class="gl-display-flex gl-align-items-center"
+      :data-testid="dataTestId"
     >
       <gl-icon
         v-if="isActive"
         name="arrow-right"
-        class="js-arrow-right icon-arrow-right gl-absolute gl-display-block"
+        class="icon-arrow-right gl-absolute gl-display-block"
       />
 
       <ci-icon :status="job.status" />
 
-      <span class="text-truncate w-100">{{ job.name ? job.name : job.id }}</span>
+      <span class="gl-text-truncate gl-w-full">{{ jobName }}</span>
 
       <gl-icon v-if="job.retried" name="retry" />
     </gl-link>

@@ -198,10 +198,6 @@
     }
 
     .build-job {
-      &.active {
-        font-weight: $gl-font-weight-bold;
-      }
-
       &.retried {
         background-color: var(--gray-10, $gray-10);
       }

@@ -136,7 +136,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
 
         wait_for_requests
-        expect(page).to have_selector('.build-job.active')
+        expect(page).to have_selector('[data-testid="active-job"]')
       end
     end
 
@@ -255,7 +255,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it 'renders escaped tooltip name' do
-        page.find('.active.build-job a').hover
+        page.find('[data-testid="active-job"]').hover
         expect(page).to have_content('<img src=x onerror=alert(document.domain)> - passed')
       end
     end
