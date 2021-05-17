@@ -1,0 +1,5 @@
+---
+title: Allow migrating scheduled and retried Sidekiq jobs to new queues
+merge_request: 60724
+author:
+type: added

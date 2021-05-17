@@ -1,3 +1,5 @@
+$top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important;
+
 .navbar-gitlab {
   padding: 0 16px;
   z-index: $header-zindex;
@@ -254,6 +256,7 @@
       }
     }
 
+    .top-nav-toggle,
     > button {
       background: transparent;
       border: 0;
@@ -627,5 +630,38 @@
       padding-left: $gl-padding;
       border-left: 1px solid $gl-text-color-quaternary;
     }
+  }
+}
+
+.top-nav-container-view {
+  .gl-new-dropdown & .gl-search-box-by-type {
+    @include gl-m-0;
+  }
+
+  .frequent-items-list-item-container > a:hover {
+    background-color: $top-nav-hover-bg;
+  }
+}
+
+.top-nav-toggle {
+  .dropdown-icon {
+    @include gl-mr-3;
+  }
+
+  .dropdown-chevron {
+    top: 0;
+  }
+}
+
+.top-nav-menu-item {
+  color: var(--indigo-900, $theme-indigo-900) !important;
+
+  &.active,
+  &:hover {
+    background-color: $top-nav-hover-bg;
+  }
+
+  .gl-icon {
+    color: inherit !important;
   }
 }

@@ -272,6 +272,18 @@ class Issue < ApplicationRecord
               "id DESC")
   end
 
+  # Temporary disable moving null elements because of performance problems
+  # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
+  def check_repositioning_allowed!
+    if blocked_for_repositioning?
+      raise ::Gitlab::RelativePositioning::IssuePositioningDisabled, "Issue relative position changes temporarily disabled."
+    end
+  end
+
+  def blocked_for_repositioning?
+    resource_parent.root_namespace&.issue_repositioning_disabled?
+  end
+
   def hook_attrs
     Gitlab::HookData::IssueBuilder.new(self).build
   end

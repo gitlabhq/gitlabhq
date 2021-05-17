@@ -11342,9 +11342,6 @@ msgstr ""
 msgid "DevopsAdoption|Adopted"
 msgstr ""
 
-msgid "DevopsAdoption|Adoption"
-msgstr ""
-
 msgid "DevopsAdoption|An error occurred while removing the group. Please try again."
 msgstr ""
 
@@ -11381,6 +11378,9 @@ msgstr ""
 msgid "DevopsAdoption|Deploys"
 msgstr ""
 
+msgid "DevopsAdoption|Dev"
+msgstr ""
+
 msgid "DevopsAdoption|DevOps adoption tracks the use of key features across your favorite groups. Add a group to the table to begin."
 msgstr ""
 
@@ -11408,6 +11408,9 @@ msgstr ""
 msgid "DevopsAdoption|Not adopted"
 msgstr ""
 
+msgid "DevopsAdoption|Ops"
+msgstr ""
+
 msgid "DevopsAdoption|Pipelines"
 msgstr ""
 
@@ -11429,6 +11432,9 @@ msgstr ""
 msgid "DevopsAdoption|Scanning"
 msgstr ""
 
+msgid "DevopsAdoption|Sec"
+msgstr ""
+
 msgid "DevopsAdoption|There was an error enabling the current group. Please refresh the page."
 msgstr ""
 
@@ -11439,9 +11445,6 @@ msgid "DevopsAdoption|There was an error fetching Groups. Please refresh the pag
 msgstr ""
 
 msgid "DevopsAdoption|You cannot remove the group you are currently in."
-msgstr ""
-
-msgid "DevopsReport|Adoption"
 msgstr ""
 
 msgid "DevopsReport|DevOps Score"
@@ -18357,6 +18360,9 @@ msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are sear
 msgstr ""
 
 msgid "Issues closed"
+msgstr ""
+
+msgid "Issues manual ordering is temporarily disabled for technical reasons."
 msgstr ""
 
 msgid "Issues must match this scope to appear in this list."
@@ -34128,6 +34134,9 @@ msgid "Too many namespaces enabled. You will need to manage them via the console
 msgstr ""
 
 msgid "Too many projects enabled. You will need to manage them via the console or the API."
+msgstr ""
+
+msgid "TopNav|Switch to..."
 msgstr ""
 
 msgid "Topics (optional)"

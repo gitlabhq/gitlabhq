@@ -18,6 +18,10 @@ module Gitlab
         Feature.enabled?(:ci_pipeline_status_omit_commit_sha_in_cache_key, project, default_enabled: true)
       end
 
+      def self.merge_base_pipeline_for_metrics_comparison?(project)
+        Feature.enabled?(:merge_base_pipeline_for_metrics_comparison, project, default_enabled: :yaml)
+      end
+
       # Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/224199
       def self.store_pipeline_messages?(project)
         ::Feature.enabled?(:ci_store_pipeline_messages, project, default_enabled: true)
@@ -53,6 +57,10 @@ module Gitlab
 
       def self.gldropdown_tags_enabled?
         ::Feature.enabled?(:gldropdown_tags, default_enabled: :yaml)
+      end
+
+      def self.background_pipeline_retry_endpoint?(project)
+        ::Feature.enabled?(:background_pipeline_retry_endpoint, project)
       end
     end
   end

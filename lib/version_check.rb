@@ -12,10 +12,12 @@ class VersionCheck
   def self.url
     encoded_data = Base64.urlsafe_encode64(data.to_json)
 
-    "#{host}?gitlab_info=#{encoded_data}"
+    "#{host}/check.svg?gitlab_info=#{encoded_data}"
   end
 
   def self.host
-    'https://version.gitlab.com/check.svg'
+    'https://version.gitlab.com'
   end
 end
+
+VersionCheck.prepend_mod

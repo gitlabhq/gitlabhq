@@ -1,4 +1,5 @@
 - is_project_overview = local_assigns.fetch(:is_project_overview, false)
+= render 'shared/alerts/positioning_disabled'
 
 - if Feature.enabled?(:vue_issuables_list, @project) && !is_project_overview
   - data_endpoint = local_assigns.fetch(:data_endpoint, expose_path(api_v4_projects_issues_path(id: @project.id)))
@@ -15,7 +16,7 @@
     'scoped-labels-available': scoped_labels_available?(@project).to_json } }
 - else
   - empty_state_path = local_assigns.fetch(:empty_state_path, 'shared/empty_states/issues')
-  %ul.content-list.issues-list.issuable-list{ class: ("manual-ordering" if @sort == 'relative_position') }
+  %ul.content-list.issues-list.issuable-list{ class: issue_manual_ordering_class }
     = render partial: "projects/issues/issue", collection: @issues
     - if @issues.blank?
       = render empty_state_path

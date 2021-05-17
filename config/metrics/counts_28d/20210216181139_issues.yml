@@ -9,7 +9,7 @@ value_type: number
 status: data_available
 time_frame: 28d
 data_source: database
-instrumentation_class: 'Gitlab::Usage::Metrics::Instrumentations::CountUsersCreatingIssuesMetric'
+instrumentation_class: CountUsersCreatingIssuesMetric
 distribution:
 - ce
 - ee

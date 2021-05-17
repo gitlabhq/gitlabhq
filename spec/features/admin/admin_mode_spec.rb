@@ -20,8 +20,6 @@ RSpec.describe 'Admin mode' do
 
       context 'when not in admin mode' do
         it 'has no leave admin mode button' do
-          pending_on_combined_menu_flag
-
           visit new_admin_session_path
 
           page.within('.navbar-sub-nav') do
@@ -180,8 +178,6 @@ RSpec.describe 'Admin mode' do
       end
 
       it 'shows no admin mode buttons in navbar' do
-        pending_on_combined_menu_flag
-
         visit admin_root_path
 
         page.within('.navbar-sub-nav') do

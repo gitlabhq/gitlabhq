@@ -9,7 +9,7 @@ module Gitlab
           instrumentation_class = definition.attributes[:instrumentation_class]
 
           if instrumentation_class.present?
-            metric_value = instrumentation_class.constantize.new(time_frame: definition.attributes[:time_frame]).value
+            metric_value = "Gitlab::Usage::Metrics::Instrumentations::#{instrumentation_class}".constantize.new(time_frame: definition.attributes[:time_frame]).value
 
             metric_payload(definition.key_path, metric_value)
           else

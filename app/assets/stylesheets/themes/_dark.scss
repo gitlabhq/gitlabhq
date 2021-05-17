@@ -70,6 +70,7 @@ $indigo-700: #a6a6de;
 $indigo-800: #d1d1f0;
 $indigo-900: #ebebfa;
 $indigo-950: #f7f7ff;
+$indigo-900-alpha-008: rgba($indigo-900, 0.08);
 
 $gray-lightest: #222;
 $gray-light: $gray-50;
@@ -160,6 +161,7 @@ body.gl-dark {
   --indigo-800: #{$indigo-800};
   --indigo-900: #{$indigo-900};
   --indigo-950: #{$indigo-950};
+  --indigo-900-alpha-008: #{$indigo-900-alpha-008};
 
   --gl-text-color: #{$gray-900};
   --border-color: #{$border-color};

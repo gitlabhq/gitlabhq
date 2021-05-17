@@ -10,7 +10,7 @@ module BoardsHelper
       boards_endpoint: @boards_endpoint,
       lists_endpoint: board_lists_path(board),
       board_id: board.id,
-      disabled: disabled?.to_s,
+      disabled: board.disabled_for?(current_user).to_s,
       root_path: root_path,
       full_path: full_path,
       bulk_update_path: @bulk_issues_path,
@@ -103,10 +103,6 @@ module BoardsHelper
 
   def can_admin_issue?
     can?(current_user, :admin_issue, current_board_parent)
-  end
-
-  def disabled?
-    !can?(current_user, :create_non_backlog_issues, board)
   end
 
   def board_list_data

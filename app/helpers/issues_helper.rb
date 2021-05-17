@@ -9,6 +9,22 @@ module IssuesHelper
     classes.join(' ')
   end
 
+  def issue_manual_ordering_class
+    is_sorting_by_relative_position = @sort == 'relative_position'
+
+    if is_sorting_by_relative_position && !issue_repositioning_disabled?
+      "manual-ordering"
+    end
+  end
+
+  def issue_repositioning_disabled?
+    if @group
+      @group.root_ancestor.issue_repositioning_disabled?
+    elsif @project
+      @project.root_namespace.issue_repositioning_disabled?
+    end
+  end
+
   def status_box_class(item)
     if item.try(:expired?)
       'status-box-expired'

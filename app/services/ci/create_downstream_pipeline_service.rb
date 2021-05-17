@@ -85,6 +85,12 @@ module Ci
         return false
       end
 
+      if has_cyclic_dependency?
+        @bridge.drop!(:pipeline_loop_detected)
+
+        return false
+      end
+
       true
     end
 
@@ -109,11 +115,24 @@ module Ci
       end
     end
 
+    def has_cyclic_dependency?
+      return false if @bridge.triggers_child_pipeline?
+
+      if Feature.enabled?(:ci_drop_cyclical_triggered_pipelines, @bridge.project, default_enabled: :yaml)
+        checksums = @bridge.pipeline.base_and_ancestors.map { |pipeline| config_checksum(pipeline) }
+        checksums.uniq.length != checksums.length
+      end
+    end
+
     def has_max_descendants_depth?
       return false unless @bridge.triggers_child_pipeline?
 
       ancestors_of_new_child = @bridge.pipeline.base_and_ancestors(same_project: true)
       ancestors_of_new_child.count > MAX_DESCENDANTS_DEPTH
+    end
+
+    def config_checksum(pipeline)
+      [pipeline.project_id, pipeline.ref].hash
     end
   end
 end

@@ -1,8 +1,9 @@
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml
-#   - template: Security/SAST.gitlab-ci.yml
-#   - template: Security/Dependency-Scanning.gitlab-ci.yml
-#   - template: Security/DAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 code_quality:
   extends:
@@ -13,85 +14,55 @@ code_quality:
       - gl-code-quality-report.json  # GitLab-specific
   rules: !reference [".reports:rules:code_quality", rules]
 
-# We need to duplicate this job's definition because the rules
-# defined in the extended jobs rely on local YAML anchors
-# (`*if-default-refs`)
-.sast:
+.sast-analyzer:
+  # We need to re-`extends` from `sast` as the `extends` here overrides the one from the template.
   extends:
     - .default-retry
-    - .reports:rules:sast
-  stage: test
-  # `needs: []` starts the job immediately in the pipeline
-  # https://docs.gitlab.com/ee/ci/yaml/README.html#needs
+    - sast
   needs: []
   artifacts:
     paths:
       - gl-sast-report.json  # GitLab-specific
-    reports:
-      sast: gl-sast-report.json
     expire_in: 1 week  # GitLab-specific
   variables:
-    DOCKER_TLS_CERTDIR: ""
-    SAST_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
-    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
-    SAST_EXCLUDED_PATHS: qa,spec,doc,ee/spec,config/gitlab.yml.example  # GitLab-specific
+    SAST_EXCLUDED_PATHS: "qa, spec, doc, ee/spec, config/gitlab.yml.example, tmp"  # GitLab-specific
     SAST_DISABLE_BABEL: "true"
-  script:
-    - /analyzer run
 
 brakeman-sast:
-  extends: .sast
-  image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
+  rules: !reference [".reports:rules:sast", rules]
 
 eslint-sast:
-  extends: .sast
-  image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
+  rules: !reference [".reports:rules:sast", rules]
 
 nodejs-scan-sast:
-  extends: .sast
-  image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
+  rules: !reference [".reports:rules:sast", rules]
 
-secrets-sast:
-  extends: .sast
-  image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/secrets:3"
+.secret-analyzer:
+  extends: .default-retry
+  needs: []
   artifacts:
     paths:
       - gl-secret-detection-report.json  # GitLab-specific
-    reports:
-      sast: gl-secret-detection-report.json
     expire_in: 1 week  # GitLab-specific
 
-# We need to duplicate this job's definition because the rules
-# defined in the extended jobs rely on local YAML anchors
-# (`*if-default-refs`)
-.dependency_scanning:
+secret_detection:
+  rules: !reference [".reports:rules:secret_detection", rules]
+
+.ds-analyzer:
+  # We need to re-`extends` from `dependency_scanning` as the `extends` here overrides the one from the template.
   extends:
     - .default-retry
-    - .reports:rules:dependency_scanning
-  stage: test
+    - dependency_scanning
   needs: []
   variables:
-    DS_MAJOR_VERSION: 2
-    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec"  # GitLab-specific
-    SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp"  # GitLab-specific
   artifacts:
     paths:
       - gl-dependency-scanning-report.json  # GitLab-specific
-    reports:
-      dependency_scanning: gl-dependency-scanning-report.json
     expire_in: 1 week  # GitLab-specific
-  script:
-    - /analyzer run
 
-dependency_scanning gemnasium:
-  extends: .dependency_scanning
-  image:
-    name: "$SECURE_ANALYZERS_PREFIX/gemnasium:$DS_MAJOR_VERSION"
+gemnasium-dependency_scanning:
   before_script:
     # git-lfs is needed for auto-remediation
     - apk add git-lfs
@@ -100,26 +71,22 @@ dependency_scanning gemnasium:
     - apk add jq
     # Lower execa severity based on https://gitlab.com/gitlab-org/gitlab/-/issues/223859#note_452922390
     - jq '(.vulnerabilities[] | select (.cve == "yarn.lock:execa:gemnasium:05cfa2e8-2d0c-42c1-8894-638e2f12ff3d")).severity = "Medium"' gl-dependency-scanning-report.json > temp.json && mv temp.json gl-dependency-scanning-report.json
+  rules: !reference [".reports:rules:dependency_scanning", rules]
 
-dependency_scanning bundler-audit:
-  extends: .dependency_scanning
-  image:
-    name: "$SECURE_ANALYZERS_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
+bundler-audit-dependency_scanning:
+  rules: !reference [".reports:rules:dependency_scanning", rules]
 
-dependency_scanning retire-js:
-  extends: .dependency_scanning
-  image:
-    name: "$SECURE_ANALYZERS_PREFIX/retire.js:$DS_MAJOR_VERSION"
+retire-js-dependency_scanning:
+  rules: !reference [".reports:rules:dependency_scanning", rules]
 
-dependency_scanning gemnasium-python:
-  extends: .dependency_scanning
-  image:
-    name: "$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
+gemnasium-python-dependency_scanning:
+  rules: !reference [".reports:rules:dependency_scanning", rules]
 
 # Analyze dependencies for malicious behavior
 # See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter
 package_hunter:
   extends:
+    - .default-retry
     - .reports:rules:package_hunter
   stage: test
   image:
@@ -133,24 +100,14 @@ package_hunter:
     - DEBUG=* HTR_user=$PACKAGE_HUNTER_USER HTR_pass=$PACKAGE_HUNTER_PASS node /usr/src/app/cli.js analyze --format gitlab gitlab.tgz | tee $CI_PROJECT_DIR/gl-dependency-scanning-report.json
   artifacts:
     paths:
-      - gl-dependency-scanning-report.json  # GitLab-specific
+      - gl-dependency-scanning-report.json
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
-    expire_in: 1 week  # GitLab-specific
+    expire_in: 1 week
 
 license_scanning:
-  extends:
-    - .default-retry
-    - .reports:rules:license_scanning
-  stage: test
-  image:
-    name: "registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:3"
-    entrypoint: [""]
+  extends: .default-retry
   needs: []
-  script:
-    - /run.sh analyze .
   artifacts:
-    reports:
-      license_scanning: gl-license-scanning-report.json
     expire_in: 1 week  # GitLab-specific
-  dependencies: []
+  rules: !reference [".reports:rules:license_scanning", rules]

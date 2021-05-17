@@ -8,8 +8,6 @@ const createAnchor = (href) => {
   const fragment = new DocumentFragment();
   const el = document.createElement('a');
   el.classList.add('link-anchor');
-  el.setAttribute('data-qa-selector', 'line_link');
-  el.setAttribute('data-qa-number', href);
   el.href = href;
   fragment.appendChild(el);
   el.addEventListener('contextmenu', (e) => {

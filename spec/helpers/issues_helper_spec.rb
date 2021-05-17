@@ -341,4 +341,65 @@ RSpec.describe IssuesHelper do
       end
     end
   end
+
+  describe '#issue_manual_ordering_class' do
+    context 'when sorting by relative position' do
+      before do
+        assign(:sort, 'relative_position')
+      end
+
+      it 'returns manual ordering class' do
+        expect(helper.issue_manual_ordering_class).to eq("manual-ordering")
+      end
+
+      context 'when manual sorting disabled' do
+        before do
+          allow(helper).to receive(:issue_repositioning_disabled?).and_return(true)
+        end
+
+        it 'returns nil' do
+          expect(helper.issue_manual_ordering_class).to eq(nil)
+        end
+      end
+    end
+  end
+
+  describe '#issue_repositioning_disabled?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+
+    subject { helper.issue_repositioning_disabled? }
+
+    context 'for project' do
+      before do
+        assign(:project, project)
+      end
+
+      it { is_expected.to eq(false) }
+
+      context 'when block_issue_repositioning feature flag is enabled' do
+        before do
+          stub_feature_flags(block_issue_repositioning: group)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+    end
+
+    context 'for group' do
+      before do
+        assign(:group, group)
+      end
+
+      it { is_expected.to eq(false) }
+
+      context 'when block_issue_repositioning feature flag is enabled' do
+        before do
+          stub_feature_flags(block_issue_repositioning: group)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
 end

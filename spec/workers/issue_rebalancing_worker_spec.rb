@@ -4,7 +4,21 @@ require 'spec_helper'
 
 RSpec.describe IssueRebalancingWorker do
   describe '#perform' do
-    let_it_be(:issue) { create(:issue) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    context 'when block_issue_repositioning is enabled' do
+      before do
+        stub_feature_flags(block_issue_repositioning: group)
+      end
+
+      it 'does not run an instance of IssueRebalancingService' do
+        expect(IssueRebalancingService).not_to receive(:new)
+
+        described_class.new.perform(nil, issue.project_id)
+      end
+    end
 
     it 'runs an instance of IssueRebalancingService' do
       service = double(execute: nil)

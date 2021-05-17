@@ -425,6 +425,10 @@ class Namespace < ApplicationRecord
     created_at >= 90.days.ago
   end
 
+  def issue_repositioning_disabled?
+    Feature.enabled?(:block_issue_repositioning, self, type: :ops, default_enabled: :yaml)
+  end
+
   private
 
   def expire_child_caches

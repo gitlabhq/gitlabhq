@@ -23,6 +23,7 @@ module Enums
           user_blocked: 14,
           project_deleted: 15,
           ci_quota_exceeded: 16,
+          pipeline_loop_detected: 17,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,
           invalid_bridge_trigger: 1_003,

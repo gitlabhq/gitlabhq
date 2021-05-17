@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe IssuePlacementWorker do
   describe '#perform' do
     let_it_be(:time) { Time.now.utc }
-    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
     let_it_be(:author) { create(:user) }
     let_it_be(:common_attrs) { { author: author, project: project } }
     let_it_be(:unplaced) { common_attrs.merge(relative_position: nil) }
@@ -117,6 +118,19 @@ RSpec.describe IssuePlacementWorker do
       let(:worker_arguments) { { issue_id: issue_id, project_id: nil } }
 
       it_behaves_like 'running the issue placement worker'
+
+      context 'when block_issue_repositioning is enabled' do
+        let(:issue_id) { issue.id }
+        let(:project_id) { project.id }
+
+        before do
+          stub_feature_flags(block_issue_repositioning: group)
+        end
+
+        it 'does not run repositioning tasks' do
+          expect { run_worker }.not_to change { issue.reset.relative_position }
+        end
+      end
     end
 
     context 'passing a project ID' do

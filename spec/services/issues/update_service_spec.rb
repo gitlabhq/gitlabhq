@@ -165,20 +165,38 @@ RSpec.describe Issues::UpdateService, :mailer do
         expect(user2.assigned_open_issues_count).to eq 1
       end
 
-      it 'sorts issues as specified by parameters' do
-        issue1 = create(:issue, project: project, assignees: [user3])
-        issue2 = create(:issue, project: project, assignees: [user3])
+      context 'when changing relative position' do
+        let(:issue1) { create(:issue, project: project, assignees: [user3]) }
+        let(:issue2) { create(:issue, project: project, assignees: [user3]) }
 
-        [issue, issue1, issue2].each do |issue|
-          issue.move_to_end
-          issue.save!
+        before do
+          [issue, issue1, issue2].each do |issue|
+            issue.move_to_end
+            issue.save!
+          end
         end
 
-        opts[:move_between_ids] = [issue1.id, issue2.id]
+        it 'sorts issues as specified by parameters' do
+          opts[:move_between_ids] = [issue1.id, issue2.id]
 
-        update_issue(opts)
+          update_issue(opts)
 
-        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
+          expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
+        end
+
+        context 'when block_issue_positioning flag is enabled' do
+          before do
+            stub_feature_flags(block_issue_repositioning: true)
+          end
+
+          it 'raises error' do
+            old_position = issue.relative_position
+            opts[:move_between_ids] = [issue1.id, issue2.id]
+
+            expect { update_issue(opts) }.to raise_error(::Gitlab::RelativePositioning::IssuePositioningDisabled)
+            expect(issue.reload.relative_position).to eq(old_position)
+          end
+        end
       end
 
       it 'does not rebalance even if needed if the flag is disabled' do

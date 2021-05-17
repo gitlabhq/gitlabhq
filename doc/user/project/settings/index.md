@@ -40,7 +40,7 @@ The project description also partially supports [standard Markdown](../../markdo
 You can create a framework label to identify that your project has certain compliance requirements or needs additional oversight.
 
 Group owners can create, edit and delete compliance frameworks by going to **Settings** > **General** and expanding the **Compliance frameworks** section.
-Compliance frameworks created can then be assigned to any number of projects via the project settings page inside the group or subgroups. 
+Compliance frameworks created can then be assigned to any number of projects via the project settings page inside the group or subgroups.
 
 NOTE:
 Attempting to create compliance frameworks on subgroups via GraphQL will cause the framework to be created on the root ancestor if the user has the correct permissions.
@@ -193,8 +193,9 @@ Set up your project's merge request settings:
 - Enable [merge request approvals](../merge_requests/approvals/index.md).
 - Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
 - Enable [merge only when all threads are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved).
-- Enable [`delete source branch after merge` option by default](../merge_requests/getting_started.md#deleting-the-source-branch)
-- Configure [suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions)
+- Enable [require an associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
+- Enable [`delete source branch after merge` option by default](../merge_requests/getting_started.md#deleting-the-source-branch).
+- Configure [suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
 - Configure [the default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
 
 ### Service Desk

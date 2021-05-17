@@ -69,8 +69,8 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :tier               | %w(test ee)
       :name               | 'count_<adjective_describing>_boards'
 
-      :instrumentation_class | 'Gitlab::Usage::Metrics::Instrumentations::Metric_Class'
-      :instrumentation_class | 'Gitlab::Usage::Metrics::MetricClass'
+      :instrumentation_class | 'Metric_Class'
+      :instrumentation_class | 'metricClass'
     end
 
     with_them do

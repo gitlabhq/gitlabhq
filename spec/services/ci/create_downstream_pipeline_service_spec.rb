@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
+  include Ci::SourcePipelineHelpers
+
   let_it_be(:user) { create(:user) }
   let(:upstream_project) { create(:project, :repository) }
   let_it_be(:downstream_project, refind: true) { create(:project, :repository) }
@@ -390,6 +392,47 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
               expect(variables).to include 'BRIDGE'
             end
           end
+        end
+      end
+    end
+
+    context 'when relationship between pipelines is cyclical' do
+      before do
+        pipeline_a = create(:ci_pipeline, project: upstream_project)
+        pipeline_b = create(:ci_pipeline, project: downstream_project)
+        pipeline_c = create(:ci_pipeline, project: upstream_project)
+
+        create_source_pipeline(pipeline_a, pipeline_b)
+        create_source_pipeline(pipeline_b, pipeline_c)
+        create_source_pipeline(pipeline_c, upstream_pipeline)
+      end
+
+      it 'does not create a new pipeline' do
+        expect { service.execute(bridge) }
+          .not_to change { Ci::Pipeline.count }
+      end
+
+      it 'changes status of the bridge build' do
+        service.execute(bridge)
+
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq 'pipeline_loop_detected'
+      end
+
+      context 'when ci_drop_cyclical_triggered_pipelines is not enabled' do
+        before do
+          stub_feature_flags(ci_drop_cyclical_triggered_pipelines: false)
+        end
+
+        it 'creates a new pipeline' do
+          expect { service.execute(bridge) }
+            .to change { Ci::Pipeline.count }
+        end
+
+        it 'expect bridge build not to be failed' do
+          service.execute(bridge)
+
+          expect(bridge.reload).not_to be_failed
         end
       end
     end

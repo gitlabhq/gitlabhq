@@ -204,6 +204,13 @@ To make an epic confidential:
 This section collects instructions for all the things you can do with [issues](../../project/issues/index.md)
 in relation to epics.
 
+### View count of issues in an epic
+
+On the **Epics and Issues** tab, under each epic name, hover over the total counts.
+
+The number indicates all epics associated with the project, including issues
+you might not have permission to.
+
 ### Add a new issue to an epic
 
 You can add an existing issue to an epic, or create a new issue that's
@@ -230,13 +237,6 @@ To add a new issue to an epic:
 
    If there are multiple issues to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
-
-#### View count of issues in an epic
-
-On the **Epics and Issues** tab, under each epic name, hover over the total counts.
-
-The number indicates all epics associated with the project, including issues
-you might not have permission to.
 
 #### Create an issue from an epic
 

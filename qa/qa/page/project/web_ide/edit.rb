@@ -108,10 +108,6 @@ module QA
             element :file_to_commit_content
           end
 
-          view 'app/assets/javascripts/editor/extensions/editor_lite_extension_base.js' do
-            element :line_link
-          end
-
           def has_file?(file_name)
             within_element(:file_list) do
               has_element?(:file_name_content, file_name: file_name)
@@ -319,11 +315,15 @@ module QA
           end
 
           def link_line(line_number)
+            previous_url = page.current_url
             wait_for_animated_element(:editor_container)
             within_element(:editor_container) do
-              find('.line-numbers', text: line_number).hover
-              find_element(:line_link, number: "#L#{line_number}")['href'].to_s
+              find('.line-numbers', text: line_number).hover.click
             end
+            wait_until(max_duration: 5, reload: false) do
+              page.current_url != previous_url
+            end
+            page.current_url.to_s
           end
         end
       end

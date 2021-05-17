@@ -208,7 +208,7 @@ The repository graph displays the history of the repository network visually, in
 
 Find it under your project's **Repository > Graph**.
 
-## Repository Languages
+## Repository languages
 
 For the default branch of each repository, GitLab determines what programming languages
 were used and displays this on the project's pages. If this information is missing, it's
@@ -268,7 +268,7 @@ All projects can be cloned into Visual Studio Code. To do that:
 
 When VS Code has successfully cloned your project, it opens the folder.
 
-## Download Source Code
+## Download source code
 
 > - Support for directory download was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/24704) in GitLab 11.11.
 > - Support for [including Git LFS blobs](../../../topics/git/lfs#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.

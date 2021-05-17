@@ -839,8 +839,52 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
 .frequent-items-dropdown-container {
   display: flex;
   flex-direction: row;
-  width: 500px;
-  height: 354px;
+  height: $grid-size * 40;
+
+  &.with-deprecated-styles {
+    width: 500px;
+    height: 354px;
+
+    .section-header,
+    .frequent-items-list-container li.section-empty {
+      padding: 0 $gl-padding;
+    }
+
+    .search-input-container {
+      position: relative;
+      padding: 4px $gl-padding;
+
+      .search-icon {
+        position: absolute;
+        top: 13px;
+        right: 25px;
+        color: $gray-300;
+      }
+    }
+
+    @include media-breakpoint-down(xs) {
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      flex: 1;
+
+      .frequent-items-dropdown-sidebar,
+      .frequent-items-dropdown-content {
+        width: 100%;
+      }
+
+      .frequent-items-dropdown-sidebar {
+        border-bottom: 1px solid $border-color;
+        border-right: 0;
+      }
+    }
+
+    .frequent-items-list-container {
+      width: auto;
+      height: auto;
+      padding-bottom: 0;
+    }
+  }
 
   .frequent-items-dropdown-sidebar,
   .frequent-items-dropdown-content {
@@ -861,26 +905,8 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     width: 70%;
   }
 
-  @include media-breakpoint-down(xs) {
-    flex-direction: column;
-    width: 100%;
-    height: auto;
-    flex: 1;
-
-    .frequent-items-dropdown-sidebar,
-    .frequent-items-dropdown-content {
-      width: 100%;
-    }
-
-    .frequent-items-dropdown-sidebar {
-      border-bottom: 1px solid $border-color;
-      border-right: 0;
-    }
-  }
-
   .section-header,
   .frequent-items-list-container li.section-empty {
-    padding: 0 $gl-padding;
     color: $gl-text-color-secondary;
     font-size: $gl-font-size;
   }
@@ -898,36 +924,16 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     }
   }
 
-  .search-input-container {
-    position: relative;
-    padding: 4px $gl-padding;
-
-    .search-icon {
-      position: absolute;
-      top: 13px;
-      right: 25px;
-      color: $gray-300;
-    }
-  }
-
   .section-header {
     font-weight: 700;
     margin-top: 8px;
-  }
-
-  @include media-breakpoint-down(xs) {
-    .frequent-items-list-container {
-      width: auto;
-      height: auto;
-      padding-bottom: 0;
-    }
   }
 }
 
 .frequent-items-list-item-container {
   .frequent-items-item-avatar-container,
   .frequent-items-item-metadata-container {
-    float: left;
+    flex-shrink: 0;
   }
 
   .frequent-items-item-metadata-container {

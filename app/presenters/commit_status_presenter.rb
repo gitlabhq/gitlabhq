@@ -15,6 +15,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     scheduler_failure: 'The scheduler failed to assign job to the runner, please try again or contact system administrator',
     data_integrity_failure: 'There has been a structural integrity problem detected, please contact system administrator',
     forward_deployment_failure: 'The deployment job is older than the previously succeeded deployment job, and therefore cannot be run',
+    pipeline_loop_detected: 'This job could not be executed because it would create infinitely looping pipelines',
     invalid_bridge_trigger: 'This job could not be executed because downstream pipeline trigger definition is invalid',
     downstream_bridge_project_not_found: 'This job could not be executed because downstream bridge project could not be found',
     insufficient_bridge_permissions: 'This job could not be executed because of insufficient permissions to create a downstream pipeline',

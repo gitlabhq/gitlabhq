@@ -6,31 +6,166 @@ RSpec.describe Users::BuildService do
   using RSpec::Parameterized::TableSyntax
 
   describe '#execute' do
+    let_it_be(:current_user) { nil }
+
     let(:params) { build_stubbed(:user).slice(:first_name, :last_name, :username, :email, :password) }
+    let(:service) { described_class.new(current_user, params) }
 
-    context 'with an admin user' do
-      let(:params) { build_stubbed(:user).slice(:name, :username, :email, :password) }
-
-      let(:admin_user) { create(:admin) }
-      let(:service) { described_class.new(admin_user, ActionController::Parameters.new(params).permit!) }
-
-      it 'returns a valid user' do
-        expect(service.execute).to be_valid
-      end
+    shared_examples_for 'common build items' do
+      it { is_expected.to be_valid }
 
       it 'sets the created_by_id' do
-        expect(service.execute.created_by_id).to eq(admin_user.id)
+        expect(user.created_by_id).to eq(current_user&.id)
       end
 
-      context 'calls the UpdateCanonicalEmailService' do
-        specify do
-          expect(Users::UpdateCanonicalEmailService).to receive(:new).and_call_original
+      it 'calls UpdateCanonicalEmailService' do
+        expect(Users::UpdateCanonicalEmailService).to receive(:new).and_call_original
 
-          service.execute
+        user
+      end
+
+      context 'when user_type is provided' do
+        context 'when project_bot' do
+          before do
+            params.merge!({ user_type: :project_bot })
+          end
+
+          it { expect(user.project_bot?).to be true }
+        end
+
+        context 'when not a project_bot' do
+          before do
+            params.merge!({ user_type: :alert_bot })
+          end
+
+          it { expect(user).to be_human }
+        end
+      end
+    end
+
+    shared_examples_for 'current user not admin' do
+      context 'with "user_default_external" application setting' do
+        where(:user_default_external, :external, :email, :user_default_internal_regex, :result) do
+          true  | nil   | 'fl@example.com'        | nil                     | true
+          true  | true  | 'fl@example.com'        | nil                     | true
+          true  | false | 'fl@example.com'        | nil                     | true # admin difference
+
+          true  | nil   | 'fl@example.com'        | ''                      | true
+          true  | true  | 'fl@example.com'        | ''                      | true
+          true  | false | 'fl@example.com'        | ''                      | true # admin difference
+
+          true  | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+          true  | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false # admin difference
+          true  | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+
+          true  | nil   | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
+          true  | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
+          true  | false | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true # admin difference
+
+          false | nil   | 'fl@example.com'        | nil                     | false
+          false | true  | 'fl@example.com'        | nil                     | false # admin difference
+          false | false | 'fl@example.com'        | nil                     | false
+
+          false | nil   | 'fl@example.com'        | ''                      | false
+          false | true  | 'fl@example.com'        | ''                      | false # admin difference
+          false | false | 'fl@example.com'        | ''                      | false
+
+          false | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+          false | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false # admin difference
+          false | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+
+          false | nil   | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false
+          false | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false # admin difference
+          false | false | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false
+        end
+
+        with_them do
+          before do
+            stub_application_setting(user_default_external: user_default_external)
+            stub_application_setting(user_default_internal_regex: user_default_internal_regex)
+
+            params.merge!({ external: external, email: email }.compact)
+          end
+
+          it 'sets the value of Gitlab::CurrentSettings.user_default_external' do
+            expect(user.external).to eq(result)
+          end
         end
       end
 
-      context 'allowed params' do
+      context 'when "send_user_confirmation_email" application setting is true' do
+        before do
+          stub_application_setting(send_user_confirmation_email: true, signup_enabled?: true)
+        end
+
+        it 'does not confirm the user' do
+          expect(user).not_to be_confirmed
+        end
+      end
+
+      context 'when "send_user_confirmation_email" application setting is false' do
+        before do
+          stub_application_setting(send_user_confirmation_email: false, signup_enabled?: true)
+        end
+
+        it 'confirms the user' do
+          expect(user).to be_confirmed
+        end
+      end
+
+      context 'with allowed params' do
+        let(:params) do
+          {
+            email: 1,
+            name: 1,
+            password: 1,
+            password_automatically_set: 1,
+            username: 1,
+            user_type: 'project_bot'
+          }
+        end
+
+        it 'sets all allowed attributes' do
+          expect(User).to receive(:new).with(hash_including(params)).and_call_original
+
+          user
+        end
+      end
+    end
+
+    context 'with nil current_user' do
+      subject(:user) { service.execute }
+
+      it_behaves_like 'common build items'
+      it_behaves_like 'current user not admin'
+    end
+
+    context 'with non admin current_user' do
+      let_it_be(:current_user) { create(:user) }
+
+      let(:service) { described_class.new(current_user, params) }
+
+      subject(:user) { service.execute(skip_authorization: true) }
+
+      it 'raises AccessDeniedError exception when authorization is not skipped' do
+        expect { service.execute }.to raise_error Gitlab::Access::AccessDeniedError
+      end
+
+      it_behaves_like 'common build items'
+      it_behaves_like 'current user not admin'
+    end
+
+    context 'with an admin current_user' do
+      let_it_be(:current_user) { create(:admin) }
+
+      let(:params) { build_stubbed(:user).slice(:name, :username, :email, :password) }
+      let(:service) { described_class.new(current_user, ActionController::Parameters.new(params).permit!) }
+
+      subject(:user) { service.execute }
+
+      it_behaves_like 'common build items'
+
+      context 'with allowed params' do
         let(:params) do
           {
             access_level: 1,
@@ -60,13 +195,14 @@ RSpec.describe Users::BuildService do
             private_profile: 1,
             organization: 1,
             location: 1,
-            public_email: 1
+            public_email: 1,
+            user_type: 'project_bot',
+            note: 1,
+            view_diffs_file_by_file: 1
           }
         end
 
         it 'sets all allowed attributes' do
-          admin_user # call first so the admin gets created before setting `expect`
-
           expect(User).to receive(:new).with(hash_including(params)).and_call_original
 
           service.execute
@@ -77,34 +213,34 @@ RSpec.describe Users::BuildService do
         where(:user_default_external, :external, :email, :user_default_internal_regex, :result) do
           true  | nil   | 'fl@example.com'        | nil                     | true
           true  | true  | 'fl@example.com'        | nil                     | true
-          true  | false | 'fl@example.com'        | nil                     | false
+          true  | false | 'fl@example.com'        | nil                     | false # admin difference
 
           true  | nil   | 'fl@example.com'        | ''                      | true
           true  | true  | 'fl@example.com'        | ''                      | true
-          true  | false | 'fl@example.com'        | ''                      | false
+          true  | false | 'fl@example.com'        | ''                      | false # admin difference
 
           true  | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
-          true  | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | true
+          true  | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | true # admin difference
           true  | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
 
           true  | nil   | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
           true  | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
-          true  | false | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false
+          true  | false | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false # admin difference
 
           false | nil   | 'fl@example.com'        | nil                     | false
-          false | true  | 'fl@example.com'        | nil                     | true
+          false | true  | 'fl@example.com'        | nil                     | true # admin difference
           false | false | 'fl@example.com'        | nil                     | false
 
           false | nil   | 'fl@example.com'        | ''                      | false
-          false | true  | 'fl@example.com'        | ''                      | true
+          false | true  | 'fl@example.com'        | ''                      | true # admin difference
           false | false | 'fl@example.com'        | ''                      | false
 
           false | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
-          false | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | true
+          false | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | true # admin difference
           false | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
 
           false | nil   | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false
-          false | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
+          false | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true # admin difference
           false | false | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false
         end
 
@@ -115,126 +251,6 @@ RSpec.describe Users::BuildService do
 
             params.merge!({ external: external, email: email }.compact)
           end
-
-          subject(:user) { service.execute }
-
-          it 'correctly sets user.external' do
-            expect(user.external).to eq(result)
-          end
-        end
-      end
-    end
-
-    context 'with non admin user' do
-      let(:user) { create(:user) }
-      let(:service) { described_class.new(user, params) }
-
-      it 'raises AccessDeniedError exception' do
-        expect { service.execute }.to raise_error Gitlab::Access::AccessDeniedError
-      end
-
-      context 'when authorization is skipped' do
-        subject(:built_user) { service.execute(skip_authorization: true) }
-
-        it { is_expected.to be_valid }
-
-        it 'sets the created_by_id' do
-          expect(built_user.created_by_id).to eq(user.id)
-        end
-      end
-    end
-
-    context 'with nil user' do
-      let(:service) { described_class.new(nil, params) }
-
-      it 'returns a valid user' do
-        expect(service.execute).to be_valid
-      end
-
-      context 'when "send_user_confirmation_email" application setting is true' do
-        before do
-          stub_application_setting(send_user_confirmation_email: true, signup_enabled?: true)
-        end
-
-        it 'does not confirm the user' do
-          expect(service.execute).not_to be_confirmed
-        end
-      end
-
-      context 'when "send_user_confirmation_email" application setting is false' do
-        before do
-          stub_application_setting(send_user_confirmation_email: false, signup_enabled?: true)
-        end
-
-        it 'confirms the user' do
-          expect(service.execute).to be_confirmed
-        end
-      end
-
-      context 'when user_type is provided' do
-        subject(:user) { service.execute }
-
-        context 'when project_bot' do
-          before do
-            params.merge!({ user_type: :project_bot })
-          end
-
-          it { expect(user.project_bot?).to be true }
-        end
-
-        context 'when not a project_bot' do
-          before do
-            params.merge!({ user_type: :alert_bot })
-          end
-
-          it { expect(user).to be_human }
-        end
-      end
-
-      context 'with "user_default_external" application setting' do
-        where(:user_default_external, :external, :email, :user_default_internal_regex, :result) do
-          true  | nil   | 'fl@example.com'        | nil                     | true
-          true  | true  | 'fl@example.com'        | nil                     | true
-          true  | false | 'fl@example.com'        | nil                     | true
-
-          true  | nil   | 'fl@example.com'        | ''                      | true
-          true  | true  | 'fl@example.com'        | ''                      | true
-          true  | false | 'fl@example.com'        | ''                      | true
-
-          true  | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
-          true  | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
-          true  | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
-
-          true  | nil   | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
-          true  | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
-          true  | false | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
-
-          false | nil   | 'fl@example.com'        | nil                     | false
-          false | true  | 'fl@example.com'        | nil                     | false
-          false | false | 'fl@example.com'        | nil                     | false
-
-          false | nil   | 'fl@example.com'        | ''                      | false
-          false | true  | 'fl@example.com'        | ''                      | false
-          false | false | 'fl@example.com'        | ''                      | false
-
-          false | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
-          false | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
-          false | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
-
-          false | nil   | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false
-          false | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false
-          false | false | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false
-        end
-
-        with_them do
-          before do
-            stub_application_setting(user_default_external: user_default_external)
-            stub_application_setting(user_default_internal_regex: user_default_internal_regex)
-
-            params.merge!({ external: external, email: email }.compact)
-          end
-
-          subject(:user) { service.execute }
 
           it 'sets the value of Gitlab::CurrentSettings.user_default_external' do
             expect(user.external).to eq(result)

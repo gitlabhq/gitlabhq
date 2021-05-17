@@ -20,7 +20,7 @@
                 = _('Next')
 
         - if Feature.enabled?(:combined_menu, current_user, default_enabled: :yaml)
-          = render "layouts/nav/combined_menu"
+          = render "layouts/nav/top_nav"
         - else
           - if current_user
             = render "layouts/nav/dashboard"

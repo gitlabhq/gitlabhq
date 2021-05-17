@@ -14,7 +14,8 @@ module SshKeys
     def perform
       return unless ::Feature.enabled?(:ssh_key_expiration_email_notification, default_enabled: :yaml)
 
-      User.with_ssh_key_expiring_soon.find_each do |user|
+      # rubocop:disable CodeReuse/ActiveRecord
+      User.with_ssh_key_expiring_soon.find_each(batch_size: 10_000) do |user|
         with_context(user: user) do
           Gitlab::AppLogger.info "#{self.class}: Notifying User #{user.id} about expiring soon ssh key(s)"
 
@@ -23,6 +24,7 @@ module SshKeys
           Keys::ExpiryNotificationService.new(user, { keys: keys, expiring_soon: true }).execute
         end
       end
+      # rubocop:enable CodeReuse/ActiveRecord
     end
   end
 end

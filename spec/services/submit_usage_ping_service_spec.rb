@@ -217,7 +217,7 @@ RSpec.describe SubmitUsagePingService do
   end
 
   def stub_response(body:, status: 201)
-    stub_full_request(SubmitUsagePingService::STAGING_URL, method: :post)
+    stub_full_request(subject.send(:url), method: :post)
       .to_return(
         headers: { 'Content-Type' => 'application/json' },
         body: body.to_json,

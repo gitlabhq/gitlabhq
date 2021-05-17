@@ -45,6 +45,30 @@ ENTITY_TITLE
 
 You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
+### Require associated Jira issue for merge requests to be merged
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280766) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.12 behind a feature flag, disabled by default.
+> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-the-ability-to-require-an-associated-jira-issue-on-merge-requests). **(ULTIMATE SELF)**
+
+This in-development feature might not be available for your use. There can be
+[risks when enabling features still in development](../../user/application_security/index.md#security-approvals-in-merge-requests).
+Refer to this feature's version history for more details.
+
+You can prevent merge requests from being merged if they do not refer to a Jira issue.
+To enforce this:
+
+1. Navigate to your project's **Settings > General** page.
+1. Expand the **Merge requests** section.
+1. Under **Merge checks**, select the **Require an associated issue from Jira** check box.
+1. Select **Save** for the changes to take effect.
+
+After you enable this feature, a merge request that doesn't reference an associated
+Jira issue can't be merged. The merge request displays the message
+**To merge, a Jira issue key must be mentioned in the title or description.**
+
 ## Close Jira issues in GitLab
 
 If you have configured GitLab transition IDs, you can close a Jira issue directly
@@ -160,3 +184,22 @@ adding a comment to the Jira issue:
 
 1. Refer to the [Configure GitLab](development_panel.md#configure-gitlab) instructions.
 1. Clear the **Enable comments** check box.
+
+## Enable or disable the ability to require an associated Jira issue on merge requests
+
+The ability to require an associated Jira issue on merge requests is under development
+and not ready for production use. It is deployed behind a feature flag that is
+**disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md) can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:jira_issue_association_on_merge_request)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:jira_issue_association_on_merge_request)
+```

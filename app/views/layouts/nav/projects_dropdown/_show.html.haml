@@ -3,7 +3,7 @@
 -# Please see [this MR][1] for more context.
 -# [1]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587
 - project_meta = { id: @project.id, name: @project.name, namespace: @project.full_name, web_url: project_path(@project), avatar_url: @project.avatar_url } if @project&.persisted?
-.frequent-items-dropdown-container
+.frequent-items-dropdown-container.with-deprecated-styles
   .frequent-items-dropdown-sidebar.qa-projects-dropdown-sidebar
     %ul
       = nav_link(path: 'dashboard/projects#index') do

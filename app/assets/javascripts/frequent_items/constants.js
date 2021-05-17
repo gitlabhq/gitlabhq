@@ -37,15 +37,16 @@ export const TRANSLATION_KEYS = {
   },
 };
 
-export const FREQUENT_ITEMS_DROPDOWNS = [
-  {
-    namespace: 'projects',
-    key: 'project',
-    vuexModule: 'frequentProjects',
-  },
-  {
-    namespace: 'groups',
-    key: 'group',
-    vuexModule: 'frequentGroups',
-  },
-];
+export const FREQUENT_ITEMS_PROJECTS = {
+  namespace: 'projects',
+  key: 'project',
+  vuexModule: 'frequentProjects',
+};
+
+export const FREQUENT_ITEMS_GROUPS = {
+  namespace: 'groups',
+  key: 'group',
+  vuexModule: 'frequentGroups',
+};
+
+export const FREQUENT_ITEMS_DROPDOWNS = [FREQUENT_ITEMS_PROJECTS, FREQUENT_ITEMS_GROUPS];

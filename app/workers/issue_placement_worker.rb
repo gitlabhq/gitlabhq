@@ -20,6 +20,10 @@ class IssuePlacementWorker
     issue = find_issue(issue_id, project_id)
     return unless issue
 
+    # Temporary disable moving null elements because of performance problems
+    # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
+    return if issue.blocked_for_repositioning?
+
     # Move the oldest 100 unpositioned items to the end.
     # This is to deal with out-of-order execution of the worker,
     # while preserving creation order.

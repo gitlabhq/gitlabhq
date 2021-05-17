@@ -9,7 +9,7 @@ value_type: string
 status: data_available
 time_frame: none
 data_source: system
-instrumentation_class: 'Gitlab::Usage::Metrics::Instrumentations::HostnameMetric'
+instrumentation_class: HostnameMetric
 distribution:
 - ce
 - ee

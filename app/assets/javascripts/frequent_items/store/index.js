@@ -13,14 +13,16 @@ export const createFrequentItemsModule = (initState = {}) => ({
   state: state(initState),
 });
 
+export const createStoreOptions = () => ({
+  modules: FREQUENT_ITEMS_DROPDOWNS.reduce(
+    (acc, { namespace, vuexModule }) =>
+      Object.assign(acc, {
+        [vuexModule]: createFrequentItemsModule({ dropdownType: namespace }),
+      }),
+    {},
+  ),
+});
+
 export const createStore = () => {
-  return new Vuex.Store({
-    modules: FREQUENT_ITEMS_DROPDOWNS.reduce(
-      (acc, { namespace, vuexModule }) =>
-        Object.assign(acc, {
-          [vuexModule]: createFrequentItemsModule({ dropdownType: namespace }),
-        }),
-      {},
-    ),
-  });
+  return new Vuex.Store(createStoreOptions());
 };

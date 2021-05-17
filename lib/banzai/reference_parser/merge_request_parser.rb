@@ -3,6 +3,8 @@
 module Banzai
   module ReferenceParser
     class MergeRequestParser < IssuableParser
+      include Gitlab::Utils::StrongMemoize
+
       self.reference_type = :merge_request
 
       def records_for_nodes(nodes)
@@ -26,6 +28,16 @@ module Banzai
             }),
           self.class.data_attribute
         )
+      end
+
+      def can_read_reference?(user, merge_request)
+        memo = strong_memoize(:can_read_reference) { {} }
+
+        project_id = merge_request.project_id
+
+        return memo[project_id] if memo.key?(project_id)
+
+        memo[project_id] = can?(user, :read_merge_request_iid, merge_request.project)
       end
     end
   end

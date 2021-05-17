@@ -189,3 +189,21 @@ $gl-line-height-42: px-to-rem(42px);
 .gl-line-height-42 {
   line-height: $gl-line-height-42;
 }
+
+.gl-w-grid-size-30 {
+  width: $grid-size * 30;
+}
+
+.gl-w-grid-size-40 {
+  width: $grid-size * 40;
+}
+
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2209
+.gl-max-w-none\! {
+  max-width: none !important;
+}
+
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2209
+.gl-max-h-none\! {
+  max-height: none !important;
+}

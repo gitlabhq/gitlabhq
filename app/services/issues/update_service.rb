@@ -100,6 +100,8 @@ module Issues
     end
 
     def handle_move_between_ids(issue)
+      issue.check_repositioning_allowed! if params[:move_between_ids]
+
       super
 
       rebalance_if_needed(issue)

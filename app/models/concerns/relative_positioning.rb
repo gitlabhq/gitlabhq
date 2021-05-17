@@ -79,6 +79,8 @@ module RelativePositioning
       objects = objects.reject(&:relative_position)
       return 0 if objects.empty?
 
+      objects.first.check_repositioning_allowed!
+
       number_of_gaps = objects.size # 1 to the nearest neighbour, and one between each
       representative = RelativePositioning.mover.context(objects.first)
 
@@ -121,6 +123,12 @@ module RelativePositioning
 
   def self.mover
     ::Gitlab::RelativePositioning::Mover.new(START_POSITION, (MIN_POSITION..MAX_POSITION))
+  end
+
+  # To be overriden on child classes whenever
+  # blocking position updates is necessary.
+  def check_repositioning_allowed!
+    nil
   end
 
   def move_between(before, after)

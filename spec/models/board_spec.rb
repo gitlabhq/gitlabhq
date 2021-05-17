@@ -42,4 +42,46 @@ RSpec.describe Board do
       expect { project.boards.first_board.find(board_A.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
+
+  describe '#disabled_for?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:user) { create(:user) }
+
+    subject { board.disabled_for?(user) }
+
+    shared_examples 'board disabled_for?' do
+      context 'when current user cannot create non backlog issues' do
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when user can create backlog issues' do
+        before do
+          board.resource_parent.add_reporter(user)
+        end
+
+        it { is_expected.to eq(false) }
+
+        context 'when block_issue_repositioning is enabled' do
+          before do
+            stub_feature_flags(block_issue_repositioning: group)
+          end
+
+          it { is_expected.to eq(true) }
+        end
+      end
+    end
+
+    context 'for group board' do
+      let_it_be(:board) { create(:board, group: group) }
+
+      it_behaves_like 'board disabled_for?'
+    end
+
+    context 'for project board' do
+      let_it_be(:board) { create(:board, project: project) }
+
+      it_behaves_like 'board disabled_for?'
+    end
+  end
 end

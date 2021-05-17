@@ -1141,10 +1141,36 @@ RSpec.describe Issue do
   end
 
   context "relative positioning" do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:issue1) { create(:issue, project: project, relative_position: nil) }
+    let_it_be(:issue2) { create(:issue, project: project, relative_position: nil) }
+
     it_behaves_like "a class that supports relative positioning" do
       let_it_be(:project) { reusable_project }
       let(:factory) { :issue }
       let(:default_params) { { project: project } }
+    end
+
+    it 'is not blocked for repositioning by default' do
+      expect(issue1.blocked_for_repositioning?).to eq(false)
+    end
+
+    context 'when block_issue_repositioning flag is enabled for group' do
+      before do
+        stub_feature_flags(block_issue_repositioning: group)
+      end
+
+      it 'is blocked for repositioning' do
+        expect(issue1.blocked_for_repositioning?).to eq(true)
+      end
+
+      it 'does not move issues with null position' do
+        payload = [issue1, issue2]
+
+        expect { described_class.move_nulls_to_end(payload) }.to raise_error(Gitlab::RelativePositioning::IssuePositioningDisabled)
+        expect { described_class.move_nulls_to_start(payload) }.to raise_error(Gitlab::RelativePositioning::IssuePositioningDisabled)
+      end
     end
   end
 

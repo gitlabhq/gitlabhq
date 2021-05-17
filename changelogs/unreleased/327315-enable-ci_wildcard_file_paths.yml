@@ -1,0 +1,5 @@
+---
+title: Implement wildcard support for pipeline include file paths
+merge_request: 61507
+author:
+type: added

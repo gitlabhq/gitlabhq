@@ -20,6 +20,7 @@ module Gitlab
             scheduler_failure: 'scheduler failure',
             data_integrity_failure: 'data integrity failure',
             forward_deployment_failure: 'forward deployment failure',
+            pipeline_loop_detected: 'job would create infinitely looping pipelines',
             invalid_bridge_trigger: 'downstream pipeline trigger definition is invalid',
             downstream_bridge_project_not_found: 'downstream project could not be found',
             insufficient_bridge_permissions: 'no permissions to trigger downstream pipeline',

@@ -73,3 +73,5 @@ class SubmitUsagePingService
     end
   end
 end
+
+SubmitUsagePingService.prepend_mod
