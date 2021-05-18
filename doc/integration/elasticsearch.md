@@ -378,7 +378,7 @@ low may lead the reindexing process to take a very long time to complete.
 
 The best value for this will depend on your cluster size, whether you're willing
 to accept some degraded search performance during reindexing, and how important
-it is for the reindex to finish quickly and unpause indexing.
+it is for the reindex to finish quickly and resume indexing.
 
 ### Mark the most recent reindex job as failed and resume the indexing
 

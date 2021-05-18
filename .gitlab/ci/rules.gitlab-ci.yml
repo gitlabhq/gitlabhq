@@ -525,6 +525,8 @@
 
 .qa:rules:package-and-qa:
   rules:
+    - <<: *if-not-ee
+      when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-qa-patterns
       allow_failure: true

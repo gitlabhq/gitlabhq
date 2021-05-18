@@ -1,0 +1,40 @@
+{
+  "name": "vue-virtual-scroller",
+  "description": "Smooth scrolling for any amount of data",
+  "version": "1.0.10",
+  "author": {
+    "name": "Guillaume Chau",
+    "email": "guillaume.b.chau@gmail.com"
+  },
+  "keywords": [
+    "vue",
+    "vuejs",
+    "plugin"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Akryum/vue-virtual-scroller.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Akryum/vue-virtual-scroller/issues"
+  },
+  "homepage": "https://github.com/Akryum/vue-virtual-scroller#readme",
+  "dependencies": {
+    "scrollparent": "^2.0.1",
+    "vue-observe-visibility": "^0.4.4",
+    "vue-resize": "^0.4.5"
+  },
+  "peerDependencies": {
+    "vue": "^2.6.11"
+  },
+  "devDependencies": {
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

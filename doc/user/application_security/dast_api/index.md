@@ -594,7 +594,7 @@ can be added, removed, and modified by creating a custom configuration.
 - Application Information Check
 - Cleartext Authentication Check
 - FrameworkDebugModeCheck
-- Html Injection Check
+- HTML Injection Check
 - Insecure Http Methods Check
 - JSON Hijacking Check
 - JSON Injection Check
@@ -602,16 +602,16 @@ can be added, removed, and modified by creating a custom configuration.
 - Session Cookie Check
 - SQL Injection Check
 - Token Check
-- Xml Injection Check
+- XML Injection Check
 
 ##### Full
 
 - Application Information Check
 - Cleartext AuthenticationCheck
-- Cors Check
-- Dns Rebinding Check
+- CORS Check
+- DNS Rebinding Check
 - Framework Debug Mode Check
-- Html Injection Check
+- HTML Injection Check
 - Insecure Http Methods Check
 - JSON Hijacking Check
 - JSON Injection Check
@@ -620,9 +620,9 @@ can be added, removed, and modified by creating a custom configuration.
 - Sensitive Information Check
 - Session Cookie Check
 - SQL Injection Check
-- Tls Configuration Check
+- TLS Configuration Check
 - Token Check
-- Xml Injection Check
+- XML Injection Check
 
 ### Available CI/CD variables
 

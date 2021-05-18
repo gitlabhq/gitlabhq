@@ -59,4 +59,4 @@ feature flags, and there is currently no strong suggestion to use one over the o
 
 Historical Context: `Experimentation Module` was built iteratively with the needs that
 appeared while implementing Growth sub-department experiments, while GLEX was built
-with the learnings of the team and an easier to use API.
+with the findings of the team and an easier to use API.

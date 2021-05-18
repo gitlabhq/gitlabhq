@@ -139,7 +139,7 @@ RSpec.describe ProjectsFinder do
 
       describe 'filter by tags' do
         before do
-          public_project.tag_list.add('foo')
+          public_project.tag_list = 'foo'
           public_project.save!
         end
 

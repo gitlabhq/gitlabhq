@@ -1302,7 +1302,7 @@ A good guideline to follow: the more complex the component you may want to steer
 
 - To capture large data structures just to have something
 - To just have some kind of test written
-- To capture highly volatile ui elements without stubbing them (Think of GitLab UI version updates)
+- To capture highly volatile UI elements without stubbing them (Think of GitLab UI version updates)
 
 ---
 

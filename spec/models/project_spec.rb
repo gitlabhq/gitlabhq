@@ -6964,6 +6964,55 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe 'topics' do
+    let_it_be(:project) { create(:project, tag_list: 'topic1, topic2, topic3') }
+
+    it 'topic_list returns correct string array' do
+      expect(project.topic_list).to match_array(%w[topic1 topic2 topic3])
+    end
+
+    it 'topics returns correct tag records' do
+      expect(project.topics.first.class.name).to eq('ActsAsTaggableOn::Tag')
+      expect(project.topics.map(&:name)).to match_array(%w[topic1 topic2 topic3])
+    end
+
+    context 'aliases' do
+      it 'tag_list returns correct string array' do
+        expect(project.tag_list).to match_array(%w[topic1 topic2 topic3])
+      end
+
+      it 'tags returns correct tag records' do
+        expect(project.tags.first.class.name).to eq('ActsAsTaggableOn::Tag')
+        expect(project.tags.map(&:name)).to match_array(%w[topic1 topic2 topic3])
+      end
+    end
+
+    context 'intermediate state during background migration' do
+      before do
+        project.taggings.first.update!(context: 'tags')
+        project.instance_variable_set("@tag_list", nil)
+        project.reload
+      end
+
+      it 'tag_list returns string array including old and new topics' do
+        expect(project.tag_list).to match_array(%w[topic1 topic2 topic3])
+      end
+
+      it 'tags returns old and new tag records' do
+        expect(project.tags.first.class.name).to eq('ActsAsTaggableOn::Tag')
+        expect(project.tags.map(&:name)).to match_array(%w[topic1 topic2 topic3])
+        expect(project.taggings.map(&:context)).to match_array(%w[tags topics topics])
+      end
+
+      it 'update tag_list adds new topics and removes old topics' do
+        project.update!(tag_list: 'topic1, topic2, topic3, topic4')
+
+        expect(project.tags.map(&:name)).to match_array(%w[topic1 topic2 topic3 topic4])
+        expect(project.taggings.map(&:context)).to match_array(%w[topics topics topics topics])
+      end
+    end
+  end
+
   def finish_job(export_job)
     export_job.start
     export_job.finish

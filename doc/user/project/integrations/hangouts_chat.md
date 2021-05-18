@@ -15,7 +15,7 @@ Hangouts).
 ## How it works
 
 To enable this integration, first you need to create a webhook for the room in
-Google Chat where you want to receive the nofications from your project.
+Google Chat where you want to receive the notifications from your project.
 
 After that, enable the integration in GitLab and choose the events you want to
 be notified about in your Google Chat room.

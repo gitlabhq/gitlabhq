@@ -128,8 +128,41 @@ class Project < ApplicationRecord
   after_initialize :use_hashed_storage
   after_create :check_repository_absence!
 
-  acts_as_ordered_taggable
-  alias_method :topics, :tag_list
+  acts_as_ordered_taggable_on :topics
+  # The 'tag_list' alias and the 'has_many' associations are required during the 'tags -> topics' migration
+  # TODO: eliminate 'tag_list', 'topic_taggings' and 'tags' in the further process of the migration
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/331081
+  alias_attribute :tag_list, :topic_list
+  has_many :topic_taggings, -> { includes(:tag).order("#{ActsAsTaggableOn::Tagging.table_name}.id") },
+                     as: :taggable,
+                     class_name: 'ActsAsTaggableOn::Tagging',
+                     after_add: :dirtify_tag_list,
+                     after_remove: :dirtify_tag_list
+  has_many :topics, -> { order("#{ActsAsTaggableOn::Tagging.table_name}.id") },
+                     class_name: 'ActsAsTaggableOn::Tag',
+                     through: :topic_taggings,
+                     source: :tag
+  has_many :tags, -> { order("#{ActsAsTaggableOn::Tagging.table_name}.id") },
+                     class_name: 'ActsAsTaggableOn::Tag',
+                     through: :topic_taggings,
+                     source: :tag
+
+  # Overwriting 'topic_list' and 'topic_list=' is necessary to ensure functionality during the background migration [1].
+  # [1] https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61237
+  # TODO: remove 'topic_list' and 'topic_list=' once the background migration is complete
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/331081
+  def topic_list
+    # Return both old topics (context 'tags') and new topics (context 'topics')
+    tag_list_on('tags') + tag_list_on('topics')
+  end
+
+  def topic_list=(new_tags)
+    # Old topics with context 'tags' are added as new topics with context 'topics'
+    super(new_tags)
+
+    # Remove old topics with context 'tags'
+    set_tag_list_on('tags', '')
+  end
 
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name

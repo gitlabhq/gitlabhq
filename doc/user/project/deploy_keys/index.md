@@ -167,7 +167,7 @@ If the key is **publicly accessible**, it will be removed from the project, but 
 
 If the key is **privately accessible** and only in use by this project, it will deleted.
 
-If the key is **privately accessible** and in use by other projects, it will be removed from the project, but still available under **Privately accesible deploy keys**.
+If the key is **privately accessible** and in use by other projects, it will be removed from the project, but still available under **Privately accessible deploy keys**.
 
 ## Troubleshooting
 

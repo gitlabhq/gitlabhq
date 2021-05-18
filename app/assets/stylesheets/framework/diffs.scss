@@ -729,7 +729,7 @@ table.code {
 }
 
 .files {
-  .diff-file:last-child {
+  .diff-file:not(.is-virtual-scrolling):last-child {
     margin-bottom: 0;
   }
 }

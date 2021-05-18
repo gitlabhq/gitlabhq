@@ -153,6 +153,7 @@ excluded_attributes:
     - :bfg_object_map
     - :detected_repository_languages
     - :tag_list
+    - :topic_list
     - :mirror_user_id
     - :mirror_trigger_builds
     - :only_mirror_protected_branches

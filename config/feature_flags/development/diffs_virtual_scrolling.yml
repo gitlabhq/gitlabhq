@@ -1,0 +1,8 @@
+---
+name: diffs_virtual_scrolling
+introduced_by_url:
+rollout_issue_url:
+milestone: '13.12'
+type: development
+group: group::code review
+default_enabled: false

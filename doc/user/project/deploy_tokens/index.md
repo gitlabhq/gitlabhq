@@ -130,20 +130,12 @@ To pull packages in the GitLab package registry, you must:
 1. For the [package type of your choice](../../packages/index.md), follow the
    authentication instructions for deploy tokens.
 
-Example request publishing a generic package using a deploy token:
+Example request publishing a NuGet package using a deploy token:
 
 ```shell
-curl --header "DEPLOY-TOKEN: <deploy_token>" \
-     --upload-file path/to/file.txt \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?status=hidden"
-```
+nuget source Add -Name GitLab -Source "https://gitlab.example.com/api/v4/projects/10/packages/nuget/index.json" -UserName deploy-token-username -Password 12345678asdf
 
-Example response:
-
-```json
-{
-  "message":"201 Created"
-}
+nuget push mypkg.nupkg -Source GitLab
 ```
 
 ### Push or upload packages

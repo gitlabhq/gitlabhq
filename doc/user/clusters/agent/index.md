@@ -172,7 +172,7 @@ the Agent in subsequent steps. You can create an Agent record with GraphQL:
 
 WARNING:
 GraphQL only displays the token and ids **one time** after creating it. Make sure to write down the `secret`, `clusterAgentId`, and `clusterAgentTokenId`; you'll need them later.
-  
+
   If you are new to using the GitLab GraphQL API, refer to the
   [Getting started with the GraphQL API page](../../../api/graphql/getting_started.md),
   or the [GraphQL Explorer](https://gitlab.com/-/graphql-explorer).
@@ -562,7 +562,7 @@ is unknown to the agent. One approach to fixing it is to present the CA certific
 via a Kubernetes `configmap` and mount the file in the agent `/etc/ssl/certs` directory from where it
 will be picked up automatically.
 
-For example, if your internal CA certifciate is `myCA.pem`:
+For example, if your internal CA certificate is `myCA.pem`:
 
 ```plaintext
 kubectl -n gitlab-kubernetes-agent create configmap ca-pemstore --from-file=myCA.pem
@@ -632,7 +632,7 @@ Alternatively, you can mount the certificate file at a different location and in
    mutation deleteAgent {
      clusterAgentDelete(input: { id: "<cluster-agent-id>" } ) {
        errors
-     } 
+     }
    }
 
    mutation deleteToken {
@@ -645,7 +645,7 @@ Alternatively, you can mount the certificate file at a different location and in
 1. Verify whether the removal occurred successfully. If the output in the Pod logs includes `unauthenticated`, it means that the agent was successfully removed:
 
    ```json
-      {"level":"warn","time":"2021-04-29T23:44:07.598Z","msg":"GetConfiguration.Recv failed","error":"rpc error: 
+      {"level":"warn","time":"2021-04-29T23:44:07.598Z","msg":"GetConfiguration.Recv failed","error":"rpc error:
       code = Unauthenticated desc = unauthenticated"}
    ```
 

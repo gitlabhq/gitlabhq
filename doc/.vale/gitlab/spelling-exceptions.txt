@@ -563,6 +563,7 @@ smartcard
 smartcards
 snapshotting
 Sobelow
+Solargraph
 Solarized
 Sourcegraph
 sparkline

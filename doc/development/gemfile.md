@@ -115,7 +115,7 @@ operator](https://thoughtbot.com/blog/rubys-pessimistic-operator))
 making it possible to upgrade `license_finder` or any other gem to a
 version that depends on `thor 1.2`.
 
-Simlarly, if `license_finder` had a vulnerability fixed in 6.0.1, we
+Similarly, if `license_finder` had a vulnerability fixed in 6.0.1, we
 should add:
 
 ```ruby
@@ -127,7 +127,7 @@ still depend on a newer version of `thor`, such as `6.0.2`, but would
 not be able to depend on the vulnerable version `6.0.0`.
 
 A downgrade like that could happen if we introduced a new dependency
-that also relied on thor but had its version pinned to a vulnerable
+that also relied on `thor` but had its version pinned to a vulnerable
 one. These changes are easy to miss in the `Gemfile.lock`. Pinning the
 version would result in a conflict that would need to be solved.
 

@@ -324,7 +324,7 @@ To allowlist specific vulnerabilities, follow these steps:
 1. Set `GIT_STRATEGY: fetch` in your `.gitlab-ci.yml` file by following the instructions in
    [overriding the container scanning template](#overriding-the-container-scanning-template).
 1. Define the allowlisted vulnerabilities in a YAML file named `vulnerability-allowlist.yml`. This must use
-   the format described in [vulnerability-allowlist.yml data format](#vulnerability-allowlistyml-data-format).
+   the format described in [`vulnerability-allowlist.yml` data format](#vulnerability-allowlistyml-data-format).
 1. Add the `vulnerability-allowlist.yml` file to the root folder of your project's Git repository.
 
 #### vulnerability-allowlist.yml data format
@@ -365,9 +365,9 @@ This example excludes from `gl-container-scanning-report.json`:
 
   You can specify container image in multiple ways:
 
-  - as image name only (ie. `centos`).
-  - as full image name with registry hostname (ie. `your.private.registry:5000/centos`).
-  - as full image name with registry hostname and sha256 label (ie. `registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256`).
+  - as image name only (such as `centos`).
+  - as full image name with registry hostname (such as `your.private.registry:5000/centos`).
+  - as full image name with registry hostname and sha256 label (such as `registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256`).
 
 NOTE:
 The string after CVE ID (`cups` and `libxml2` in the previous example) is an optional comment format. It has **no impact** on the handling of vulnerabilities. You can include comments to describe the vulnerability.

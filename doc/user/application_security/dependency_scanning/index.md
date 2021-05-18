@@ -510,7 +510,7 @@ ensure that it can reach your private repository. Here is an example configurati
 
 ## Hosting a copy of the gemnasium_db advisory database
 
-The [gemnasium_db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) Git repository is
+The [`gemnasium_db`](https://gitlab.com/gitlab-org/security-products/gemnasium-db) Git repository is
 used by `gemnasium`, `gemnasium-maven`, and `gemnasium-python` as the source of vulnerability data.
 This repository updates at scan time to fetch the latest advisories. However, due to a restricted
 networking environment, running this update is sometimes not possible. In this case, a user can do

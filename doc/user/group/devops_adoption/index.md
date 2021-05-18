@@ -114,7 +114,7 @@ To disable it:
 Feature.disable(:group_devops_adoption)
 ```
 
-To reenable it:
+To re-enable it:
 
 ```ruby
 Feature.enable(:group_devops_adoption)

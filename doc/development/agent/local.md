@@ -116,7 +116,7 @@ Before performing any of these tests, if you have a `k3s` instance running, make
 stop it manually before running them. Otherwise, the tests might fail with the message
 `failed to remove k3s cluster`.
 
-You might need to specify the correct Agent image version that matches the `kas` image version. You can use the `GITLAB_AGENTK_VERSION` local env for this.
+You might need to specify the correct Agent image version that matches the `kas` image version. You can use the `GITLAB_AGENTK_VERSION` local environment for this.
 
 ### Against `staging`
 
@@ -124,7 +124,7 @@ You might need to specify the correct Agent image version that matches the `kas`
    [this line](https://gitlab.com/gitlab-org/gitlab/-/blob/5b15540ea78298a106150c3a1d6ed26416109b9d/qa/qa/service/cluster_provider/k3s.rb#L8) and
    [this line](https://gitlab.com/gitlab-org/gitlab/-/blob/5b15540ea78298a106150c3a1d6ed26416109b9d/qa/qa/service/cluster_provider/k3s.rb#L36).
    We don't allow local connections on `staging` as they require an admin user.
-1. Ensure you don't have an `EE_LICENSE` env var set as this would force an admin login.
+1. Ensure you don't have an `EE_LICENSE` environment variable set as this would force an admin login.
 1. Go to your GDK root folder and `cd gitlab/qa`.
 1. Login with your user in staging and create a group to be used as sandbox.
    Something like: `username-qa-sandbox`.

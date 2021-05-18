@@ -782,7 +782,7 @@ While the Apollo client has support for simple polling, for performance reasons,
 
 Once the backend is set up, there are a few changes to make on the frontend.
 
-First, get your resource Etag path from the backend. In the example of the pipelines graph, this is called the `graphql_resource_etag`. This will be used to create new headers to add to the Apollo context:
+First, get your resource ETag path from the backend. In the example of the pipelines graph, this is called the `graphql_resource_etag`. This will be used to create new headers to add to the Apollo context:
 
 ```javascript
 /* pipelines/components/graph/utils.js */
@@ -817,7 +817,7 @@ apollo: {
 },
 ```
 
-Then, because Etags depend on the request being a `GET` instead of GraphQL's usual `POST`, but our default link library does not support `GET` we need to let our default Apollo client know to use a different library.
+Then, because ETags depend on the request being a `GET` instead of GraphQL's usual `POST`, but our default link library does not support `GET` we need to let our default Apollo client know to use a different library.
 
 ```javascript
 /* componentMountIndex.js */

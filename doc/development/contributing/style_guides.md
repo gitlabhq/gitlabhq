@@ -101,7 +101,7 @@ You can check for any offenses locally with `bundle exec rubocop --parallel`.
 On the CI, this is automatically checked by the `static-analysis` jobs.
 
 In addition, you can [integrate RuboCop](../developing_with_solargraph.md) into
-supported IDEs using the [solargraph](https://github.com/castwide/solargraph) gem.
+supported IDEs using the [Solargraph](https://github.com/castwide/solargraph) gem.
 
 For RuboCop rules that we have not taken a decision on yet, we follow the
 [Ruby Style Guide](https://github.com/rubocop-hq/ruby-style-guide),

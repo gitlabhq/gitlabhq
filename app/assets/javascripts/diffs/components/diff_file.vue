@@ -83,7 +83,7 @@ export default {
   computed: {
     ...mapState('diffs', ['currentDiffFileId', 'codequalityDiff']),
     ...mapGetters(['isNotesFetched']),
-    ...mapGetters('diffs', ['getDiffFileDiscussions']),
+    ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled']),
     viewBlobHref() {
       return escape(this.file.view_path);
     },
@@ -290,6 +290,7 @@ export default {
       'is-active': currentDiffFileId === file.file_hash,
       'comments-disabled': Boolean(file.brokenSymlink),
       'has-body': showBody,
+      'is-virtual-scrolling': isVirtualScrollingEnabled,
     }"
     :data-path="file.new_path"
     class="diff-file file-holder gl-border-none"

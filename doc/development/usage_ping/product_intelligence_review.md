@@ -48,7 +48,7 @@ Product Intelligence files.
   [Metrics Dictionary](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/usage_ping/dictionary.md) if it is needed.
 - Add a changelog [according to guidelines](../changelog.md).
 
-##### When adding or modifiying Snowplow events
+##### When adding or modifying Snowplow events
 
 - For frontend events, when relevant, add a screenshot of the event in
   the [testing tool](../snowplow/index.md#developing-and-testing-snowplow) used.
@@ -81,7 +81,7 @@ Any of the Product Intelligence engineers can be assigned for the Product Intell
   - Check if a [feature flag is needed](index.md#recommendations).
 - For tracking with Snowplow:
   - Check that the [event taxonomy](../snowplow/index.md#structured-event-taxonomy) is correct.
-  - Check the [usage recomendations](../snowplow/index.md#usage-recommendations).
+  - Check the [usage recommendations](../snowplow/index.md#usage-recommendations).
 - Metrics YAML definitions:
   - Check the metric `description`.
   - Check the metrics `key_path`.
