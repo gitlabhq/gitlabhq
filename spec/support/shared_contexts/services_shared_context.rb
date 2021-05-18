@@ -49,8 +49,9 @@ Integration.available_services_names.each do |service|
       stub_jira_service_test if service == 'jira'
     end
 
-    def initialize_service(service)
+    def initialize_service(service, attrs = {})
       service_item = project.find_or_initialize_service(service)
+      service_item.attributes = attrs
       service_item.properties = service_attrs
       service_item.save!
       service_item

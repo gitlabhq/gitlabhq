@@ -13,7 +13,7 @@ module Gitlab
           @size = size
           @size_limit = size_limit
 
-          super "#{@worker_class} job exceeds payload size limit (#{size}/#{size_limit})"
+          super "#{@worker_class} job exceeds payload size limit"
         end
 
         def sentry_extra_data

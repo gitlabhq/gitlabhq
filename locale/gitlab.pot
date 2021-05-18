@@ -1528,15 +1528,6 @@ msgstr ""
 msgid "APIFuzzing|$VariableWithUsername"
 msgstr ""
 
-msgid "APIFuzzing|/folder/example_file.har"
-msgstr ""
-
-msgid "APIFuzzing|/folder/example_file.json"
-msgstr ""
-
-msgid "APIFuzzing|/folder/example_file.postman_collection.json"
-msgstr ""
-
 msgid "APIFuzzing|API Fuzzing Configuration"
 msgstr ""
 
@@ -1576,13 +1567,13 @@ msgstr ""
 msgid "APIFuzzing|Enter the name of the variable containing the username. For example, $VariableWithUsername."
 msgstr ""
 
-msgid "APIFuzzing|File path containing APIs to be tested. For example, /folder/example_file.har. HAR files may contain sensitive information such as authentication tokens, API keys, and session cookies. We recommend that you review the HAR files' contents before adding them to a repository."
+msgid "APIFuzzing|File path or URL to APIs to be tested. For example, folder/example_fuzz.har. HAR files may contain sensitive information such as authentication tokens, API keys, and session cookies. We recommend that you review the HAR files' contents before adding them to a repository."
 msgstr ""
 
-msgid "APIFuzzing|File path containing APIs to be tested. For example, /folder/example_file.json."
+msgid "APIFuzzing|File path or URL to OpenAPI specification. For example, folder/openapi.json or http://www.example.com/openapi.json."
 msgstr ""
 
-msgid "APIFuzzing|File path containing requests to be tested. For example, /folder/example_file.postman_collection.json."
+msgid "APIFuzzing|File path or URL to requests to be tested. For example, folder/example.postman_collection.json."
 msgstr ""
 
 msgid "APIFuzzing|Generate code snippet"
@@ -1609,7 +1600,7 @@ msgstr ""
 msgid "APIFuzzing|Target URL"
 msgstr ""
 
-msgid "APIFuzzing|There are two ways to perform scans."
+msgid "APIFuzzing|There are three ways to perform scans."
 msgstr ""
 
 msgid "APIFuzzing|Tip: Insert the following variables anywhere below stages and include"
@@ -1634,6 +1625,15 @@ msgid "APIFuzzing|Username for basic authentication"
 msgstr ""
 
 msgid "APIFuzzing|You may need a maintainer's help to secure your credentials."
+msgstr ""
+
+msgid "APIFuzzing|folder/example.postman_collection.json"
+msgstr ""
+
+msgid "APIFuzzing|folder/example_fuzz.har"
+msgstr ""
+
+msgid "APIFuzzing|folder/openapi.json"
 msgstr ""
 
 msgid "AWS Access Key"
@@ -16220,7 +16220,7 @@ msgstr ""
 msgid "HAR (HTTP Archive)"
 msgstr ""
 
-msgid "HAR file path"
+msgid "HAR file path or URL"
 msgstr ""
 
 msgid "HTTP Basic: Access denied\\nYou must use a personal access token with 'api' scope for Git over HTTP.\\nYou can generate one at %{profile_personal_access_tokens_url}"
@@ -23139,7 +23139,7 @@ msgstr ""
 msgid "OpenAPI"
 msgstr ""
 
-msgid "OpenAPI specification file path"
+msgid "OpenAPI Specification file path or URL"
 msgstr ""
 
 msgid "Opened"
@@ -24691,6 +24691,9 @@ msgid "Port"
 msgstr ""
 
 msgid "Postman collection"
+msgstr ""
+
+msgid "Postman collection file path or URL"
 msgstr ""
 
 msgid "Pre-defined push rules."

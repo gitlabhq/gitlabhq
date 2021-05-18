@@ -125,8 +125,11 @@ module API
         requires :service_slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
       end
       get ":id/services/:service_slug" do
-        service = user_project.find_or_initialize_service(params[:service_slug].underscore)
-        present service, with: Entities::ProjectService
+        integration = user_project.find_or_initialize_service(params[:service_slug].underscore)
+
+        not_found!('Service') unless integration&.persisted?
+
+        present integration, with: Entities::ProjectService
       end
     end
 

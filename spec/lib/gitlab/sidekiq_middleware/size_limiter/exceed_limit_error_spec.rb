@@ -22,7 +22,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError do
   it 'encapsulates worker info' do
     exception = described_class.new(TestSizeLimiterWorker, 500, 300)
 
-    expect(exception.message).to eql("TestSizeLimiterWorker job exceeds payload size limit (500/300)")
+    expect(exception.message).to eql("TestSizeLimiterWorker job exceeds payload size limit")
     expect(exception.worker_class).to eql(TestSizeLimiterWorker)
     expect(exception.size).to be(500)
     expect(exception.size_limit).to be(300)
