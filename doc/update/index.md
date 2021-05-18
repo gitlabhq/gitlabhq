@@ -107,6 +107,10 @@ Sidekiq::Queue.new("background_migration").size
 Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.size
 ```
 
+### Batched background migrations
+
+See the documentation on [batched background migrations](../user/admin_area/monitoring/background_migrations.md).
+
 ### What do I do if my background migrations are stuck?
 
 WARNING:

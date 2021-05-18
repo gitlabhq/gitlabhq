@@ -19,6 +19,7 @@ module Gitlab
         def initialize(stage:, params: {})
           @stage = stage
           @params = build_finder_params(params)
+          @params[:state] = :opened if in_progress?
         end
 
         # rubocop: disable CodeReuse/ActiveRecord

@@ -16,7 +16,7 @@ module Database
     INTERVAL_VARIANCE = 5.seconds.freeze
 
     def perform
-      return unless Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops) && active_migration
+      return unless Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops, default_enabled: :yaml) && active_migration
 
       with_exclusive_lease(active_migration.interval) do
         # Now that we have the exclusive lease, reload migration in case another process has changed it.

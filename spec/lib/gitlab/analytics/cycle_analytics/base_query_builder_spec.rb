@@ -62,4 +62,29 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
 
     expect(records.size).to eq(2)
   end
+
+  describe 'in progress filter' do
+    let_it_be(:mr3) { create(:merge_request, :opened, target_project: project, source_project: project, allow_broken: true, created_at: 3.months.ago) }
+    let_it_be(:mr4) { create(:merge_request, :closed, target_project: project, source_project: project, allow_broken: true, created_at: 1.month.ago) }
+
+    before do
+      params[:from] = 5.months.ago
+    end
+
+    context 'when the filter is present' do
+      before do
+        params[:end_event_filter] = :in_progress
+      end
+
+      it 'returns only open items' do
+        expect(records).to eq([mr3])
+      end
+    end
+
+    context 'when the filter is absent' do
+      it 'returns finished items' do
+        expect(records).to match_array([mr1, mr2])
+      end
+    end
+  end
 end

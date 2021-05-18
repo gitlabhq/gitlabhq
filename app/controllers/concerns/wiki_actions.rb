@@ -115,9 +115,6 @@ module WikiActions
       @error = response.message
       render 'shared/wikis/edit'
     end
-  rescue WikiPage::PageChangedError, WikiPage::PageRenameError => e
-    @error = e.message
-    render 'shared/wikis/edit'
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
