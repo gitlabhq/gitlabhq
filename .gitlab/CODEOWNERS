@@ -17,25 +17,25 @@
 /doc/administration/operations/ @axil @eread @marcia
 /doc/administration/packages/ @ngaskill
 /doc/administration/postgresql/ @marcia
-/doc/administration/raketasks/ @axil @eread @mjang1
+/doc/administration/raketasks/ @axil @eread
 /doc/administration/redis/ @axil
 /doc/administration/reference_architectures/ @axil
 /doc/administration/snippets/ @aqualls
-/doc/administration/troubleshooting @axil @marcia @mjang1
+/doc/administration/troubleshooting @axil @marcia
 /doc/api/group_activity_analytics.md @msedlakjakubowski
 /doc/ci/ @marcel.amirault @sselhorn
 /doc/ci/environments/ @axil
 /doc/ci/services/ @sselhorn
 /doc/ci/test_cases/ @msedlakjakubowski
-/doc/development/ @marcia @mjang1
+/doc/development/ @marcia
 /doc/development/documentation/ @cnorris
 /doc/development/value_stream_analytics.md @msedlakjakubowski
 /doc/gitlab-basics/ @marcia
 /doc/install/ @axil
-/doc/integration/ @aqualls @mjang1
+/doc/integration/ @aqualls
 /doc/operations/ @ngaskill @axil
 /doc/push_rules/ @aqualls
-/doc/ssh/ @mjang1
+/doc/ssh/ @eread
 /doc/subscriptions/ @sselhorn
 /doc/topics/autodevops/ @ngaskill @marcia
 /doc/topics/git/ @aqualls
@@ -43,7 +43,7 @@
 /doc/user/analytics/ @msedlakjakubowski @ngaskill
 /doc/user/application_security @rdickenson
 /doc/user/clusters/ @marcia
-/doc/user/compliance/ @mjang1 @rdickenson
+/doc/user/compliance/ @rdickenson
 /doc/user/group/ @msedlakjakubowski
 /doc/user/group/bulk_editing/ @msedlakjakubowski
 /doc/user/group/devops_adoption/ @msedlakjakubowski
@@ -54,10 +54,10 @@
 /doc/user/group/value_stream_analytics/ @msedlakjakubowski
 /doc/user/infrastructure/ @marcia
 /doc/user/packages/ @ngaskill
-/doc/user/profile/ @mjang1 @msedlakjakubowski
-/doc/user/project/ @aqualls @axil @eread @mjang1 @msedlakjakubowski @ngaskill
+/doc/user/profile/ @msedlakjakubowski
+/doc/user/project/ @aqualls @axil @eread @msedlakjakubowski @ngaskill
 /doc/user/project/clusters/ @ngaskill
-/doc/user/project/import/ @mjang1 @msedlakjakubowski
+/doc/user/project/import/ @msedlakjakubowski
 /doc/user/project/integrations/ @aqualls
 /doc/user/project/integrations/prometheus_library/ @ngaskill
 /doc/user/project/issues/ @msedlakjakubowski
@@ -65,7 +65,7 @@
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/pages/ @axil
 /doc/user/project/repository/ @aqualls
-/doc/user/project/settings/ @mjang1 @aqualls
+/doc/user/project/settings/ @aqualls
 /doc/user/project/static_site_editor/index.md @aqualls
 /doc/user/project/web_ide/index.md @aqualls
 /doc/user/project/wiki/index.md @aqualls

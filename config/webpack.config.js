@@ -188,7 +188,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js', '.gql', '.graphql'],
+    extensions: ['.js'],
     alias,
   },
 

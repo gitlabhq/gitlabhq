@@ -7,7 +7,9 @@ module GroupsHelper
       groups#details
       groups#activity
       groups#subgroups
-    ]
+    ].tap do |paths|
+      paths << 'labels#index' if Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+    end
   end
 
   def group_settings_nav_link_paths

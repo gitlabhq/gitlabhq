@@ -230,12 +230,3 @@ danger-review:
       else
         run_timed_command "bundle exec danger --fail-on-errors=true --verbose"
       fi
-
-update-danger-review-cache:
-  extends:
-    - danger-review
-    - .shared:rules:update-cache
-  stage: prepare
-  script: echo 'Cache is fresh!'
-  cache:
-    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.

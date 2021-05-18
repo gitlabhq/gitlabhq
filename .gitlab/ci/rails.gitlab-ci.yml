@@ -187,18 +187,10 @@ setup-test-env:
 update-setup-test-env-cache:
   extends:
     - setup-test-env
+    - .setup-test-env-cache-push
     - .shared:rules:update-cache
   artifacts:
     paths: []  # This job's purpose is only to update the cache.
-  cache:
-    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
-
-update-rails-cache:
-  extends:
-    - update-setup-test-env-cache
-    - .rails-cache
-  cache:
-    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .coverage-base:
   extends:
@@ -208,16 +200,6 @@ update-rails-cache:
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
-
-update-coverage-cache:
-  extends:
-    - .coverage-base
-    - .shared:rules:update-cache
-  stage: prepare
-  script:
-    - !reference [.minimal-bundle-install, script]
-  cache:
-    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .static-analysis-base:
   extends:
@@ -232,16 +214,11 @@ update-coverage-cache:
 update-static-analysis-cache:
   extends:
     - .static-analysis-base
+    - .static-analysis-cache-push
     - .shared:rules:update-cache
   stage: prepare
   script:
-    - rm -rf ./node_modules  # We remove node_modules because there's no mechanism to remove stall entries.
-    - run_timed_command "retry yarn install --frozen-lockfile"
-    - run_timed_command "bundle exec rubocop --parallel"  # For the moment we only cache `vendor/ruby/`, `node_modules/`, and `tmp/rubocop_cache` so we don't need to run all the tasks,
-  cache:
-    # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up but RuboCop has a mechanism
-    # for keeping only the N latest cache files, so we take advantage of it with `pull-push` and removing `node_modules` at the start of the job.
-    policy: pull-push
+    - run_timed_command "bundle exec rubocop --parallel"  # For the moment we only cache `tmp/rubocop_cache` so we don't need to run all the tasks.
 
 static-analysis:
   extends:

@@ -252,7 +252,9 @@ RSpec.describe ApplicationSetting do
 
     context "when user accepted let's encrypt terms of service" do
       before do
-        setting.update(lets_encrypt_terms_of_service_accepted: true)
+        expect do
+          setting.update!(lets_encrypt_terms_of_service_accepted: true)
+        end.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Lets encrypt notification email can't be blank")
       end
 
       it { is_expected.not_to allow_value(nil).for(:lets_encrypt_notification_email) }
@@ -302,26 +304,30 @@ RSpec.describe ApplicationSetting do
 
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
-        setting.update(default_artifacts_expire_in: 'a')
+        expect do
+          setting.update!(default_artifacts_expire_in: 'a')
+        end.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Default artifacts expire in is not a correct duration")
 
         expect_invalid
       end
 
       it 'sets an error if it is blank' do
-        setting.update(default_artifacts_expire_in: ' ')
+        expect do
+          setting.update!(default_artifacts_expire_in: ' ')
+        end.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Default artifacts expire in can't be blank")
 
         expect_invalid
       end
 
       it 'sets the value if it is valid' do
-        setting.update(default_artifacts_expire_in: '30 days')
+        setting.update!(default_artifacts_expire_in: '30 days')
 
         expect(setting).to be_valid
         expect(setting.default_artifacts_expire_in).to eq('30 days')
       end
 
       it 'sets the value if it is 0' do
-        setting.update(default_artifacts_expire_in: '0')
+        setting.update!(default_artifacts_expire_in: '0')
 
         expect(setting).to be_valid
         expect(setting.default_artifacts_expire_in).to eq('0')
@@ -400,18 +406,18 @@ RSpec.describe ApplicationSetting do
     context 'auto_devops_domain setting' do
       context 'when auto_devops_enabled? is true' do
         before do
-          setting.update(auto_devops_enabled: true)
+          setting.update!(auto_devops_enabled: true)
         end
 
         it 'can be blank' do
-          setting.update(auto_devops_domain: '')
+          setting.update!(auto_devops_domain: '')
 
           expect(setting).to be_valid
         end
 
         context 'with a valid value' do
           before do
-            setting.update(auto_devops_domain: 'domain.com')
+            setting.update!(auto_devops_domain: 'domain.com')
           end
 
           it 'is valid' do
@@ -421,7 +427,9 @@ RSpec.describe ApplicationSetting do
 
         context 'with an invalid value' do
           before do
-            setting.update(auto_devops_domain: 'definitelynotahostname')
+            expect do
+              setting.update!(auto_devops_domain: 'definitelynotahostname')
+            end.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Auto devops domain is not a fully qualified domain name")
           end
 
           it 'is invalid' do

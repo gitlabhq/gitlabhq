@@ -155,7 +155,7 @@ gosec-sast:
       exists:
         - '**/*.go'
 
-mobsf-android-sast:
+.mobsf-sast:
   extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE"
@@ -164,6 +164,9 @@ mobsf-android-sast:
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
+
+mobsf-android-sast:
+  extends: .mobsf-sast
   rules:
     - if: $SAST_DISABLED
       when: never
@@ -173,17 +176,11 @@ mobsf-android-sast:
           $SAST_DEFAULT_ANALYZERS =~ /mobsf/ &&
           $SAST_EXPERIMENTAL_FEATURES == 'true'
       exists:
+        - '**/*.apk'
         - '**/AndroidManifest.xml'
 
 mobsf-ios-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    # SAST_ANALYZER_IMAGE is an undocumented variable used internally to allow QA to
-    # override the analyzer image with a custom value. This may be subject to change or
-    # breakage across GitLab releases.
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
+  extends: .mobsf-sast
   rules:
     - if: $SAST_DISABLED
       when: never
@@ -193,6 +190,7 @@ mobsf-ios-sast:
           $SAST_DEFAULT_ANALYZERS =~ /mobsf/ &&
           $SAST_EXPERIMENTAL_FEATURES == 'true'
       exists:
+        - '**/*.ipa'
         - '**/*.xcodeproj/*'
 
 nodejs-scan-sast:

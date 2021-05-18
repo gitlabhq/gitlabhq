@@ -41,12 +41,11 @@ qa:selectors-as-if-foss:
 update-qa-cache:
   extends:
     - .qa-job-base
+    - .qa-cache-push
     - .shared:rules:update-cache
   stage: prepare
   script:
     - echo "Cache has been updated and ready to be uploaded."
-  cache:
-    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .package-and-qa-base:
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine

@@ -115,6 +115,10 @@ RSpec.describe NavHelper do
   describe '.group_issues_sub_menu_items' do
     subject { helper.group_issues_sub_menu_items }
 
+    before do
+      allow(helper).to receive(:current_user).and_return(nil)
+    end
+
     it { is_expected.to all(be_a(String)) }
   end
 

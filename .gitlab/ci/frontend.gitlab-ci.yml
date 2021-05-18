@@ -58,31 +58,27 @@ compile-test-assets as-if-foss:
 update-assets-compile-production-cache:
   extends:
     - compile-production-assets
+    - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
   artifacts: {}  # This job's purpose is only to update the cache.
-  cache:
-    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 update-assets-compile-test-cache:
   extends:
     - compile-test-assets
+    - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
   artifacts: {}  # This job's purpose is only to update the cache.
-  cache:
-    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 update-yarn-cache:
   extends:
     - .default-retry
-    - .yarn-cache
+    - .yarn-cache-push
     - .shared:rules:update-cache
   stage: prepare
   script:
     - *yarn-install
-  cache:
-    policy: push
 
 .frontend-fixtures-base:
   extends:

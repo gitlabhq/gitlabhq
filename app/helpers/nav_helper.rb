@@ -69,7 +69,14 @@ module NavHelper
   end
 
   def group_issues_sub_menu_items
-    %w(groups#issues labels#index milestones#index boards#index boards#show)
+    %w[
+      groups#issues
+      milestones#index
+      boards#index
+      boards#show
+    ].tap do |paths|
+      paths << 'labels#index' if Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+    end
   end
 
   private

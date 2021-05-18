@@ -24,7 +24,7 @@
               = group_information_title(@group)
 
           %ul.sidebar-sub-level-items
-            = nav_link(path: ['groups#show', 'groups#details', 'groups#activity', 'groups#subgroups'], html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(path: paths, html_options: { class: "fly-out-top-item" } ) do
               = link_to group_path(@group) do
                 %strong.fly-out-top-item-name
                   = group_information_title(@group)
@@ -42,6 +42,12 @@
                   %span
                     = _('Activity')
 
+            - if group_sidebar_link?(:labels) && Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+              = nav_link(path: 'labels#index') do
+                = link_to group_labels_path(@group), title: _('Labels') do
+                  %span
+                    = _('Labels')
+
       = render_if_exists "layouts/nav/ee/epic_link", group: @group
 
       - if group_sidebar_link?(:issues)
@@ -54,7 +60,7 @@
             %span.badge.badge-pill.count= issues_count
 
           %ul.sidebar-sub-level-items{ data: { qa_selector: 'group_issues_sidebar_submenu'} }
-            = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index', 'iterations#index'], html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(path: group_issues_sub_menu_items, html_options: { class: "fly-out-top-item" } ) do
               = link_to issues_group_path(@group) do
                 %strong.fly-out-top-item-name
                   = _('Issues')
@@ -72,7 +78,7 @@
                   %span
                     = boards_link_text
 
-            - if group_sidebar_link?(:labels)
+            - if group_sidebar_link?(:labels) && Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
               = nav_link(path: 'labels#index') do
                 = link_to group_labels_path(@group), title: _('Labels') do
                   %span

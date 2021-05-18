@@ -191,7 +191,7 @@ A few notes:
   cycles, calculate their median time and the result is what the dashboard of
   Value Stream Analytics is showing.
 
-## Customizable Stages
+## Custom value streams
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in GitLab 12.9.
 
@@ -311,15 +311,52 @@ add stages as desired.
 
 To create a value stream with stages:
 
-1. Navigate to your group's **Analytics > Value Stream**.
-1. Find and select the Value Stream dropdown. Select **Create new Value Stream**.
+1. Go to your group and select **Analytics > Value Stream**.
+1. Select the Value Stream dropdown and select **Create new Value Stream**.
 1. Select either **Create from default template** or **Create from no template**.
-   - Default stages in the value stream can be hidden or re-ordered
+   - Default stages in the value stream can be hidden or re-ordered.
+
      ![Default stage actions](img/vsa_default_stage_v13_10.png "Default stage actions")
-   - New stages can be added by clicking the 'Add another stage' button
+
+   - New stages can be added by clicking the 'Add another stage' button.
    - The name, start and end events for the stage can be selected
+
      ![Custom stage actions](img/vsa_custom_stage_v13_10.png "Custom stage actions")
 1. Select the **Create Value Stream** button to save the value stream.
+
+#### Label-based stages
+
+The pre-defined start and end events can cover many use cases involving both issues and merge requests.
+
+In more complex workflows, use stages based on group labels. These events are based on
+added or removed labels. In particular, [scoped labels](../../project/labels.md#scoped-labels)
+are useful for complex workflows.
+
+In this example, we'd like to measure times for deployment from a staging environment to production. The workflow is the following:
+
+- When the code is deployed to staging, the `workflow::staging` label is added to the merge request.
+- When the code is deployed to production, the `workflow::production` label is added to the merge request.
+
+![Label Based Value Stream Analytics Stage](img/vsa_label_based_stage_v14_0.png "Creating a label based Value Stream Analytics Stage")
+
+### Editing a value stream
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
+
+After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
+
+1. Go to your group and select **Analytics > Value Stream**.
+1. Find and select the relevant value stream from the value stream dropdown. 
+1. Next to the value stream dropdown, select **Edit**.
+   The edit form is populated with the value stream details.
+1. Optional:
+    - Rename the value stream.
+    - Hide or re-order default stages.
+    - Remove existing custom stages.
+    - Add new stages by selecting the 'Add another stage' button
+    - Select the start and end events for the stage.
+1. Optional. To undo any modifications, select **Restore value stream defaults**.
+1. Select **Save Value Stream**.
 
 ### Deleting a value stream
 

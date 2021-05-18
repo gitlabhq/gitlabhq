@@ -9350,8 +9350,8 @@ Contains release-related statistics about a group.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupreleasestatsreleasescount"></a>`releasesCount` | [`Int`](#int) | Total number of releases in all descendant projects of the group. Will always return `null` if `group_level_release_statistics` feature flag is disabled. |
-| <a id="groupreleasestatsreleasespercentage"></a>`releasesPercentage` | [`Int`](#int) | Percentage of the group's descendant projects that have at least one release. Will always return `null` if `group_level_release_statistics` feature flag is disabled. |
+| <a id="groupreleasestatsreleasescount"></a>`releasesCount` | [`Int`](#int) | Total number of releases in all descendant projects of the group. |
+| <a id="groupreleasestatsreleasespercentage"></a>`releasesPercentage` | [`Int`](#int) | Percentage of the group's descendant projects that have at least one release. |
 
 ### `GroupStats`
 
