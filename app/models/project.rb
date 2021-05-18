@@ -2454,7 +2454,7 @@ class Project < ApplicationRecord
   end
 
   def access_request_approvers_to_be_notified
-    members.maintainers.order_recent_sign_in.limit(ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
+    members.maintainers.connected_to_user.order_recent_sign_in.limit(ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end
 
   def pages_lookup_path(trim_prefix: nil, domain: nil)

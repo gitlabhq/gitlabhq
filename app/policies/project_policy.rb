@@ -171,6 +171,7 @@ class ProjectPolicy < BasePolicy
   rule { guest | admin }.enable :read_project_for_iids
 
   rule { admin }.enable :update_max_artifacts_size
+  rule { admin }.enable :read_storage_disk_path
   rule { can?(:read_all_resources) }.enable :read_confidential_issues
 
   rule { guest }.enable :guest_access

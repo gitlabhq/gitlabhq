@@ -92,11 +92,13 @@ class Member < ApplicationRecord
       .reorder(nil)
   end
 
+  scope :connected_to_user, -> { where.not(user_id: nil) }
+
   # This scope is exclusively used to get the members
   # that can possibly have project_authorization records
   # to projects/groups.
   scope :authorizable, -> do
-    where.not(user_id: nil)
+    connected_to_user
       .non_request
       .non_minimal_access
   end

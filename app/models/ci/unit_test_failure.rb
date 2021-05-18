@@ -11,6 +11,8 @@ module Ci
     belongs_to :unit_test, class_name: "Ci::UnitTest", foreign_key: :unit_test_id
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 
+    scope :deletable, -> { where('failed_at < ?', REPORT_WINDOW.ago) }
+
     def self.recent_failures_count(project:, unit_test_keys:, date_range: REPORT_WINDOW.ago..Time.current)
       joins(:unit_test)
         .where(

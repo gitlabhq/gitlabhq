@@ -2245,21 +2245,30 @@ RSpec.describe Group do
   end
 
   describe '#access_request_approvers_to_be_notified' do
-    it 'returns a maximum of ten, active, non_requested owners of the group in recent_sign_in descending order' do
-      group = create(:group, :public)
+    let_it_be(:group) { create(:group, :public) }
 
+    it 'returns a maximum of ten owners of the group in recent_sign_in descending order' do
       users = create_list(:user, 12, :with_sign_ins)
       active_owners = users.map do |user|
         create(:group_member, :owner, group: group, user: user)
       end
 
-      create(:group_member, :owner, :blocked, group: group)
-      create(:group_member, :maintainer, group: group)
-      create(:group_member, :access_request, :owner, group: group)
-
-      active_owners_in_recent_sign_in_desc_order = group.members_and_requesters.where(id: active_owners).order_recent_sign_in.limit(10)
+      active_owners_in_recent_sign_in_desc_order = group.members_and_requesters
+                                                        .id_in(active_owners)
+                                                        .order_recent_sign_in.limit(10)
 
       expect(group.access_request_approvers_to_be_notified).to eq(active_owners_in_recent_sign_in_desc_order)
+    end
+
+    it 'returns active, non_invited, non_requested owners of the group' do
+      owner = create(:group_member, :owner, source: group)
+
+      create(:group_member, :maintainer, group: group)
+      create(:group_member, :owner, :invited, group: group)
+      create(:group_member, :owner, :access_request, group: group)
+      create(:group_member, :owner, :blocked, group: group)
+
+      expect(group.access_request_approvers_to_be_notified.to_a).to eq([owner])
     end
   end
 

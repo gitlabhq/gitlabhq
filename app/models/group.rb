@@ -649,7 +649,7 @@ class Group < Namespace
   end
 
   def access_request_approvers_to_be_notified
-    members.owners.order_recent_sign_in.limit(ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
+    members.owners.connected_to_user.order_recent_sign_in.limit(ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end
 
   def supports_events?

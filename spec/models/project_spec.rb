@@ -6304,22 +6304,30 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#access_request_approvers_to_be_notified' do
-    it 'returns a maximum of ten, active, non_requested maintainers of the project in recent_sign_in descending order' do
-      group = create(:group, :public)
-      project = create(:project, group: group)
+    let_it_be(:project) { create(:project, group: create(:group, :public)) }
 
+    it 'returns a maximum of ten maintainers of the project in recent_sign_in descending order' do
       users = create_list(:user, 12, :with_sign_ins)
       active_maintainers = users.map do |user|
-        create(:project_member, :maintainer, user: user)
+        create(:project_member, :maintainer, user: user, project: project)
       end
 
-      create(:project_member, :maintainer, :blocked, project: project)
-      create(:project_member, :developer, project: project)
-      create(:project_member, :access_request, :maintainer, project: project)
-
-      active_maintainers_in_recent_sign_in_desc_order = project.members_and_requesters.where(id: active_maintainers).order_recent_sign_in.limit(10)
+      active_maintainers_in_recent_sign_in_desc_order = project.members_and_requesters
+                                                               .id_in(active_maintainers)
+                                                               .order_recent_sign_in.limit(10)
 
       expect(project.access_request_approvers_to_be_notified).to eq(active_maintainers_in_recent_sign_in_desc_order)
+    end
+
+    it 'returns active, non_invited, non_requested maintainers of the project' do
+      maintainer = create(:project_member, :maintainer, source: project)
+
+      create(:project_member, :developer, project: project)
+      create(:project_member, :maintainer, :invited, project: project)
+      create(:project_member, :maintainer, :access_request, project: project)
+      create(:project_member, :maintainer, :blocked, project: project)
+
+      expect(project.access_request_approvers_to_be_notified.to_a).to eq([maintainer])
     end
   end
 

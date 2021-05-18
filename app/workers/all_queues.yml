@@ -182,6 +182,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:ci_delete_unit_tests
+  :worker_name: Ci::DeleteUnitTestsWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_pipeline_artifacts_expire_artifacts
   :worker_name: Ci::PipelineArtifacts::ExpireArtifactsWorker
   :feature_category: :continuous_integration

@@ -1,5 +1,0 @@
----
-title: Add duplicated gin trigram index on notes table (note) to replace existing
-merge_request: 61430
-author:
-type: performance

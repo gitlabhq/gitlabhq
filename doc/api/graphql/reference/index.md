@@ -11926,6 +11926,7 @@ Represents the source code attached to a release in a particular format.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="repositorydiskpath"></a>`diskPath` | [`String`](#string) | Shows a disk path of the repository. |
 | <a id="repositoryempty"></a>`empty` | [`Boolean!`](#boolean) | Indicates repository has no visible content. |
 | <a id="repositoryexists"></a>`exists` | [`Boolean!`](#boolean) | Indicates a corresponding Git repository exists on disk. |
 | <a id="repositoryrootref"></a>`rootRef` | [`String`](#string) | Default branch of the repository. |

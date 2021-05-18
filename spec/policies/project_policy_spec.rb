@@ -393,6 +393,34 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'read_storage_disk_path' do
+    context 'when no user' do
+      let(:current_user) { anonymous }
+
+      it { expect_disallowed(:read_storage_disk_path) }
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed(:read_storage_disk_path) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { expect_disallowed(:read_storage_disk_path) }
+      end
+    end
+
+    %w(guest reporter developer maintainer owner).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it { expect_disallowed(:read_storage_disk_path) }
+      end
+    end
+  end
+
   context 'alert bot' do
     let(:current_user) { User.alert_bot }
 

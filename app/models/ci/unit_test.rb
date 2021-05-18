@@ -14,6 +14,7 @@ module Ci
     belongs_to :project
 
     scope :by_project_and_keys, -> (project, keys) { where(project_id: project.id, key_hash: keys) }
+    scope :deletable, -> { where('NOT EXISTS (?)', Ci::UnitTestFailure.select(1).where("#{Ci::UnitTestFailure.table_name}.unit_test_id = #{table_name}.id")) }
 
     class << self
       def find_or_create_by_batch(project, unit_test_attrs)

@@ -1160,6 +1160,56 @@ The API Fuzzing engine outputs an error message when it cannot establish a conne
 - Remove the `FUZZAPI_API` variable from the `.gitlab-ci.yml` file. The value will be inherited from the API Fuzzing CI/CD template. We recommend this method instead of manually setting a value.
 - If removing the variable is not possible, check to see if this value has changed in the latest version of the [API Fuzzing CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
+### Application cannot determine the base URL for the target API
+
+The API Fuzzing analyzer outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml`file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
+
+There is an order of precedence in which the API Fuzzing analyzer tries to get the target API when checking the different sources. First, it will try to use the `FUZZAPI_TARGET_URL`. If the environment variable has not been set, then the API Fuzzing analyzer will attempt to use the `environment_url.txt` file. If there is no file `environment_url.txt`, the API Fuzzing analyzer will then use the OpenAPI document contents and the URL provided in `FUZZAPI_OPENAPI` (if a URL is provided) to try to compute the target API.
+
+The best-suited solution will depend on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case please refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
+
+#### Static environment solution
+
+This solution is for pipelines in which the target API URL doesn't change (is static). 
+
+**Add environmental variable**
+
+For environments where the target API remains the same, we recommend you specify the target URL by using the `FUZZAPI_TARGET_URL` environment variable. In your `.gitlab-ci.yml` file, add a variable `FUZZAPI_TARGET_URL`. The variable must be set to the base URL of API testing target. For example:
+
+```yaml
+include:
+    - template: API-Fuzzing.gitlab-ci.yml
+
+  variables:
+    FUZZAPI_TARGET_URL: http://test-deployment/
+    FUZZAPI_OPENAPI: test-api-specification.json
+```
+
+#### Dynamic environment solutions
+
+In a dynamic environment your target API changes for each different deployment. In this case, there is more than one possible solution, we recommend to use the `environment_url.txt` file when dealing with dynamic environments. 
+
+**Use environment_url.txt**
+
+To support dynamic environments in which the target API URL changes during each pipeline, API Fuzzing supports the use of an `environment_url.txt` file that contains the URL to use. This file is not checked into the repository, instead it's created during the pipeline by the job that deploys the test target and collected as an artifact that can be used by later jobs in the pipeline. The job that creates the `environment_url.txt` file must run before the API Fuzzing job.
+
+1. Modify the test target deployment job adding the base URL in an `environment_url.txt` file at the root of your project.
+1. Modify the test target deployment job collecting the `environment_url.txt` as an artifact.
+
+Example:
+
+```yaml
+deploy-test-target:
+  script:
+    # Perform deployment steps
+    # Create environment_url.txt (example)
+    - echo http://${CI_PROJECT_ID}-${CI_ENVIRONMENT_SLUG}.example.org > environment_url.txt
+
+  artifacts:
+    paths:
+      - environment_url.txt
+```
+
 <!--
 ### Target Container
 

@@ -161,7 +161,7 @@ module CommitsHelper
       ref,
       {
         merge_request: merge_request,
-        pipeline_status: hashed_pipeline_status(commit, ref),
+        pipeline_status: commit.status_for(ref),
         xhr: request.xhr?,
         controller: controller.controller_path,
         path: @path # referred to in #link_to_browse_code
@@ -241,15 +241,5 @@ module CommitsHelper
     else
       project_commit_path(project, commit)
     end
-  end
-
-  private
-
-  def hashed_pipeline_status(commit, ref)
-    status = commit.status_for(ref)
-
-    return if status.nil?
-
-    Digest::SHA1.hexdigest(status.to_s)
   end
 end
