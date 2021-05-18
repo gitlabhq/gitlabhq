@@ -3,20 +3,48 @@
 require 'spec_helper'
 
 RSpec.describe Issues::CloseService do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user, email: "user@example.com") }
-  let(:user2) { create(:user, email: "user2@example.com") }
-  let(:guest) { create(:user) }
-  let(:issue) { create(:issue, title: "My issue", project: project, assignees: [user2], author: create(:user)) }
-  let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
-  let(:closing_merge_request) { create(:merge_request, source_project: project) }
-  let(:closing_commit) { create(:commit, project: project) }
-  let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
+  subject(:close_issue) { described_class.new(project: project, current_user: user).close_issue(issue) }
 
-  before do
+  let_it_be(:project, refind: true) { create(:project, :repository) }
+  let_it_be(:label1) { create(:label, project: project) }
+  let_it_be(:label2) { create(:label, project: project, remove_on_close: true) }
+  let_it_be(:author) { create(:user) }
+  let_it_be(:user) { create(:user, email: "user@example.com") }
+  let_it_be(:user2) { create(:user, email: "user2@example.com") }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:closing_merge_request) { create(:merge_request, source_project: project) }
+
+  let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
+  let!(:issue) { create(:issue, title: "My issue", project: project, assignees: [user2], author: author) }
+
+  before_all do
     project.add_maintainer(user)
     project.add_developer(user2)
     project.add_guest(guest)
+  end
+
+  shared_examples 'removes labels marked for removal from issue when closed' do
+    before do
+      issue.update!(label_ids: [label1.id, label2.id])
+    end
+
+    it 'removes labels marked for removal' do
+      expect do
+        close_issue
+      end.to change { issue.reload.label_ids }.from(containing_exactly(label1.id, label2.id)).to(containing_exactly(label1.id))
+    end
+
+    it 'creates system notes for the removed labels' do
+      expect do
+        close_issue
+      end.to change(ResourceLabelEvent, :count).by(1)
+
+      expect(ResourceLabelEvent.last.slice(:action, :issue_id, :label_id)).to eq(
+        'action' => 'remove',
+        'issue_id' => issue.id,
+        'label_id' => label2.id
+      )
+    end
   end
 
   describe '#execute' do
@@ -121,6 +149,8 @@ RSpec.describe Issues::CloseService do
         end
       end
 
+      it_behaves_like 'removes labels marked for removal from issue when closed'
+
       it 'mentions closure via a merge request' do
         close_issue
 
@@ -184,10 +214,18 @@ RSpec.describe Issues::CloseService do
     end
 
     context "closed by a commit", :sidekiq_might_not_need_inline do
-      it 'mentions closure via a commit' do
+      subject(:close_issue) do
         perform_enqueued_jobs do
           described_class.new(project: project, current_user: user).close_issue(issue, closed_via: closing_commit)
         end
+      end
+
+      let(:closing_commit) { create(:commit, project: project) }
+
+      it_behaves_like 'removes labels marked for removal from issue when closed'
+
+      it 'mentions closure via a commit' do
+        close_issue
 
         email = ActionMailer::Base.deliveries.last
 
@@ -199,9 +237,8 @@ RSpec.describe Issues::CloseService do
       context 'when user cannot read the commit' do
         it 'does not mention the commit id' do
           project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
-          perform_enqueued_jobs do
-            described_class.new(project: project, current_user: user).close_issue(issue, closed_via: closing_commit)
-          end
+
+          close_issue
 
           email = ActionMailer::Base.deliveries.last
           body_text = email.body.parts.map(&:body).join(" ")
@@ -222,11 +259,13 @@ RSpec.describe Issues::CloseService do
 
       it 'verifies the number of queries' do
         recorded = ActiveRecord::QueryRecorder.new { close_issue }
-        expected_queries = 23
+        expected_queries = 32
 
         expect(recorded.count).to be <= expected_queries
         expect(recorded.cached_count).to eq(0)
       end
+
+      it_behaves_like 'removes labels marked for removal from issue when closed'
 
       it 'closes the issue' do
         close_issue
@@ -257,6 +296,8 @@ RSpec.describe Issues::CloseService do
       end
 
       it 'marks todos as done' do
+        todo = create(:todo, :assigned, user: user, project: project, target: issue, author: user2)
+
         close_issue
 
         expect(todo.reload).to be_done
@@ -321,26 +362,32 @@ RSpec.describe Issues::CloseService do
     end
 
     context 'when issue is not confidential' do
+      it_behaves_like 'removes labels marked for removal from issue when closed'
+
       it 'executes issue hooks' do
         expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
         expect(project).to receive(:execute_services).with(an_instance_of(Hash), :issue_hooks)
 
-        described_class.new(project: project, current_user: user).close_issue(issue)
+        close_issue
       end
     end
 
     context 'when issue is confidential' do
-      it 'executes confidential issue hooks' do
-        issue = create(:issue, :confidential, project: project)
+      let(:issue) { create(:issue, :confidential, project: project) }
 
+      it_behaves_like 'removes labels marked for removal from issue when closed'
+
+      it 'executes confidential issue hooks' do
         expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
         expect(project).to receive(:execute_services).with(an_instance_of(Hash), :confidential_issue_hooks)
 
-        described_class.new(project: project, current_user: user).close_issue(issue)
+        close_issue
       end
     end
 
     context 'internal issues disabled' do
+      let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
+
       before do
         project.issues_enabled = false
         project.save!

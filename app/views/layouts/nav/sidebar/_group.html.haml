@@ -48,6 +48,13 @@
                   %span
                     = _('Labels')
 
+            - if Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+              - if group_sidebar_link?(:group_members)
+                = nav_link(path: 'group_members#index') do
+                  = link_to group_group_members_path(@group), title: _('Members'), data: { qa_selector: 'group_members_item' } do
+                    %span
+                      = _('Members')
+
       = render_if_exists "layouts/nav/ee/epic_link", group: @group
 
       - if group_sidebar_link?(:issues)
@@ -131,25 +138,26 @@
       - if group_sidebar_link?(:wiki)
         = render 'layouts/nav/sidebar/wiki_link', wiki_url: @group.wiki.web_url
 
-      - if group_sidebar_link?(:group_members)
-        = nav_link(path: 'group_members#index') do
-          = link_to group_group_members_path(@group) do
-            .nav-icon-container
-              = sprite_icon('users')
-            %span.nav-item-name.qa-group-members-item
-              = _('Members')
-          %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(path: 'group_members#index', html_options: { class: "fly-out-top-item" } ) do
-              = link_to group_group_members_path(@group) do
-                %strong.fly-out-top-item-name
-                  = _('Members')
+      - if Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+        - if group_sidebar_link?(:group_members)
+          = nav_link(path: 'group_members#index') do
+            = link_to group_group_members_path(@group) do
+              .nav-icon-container
+                = sprite_icon('users')
+              %span.nav-item-name.qa-group-members-item
+                = _('Members')
+            %ul.sidebar-sub-level-items.is-fly-out-only
+              = nav_link(path: 'group_members#index', html_options: { class: "fly-out-top-item" } ) do
+                = link_to group_group_members_path(@group) do
+                  %strong.fly-out-top-item-name
+                    = _('Members')
 
       - if group_sidebar_link?(:settings)
         = nav_link(path: group_settings_nav_link_paths) do
           = link_to edit_group_path(@group) do
             .nav-icon-container
               = sprite_icon('settings')
-            %span.nav-item-name.qa-group-settings-item
+            %span.nav-item-name{ data: { qa_selector: 'group_settings' } }
               = _('Settings')
           %ul.sidebar-sub-level-items.qa-group-sidebar-submenu{ data: { testid: 'group-settings-menu' } }
             = nav_link(path: %w[groups#projects groups#edit badges#index ci_cd#show groups/applications#index], html_options: { class: "fly-out-top-item" } ) do

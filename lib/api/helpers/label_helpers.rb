@@ -5,27 +5,34 @@ module API
     module LabelHelpers
       extend Grape::API::Helpers
 
+      params :optional_label_params do
+        optional :description, type: String, desc: 'The description of the label'
+        optional :remove_on_close, type: Boolean, desc: 'Whether the label should be removed from an issue when the issue is closed'
+      end
+
       params :label_create_params do
         requires :name, type: String, desc: 'The name of the label to be created'
         requires :color, type: String, desc: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
-        optional :description, type: String, desc: 'The description of label to be created'
+
+        use :optional_label_params
       end
 
       params :label_update_params do
         optional :new_name, type: String, desc: 'The new name of the label'
         optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
-        optional :description, type: String, desc: 'The new description of label'
+
+        use :optional_label_params
       end
 
       params :project_label_update_params do
         use :label_update_params
         optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
-        at_least_one_of :new_name, :color, :description, :priority
+        at_least_one_of :new_name, :color, :description, :priority, :remove_on_close
       end
 
       params :group_label_update_params do
         use :label_update_params
-        at_least_one_of :new_name, :color, :description
+        at_least_one_of :new_name, :color, :description, :remove_on_close
       end
 
       def find_label(parent, id_or_title, params = { include_ancestor_groups: true })

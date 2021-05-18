@@ -5,6 +5,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
 import { diffViewerErrors } from '~/ide/constants';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import { sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import notesEventHub from '../../notes/event_hub';
@@ -233,15 +234,20 @@ export default {
         eventHub.$emit(event);
       });
     },
-    handleToggle() {
-      const currentCollapsedFlag = this.isCollapsed;
+    handleToggle({ viaUserInteraction = false } = {}) {
+      const collapsingNow = !this.isCollapsed;
+      const contentElement = this.$el.querySelector(`#diff-content-${this.file.file_hash}`);
 
       this.setFileCollapsedByUser({
         filePath: this.file.file_path,
-        collapsed: !currentCollapsedFlag,
+        collapsed: collapsingNow,
       });
 
-      if (!this.hasDiff && currentCollapsedFlag) {
+      if (collapsingNow && viaUserInteraction && contentElement) {
+        scrollToElement(contentElement, { duration: 1 });
+      }
+
+      if (!this.hasDiff && !collapsingNow) {
         this.requestDiff();
       }
     },
@@ -300,7 +306,7 @@ export default {
       :codequality-diff="codequalityDiffForFile"
       class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
       :class="hasBodyClasses.header"
-      @toggleFile="handleToggle"
+      @toggleFile="handleToggle({ viaUserInteraction: true })"
       @showForkMessage="showForkMessage"
     />
 

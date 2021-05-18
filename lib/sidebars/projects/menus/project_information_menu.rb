@@ -10,6 +10,7 @@ module Sidebars
           add_item(activity_menu_item)
           add_item(releases_menu_item)
           add_item(labels_menu_item)
+          add_item(members_menu_item)
 
           true
         end
@@ -111,6 +112,22 @@ module Sidebars
             link: project_labels_path(context.project),
             active_routes: { controller: :labels },
             item_id: :labels
+          )
+        end
+
+        def members_menu_item
+          if Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
+            return ::Sidebars::NilMenuItem.new(item_id: :members)
+          end
+
+          ::Sidebars::MenuItem.new(
+            title: _('Members'),
+            link: project_project_members_path(context.project),
+            active_routes: { controller: :project_members },
+            item_id: :members,
+            container_html_options: {
+              id: 'js-onboarding-members-link'
+            }
           )
         end
       end

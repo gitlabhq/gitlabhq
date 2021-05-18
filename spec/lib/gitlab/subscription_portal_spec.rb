@@ -2,80 +2,26 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::SubscriptionPortal do
-  unless Gitlab.jh?
-    describe '.default_subscriptions_url' do
-      subject { described_class.default_subscriptions_url }
+RSpec.describe ::Gitlab::SubscriptionPortal, skip: Gitlab.jh? do
+  using RSpec::Parameterized::TableSyntax
 
-      context 'on non test and non dev environments' do
-        before do
-          allow(Rails).to receive_message_chain(:env, :test?).and_return(false)
-          allow(Rails).to receive_message_chain(:env, :development?).and_return(false)
-        end
+  where(:method_name, :test, :development, :result) do
+    :default_subscriptions_url | false | false  | 'https://customers.gitlab.com'
+    :default_subscriptions_url | false | true   | 'https://customers.stg.gitlab.com'
+    :default_subscriptions_url | true  | false  | 'https://customers.stg.gitlab.com'
+    :payment_form_url          | false | false  | 'https://customers.gitlab.com/payment_forms/cc_validation'
+    :payment_form_url          | false | true   | 'https://customers.stg.gitlab.com/payment_forms/cc_validation'
+    :payment_form_url          | true  | false  | 'https://customers.stg.gitlab.com/payment_forms/cc_validation'
+  end
 
-        it 'returns production subscriptions app URL' do
-          is_expected.to eq('https://customers.gitlab.com')
-        end
-      end
+  with_them do
+    subject { described_class.method(method_name).call }
 
-      context 'on dev environment' do
-        before do
-          allow(Rails).to receive_message_chain(:env, :test?).and_return(false)
-          allow(Rails).to receive_message_chain(:env, :development?).and_return(true)
-        end
-
-        it 'returns staging subscriptions app url' do
-          is_expected.to eq('https://customers.stg.gitlab.com')
-        end
-      end
-
-      context 'on test environment' do
-        before do
-          allow(Rails).to receive_message_chain(:env, :test?).and_return(true)
-          allow(Rails).to receive_message_chain(:env, :development?).and_return(false)
-        end
-
-        it 'returns staging subscriptions app url' do
-          is_expected.to eq('https://customers.stg.gitlab.com')
-        end
-      end
+    before do
+      allow(Rails).to receive_message_chain(:env, :test?).and_return(test)
+      allow(Rails).to receive_message_chain(:env, :development?).and_return(development)
     end
 
-    describe '.payment_form_url' do
-      subject { described_class.payment_form_url }
-
-      context 'on non test and non dev environments' do
-        before do
-          allow(Rails).to receive_message_chain(:env, :test?).and_return(false)
-          allow(Rails).to receive_message_chain(:env, :development?).and_return(false)
-        end
-
-        it 'returns URL to production payment form' do
-          is_expected.to eq('https://customers.gitlab.com/payment_forms/cc_validation')
-        end
-      end
-
-      context 'on dev environment' do
-        before do
-          allow(Rails).to receive_message_chain(:env, :test?).and_return(false)
-          allow(Rails).to receive_message_chain(:env, :development?).and_return(true)
-        end
-
-        it 'returns URL to staging payment form' do
-          is_expected.to eq('https://customers.stg.gitlab.com/payment_forms/cc_validation')
-        end
-      end
-
-      context 'on test environment' do
-        before do
-          allow(Rails).to receive_message_chain(:env, :test?).and_return(true)
-          allow(Rails).to receive_message_chain(:env, :development?).and_return(false)
-        end
-
-        it 'returns URL to staging payment form' do
-          is_expected.to eq('https://customers.stg.gitlab.com/payment_forms/cc_validation')
-        end
-      end
-    end
+    it { is_expected.to eq(result) }
   end
 end

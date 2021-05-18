@@ -1,4 +1,4 @@
-import { GlAlert, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -10,6 +10,7 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 describe('WikiForm', () => {
   let wrapper;
+  let mock;
 
   const findForm = () => wrapper.find('form');
   const findTitle = () => wrapper.find('#wiki_title');
@@ -19,6 +20,8 @@ describe('WikiForm', () => {
   const findSubmitButton = () => wrapper.findByTestId('wiki-submit-button');
   const findCancelButton = () => wrapper.findByRole('link', { name: 'Cancel' });
   const findUseNewEditorButton = () => wrapper.findByRole('button', { name: 'Use new editor' });
+  const findSwitchToOldEditorButton = () =>
+    wrapper.findByRole('button', { name: 'Switch to old editor' });
   const findTitleHelpLink = () => wrapper.findByRole('link', { name: 'More Information.' });
   const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
 
@@ -84,7 +87,12 @@ describe('WikiForm', () => {
     );
   }
 
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+  });
+
   afterEach(() => {
+    mock.restore();
     wrapper.destroy();
     wrapper = null;
   });
@@ -266,7 +274,14 @@ describe('WikiForm', () => {
     const assertOldEditorIsVisible = () => {
       expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
       expect(wrapper.findComponent(MarkdownField).exists()).toBe(true);
-      expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
+      expect(findSubmitButton().props('disabled')).toBe(false);
+
+      expect(wrapper.text()).not.toContain(
+        "Switching will discard any changes you've made in the new editor.",
+      );
+      expect(wrapper.text()).not.toContain(
+        "This editor is in beta and may not display the page's contents properly.",
+      );
     };
 
     it('shows old editor by default', assertOldEditorIsVisible);
@@ -294,29 +309,54 @@ describe('WikiForm', () => {
       });
     });
 
-    describe('clicking "use new editor"', () => {
-      let mock;
-
+    describe('clicking "use new editor": editor fails to load', () => {
       beforeEach(async () => {
-        mock = new MockAdapter(axios);
+        mock.onPost(/preview-markdown/).reply(400);
+
+        await findUseNewEditorButton().trigger('click');
+
+        // try waiting for content editor to load (but it will never actually load)
+        await waitForPromises();
+      });
+
+      it('editor is shown in a perpetual loading state', () => {
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
+      });
+
+      it('disables the submit button', () => {
+        expect(findSubmitButton().props('disabled')).toBe(true);
+      });
+
+      describe('clicking "switch to old editor"', () => {
+        beforeEach(() => {
+          return findSwitchToOldEditorButton().trigger('click');
+        });
+
+        it('switches to old editor directly without showing a modal', () => {
+          expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
+          expect(wrapper.findComponent(MarkdownField).exists()).toBe(true);
+        });
+      });
+    });
+
+    describe('clicking "use new editor": editor loads successfully', () => {
+      beforeEach(() => {
         mock.onPost(/preview-markdown/).reply(200, { body: '<p>hello <strong>world</strong></p>' });
 
         findUseNewEditorButton().trigger('click');
-
-        await wrapper.vm.$nextTick();
-      });
-
-      afterEach(() => {
-        mock.restore();
       });
 
       it('shows a loading indicator for the rich text editor', () => {
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
 
-      it('shows a warning alert that the rich text editor is in beta', () => {
-        expect(wrapper.findComponent(GlAlert).text()).toContain(
-          "You are editing this page with Content Editor. This editor is in beta and may not display the page's contents properly.",
+      it('shows warnings that the rich text editor is in beta and may not work properly', () => {
+        expect(wrapper.text()).toContain(
+          "Switching will discard any changes you've made in the new editor.",
+        );
+        expect(wrapper.text()).toContain(
+          "This editor is in beta and may not display the page's contents properly.",
         );
       });
 
@@ -341,8 +381,6 @@ describe('WikiForm', () => {
             '<p>hello __world__ from content editor</p>',
             true,
           );
-
-          await waitForPromises();
 
           return wrapper.vm.$nextTick();
         });
@@ -377,30 +415,45 @@ describe('WikiForm', () => {
       });
 
       describe('clicking "switch to old editor"', () => {
+        let modal;
+
         beforeEach(async () => {
-          // wait for content editor to load
-          await waitForPromises();
+          modal = wrapper.findComponent(GlModal);
+          jest.spyOn(modal.vm, 'show');
 
-          wrapper.vm.contentEditor.tiptapEditor.commands.setContent(
-            '<p>hello __world__ from content editor</p>',
-            true,
-          );
-          wrapper.findComponent(GlAlert).findComponent(GlButton).trigger('click');
-
-          await wrapper.vm.$nextTick();
+          findSwitchToOldEditorButton().trigger('click');
         });
 
-        it('switches to old editor', () => {
-          expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
-          expect(wrapper.findComponent(MarkdownField).exists()).toBe(true);
+        it('shows a modal confirming the change', () => {
+          expect(modal.vm.show).toHaveBeenCalled();
         });
 
-        it('does not show a warning alert about content editor', () => {
-          expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
-        });
+        describe('confirming "switch to old editor" in the modal', () => {
+          beforeEach(async () => {
+            wrapper.vm.contentEditor.tiptapEditor.commands.setContent(
+              '<p>hello __world__ from content editor</p>',
+              true,
+            );
 
-        it('the old editor retains its old value and does not use the content from the content editor', () => {
-          expect(findContent().element.value).toBe('My page content');
+            wrapper.findComponent(GlModal).vm.$emit('primary');
+
+            await wrapper.vm.$nextTick();
+          });
+
+          it('switches to old editor', () => {
+            expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
+            expect(wrapper.findComponent(MarkdownField).exists()).toBe(true);
+          });
+
+          it('does not show a warning about content editor', () => {
+            expect(wrapper.text()).not.toContain(
+              "This editor is in beta and may not display the page's contents properly.",
+            );
+          });
+
+          it('the old editor retains its old value and does not use the content from the content editor', () => {
+            expect(findContent().element.value).toBe('My page content');
+          });
         });
       });
     });

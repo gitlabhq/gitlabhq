@@ -11,16 +11,27 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
     sign_in(user)
   end
 
-  describe 'Sidebar > Operations' do
+  describe 'Sidebar > Monitor' do
     it 'renders the menu in the sidebar' do
       visit project_path(project)
       wait_for_requests
 
-      expect(page).to have_selector('.sidebar-sub-level-items a[aria-label="Operations"]', text: 'Operations', visible: false)
+      expect(page).to have_selector('.sidebar-sub-level-items a[aria-label="Monitor"]', text: 'Monitor', visible: false)
+    end
+
+    context 'when feature flag sidebar_refactor is disabled' do
+      it 'renders the menu "Operations" in the sidebar' do
+        stub_feature_flags(sidebar_refactor: false)
+
+        visit project_path(project)
+        wait_for_requests
+
+        expect(page).to have_selector('.sidebar-sub-level-items a[aria-label="Operations"]', text: 'Operations', visible: false)
+      end
     end
   end
 
-  describe 'Settings > Operations' do
+  describe 'Settings > Monitor' do
     describe 'Incidents' do
       let(:create_issue) { 'Create an incident. Incidents are created for each alert triggered.' }
       let(:send_email) { 'Send a single email notification to Owners and Maintainers for new alerts.' }

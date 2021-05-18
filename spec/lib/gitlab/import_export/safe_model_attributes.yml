@@ -102,6 +102,7 @@ ProjectLabel:
 - template
 - description
 - priority
+- remove_on_close
 Milestone:
 - id
 - title

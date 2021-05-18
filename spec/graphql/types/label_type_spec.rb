@@ -11,6 +11,7 @@ RSpec.describe GitlabSchema.types['Label'] do
       :color,
       :text_color,
       :created_at,
+      :remove_on_close,
       :updated_at
     ]
 

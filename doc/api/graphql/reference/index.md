@@ -2700,6 +2700,7 @@ Input type: `LabelCreateInput`
 | <a id="mutationlabelcreatedescription"></a>`description` | [`String`](#string) | Description of the label. |
 | <a id="mutationlabelcreategrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
 | <a id="mutationlabelcreateprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
+| <a id="mutationlabelcreateremoveonclose"></a>`removeOnClose` | [`Boolean`](#boolean) | Whether the label should be removed from an issue when the issue is closed. |
 | <a id="mutationlabelcreatetitle"></a>`title` | [`String!`](#string) | Title of the label. |
 
 #### Fields
@@ -9742,6 +9743,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="labeldescription"></a>`description` | [`String`](#string) | Description of the label (Markdown rendered as HTML for caching). |
 | <a id="labeldescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="labelid"></a>`id` | [`ID!`](#id) | Label ID. |
+| <a id="labelremoveonclose"></a>`removeOnClose` | [`Boolean!`](#boolean) | Whether the label should be removed from an issue when the issue is closed. |
 | <a id="labeltextcolor"></a>`textColor` | [`String!`](#string) | Text color of the label. |
 | <a id="labeltitle"></a>`title` | [`String!`](#string) | Content of the label. |
 | <a id="labelupdatedat"></a>`updatedAt` | [`Time!`](#time) | When this label was last updated. |

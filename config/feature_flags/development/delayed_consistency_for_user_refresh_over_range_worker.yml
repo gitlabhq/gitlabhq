@@ -1,0 +1,8 @@
+---
+name: delayed_consistency_for_user_refresh_over_range_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61883
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327092
+milestone: '13.12'
+type: development
+group: group::access
+default_enabled: false

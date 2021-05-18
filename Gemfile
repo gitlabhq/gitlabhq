@@ -92,7 +92,7 @@ gem 'net-ldap', '~> 0.16.3'
 
 # API
 gem 'grape', '~> 1.5.2'
-gem 'grape-entity', '~> 0.7.1'
+gem 'grape-entity', '~> 0.9.0'
 gem 'rack-cors', '~> 1.0.6', require: 'rack/cors'
 
 # GraphQL API

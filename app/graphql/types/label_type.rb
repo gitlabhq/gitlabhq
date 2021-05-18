@@ -23,5 +23,7 @@ module Types
           description: 'When this label was created.'
     field :updated_at, Types::TimeType, null: false,
           description: 'When this label was last updated.'
+    field :remove_on_close, GraphQL::BOOLEAN_TYPE, null: false,
+          description: 'Whether the label should be removed from an issue when the issue is closed.'
   end
 end

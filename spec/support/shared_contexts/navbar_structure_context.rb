@@ -24,7 +24,14 @@ RSpec.shared_context 'project navbar structure' do
     }
   end
 
-  let(:operations_menu_items) do
+  let(:monitor_nav_item) do
+    {
+      nav_item: _('Operations'),
+      nav_sub_items: monitor_menu_items
+    }
+  end
+
+  let(:monitor_menu_items) do
     [
       _('Metrics'),
       _('Logs'),
@@ -50,6 +57,18 @@ RSpec.shared_context 'project navbar structure' do
         _('Releases')
       ]
     }
+  end
+
+  let(:settings_menu_items) do
+    [
+      _('General'),
+      _('Integrations'),
+      _('Webhooks'),
+      _('Access Tokens'),
+      _('Repository'),
+      _('CI/CD'),
+      _('Operations')
+    ]
   end
 
   let(:structure) do
@@ -93,10 +112,7 @@ RSpec.shared_context 'project navbar structure' do
         ]
       },
       security_and_compliance_nav_item,
-      {
-        nav_item: _('Operations'),
-        nav_sub_items: operations_menu_items
-      },
+      monitor_nav_item,
       analytics_nav_item,
       {
         nav_item: _('Wiki'),
@@ -107,20 +123,8 @@ RSpec.shared_context 'project navbar structure' do
         nav_sub_items: []
       },
       {
-        nav_item: _('Members'),
-        nav_sub_items: []
-      },
-      {
         nav_item: _('Settings'),
-        nav_sub_items: [
-          _('General'),
-          _('Integrations'),
-          _('Webhooks'),
-          _('Access Tokens'),
-          _('Repository'),
-          _('CI/CD'),
-          _('Operations')
-        ].compact
+        nav_sub_items: settings_menu_items
       }
     ].compact
   end
@@ -182,9 +186,18 @@ RSpec.shared_context 'group navbar structure' do
       nav_item: _('Group information'),
       nav_sub_items: [
         _('Activity'),
-        _('Labels')
+        _('Labels'),
+        _('Members')
       ]
     }
+  end
+
+  let(:issues_nav_items) do
+    [
+      _('List'),
+      _('Board'),
+      _('Milestones')
+    ]
   end
 
   let(:structure) do
@@ -192,11 +205,7 @@ RSpec.shared_context 'group navbar structure' do
       group_information_nav_item,
       {
         nav_item: _('Issues'),
-        nav_sub_items: [
-          _('List'),
-          _('Board'),
-          _('Milestones')
-        ]
+        nav_sub_items: issues_nav_items
       },
       {
         nav_item: _('Merge requests'),
@@ -208,11 +217,7 @@ RSpec.shared_context 'group navbar structure' do
         nav_item: _('Kubernetes'),
         nav_sub_items: []
       },
-      (analytics_nav_item if Gitlab.ee?),
-      {
-        nav_item: _('Members'),
-        nav_sub_items: []
-      }
+      (analytics_nav_item if Gitlab.ee?)
     ]
   end
 end

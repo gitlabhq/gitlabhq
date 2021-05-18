@@ -17,7 +17,7 @@ methods: "one-click install" and "CI/CD template". Both methods are **deprecated
 
 Both methods were limiting as you couldn't fully customize your third-party apps installed
 through GitLab Managed Apps. Therefore, we decided to deprecate this feature and provide
-better alternatives to our users in future GitLab releases.
+better [GitOps-driven alternatives](https://about.gitlab.com/direction/configure/kubernetes_management/#gitlab-managed-applications) to our users, such as [cluster integrations](integrations.md#cluster-integrations) and [cluster management project](management_project.md).
 
 Read the sections below according to the installation method you chose to
 learn how to proceed to keep your apps up and running:

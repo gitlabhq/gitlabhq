@@ -3,7 +3,7 @@
 module Sidebars
   module Projects
     module Menus
-      class OperationsMenu < ::Sidebars::Menu
+      class MonitorMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
           return false unless context.project.feature_available?(:operations, context.current_user)
@@ -36,18 +36,18 @@ module Sidebars
         override :extra_container_html_options
         def extra_container_html_options
           {
-            class: 'shortcuts-operations'
+            class: Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ? 'shortcuts-monitor' : 'shortcuts-operations'
           }
         end
 
         override :title
         def title
-          _('Operations')
+          Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ? _('Monitor') : _('Operations')
         end
 
         override :sprite_icon
         def sprite_icon
-          Feature.enabled?(:sidebar_refactor, context.current_user) ? 'monitor' : 'cloud-gear'
+          Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ? 'monitor' : 'cloud-gear'
         end
 
         override :active_routes
@@ -243,4 +243,4 @@ module Sidebars
   end
 end
 
-Sidebars::Projects::Menus::OperationsMenu.prepend_mod_with('Sidebars::Projects::Menus::OperationsMenu')
+Sidebars::Projects::Menus::MonitorMenu.prepend_mod_with('Sidebars::Projects::Menus::MonitorMenu')

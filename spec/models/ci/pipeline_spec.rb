@@ -3234,18 +3234,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       expect(pipeline.messages.map(&:content)).to contain_exactly('The error message')
     end
-
-    context 'when feature flag ci_store_pipeline_messages is disabled' do
-      before do
-        stub_feature_flags(ci_store_pipeline_messages: false)
-      end
-
-      it 'does not add pipeline error message' do
-        pipeline.add_error_message('The error message')
-
-        expect(pipeline.messages).to be_empty
-      end
-    end
   end
 
   describe '#has_yaml_errors?' do

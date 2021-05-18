@@ -24,7 +24,7 @@ module AuthorizedProjectUpdate
     # `data_consistency :delayed` and not `idempotent!`
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/325291
     deduplicate :until_executing, including_scheduled: true
-    data_consistency :delayed, feature_flag: :periodic_project_authorization_update_via_replica
+    data_consistency :delayed, feature_flag: :delayed_consistency_for_user_refresh_over_range_worker
 
     def perform(start_user_id, end_user_id)
       if Feature.enabled?(:periodic_project_authorization_update_via_replica)
@@ -32,11 +32,16 @@ module AuthorizedProjectUpdate
           enqueue_project_authorizations_refresh(user) if project_authorizations_needs_refresh?(user)
         end
       else
+        use_primary_database
         AuthorizedProjectUpdate::RecalculateForUserRangeService.new(start_user_id, end_user_id).execute
       end
     end
 
     private
+
+    def use_primary_database
+      # no-op in CE, overriden in EE
+    end
 
     def project_authorizations_needs_refresh?(user)
       AuthorizedProjectUpdate::FindRecordsDueForRefreshService.new(user).needs_refresh?
@@ -49,3 +54,5 @@ module AuthorizedProjectUpdate
     end
   end
 end
+
+AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker.prepend_mod_with('AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker')

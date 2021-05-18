@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
+RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures do
   let_it_be_with_reload(:project) { create(:project, :internal, :repository) }
 
   let(:user) { create(:user) }
@@ -17,27 +17,27 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
     visit project_issues_path(project)
   end
 
-  shared_examples 'shows Operations menu based on the access level' do
+  shared_examples 'shows Monitor menu based on the access level' do
     context 'when operations project feature is PRIVATE' do
       let(:access_level) { ProjectFeature::PRIVATE }
 
-      it 'shows the `Operations` menu' do
-        expect(page).to have_selector('a.shortcuts-operations', text: 'Operations')
+      it 'shows the `Monitor` menu' do
+        expect(page).to have_selector('a.shortcuts-monitor', text: 'Monitor')
       end
     end
 
     context 'when operations project feature is DISABLED' do
       let(:access_level) { ProjectFeature::DISABLED }
 
-      it 'does not show the `Operations` menu' do
-        expect(page).not_to have_selector('a.shortcuts-operations')
+      it 'does not show the `Monitor` menu' do
+        expect(page).not_to have_selector('a.shortcuts-monitor')
       end
     end
   end
 
   context 'user is not a member' do
-    it 'has the correct `Operations` menu items', :aggregate_failures do
-      expect(page).to have_selector('a.shortcuts-operations', text: 'Operations')
+    it 'has the correct `Monitor` menu items', :aggregate_failures do
+      expect(page).to have_selector('a.shortcuts-monitor', text: 'Monitor')
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))
 
@@ -53,8 +53,8 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
     context 'when operations project feature is PRIVATE' do
       let(:access_level) { ProjectFeature::PRIVATE }
 
-      it 'does not show the `Operations` menu' do
-        expect(page).not_to have_selector('a.shortcuts-operations')
+      it 'does not show the `Monitor` menu' do
+        expect(page).not_to have_selector('a.shortcuts-monitor')
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
       let(:access_level) { ProjectFeature::DISABLED }
 
       it 'does not show the `Operations` menu' do
-        expect(page).not_to have_selector('a.shortcuts-operations')
+        expect(page).not_to have_selector('a.shortcuts-monitor')
       end
     end
   end
@@ -70,8 +70,8 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
   context 'user has guest role' do
     let(:role) { :guest }
 
-    it 'has the correct `Operations` menu items' do
-      expect(page).to have_selector('a.shortcuts-operations', text: 'Operations')
+    it 'has the correct `Monitor` menu items' do
+      expect(page).to have_selector('a.shortcuts-monitor', text: 'Monitor')
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))
 
@@ -84,13 +84,13 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
       expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
-    it_behaves_like 'shows Operations menu based on the access level'
+    it_behaves_like 'shows Monitor menu based on the access level'
   end
 
   context 'user has reporter role' do
     let(:role) { :reporter }
 
-    it 'has the correct `Operations` menu items' do
+    it 'has the correct `Monitor` menu items' do
       expect(page).to have_link('Metrics', href: project_metrics_dashboard_path(project))
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))
@@ -103,13 +103,13 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
       expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
-    it_behaves_like 'shows Operations menu based on the access level'
+    it_behaves_like 'shows Monitor menu based on the access level'
   end
 
   context 'user has developer role' do
     let(:role) { :developer }
 
-    it 'has the correct `Operations` menu items' do
+    it 'has the correct `Monitor` menu items' do
       expect(page).to have_link('Metrics', href: project_metrics_dashboard_path(project))
       expect(page).to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
@@ -122,13 +122,13 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
       expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
-    it_behaves_like 'shows Operations menu based on the access level'
+    it_behaves_like 'shows Monitor menu based on the access level'
   end
 
   context 'user has maintainer role' do
     let(:role) { :maintainer }
 
-    it 'has the correct `Operations` menu items' do
+    it 'has the correct `Monitor` menu items' do
       expect(page).to have_link('Metrics', href: project_metrics_dashboard_path(project))
       expect(page).to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
@@ -140,6 +140,6 @@ RSpec.describe 'Operations dropdown sidebar', :aggregate_failures do
       expect(page).to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
-    it_behaves_like 'shows Operations menu based on the access level'
+    it_behaves_like 'shows Monitor menu based on the access level'
   end
 end

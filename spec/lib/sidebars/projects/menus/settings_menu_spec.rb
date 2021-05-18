@@ -18,7 +18,7 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu do
   end
 
   describe 'Menu items' do
-    subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
+    subject { described_class.new(context).renderable_items.find { |e| e.item_id == item_id } }
 
     shared_examples 'access rights checks' do
       specify { is_expected.not_to be_nil }
@@ -82,8 +82,8 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu do
       end
     end
 
-    describe 'Operations' do
-      let(:item_id) { :operations }
+    describe 'Monitor' do
+      let(:item_id) { :monitor }
 
       describe 'when project is archived' do
         before do
@@ -95,6 +95,16 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu do
 
       describe 'when project is not archived' do
         specify { is_expected.not_to be_nil }
+
+        specify { expect(subject.title).to eq 'Monitor' }
+
+        context 'when feature flag :sidebar_refactor is disabled' do
+          before do
+            stub_feature_flags(sidebar_refactor: false)
+          end
+
+          specify { expect(subject.title).to eq 'Operations' }
+        end
 
         describe 'when the user does not have access' do
           let(:user) { nil }

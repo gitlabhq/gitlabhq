@@ -25,6 +25,7 @@ module Issues
       end
 
       if project.issues_enabled? && issue.close(current_user)
+        remove_on_close_labels_from(issue)
         event_service.close_issue(issue, current_user)
         create_note(issue, closed_via) if system_note
 
@@ -50,6 +51,18 @@ module Issues
     end
 
     private
+
+    def remove_on_close_labels_from(issue)
+      old_labels = issue.labels.to_a
+
+      issue.label_links.with_remove_on_close_labels.delete_all
+      issue.labels.reset
+
+      Issuable::CommonSystemNotesService.new(project: project, current_user: current_user).execute(
+        issue,
+        old_labels: old_labels
+      )
+    end
 
     def close_external_issue(issue, closed_via)
       return unless project.external_issue_tracker&.support_close_issue?

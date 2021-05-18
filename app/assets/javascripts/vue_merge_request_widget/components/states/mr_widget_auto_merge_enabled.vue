@@ -169,6 +169,7 @@ export default {
             role="button"
             href="#"
             class="btn btn-sm btn-default js-cancel-auto-merge"
+            data-qa-selector="cancel_auto_merge_button"
             data-testid="cancelAutomaticMergeButton"
             @click.prevent="cancelAutomaticMerge"
           >

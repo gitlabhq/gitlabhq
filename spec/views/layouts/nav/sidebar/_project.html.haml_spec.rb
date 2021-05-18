@@ -103,6 +103,27 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
         end
       end
     end
+
+    describe 'Members' do
+      let(:page) { Nokogiri::HTML.parse(rendered) }
+
+      it 'has a link to the members page' do
+        render
+
+        expect(page.at_css('.shortcuts-project').parent.css('[aria-label="Members"]')).not_to be_empty
+        expect(rendered).to have_link('Members', href: project_project_members_path(project))
+      end
+
+      context 'when feature flag :sidebar_refactor is disabled' do
+        it 'does not have a link to the members page' do
+          stub_feature_flags(sidebar_refactor: false)
+
+          render
+
+          expect(page.at_css('.shortcuts-project').parent.css('[aria-label="Members"]')).to be_empty
+        end
+      end
+    end
   end
 
   describe 'Learn GitLab' do
@@ -507,11 +528,11 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
-  describe 'Operations' do
+  describe 'Monitor' do
     it 'top level navigation link is visible for user with permissions' do
       render
 
-      expect(rendered).to have_link('Operations')
+      expect(rendered).to have_link('Monitor')
     end
 
     describe 'Metrics Dashboard' do
@@ -705,7 +726,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       it 'does not have a link to the environments page' do
         render
 
-        expect(page.at_css('.shortcuts-operations').parent.css('[aria-label="Environments"]')).to be_empty
+        expect(page.at_css('.shortcuts-monitor').parent.css('[aria-label="Environments"]')).to be_empty
       end
 
       context 'when feature flag :sidebar_refactor is disabled' do
@@ -738,7 +759,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       it 'does not have a link to the feature flags page' do
         render
 
-        expect(page.at_css('.shortcuts-operations').parent.css('[aria-label="Feature Flags"]')).to be_empty
+        expect(page.at_css('.shortcuts-monitor').parent.css('[aria-label="Feature Flags"]')).to be_empty
       end
 
       context 'when feature flag :sidebar_refactor is disabled' do
@@ -1073,21 +1094,30 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
   end
 
   describe 'Members' do
-    before do
-      render
+    it 'does not show the Member menu item' do
+      expect(rendered).not_to have_selector('.sidebar-top-level-items > li > a[aria-label="Members"]')
     end
 
-    context 'when user can access members' do
-      it 'show Members link' do
-        expect(rendered).to have_link('Members', href: project_project_members_path(project))
+    context 'when feature flag :sidebar_refactor is disabled' do
+      before do
+        stub_feature_flags(sidebar_refactor: false)
+
+        render
       end
-    end
 
-    context 'when user cannot access members' do
-      let(:user) { nil }
+      context 'when user can access members' do
+        it 'show Members link' do
+          expect(rendered).to have_selector('.sidebar-top-level-items > li > a[aria-label="Members"]')
+          expect(rendered).to have_link('Members', href: project_project_members_path(project))
+        end
+      end
 
-      it 'show Members link' do
-        expect(rendered).not_to have_link('Members')
+      context 'when user cannot access members' do
+        let(:user) { nil }
+
+        it 'show Members link' do
+          expect(rendered).not_to have_link('Members')
+        end
       end
     end
   end
@@ -1173,24 +1203,24 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       end
     end
 
-    describe 'Operations' do
+    describe 'Monitor' do
       context 'when project is archived' do
         before do
           project.update!(archived: true)
         end
 
-        it 'does not have a link to the Operations settings' do
+        it 'does not have a link to the Monitor settings' do
           render
 
-          expect(rendered).not_to have_link('Operations', href: project_settings_operations_path(project))
+          expect(rendered).not_to have_link('Monitor', href: project_settings_operations_path(project))
         end
       end
 
       context 'when project is not archived active' do
-        it 'has a link to the Operations settings' do
+        it 'has a link to the Monitor settings' do
           render
 
-          expect(rendered).to have_link('Operations', href: project_settings_operations_path(project))
+          expect(rendered).to have_link('Monitor', href: project_settings_operations_path(project))
         end
       end
     end

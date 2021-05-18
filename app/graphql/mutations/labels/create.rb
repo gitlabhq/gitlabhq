@@ -20,6 +20,10 @@ module Mutations
                required: false,
                description: 'Description of the label.'
 
+      argument :remove_on_close, GraphQL::BOOLEAN_TYPE,
+               required: false,
+               description: copy_field_description(Types::LabelType, :remove_on_close)
+
       argument :color, GraphQL::STRING_TYPE,
                required: false,
                default_value: Label::DEFAULT_COLOR,

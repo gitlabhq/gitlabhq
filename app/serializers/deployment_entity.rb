@@ -38,7 +38,7 @@ class DeploymentEntity < Grape::Entity
   expose :commit, using: CommitEntity, if: -> (*) { include_details? }
   expose :manual_actions, using: JobEntity, if: -> (*) { include_details? && can_create_deployment? }
   expose :scheduled_actions, using: JobEntity, if: -> (*) { include_details? && can_create_deployment? }
-  expose :playable_build, expose_nil: false, if: -> (*) { include_details? && can_create_deployment? } do |deployment, options|
+  expose :playable_build, if: -> (deployment) { include_details? && can_create_deployment? && deployment.playable_build } do |deployment, options|
     JobEntity.represent(deployment.playable_build, options.merge(only: [:play_path, :retry_path]))
   end
 

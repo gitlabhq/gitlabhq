@@ -10,17 +10,25 @@ RSpec.describe Sidebars::Projects::Menus::MembersMenu do
   subject { described_class.new(context) }
 
   describe '#render?' do
-    context 'when user cannot access members' do
-      let(:user) { nil }
-
-      it 'returns false' do
-        expect(subject.render?).to eq false
-      end
+    it 'returns false' do
+      expect(subject.render?).to eq false
     end
 
-    context 'when user can access members' do
+    context 'when feature flag :sidebar_refactor is disabled' do
+      before do
+        stub_feature_flags(sidebar_refactor: false)
+      end
+
       it 'returns true' do
         expect(subject.render?).to eq true
+      end
+
+      context 'when user cannot access members' do
+        let(:user) { nil }
+
+        it 'returns false' do
+          expect(subject.render?).to eq false
+        end
       end
     end
   end

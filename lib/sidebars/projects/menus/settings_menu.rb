@@ -14,7 +14,7 @@ module Sidebars
           add_item(access_tokens_menu_item)
           add_item(repository_menu_item)
           add_item(ci_cd_menu_item)
-          add_item(operations_menu_item)
+          add_item(monitor_menu_item)
           add_item(pages_menu_item)
           add_item(packages_and_registries_menu_item)
 
@@ -107,16 +107,17 @@ module Sidebars
           )
         end
 
-        def operations_menu_item
+        def monitor_menu_item
           if context.project.archived? || !can?(context.current_user, :admin_operations, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :operations)
+            return ::Sidebars::NilMenuItem.new(item_id: :monitor)
           end
 
+          title = Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ? _('Monitor') : _('Operations')
           ::Sidebars::MenuItem.new(
-            title: _('Operations'),
+            title: title,
             link: project_settings_operations_path(context.project),
             active_routes: { path: 'operations#show' },
-            item_id: :operations
+            item_id: :monitor
           )
         end
 

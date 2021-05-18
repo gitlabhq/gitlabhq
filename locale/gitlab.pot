@@ -5099,7 +5099,10 @@ msgstr ""
 msgid "BillingPlan|Upgrade for free"
 msgstr ""
 
-msgid "Billings|To use free pipeline minutes, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge or store your credit card, it will only be used for validation.%{strongEnd}"
+msgid "Billings|To use free pipeline minutes on shared runners, you’ll need to validate your account with a credit or debit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge or store your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "Billings|To use free pipeline minutes on shared runners, you’ll need to validate your account with a credit or debit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge or store your card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
 msgid "Billings|User successfully validated"
@@ -21406,6 +21409,12 @@ msgstr ""
 msgid "Monday"
 msgstr ""
 
+msgid "Monitor"
+msgstr ""
+
+msgid "Monitor Settings"
+msgstr ""
+
 msgid "Monitor your errors by integrating with Sentry."
 msgstr ""
 
@@ -28827,10 +28836,19 @@ msgstr ""
 msgid "SecurityConfiguration|Available with %{linkStart}upgrade or free trial%{linkEnd}"
 msgstr ""
 
+msgid "SecurityConfiguration|Available with Ultimate"
+msgstr ""
+
 msgid "SecurityConfiguration|By default, all analyzers are applied in order to cover all languages across your project, and only run if the language is detected in the Merge Request."
 msgstr ""
 
+msgid "SecurityConfiguration|Configuration guide"
+msgstr ""
+
 msgid "SecurityConfiguration|Configure"
+msgstr ""
+
+msgid "SecurityConfiguration|Configure %{feature}"
 msgstr ""
 
 msgid "SecurityConfiguration|Configure via Merge Request"
@@ -28846,6 +28864,9 @@ msgid "SecurityConfiguration|Customize common SAST settings to suit your require
 msgstr ""
 
 msgid "SecurityConfiguration|Enable"
+msgstr ""
+
+msgid "SecurityConfiguration|Enable %{feature}"
 msgstr ""
 
 msgid "SecurityConfiguration|Enabled"
@@ -36727,6 +36748,12 @@ msgstr ""
 msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{wikiLinkStart}the page%{wikiLinkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
+msgid "WikiPage|An error occured while trying to render the content editor. Please try again later."
+msgstr ""
+
+msgid "WikiPage|Are you sure you want to switch to the old editor?"
+msgstr ""
+
 msgid "WikiPage|Cancel"
 msgstr ""
 
@@ -36745,10 +36772,16 @@ msgstr ""
 msgid "WikiPage|Format"
 msgstr ""
 
+msgid "WikiPage|Keep editing"
+msgstr ""
+
 msgid "WikiPage|More Information."
 msgstr ""
 
 msgid "WikiPage|Page title"
+msgstr ""
+
+msgid "WikiPage|Retry"
 msgstr ""
 
 msgid "WikiPage|Save changes"
@@ -36758,6 +36791,12 @@ msgid "WikiPage|Switch to old editor"
 msgstr ""
 
 msgid "WikiPage|Switching to the old editor will discard any changes you've made in the new editor."
+msgstr ""
+
+msgid "WikiPage|Switching will discard any changes you've made in the new editor."
+msgstr ""
+
+msgid "WikiPage|This editor is in beta and may not display the page's contents properly."
 msgstr ""
 
 msgid "WikiPage|Tip: You can move this page by adding the path to the beginning of the title."
@@ -36779,9 +36818,6 @@ msgid "WikiPage|Use new editor"
 msgstr ""
 
 msgid "WikiPage|Write your content or drag files here…"
-msgstr ""
-
-msgid "WikiPage|You are editing this page with Content Editor. This editor is in beta and may not display the page's contents properly."
 msgstr ""
 
 msgid "Wikis"

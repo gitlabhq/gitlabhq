@@ -28,6 +28,14 @@ RSpec.describe 'Project navbar' do
         new_sub_nav_item_name: _('Labels')
       )
 
+      insert_after_nav_item(
+        _('Snippets'),
+        new_nav_item: {
+          nav_item: _('Members'),
+          nav_sub_items: []
+        }
+      )
+
       stub_config(registry: { enabled: false })
     end
 
@@ -83,7 +91,14 @@ RSpec.describe 'Project navbar' do
   end
 
   context 'when sidebar refactor feature flag is enabled' do
-    let(:operations_menu_items) do
+    let(:monitor_nav_item) do
+      {
+        nav_item: _('Monitor'),
+        nav_sub_items: monitor_menu_items
+      }
+    end
+
+    let(:monitor_menu_items) do
       [
         _('Metrics'),
         _('Logs'),
@@ -100,26 +115,39 @@ RSpec.describe 'Project navbar' do
         nav_item: _('Project information'),
         nav_sub_items: [
           _('Activity'),
-          _('Labels')
+          _('Labels'),
+          _('Members')
         ]
       }
+    end
+
+    let(:settings_menu_items) do
+      [
+        _('General'),
+        _('Integrations'),
+        _('Webhooks'),
+        _('Access Tokens'),
+        _('Repository'),
+        _('CI/CD'),
+        _('Monitor')
+      ]
     end
 
     before do
       stub_feature_flags(sidebar_refactor: true)
       stub_config(registry: { enabled: true })
-      insert_package_nav(_('Operations'))
+      insert_package_nav(_('Monitor'))
       insert_infrastructure_registry_nav
       insert_container_nav
 
       insert_after_sub_nav_item(
-        _('Operations'),
+        _('Monitor'),
         within: _('Settings'),
         new_sub_nav_item_name: _('Packages & Registries')
       )
 
       insert_after_nav_item(
-        _('Operations'),
+        _('Monitor'),
         new_nav_item: {
           nav_item: _('Infrastructure'),
           nav_sub_items: [

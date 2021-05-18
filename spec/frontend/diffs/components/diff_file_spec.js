@@ -1,5 +1,6 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import DiffContentComponent from '~/diffs/components/diff_content.vue';
@@ -16,10 +17,13 @@ import createDiffsStore from '~/diffs/store/modules';
 
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import httpStatus from '~/lib/utils/http_status';
 import createNotesStore from '~/notes/stores/modules';
 import diffFileMockDataReadable from '../mock_data/diff_file';
 import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
+
+jest.mock('~/lib/utils/common_utils');
 
 function changeViewer(store, index, { automaticallyCollapsed, manuallyCollapsed, name }) {
   const file = store.state.diffs.diffFiles[index];
@@ -352,6 +356,49 @@ describe('DiffFile', () => {
         expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith('diffs/setFileCollapsedByUser', {
           filePath: wrapper.vm.file.file_path,
           collapsed: true,
+        });
+      });
+
+      describe('scoll-to-top of file after collapse', () => {
+        beforeEach(() => {
+          jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation(() => {});
+        });
+
+        it("scrolls to the top when the file is open, the users initiates the collapse, and there's a content block to scroll to", async () => {
+          makeFileOpenByDefault(store);
+          await nextTick();
+
+          toggleFile(wrapper);
+
+          expect(scrollToElement).toHaveBeenCalled();
+        });
+
+        it('does not scroll when the content block is missing', async () => {
+          makeFileOpenByDefault(store);
+          await nextTick();
+          findDiffContentArea(wrapper).element.remove();
+
+          toggleFile(wrapper);
+
+          expect(scrollToElement).not.toHaveBeenCalled();
+        });
+
+        it("does not scroll if the user doesn't initiate the file collapse", async () => {
+          makeFileOpenByDefault(store);
+          await nextTick();
+
+          wrapper.vm.handleToggle();
+
+          expect(scrollToElement).not.toHaveBeenCalled();
+        });
+
+        it('does not scroll if the file is already collapsed', async () => {
+          makeFileManuallyCollapsed(store);
+          await nextTick();
+
+          toggleFile(wrapper);
+
+          expect(scrollToElement).not.toHaveBeenCalled();
         });
       });
 

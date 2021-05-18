@@ -8,7 +8,9 @@ module GroupsHelper
       groups#activity
       groups#subgroups
     ].tap do |paths|
-      paths << 'labels#index' if Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+      break paths if Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
+
+      paths.concat(['labels#index', 'group_members#index'])
     end
   end
 

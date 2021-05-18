@@ -22,11 +22,6 @@ module Gitlab
         Feature.enabled?(:merge_base_pipeline_for_metrics_comparison, project, default_enabled: :yaml)
       end
 
-      # Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/224199
-      def self.store_pipeline_messages?(project)
-        ::Feature.enabled?(:ci_store_pipeline_messages, project, default_enabled: true)
-      end
-
       def self.raise_job_rules_without_workflow_rules_warning?
         ::Feature.enabled?(:ci_raise_job_rules_without_workflow_rules_warning, default_enabled: true)
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::OperationsMenu do
+RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
   let_it_be_with_refind(:project) { create(:project) }
 
   let(:user) { project.owner }
@@ -33,6 +33,34 @@ RSpec.describe Sidebars::Projects::Menus::OperationsMenu do
         it 'returns true' do
           expect(subject.render?).to be true
         end
+      end
+    end
+  end
+
+  describe '#title' do
+    it 'returns "Monitor"' do
+      expect(subject.title).to eq 'Monitor'
+    end
+
+    context 'when feature flag :sidebar_refactor is disabled' do
+      it 'returns "Operations"' do
+        stub_feature_flags(sidebar_refactor: false)
+
+        expect(subject.title).to eq 'Operations'
+      end
+    end
+  end
+
+  describe '#extra_container_html_options' do
+    it 'returns "shortcuts-monitor"' do
+      expect(subject.extra_container_html_options).to eq(class: 'shortcuts-monitor')
+    end
+
+    context 'when feature flag :sidebar_refactor is disabled' do
+      it 'returns "shortcuts-operations"' do
+        stub_feature_flags(sidebar_refactor: false)
+
+        expect(subject.extra_container_html_options).to eq(class: 'shortcuts-operations')
       end
     end
   end

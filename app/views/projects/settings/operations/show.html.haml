@@ -1,6 +1,7 @@
 - @content_class = 'limit-container-width' unless fluid_layout
-- page_title _('Operations Settings')
-- breadcrumb_title _('Operations Settings')
+- title = Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml) ? _('Monitor Settings') : _('Operations Settings')
+- page_title title
+- breadcrumb_title title
 
 = render 'projects/settings/operations/alert_management'
 = render 'projects/settings/operations/incidents'
