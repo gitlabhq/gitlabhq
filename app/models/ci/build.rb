@@ -88,6 +88,16 @@ module Ci
       end
     end
 
+    # Initializing an object instead of fetching `persisted_environment` for avoiding unnecessary queries.
+    # We're planning to introduce a direct relationship between build and environment
+    # in https://gitlab.com/gitlab-org/gitlab/-/issues/326445 to let us to preload
+    # in batch.
+    def instantized_environment
+      return unless has_environment?
+
+      ::Environment.new(project: self.project, name: self.expanded_environment_name)
+    end
+
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 

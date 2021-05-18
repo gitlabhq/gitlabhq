@@ -331,7 +331,7 @@ HELM_CMD=$(cat << EOF
     --namespace="${namespace}" \
     --install \
     --wait \
-    --timeout 15m \
+    --timeout "${HELM_INSTALL_TIMEOUT:-20m}" \
     --set ci.branch="${CI_COMMIT_REF_NAME}" \
     --set ci.commit.sha="${CI_COMMIT_SHORT_SHA}" \
     --set ci.job.url="${CI_JOB_URL}" \

@@ -427,7 +427,7 @@ module Gitlab
 
       def services_usage
         # rubocop: disable UsageData/LargeTable:
-        Integration.available_services_names.each_with_object({}) do |service_name, response|
+        Integration.available_services_names(include_dev: false).each_with_object({}) do |service_name, response|
           service_type = Integration.service_name_to_type(service_name)
 
           response["projects_#{service_name}_active".to_sym] = count(Integration.active.where.not(project: nil).where(type: service_type))

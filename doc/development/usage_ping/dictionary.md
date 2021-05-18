@@ -154,6 +154,18 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `analytics_unique_visits.i_analytics_dev_ops_adoption`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210423005644_i_analytics_dev_ops_adoption.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers:
+
 ### `analytics_unique_visits.i_analytics_dev_ops_score`
 
 Unique visitors to /-/instance_statistics/dev_ops_score
@@ -261,6 +273,18 @@ Group: `group::optimize`
 Status: `data_available`
 
 Tiers: `free`
+
+### `analytics_unique_visits.users_viewing_analytics_group_devops_adoption`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210428142406_users_viewing_analytics_group_devops_adoption.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
 
 ### `compliance_unique_visits.a_compliance_audit_events_api`
 
@@ -6562,6 +6586,42 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `counts_monthly.aggregated_metrics.code_review_category_monthly_active_users`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210427102618_code_review_category_monthly_active_users.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts_monthly.aggregated_metrics.code_review_extension_category_monthly_active_users`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210427103010_code_review_extension_category_monthly_active_users.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts_monthly.aggregated_metrics.code_review_group_monthly_active_users`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210427103119_code_review_group_monthly_active_users.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts_monthly.aggregated_metrics.compliance_features_track_unique_visits_union`
 
 Missing description
@@ -6729,6 +6789,42 @@ Group: `group::release`
 Status: `data_available`
 
 Tiers: `free`
+
+### `counts_weekly.aggregated_metrics.code_review_category_monthly_active_users`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210427103407_code_review_category_monthly_active_users.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts_weekly.aggregated_metrics.code_review_extension_category_monthly_active_users`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210427103452_code_review_extension_category_monthly_active_users.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts_weekly.aggregated_metrics.code_review_group_monthly_active_users`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210427103328_code_review_group_monthly_active_users.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_weekly.aggregated_metrics.compliance_features_track_unique_visits_union`
 
@@ -11422,30 +11518,6 @@ Status: `data_available`
 
 Tiers:
 
-### `redis_hll_counters.incident_management.i_incident_management_oncall_notification_sent_monthly`
-
-Count of unique users to receive a notification while on-call
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210405222005_i_incident_management_oncall_notification_sent_monthly.yml)
-
-Group: `group::monitor`
-
-Status: `implemented`
-
-Tiers: `premium`, `ultimate`
-
-### `redis_hll_counters.incident_management.i_incident_management_oncall_notification_sent_weekly`
-
-Count of unique users to receive a notification while on-call
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210405220139_i_incident_management_oncall_notification_sent_weekly.yml)
-
-Group: `group::monitor`
-
-Status: `implemented`
-
-Tiers: `premium`, `ultimate`
-
 ### `redis_hll_counters.incident_management.incident_management_alert_assigned_monthly`
 
 Missing description
@@ -11829,6 +11901,30 @@ Group: `group::health`
 Status: `data_available`
 
 Tiers:
+
+### `redis_hll_counters.incident_management_oncall.i_incident_management_oncall_notification_sent_monthly`
+
+Count of unique users to receive a notification while on-call
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210405222005_i_incident_management_oncall_notification_sent_monthly.yml)
+
+Group: `group::monitor`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
+
+### `redis_hll_counters.incident_management_oncall.i_incident_management_oncall_notification_sent_weekly`
+
+Count of unique users to receive a notification while on-call
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210405220139_i_incident_management_oncall_notification_sent_weekly.yml)
+
+Group: `group::monitor`
+
+Status: `implemented`
+
+Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.issues_edit.g_project_management_issue_added_to_epic_monthly`
 
@@ -12691,6 +12787,30 @@ Weekly unique user count having merge requests which contains the CI config file
 Group: `group::pipeline authoring`
 
 Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.pipeline_authoring.pipeline_authoring_total_unique_counts_monthly`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210427105033_pipeline_authoring_total_unique_counts_monthly.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.pipeline_authoring.pipeline_authoring_total_unique_counts_weekly`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210427105030_pipeline_authoring_total_unique_counts_weekly.yml)
+
+Group: ``
+
+Status: `implemented`
 
 Tiers: `free`, `premium`, `ultimate`
 
@@ -15948,6 +16068,18 @@ Status: `data_available`
 
 Tiers: `premium`, `ultimate`
 
+### `usage_activity_by_stage.enablement.geo_secondary_web_oauth_users`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210427212450_geo_secondary_web_oauth_users.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `usage_activity_by_stage.manage.bulk_imports.gitlab`
 
 Distinct count of users that triggered an import using the Group Migration tool
@@ -17893,6 +18025,18 @@ Group: `group::source code`
 Status: `data_available`
 
 Tiers: `premium`, `ultimate`
+
+### `usage_activity_by_stage_monthly.enablement.geo_secondary_web_oauth_users`
+
+Missing description
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210427213346_geo_secondary_web_oauth_users.yml)
+
+Group: ``
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.manage.bulk_imports.gitlab`
 

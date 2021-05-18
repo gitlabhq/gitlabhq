@@ -119,6 +119,12 @@ module Types
           description: "Find a runner.",
           feature_flag: :runner_graphql_query
 
+    field :runners, Types::Ci::RunnerType.connection_type,
+          null: true,
+          resolver: Resolvers::Ci::RunnersResolver,
+          description: "Find runners visible to the current user.",
+          feature_flag: :runner_graphql_query
+
     field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126 # AUTHENTICATED_COMPLEXITY / 2 + 1
 
     def design_management

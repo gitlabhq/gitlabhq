@@ -52,7 +52,6 @@ Rails/SaveBang:
     - 'ee/spec/models/approval_project_rule_spec.rb'
     - 'ee/spec/models/burndown_spec.rb'
     - 'ee/spec/models/elasticsearch_indexed_namespace_spec.rb'
-    - 'ee/spec/models/environment_spec.rb'
     - 'ee/spec/models/epic_spec.rb'
     - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/issue_spec.rb'

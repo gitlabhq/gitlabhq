@@ -120,6 +120,10 @@ module Ci
       raise NotImplementedError
     end
 
+    def instantized_environment
+      raise NotImplementedError
+    end
+
     override :all_met_to_become_pending?
     def all_met_to_become_pending?
       super && !with_resource_group?

@@ -25,6 +25,7 @@ RSpec.describe GitlabSchema.types['Query'] do
       usage_trends_measurements
       runner_platforms
       runner
+      runners
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least
@@ -89,6 +90,12 @@ RSpec.describe GitlabSchema.types['Query'] do
     subject { described_class.fields['runner'] }
 
     it { is_expected.to have_graphql_type(Types::Ci::RunnerType) }
+  end
+
+  describe 'runners field' do
+    subject { described_class.fields['runners'] }
+
+    it { is_expected.to have_graphql_type(Types::Ci::RunnerType.connection_type) }
   end
 
   describe 'runner_platforms field' do

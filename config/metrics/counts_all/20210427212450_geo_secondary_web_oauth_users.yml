@@ -1,0 +1,22 @@
+---
+key_path: usage_activity_by_stage.enablement.geo_secondary_web_oauth_users
+name: ""
+description:
+product_section:
+product_stage:
+product_group:
+product_category:
+value_type: number
+status: implemented
+milestone: "13.12"
+introduced_by_url:
+time_frame: all
+data_source:
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+skip_validation: true

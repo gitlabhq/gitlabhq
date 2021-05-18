@@ -38,6 +38,11 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     File.write(path, content)
   end
 
+  after do
+    # Reset memoized `definitions` result
+    described_class.instance_variable_set(:@definitions, nil)
+  end
+
   it 'has all definitons valid' do
     expect { described_class.definitions }.not_to raise_error(Gitlab::Usage::Metric::InvalidMetricError)
   end
@@ -193,8 +198,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
           File.join(metric2, '**', '*.yml')
         ]
       )
-      # Reset memoized `definitions` result
-      described_class.instance_variable_set(:@definitions, nil)
     end
 
     after do

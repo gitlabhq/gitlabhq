@@ -38,6 +38,9 @@ eslint-sast:
 nodejs-scan-sast:
   rules: !reference [".reports:rules:sast", rules]
 
+semgrep-sast:
+  rules: !reference [".reports:rules:sast", rules]
+
 .secret-analyzer:
   extends: .default-retry
   needs: []

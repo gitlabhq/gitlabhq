@@ -253,6 +253,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `gitlab_server`                         | Server to use for authentication when access control is enabled; defaults to GitLab `external_url`. |
 | `headers`                               | Specify any additional http headers that should be sent to the client with each response. Multiple headers can be given as an array, header and value as one string, for example `['my-header: myvalue', 'my-other-header: my-other-value']` |
 | `inplace_chroot`                        | On [systems that don't support bind-mounts](index.md#additional-configuration-for-docker-container), this instructs GitLab Pages to `chroot` into its `pages_path` directory. Some caveats exist when using in-place `chroot`; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information. |
+| `enable_disk`                           | Allows the GitLab Pages daemon to serve content from disk. Shall be disabled if shared disk storage isn't available. |
 | `insecure_ciphers`                      | Use default list of cipher suites, may contain insecure ones like 3DES and RC4. |
 | `internal_gitlab_server`                | Internal GitLab server address used exclusively for API requests. Useful if you want to send that traffic over an internal load balancer. Defaults to GitLab `external_url`. |
 | `listen_proxy`                          | The addresses to listen on for reverse-proxy requests. Pages binds to these addresses' network sockets and receives incoming requests from them. Sets the value of `proxy_pass` in `$nginx-dir/conf/gitlab-pages.conf`. |
@@ -1299,3 +1300,24 @@ Once added, reconfigure with `sudo gitlab-ctl reconfigure` and restart GitLab wi
 
 Verify that the **Callback URL**/Redirect URI in the GitLab Pages [System OAuth application](../../integration/oauth_provider.md#instance-wide-applications)
 is using the protocol (HTTP or HTTPS) that `pages_external_url` is configured to use.
+
+### 500 error `cannot serve from disk`
+
+If you get a 500 response from Pages and encounter an error similar to:
+
+```plaintext
+ERRO[0145] cannot serve from disk                        error="gitlab: disk access is disabled via enable-disk=false" project_id=27 source_path="file:///shared/pages/@hashed/67/06/670671cd97404156226e507973f2ab8330d3022ca96e0c93bdbdb320c41adcaf/pages_deployments/14/artifacts.zip" source_type=zip
+```
+
+It means that GitLab Rails is telling GitLab Pages to serve content from a location on disk,
+however, GitLab Pages was configured to disable disk access.
+
+To enable disk access:
+
+1. Enable disk access for GitLab Pages in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['enable_disk'] = true
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
