@@ -13,7 +13,12 @@ module Gitlab
 
         # Builds a lfs_object
         def self.from_api_response(lfs_object)
-          new({ oid: lfs_object.oid, link: lfs_object.link, size: lfs_object.size })
+          new(
+            oid: lfs_object.oid,
+            link: lfs_object.link,
+            size: lfs_object.size,
+            github_id: lfs_object.oid
+          )
         end
 
         # Builds a new lfs_object using a Hash that was built from a JSON payload.

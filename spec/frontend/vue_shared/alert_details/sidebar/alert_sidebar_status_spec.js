@@ -121,6 +121,13 @@ describe('Alert Details Sidebar Status', () => {
         expect(findStatus().text()).toBe('Triggered');
       });
 
+      it('emits "alert-update" when the status has been updated', () => {
+        mountComponent({ sidebarCollapsed: false });
+        expect(wrapper.emitted('alert-update')).toBeUndefined();
+        findAlertStatus().vm.$emit('handle-updating');
+        expect(wrapper.emitted('alert-update')).toEqual([[]]);
+      });
+
       it('renders translated statuses', () => {
         const status = 'TEST';
         const statuses = { [status]: 'Test' };

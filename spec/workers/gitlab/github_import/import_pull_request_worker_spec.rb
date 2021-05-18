@@ -12,6 +12,7 @@ RSpec.describe Gitlab::GithubImport::ImportPullRequestWorker do
       importer = double(:importer)
       hash = {
         'iid' => 42,
+        'github_id' => 42,
         'title' => 'My Pull Request',
         'description' => 'This is my pull request',
         'source_branch' => 'my-feature',

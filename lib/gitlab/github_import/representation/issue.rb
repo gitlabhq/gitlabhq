@@ -25,6 +25,7 @@ module Gitlab
 
           hash = {
             iid: issue.number,
+            github_id: issue.number,
             title: issue.title,
             description: issue.body,
             milestone_number: issue.milestone&.number,

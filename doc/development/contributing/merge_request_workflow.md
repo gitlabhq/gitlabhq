@@ -250,6 +250,8 @@ requirements.
    with any questions.
 1. The new feature does not degrade the user experience of the product.
 
+Contributions do not require approval from the [Product team](https://about.gitlab.com/handbook/product/product-processes/#gitlab-pms-arent-the-arbiters-of-community-contributions).
+
 ## Dependencies
 
 If you add a dependency in GitLab (such as an operating system package) please
