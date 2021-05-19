@@ -82,6 +82,14 @@ to the project root:
 ```shell
 Auth/User.cs
 Lib/Utils/User.cs
+src/main/java
+```
+
+In the Cobertura XML, the `filename` attribute in the `class` element assumes the value is a
+relative path to project's root.
+
+```xml
+<class name="packet.name" filename="src/main/java" line-rate="0.0" branch-rate="0.0" complexity="5">
 ```
 
 And the `sources` from Cobertura XML with paths in the format of `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`:
@@ -153,7 +161,7 @@ coverage-jdk11:
   stage: visualize
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
-    # convert report from jacoco to cobertura
+    # convert report from jacoco to cobertura, use relative project path
     - 'python /opt/cover2cover.py target/site/jacoco/jacoco.xml src/main/java > target/site/cobertura.xml'
     # read the <source></source> tag and prepend the path to every filename attribute
     - 'python /opt/source2filename.py target/site/cobertura.xml'
@@ -193,7 +201,7 @@ coverage-jdk11:
   stage: visualize
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
-    # convert report from jacoco to cobertura
+    # convert report from jacoco to cobertura, use relative project path
     - 'python /opt/cover2cover.py build/jacoco/jacoco.xml src/main/java > build/cobertura.xml'
     # read the <source></source> tag and prepend the path to every filename attribute
     - 'python /opt/source2filename.py build/cobertura.xml'

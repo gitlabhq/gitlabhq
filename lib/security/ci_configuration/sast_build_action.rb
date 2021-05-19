@@ -15,11 +15,6 @@ module Security
       private
 
       def variables(params)
-        # This early return is necessary for supporting REST API.
-        # Will be removed during the implementation of
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/246737
-        return params unless params['global'].present?
-
         collect_values(params, 'value')
       end
 

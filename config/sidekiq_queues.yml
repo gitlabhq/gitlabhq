@@ -152,8 +152,6 @@
   - 1
 - - geo
   - 1
-- - git_garbage_collect
-  - 1
 - - github_import_advance_stage
   - 1
 - - github_importer

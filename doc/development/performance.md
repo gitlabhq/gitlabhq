@@ -365,14 +365,16 @@ This patch is available by default for
 [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/merge_requests/149)
 and can additionally be enabled for [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/advanced.md#apply-custom-patches-for-ruby).
 
-This patch provides a set of 3 metrics that makes it easier to understand efficiency of memory usage for a given codepath:
+This patch provides the following metrics that make it easier to understand efficiency of memory use for a given codepath:
 
+- `mem_total_bytes`: the number of bytes consumed both due to new objects being allocated into existing object slots
+                     plus additional memory allocated for large objects (that is, `mem_bytes + slot_size * mem_objects`).
+- `mem_bytes`: the number of bytes allocated by `malloc` for objects that did not fit into an existing object slot.
 - `mem_objects`: the number of objects allocated.
-- `mem_bytes`: the number of bytes allocated by malloc.
-- `mem_mallocs`: the number of malloc allocations.
+- `mem_mallocs`: the number of `malloc` calls.
 
 The number of objects and bytes allocated impact how often GC cycles happen.
-Fewer objects allocations result in a significantly more responsive application.
+Fewer object allocations result in a significantly more responsive application.
 
 It is advised that web server requests do not allocate more than `100k mem_objects`
 and `100M mem_bytes`. You can view the current usage on [GitLab.com](https://log.gprd.gitlab.net/goto/3a9678bb595e3f89a0c7b5c61bcc47b9).

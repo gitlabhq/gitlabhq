@@ -25,9 +25,7 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def reprocess!(build)
-      unless can?(current_user, :update_build, build)
-        raise Gitlab::Access::AccessDeniedError
-      end
+      check_access!(build)
 
       attributes = self.class.clone_accessors.to_h do |attribute|
         [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
@@ -51,6 +49,12 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
+
+    def check_access!(build)
+      unless can?(current_user, :update_build, build)
+        raise Gitlab::Access::AccessDeniedError
+      end
+    end
 
     def create_build!(attributes)
       build = project.builds.new(attributes)

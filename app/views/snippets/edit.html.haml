@@ -1,6 +1,6 @@
 - page_title _("Edit"), "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 - @content_class = "limit-container-width" unless fluid_layout
-- content_for :monaco_tag do
+- content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
 
 %h3.page-title

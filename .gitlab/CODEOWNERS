@@ -136,13 +136,13 @@
 /doc/user/snippets.md @aqualls
 
 [Docs Growth]
-/doc/administration/instance_review.md @aqualls
-/doc/api/invitations.md @aqualls
-/doc/api/experiments.md @aqualls
-/doc/development/experiment_guide/ @aqualls
-/doc/development/snowplow/ @aqualls
-/doc/development/usage_ping/ @aqualls
-/doc/user/admin_area/license.md @aqualls
+/doc/administration/instance_review.md @kpaizee
+/doc/api/invitations.md @kpaizee
+/doc/api/experiments.md @kpaizee
+/doc/development/experiment_guide/ @kpaizee
+/doc/development/snowplow/ @kpaizee
+/doc/development/usage_ping/ @kpaizee
+/doc/user/admin_area/license.md @kpaizee
 
 [Frontend]
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend

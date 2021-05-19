@@ -4,7 +4,7 @@
 - add_page_specific_style 'page_bundles/build'
 - add_page_specific_style 'page_bundles/ide'
 
-- content_for :monaco_tag do
+- content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
 
 #ide.ide-loading{ data: ide_data }

@@ -1,6 +1,6 @@
 - breadcrumb_title _("Repository")
 - page_title _("Edit"), @blob.path, @ref
-- content_for :monaco_tag do
+- content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
 
 - if @conflict
