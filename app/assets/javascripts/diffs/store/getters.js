@@ -1,3 +1,4 @@
+import { getParameterValues } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
@@ -172,4 +173,6 @@ export function suggestionCommitMessage(state, _, rootState) {
 }
 
 export const isVirtualScrollingEnabled = (state) =>
-  !state.viewDiffsFileByFile && window.gon?.features?.diffsVirtualScrolling;
+  !state.viewDiffsFileByFile &&
+  (window.gon?.features?.diffsVirtualScrolling ||
+    getParameterValues('virtual_scrolling')[0] === 'true');

@@ -59,7 +59,8 @@ RSpec.describe Ci::RetryBuildService do
        metadata runner_session trace_chunks upstream_pipeline_id
        artifacts_file artifacts_metadata artifacts_size commands
        resource resource_group_id processed security_scans author
-       pipeline_id report_results pending_state pages_deployments].freeze
+       pipeline_id report_results pending_state pages_deployments
+       queuing_entry].freeze
 
   shared_examples 'build duplication' do
     let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }

@@ -18,7 +18,7 @@
         = nav_link(path: paths, unless: -> { current_path?('groups/contribution_analytics#show') }, html_options: { class: 'home' }) do
           = link_to group_path(@group) do
             .nav-icon-container
-              - sprite = Feature.enabled?(:sidebar_refactor, current_user) ? 'group' : 'home'
+              - sprite = Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml) ? 'group' : 'home'
               = sprite_icon(sprite)
             %span.nav-item-name
               = group_information_title(@group)
@@ -30,7 +30,7 @@
                   = group_information_title(@group)
             %li.divider.fly-out-top-item
 
-            - if Feature.disabled?(:sidebar_refactor, current_user)
+            - if Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
               = nav_link(path: ['groups#show', 'groups#details', 'groups#subgroups'], html_options: { class: 'home' }) do
                 = link_to details_group_path(@group), title: _('Group details') do
                   %span

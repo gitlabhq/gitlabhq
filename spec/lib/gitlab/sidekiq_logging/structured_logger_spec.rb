@@ -303,6 +303,39 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         expect { subject.call(job.dup, 'test_queue') {} }.not_to raise_error
       end
     end
+
+    context 'when the job payload is compressed' do
+      let(:compressed_args) { "eJyLVspIzcnJV4oFAA88AxE=" }
+      let(:expected_start_payload) do
+        start_payload.merge(
+          'args' => ['[COMPRESSED]'],
+          'job_size_bytes' => Sidekiq.dump_json([compressed_args]).bytesize,
+          'compressed' => true
+        )
+      end
+
+      let(:expected_end_payload) do
+        end_payload.merge(
+          'args' => ['[COMPRESSED]'],
+          'job_size_bytes' => Sidekiq.dump_json([compressed_args]).bytesize,
+          'compressed' => true
+        )
+      end
+
+      it 'logs it in the done log' do
+        Timecop.freeze(timestamp) do
+          expect(logger).to receive(:info).with(expected_start_payload).ordered
+          expect(logger).to receive(:info).with(expected_end_payload).ordered
+
+          job['args'] = [compressed_args]
+          job['compressed'] = true
+
+          call_subject(job, 'test_queue') do
+            ::Gitlab::SidekiqMiddleware::SizeLimiter::Compressor.decompress(job)
+          end
+        end
+      end
+    end
   end
 
   describe '#add_time_keys!' do

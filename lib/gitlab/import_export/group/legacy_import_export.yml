@@ -72,6 +72,8 @@ ee:
         - :award_emoji
         - events:
           - :push_event_payload
+        - label_links:
+          - :label
         - notes:
           - :author
           - :award_emoji

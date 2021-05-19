@@ -6,7 +6,7 @@ product_stage: create
 product_group: group::gitaly
 product_category: gitaly
 value_type: number
-status: implemented
+status: data_available
 milestone: "13.11"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47040
 time_frame: none

@@ -9,6 +9,8 @@ module Gitlab
     # eg: `config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator)`
     def self.server_configurator(metrics: true, arguments_logger: true, memory_killer: true)
       lambda do |chain|
+        # Size limiter should be placed at the top
+        chain.add ::Gitlab::SidekiqMiddleware::SizeLimiter::Server
         chain.add ::Gitlab::SidekiqMiddleware::Monitor
         chain.add ::Gitlab::SidekiqMiddleware::ServerMetrics if metrics
         chain.add ::Gitlab::SidekiqMiddleware::ArgumentsLogger if arguments_logger

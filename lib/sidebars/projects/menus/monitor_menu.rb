@@ -139,7 +139,7 @@ module Sidebars
         end
 
         def serverless_menu_item
-          if Feature.enabled?(:sidebar_refactor, context.current_user) ||
+          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
             !can?(context.current_user, :read_cluster, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :serverless)
           end
@@ -153,7 +153,7 @@ module Sidebars
         end
 
         def terraform_menu_item
-          if Feature.enabled?(:sidebar_refactor, context.current_user) ||
+          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
             !can?(context.current_user, :read_terraform_state, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :terraform)
           end
@@ -167,7 +167,7 @@ module Sidebars
         end
 
         def kubernetes_menu_item
-          if Feature.enabled?(:sidebar_refactor, context.current_user) ||
+          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
             !can?(context.current_user, :read_cluster, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :kubernetes)
           end

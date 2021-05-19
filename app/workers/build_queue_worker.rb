@@ -14,7 +14,7 @@ class BuildQueueWorker # rubocop:disable Scalability/IdempotentWorker
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
-      Ci::UpdateBuildQueueService.new.execute(build)
+      Ci::UpdateBuildQueueService.new.tick(build)
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

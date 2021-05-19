@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Requirements **(FREE SELF)**
+# Installation requirements **(FREE SELF)**
 
 This page includes useful information on the supported Operating Systems as well
 as the hardware requirements that are needed to install and use GitLab.

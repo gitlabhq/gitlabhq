@@ -1,0 +1,5 @@
+---
+title: Compress oversized Sidekiq job payload before dispatching into Redis
+merge_request: 61667
+author:
+type: added

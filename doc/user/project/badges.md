@@ -90,6 +90,35 @@ default branch or commit SHA when the project is configured to have a private
 repository. This is by design, as badges are intended to be used publicly. Avoid
 using these placeholders if the information is sensitive.
 
+## Use custom badge images
+
+Use custom badge images in a project or a group if you want to use badges other than the default
+ones.
+
+Prerequisites:
+
+- A valid URL that points directly to the desired image for the badge.
+  If the image is located in a GitLab repository, use the raw link to the image.
+
+Using placeholders, here is an example badge image URL referring to a raw image at the root of a repository:
+
+```plaintext
+https://gitlab.example.com/<project_path>/-/raw/<default_branch>/my-image.svg
+```
+
+To add a new badge to a group or project with a custom image:
+
+1. Go to your group or project and select **Settings > General**.
+1. Expand **Badges**.
+1. Under **Name**, enter the name for the badge.
+1. Under **Link**, enter the URL that the badge should point to.
+1. Under **Badge image URL**, enter the URL that points directly to the custom image that should be
+   displayed.
+1. Select **Add badge**.
+
+To learn how to use custom images generated via a pipeline, see our documentation on
+[accessing the latest job artifacts by URL](../../ci/pipelines/job_artifacts.md#access-the-latest-job-artifacts-by-url).
+
 ## API
 
 You can also configure badges via the GitLab API. As in the settings, there is

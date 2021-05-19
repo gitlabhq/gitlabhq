@@ -20,6 +20,8 @@ module Gitlab
           :build_can_pick,
           :build_not_pick,
           :build_not_pending,
+          :build_queue_push,
+          :build_queue_pop,
           :build_temporary_locked,
           :build_conflict_lock,
           :build_conflict_exception,
@@ -77,11 +79,7 @@ module Gitlab
         # rubocop: enable CodeReuse/ActiveRecord
 
         def increment_queue_operation(operation)
-          if !Rails.env.production? && !OPERATION_COUNTERS.include?(operation)
-            raise ArgumentError, "unknown queue operation: #{operation}"
-          end
-
-          self.class.queue_operations_total.increment(operation: operation)
+          self.class.increment_queue_operation(operation)
         end
 
         def observe_queue_depth(queue, size)
@@ -119,6 +117,14 @@ module Gitlab
           end
 
           result
+        end
+
+        def self.increment_queue_operation(operation)
+          if !Rails.env.production? && !OPERATION_COUNTERS.include?(operation)
+            raise ArgumentError, "unknown queue operation: #{operation}"
+          end
+
+          queue_operations_total.increment(operation: operation)
         end
 
         def self.observe_active_runners(runners_proc)
