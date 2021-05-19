@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
 
-The Compliance Dashboard gives you the ability to see a group's Merge Request activity
+The Compliance Dashboard gives you the ability to see a group's merge request activity
 by providing a high-level view for all projects in the group. For example, code approved
 for merging into production.
 
@@ -28,10 +28,10 @@ This feature is for people who care about the compliance status of projects with
 
 You can use the dashboard to:
 
-- Get an overview of the latest Merge Request for each project.
-- See if Merge Requests were approved and by whom.
-- See Merge Request authors.
-- See the latest [CI Pipeline](../../../ci/pipelines/index.md) result for each Merge Request.
+- Get an overview of the latest merge request for each project.
+- See if merge requests were approved and by whom.
+- See merge request authors.
+- See the latest [CI Pipeline](../../../ci/pipelines/index.md) result for each merge request.
 
 ## Permissions
 
@@ -42,25 +42,25 @@ You can use the dashboard to:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217939) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
 
-We support a separation of duties policy between users who create and approve Merge Requests.
+We support a separation of duties policy between users who create and approve merge requests.
 The approval status column can help you identify violations of this policy.
 Our criteria for the separation of duties is as follows:
 
-- [A Merge Request author is **not** allowed to approve their Merge Request](../../project/merge_requests/approvals/settings.md#allowing-merge-request-authors-to-approve-their-own-merge-requests)
-- [A Merge Request committer is **not** allowed to approve a Merge Request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-approval-of-merge-requests-by-their-committers)
-- [The minimum number of approvals required to merge a Merge Request is **at least** two](../../project/merge_requests/approvals/rules.md)
+- [A merge request author is **not** allowed to approve their merge request](../../project/merge_requests/approvals/settings.md#prevent-authors-from-approving-their-own-work)
+- [A merge request committer is **not** allowed to approve a merge request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-committers-from-approving-their-own-work)
+- [The minimum number of approvals required to merge a merge request is **at least** two](../../project/merge_requests/approvals/rules.md)
 
-The "Approval status" column shows you, at a glance, whether a Merge Request is complying with the above.
+The "Approval status" column shows you, at a glance, whether a merge request is complying with the above.
 This column has four states:
 
 | State | Description |
 |:------|:------------|
-| Empty | The Merge Request approval status is unknown |
-| ![Failed](img/failed_icon_v13_3.png) | The Merge Request **does not** comply with any of the above criteria |
-| ![Warning](img/warning_icon_v13_3.png) | The Merge Request complies with **some** of the above criteria |
-| ![Success](img/success_icon_v13_3.png) | The Merge Request complies with **all** of the above criteria |
+| Empty | The merge request approval status is unknown |
+| ![Failed](img/failed_icon_v13_3.png) | The merge request **does not** comply with any of the above criteria |
+| ![Warning](img/warning_icon_v13_3.png) | The merge request complies with **some** of the above criteria |
+| ![Success](img/success_icon_v13_3.png) | The merge request complies with **all** of the above criteria |
 
-If you do not see the success icon in your Compliance dashboard; please review the above criteria for the Merge Requests
+If you do not see the success icon in your Compliance dashboard; please review the above criteria for the merge requests
 project to make sure it complies with the separation of duties described above.
 
 ## Chain of Custody report **(ULTIMATE)**

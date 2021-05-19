@@ -77,7 +77,9 @@ The user running the pipeline in the project should at least have Reporter acces
 Example `.compliance-gitlab-ci.yml`
 
 ```yaml
-stages: # Allows compliance team to control the ordering and interweaving of stages/jobs
+# Allows compliance team to control the ordering and interweaving of stages/jobs.
+# Stages without jobs defined will remain hidden.
+stages: 
 - pre-compliance
 - build
 - test

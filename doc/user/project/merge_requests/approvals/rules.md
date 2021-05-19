@@ -49,7 +49,7 @@ Users of GitLab Premium and higher tiers can create [additional approval rules](
 Your configuration for approval rule overrides determines if the new rule is applied
 to existing merge requests:
 
-- If [approval rule overrides](settings.md#prevent-overriding-default-approvals) are allowed,
+- If [approval rule overrides](settings.md#prevent-overrides-of-default-approvals) are allowed,
   changes to these default rules are not applied to existing merge requests, except for
   changes to the [target branch](#approvals-for-protected-branches) of the rule.
 - If approval rule overrides are not allowed, all changes to default rules
@@ -138,10 +138,10 @@ approve in these ways:
   counts as one approver, and not two.
 - Merge request authors do not count as eligible approvers on their own merge requests by default.
   To change this behavior, disable the
-  [**Prevent author approval**](settings.md#allowing-merge-request-authors-to-approve-their-own-merge-requests)
+  [**Prevent author approval**](settings.md#prevent-authors-from-approving-their-own-work)
   project setting.
 - Committers to merge requests can approve a merge request. To change this behavior, enable the
-  [**Prevent committers approval**](settings.md#prevent-approval-of-merge-requests-by-their-committers)
+  [**Prevent committers approval**](settings.md#prevent-committers-from-approving-their-own-work)
   project setting.
 
 ### Code owners as eligible approvers
@@ -200,7 +200,7 @@ on a merge request, you can either add or remove approvers:
    1. Add or remove your desired approval rules.
    1. Select **Save changes**.
 
-Administrators can change the [merge request approvals settings](settings.md#prevent-overriding-default-approvals)
+Administrators can change the [merge request approvals settings](settings.md#prevent-overrides-of-default-approvals)
 to prevent users from overriding approval rules for merge requests.
 
 ## Configure optional approval rules

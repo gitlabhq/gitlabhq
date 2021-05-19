@@ -20,17 +20,13 @@ RSpec.describe 'Issues > Labels bulk assignment' do
     end
 
     context 'sidebar' do
-      before do
-        enable_bulk_update
-      end
-
       it 'is present when bulk edit is enabled' do
-        expect(page).to have_css('.issuable-sidebar')
+        enable_bulk_update
+        expect(page).to have_css 'aside[aria-label="Bulk update"]'
       end
 
       it 'is not present when bulk edit is disabled' do
-        disable_bulk_update
-        expect(page).not_to have_css('.issuable-sidebar')
+        expect(page).not_to have_css 'aside[aria-label="Bulk update"]'
       end
     end
 
@@ -42,7 +38,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
       context 'a label' do
         context 'to all issues' do
           before do
-            check 'check-all-issues'
+            check 'Select all'
             open_labels_dropdown ['bug']
             update_issues
           end
@@ -57,8 +53,8 @@ RSpec.describe 'Issues > Labels bulk assignment' do
 
         context 'to some issues' do
           before do
-            check "selected_issue_#{issue1.id}"
-            check "selected_issue_#{issue2.id}"
+            check issue1.title
+            check issue2.title
             open_labels_dropdown ['bug']
             update_issues
           end
@@ -73,7 +69,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
 
         context 'to an issue' do
           before do
-            check "selected_issue_#{issue1.id}"
+            check issue1.title
             open_labels_dropdown ['bug']
             update_issues
           end
@@ -89,7 +85,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         context 'to an issue by selecting the label first' do
           before do
             open_labels_dropdown ['bug']
-            check "selected_issue_#{issue1.id}"
+            check issue1.title
             update_issues
           end
 
@@ -105,7 +101,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
       context 'multiple labels' do
         context 'to all issues' do
           before do
-            check 'check-all-issues'
+            check 'Select all'
             open_labels_dropdown %w(bug feature)
             update_issues
           end
@@ -120,7 +116,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
 
         context 'to a issue' do
           before do
-            check "selected_issue_#{issue1.id}"
+            check issue1.title
             open_labels_dropdown %w(bug feature)
             update_issues
           end
@@ -141,7 +137,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         issue2.labels << feature
 
         enable_bulk_update
-        check 'check-all-issues'
+        check 'Select all'
 
         open_labels_dropdown ['bug']
         update_issues
@@ -162,7 +158,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           issue2.labels << feature
 
           enable_bulk_update
-          check 'check-all-issues'
+          check 'Select all'
           unmark_labels_in_dropdown %w(bug feature)
           update_issues
         end
@@ -229,7 +225,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
           expect(find("#issue_#{issue2.id}")).to have_content 'feature'
 
-          check 'check-all-issues'
+          check 'Select all'
 
           open_milestone_dropdown(['First Release'])
           update_issues
@@ -250,7 +246,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
         it 'keeps existing label and new label is present' do
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
 
-          check 'check-all-issues'
+          check 'Select all'
           open_milestone_dropdown ['First Release']
           open_labels_dropdown ['feature']
           update_issues
@@ -277,7 +273,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
           expect(find("#issue_#{issue2.id}")).to have_content 'feature'
 
-          check 'check-all-issues'
+          check 'Select all'
 
           open_milestone_dropdown ['First Release']
           unmark_labels_in_dropdown ['feature']
@@ -309,7 +305,7 @@ RSpec.describe 'Issues > Labels bulk assignment' do
           expect(find("#issue_#{issue2.id}")).to have_content 'feature'
           expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
 
-          check 'check-all-issues'
+          check 'Select all'
           open_milestone_dropdown(['No milestone'])
           update_issues
 
@@ -369,31 +365,31 @@ RSpec.describe 'Issues > Labels bulk assignment' do
       end
 
       it 'applies label from filtered results' do
-        check 'check-all-issues'
+        check 'Select all'
 
-        page.within('.issues-bulk-update') do
+        within('aside[aria-label="Bulk update"]') do
           click_button 'Select labels'
           wait_for_requests
 
-          expect(find('.dropdown-menu-labels li', text: 'bug')).to have_css('.is-active')
-          expect(find('.dropdown-menu-labels li', text: 'feature')).to have_css('.is-indeterminate')
+          expect(page).to have_link 'bug', class: 'is-active'
+          expect(page).to have_link 'feature', class: 'is-indeterminate'
 
           click_link 'bug'
-          find('.dropdown-input-field', visible: true).set('wontfix')
+          fill_in 'Search', with: 'wontfix'
           click_link 'wontfix'
         end
 
         update_issues
 
-        page.within '.issues-holder' do
-          expect(find("#issue_#{issue1.id}")).not_to have_content 'bug'
-          expect(find("#issue_#{issue1.id}")).to have_content 'feature'
-          expect(find("#issue_#{issue1.id}")).to have_content 'wontfix'
+        first_issue = find("#issue_#{issue1.id}")
+        expect(first_issue).not_to have_content 'bug'
+        expect(first_issue).to have_content 'feature'
+        expect(first_issue).to have_content 'wontfix'
 
-          expect(find("#issue_#{issue2.id}")).not_to have_content 'bug'
-          expect(find("#issue_#{issue2.id}")).not_to have_content 'feature'
-          expect(find("#issue_#{issue2.id}")).to have_content 'wontfix'
-        end
+        second_issue = find("#issue_#{issue2.id}")
+        expect(second_issue).not_to have_content 'bug'
+        expect(second_issue).not_to have_content 'feature'
+        expect(second_issue).to have_content 'wontfix'
       end
     end
   end
@@ -408,24 +404,22 @@ RSpec.describe 'Issues > Labels bulk assignment' do
     context 'cannot bulk assign labels' do
       it do
         expect(page).not_to have_button 'Edit issues'
-        expect(page).not_to have_css '.check-all-issues'
-        expect(page).not_to have_css '.issue-check'
+        expect(page).not_to have_unchecked_field 'Select all'
+        expect(page).not_to have_unchecked_field issue1.title
       end
     end
   end
 
   def open_milestone_dropdown(items = [])
-    page.within('.issues-bulk-update') do
-      click_button 'Select milestone'
-      wait_for_requests
-      items.map do |item|
-        click_link item
-      end
+    click_button 'Select milestone'
+    wait_for_requests
+    items.map do |item|
+      click_link item
     end
   end
 
   def open_labels_dropdown(items = [], unmark = false)
-    page.within('.issues-bulk-update') do
+    within('aside[aria-label="Bulk update"]') do
       click_button 'Select labels'
       wait_for_requests
       items.map do |item|
@@ -446,12 +440,10 @@ RSpec.describe 'Issues > Labels bulk assignment' do
   end
 
   def check_issue(issue, uncheck = false)
-    page.within('.issues-list') do
-      if uncheck
-        uncheck "selected_issue_#{issue.id}"
-      else
-        check "selected_issue_#{issue.id}"
-      end
+    if uncheck
+      uncheck issue.title
+    else
+      check issue.title
     end
   end
 
@@ -460,12 +452,13 @@ RSpec.describe 'Issues > Labels bulk assignment' do
   end
 
   def update_issues
-    find('.update-selected-issues').click
+    click_button 'Update all'
     wait_for_requests
   end
 
   def enable_bulk_update
     visit project_issues_path(project)
+    wait_for_requests
     click_button 'Edit issues'
   end
 

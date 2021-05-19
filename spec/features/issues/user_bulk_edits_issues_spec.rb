@@ -17,10 +17,10 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
       visit project_issues_path(project)
 
       click_button 'Edit issues'
-      find('#check-all-issues').click
-      find('.js-issue-status').click
+      check 'Select all'
+      click_button 'Select status'
+      click_link 'Closed'
 
-      find('.dropdown-menu-status a', text: 'Closed').click
       click_update_issues_button
       expect(page).to have_selector('.issue', count: 0)
     end
@@ -30,10 +30,10 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
       visit project_issues_path(project, state: 'closed')
 
       click_button 'Edit issues'
-      find('#check-all-issues').click
-      find('.js-issue-status').click
+      check 'Select all'
+      click_button 'Select status'
+      click_link 'Open'
 
-      find('.dropdown-menu-status a', text: 'Open').click
       click_update_issues_button
       expect(page).to have_selector('.issue', count: 0)
     end
@@ -44,10 +44,10 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
       visit project_issues_path(project)
 
       click_button 'Edit issues'
-      find('#check-all-issues').click
+      check 'Select all'
       click_update_assignee_button
+      click_link user.username
 
-      find('.dropdown-menu-user-link', text: user.username).click
       click_update_issues_button
 
       page.within('.issue .controls') do
@@ -59,13 +59,15 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
       create_assigned
       visit project_issues_path(project)
 
-      click_button 'Edit issues'
-      find('#check-all-issues').click
-      click_update_assignee_button
+      expect(find('.issue:first-of-type')).to have_link "Assigned to #{user.name}"
 
+      click_button 'Edit issues'
+      check 'Select all'
+      click_update_assignee_button
       click_link 'Unassigned'
       click_update_issues_button
-      expect(find('.issue:first-child .controls')).not_to have_css('.author-link')
+
+      expect(find('.issue:first-of-type')).not_to have_link "Assigned to #{user.name}"
     end
   end
 
@@ -76,10 +78,9 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
       visit project_issues_path(project)
 
       click_button 'Edit issues'
-      find('#check-all-issues').click
-      find('.issues-bulk-update .js-milestone-select').click
-
-      find('.dropdown-menu-milestone a', text: milestone.title).click
+      check 'Select all'
+      click_button 'Select milestone'
+      click_link milestone.title
       click_update_issues_button
 
       expect(page.find('.issue')).to have_content milestone.title
@@ -91,16 +92,15 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
 
       wait_for_requests
 
-      expect(first('.issue')).to have_content milestone.title
+      expect(find('.issue:first-of-type')).to have_text milestone.title
 
       click_button 'Edit issues'
-      find('#check-all-issues').click
-      find('.issues-bulk-update .js-milestone-select').click
-
-      find('.dropdown-menu-milestone a', text: "No milestone").click
+      check 'Select all'
+      click_button 'Select milestone'
+      click_link 'No milestone'
       click_update_issues_button
 
-      expect(find('.issue:first-child')).not_to have_content milestone.title
+      expect(find('.issue:first-of-type')).not_to have_text milestone.title
     end
   end
 
@@ -117,12 +117,12 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
   end
 
   def click_update_assignee_button
-    find('.js-update-assignee').click
+    click_button 'Select assignee'
     wait_for_requests
   end
 
   def click_update_issues_button
-    find('.update-selected-issues').click
+    click_button 'Update all'
     wait_for_requests
   end
 end

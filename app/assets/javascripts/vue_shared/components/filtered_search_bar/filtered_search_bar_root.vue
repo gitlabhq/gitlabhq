@@ -324,7 +324,9 @@ export default {
       class="gl-align-self-center"
       :checked="checkboxChecked"
       @input="$emit('checked-input', $event)"
-    />
+    >
+      <span class="gl-sr-only">{{ __('Select all') }}</span>
+    </gl-form-checkbox>
     <gl-filtered-search
       ref="filteredSearchInput"
       v-model="filterValue"

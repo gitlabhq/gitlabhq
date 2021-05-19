@@ -152,6 +152,13 @@ are the default pipeline stages.
 
 If a job does not specify a [`stage`](#stage), the job is assigned the `test` stage.
 
+If a stage is defined, but no jobs use it, the stage is not visible in the pipeline. This is
+useful for [compliance pipeline configuration](../../user/project/settings/index.md#compliance-pipeline-configuration)
+because:
+
+- Stages can be defined in the compliance configuration but remain hidden if not used.
+- The defined stages become visible when developers use them in job definitions.
+
 To make a job start earlier and ignore the stage order, use
 the [`needs`](#needs) keyword.
 

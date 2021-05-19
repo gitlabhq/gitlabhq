@@ -169,7 +169,9 @@ export default {
           :checked="checked"
           :data-id="issuable.id"
           @input="$emit('checked-input', $event)"
-        />
+        >
+          <span class="gl-sr-only">{{ issuable.title }}</span>
+        </gl-form-checkbox>
       </div>
       <div class="issuable-main-info">
         <div data-testid="issuable-title" class="issue-title title">

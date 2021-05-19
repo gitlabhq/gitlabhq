@@ -40,7 +40,7 @@ module Gitlab
         end
 
         def optimize!
-          return unless Feature.enabled?(:optimize_batched_migrations, type: :ops)
+          return unless Feature.enabled?(:optimize_batched_migrations, type: :ops, default_enabled: :yaml)
 
           if multiplier = batch_size_multiplier
             migration.batch_size = (migration.batch_size * multiplier).to_i.clamp(ALLOWED_BATCH_SIZE)
