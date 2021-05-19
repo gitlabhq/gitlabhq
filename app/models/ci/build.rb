@@ -753,22 +753,14 @@ module Ci
     end
 
     def any_runners_online?
-      if Feature.enabled?(:runners_cached_states, project, default_enabled: :yaml)
-        cache_for_online_runners do
-          project.any_online_runners? { |runner| runner.match_build_if_online?(self) }
-        end
-      else
-        project.any_active_runners? { |runner| runner.match_build_if_online?(self) }
+      cache_for_online_runners do
+        project.any_online_runners? { |runner| runner.match_build_if_online?(self) }
       end
     end
 
     def any_runners_available?
-      if Feature.enabled?(:runners_cached_states, project, default_enabled: :yaml)
-        cache_for_available_runners do
-          project.active_runners.exists?
-        end
-      else
-        project.any_active_runners?
+      cache_for_available_runners do
+        project.active_runners.exists?
       end
     end
 

@@ -20,7 +20,7 @@ export default {
       id="issuable-title"
       ref="input"
       v-model="formState.title"
-      class="form-control qa-title-input"
+      class="form-control qa-title-input gl-border-gray-200"
       dir="auto"
       type="text"
       :placeholder="__('Title')"

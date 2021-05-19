@@ -1,6 +1,7 @@
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import '~/behaviors/markdown/render_gfm';
 import IssuableApp from '~/issue_show/components/app.vue';
@@ -17,7 +18,7 @@ import {
   publishedIncidentUrl,
   secondRequest,
   zoomMeetingUrl,
-} from '../mock_data';
+} from '../mock_data/mock_data';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
@@ -36,12 +37,11 @@ describe('Issuable output', () => {
   let wrapper;
 
   const findStickyHeader = () => wrapper.find('[data-testid="issue-sticky-header"]');
-
   const findLockedBadge = () => wrapper.find('[data-testid="locked"]');
-
   const findConfidentialBadge = () => wrapper.find('[data-testid="confidential"]');
+  const findAlert = () => wrapper.find('.alert');
 
-  const mountComponent = (props = {}, options = {}) => {
+  const mountComponent = (props = {}, options = {}, data = {}) => {
     wrapper = mount(IssuableApp, {
       propsData: { ...appProps, ...props },
       provide: {
@@ -52,6 +52,11 @@ describe('Issuable output', () => {
       stubs: {
         HighlightBar: true,
         IncidentTabs: true,
+      },
+      data() {
+        return {
+          ...data,
+        };
       },
       ...options,
     });
@@ -91,10 +96,8 @@ describe('Issuable output', () => {
   afterEach(() => {
     mock.restore();
     realtimeRequestCount = 0;
-
     wrapper.vm.poll.stop();
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('should render a title/description/edited and update title/description/edited on update', () => {
@@ -115,7 +118,7 @@ describe('Issuable output', () => {
         expect(formatText(editedText.text())).toMatch(/Edited[\s\S]+?by Some User/);
         expect(editedText.find('.author-link').attributes('href')).toMatch(/\/some_user$/);
         expect(editedText.find('time').text()).toBeTruthy();
-        expect(wrapper.vm.state.lock_version).toEqual(1);
+        expect(wrapper.vm.state.lock_version).toBe(initialRequest.lock_version);
       })
       .then(() => {
         wrapper.vm.poll.makeRequest();
@@ -133,7 +136,9 @@ describe('Issuable output', () => {
 
         expect(editedText.find('.author-link').attributes('href')).toMatch(/\/other_user$/);
         expect(editedText.find('time').text()).toBeTruthy();
-        expect(wrapper.vm.state.lock_version).toEqual(2);
+        // As the lock_version value does not differ from the server,
+        // we should not see an alert
+        expect(findAlert().exists()).toBe(false);
       });
   });
 
@@ -172,7 +177,7 @@ describe('Issuable output', () => {
       ${'zoomMeetingUrl'}       | ${zoomMeetingUrl}
       ${'publishedIncidentUrl'} | ${publishedIncidentUrl}
     `('sets the $prop correctly on underlying pinned links', ({ prop, value }) => {
-      expect(wrapper.vm[prop]).toEqual(value);
+      expect(wrapper.vm[prop]).toBe(value);
       expect(wrapper.find(`[data-testid="${prop}"]`).attributes('href')).toBe(value);
     });
   });
@@ -374,9 +379,9 @@ describe('Issuable output', () => {
           });
         })
         .then(() => {
-          expect(wrapper.vm.formState.lockedWarningVisible).toEqual(true);
-          expect(wrapper.vm.formState.lock_version).toEqual(1);
-          expect(wrapper.find('.alert').exists()).toBe(true);
+          expect(wrapper.vm.formState.lockedWarningVisible).toBe(true);
+          expect(wrapper.vm.formState.lock_version).toBe(1);
+          expect(findAlert().exists()).toBe(true);
         });
     });
   });
@@ -530,7 +535,7 @@ describe('Issuable output', () => {
       `('$title', async ({ state }) => {
         wrapper.setProps({ issuableStatus: state });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findStickyHeader().text()).toContain(IssuableStatusText[state]);
       });
@@ -542,7 +547,7 @@ describe('Issuable output', () => {
       `('$title', async ({ isConfidential }) => {
         wrapper.setProps({ isConfidential });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findConfidentialBadge().exists()).toBe(isConfidential);
       });
@@ -554,7 +559,7 @@ describe('Issuable output', () => {
       `('$title', async ({ isLocked }) => {
         wrapper.setProps({ isLocked });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(findLockedBadge().exists()).toBe(isLocked);
       });
@@ -562,9 +567,9 @@ describe('Issuable output', () => {
   });
 
   describe('Composable description component', () => {
-    const findIncidentTabs = () => wrapper.find(IncidentTabs);
-    const findDescriptionComponent = () => wrapper.find(DescriptionComponent);
-    const findPinnedLinks = () => wrapper.find(PinnedLinks);
+    const findIncidentTabs = () => wrapper.findComponent(IncidentTabs);
+    const findDescriptionComponent = () => wrapper.findComponent(DescriptionComponent);
+    const findPinnedLinks = () => wrapper.findComponent(PinnedLinks);
     const borderClass = 'gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-mb-6';
 
     describe('when using description component', () => {

@@ -49,4 +49,42 @@ RSpec.describe 'Incident details', :js do
       end
     end
   end
+
+  context 'when an incident `issue_type` is edited by a signed in user' do
+    it 'routes the user to the incident details page when the `issue_type` is set to incident' do
+      wait_for_requests
+      project_path = "/#{project.full_path}"
+      click_button 'Edit title and description'
+      wait_for_requests
+
+      page.within('[data-testid="issuable-form"]') do
+        click_button 'Incident'
+        click_button 'Issue'
+        click_button 'Save changes'
+
+        wait_for_requests
+
+        expect(page).to have_current_path("#{project_path}/-/issues/#{incident.iid}")
+      end
+    end
+  end
+
+  context 'when incident details are edited by a signed in user' do
+    it 'routes the user to the incident details page when the `issue_type` is set to incident' do
+      wait_for_requests
+      project_path = "/#{project.full_path}"
+      click_button 'Edit title and description'
+      wait_for_requests
+
+      page.within('[data-testid="issuable-form"]') do
+        click_button 'Incident'
+        click_button 'Issue'
+        click_button 'Save changes'
+
+        wait_for_requests
+
+        expect(page).to have_current_path("#{project_path}/-/issues/#{incident.iid}")
+      end
+    end
+  end
 end

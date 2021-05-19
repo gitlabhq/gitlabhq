@@ -1,14 +1,33 @@
 import Vue from 'vue';
-import VueApollo from 'vue-apollo';
 import { mapGetters } from 'vuex';
-import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import IssuableApp from './components/app.vue';
 import HeaderActions from './components/header_actions.vue';
+import { issueState } from './constants';
+import apolloProvider from './graphql';
+import getIssueStateQuery from './queries/get_issue_state.query.graphql';
+
+const bootstrapApollo = (state = {}) => {
+  return apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: getIssueStateQuery,
+    data: {
+      issueState: state,
+    },
+  });
+};
 
 export function initIssuableApp(issuableData, store) {
+  const el = document.getElementById('js-issuable-app');
+
+  if (!el) {
+    return undefined;
+  }
+
+  bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
+
   return new Vue({
-    el: document.getElementById('js-issuable-app'),
+    el,
+    apolloProvider,
     store,
     computed: {
       ...mapGetters(['getNoteableData']),
@@ -33,11 +52,7 @@ export function initIssueHeaderActions(store) {
     return undefined;
   }
 
-  Vue.use(VueApollo);
-
-  const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
-  });
+  bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
 
   return new Vue({
     el,

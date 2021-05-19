@@ -176,6 +176,58 @@ RSpec.describe ApplicationWorker do
     end
   end
 
+  describe '.perform_async' do
+    shared_examples_for 'worker utilizes load balancing capabilities' do |data_consistency|
+      before do
+        worker.data_consistency(data_consistency)
+      end
+
+      context 'when data_consistency_delayed_execution feature flag is disabled' do
+        before do
+          stub_feature_flags(data_consistency_delayed_execution: false)
+        end
+
+        it 'data_consistency_delayed_execution_feature_flag_enabled? should return false' do
+          expect(worker).to receive(:data_consistency_delayed_execution_feature_flag_enabled?).and_return(false)
+
+          worker.perform_async
+        end
+
+        it 'does not call perform_in' do
+          expect(worker).not_to receive(:perform_in)
+
+          worker.perform_async
+        end
+      end
+
+      it 'call perform_in' do
+        expect(worker).to receive(:perform_in).with(described_class::DEFAULT_DELAY_INTERVAL.seconds, 123)
+
+        worker.perform_async(123)
+      end
+    end
+
+    context 'when workers data consistency is :sticky' do
+      it_behaves_like 'worker utilizes load balancing capabilities', :sticky
+    end
+
+    context 'when workers data consistency is :delayed' do
+      it_behaves_like 'worker utilizes load balancing capabilities', :delayed
+    end
+
+    context 'when workers data consistency is :always' do
+      before do
+        worker.data_consistency(:always)
+      end
+
+      it 'does not call perform_in' do
+        expect(worker).not_to receive(:perform_in)
+
+        worker.perform_async
+      end
+    end
+  end
+
   describe '.bulk_perform_async' do
     it 'enqueues jobs in bulk' do
       Sidekiq::Testing.fake! do

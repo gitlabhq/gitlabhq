@@ -335,10 +335,6 @@ RSpec.describe InvitesController, 'routing' do
   it 'to #show' do
     expect(get("/-/invites/#{member.invite_token}")).to route_to('invites#show', id: member.invite_token)
   end
-
-  it 'to legacy route' do
-    expect(get("/invites/#{member.invite_token}")).to route_to('invites#show', id: member.invite_token)
-  end
 end
 
 RSpec.describe AbuseReportsController, 'routing' do
@@ -346,10 +342,6 @@ RSpec.describe AbuseReportsController, 'routing' do
 
   it 'to #new' do
     expect(get("/-/abuse_reports/new?user_id=#{user.id}")).to route_to('abuse_reports#new', user_id: user.id.to_s)
-  end
-
-  it 'to legacy route' do
-    expect(get("/abuse_reports/new?user_id=#{user.id}")).to route_to('abuse_reports#new', user_id: user.id.to_s)
   end
 end
 
@@ -375,12 +367,6 @@ RSpec.describe AutocompleteController, 'routing' do
 
   it 'to #merge_request_target_branches' do
     expect(get("/-/autocomplete/merge_request_target_branches")).to route_to('autocomplete#merge_request_target_branches')
-  end
-
-  it 'to legacy route' do
-    expect(get("/autocomplete/users")).to route_to('autocomplete#users')
-    expect(get("/autocomplete/projects")).to route_to('autocomplete#projects')
-    expect(get("/autocomplete/award_emojis")).to route_to('autocomplete#award_emojis')
   end
 end
 

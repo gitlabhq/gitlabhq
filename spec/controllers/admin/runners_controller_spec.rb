@@ -12,6 +12,10 @@ RSpec.describe Admin::RunnersController do
   describe '#index' do
     render_views
 
+    before do
+      stub_feature_flags(runner_list_view_vue_ui: false)
+    end
+
     it 'lists all runners' do
       get :index
 

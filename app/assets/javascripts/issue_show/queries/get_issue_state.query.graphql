@@ -1,0 +1,3 @@
+query issueState {
+  issueState @client
+}

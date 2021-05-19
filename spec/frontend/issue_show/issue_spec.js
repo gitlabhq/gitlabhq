@@ -5,7 +5,7 @@ import { initIssuableApp } from '~/issue_show/issue';
 import * as parseData from '~/issue_show/utils/parse_data';
 import axios from '~/lib/utils/axios_utils';
 import createStore from '~/notes/stores';
-import { appProps } from './mock_data';
+import { appProps } from './mock_data/mock_data';
 
 const mock = new MockAdapter(axios);
 mock.onGet().reply(200);

@@ -34,7 +34,6 @@ module Issues
 
     # Add new items to Issues::AfterCreateService if they can be performed in Sidekiq
     def after_create(issue)
-      add_incident_label(issue)
       user_agent_detail_service.create
       resolve_discussions_with_issue(issue)
 
@@ -55,22 +54,6 @@ module Issues
 
     def user_agent_detail_service
       UserAgentDetailService.new(@issue, request)
-    end
-
-    # Applies label "incident" (creates it if missing) to incident issues.
-    # For use in "after" hooks only to ensure we are not appyling
-    # labels prematurely.
-    def add_incident_label(issue)
-      return unless issue.incident?
-
-      label = ::IncidentManagement::CreateIncidentLabelService
-        .new(project, current_user)
-        .execute
-        .payload[:label]
-
-      return if issue.label_ids.include?(label.id)
-
-      issue.labels << label
     end
   end
 end

@@ -48,30 +48,51 @@ RSpec.describe Nav::TopNavHelper do
 
     context 'when current_user is nil (anonymous)' do
       it 'has expected :primary' do
-        expected_projects_item = ::Gitlab::Nav::TopNavMenuItem.build(
-          href: '/explore',
-          icon: 'project',
-          id: 'project',
-          title: 'Projects'
-        )
-        expected_groups_item = ::Gitlab::Nav::TopNavMenuItem.build(
-          href: '/explore/groups',
-          icon: 'group',
-          id: 'groups',
-          title: 'Groups'
-        )
-        expected_snippets_item = ::Gitlab::Nav::TopNavMenuItem.build(
-          href: '/explore/snippets',
-          icon: 'snippet',
-          id: 'snippets',
-          title: 'Snippets'
-        )
-        expect(subject[:primary])
-          .to eq([
-                   expected_projects_item,
-                   expected_groups_item,
-                   expected_snippets_item
-                 ])
+        expected_primary = [
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            href: '/explore',
+            icon: 'project',
+            id: 'project',
+            title: 'Projects'
+          ),
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            href: '/explore/groups',
+            icon: 'group',
+            id: 'groups',
+            title: 'Groups'
+          ),
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            href: '/explore/snippets',
+            icon: 'snippet',
+            id: 'snippets',
+            title: 'Snippets'
+          )
+        ]
+        expect(subject[:primary]).to eq(expected_primary)
+      end
+
+      it 'has expected :shortcuts' do
+        expected_shortcuts = [
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            href: '/explore',
+            id: 'project-shortcut',
+            title: 'Projects',
+            css_class: 'dashboard-shortcuts-projects'
+          ),
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            href: '/explore/groups',
+            id: 'groups-shortcut',
+            title: 'Groups',
+            css_class: 'dashboard-shortcuts-groups'
+          ),
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            href: '/explore/snippets',
+            id: 'snippets-shortcut',
+            title: 'Snippets',
+            css_class: 'dashboard-shortcuts-snippets'
+          )
+        ]
+        expect(subject[:shortcuts]).to eq(expected_shortcuts)
       end
     end
 
@@ -82,6 +103,7 @@ RSpec.describe Nav::TopNavHelper do
         expect(subject).to eq({ activeTitle: active_title,
                                 primary: [],
                                 secondary: [],
+                                shortcuts: [],
                                 views: {} })
       end
 
@@ -103,6 +125,16 @@ RSpec.describe Nav::TopNavHelper do
             view: 'projects'
           )
           expect(subject[:primary]).to eq([expected_primary])
+        end
+
+        it 'has expected :shortcuts' do
+          expected_shortcuts = ::Gitlab::Nav::TopNavMenuItem.build(
+            id: 'project-shortcut',
+            title: 'Projects',
+            href: '/dashboard/projects',
+            css_class: 'dashboard-shortcuts-projects'
+          )
+          expect(subject[:shortcuts]).to eq([expected_shortcuts])
         end
 
         context 'projects' do
@@ -191,6 +223,16 @@ RSpec.describe Nav::TopNavHelper do
           expect(subject[:primary]).to eq([expected_primary])
         end
 
+        it 'has expected :shortcuts' do
+          expected_shortcuts = ::Gitlab::Nav::TopNavMenuItem.build(
+            id: 'groups-shortcut',
+            title: 'Groups',
+            href: '/dashboard/groups',
+            css_class: 'dashboard-shortcuts-groups'
+          )
+          expect(subject[:shortcuts]).to eq([expected_shortcuts])
+        end
+
         context 'groups' do
           it 'has expected :currentUserName' do
             expect(groups_view[:currentUserName]).to eq(current_user.username)
@@ -268,6 +310,16 @@ RSpec.describe Nav::TopNavHelper do
           )
           expect(subject[:primary]).to eq([expected_primary])
         end
+
+        it 'has expected :shortcuts' do
+          expected_shortcuts = ::Gitlab::Nav::TopNavMenuItem.build(
+            id: 'milestones-shortcut',
+            title: 'Milestones',
+            href: '/dashboard/milestones',
+            css_class: 'dashboard-shortcuts-milestones'
+          )
+          expect(subject[:shortcuts]).to eq([expected_shortcuts])
+        end
       end
 
       context 'with snippets' do
@@ -285,6 +337,16 @@ RSpec.describe Nav::TopNavHelper do
           )
           expect(subject[:primary]).to eq([expected_primary])
         end
+
+        it 'has expected :shortcuts' do
+          expected_shortcuts = ::Gitlab::Nav::TopNavMenuItem.build(
+            id: 'snippets-shortcut',
+            title: 'Snippets',
+            href: '/dashboard/snippets',
+            css_class: 'dashboard-shortcuts-snippets'
+          )
+          expect(subject[:shortcuts]).to eq([expected_shortcuts])
+        end
       end
 
       context 'with activity' do
@@ -301,6 +363,16 @@ RSpec.describe Nav::TopNavHelper do
             title: 'Activity'
           )
           expect(subject[:primary]).to eq([expected_primary])
+        end
+
+        it 'has expected :shortcuts' do
+          expected_shortcuts = ::Gitlab::Nav::TopNavMenuItem.build(
+            id: 'activity-shortcut',
+            title: 'Activity',
+            href: '/dashboard/activity',
+            css_class: 'dashboard-shortcuts-activity'
+          )
+          expect(subject[:shortcuts]).to eq([expected_shortcuts])
         end
       end
 

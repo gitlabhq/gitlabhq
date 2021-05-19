@@ -48,6 +48,7 @@ export const appProps = {
   initialDescriptionHtml: 'test',
   initialDescriptionText: 'test',
   lockVersion: 1,
+  issueType: 'issue',
   markdownPreviewPath: '/',
   markdownDocsPath: '/',
   projectNamespace: '/',

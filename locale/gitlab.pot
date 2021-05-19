@@ -18230,6 +18230,9 @@ msgstr ""
 msgid "Issue Boards"
 msgstr ""
 
+msgid "Issue Type"
+msgstr ""
+
 msgid "Issue already promoted to epic."
 msgstr ""
 
@@ -32143,9 +32146,6 @@ msgid "That's it, well done!"
 msgstr ""
 
 msgid "The \"%{group_path}\" group allows you to sign in with your Single Sign-On Account"
-msgstr ""
-
-msgid "The \"Require approval from CODEOWNERS\" setting was moved to %{banner_link_start}Protected Branches%{banner_link_end}"
 msgstr ""
 
 msgid "The %{featureName} feature is part of your GitLab Ultimate trial."

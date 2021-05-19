@@ -13,6 +13,7 @@ module ApplicationWorker
   include Gitlab::SidekiqVersioning::Worker
 
   LOGGING_EXTRA_KEY = 'extra'
+  DEFAULT_DELAY_INTERVAL = 1
 
   included do
     set_queue
@@ -49,6 +50,16 @@ module ApplicationWorker
     def inherited(subclass)
       subclass.set_queue
       subclass.after_set_class_attribute { subclass.set_queue }
+    end
+
+    def perform_async(*args)
+      # Worker execution for workers with data_consistency set to :delayed or :sticky
+      # will be delayed to give replication enough time to complete
+      if utilizes_load_balancing_capabilities? && data_consistency_delayed_execution_feature_flag_enabled?
+        perform_in(delay_interval, *args)
+      else
+        super
+      end
     end
 
     def set_queue
@@ -110,6 +121,16 @@ module ApplicationWorker
       else
         Sidekiq::Client.push_bulk('class' => self, 'args' => args_list, 'at' => schedule)
       end
+    end
+
+    protected
+
+    def data_consistency_delayed_execution_feature_flag_enabled?
+      Feature.enabled?(:data_consistency_delayed_execution, default_enabled: :yaml)
+    end
+
+    def delay_interval
+      DEFAULT_DELAY_INTERVAL.seconds
     end
   end
 end

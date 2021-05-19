@@ -17,6 +17,10 @@ RSpec.describe "Admin Runners" do
   describe "Runners page" do
     let(:pipeline) { create(:ci_pipeline) }
 
+    before do
+      stub_feature_flags(runner_list_view_vue_ui: false)
+    end
+
     context "when there are runners" do
       it 'has all necessary texts' do
         runner = create(:ci_runner, contacted_at: Time.now)
@@ -240,7 +244,7 @@ RSpec.describe "Admin Runners" do
       it 'shows the label and does not show the project count' do
         visit admin_runners_path
 
-        within "#runner_#{runner.id}" do
+        within "[data-testid='runner-row-#{runner.id}']" do
           expect(page).to have_selector '.badge', text: 'group'
           expect(page).to have_text 'n/a'
         end
@@ -253,7 +257,7 @@ RSpec.describe "Admin Runners" do
 
         visit admin_runners_path
 
-        within "#runner_#{runner.id}" do
+        within "[data-testid='runner-row-#{runner.id}']" do
           expect(page).to have_selector '.badge', text: 'shared'
           expect(page).to have_text 'n/a'
         end
@@ -267,9 +271,33 @@ RSpec.describe "Admin Runners" do
 
         visit admin_runners_path
 
-        within "#runner_#{runner.id}" do
+        within "[data-testid='runner-row-#{runner.id}']" do
           expect(page).to have_selector '.badge', text: 'specific'
           expect(page).to have_text '1'
+        end
+      end
+    end
+
+    describe 'runners registration token' do
+      let!(:token) { Gitlab::CurrentSettings.runners_registration_token }
+
+      before do
+        visit admin_runners_path
+      end
+
+      it 'has a registration token' do
+        expect(page.find('[data-testid="registration_token"]')).to have_content(token)
+      end
+
+      describe 'reset registration token' do
+        let(:page_token) { find('[data-testid="registration_token"]').text }
+
+        before do
+          click_button 'Reset registration token'
+        end
+
+        it 'changes registration token' do
+          expect(page_token).not_to eq token
         end
       end
     end
@@ -378,30 +406,6 @@ RSpec.describe "Admin Runners" do
         new_runner_project = page.find('[data-testid="unassigned-projects"]')
 
         expect(new_runner_project).to have_content(@project1.path)
-      end
-    end
-  end
-
-  describe 'runners registration token' do
-    let!(:token) { Gitlab::CurrentSettings.runners_registration_token }
-
-    before do
-      visit admin_runners_path
-    end
-
-    it 'has a registration token' do
-      expect(page.find('#registration_token')).to have_content(token)
-    end
-
-    describe 'reload registration token' do
-      let(:page_token) { find('#registration_token').text }
-
-      before do
-        click_button 'Reset registration token'
-      end
-
-      it 'changes registration token' do
-        expect(page_token).not_to eq token
       end
     end
   end

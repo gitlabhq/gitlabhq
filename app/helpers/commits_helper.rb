@@ -160,8 +160,8 @@ module CommitsHelper
       commit.author,
       ref,
       {
-        merge_request: merge_request,
-        pipeline_status: commit.status_for(ref),
+        merge_request: merge_request&.cache_key,
+        pipeline_status: commit.status_for(ref)&.cache_key,
         xhr: request.xhr?,
         controller: controller.controller_path,
         path: @path # referred to in #link_to_browse_code

@@ -1751,11 +1751,6 @@ class Project < ApplicationRecord
     end
   end
 
-  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/326989
-  def any_active_runners?(&block)
-    active_runners_with_tags.any?(&block)
-  end
-
   def any_online_runners?(&block)
     online_runners_with_tags.any?(&block)
   end

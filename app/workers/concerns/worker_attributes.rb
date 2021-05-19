@@ -71,6 +71,20 @@ module WorkerAttributes
       class_attributes[:urgency] || :low
     end
 
+    # Allows configuring worker's data_consistency.
+    #
+    #  Worker can utilize Sidekiq readonly database replicas capabilities by setting data_consistency attribute.
+    #  Workers with data_consistency set to :delayed or :sticky, calling #perform_async
+    #  will be delayed in order to give replication process enough time to complete.
+    #
+    #  - *data_consistency* values:
+    #    - 'always' - The job is required to use the primary database (default).
+    #    - 'sticky' - The uses a replica as long as possible. It switches to primary either on write or long replication lag.
+    #    - 'delayed' - The job would switch to primary only on write. It would use replica always.
+    #      If there's a long replication lag the job will be delayed, and only if the replica is not up to date on the next retry,
+    #      it will switch to the primary.
+    #  - *feature_flag* - allows you to toggle a job's `data_consistency, which permits you to safely toggle load balancing capabilities for a specific job.
+    #    If disabled, job will default to `:always`, which means that the job will always use the primary.
     def data_consistency(data_consistency, feature_flag: nil)
       raise ArgumentError, "Invalid data consistency: #{data_consistency}" unless VALID_DATA_CONSISTENCIES.include?(data_consistency)
       raise ArgumentError, 'Data consistency is already set' if class_attributes[:data_consistency]
@@ -85,9 +99,14 @@ module WorkerAttributes
       # Since the deduplication should always take into account the latest binary replication pointer into account,
       # not the first one, the deduplication will not work with sticky or delayed.
       # Follow up issue to improve this: https://gitlab.com/gitlab-org/gitlab/-/issues/325291
-      if idempotent? && get_data_consistency != :always
+      if idempotent? && utilizes_load_balancing_capabilities?
         raise ArgumentError, "Class can't be marked as idempotent if data_consistency is not set to :always"
       end
+    end
+
+    # If data_consistency is not set to :always, worker will try to utilize load balancing capabilities and use the replica
+    def utilizes_load_balancing_capabilities?
+      get_data_consistency != :always
     end
 
     def get_data_consistency

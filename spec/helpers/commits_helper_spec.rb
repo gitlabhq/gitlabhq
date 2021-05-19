@@ -298,7 +298,7 @@ RSpec.describe CommitsHelper do
     let(:pipeline) { create(:ci_pipeline, :running) }
     let(:user) { create(:user) }
     let(:ref) { "master" }
-    let(:merge_request) { nil }
+    let(:merge_request) { create(:merge_request) }
     let(:request) { double(xhr?: true) }
     let(:current_path) { "test" }
 
@@ -315,8 +315,8 @@ RSpec.describe CommitsHelper do
     it do
       is_expected.to include(
         {
-          merge_request: merge_request,
-          pipeline_status: commit_status,
+          merge_request: merge_request.cache_key,
+          pipeline_status: pipeline.cache_key,
           xhr: true,
           controller: "commits",
           path: current_path

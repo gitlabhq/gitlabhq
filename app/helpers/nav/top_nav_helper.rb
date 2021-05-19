@@ -22,32 +22,26 @@ module Nav
     def build_anonymous_view_model(builder:)
       # These come from `app/views/layouts/nav/_explore.html.ham`
       if explore_nav_link?(:projects)
-        builder.add_primary_menu_item(
-          **projects_menu_item_attrs.merge(
-            {
-              active: active_nav_link?(path: %w[dashboard#show root#show projects#trending projects#starred projects#index]),
-              href: explore_root_path
-            })
+        builder.add_primary_menu_item_with_shortcut(
+          href: explore_root_path,
+          active: active_nav_link?(path: %w[dashboard#show root#show projects#trending projects#starred projects#index]),
+          **projects_menu_item_attrs
         )
       end
 
       if explore_nav_link?(:groups)
-        builder.add_primary_menu_item(
-          **groups_menu_item_attrs.merge(
-            {
-              active: active_nav_link?(controller: [:groups, 'groups/milestones', 'groups/group_members']),
-              href: explore_groups_path
-            })
+        builder.add_primary_menu_item_with_shortcut(
+          href: explore_groups_path,
+          active: active_nav_link?(controller: [:groups, 'groups/milestones', 'groups/group_members']),
+          **groups_menu_item_attrs
         )
       end
 
       if explore_nav_link?(:snippets)
-        builder.add_primary_menu_item(
-          **snippets_menu_item_attrs.merge(
-            {
-              active: active_nav_link?(controller: :snippets),
-              href: explore_snippets_path
-            })
+        builder.add_primary_menu_item_with_shortcut(
+          active: active_nav_link?(controller: :snippets),
+          href: explore_snippets_path,
+          **snippets_menu_item_attrs
         )
       end
     end
@@ -57,13 +51,13 @@ module Nav
       if dashboard_nav_link?(:projects)
         current_item = project ? current_project(project: project) : {}
 
-        builder.add_primary_menu_item(
-          **projects_menu_item_attrs.merge({
-            active: active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
-            css_class: 'qa-projects-dropdown',
-            data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" },
-            view: PROJECTS_VIEW
-          })
+        builder.add_primary_menu_item_with_shortcut(
+          active: active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
+          css_class: 'qa-projects-dropdown',
+          data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" },
+          view: PROJECTS_VIEW,
+          shortcut_href: dashboard_projects_path,
+          **projects_menu_item_attrs
         )
         builder.add_view(PROJECTS_VIEW, container_view_props(namespace: 'projects', current_item: current_item, submenu: projects_submenu))
       end
@@ -71,46 +65,47 @@ module Nav
       if dashboard_nav_link?(:groups)
         current_item = group ? current_group(group: group) : {}
 
-        builder.add_primary_menu_item(
-          **groups_menu_item_attrs.merge({
-            active: active_nav_link?(path: %w[dashboard/groups explore/groups]),
-            css_class: 'qa-groups-dropdown',
-            data: { track_label: "groups_dropdown", track_event: "click_dropdown" },
-            view: GROUPS_VIEW
-          })
+        builder.add_primary_menu_item_with_shortcut(
+          active: active_nav_link?(path: %w[dashboard/groups explore/groups]),
+          css_class: 'qa-groups-dropdown',
+          data: { track_label: "groups_dropdown", track_event: "click_dropdown" },
+          view: GROUPS_VIEW,
+          shortcut_href: dashboard_groups_path,
+          **groups_menu_item_attrs
         )
         builder.add_view(GROUPS_VIEW, container_view_props(namespace: 'groups', current_item: current_item, submenu: groups_submenu))
       end
 
       if dashboard_nav_link?(:milestones)
-        builder.add_primary_menu_item(
+        builder.add_primary_menu_item_with_shortcut(
           id: 'milestones',
           title: 'Milestones',
+          href: dashboard_milestones_path,
           active: active_nav_link?(controller: 'dashboard/milestones'),
           icon: 'clock',
           data: { qa_selector: 'milestones_link' },
-          href: dashboard_milestones_path
+          shortcut_class: 'dashboard-shortcuts-milestones'
         )
       end
 
       if dashboard_nav_link?(:snippets)
-        builder.add_primary_menu_item(
-          **snippets_menu_item_attrs.merge({
-            active: active_nav_link?(controller: 'dashboard/snippets'),
-            data: { qa_selector: 'snippets_link' },
-            href: dashboard_snippets_path
-          })
+        builder.add_primary_menu_item_with_shortcut(
+          active: active_nav_link?(controller: 'dashboard/snippets'),
+          data: { qa_selector: 'snippets_link' },
+          href: dashboard_snippets_path,
+          **snippets_menu_item_attrs
         )
       end
 
       if dashboard_nav_link?(:activity)
-        builder.add_primary_menu_item(
+        builder.add_primary_menu_item_with_shortcut(
           id: 'activity',
           title: 'Activity',
+          href: activity_dashboard_path,
           active: active_nav_link?(path: 'dashboard#activity'),
           icon: 'history',
           data: { qa_selector: 'activity_link' },
-          href: activity_dashboard_path
+          shortcut_class: 'dashboard-shortcuts-activity'
         )
       end
 
@@ -165,7 +160,8 @@ module Nav
       {
         id: 'project',
         title: _('Projects'),
-        icon: 'project'
+        icon: 'project',
+        shortcut_class: 'dashboard-shortcuts-projects'
       }
     end
 
@@ -173,7 +169,8 @@ module Nav
       {
         id: 'groups',
         title: 'Groups',
-        icon: 'group'
+        icon: 'group',
+        shortcut_class: 'dashboard-shortcuts-groups'
       }
     end
 
@@ -181,7 +178,8 @@ module Nav
       {
         id: 'snippets',
         title: _('Snippets'),
-        icon: 'snippet'
+        icon: 'snippet',
+        shortcut_class: 'dashboard-shortcuts-snippets'
       }
     end
 

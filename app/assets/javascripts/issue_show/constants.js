@@ -25,3 +25,14 @@ export const IssueStateEvent = {
 
 export const STATUS_PAGE_PUBLISHED = __('Published on status page');
 export const JOIN_ZOOM_MEETING = __('Join Zoom meeting');
+
+export const IssuableTypes = [
+  { value: 'issue', text: __('Issue') },
+  { value: 'incident', text: __('Incident') },
+];
+
+export const IssueTypePath = 'issues';
+export const IncidentTypePath = 'issues/incident';
+export const IncidentType = 'incident';
+
+export const issueState = { issueType: undefined, isDirty: false };

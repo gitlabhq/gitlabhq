@@ -54,13 +54,11 @@ Currently the following names are reserved as top level groups:
 - `500.html`
 - `502.html`
 - `503.html`
-- `abuse_reports`
 - `admin`
 - `api`
 - `apple-touch-icon-precomposed.png`
 - `apple-touch-icon.png`
 - `assets`
-- `autocomplete`
 - `dashboard`
 - `deploy.html`
 - `explore`
@@ -71,7 +69,6 @@ Currently the following names are reserved as top level groups:
 - `health_check`
 - `help`
 - `import`
-- `invites`
 - `jwt`
 - `login`
 - `oauth`
@@ -81,7 +78,6 @@ Currently the following names are reserved as top level groups:
 - `robots.txt`
 - `s`
 - `search`
-- `sent_notifications`
 - `sitemap`
 - `sitemap.xml`
 - `sitemap.xml.gz`

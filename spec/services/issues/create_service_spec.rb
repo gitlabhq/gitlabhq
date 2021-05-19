@@ -78,8 +78,8 @@ RSpec.describe Issues::CreateService do
             opts.merge!(title: '')
           end
 
-          it 'does not create an incident label prematurely' do
-            expect { subject }.not_to change(Label, :count)
+          it 'does not apply an incident label prematurely' do
+            expect { subject }.to not_change(LabelLink, :count).and not_change(Issue, :count)
           end
         end
       end
