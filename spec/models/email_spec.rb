@@ -24,7 +24,7 @@ RSpec.describe Email do
     let(:user) { create(:user) }
 
     it 'synchronizes the gpg keys when the email is updated' do
-      email = user.emails.create(email: 'new@email.com')
+      email = user.emails.create!(email: 'new@email.com')
 
       expect(user).to receive(:update_invalid_gpg_signatures)
 

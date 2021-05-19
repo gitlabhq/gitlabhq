@@ -395,7 +395,6 @@ project:
 - ewm_service
 - external_wiki_service
 - mock_ci_service
-- mock_deployment_service
 - mock_monitoring_service
 - forked_to_members
 - forked_from_project
@@ -571,6 +570,7 @@ project:
 - exported_protected_branches
 - incident_management_oncall_schedules
 - incident_management_oncall_rotations
+- incident_management_escalation_policies
 - debian_distributions
 - merge_request_metrics
 - security_orchestration_policy_configuration

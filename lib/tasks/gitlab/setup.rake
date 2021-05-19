@@ -40,7 +40,7 @@ namespace :gitlab do
   end
 
   # If there are any clients connected to the DB, PostgreSQL won't let
-  # you drop the database. It's possible that Sidekiq, Unicorn, or
+  # you drop the database. It's possible that Sidekiq, Puma, or
   # some other client will be hanging onto a connection, preventing
   # the DROP DATABASE from working. To workaround this problem, this
   # method terminates all the connections so that a subsequent DROP

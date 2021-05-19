@@ -14,6 +14,7 @@ import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assi
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import SidebarDueDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
+import SidebarParticipantsWidget from '~/sidebar/components/participants/sidebar_participants_widget.vue';
 import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
 import { apolloProvider } from '~/sidebar/graphql';
 import Translate from '../vue_shared/translate';
@@ -21,7 +22,6 @@ import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
 import SidebarLabels from './components/labels/sidebar_labels.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
-import sidebarParticipants from './components/participants/sidebar_participants.vue';
 import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
 import SidebarSubscriptionsWidget from './components/subscriptions/sidebar_subscriptions_widget.vue';
@@ -314,21 +314,29 @@ function mountLockComponent() {
     });
 }
 
-function mountParticipantsComponent(mediator) {
+function mountParticipantsComponent() {
   const el = document.querySelector('.js-sidebar-participants-entry-point');
 
   if (!el) return;
 
+  const { fullPath, iid } = getSidebarOptions();
+
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    apolloProvider,
     components: {
-      sidebarParticipants,
+      SidebarParticipantsWidget,
     },
     render: (createElement) =>
-      createElement('sidebar-participants', {
+      createElement('sidebar-participants-widget', {
         props: {
-          mediator,
+          iid: String(iid),
+          fullPath,
+          issuableType:
+            isInIssuePage() || isInIncidentPage() || isInDesignPage()
+              ? IssuableType.Issue
+              : IssuableType.MergeRequest,
         },
       }),
   });
@@ -435,7 +443,7 @@ export function mountSidebar(mediator) {
   mountDueDateComponent(mediator);
   mountReferenceComponent(mediator);
   mountLockComponent();
-  mountParticipantsComponent(mediator);
+  mountParticipantsComponent();
   mountSubscriptionsComponent();
   mountCopyEmailComponent();
 

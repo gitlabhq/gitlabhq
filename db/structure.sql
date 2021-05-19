@@ -14280,8 +14280,7 @@ CREATE TABLE labels (
     description_html text,
     type character varying,
     group_id integer,
-    cached_markdown_version integer,
-    remove_on_close boolean DEFAULT false NOT NULL
+    cached_markdown_version integer
 );
 
 CREATE SEQUENCE labels_id_seq
@@ -15538,6 +15537,30 @@ CREATE SEQUENCE packages_debian_group_components_id_seq
 
 ALTER SEQUENCE packages_debian_group_components_id_seq OWNED BY packages_debian_group_components.id;
 
+CREATE TABLE packages_debian_group_distribution_keys (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    distribution_id bigint NOT NULL,
+    encrypted_private_key text NOT NULL,
+    encrypted_private_key_iv text NOT NULL,
+    encrypted_passphrase text NOT NULL,
+    encrypted_passphrase_iv text NOT NULL,
+    public_key text NOT NULL,
+    fingerprint text NOT NULL,
+    CONSTRAINT check_bc95dc3fbe CHECK ((char_length(fingerprint) <= 255)),
+    CONSTRAINT check_f708183491 CHECK ((char_length(public_key) <= 524288))
+);
+
+CREATE SEQUENCE packages_debian_group_distribution_keys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_debian_group_distribution_keys_id_seq OWNED BY packages_debian_group_distribution_keys.id;
+
 CREATE TABLE packages_debian_group_distributions (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -15639,6 +15662,30 @@ CREATE SEQUENCE packages_debian_project_components_id_seq
     CACHE 1;
 
 ALTER SEQUENCE packages_debian_project_components_id_seq OWNED BY packages_debian_project_components.id;
+
+CREATE TABLE packages_debian_project_distribution_keys (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    distribution_id bigint NOT NULL,
+    encrypted_private_key text NOT NULL,
+    encrypted_private_key_iv text NOT NULL,
+    encrypted_passphrase text NOT NULL,
+    encrypted_passphrase_iv text NOT NULL,
+    public_key text NOT NULL,
+    fingerprint text NOT NULL,
+    CONSTRAINT check_9e8a5eef0a CHECK ((char_length(fingerprint) <= 255)),
+    CONSTRAINT check_d188f6547f CHECK ((char_length(public_key) <= 524288))
+);
+
+CREATE SEQUENCE packages_debian_project_distribution_keys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_debian_project_distribution_keys_id_seq OWNED BY packages_debian_project_distribution_keys.id;
 
 CREATE TABLE packages_debian_project_distributions (
     id bigint NOT NULL,
@@ -19951,6 +19998,8 @@ ALTER TABLE ONLY packages_debian_group_component_files ALTER COLUMN id SET DEFAU
 
 ALTER TABLE ONLY packages_debian_group_components ALTER COLUMN id SET DEFAULT nextval('packages_debian_group_components_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_debian_group_distribution_keys ALTER COLUMN id SET DEFAULT nextval('packages_debian_group_distribution_keys_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_debian_group_distributions ALTER COLUMN id SET DEFAULT nextval('packages_debian_group_distributions_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_debian_project_architectures ALTER COLUMN id SET DEFAULT nextval('packages_debian_project_architectures_id_seq'::regclass);
@@ -19958,6 +20007,8 @@ ALTER TABLE ONLY packages_debian_project_architectures ALTER COLUMN id SET DEFAU
 ALTER TABLE ONLY packages_debian_project_component_files ALTER COLUMN id SET DEFAULT nextval('packages_debian_project_component_files_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_debian_project_components ALTER COLUMN id SET DEFAULT nextval('packages_debian_project_components_id_seq'::regclass);
+
+ALTER TABLE ONLY packages_debian_project_distribution_keys ALTER COLUMN id SET DEFAULT nextval('packages_debian_project_distribution_keys_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_debian_project_distributions ALTER COLUMN id SET DEFAULT nextval('packages_debian_project_distributions_id_seq'::regclass);
 
@@ -21423,6 +21474,9 @@ ALTER TABLE ONLY packages_debian_group_component_files
 ALTER TABLE ONLY packages_debian_group_components
     ADD CONSTRAINT packages_debian_group_components_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY packages_debian_group_distribution_keys
+    ADD CONSTRAINT packages_debian_group_distribution_keys_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY packages_debian_group_distributions
     ADD CONSTRAINT packages_debian_group_distributions_pkey PRIMARY KEY (id);
 
@@ -21434,6 +21488,9 @@ ALTER TABLE ONLY packages_debian_project_component_files
 
 ALTER TABLE ONLY packages_debian_project_components
     ADD CONSTRAINT packages_debian_project_components_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY packages_debian_project_distribution_keys
+    ADD CONSTRAINT packages_debian_project_distribution_keys_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_debian_project_distributions
     ADD CONSTRAINT packages_debian_project_distributions_pkey PRIMARY KEY (id);
@@ -22211,6 +22268,10 @@ CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON pac
 CREATE INDEX idx_packages_debian_project_component_files_on_architecture_id ON packages_debian_project_component_files USING btree (architecture_id);
 
 CREATE INDEX idx_packages_packages_on_project_id_name_version_package_type ON packages_packages USING btree (project_id, name, version, package_type);
+
+CREATE INDEX idx_pkgs_debian_group_distribution_keys_on_distribution_id ON packages_debian_group_distribution_keys USING btree (distribution_id);
+
+CREATE INDEX idx_pkgs_debian_project_distribution_keys_on_distribution_id ON packages_debian_project_distribution_keys USING btree (distribution_id);
 
 CREATE UNIQUE INDEX idx_pkgs_dep_links_on_pkg_id_dependency_id_dependency_type ON packages_dependency_links USING btree (package_id, dependency_id, dependency_type);
 
@@ -26272,6 +26333,9 @@ ALTER TABLE ONLY group_merge_request_approval_settings
 ALTER TABLE ONLY analytics_cycle_analytics_project_stages
     ADD CONSTRAINT fk_rails_3829e49b66 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY packages_debian_project_distribution_keys
+    ADD CONSTRAINT fk_rails_3834a11264 FOREIGN KEY (distribution_id) REFERENCES packages_debian_project_distributions(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issue_user_mentions
     ADD CONSTRAINT fk_rails_3861d9fefa FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
@@ -26679,6 +26743,9 @@ ALTER TABLE ONLY packages_debian_publications
 
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_rails_76c4e9732d FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_debian_group_distribution_keys
+    ADD CONSTRAINT fk_rails_779438f163 FOREIGN KEY (distribution_id) REFERENCES packages_debian_group_distributions(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_subscriptions_projects
     ADD CONSTRAINT fk_rails_7871f9a97b FOREIGN KEY (upstream_project_id) REFERENCES projects(id) ON DELETE CASCADE;

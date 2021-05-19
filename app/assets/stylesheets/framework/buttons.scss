@@ -200,10 +200,6 @@
     @include btn-red;
   }
 
-  &.btn-cancel {
-    float: right;
-  }
-
   &.btn-grouped {
     @include btn-with-margin;
   }

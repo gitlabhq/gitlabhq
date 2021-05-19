@@ -213,7 +213,6 @@ class Project < ApplicationRecord
   has_one :external_wiki_service
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_ci_service
-  has_one :mock_deployment_service
   has_one :mock_monitoring_service
   has_one :microsoft_teams_service
   has_one :packagist_service

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# Unicorn terminates any request which runs longer than 60 seconds.
 # Puma doesn't have any timeout mechanism for terminating long-running
 # requests, to make sure that server is not paralyzed by long-running
 # or stuck queries, we add a request timeout which terminates the

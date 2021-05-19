@@ -975,6 +975,108 @@ RSpec.describe Ci::Runner do
     end
   end
 
+  describe '.runner_matchers' do
+    subject(:matchers) { described_class.all.runner_matchers }
+
+    context 'deduplicates on runner_type' do
+      before do
+        create_list(:ci_runner, 2, :instance)
+        create_list(:ci_runner, 2, :project)
+      end
+
+      it 'creates two matchers' do
+        expect(matchers.size).to eq(2)
+
+        expect(matchers.map(&:runner_type)).to match_array(%w[instance_type project_type])
+      end
+    end
+
+    context 'deduplicates on public_projects_minutes_cost_factor' do
+      before do
+        create_list(:ci_runner, 2, public_projects_minutes_cost_factor: 5)
+        create_list(:ci_runner, 2, public_projects_minutes_cost_factor: 10)
+      end
+
+      it 'creates two matchers' do
+        expect(matchers.size).to eq(2)
+
+        expect(matchers.map(&:public_projects_minutes_cost_factor)).to match_array([5, 10])
+      end
+    end
+
+    context 'deduplicates on private_projects_minutes_cost_factor' do
+      before do
+        create_list(:ci_runner, 2, private_projects_minutes_cost_factor: 5)
+        create_list(:ci_runner, 2, private_projects_minutes_cost_factor: 10)
+      end
+
+      it 'creates two matchers' do
+        expect(matchers.size).to eq(2)
+
+        expect(matchers.map(&:private_projects_minutes_cost_factor)).to match_array([5, 10])
+      end
+    end
+
+    context 'deduplicates on run_untagged' do
+      before do
+        create_list(:ci_runner, 2, run_untagged: true, tag_list: ['a'])
+        create_list(:ci_runner, 2, run_untagged: false, tag_list: ['a'])
+      end
+
+      it 'creates two matchers' do
+        expect(matchers.size).to eq(2)
+
+        expect(matchers.map(&:run_untagged)).to match_array([true, false])
+      end
+    end
+
+    context 'deduplicates on access_level' do
+      before do
+        create_list(:ci_runner, 2, access_level: :ref_protected)
+        create_list(:ci_runner, 2, access_level: :not_protected)
+      end
+
+      it 'creates two matchers' do
+        expect(matchers.size).to eq(2)
+
+        expect(matchers.map(&:access_level)).to match_array(%w[ref_protected not_protected])
+      end
+    end
+
+    context 'deduplicates on tag_list' do
+      before do
+        create_list(:ci_runner, 2, tag_list: %w[tag1 tag2])
+        create_list(:ci_runner, 2, tag_list: %w[tag3 tag4])
+      end
+
+      it 'creates two matchers' do
+        expect(matchers.size).to eq(2)
+
+        expect(matchers.map(&:tag_list)).to match_array([%w[tag1 tag2], %w[tag3 tag4]])
+      end
+    end
+  end
+
+  describe '#runner_matcher' do
+    let(:runner) do
+      build_stubbed(:ci_runner, :instance_type, tag_list: %w[tag1 tag2])
+    end
+
+    subject(:matcher) { runner.runner_matcher }
+
+    it { expect(matcher.runner_type).to eq(runner.runner_type) }
+
+    it { expect(matcher.public_projects_minutes_cost_factor).to eq(runner.public_projects_minutes_cost_factor) }
+
+    it { expect(matcher.private_projects_minutes_cost_factor).to eq(runner.private_projects_minutes_cost_factor) }
+
+    it { expect(matcher.run_untagged).to eq(runner.run_untagged) }
+
+    it { expect(matcher.access_level).to eq(runner.access_level) }
+
+    it { expect(matcher.tag_list).to match_array(runner.tag_list) }
+  end
+
   describe '#uncached_contacted_at' do
     let(:contacted_at_stored) { 1.hour.ago.change(usec: 0) }
     let(:runner) { create(:ci_runner, contacted_at: contacted_at_stored) }

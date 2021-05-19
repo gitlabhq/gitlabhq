@@ -57,7 +57,7 @@ RSpec.describe API::Labels do
         put_labels_api(route_type, user, spec_params)
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq('new_name, color, description, priority, remove_on_close are missing, '\
+        expect(json_response['error']).to eq('new_name, color, description, priority are missing, '\
                                              'at least one parameter must be provided')
       end
 
@@ -111,14 +111,6 @@ RSpec.describe API::Labels do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq(expected_response_label_id)
         expect(json_response['priority']).to eq(10)
-      end
-
-      it "returns 200 if remove_on_close is changed (#{route_type} route)" do
-        put_labels_api(route_type, user, spec_params, remove_on_close: true)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['id']).to eq(expected_response_label_id)
-        expect(json_response['remove_on_close']).to eq(true)
       end
     end
 
@@ -309,8 +301,7 @@ RSpec.describe API::Labels do
              name: valid_label_title_2,
              color: '#FFAABB',
              description: 'test',
-             priority: 2,
-             remove_on_close: true
+             priority: 2
            }
 
       expect(response).to have_gitlab_http_status(:created)
@@ -318,7 +309,6 @@ RSpec.describe API::Labels do
       expect(json_response['color']).to eq('#FFAABB')
       expect(json_response['description']).to eq('test')
       expect(json_response['priority']).to eq(2)
-      expect(json_response['remove_on_close']).to eq(true)
     end
 
     it 'returns created label when only required params' do

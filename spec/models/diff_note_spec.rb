@@ -167,7 +167,7 @@ RSpec.describe DiffNote do
               end
 
               it 'creates a diff note file' do
-                subject.save
+                subject.save!
                 expect(subject.note_diff_file).to be_present
               end
             end
@@ -188,7 +188,7 @@ RSpec.describe DiffNote do
               end
 
               it 'raises an error' do
-                expect { subject.save }.to raise_error(::DiffNote::NoteDiffFileCreationError,
+                expect { subject.save! }.to raise_error(::DiffNote::NoteDiffFileCreationError,
                                                        "Failed to find diff line for: #{diff_file.file_path}, "\
                                                        "old_line: #{position.old_line}"\
                                                        ", new_line: #{position.new_line}")
@@ -201,7 +201,7 @@ RSpec.describe DiffNote do
               end
 
               it 'creates a diff note file' do
-                subject.save
+                subject.save!
                 expect(subject.reload.note_diff_file).to be_present
               end
             end
@@ -544,7 +544,7 @@ RSpec.describe DiffNote do
       it "does not update the position" do
         expect(subject).not_to receive(:update_position)
 
-        subject.save
+        subject.save!
       end
     end
 

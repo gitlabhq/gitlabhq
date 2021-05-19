@@ -69,33 +69,17 @@ RSpec.describe Mutations::Issues::Update do
       context 'when changing state' do
         let_it_be_with_refind(:issue) { create(:issue, project: project, state: :opened) }
 
-        before do
-          mutation_params[:state_event] = state_event
+        it 'closes issue' do
+          mutation_params[:state_event] = 'close'
+
+          expect { subject }.to change { issue.reload.state }.from('opened').to('closed')
         end
 
-        context 'when state_event is close' do
-          let_it_be(:removable_label) { create(:label, project: project, remove_on_close: true, issues: [issue]) }
+        it 'reopens issue' do
+          issue.close
+          mutation_params[:state_event] = 'reopen'
 
-          let(:state_event) { 'close' }
-
-          it 'closes issue' do
-            expect do
-              subject
-              issue.reload
-            end.to change(issue, :state).from('opened').to('closed').and(
-              change { issue.label_ids }.from([removable_label.id]).to([])
-            )
-          end
-        end
-
-        context 'when state_event is reopen' do
-          let(:state_event) { 'reopen' }
-
-          it 'reopens issue' do
-            issue.close
-
-            expect { subject }.to change { issue.reload.state }.from('closed').to('opened')
-          end
+          expect { subject }.to change { issue.reload.state }.from('closed').to('opened')
         end
       end
 

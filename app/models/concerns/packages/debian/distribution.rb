@@ -18,6 +18,10 @@ module Packages
         belongs_to container_type
         belongs_to :creator, class_name: 'User'
 
+        has_one :key,
+          class_name: "Packages::Debian::#{container_type.capitalize}DistributionKey",
+          foreign_key: :distribution_id,
+          inverse_of: :distribution
         # component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
         has_many :components,
           class_name: "Packages::Debian::#{container_type.capitalize}Component",

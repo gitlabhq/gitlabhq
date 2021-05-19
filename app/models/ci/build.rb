@@ -11,6 +11,7 @@ module Ci
     include Importable
     include Ci::HasRef
     include IgnorableColumns
+    include TaggableQueries
 
     BuildArchivedError = Class.new(StandardError)
 
@@ -376,6 +377,33 @@ module Ci
         else
           build.deployment&.cancel
         end
+      end
+    end
+
+    def self.build_matchers(project)
+      unique_params = [
+        :protected,
+        Arel.sql("(#{arel_tag_names_array.to_sql})")
+      ]
+
+      group(*unique_params).pluck('array_agg(id)', *unique_params).map do |values|
+        Gitlab::Ci::Matching::BuildMatcher.new({
+          build_ids: values[0],
+          protected: values[1],
+          tag_list: values[2],
+          project: project
+        })
+      end
+    end
+
+    def build_matcher
+      strong_memoize(:build_matcher) do
+        Gitlab::Ci::Matching::BuildMatcher.new({
+          protected: protected?,
+          tag_list: tag_list,
+          build_ids: [id],
+          project: project
+        })
       end
     end
 

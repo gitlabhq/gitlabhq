@@ -5,7 +5,7 @@ if /darwin/ =~ RUBY_PLATFORM
     require 'fiddle'
 
     # Dynamically load Foundation.framework, ~implicitly~ initialising
-    # the Objective-C runtime before any forking happens in Unicorn
+    # the Objective-C runtime before any forking happens in webserver
     #
     # From https://bugs.ruby-lang.org/issues/14009
     Fiddle.dlopen '/System/Library/Frameworks/Foundation.framework/Foundation'

@@ -4987,4 +4987,67 @@ RSpec.describe Ci::Build do
       it { is_expected.to be_truthy }
     end
   end
+
+  describe '.build_matchers' do
+    let_it_be(:pipeline) { create(:ci_pipeline, :protected) }
+
+    subject(:matchers) { pipeline.builds.build_matchers(pipeline.project) }
+
+    context 'when the pipeline is empty' do
+      it 'does not throw errors' do
+        is_expected.to eq([])
+      end
+    end
+
+    context 'when the pipeline has builds' do
+      let_it_be(:build_without_tags) do
+        create(:ci_build, pipeline: pipeline)
+      end
+
+      let_it_be(:build_with_tags) do
+        create(:ci_build, pipeline: pipeline, tag_list: %w[tag1 tag2])
+      end
+
+      let_it_be(:other_build_with_tags) do
+        create(:ci_build, pipeline: pipeline, tag_list: %w[tag2 tag1])
+      end
+
+      it { expect(matchers.size).to eq(2) }
+
+      it 'groups build ids' do
+        expect(matchers.map(&:build_ids)).to match_array([
+          [build_without_tags.id],
+          match_array([build_with_tags.id, other_build_with_tags.id])
+        ])
+      end
+
+      it { expect(matchers.map(&:tag_list)).to match_array([[], %w[tag1 tag2]]) }
+
+      it { expect(matchers.map(&:protected?)).to all be_falsey }
+
+      context 'when the builds are protected' do
+        before do
+          pipeline.builds.update_all(protected: true)
+        end
+
+        it { expect(matchers).to all be_protected }
+      end
+    end
+  end
+
+  describe '#build_matcher' do
+    let_it_be(:build) do
+      build_stubbed(:ci_build, tag_list: %w[tag1 tag2])
+    end
+
+    subject(:matcher) { build.build_matcher }
+
+    it { expect(matcher.build_ids).to eq([build.id]) }
+
+    it { expect(matcher.tag_list).to match_array(%w[tag1 tag2]) }
+
+    it { expect(matcher.protected?).to eq(build.protected?) }
+
+    it { expect(matcher.project).to eq(build.project) }
+  end
 end

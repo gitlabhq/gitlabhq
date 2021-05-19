@@ -10,6 +10,8 @@ module Ci
     include TokenAuthenticatable
     include IgnorableColumns
     include FeatureGate
+    include Gitlab::Utils::StrongMemoize
+    include TaggableQueries
 
     add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 
@@ -194,6 +196,42 @@ module Ci
         order_contacted_at_asc
       else
         order_created_at_desc
+      end
+    end
+
+    def self.runner_matchers
+      unique_params = [
+        :runner_type,
+        :public_projects_minutes_cost_factor,
+        :private_projects_minutes_cost_factor,
+        :run_untagged,
+        :access_level,
+        Arel.sql("(#{arel_tag_names_array.to_sql})")
+      ]
+
+      # we use distinct to de-duplicate data
+      distinct.pluck(*unique_params).map do |values|
+        Gitlab::Ci::Matching::RunnerMatcher.new({
+          runner_type: values[0],
+          public_projects_minutes_cost_factor: values[1],
+          private_projects_minutes_cost_factor: values[2],
+          run_untagged: values[3],
+          access_level: values[4],
+          tag_list: values[5]
+        })
+      end
+    end
+
+    def runner_matcher
+      strong_memoize(:runner_matcher) do
+        Gitlab::Ci::Matching::RunnerMatcher.new({
+          runner_type: runner_type,
+          public_projects_minutes_cost_factor: public_projects_minutes_cost_factor,
+          private_projects_minutes_cost_factor: private_projects_minutes_cost_factor,
+          run_untagged: run_untagged,
+          access_level: access_level,
+          tag_list: tag_list
+        })
       end
     end
 
