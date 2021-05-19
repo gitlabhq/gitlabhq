@@ -55,21 +55,25 @@ export const createNodeDict = (nodes) => {
 export const makeLinksFromNodes = (nodes, nodeDict) => {
   const constantLinkValue = 10; // all links are the same weight
   return nodes
-    .map((group) => {
-      return group.jobs.map((job) => {
-        if (!job.needs) {
-          return [];
-        }
+    .map(({ jobs, name: groupName }) =>
+      jobs.map(({ needs = [] }) =>
+        needs.reduce((acc, needed) => {
+          // It's possible that we have an optional job, which
+          // is being needed by another job. In that scenario,
+          // the needed job doesn't exist, so we don't want to
+          // create link for it.
+          if (nodeDict[needed]?.name) {
+            acc.push({
+              source: nodeDict[needed].name,
+              target: groupName,
+              value: constantLinkValue,
+            });
+          }
 
-        return job.needs.map((needed) => {
-          return {
-            source: nodeDict[needed]?.name,
-            target: group.name,
-            value: constantLinkValue,
-          };
-        });
-      });
-    })
+          return acc;
+        }, []),
+      ),
+    )
     .flat(2);
 };
 

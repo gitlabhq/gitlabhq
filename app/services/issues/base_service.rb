@@ -29,7 +29,7 @@ module Issues
       gates = [issue.project, issue.project.group].compact
       return unless gates.any? { |gate| Feature.enabled?(:rebalance_issues, gate) }
 
-      IssueRebalancingWorker.perform_async(nil, issue.project_id)
+      IssueRebalancingWorker.perform_async(nil, *issue.project.self_or_root_group_ids)
     end
 
     private

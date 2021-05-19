@@ -363,21 +363,8 @@
 // Collapsed nav
 
 .toggle-sidebar-button,
-.close-nav-button,
-.toggle-right-sidebar-button {
-  transition: width $sidebar-transition-duration;
-  height: $toggle-sidebar-height;
-  padding: 0 $gl-padding;
-  background-color: $gray-light;
-  border: 0;
-  color: $gl-text-color-secondary;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    background-color: $border-color;
-    color: $gl-text-color;
-  }
+.close-nav-button {
+  @include side-panel-toggle;
 }
 
 .toggle-sidebar-button,
@@ -394,10 +381,6 @@
   .icon-chevron-double-lg-right {
     display: none;
   }
-}
-
-.toggle-right-sidebar-button {
-  border-bottom: 1px solid $border-color;
 }
 
 .collapse-text {

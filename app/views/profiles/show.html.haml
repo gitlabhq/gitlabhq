@@ -11,7 +11,7 @@
   .row.js-search-settings-section
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0
-        = s_("Profiles|Public Avatar")
+        = s_("Profiles|Public avatar")
       %p
         - if @user.avatar?
           - if gravatar_enabled?
@@ -27,18 +27,17 @@
           .md
             = brand_profile_image_guidelines
     .col-lg-8
-      .clearfix.avatar-image.gl-mb-3
+      .avatar-image
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
-          = image_tag avatar_icon_for_user(@user, 160), alt: '', class: 'avatar s160'
+          = image_tag avatar_icon_for_user(@user, 96), alt: '', class: 'avatar s96'
       %h5.gl-mt-0= s_("Profiles|Upload new avatar")
-      .gl-mt-2.gl-mb-3
-        %button.gl-button.btn.js-choose-user-avatar-button{ type: 'button' }= s_("Profiles|Choose file...")
+      .gl-my-3
+        %button.gl-button.btn.btn-default.js-choose-user-avatar-button{ type: 'button' }= s_("Profiles|Choose file...")
         %span.avatar-file-name.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen.")
         = f.file_field_without_bootstrap :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
-      .form-text.text-muted= s_("Profiles|The maximum file size allowed is 200KB.")
+      .gl-text-gray-500= s_("Profiles|The maximum file size allowed is 200KB.")
       - if @user.avatar?
-        %hr
-        = link_to s_("Profiles|Remove avatar"), profile_avatar_path, data: { confirm: s_("Profiles|Avatar will be removed. Are you sure?") }, method: :delete, class: 'gl-button btn btn-danger btn-inverted'
+        = link_to s_("Profiles|Remove avatar"), profile_avatar_path, data: { confirm: s_("Profiles|Avatar will be removed. Are you sure?") }, method: :delete, class: 'gl-button btn btn-danger-secondary btn-sm gl-mt-5'
     .col-lg-12
       %hr
   .row.js-search-settings-section
@@ -124,10 +123,10 @@
       = f.check_box :include_private_contributions, label: s_('Profiles|Include private contributions on my profile'), wrapper_class: 'mb-2', inline: true
       .help-block
         = s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information")
-  .row.gl-mt-3.gl-mb-3.gl-justify-content-end
-    .col-lg-8
-      = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm'
-      = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-cancel'
+  .row.gl-justify-content-end.gl-mt-5
+    .col-lg-8.gl-display-flex
+      = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm gl-mr-3'
+      = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-default btn-cancel'
 
 .modal.modal-profile-crop{ data: { cropper_css_path: ActionController::Base.helpers.stylesheet_path('lazy_bundles/cropper.css') } }
   .modal-dialog

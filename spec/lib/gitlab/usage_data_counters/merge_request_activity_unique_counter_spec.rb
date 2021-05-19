@@ -386,4 +386,20 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:action) { described_class::MR_LABELS_CHANGED_ACTION }
     end
   end
+
+  describe '.track_loading_conflict_ui_action' do
+    subject { described_class.track_loading_conflict_ui_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_LOAD_CONFLICT_UI_ACTION }
+    end
+  end
+
+  describe '.track_resolve_conflict_action' do
+    subject { described_class.track_resolve_conflict_action(user: user) }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_RESOLVE_CONFLICT_ACTION }
+    end
+  end
 end

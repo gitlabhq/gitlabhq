@@ -11,7 +11,7 @@ module Gitlab
     end
 
     def self.dir_glob
-      Dir.glob([Rails.root.join('file_hooks/*'), Rails.root.join('plugins/*')])
+      Dir.glob(Rails.root.join('file_hooks/*'))
     end
     private_class_method :dir_glob
 

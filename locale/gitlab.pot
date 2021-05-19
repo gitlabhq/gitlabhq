@@ -24711,9 +24711,6 @@ msgstr ""
 msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
-msgid "Plugins directory is deprecated and will be removed in 14.0. Please move this file into /file_hooks directory."
-msgstr ""
-
 msgid "Pod does not exist"
 msgstr ""
 
@@ -25254,7 +25251,7 @@ msgstr ""
 msgid "Profiles|Profile was successfully updated"
 msgstr ""
 
-msgid "Profiles|Public Avatar"
+msgid "Profiles|Public avatar"
 msgstr ""
 
 msgid "Profiles|Public email"

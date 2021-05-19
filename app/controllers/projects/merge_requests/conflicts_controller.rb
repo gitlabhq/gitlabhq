@@ -9,6 +9,7 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
     respond_to do |format|
       format.html do
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
+        Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_loading_conflict_ui_action(user: current_user)
       end
 
       format.json do
@@ -41,6 +42,8 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
 
   def resolve_conflicts
     return render_404 unless @conflicts_list.can_be_resolved_in_ui?
+
+    Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_resolve_conflict_action(user: current_user)
 
     if @merge_request.can_be_merged?
       render status: :bad_request, json: { message: _('The merge conflicts for this merge request have already been resolved.') }

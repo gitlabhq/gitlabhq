@@ -219,3 +219,11 @@
   category: code_review
   aggregation: weekly
   feature_flag: diff_settings_usage_data
+- name: i_code_review_user_load_conflict_ui
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_user_resolve_conflict
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly

@@ -1,0 +1,21 @@
+---
+key_path: redis_hll_counters.code_review.i_code_review_user_resolve_conflict_weekly
+name: resolve_conflict
+description: Count of unique users per week who attempt to resolve a conflict through the ui
+product_section:
+product_stage: create
+product_group: group::code review
+product_category: code_review
+value_type: number
+status: implemented
+milestone: "13.12"
+time_frame: 28d
+data_source: redis_hll
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61654
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

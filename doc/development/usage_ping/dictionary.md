@@ -9346,6 +9346,30 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `redis_hll_counters.code_review.i_code_review_user_load_conflict_ui_monthly`
+
+Count of unique users per week who load the conflict resolution page
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210514013549_i_code_review_user_load_conflict_ui_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_user_load_conflict_ui_weekly`
+
+Count of unique users per week who load the conflict resolution page
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210514013544_i_code_review_user_load_conflict_ui_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.code_review.i_code_review_user_marked_as_draft_monthly`
 
 Count of unique users per month who mark a merge request as a draft
@@ -9559,6 +9583,30 @@ Count of unique users per week who reopened a MR
 Group: `group::code review`
 
 Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_user_resolve_conflict_monthly`
+
+Count of unique users per week who attempt to resolve a conflict through the ui
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210514013545_i_code_review_user_resolve_conflict_monthly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_user_resolve_conflict_weekly`
+
+Count of unique users per week who attempt to resolve a conflict through the ui
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210514013545_i_code_review_user_resolve_conflict_weekly.yml)
+
+Group: `group::code review`
+
+Status: `implemented`
 
 Tiers: `free`, `premium`, `ultimate`
 

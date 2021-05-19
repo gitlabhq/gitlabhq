@@ -128,11 +128,10 @@ RSpec.describe WebHookService do
     end
 
     it 'handles exceptions' do
-      exceptions = [
-        SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED,
-        Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout,
-        Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep
+      exceptions = Gitlab::HTTP::HTTP_ERRORS + [
+        Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError
       ]
+
       exceptions.each do |exception_class|
         exception = exception_class.new('Exception message')
         project_hook.enable!

@@ -41,7 +41,7 @@ class IssuePlacementWorker
     IssuePlacementWorker.perform_async(nil, leftover.project_id) if leftover.present?
   rescue RelativePositioning::NoSpaceLeft => e
     Gitlab::ErrorTracking.log_exception(e, issue_id: issue_id, project_id: project_id)
-    IssueRebalancingWorker.perform_async(nil, project_id.presence || issue.project_id)
+    IssueRebalancingWorker.perform_async(nil, *root_namespace_id_to_rebalance(issue, project_id))
   end
 
   def find_issue(issue_id, project_id)
@@ -53,4 +53,11 @@ class IssuePlacementWorker
     project.issues.take
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  private
+
+  def root_namespace_id_to_rebalance(issue, project_id)
+    project_id = project_id.presence || issue.project_id
+    Project.find(project_id)&.self_or_root_group_ids
+  end
 end

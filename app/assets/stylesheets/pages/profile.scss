@@ -5,6 +5,12 @@
 }
 
 .avatar-image {
+  margin-bottom: $grid-size;
+
+  .avatar {
+    float: none;
+  }
+
   @include media-breakpoint-up(sm) {
     float: left;
     margin-bottom: 0;

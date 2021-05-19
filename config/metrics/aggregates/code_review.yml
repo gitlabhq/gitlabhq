@@ -63,6 +63,8 @@
     - 'i_code_review_diff_hide_whitespace'
     - 'i_code_review_diff_single_file'
     - 'i_code_review_diff_multiple_files'
+    - 'i_code_review_user_load_conflict_ui'
+    - 'i_code_review_user_resolve_conflict'
 - name: code_review_category_monthly_active_users
   operator: OR
   feature_flag: usage_data_code_review_aggregation
@@ -118,6 +120,8 @@
     - 'i_code_review_diff_hide_whitespace'
     - 'i_code_review_diff_single_file'
     - 'i_code_review_diff_multiple_files'
+    - 'i_code_review_user_load_conflict_ui'
+    - 'i_code_review_user_resolve_conflict'
 - name: code_review_extension_category_monthly_active_users
   operator: OR
   feature_flag: usage_data_code_review_aggregation

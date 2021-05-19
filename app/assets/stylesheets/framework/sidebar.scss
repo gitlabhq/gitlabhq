@@ -232,3 +232,8 @@
     }
   }
 }
+
+.toggle-right-sidebar-button {
+  @include side-panel-toggle;
+  border-bottom: 1px solid $border-color;
+}

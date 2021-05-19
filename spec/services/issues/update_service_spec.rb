@@ -225,7 +225,7 @@ RSpec.describe Issues::UpdateService, :mailer do
 
         opts[:move_between_ids] = [issue1.id, issue2.id]
 
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, nil, project.root_namespace.id)
 
         update_issue(opts)
         expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
@@ -239,7 +239,7 @@ RSpec.describe Issues::UpdateService, :mailer do
 
         opts[:move_between_ids] = [issue1.id, issue2.id]
 
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, nil, project.root_namespace.id)
 
         update_issue(opts)
         expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
@@ -253,7 +253,7 @@ RSpec.describe Issues::UpdateService, :mailer do
 
         opts[:move_between_ids] = [issue1.id, issue2.id]
 
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, nil, project.root_namespace.id)
 
         update_issue(opts)
         expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)

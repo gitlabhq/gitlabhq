@@ -446,3 +446,19 @@
     }
   }
 }
+
+@mixin side-panel-toggle {
+  transition: width $sidebar-transition-duration;
+  height: $toggle-sidebar-height;
+  padding: 0 $gl-padding;
+  background-color: $gray-light;
+  border: 0;
+  color: $gl-text-color-secondary;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background-color: $border-color;
+    color: $gl-text-color;
+  }
+}

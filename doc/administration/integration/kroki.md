@@ -6,10 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Kroki diagrams **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241744) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241744) in GitLab 13.7.
+> - Support for reStructuredText and Textile documents [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324766) in GitLab 13.12.
 
 When [Kroki](https://kroki.io) integration is enabled and configured in
-GitLab you can use it to create diagrams in AsciiDoc and Markdown documents.
+GitLab you can use it to create diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents.
 
 ## Kroki Server
 
@@ -85,13 +86,29 @@ your AsciiDoc or Markdown documentation using delimited blocks:
   ....
   ```
 
+- **reStructuredText**
+
+  ```plaintext
+  .. code-block:: plantuml
+
+    Bob->Alice : hello
+    Alice -> Bob : hi
+  ```
+
+- **Textile**
+
+  ```plaintext
+  bc[plantuml]. Bob->Alice : hello
+  Alice -> Bob : hi
+  ```
+
 The above blocks are converted to an HTML image tag with source pointing to the
 Kroki instance. If the Kroki server is correctly configured, this should
 render a nice diagram instead of the block:
 
 ![PlantUML diagram](../img/kroki_plantuml_diagram.png)
 
-Kroki supports more than a dozen diagram libraries. Here's a few examples:
+Kroki supports more than a dozen diagram libraries. Here's a few examples for AsciiDoc:
 
 **GraphViz**
 

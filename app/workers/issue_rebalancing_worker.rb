@@ -9,21 +9,44 @@ class IssueRebalancingWorker
   urgency :low
   feature_category :issue_tracking
   tags :exclude_from_kubernetes
+  deduplicate :until_executed, including_scheduled: true
 
-  def perform(ignore = nil, project_id = nil)
-    return if project_id.nil?
+  def perform(ignore = nil, project_id = nil, root_namespace_id = nil)
+    # we need to have exactly one of the project_id and root_namespace_id params be non-nil
+    raise ArgumentError, "Expected only one of the params project_id: #{project_id} and root_namespace_id: #{root_namespace_id}" if project_id && root_namespace_id
+    return if project_id.nil? && root_namespace_id.nil?
 
-    project = Project.find(project_id)
+    # pull the projects collection to be rebalanced either the project if namespace is not a group(i.e. user namesapce)
+    # or the root namespace, this also makes the worker backward compatible with previous version where a project_id was
+    # passed as the param
+    projects_to_rebalance = projects_collection(project_id, root_namespace_id)
 
-    # Temporary disable reabalancing for performance reasons
+    # something might have happened with the namespace between scheduling the worker and actually running it,
+    # maybe it was removed.
+    if projects_to_rebalance.blank?
+      Gitlab::ErrorTracking.log_exception(
+        ArgumentError.new("Projects to be rebalanced not found for arguments: project_id #{project_id}, root_namespace_id: #{root_namespace_id}"),
+        { project_id: project_id, root_namespace_id: root_namespace_id })
+
+      return
+    end
+
+    # Temporary disable rebalancing for performance reasons
     # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
-    return if project.root_namespace&.issue_repositioning_disabled?
+    return if projects_to_rebalance.take&.root_namespace&.issue_repositioning_disabled? # rubocop:disable CodeReuse/ActiveRecord
 
-    # All issues are equivalent as far as we are concerned
-    issue = project.issues.take # rubocop: disable CodeReuse/ActiveRecord
+    IssueRebalancingService.new(projects_to_rebalance).execute
+  rescue IssueRebalancingService::TooManyIssues => e
+    Gitlab::ErrorTracking.log_exception(e, root_namespace_id: root_namespace_id, project_id: project_id)
+  end
 
-    IssueRebalancingService.new(issue).execute
-  rescue ActiveRecord::RecordNotFound, IssueRebalancingService::TooManyIssues => e
-    Gitlab::ErrorTracking.log_exception(e, project_id: project_id)
+  private
+
+  def projects_collection(project_id, root_namespace_id)
+    # we can have either project_id(older version) or project_id if project is part of a user namespace and not a group
+    # or root_namespace_id(newer version) never both.
+    return Project.id_in([project_id]) if project_id
+
+    Namespace.find_by_id(root_namespace_id)&.all_projects
   end
 end

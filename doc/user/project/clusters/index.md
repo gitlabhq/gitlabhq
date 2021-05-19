@@ -351,16 +351,17 @@ You can customize the deployment namespace in a few ways:
 When you customize the namespace, existing environments remain linked to their current
 namespaces until you [clear the cluster cache](#clearing-the-cluster-cache).
 
-WARNING:
+#### Protecting credentials
+
 By default, anyone who can create a deployment job can access any CI/CD variable in
 an environment's deployment job. This includes `KUBECONFIG`, which gives access to
 any secret available to the associated service account in your cluster.
 To keep your production credentials safe, consider using
 [protected environments](../../../ci/environments/protected_environments.md),
-combined with either
+combined with *one* of the following:
 
-- a GitLab-managed cluster and namespace per environment,
-- *or*, an environment-scoped cluster per protected environment. The same cluster
+- A GitLab-managed cluster and namespace per environment.
+- An environment-scoped cluster per protected environment. The same cluster
   can be added multiple times with multiple restricted service accounts.
 
 ### Integrations

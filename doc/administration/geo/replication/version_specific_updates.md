@@ -11,6 +11,10 @@ Review this page for update instructions for your version. These steps
 accompany the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 13.11
+
+We found an [issue with Git clone/pull through HTTP(s)](https://gitlab.com/gitlab-org/gitlab/-/issues/330787) on Geo secondaries and on any GitLab instance if maintenance mode is enabled. This was caused by a regression in GitLab Workhorse. This is fixed in the [GitLab 13.11.4 patch release](https://about.gitlab.com/releases/2021/05/14/gitlab-13-11-4-released/). To avoid this issue, upgrade to GitLab 13.11.4 or later. 
+
 ## Updating to GitLab 13.9
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
